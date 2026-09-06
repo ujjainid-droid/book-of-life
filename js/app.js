@@ -125,6 +125,18 @@ function openSettingsModal() {
         </div>
       </div>
 
+      <!-- App Cache & Reload -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <i data-lucide="refresh-cw" style="color:var(--primary);width:18px;height:18px;"></i>
+          <h3>App Cache & Updates</h3>
+        </div>
+        <p class="settings-desc">Force reload the app and clear browser cache on mobile.</p>
+        <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="window.location.reload(true)">
+          <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Force Refresh App
+        </button>
+      </div>
+
       <!-- Reset -->
       <div class="settings-card danger-zone">
         <div class="settings-card-header">
