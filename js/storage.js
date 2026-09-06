@@ -130,6 +130,9 @@ class StorageManager {
   saveData() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
+      if (typeof syncManager !== 'undefined' && syncManager.isConfigured()) {
+        syncManager.pushToCloud();
+      }
     } catch (e) {
       console.error('Failed to save state to localStorage', e);
     }

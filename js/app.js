@@ -107,6 +107,63 @@ function openSettingsModal() {
           onchange="updateMotto(this.value)">
       </div>
 
+      <!-- Instant Cloud Sync (Firebase Realtime) -->
+      <div class="settings-card">
+        <div class="settings-card-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="cloud-lightning" style="color:var(--primary);width:18px;height:18px;"></i>
+            <h3>Instant Cloud Sync</h3>
+          </div>
+          <span id="sync-status-indicator" class="sync-status-badge ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'connected' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'connecting' : 'offline')}">
+            <span class="status-dot ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'green' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'yellow' : 'grey')}"></span>
+            ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'Live Sync Active' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'Connecting...' : 'Offline (Local Only)')}
+          </span>
+        </div>
+        <p class="settings-desc">
+          Instant 2-way real-time sync between your Mac and iPhone using your free Firebase Realtime Database. Changes appear in milliseconds.
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" style="font-size:0.75rem;">Firebase Database URL</label>
+            <input type="url" class="form-input" id="sync-db-url-input" 
+              placeholder="https://your-project-default-rtdb.firebaseio.com" 
+              value="${typeof syncManager !== 'undefined' ? (syncManager.dbUrl || '') : ''}">
+          </div>
+
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label" style="font-size:0.75rem;">Sync Passphrase (Secret Key)</label>
+            <input type="text" class="form-input" id="sync-passphrase-input" 
+              placeholder="e.g. ujj-book-of-life-2026" 
+              value="${typeof syncManager !== 'undefined' ? (syncManager.passphrase || '') : ''}">
+          </div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:4px;">
+            <button class="btn btn-primary btn-sm" onclick="saveSyncSettings()">
+              <i data-lucide="check" style="width:14px;height:14px;"></i> Save &amp; Connect
+            </button>
+            ${typeof syncManager !== 'undefined' && syncManager.isConfigured() ? `
+              <button class="btn btn-secondary btn-sm" onclick="openPairingModal()">
+                <i data-lucide="smartphone" style="width:14px;height:14px;"></i> 📱 Pair with iPhone (QR Code)
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="syncManager.pullFromCloud();showToast('Syncing now...')">
+                <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sync Now
+              </button>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="sync-setup-help">
+          <span class="help-title">💡 1-Minute Firebase Setup (100% Free):</span>
+          <ol style="margin:6px 0 0 16px;padding:0;font-size:0.76rem;color:var(--text-muted);line-height:1.45;">
+            <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary);text-decoration:underline;">console.firebase.google.com</a> (log in with your Google account).</li>
+            <li>Click <strong>Create a project</strong> → name it <code>book-of-life</code> → Create.</li>
+            <li>In left sidebar: <strong>Build</strong> → <strong>Realtime Database</strong> → <strong>Create Database</strong> → choose <strong>Start in test mode</strong>.</li>
+            <li>Copy the database link at the top (e.g. <code>https://...firebaseio.com/</code>) and paste it above!</li>
+          </ol>
+        </div>
+      </div>
+
       <!-- Backup -->
       <div class="settings-card">
         <div class="settings-card-header">
@@ -372,3 +429,60 @@ function triggerConfetti() {
     });
   }
 }
+
+/* --------------------------------------------------------------------------
+   Cloud Sync Settings & Pairing Handlers
+   -------------------------------------------------------------------------- */
+function saveSyncSettings() {
+  const dbUrl = (document.getElementById('sync-db-url-input')?.value || '').trim();
+  const passphrase = (document.getElementById('sync-passphrase-input')?.value || '').trim();
+
+  if (!dbUrl) {
+    showToast('Please enter your Firebase Database URL');
+    return;
+  }
+  if (!passphrase) {
+    showToast('Please enter a secret Sync Passphrase');
+    return;
+  }
+
+  if (typeof syncManager !== 'undefined') {
+    syncManager.saveConfig(dbUrl, passphrase);
+    openSettingsModal();
+  }
+}
+
+function openPairingModal() {
+  if (typeof syncManager === 'undefined' || !syncManager.isConfigured()) {
+    showToast('Please configure cloud sync first');
+    return;
+  }
+
+  const pairUrl = syncManager.getPairingUrl();
+  const modal = document.getElementById('modal-sync-pair');
+  const body = document.getElementById('sync-pair-modal-body');
+  if (!modal || !body) return;
+
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(pairUrl)}`;
+
+  body.innerHTML = `
+    <div style="background: white; padding: 12px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: inline-block;">
+      <img src="${qrSrc}" alt="Sync Pairing QR Code" width="200" height="200" style="display: block;">
+    </div>
+    <div style="font-size: 0.84rem; color: var(--text-secondary); max-width: 360px; line-height: 1.45; text-align: center;">
+      <strong>Point your iPhone camera</strong> at this QR code to automatically connect your phone to this database. No typing required!
+    </div>
+    <div style="display: flex; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap;">
+      <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${pairUrl.replace(/'/g, "\\'")}'); showToast('📋 Pairing link copied!')">
+        <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy Pairing Link
+      </button>
+      <button class="btn btn-primary btn-sm" onclick="closeAllModals()">
+        Done
+      </button>
+    </div>
+  `;
+
+  modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+
