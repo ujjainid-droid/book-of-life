@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Book of Life">
+  <meta name="theme-color" content="#F4F5FB">
+  <title>Book of Life — MARGO Life OS</title>
+  
+  <!-- Google Fonts: Inter & Newsreader for Nordic Editorial aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Modular Stylesheets -->
+  <link rel="stylesheet" href="css/nordic-theme.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/cover.css">
+  <link rel="stylesheet" href="css/habits.css">
+  <link rel="stylesheet" href="css/tasks.css">
+  <link rel="stylesheet" href="css/settings.css">
+</head>
+<body>
+
+  <div class="book-app">
+    <!-- Header -->
+    <header class="book-header">
+      <div class="book-title-area">
+        <h1>Book of Life</h1>
+      </div>
+
+      <div class="header-date-nav">
+        <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
+          <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
+        </button>
+        <button class="date-current-btn" id="header-date-label" onclick="resetToToday()" title="Jump to Today">
+          Today
+        </button>
+        <button class="date-nav-btn" onclick="navigateDate(1)" title="Next Day">
+          <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" title="Toggle Light / Dark Theme" onclick="toggleTheme()">
+          <i data-lucide="moon" id="header-theme-icon" style="width: 18px; height: 18px;"></i>
+        </button>
+        <button class="icon-btn" title="Settings & Preferences" onclick="openSettingsModal()">
+          <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Single Daily Sheet Frame -->
+    <main class="daily-sheet-container" id="daily-sheet-container"></main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Add Habit Modal -->
+  <div class="modal-overlay" id="modal-add-habit" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add New Habit</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form onsubmit="submitAddHabit(event)">
+        <div class="form-group">
+          <label class="form-label">Habit Name</label>
+          <input type="text" class="form-input" id="habit-name-input" placeholder="e.g. Move, 10k Steps, Hydrate 2L, Read 20m..." required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">MARGO Category</label>
+            <select class="form-select" id="habit-bucket-select">
+              <option value="M" selected>M — Move (Fitness, Steps, Workout)</option>
+              <option value="A">A — Aesthetic (Skincare, Outfits)</option>
+              <option value="R">R — Reflect (Meditate, Journal, Me time)</option>
+              <option value="G">G — Grow (Reading, Skills, Hobbies)</option>
+              <option value="O">O — Organize (Routines, Finances)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Frequency / Cadence</label>
+            <select class="form-select" id="habit-cadence-select" onchange="onCadenceChange(this.value, 'habit-target-group')">
+              <option value="daily" selected>Daily (Every Day)</option>
+              <option value="weekly">Target Times / Week</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="habit-target-group" style="display: none;">
+          <label class="form-label">Weekly Target (Days per week)</label>
+          <input type="number" min="1" max="7" class="form-input" id="habit-target-input" value="3">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Context / Motivation Note (Optional)</label>
+          <input type="text" class="form-input" id="habit-desc-input" placeholder="e.g. 10 minutes right after waking up">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Habit Modal -->
+  <div class="modal-overlay" id="modal-edit-habit" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Habit</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form onsubmit="submitEditHabit(event)">
+        <div class="form-group">
+          <label class="form-label">Habit Name</label>
+          <input type="text" class="form-input" id="edit-habit-name-input" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">MARGO Category</label>
+            <select class="form-select" id="edit-habit-bucket-select">
+              <option value="M">M — Move</option>
+              <option value="A">A — Aesthetic</option>
+              <option value="R">R — Reflect</option>
+              <option value="G">G — Grow</option>
+              <option value="O">O — Organize</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Frequency / Cadence</label>
+            <select class="form-select" id="edit-habit-cadence-select" onchange="onCadenceChange(this.value, 'edit-habit-target-group')">
+              <option value="daily">Daily (Every Day)</option>
+              <option value="weekly">Target Times / Week</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="edit-habit-target-group" style="display: none;">
+          <label class="form-label">Weekly Target (Days per week)</label>
+          <input type="number" min="1" max="7" class="form-input" id="edit-habit-target-input" value="3">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Context / Motivation Note (Optional)</label>
+          <input type="text" class="form-input" id="edit-habit-desc-input">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" style="color: var(--danger);" onclick="deleteCurrentEditingHabit()">
+            <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i> Delete Habit
+          </button>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Habit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="modal-settings" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <h3>Settings & Preferences</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="settings-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="js/margoData.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/pages/coverPage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

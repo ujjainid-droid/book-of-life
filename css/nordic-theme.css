@@ -1,0 +1,186 @@
+/* ==========================================================================
+   Book of Life / Life OS - Modern Minimalist Theme (Cool Purple & Obsidian)
+   ========================================================================== */
+
+:root {
+  /* Icy Lavender & Frosted Slate (Light / Modern Minimal) */
+  --bg-app: #F4F5FB;
+  --bg-book: #FAFBFD;
+  --bg-page: #FFFFFF;
+  --bg-surface: #EEF0F8;
+  --bg-surface-hover: #E5E8F4;
+  --bg-card: #FFFFFF;
+  
+  --border-light: #E2E6F0;
+  --border-subtle: #EDF0F7;
+  --border-strong: #CBD2E1;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #8492A6;
+  --text-inverse: #FFFFFF;
+
+  /* Signature Hero Purple */
+  --primary: #702BED;
+  --primary-hover: #5B21B6;
+  --primary-light: #F3E8FF;
+  --primary-border: #DDD6FE;
+  --primary-glow: rgba(112, 43, 237, 0.18);
+
+  /* Cool-Leaning MARGO 5-Bucket Palette */
+  /* M — Move: Signature Royal Violet */
+  --margo-m: #702BED;
+  --margo-m-light: #F3E8FF;
+  --margo-m-border: #DDD6FE;
+  --margo-m-dark: #4C1D95;
+
+  /* A — Aesthetic: Electric Orchid / Magenta */
+  --margo-a: #C026D3;
+  --margo-a-light: #FDF4FF;
+  --margo-a-border: #F5D0FE;
+  --margo-a-dark: #86198F;
+
+  /* R — Reflect: Soft Wisteria / Lavender */
+  --margo-r: #8B5CF6;
+  --margo-r-light: #F5F3FF;
+  --margo-r-border: #DDD6FE;
+  --margo-r-dark: #5B21B6;
+
+  /* G — Grow: Arctic Cyan / Ice Blue */
+  --margo-g: #0284C7;
+  --margo-g-light: #F0F9FF;
+  --margo-g-border: #BAE6FD;
+  --margo-g-dark: #0369A1;
+
+  /* O — Organize: Indigo Slate */
+  --margo-o: #4F46E5;
+  --margo-o-light: #EEF2FF;
+  --margo-o-border: #C7D2FE;
+  --margo-o-dark: #3730A3;
+
+  /* Neutrals & Functional */
+  --accent-gold: #D97706;
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --info: #0284C7;
+
+  /* Pure Modern Sans Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Geometry & Shadows */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-full: 9999px;
+
+  --shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 4px 20px -2px rgba(112, 43, 237, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
+  --shadow-book: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
+  --shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-page: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark Mode - Deep Obsidian & Neon Ice */
+[data-theme="dark"] {
+  --bg-app: #080A11;
+  --bg-book: #0D0F18;
+  --bg-page: #101320;
+  --bg-surface: #151928;
+  --bg-surface-hover: #1E2338;
+  --bg-card: #0F121F;
+  
+  --border-light: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --text-inverse: #080A11;
+
+  /* Neon Violet Accents */
+  --primary: #8B5CF6;
+  --primary-hover: #A78BFA;
+  --primary-light: rgba(139, 92, 246, 0.16);
+  --primary-border: rgba(139, 92, 246, 0.35);
+  --primary-glow: rgba(139, 92, 246, 0.35);
+
+  --margo-m: #A855F7;
+  --margo-m-light: rgba(168, 85, 247, 0.15);
+  --margo-m-border: rgba(168, 85, 247, 0.35);
+  --margo-m-dark: #C084FC;
+
+  --margo-a: #E879F9;
+  --margo-a-light: rgba(232, 121, 249, 0.15);
+  --margo-a-border: rgba(232, 121, 249, 0.35);
+  --margo-a-dark: #F0ABFC;
+
+  --margo-r: #A78BFA;
+  --margo-r-light: rgba(167, 139, 250, 0.15);
+  --margo-r-border: rgba(167, 139, 250, 0.35);
+  --margo-r-dark: #C4B5FD;
+
+  --margo-g: #38BDF8;
+  --margo-g-light: rgba(56, 189, 248, 0.15);
+  --margo-g-border: rgba(56, 189, 248, 0.35);
+  --margo-g-dark: #7DD3FC;
+
+  --margo-o: #818CF8;
+  --margo-o-light: rgba(129, 140, 248, 0.15);
+  --margo-o-border: rgba(129, 140, 248, 0.35);
+  --margo-o-dark: #A5B4FC;
+
+  --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-book: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+/* MARGO Bucket Utility Classes */
+.margo-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+}
+
+.margo-tag-m {
+  background-color: var(--margo-m-light);
+  color: var(--margo-m);
+  border-color: var(--margo-m-border);
+}
+
+.margo-tag-a {
+  background-color: var(--margo-a-light);
+  color: var(--margo-a);
+  border-color: var(--margo-a-border);
+}
+
+.margo-tag-r {
+  background-color: var(--margo-r-light);
+  color: var(--margo-r);
+  border-color: var(--margo-r-border);
+}
+
+.margo-tag-g {
+  background-color: var(--margo-g-light);
+  color: var(--margo-g);
+  border-color: var(--margo-g-border);
+}
+
+.margo-tag-o {
+  background-color: var(--margo-o-light);
+  color: var(--margo-o);
+  border-color: var(--margo-o-border);
+}
