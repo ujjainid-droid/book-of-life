@@ -344,6 +344,13 @@
   color: var(--text-muted);
 }
 
+.streak-tracker-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 .week-mini-strip {
   display: flex;
   gap: 8px;
@@ -358,6 +365,17 @@
   font-size: 0.7rem;
   color: var(--text-muted);
   font-weight: 700;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px 5px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.mini-day-dot:hover {
+  background: var(--bg-surface-hover);
+  transform: translateY(-2px);
 }
 
 .mini-dot-circle {
@@ -391,6 +409,45 @@
 .mini-day-dot.is-today .mini-dot-circle {
   box-shadow: 0 0 0 2px var(--primary);
   font-weight: 800;
+}
+
+.mini-day-dot.is-selected {
+  background: var(--primary-light);
+}
+
+.mini-day-dot.is-selected .mini-dot-circle {
+  box-shadow: 0 0 0 2.5px var(--primary), 0 0 10px var(--primary-glow);
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.mini-day-dot.is-selected span {
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.catchup-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.catchup-trigger-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+  color: var(--primary);
+  transform: translateY(-1px);
 }
 
 /* Habit Stack Options Shelf */

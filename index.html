@@ -40,11 +40,15 @@
         <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
           <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
         </button>
-        <button class="date-current-btn" id="header-date-label" onclick="resetToToday()" title="Jump to Today">
+        <button class="date-current-btn" id="header-date-label" onclick="handleHeaderDateClick()" title="Jump to Today or Pick Date">
           Today
         </button>
+        <input type="date" id="header-date-picker-input" class="hidden-date-picker" onchange="onHeaderDatePicked(this.value)">
         <button class="date-nav-btn" onclick="navigateDate(1)" title="Next Day">
           <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
+        </button>
+        <button class="date-nav-btn" onclick="triggerHeaderDatePicker()" title="Pick Specific Date From Calendar">
+          <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
         </button>
       </div>
 
@@ -170,6 +174,20 @@
           </div>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Catch-Up Past Days Modal -->
+  <div class="modal-overlay" id="modal-past-days" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="calendar-check-2" style="color: var(--primary);"></i>
+          <h3>Catch-Up Past Days</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="past-days-modal-body"></div>
     </div>
   </div>
 

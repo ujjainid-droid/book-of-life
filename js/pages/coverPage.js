@@ -22,8 +22,11 @@ function renderDailySheet() {
     if (isToday) {
       const formatted = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
       headerDateLabel.textContent = `Today (${formatted})`;
+      headerDateLabel.classList.remove('is-past-date');
     } else {
-      headerDateLabel.textContent = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const formatted = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      headerDateLabel.textContent = `📅 ${formatted}`;
+      headerDateLabel.classList.add('is-past-date');
     }
   }
 
@@ -71,6 +74,24 @@ function renderDailySheet() {
   const activeTerrorizing = storage.data.activeTerrorizing || [];
 
   container.innerHTML = `
+    ${!isToday ? `
+      <!-- Past Date Navigation & Action Banner -->
+      <div class="past-date-banner">
+        <div class="past-date-info">
+          <span class="past-date-icon">🕒</span>
+          <div>
+            <div class="past-date-title">Viewing Past Date: <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</strong></div>
+            <div class="past-date-sub">Any habits, day goals, or good choices you check off below will be recorded for this day.</div>
+          </div>
+        </div>
+        <div class="past-date-actions">
+          <button class="btn btn-secondary btn-xs" onclick="navigateDate(-1)" title="Previous Day">← Previous Day</button>
+          <button class="btn btn-primary btn-xs" onclick="resetToToday()">↩ Return to Today</button>
+          <button class="btn btn-secondary btn-xs" onclick="navigateDate(1)" title="Next Day">Next Day →</button>
+        </div>
+      </div>
+    ` : ''}
+
     <!-- 1. Daily Reminders Banner (Up Front) -->
     <div class="daily-reminders-card">
       <div class="reminders-header">
@@ -165,20 +186,29 @@ function renderDailySheet() {
         </div>
       </div>
 
-      <!-- 7-Day Mini Consistency Dots (Sun–Sat) -->
-      <div class="week-mini-strip">
-        ${weeklyStats.days.map(d => {
-          const isAllDone = d.totalHabits > 0 && d.completedCount >= d.totalHabits;
-          const isPartDone = d.completedCount > 0 && !isAllDone;
-          return `
-            <div class="mini-day-dot ${d.isToday ? 'is-today' : ''}" title="${d.dayFullName}: ${d.completedCount}/${d.totalHabits} done">
-              <div class="mini-dot-circle ${isAllDone ? 'all-done' : (isPartDone ? 'part-done' : '')}">
-                ${isAllDone ? '✓' : (d.completedCount > 0 ? d.completedCount : '')}
-              </div>
-              <span>${d.dayName}</span>
-            </div>
-          `;
-        }).join('')}
+      <!-- 7-Day Interactive Mini Consistency Strip (Sun–Sat) & Catch-Up Button -->
+      <div class="streak-tracker-right">
+        <div class="week-mini-strip">
+          ${weeklyStats.days.map(d => {
+            const isAllDone = d.totalHabits > 0 && d.completedCount >= d.totalHabits;
+            const isPartDone = d.completedCount > 0 && !isAllDone;
+            const isSelected = (d.dateStr === activeTrackingDate);
+            return `
+              <button class="mini-day-dot ${d.isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" 
+                      onclick="jumpToTrackingDate('${d.dateStr}')" 
+                      title="${d.dayFullName} (${d.dateStr}): ${d.completedCount}/${d.totalHabits} done — Click to view and check off">
+                <div class="mini-dot-circle ${isAllDone ? 'all-done' : (isPartDone ? 'part-done' : '')}">
+                  ${isAllDone ? '✓' : (d.completedCount > 0 ? d.completedCount : '·')}
+                </div>
+                <span>${d.dayName}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+        <button class="catchup-trigger-btn" onclick="openPastDaysModal()" title="Quickly check off habits across past days">
+          <i data-lucide="calendar-check-2" style="width: 14px; height: 14px;"></i>
+          <span>Catch-Up Past Days</span>
+        </button>
       </div>
     </div>
 
@@ -506,13 +536,26 @@ function toggleHabitInSheet(habitId) {
   const nextVal = storage.toggleHabit(habitId, activeTrackingDate);
   renderDailySheet();
 
+  const habit = storage.getHabit(habitId);
+  const hName = habit ? habit.name : 'Habit';
+  const todayIso = formatDateIso(new Date());
+  const isToday = (activeTrackingDate === todayIso);
+
   const habits = storage.getHabits();
   const dayState = storage.data.habitsState[activeTrackingDate] || {};
   const allDone = habits.length > 0 && habits.every(h => !!dayState[h.id]);
 
   if (allDone && nextVal) {
     triggerConfetti();
-    showToast('🎉 All habits completed! Momentum locked in.');
+    showToast(isToday ? '🎉 All habits completed! Momentum locked in.' : '🎉 All habits completed for this day!');
+  } else if (!isToday) {
+    const dObj = parseDateIso(activeTrackingDate);
+    const shortDate = dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    if (nextVal) {
+      showToast(`✓ Checked "${hName}" for ${shortDate} (+10 XP)`);
+    } else {
+      showToast(`Unchecked "${hName}" for ${shortDate}`);
+    }
   }
 }
 
@@ -536,5 +579,175 @@ function addHabitFromPreset(presetIndex) {
 
   storage.addHabit(preset);
   showToast(`Added "${preset.name}" to your habits!`);
+  renderDailySheet();
+}
+
+/**
+ * Jump Directly to Any Date (Past or Present)
+ */
+function jumpToTrackingDate(dateStr) {
+  activeTrackingDate = dateStr;
+  renderDailySheet();
+  const todayIso = formatDateIso(new Date());
+  if (dateStr === todayIso) {
+    showToast('📅 Jumped to Today');
+  } else {
+    const dObj = parseDateIso(dateStr);
+    const formatted = dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    showToast(`📅 Viewing: ${formatted}`);
+  }
+}
+
+function handleHeaderDateClick() {
+  const todayIso = formatDateIso(new Date());
+  if (activeTrackingDate !== todayIso) {
+    resetToToday();
+    showToast('📅 Returned to Today');
+  } else {
+    triggerHeaderDatePicker();
+  }
+}
+
+function triggerHeaderDatePicker() {
+  const input = document.getElementById('header-date-picker-input');
+  if (!input) return;
+  input.value = activeTrackingDate;
+  if (typeof input.showPicker === 'function') {
+    try {
+      input.showPicker();
+      return;
+    } catch (e) {}
+  }
+  input.click();
+}
+
+function onHeaderDatePicked(val) {
+  if (val) {
+    jumpToTrackingDate(val);
+  }
+}
+
+/**
+ * Catch-Up Past Days Matrix Modal
+ */
+function openPastDaysModal() {
+  const modal = document.getElementById('modal-past-days');
+  if (!modal) return;
+  renderPastDaysModal();
+  modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderPastDaysModal() {
+  const body = document.getElementById('past-days-modal-body');
+  if (!body) return;
+
+  const habits = storage.getHabits();
+  const selectedDateObj = parseDateIso(activeTrackingDate);
+  const sundayOfSelectedWeek = getSundayOfWeek(selectedDateObj);
+  const weeklyStats = calculateWeeklyStats(sundayOfSelectedWeek, habits, storage.data.habitsState);
+  const todayIso = formatDateIso(new Date());
+
+  body.innerHTML = `
+    <div class="past-days-modal-content">
+      <div class="past-days-modal-desc">
+        Check off any habits you completed earlier this week. Your anchor streaks, XP points, and consistency score update in real-time.
+      </div>
+
+      <div class="past-days-table-scroll">
+        <table class="past-days-table">
+          <thead>
+            <tr>
+              <th class="col-habit">Habit</th>
+              ${weeklyStats.days.map(d => `
+                <th class="col-day ${d.isToday ? 'col-today' : ''} ${d.dateStr === activeTrackingDate ? 'col-selected' : ''}">
+                  <div class="th-day-name">${d.dayName}</div>
+                  <div class="th-day-date">${d.dayNum}</div>
+                  <button class="th-jump-link" onclick="closeAllModals(); jumpToTrackingDate('${d.dateStr}')" title="Open full sheet for ${d.dayName}">
+                    ${d.isToday ? 'Today' : 'Open'}
+                  </button>
+                </th>
+              `).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${habits.map(h => {
+              const streak = storage.data.habitStreaks[h.id] || 0;
+              return `
+                <tr>
+                  <td class="col-habit">
+                    <div class="modal-habit-info">
+                      <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
+                      <div class="modal-habit-text">
+                        <span class="modal-habit-name">${h.name}</span>
+                        <span class="modal-habit-cadence">${h.cadence === 'weekly' ? `${h.target}x/wk` : 'Daily'} • 🔥 ${streak}d</span>
+                      </div>
+                    </div>
+                  </td>
+                  ${weeklyStats.days.map(d => {
+                    const dayState = storage.data.habitsState[d.dateStr] || {};
+                    const isDone = h.cadence === 'weekly' 
+                      ? (Number(dayState[h.id] || 0) > 0 || !!dayState[h.id])
+                      : !!dayState[h.id];
+                    const isFuture = d.isFuture;
+
+                    return `
+                      <td class="col-day ${d.isToday ? 'col-today' : ''}">
+                        ${isFuture ? `
+                          <span class="future-dash" title="Future date">—</span>
+                        ` : `
+                          <button class="past-matrix-btn ${isDone ? 'checked' : ''}" 
+                                  onclick="toggleHabitFromMatrix('${h.id}', '${d.dateStr}')"
+                                  title="${isDone ? 'Click to uncheck' : 'Click to check off'} for ${d.dayName} (${d.dateStr})">
+                            ${isDone ? '✓' : ''}
+                          </button>
+                        `}
+                      </td>
+                    `;
+                  }).join('')}
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td class="col-habit" style="font-weight: 700; color: var(--text-secondary);">Daily Completed</td>
+              ${weeklyStats.days.map(d => `
+                <td class="col-day ${d.isToday ? 'col-today' : ''}">
+                  <span class="day-total-badge ${d.isPerfect ? 'perfect' : (d.completedCount > 0 ? 'partial' : '')}">
+                    ${d.completedCount}/${d.totalHabits}
+                  </span>
+                </td>
+              `).join('')}
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="past-days-modal-footer">
+        <div class="past-days-footer-stats">
+          <span>Week Consistency: <strong>${weeklyStats.overallCompletionRate}%</strong></span>
+          <span>XP Points: <strong>${storage.getPoints()}</strong></span>
+        </div>
+        <button class="btn btn-primary" onclick="closeAllModals()">Done</button>
+      </div>
+    </div>
+  `;
+}
+
+function toggleHabitFromMatrix(habitId, dateStr) {
+  const nextVal = storage.toggleHabit(habitId, dateStr);
+  const habit = storage.getHabit(habitId);
+  const hName = habit ? habit.name : 'Habit';
+  const dObj = parseDateIso(dateStr);
+  const formatted = dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  if (nextVal) {
+    showToast(`✓ Marked "${hName}" for ${formatted} (+10 XP)`);
+  } else {
+    showToast(`Unchecked "${hName}" for ${formatted}`);
+  }
+
+  renderPastDaysModal();
   renderDailySheet();
 }

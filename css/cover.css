@@ -1068,3 +1068,272 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   Past Date Navigation & Catch-Up Past Days Matrix
+   ========================================================================== */
+
+.hidden-date-picker {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.date-current-btn.is-past-date {
+  background: var(--primary-light) !important;
+  border-color: var(--primary-border) !important;
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Past Date Active Banner */
+.past-date-banner {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.09), rgba(99, 102, 241, 0.05));
+  border: 1.5px solid var(--primary-border);
+  border-radius: var(--radius-lg);
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  box-shadow: 0 3px 12px rgba(139, 92, 246, 0.08);
+  animation: fadeInPage 0.2s ease-out;
+}
+
+[data-theme="dark"] .past-date-banner {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(99, 102, 241, 0.09));
+  border-color: rgba(139, 92, 246, 0.38);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.past-date-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.past-date-icon {
+  font-size: 1.5rem;
+}
+
+.past-date-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.past-date-sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.past-date-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Wide Modal for Past Days Catch-Up */
+.modal-card-wide {
+  max-width: 780px !important;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.past-days-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.past-days-modal-desc {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.past-days-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  -webkit-overflow-scrolling: touch;
+}
+
+.past-days-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 580px;
+}
+
+.past-days-table th, 
+.past-days-table td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.past-days-table th {
+  background: var(--bg-surface);
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.78rem;
+}
+
+.past-days-table .col-habit {
+  text-align: left;
+  min-width: 160px;
+  padding-left: 14px;
+  position: sticky;
+  left: 0;
+  background: var(--bg-card);
+  z-index: 2;
+  border-right: 1px solid var(--border-light);
+}
+
+.past-days-table thead .col-habit {
+  background: var(--bg-surface);
+}
+
+.past-days-table .col-day {
+  min-width: 52px;
+}
+
+.past-days-table .col-today {
+  background: rgba(139, 92, 246, 0.05);
+}
+
+.past-days-table .col-selected {
+  background: rgba(139, 92, 246, 0.09);
+}
+
+.th-day-name {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.th-day-date {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.th-jump-link {
+  font-size: 0.68rem;
+  font-weight: 700;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  cursor: pointer;
+  color: var(--primary);
+  transition: all var(--transition-fast);
+}
+
+.th-jump-link:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.modal-habit-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-habit-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-habit-name {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+}
+
+.modal-habit-cadence {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.past-matrix-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-strong);
+  background: var(--bg-surface);
+  color: transparent;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  margin: 0 auto;
+}
+
+.past-matrix-btn:hover {
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.past-matrix-btn.checked {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+
+.future-dash {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.day-total-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}
+
+.day-total-badge.perfect {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.day-total-badge.partial {
+  background: var(--bg-surface-hover);
+  color: var(--text-secondary);
+}
+
+.past-days-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+
+.past-days-footer-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+

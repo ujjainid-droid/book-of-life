@@ -7,6 +7,14 @@ const STORAGE_KEY = 'BOOK_OF_LIFE_DATA_V2';
 class StorageManager {
   constructor() {
     this.data = this.loadData();
+    this.recalculateAllStreaks();
+  }
+
+  recalculateAllStreaks() {
+    if (!this.data || !Array.isArray(this.data.habits)) return;
+    this.data.habits.forEach(h => {
+      this.recalculateStreak(h.id);
+    });
   }
 
   getDefaultState() {
