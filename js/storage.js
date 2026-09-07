@@ -70,7 +70,46 @@ class StorageManager {
       projects: [...DEFAULT_PROJECTS],
       tasks: [...DEFAULT_TASKS],
       budgetCategories: [...DEFAULT_BUDGET_CATEGORIES],
-      transactions: [...DEFAULT_TRANSACTIONS]
+      transactions: [...DEFAULT_TRANSACTIONS],
+      // Medical Claims & Recovery Tracker (Out-of-Network)
+      claims: [
+        {
+          id: 'claim-demo-1',
+          date: '2026-08-28',
+          provider: 'Dr. Adams (Specialist)',
+          amountPaid: 250.00,
+          superbillStatus: 'need',
+          stage: 'need_superbill',
+          nextAction: 'Call/email clinic to request itemized superbill',
+          reimbursedAmount: 0,
+          notes: 'Specialist consult. Paid with card.',
+          createdAt: '2026-08-28T10:00:00.000Z'
+        },
+        {
+          id: 'claim-demo-2',
+          date: '2026-08-14',
+          provider: 'City Physical Therapy',
+          amountPaid: 180.00,
+          superbillStatus: 'have',
+          stage: 'ready_to_send',
+          nextAction: 'Batch upload superbill to Included Health app',
+          reimbursedAmount: 0,
+          notes: 'Superbill received with CPT 97110/97140.',
+          createdAt: '2026-08-14T14:30:00.000Z'
+        },
+        {
+          id: 'claim-demo-3',
+          date: '2026-07-20',
+          provider: 'Dr. Miller (Therapy)',
+          amountPaid: 320.00,
+          superbillStatus: 'have',
+          stage: 'with_included_health',
+          nextAction: 'Waiting on Included Health & Insurance EOB review',
+          reimbursedAmount: 0,
+          notes: 'Forwarded to Included Health advocate.',
+          createdAt: '2026-07-20T16:00:00.000Z'
+        }
+      ]
     };
   }
 
@@ -117,6 +156,11 @@ class StorageManager {
         }
         if (!Array.isArray(merged.activeTerrorizing)) {
           merged.activeTerrorizing = ['10k steps', 'Close rings'];
+        }
+
+        // Initialize claims array if missing
+        if (!Array.isArray(merged.claims)) {
+          merged.claims = [...defaults.claims];
         }
 
         return merged;
@@ -408,6 +452,90 @@ class StorageManager {
     return (this.data.weeklyReflections && this.data.weeklyReflections[sundayIso]) || { wins: '', focus: '' };
   }
 
+  // --- Medical Claims & Recovery Methods ---
+
+  getClaims() {
+    if (!Array.isArray(this.data.claims)) this.data.claims = [];
+    return this.data.claims;
+  }
+
+  getClaim(id) {
+    return this.getClaims().find(c => c.id === id) || null;
+  }
+
+  addClaim(claimData) {
+    if (!Array.isArray(this.data.claims)) this.data.claims = [];
+    const newClaim = {
+      id: 'claim-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+      date: claimData.date || formatDateIso(new Date()),
+      provider: (claimData.provider || '').trim() || 'Provider',
+      amountPaid: parseFloat(claimData.amountPaid) || 0,
+      superbillStatus: claimData.superbillStatus || 'have',
+      stage: claimData.stage || 'ready_to_send',
+      nextAction: (claimData.nextAction || '').trim() || (typeof getDefaultNextAction === 'function' ? getDefaultNextAction(claimData.stage) : 'Review claim'),
+      reimbursedAmount: parseFloat(claimData.reimbursedAmount) || 0,
+      notes: (claimData.notes || '').trim(),
+      createdAt: new Date().toISOString()
+    };
+    this.data.claims.unshift(newClaim);
+    this.saveData();
+    return newClaim;
+  }
+
+  updateClaim(id, patch) {
+    const claims = this.getClaims();
+    const idx = claims.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      claims[idx] = { ...claims[idx], ...patch, updatedAt: new Date().toISOString() };
+      this.saveData();
+      return claims[idx];
+    }
+    return null;
+  }
+
+  deleteClaim(id) {
+    if (!Array.isArray(this.data.claims)) return;
+    this.data.claims = this.data.claims.filter(c => c.id !== id);
+    this.saveData();
+  }
+
+  getClaimsStats() {
+    const claims = this.getClaims();
+    let totalPendingRecovery = 0;
+    let actionNeededCount = 0;
+    let withIncludedHealthCount = 0;
+    let checkDueCount = 0;
+    let settledCount = 0;
+    let totalSettled = 0;
+
+    claims.forEach(c => {
+      const amt = parseFloat(c.amountPaid) || 0;
+      if (c.stage === 'settled') {
+        settledCount++;
+        totalSettled += (parseFloat(c.reimbursedAmount) || amt);
+      } else {
+        totalPendingRecovery += amt;
+        if (c.stage === 'need_superbill' || c.stage === 'ready_to_send') {
+          actionNeededCount++;
+        } else if (c.stage === 'with_included_health') {
+          withIncludedHealthCount++;
+        } else if (c.stage === 'check_due') {
+          checkDueCount++;
+        }
+      }
+    });
+
+    return {
+      totalCount: claims.length,
+      totalPendingRecovery,
+      actionNeededCount,
+      withIncludedHealthCount,
+      checkDueCount,
+      settledCount,
+      totalSettled
+    };
+  }
+
   // --- Import / Export / Backup ---
 
   exportJSON() {
@@ -446,6 +574,20 @@ class StorageManager {
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
     link.setAttribute("download", `BookOfLife_Finances_${formatDateIso(new Date())}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  exportClaimsCSV() {
+    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Amount Paid,Superbill Status,Stage,Next Action,Notes\n";
+    this.getClaims().forEach(c => {
+      csvContent += `"${c.date}","${(c.provider || '').replace(/"/g, '""')}",${c.amountPaid || 0},"${c.superbillStatus}","${c.stage}","${(c.nextAction || '').replace(/"/g, '""')}","${(c.notes || '').replace(/"/g, '""')}"\n`;
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `Medical_Claims_${formatDateIso(new Date())}.csv`);
     document.body.appendChild(link);
     link.click();
     link.remove();

@@ -501,6 +501,10 @@ function renderDailySheet() {
   if (window.lucide) {
     lucide.createIcons();
   }
+
+  if (typeof refreshAppBadges === 'function') {
+    refreshAppBadges();
+  }
 }
 
 /**

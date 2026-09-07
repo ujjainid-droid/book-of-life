@@ -3,6 +3,7 @@
    ========================================================================== */
 
 let editingHabitId = null;
+let currentView = 'daily'; // 'daily' | 'claims'
 
 /* --------------------------------------------------------------------------
    Boot
@@ -20,11 +21,47 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render the single daily sheet
   renderDailySheet();
 
+  // Refresh header badges
+  refreshAppBadges();
+
   // Keyboard: Escape closes modals
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeAllModals();
   });
 });
+
+/* --------------------------------------------------------------------------
+   View Switching (Daily Sheet vs Medical Claims)
+   -------------------------------------------------------------------------- */
+function switchAppView(viewName) {
+  currentView = viewName;
+  const navDaily = document.getElementById('nav-btn-daily');
+  const navClaims = document.getElementById('nav-btn-claims');
+  const dateNavContainer = document.getElementById('header-date-nav-container');
+
+  if (viewName === 'claims') {
+    if (navDaily) navDaily.classList.remove('active');
+    if (navClaims) navClaims.classList.add('active');
+    if (dateNavContainer) dateNavContainer.style.display = 'none';
+    if (typeof renderClaimsPage === 'function') renderClaimsPage();
+  } else {
+    if (navClaims) navClaims.classList.remove('active');
+    if (navDaily) navDaily.classList.add('active');
+    if (dateNavContainer) dateNavContainer.style.display = 'inline-flex';
+    if (typeof renderDailySheet === 'function') renderDailySheet();
+  }
+
+  refreshAppBadges();
+}
+
+function refreshAppBadges() {
+  if (typeof storage !== 'undefined' && typeof storage.getClaimsStats === 'function') {
+    const stats = storage.getClaimsStats();
+    if (typeof updateClaimsHeaderBadge === 'function') {
+      updateClaimsHeaderBadge(stats.actionNeededCount);
+    }
+  }
+}
 
 /* --------------------------------------------------------------------------
    Theme

@@ -23,12 +23,13 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=2.4">
-  <link rel="stylesheet" href="css/layout.css?v=2.4">
-  <link rel="stylesheet" href="css/cover.css?v=2.4">
-  <link rel="stylesheet" href="css/habits.css?v=2.4">
-  <link rel="stylesheet" href="css/tasks.css?v=2.4">
-  <link rel="stylesheet" href="css/settings.css?v=2.4">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=2.5">
+  <link rel="stylesheet" href="css/layout.css?v=2.5">
+  <link rel="stylesheet" href="css/cover.css?v=2.5">
+  <link rel="stylesheet" href="css/habits.css?v=2.5">
+  <link rel="stylesheet" href="css/tasks.css?v=2.5">
+  <link rel="stylesheet" href="css/settings.css?v=2.5">
+  <link rel="stylesheet" href="css/claims.css?v=2.5">
 </head>
 <body>
 
@@ -39,7 +40,20 @@
         <h1>margo</h1>
       </div>
 
-      <div class="header-date-nav">
+      <!-- View Switcher Navigation (Daily vs Medical Claims) -->
+      <nav class="header-view-nav">
+        <button class="view-nav-btn active" id="nav-btn-daily" onclick="switchAppView('daily')" title="Daily Habits &amp; Momentum">
+          <i data-lucide="check-circle-2" style="width: 14px; height: 14px;"></i>
+          <span>Daily</span>
+        </button>
+        <button class="view-nav-btn" id="nav-btn-claims" onclick="switchAppView('claims')" title="Medical Claims &amp; Recovery Tracker">
+          <i data-lucide="receipt" style="width: 14px; height: 14px;"></i>
+          <span>Claims</span>
+          <span class="claims-badge-pill" id="header-claims-badge" style="display: none;"></span>
+        </button>
+      </nav>
+
+      <div class="header-date-nav" id="header-date-nav-container">
         <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
           <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
         </button>
@@ -219,14 +233,84 @@
     </div>
   </div>
 
+  <!-- Included Health Export Modal -->
+  <div class="modal-overlay" id="modal-export-claims" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="copy" style="color: var(--primary);"></i>
+          <h3>Copy for Included Health</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="export-claims-body"></div>
+    </div>
+  </div>
+
+  <!-- Edit Claim Modal -->
+  <div class="modal-overlay" id="modal-edit-claim" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Medical Claim</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="edit-claim-form" onsubmit="submitEditClaim(event)">
+        <div class="form-group">
+          <label class="form-label">Date of Service</label>
+          <input type="date" class="form-input" id="edit-claim-date" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Provider Name</label>
+          <input type="text" class="form-input" id="edit-claim-provider" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Amount Paid ($)</label>
+          <input type="number" step="0.01" min="0" class="form-input" id="edit-claim-amount" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Superbill Status</label>
+            <select class="form-select" id="edit-claim-superbill">
+              <option value="have">✅ Superbill Attached</option>
+              <option value="need">❌ Need Superbill</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current Stage</label>
+            <select class="form-select" id="edit-claim-stage">
+              <option value="need_superbill">🔴 Need Superbill</option>
+              <option value="ready_to_send">🟡 Send to Included Health</option>
+              <option value="with_included_health">🔵 With Included Health</option>
+              <option value="check_due">🟢 Check / Deposit Due</option>
+              <option value="settled">⚪ Settled &amp; Reconciled</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Next Action</label>
+          <input type="text" class="form-input" id="edit-claim-nextaction" placeholder="Immediate next move...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (Optional)</label>
+          <textarea class="form-input" id="edit-claim-notes" rows="2" placeholder="e.g. Case number, provider phone, receipt notes..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=2.4"></script>
-  <script src="js/sync.js?v=2.4"></script>
-  <script src="js/storage.js?v=2.4"></script>
-  <script src="js/pages/coverPage.js?v=2.4"></script>
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/margoData.js?v=2.5"></script>
+  <script src="js/sync.js?v=2.5"></script>
+  <script src="js/storage.js?v=2.5"></script>
+  <script src="js/pages/coverPage.js?v=2.5"></script>
+  <script src="js/pages/claimsPage.js?v=2.5"></script>
+  <script src="js/app.js?v=2.5"></script>
 </body>
 </html>

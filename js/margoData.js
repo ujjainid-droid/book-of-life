@@ -483,3 +483,48 @@ function getSassyStatus(points = 0) {
   };
 }
 
+/**
+ * Medical Claims & Recovery Pipeline Stages
+ */
+const CLAIM_STAGES = {
+  need_superbill: {
+    id: 'need_superbill',
+    label: 'Need Superbill',
+    emoji: '🔴',
+    defaultAction: 'Request itemized superbill from provider',
+    actor: 'You'
+  },
+  ready_to_send: {
+    id: 'ready_to_send',
+    label: 'Send to Included Health',
+    emoji: '🟡',
+    defaultAction: 'Upload superbill to Included Health app',
+    actor: 'You'
+  },
+  with_included_health: {
+    id: 'with_included_health',
+    label: 'With Included Health',
+    emoji: '🔵',
+    defaultAction: 'Waiting on Included Health / Insurance review',
+    actor: 'Included Health'
+  },
+  check_due: {
+    id: 'check_due',
+    label: 'Check / Deposit Due',
+    emoji: '🟢',
+    defaultAction: 'Watch Monarch / Bank for reimbursement deposit',
+    actor: 'Monarch'
+  },
+  settled: {
+    id: 'settled',
+    label: 'Settled & Reconciled',
+    emoji: '⚪',
+    defaultAction: 'Reconciled in Monarch — All set!',
+    actor: 'Done'
+  }
+};
+
+function getDefaultNextAction(stage) {
+  return CLAIM_STAGES[stage] ? CLAIM_STAGES[stage].defaultAction : '';
+}
+
