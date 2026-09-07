@@ -1,4 +1,4 @@
-# 📖 Book of Life — Habit Tracker & Life OS
+# ⚡ margo — Life OS
 
 An elegant, high-clarity personal operating system designed around foundational habit tracking starting with **Move**, progressive stacking, and Sunday-to-Saturday weekly performance reviews.
 

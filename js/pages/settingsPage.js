@@ -86,7 +86,7 @@ function renderSettingsPage() {
           <h3>Backup & Data Portability</h3>
         </div>
         <p class="settings-desc">
-          Your Book of Life lives directly in your browser. Export anytime to guarantee zero data loss.
+          Your margo data lives directly in your browser. Export anytime to guarantee zero data loss.
         </p>
 
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -171,7 +171,7 @@ function importDataJSON(event) {
 }
 
 function resetToDemoData() {
-  if (confirm('Are you sure you want to reset your Book of Life to default sample data?')) {
+  if (confirm('Are you sure you want to reset margo to default sample data?')) {
     storage.resetToDefaults();
     showToast('Reset to default sample data.');
     switchPage('cover');
