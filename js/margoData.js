@@ -538,3 +538,44 @@ function getDefaultNextAction(stage, payoutMethod = 'direct_deposit', submission
   return CLAIM_STAGES[stage] ? CLAIM_STAGES[stage].defaultAction : '';
 }
 
+/* --------------------------------------------------------------------------
+   Health & Vitality Check-in Configuration
+   -------------------------------------------------------------------------- */
+const HEALTH_LEVELS = {
+  5: {
+    level: 5,
+    emoji: '🌟',
+    label: 'Thriving',
+    desc: 'Peak vitality, invincible, full energy',
+    sassy: "Look at you glowing. Try not to intimidate the mere mortals today."
+  },
+  4: {
+    level: 4,
+    emoji: '⚡',
+    label: 'Solid',
+    desc: 'Feeling good, body cooperating, clear head',
+    sassy: "Functional and thriving. Let's not ruin this with questionable decisions."
+  },
+  3: {
+    level: 3,
+    emoji: '☕',
+    label: 'Surviving',
+    desc: 'Baseline okay, fueled by coffee & momentum',
+    sassy: "Held together by coffee and sheer willpower, but hey—you're upright."
+  },
+  2: {
+    level: 2,
+    emoji: '🔋',
+    label: 'Dragging',
+    desc: 'Low battery, sluggish, low-power mode',
+    sassy: "Battery at 12%. Postpone unnecessary drama and conserve power."
+  },
+  1: {
+    level: 1,
+    emoji: '🧟',
+    label: 'Zombie',
+    desc: 'Under the weather, drained, need recovery',
+    sassy: "Official goblin mode. Drink water, crawl under blankets, apologize to nobody."
+  }
+};
+

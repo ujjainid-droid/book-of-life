@@ -53,6 +53,8 @@ class StorageManager {
       choicesState: {
         [todayStr]: { good: 3, not: 0 }
       },
+      // Daily Health & Vitality Check-in: { [dateStr]: { level: number, updatedAt: number } }
+      healthState: {},
       // Day-Specific Goals (one-off daily targets): { [dateStr]: [ { id, text, completed } ] }
       dayGoals: {
         [todayStr]: [
@@ -142,9 +144,12 @@ class StorageManager {
           merged.weeklyReflections = {};
         }
 
-        // Initialize choicesState and dayGoals if missing
+        // Initialize choicesState, healthState and dayGoals if missing
         if (!merged.choicesState || typeof merged.choicesState !== 'object') {
           merged.choicesState = {};
+        }
+        if (!merged.healthState || typeof merged.healthState !== 'object') {
+          merged.healthState = {};
         }
         if (!merged.dayGoals || typeof merged.dayGoals !== 'object') {
           merged.dayGoals = {};
@@ -368,6 +373,101 @@ class StorageManager {
       total,
       ratio,
       net
+    };
+  }
+
+  // --- Health & Vitality Check-in Methods ---
+
+  getHealthLevel(dateStr = formatDateIso(new Date())) {
+    if (!this.data.healthState) this.data.healthState = {};
+    const val = this.data.healthState[dateStr];
+    return (val && typeof val === 'object') ? (val.level || null) : (typeof val === 'number' ? val : null);
+  }
+
+  setHealthLevel(level, dateStr = formatDateIso(new Date())) {
+    if (!this.data.healthState) this.data.healthState = {};
+    const existing = this.getHealthLevel(dateStr);
+    const numLevel = parseInt(level, 10);
+    if (isNaN(numLevel) || numLevel < 1 || numLevel > 5) return;
+
+    this.data.healthState[dateStr] = {
+      level: numLevel,
+      updatedAt: Date.now()
+    };
+
+    // First time rating for the day awards +5 XP
+    if (!existing) {
+      this.addPoints(5);
+    }
+
+    this.saveData();
+    return numLevel;
+  }
+
+  clearHealthLevel(dateStr = formatDateIso(new Date())) {
+    if (this.data.healthState && this.data.healthState[dateStr]) {
+      delete this.data.healthState[dateStr];
+      this.saveData();
+    }
+  }
+
+  getWeeklyHealth(sundayDate = getSundayOfWeek(new Date())) {
+    const days = [];
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    let sum = 0;
+    let totalDays = 0;
+
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(sundayDate);
+      d.setDate(sundayDate.getDate() + i);
+      const dIso = formatDateIso(d);
+      const level = this.getHealthLevel(dIso);
+      if (level) {
+        counts[level] = (counts[level] || 0) + 1;
+        sum += level;
+        totalDays++;
+      }
+      days.push({
+        dateStr: dIso,
+        dayName: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][i],
+        level: level,
+        isToday: dIso === formatDateIso(new Date())
+      });
+    }
+
+    const avgScore = totalDays > 0 ? (sum / totalDays).toFixed(1) : null;
+
+    return {
+      counts,
+      avgScore,
+      totalDays,
+      days
+    };
+  }
+
+  getRunningHealth() {
+    if (!this.data.healthState || typeof this.data.healthState !== 'object') {
+      return { counts: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }, avgScore: null, totalDays: 0 };
+    }
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    let sum = 0;
+    let totalDays = 0;
+
+    Object.values(this.data.healthState).forEach(val => {
+      const lvl = (val && typeof val === 'object') ? val.level : (typeof val === 'number' ? val : null);
+      if (lvl && lvl >= 1 && lvl <= 5) {
+        counts[lvl] = (counts[lvl] || 0) + 1;
+        sum += lvl;
+        totalDays++;
+      }
+    });
+
+    const avgScore = totalDays > 0 ? (sum / totalDays).toFixed(1) : null;
+
+    return {
+      counts,
+      avgScore,
+      totalDays
     };
   }
 

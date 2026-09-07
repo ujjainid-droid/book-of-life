@@ -423,6 +423,19 @@ function recordChoiceAction(type, delta = 1, dateStr = formatDateIso(new Date())
 }
 
 /* --------------------------------------------------------------------------
+   Health & Vitality Check-in Actions
+   -------------------------------------------------------------------------- */
+function recordHealthLevelAction(level, dateStr = formatDateIso(new Date())) {
+  const current = storage.getHealthLevel(dateStr);
+  storage.setHealthLevel(level, dateStr);
+  const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[level] : null;
+  if (meta && current !== level) {
+    showToast(`${meta.emoji} Vitality logged: ${meta.label}! (+5 XP)`);
+  }
+  renderDailySheet();
+}
+
+/* --------------------------------------------------------------------------
    Day-Specific Goal Actions
    -------------------------------------------------------------------------- */
 function submitAddDayGoalInline(e, dateStr = formatDateIso(new Date()), inputId = 'sheet-day-goal-input') {

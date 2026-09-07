@@ -115,6 +115,27 @@ class SyncManager {
       incoming.choicesState = mergedChoices;
     }
 
+    // Smart-merge healthState: preserve local ratings if newer or present
+    if (storage.data.healthState && typeof storage.data.healthState === 'object') {
+      const localHealth = storage.data.healthState;
+      const cloudHealth = (incoming.healthState && typeof incoming.healthState === 'object') ? incoming.healthState : {};
+      const mergedHealth = { ...cloudHealth };
+
+      Object.entries(localHealth).forEach(([dateStr, lVal]) => {
+        const cVal = mergedHealth[dateStr];
+        if (!cVal) {
+          mergedHealth[dateStr] = lVal;
+        } else {
+          const lTime = (lVal && typeof lVal === 'object') ? (lVal.updatedAt || 0) : 0;
+          const cTime = (cVal && typeof cVal === 'object') ? (cVal.updatedAt || 0) : 0;
+          if (lTime >= cTime) {
+            mergedHealth[dateStr] = lVal;
+          }
+        }
+      });
+      incoming.healthState = mergedHealth;
+    }
+
     // Merge into local storage
     storage.data = { ...storage.data, ...incoming };
     try {

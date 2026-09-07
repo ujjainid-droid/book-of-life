@@ -3,6 +3,19 @@
    ========================================================================== */
 
 let activeTrackingDate = formatDateIso(new Date());
+let corePrinciplesExpanded = false;
+
+function toggleCorePrinciples() {
+  corePrinciplesExpanded = !corePrinciplesExpanded;
+  const list = document.getElementById('reminders-sub-list');
+  const chevron = document.getElementById('reminders-chevron');
+  if (list) {
+    list.style.display = corePrinciplesExpanded ? 'grid' : 'none';
+  }
+  if (chevron) {
+    chevron.textContent = corePrinciplesExpanded ? '▴ Less' : '▾ Principles';
+  }
+}
 
 function renderCoverPage() {
   renderDailySheet();
@@ -69,6 +82,12 @@ function renderDailySheet() {
   const weeklyChoices = storage.getWeeklyChoices(sundayOfSelectedWeek);
   const runningChoices = storage.getRunningChoices();
 
+  // Health & Vitality Check-in for this date
+  const currentHealthLevel = storage.getHealthLevel(activeTrackingDate);
+  const currentHealthMeta = (currentHealthLevel && typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[currentHealthLevel] : null;
+  const weeklyHealth = storage.getWeeklyHealth(sundayOfSelectedWeek);
+  const runningHealth = storage.getRunningHealth();
+
   // Gamification: Sassy Status & Rewards
   const currentPoints = storage.getPoints();
   const statusInfo = getSassyStatus(currentPoints);
@@ -93,40 +112,38 @@ function renderDailySheet() {
       </div>
     ` : ''}
 
-    <!-- 1. Daily Reminders Banner (Up Front) -->
+    <!-- 1. Daily Reminders Banner (Compact & Expandable) -->
     <div class="daily-reminders-card">
-      <div class="reminders-header">
-        <div class="reminders-badge">
-          <i data-lucide="compass" style="width: 14px; height: 14px;"></i>
-          <span>Core Principles • Daily Reminders</span>
-        </div>
-        <span class="reminders-sub">Simplicity First</span>
-      </div>
-      <div class="reminders-list">
-        <div class="reminder-item highlight">
+      <div class="reminders-header" onclick="toggleCorePrinciples()">
+        <div class="reminders-main-anchor">
           <span class="reminder-icon">✦</span>
-          <span class="reminder-text">Simple. Visible. Next step. Done.</span>
+          <span>Simple. Visible. Next step. Done.</span>
         </div>
-        <div class="reminder-item">
-          <span class="reminder-bullet">•</span>
-          <span class="reminder-text">Build the simplest thing that works.</span>
+        <button type="button" class="reminders-toggle-btn" id="reminders-chevron" onclick="event.stopPropagation(); toggleCorePrinciples()">
+          ${corePrinciplesExpanded ? '▴ Less' : '▾ Principles'}
+        </button>
+      </div>
+      <div class="reminders-sub-grid" id="reminders-sub-list" style="display: ${corePrinciplesExpanded ? 'grid' : 'none'};">
+        <div class="reminder-sub-item">
+          <span class="bullet">•</span>
+          <span>Build the simplest thing that works.</span>
         </div>
-        <div class="reminder-item">
-          <span class="reminder-bullet">•</span>
-          <span class="reminder-text">If you can't see it at a glance, fix the display, not the data.</span>
+        <div class="reminder-sub-item">
+          <span class="bullet">•</span>
+          <span>If you can't see it at a glance, fix the display, not the data.</span>
         </div>
-        <div class="reminder-item">
-          <span class="reminder-bullet">•</span>
-          <span class="reminder-text">Know your next move, not the whole roadmap.</span>
+        <div class="reminder-sub-item">
+          <span class="bullet">•</span>
+          <span>Know your next move, not the whole roadmap.</span>
         </div>
-        <div class="reminder-item">
-          <span class="reminder-bullet">•</span>
-          <span class="reminder-text">Rough and shipped beats polished and stalled.</span>
+        <div class="reminder-sub-item">
+          <span class="bullet">•</span>
+          <span>Rough and shipped beats polished and stalled.</span>
         </div>
       </div>
     </div>
 
-    <!-- 2. Sassy Gamification Status & Rewards Widget -->
+    <!-- 2. Sassy Gamification Status & Rewards Widget (Compact) -->
     <div class="sassy-status-card">
       <div class="sassy-status-top">
         <div class="sassy-badge-pill">
@@ -139,7 +156,7 @@ function renderDailySheet() {
 
         <div class="sassy-points-badge">
           <span class="sassy-points-val">${currentPoints}</span>
-          <span class="sassy-points-lbl">XP Points</span>
+          <span class="sassy-points-lbl">XP</span>
         </div>
       </div>
 
@@ -155,14 +172,12 @@ function renderDailySheet() {
         <div class="sassy-max-rank">★ Maximum Menace Level Achieved ★</div>
       `}
 
-      <!-- Self-Reward Box -->
+      <!-- Self-Reward Box (Compact inline) -->
       <div class="sassy-reward-box">
         <div class="sassy-reward-left">
           <span class="sassy-gift-icon">🎁</span>
-          <div>
-            <div class="sassy-reward-title">Unlocked Status Reward</div>
-            <div class="sassy-reward-desc">${statusInfo.currentTier.reward}</div>
-          </div>
+          <span class="sassy-reward-title">Unlocked:</span>
+          <span class="sassy-reward-desc" title="${statusInfo.currentTier.reward}">${statusInfo.currentTier.reward}</span>
         </div>
         <button class="sassy-claim-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')">
           Treat Yourself
@@ -170,15 +185,13 @@ function renderDailySheet() {
       </div>
     </div>
 
-    <!-- 3. Simple Streak Tracker -->
+    <!-- 3. Simple Streak Tracker (Compact) -->
     <div class="simple-streak-tracker">
       <div class="streak-stat-group">
         <div class="streak-main-pill">
           <span class="streak-fire-icon">🔥</span>
-          <div>
-            <div class="streak-num">${moveStreak > 0 ? moveStreak : maxStreak} Days</div>
-            <div class="streak-label">Anchor Streak</div>
-          </div>
+          <span class="streak-num">${moveStreak > 0 ? moveStreak : maxStreak}d</span>
+          <span class="streak-label">Anchor Streak</span>
         </div>
 
         <div class="streak-rate-col">
@@ -207,8 +220,8 @@ function renderDailySheet() {
           }).join('')}
         </div>
         <button class="catchup-trigger-btn" onclick="openPastDaysModal()" title="Quickly check off habits across past days">
-          <i data-lucide="calendar-check-2" style="width: 14px; height: 14px;"></i>
-          <span>Catch-Up Past Days</span>
+          <i data-lucide="calendar-check-2" style="width: 13px; height: 13px;"></i>
+          <span>Catch-Up</span>
         </button>
       </div>
     </div>
@@ -347,6 +360,53 @@ function renderDailySheet() {
             <div class="choice-bar-good" style="width: ${goodBarWidth}%;"></div>
             <div class="choice-bar-not" style="width: ${notBarWidth}%;"></div>
           </div>
+        </div>
+      </div>
+
+      <!-- How Healthy Do I Feel? Widget -->
+      <div class="cover-card">
+        <div class="card-title-row">
+          <div>
+            <h3>
+              <i data-lucide="heart-pulse" style="color: var(--danger);"></i>
+              How Healthy Do I Feel?
+            </h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">
+              ${weeklyHealth.totalDays > 0 ? `Week Avg: <strong style="color:var(--primary);">${weeklyHealth.avgScore}/5</strong> (${weeklyHealth.totalDays}d) • Running: <strong style="color:var(--primary);">${runningHealth.avgScore || '—'}/5</strong> (${runningHealth.totalDays} total)` : 'Tap to log daily vitality'}
+            </span>
+          </div>
+        </div>
+
+        <div class="health-choices-card">
+          <div class="health-buttons-grid">
+            ${[5, 4, 3, 2, 1].map(lvl => {
+              const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[lvl] : { emoji: '✨', label: `Lvl ${lvl}`, desc: '', sassy: '' };
+              const isSelected = (currentHealthLevel === lvl);
+              return `
+                <button type="button" 
+                        class="health-btn ${isSelected ? 'active' : ''}" 
+                        onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
+                        title="${meta.label}: ${meta.desc}">
+                  <span class="health-btn-emoji">${meta.emoji}</span>
+                  <span class="health-btn-label">${meta.label}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Sassy Saying / Insight -->
+          ${currentHealthMeta ? `
+            <div class="health-sassy-quote">
+              <span class="quote-icon">${currentHealthMeta.emoji}</span>
+              <div>
+                <strong>${currentHealthMeta.label}:</strong> <em>"${currentHealthMeta.sassy}"</em>
+              </div>
+            </div>
+          ` : `
+            <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;padding:4px 0;">
+              Check in with your body today for +5 XP.
+            </div>
+          `}
         </div>
       </div>
 
