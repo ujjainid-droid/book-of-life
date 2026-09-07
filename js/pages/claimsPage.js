@@ -144,8 +144,8 @@ function renderClaimsPage() {
               <input type="text" class="form-input" id="claim-provider-input" value="${formProvider}" oninput="saveClaimDraft()" placeholder="e.g. Dr. Adams, Physical Therapy" required>
             </div>
             <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Amount Paid ($)</label>
-              <input type="number" step="0.01" min="0" class="form-input" id="claim-amount-input" value="${formAmount}" oninput="saveClaimDraft()" placeholder="250.00" required>
+              <label class="form-label" style="font-size:0.75rem;">Bill / Charge Amount ($)</label>
+              <input type="number" step="0.01" min="0" class="form-input" id="claim-amount-input" value="${formAmount}" oninput="saveClaimDraft()" placeholder="e.g. 250.00 (billed or paid)" required>
             </div>
           </div>
 
@@ -618,7 +618,7 @@ function generateIncludedHealthSummary(claimsList) {
 
     text += `${idx + 1}. Provider: ${c.provider}\n`;
     text += `   - Date of Service: ${dStr}\n`;
-    text += `   - Amount Paid: $${(c.amountPaid || 0).toFixed(2)}\n`;
+    text += `   - Bill / Charge Amount: $${(c.amountPaid || 0).toFixed(2)}\n`;
     text += `   - Submission: ${isProv ? 'Provider Submitted Directly (Courtesy)' : (hasSb ? 'Superbill Available (Please submit)' : 'Pending Superbill')}\n`;
     text += `   - Expected Reimbursement: ${isCheck ? 'Mailed Paper Check' : 'Direct Deposit (ACH)'}\n`;
     text += `   - Current Stage: ${CLAIM_STAGES[c.stage]?.label || c.stage}\n`;

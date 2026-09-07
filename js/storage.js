@@ -582,7 +582,7 @@ class StorageManager {
   }
 
   exportClaimsCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Amount Paid,Submission By,Payout Method,Superbill Status,Stage,Next Action,Notes\n";
+    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Bill / Charge Amount,Submission By,Payout Method,Superbill Status,Stage,Next Action,Notes\n";
     this.getClaims().forEach(c => {
       const sub = (c.submissionType === 'provider') ? 'Provider (Courtesy)' : 'Self / Included Health';
       const payout = (c.payoutMethod === 'check') ? 'Mailed Check' : 'Direct Deposit';
