@@ -9,6 +9,7 @@ class SyncManager {
     this.eventSource = null;
     this.isConnected = false;
     this.isSyncing = false;
+    this.pendingPush = false;
     this.lastSyncTime = null;
 
     // Check URL parameters for 1-tap quick pairing: ?sync_url=...&sync_key=...
@@ -65,6 +66,47 @@ class SyncManager {
     } catch (e) {}
   }
 
+  /**
+   * Intelligently merge incoming cloud data without destroying local additions
+   */
+  mergeIncomingData(incoming) {
+    if (!incoming || typeof incoming !== 'object' || !incoming.version) return false;
+
+    // Check if cloud data is already identical to local
+    const incomingStr = JSON.stringify(incoming);
+    const localStr = JSON.stringify(storage.data);
+    if (incomingStr === localStr) return false;
+
+    // Smart-merge claims: NEVER allow an older cloud snapshot to erase locally added claims
+    if (Array.isArray(storage.data.claims)) {
+      const localClaims = storage.data.claims;
+      const cloudClaims = Array.isArray(incoming.claims) ? incoming.claims : [];
+      const claimsMap = new Map();
+
+      // Add cloud claims first
+      cloudClaims.forEach(c => claimsMap.set(c.id, c));
+
+      // Add/overwrite with local claims so newly added/edited local claims always survive
+      localClaims.forEach(c => {
+        const existing = claimsMap.get(c.id);
+        if (!existing || (c.updatedAt && (!existing.updatedAt || c.updatedAt >= existing.updatedAt))) {
+          claimsMap.set(c.id, c);
+        }
+      });
+
+      incoming.claims = Array.from(claimsMap.values());
+    }
+
+    // Merge into local storage
+    storage.data = { ...storage.data, ...incoming };
+    try {
+      localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data));
+    } catch (e) {}
+
+    storage.recalculateAllStreaks();
+    return true;
+  }
+
   async pullFromCloud() {
     if (!this.isConfigured() || this.isSyncing) return;
     try {
@@ -72,14 +114,22 @@ class SyncManager {
       const res = await fetch(this.getEndpoint());
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const cloudData = await res.json();
+
       if (cloudData && typeof cloudData === 'object' && cloudData.version) {
-        storage.data = { ...storage.data, ...cloudData };
-        try { localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data)); } catch(e){}
-        storage.recalculateAllStreaks();
-        if (typeof renderCurrentView === 'function') {
-          renderCurrentView();
-        } else if (typeof renderDailySheet === 'function') {
-          renderDailySheet();
+        const hasChanges = this.mergeIncomingData(cloudData);
+        if (hasChanges) {
+          // Only re-render if user is NOT actively typing
+          const isUserTyping = document.activeElement && (
+            document.activeElement.tagName === 'INPUT' || 
+            document.activeElement.tagName === 'TEXTAREA'
+          );
+          if (!isUserTyping) {
+            if (typeof renderCurrentView === 'function') {
+              renderCurrentView();
+            } else if (typeof renderDailySheet === 'function') {
+              renderDailySheet();
+            }
+          }
         }
         this.lastSyncTime = new Date();
         this.isConnected = true;
@@ -92,13 +142,22 @@ class SyncManager {
       console.warn('Cloud pull error:', err);
     } finally {
       this.isSyncing = false;
+      if (this.pendingPush) {
+        this.pushToCloud();
+      }
     }
   }
 
   async pushToCloud() {
-    if (!this.isConfigured() || this.isSyncing) return;
+    if (!this.isConfigured()) return;
+    if (this.isSyncing) {
+      this.pendingPush = true;
+      return;
+    }
+
     try {
       this.isSyncing = true;
+      this.pendingPush = false;
       const payload = JSON.stringify(storage.data);
       const res = await fetch(this.getEndpoint(), {
         method: 'PUT',
@@ -114,6 +173,9 @@ class SyncManager {
       console.warn('Cloud push error:', err);
     } finally {
       this.isSyncing = false;
+      if (this.pendingPush) {
+        this.pushToCloud();
+      }
     }
   }
 
@@ -134,13 +196,19 @@ class SyncManager {
           if (parsed && parsed.data && typeof parsed.data === 'object' && parsed.path === '/') {
             const incoming = parsed.data;
             if (incoming.version) {
-              storage.data = { ...storage.data, ...incoming };
-              try { localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data)); } catch(e){}
-              storage.recalculateAllStreaks();
-              if (typeof renderCurrentView === 'function') {
-                renderCurrentView();
-              } else if (typeof renderDailySheet === 'function') {
-                renderDailySheet();
+              const hasChanges = this.mergeIncomingData(incoming);
+              if (hasChanges) {
+                const isUserTyping = document.activeElement && (
+                  document.activeElement.tagName === 'INPUT' || 
+                  document.activeElement.tagName === 'TEXTAREA'
+                );
+                if (!isUserTyping) {
+                  if (typeof renderCurrentView === 'function') {
+                    renderCurrentView();
+                  } else if (typeof renderDailySheet === 'function') {
+                    renderDailySheet();
+                  }
+                }
               }
               this.lastSyncTime = new Date();
               this.isConnected = true;
@@ -207,9 +275,9 @@ class SyncManager {
 
 const syncManager = new SyncManager();
 
-// Automatically pull latest data whenever user returns to the tab or app
+// Only reconnect realtime listener on focus if connection was dropped
 window.addEventListener('focus', () => {
-  if (syncManager.isConfigured()) {
-    syncManager.pullFromCloud();
+  if (syncManager.isConfigured() && !syncManager.isConnected) {
+    syncManager.startRealtimeListener();
   }
 });

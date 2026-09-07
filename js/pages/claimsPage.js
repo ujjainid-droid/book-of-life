@@ -5,6 +5,38 @@
 let activeClaimsFilter = 'all';
 let editingClaimId = null;
 
+function getClaimDraft() {
+  try {
+    const raw = localStorage.getItem('BOL_CLAIM_DRAFT') || sessionStorage.getItem('BOL_CLAIM_DRAFT');
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function saveClaimDraft() {
+  try {
+    const draft = {
+      date: document.getElementById('claim-date-input')?.value || '',
+      provider: document.getElementById('claim-provider-input')?.value || '',
+      amountPaid: document.getElementById('claim-amount-input')?.value || '',
+      submissionType: document.getElementById('claim-submission-select')?.value || 'provider',
+      payoutMethod: document.getElementById('claim-payout-select')?.value || 'direct_deposit',
+      stage: document.getElementById('claim-stage-select')?.value || 'with_included_health',
+      superbillStatus: document.getElementById('claim-superbill-select')?.value || 'have',
+      nextAction: document.getElementById('claim-nextaction-input')?.value || ''
+    };
+    localStorage.setItem('BOL_CLAIM_DRAFT', JSON.stringify(draft));
+  } catch (e) {}
+}
+
+function clearClaimDraft() {
+  try {
+    localStorage.removeItem('BOL_CLAIM_DRAFT');
+    sessionStorage.removeItem('BOL_CLAIM_DRAFT');
+  } catch (e) {}
+}
+
 function renderClaimsPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
@@ -32,6 +64,15 @@ function renderClaimsPage() {
   };
 
   const todayIso = formatDateIso(new Date());
+  const draft = getClaimDraft();
+  const formDate = (draft && draft.date) ? draft.date : todayIso;
+  const formProvider = (draft && draft.provider) ? draft.provider : '';
+  const formAmount = (draft && draft.amountPaid) ? draft.amountPaid : '';
+  const formSubmission = (draft && draft.submissionType) ? draft.submissionType : 'provider';
+  const formPayout = (draft && draft.payoutMethod) ? draft.payoutMethod : 'direct_deposit';
+  const formStage = (draft && draft.stage) ? draft.stage : 'with_included_health';
+  const formSuperbill = (draft && draft.superbillStatus) ? draft.superbillStatus : 'have';
+  const formNextAction = (draft && draft.nextAction) ? draft.nextAction : 'Provider submitted claim — waiting on insurance EOB';
 
   container.innerHTML = `
     <div class="claims-container">
@@ -96,15 +137,15 @@ function renderClaimsPage() {
           <div class="claims-grid-form">
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Date of Service</label>
-              <input type="date" class="form-input" id="claim-date-input" value="${todayIso}" required>
+              <input type="date" class="form-input" id="claim-date-input" value="${formDate}" oninput="saveClaimDraft()" onchange="saveClaimDraft()" required>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Provider / Doctor</label>
-              <input type="text" class="form-input" id="claim-provider-input" placeholder="e.g. Dr. Adams, Physical Therapy" required>
+              <input type="text" class="form-input" id="claim-provider-input" value="${formProvider}" oninput="saveClaimDraft()" placeholder="e.g. Dr. Adams, Physical Therapy" required>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Amount Paid ($)</label>
-              <input type="number" step="0.01" min="0" class="form-input" id="claim-amount-input" placeholder="250.00" required>
+              <input type="number" step="0.01" min="0" class="form-input" id="claim-amount-input" value="${formAmount}" oninput="saveClaimDraft()" placeholder="250.00" required>
             </div>
           </div>
 
@@ -112,40 +153,40 @@ function renderClaimsPage() {
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Who Submits Claim?</label>
               <select class="form-select" id="claim-submission-select" onchange="handleSubmissionTypeChange(this.value)">
-                <option value="provider" selected>🏢 Provider Submits (Courtesy)</option>
-                <option value="self">👤 I / Included Health Submit</option>
+                <option value="provider" ${formSubmission === 'provider' ? 'selected' : ''}>🏢 Provider Submits (Courtesy)</option>
+                <option value="self" ${formSubmission === 'self' ? 'selected' : ''}>👤 I / Included Health Submit</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Expected Payout</label>
               <select class="form-select" id="claim-payout-select" onchange="handlePayoutMethodChange(this.value)">
-                <option value="direct_deposit" selected>🏦 Direct Deposit (Monarch)</option>
-                <option value="check">✉️ Mailed Paper Check</option>
+                <option value="direct_deposit" ${formPayout === 'direct_deposit' ? 'selected' : ''}>🏦 Direct Deposit (Monarch)</option>
+                <option value="check" ${formPayout === 'check' ? 'selected' : ''}>✉️ Mailed Paper Check</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Current Stage</label>
               <select class="form-select" id="claim-stage-select" onchange="handleStageSelectChange(this.value)">
-                <option value="with_included_health" selected>🔵 Pending Insurance</option>
-                <option value="check_due">🟢 Check / Deposit Due</option>
-                <option value="ready_to_send">🟡 Send to Included Health</option>
-                <option value="need_superbill">🔴 Need Superbill</option>
-                <option value="settled">⚪ Settled &amp; Reconciled</option>
+                <option value="with_included_health" ${formStage === 'with_included_health' ? 'selected' : ''}>🔵 Pending Insurance</option>
+                <option value="check_due" ${formStage === 'check_due' ? 'selected' : ''}>🟢 Check / Deposit Due</option>
+                <option value="ready_to_send" ${formStage === 'ready_to_send' ? 'selected' : ''}>🟡 Send to Included Health</option>
+                <option value="need_superbill" ${formStage === 'need_superbill' ? 'selected' : ''}>🔴 Need Superbill</option>
+                <option value="settled" ${formStage === 'settled' ? 'selected' : ''}>⚪ Settled &amp; Reconciled</option>
               </select>
             </div>
           </div>
 
           <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;">
-            <div class="form-group" id="claim-superbill-group" style="display:none;margin-bottom:0;">
+            <div class="form-group" id="claim-superbill-group" style="display:${formSubmission === 'self' ? 'block' : 'none'};margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Superbill Status</label>
               <select class="form-select" id="claim-superbill-select" onchange="handleSuperbillStatusChange(this.value)">
-                <option value="have" selected>✅ Have Superbill / Invoice</option>
-                <option value="need">❌ Need Superbill from Office</option>
+                <option value="have" ${formSuperbill === 'have' ? 'selected' : ''}>✅ Have Superbill / Invoice</option>
+                <option value="need" ${formSuperbill === 'need' ? 'selected' : ''}>❌ Need Superbill from Office</option>
               </select>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label class="form-label" style="font-size:0.75rem;">Next Action (Immediate step)</label>
-              <input type="text" class="form-input" id="claim-nextaction-input" value="Provider submitted claim — waiting on insurance EOB">
+              <input type="text" class="form-input" id="claim-nextaction-input" value="${formNextAction}" oninput="saveClaimDraft()">
             </div>
           </div>
 
@@ -370,6 +411,7 @@ function handleSubmissionTypeChange(val) {
     if (stageSelect) stageSelect.value = newStage;
     if (actionInput) actionInput.value = getDefaultNextAction(newStage, payoutVal, 'self');
   }
+  saveClaimDraft();
 }
 
 function handlePayoutMethodChange(val) {
@@ -383,6 +425,7 @@ function handlePayoutMethodChange(val) {
       submissionSelect ? submissionSelect.value : 'provider'
     );
   }
+  saveClaimDraft();
 }
 
 function handleStageSelectChange(val) {
@@ -396,6 +439,7 @@ function handleStageSelectChange(val) {
       submissionSelect ? submissionSelect.value : 'provider'
     );
   }
+  saveClaimDraft();
 }
 
 function handleSuperbillStatusChange(val) {
@@ -414,6 +458,7 @@ function handleSuperbillStatusChange(val) {
       if (actionInput) actionInput.value = 'Upload superbill to Included Health app';
     }
   }
+  saveClaimDraft();
 }
 
 /**
@@ -445,6 +490,8 @@ function handleQuickAddClaim(e) {
     stage,
     nextAction
   });
+
+  clearClaimDraft();
 
   // Reset inputs
   document.getElementById('claim-provider-input').value = '';
