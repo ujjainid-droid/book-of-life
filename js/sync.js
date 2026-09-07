@@ -76,7 +76,11 @@ class SyncManager {
         storage.data = { ...storage.data, ...cloudData };
         try { localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data)); } catch(e){}
         storage.recalculateAllStreaks();
-        if (typeof renderDailySheet === 'function') renderDailySheet();
+        if (typeof renderCurrentView === 'function') {
+          renderCurrentView();
+        } else if (typeof renderDailySheet === 'function') {
+          renderDailySheet();
+        }
         this.lastSyncTime = new Date();
         this.isConnected = true;
         this.updateStatusBadge();
@@ -133,7 +137,11 @@ class SyncManager {
               storage.data = { ...storage.data, ...incoming };
               try { localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data)); } catch(e){}
               storage.recalculateAllStreaks();
-              if (typeof renderDailySheet === 'function') renderDailySheet();
+              if (typeof renderCurrentView === 'function') {
+                renderCurrentView();
+              } else if (typeof renderDailySheet === 'function') {
+                renderDailySheet();
+              }
               this.lastSyncTime = new Date();
               this.isConnected = true;
               this.updateStatusBadge();

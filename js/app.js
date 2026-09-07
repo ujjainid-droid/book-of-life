@@ -18,8 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   updateThemeIcon();
 
-  // Render the single daily sheet
-  renderDailySheet();
+  // Restore saved view (or URL hash)
+  const hashView = window.location.hash.replace('#', '');
+  const savedView = (hashView === 'claims' || hashView === 'daily') 
+    ? hashView 
+    : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'daily');
+
+  switchAppView(savedView);
 
   // Refresh header badges
   refreshAppBadges();
@@ -34,12 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
    View Switching (Daily Sheet vs Medical Claims)
    -------------------------------------------------------------------------- */
 function switchAppView(viewName) {
-  currentView = viewName;
+  currentView = (viewName === 'claims') ? 'claims' : 'daily';
+  try {
+    localStorage.setItem('BOL_ACTIVE_VIEW', currentView);
+  } catch (e) {}
+
   const navDaily = document.getElementById('nav-btn-daily');
   const navClaims = document.getElementById('nav-btn-claims');
   const dateNavContainer = document.getElementById('header-date-nav-container');
 
-  if (viewName === 'claims') {
+  if (currentView === 'claims') {
     if (navDaily) navDaily.classList.remove('active');
     if (navClaims) navClaims.classList.add('active');
     if (dateNavContainer) dateNavContainer.style.display = 'none';
@@ -52,6 +61,14 @@ function switchAppView(viewName) {
   }
 
   refreshAppBadges();
+}
+
+function renderCurrentView() {
+  if (currentView === 'claims') {
+    if (typeof renderClaimsPage === 'function') renderClaimsPage();
+  } else {
+    if (typeof renderDailySheet === 'function') renderDailySheet();
+  }
 }
 
 function refreshAppBadges() {
