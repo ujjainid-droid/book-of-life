@@ -97,6 +97,24 @@ class SyncManager {
       incoming.claims = Array.from(claimsMap.values());
     }
 
+    // Smart-merge choices: NEVER let an older cloud snapshot reduce logged choice counts
+    if (storage.data.choicesState && typeof storage.data.choicesState === 'object') {
+      const localChoices = storage.data.choicesState;
+      const cloudChoices = (incoming.choicesState && typeof incoming.choicesState === 'object') ? incoming.choicesState : {};
+      const mergedChoices = { ...cloudChoices };
+
+      Object.entries(localChoices).forEach(([dateStr, lVal]) => {
+        if (lVal && typeof lVal === 'object') {
+          const cVal = mergedChoices[dateStr] || { good: 0, not: 0 };
+          mergedChoices[dateStr] = {
+            good: Math.max(Number(lVal.good) || 0, Number(cVal.good) || 0),
+            not: Math.max(Number(lVal.not) || 0, Number(cVal.not) || 0)
+          };
+        }
+      });
+      incoming.choicesState = mergedChoices;
+    }
+
     // Merge into local storage
     storage.data = { ...storage.data, ...incoming };
     try {

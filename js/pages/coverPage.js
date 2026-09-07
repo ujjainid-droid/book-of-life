@@ -65,8 +65,9 @@ function renderDailySheet() {
   const goodBarWidth = totalChoices > 0 ? Math.round((dateChoices.good / totalChoices) * 100) : 100;
   const notBarWidth = totalChoices > 0 ? 100 - goodBarWidth : 0;
 
-  // Running Weekly Good vs Bad Tally (Sun to Sat)
+  // Running Weekly Good vs Bad Tally (Sun to Sat) & All-Time Running Total
   const weeklyChoices = storage.getWeeklyChoices(sundayOfSelectedWeek);
+  const runningChoices = storage.getRunningChoices();
 
   // Gamification: Sassy Status & Rewards
   const currentPoints = storage.getPoints();
@@ -315,7 +316,7 @@ function renderDailySheet() {
               Good Choices (vs Not)
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Real-time conscious decision tally
+              Week: <strong style="color:var(--primary);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--primary);">+${runningChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${runningChoices.totalNot}</strong>
             </span>
           </div>
         </div>
@@ -334,7 +335,7 @@ function renderDailySheet() {
 
           <div class="choice-controls-row">
             <span>
-              ${totalChoices > 0 ? `<strong>${goodRatio}%</strong> good choices (${dateChoices.good} vs ${dateChoices.not})` : 'No choices logged yet'}
+              ${totalChoices > 0 ? `<strong>${goodRatio}%</strong> today (${dateChoices.good} vs ${dateChoices.not})` : 'No choices logged today'}
             </span>
             <div class="choice-undo-group">
               ${dateChoices.good > 0 ? `<button class="choice-undo-btn" title="Undo 1 good" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
@@ -347,15 +348,37 @@ function renderDailySheet() {
             <div class="choice-bar-not" style="width: ${notBarWidth}%;"></div>
           </div>
 
-          <!-- Simple Weekly Running Choices Tally (Sun to Sat) -->
-          <div class="weekly-simple-tally">
-            <span class="weekly-tally-lbl">This Week (Sun–Sat):</span>
-            <span class="weekly-tally-counts">
-              <strong class="good-text">+${weeklyChoices.totalGood} Good</strong>
-              <span class="tally-vs">vs</span>
-              <strong class="not-text">${weeklyChoices.totalNot} Not</strong>
-            </span>
-            <span class="weekly-tally-pill">${weeklyChoices.total > 0 ? `${weeklyChoices.ratio}%` : '—'}</span>
+          <!-- Weekly Count & Running Total Breakdown -->
+          <div class="choices-summary-grid">
+            <div class="choices-summary-box">
+              <div class="summary-box-header">
+                <span class="summary-box-title">This Week (Sun–Sat)</span>
+                <span class="weekly-tally-pill">${weeklyChoices.total > 0 ? `${weeklyChoices.ratio}%` : '—'}</span>
+              </div>
+              <div class="summary-box-val">
+                <strong class="good-text">+${weeklyChoices.totalGood} Good</strong>
+                <span class="tally-vs">vs</span>
+                <strong class="not-text">${weeklyChoices.totalNot} Not</strong>
+              </div>
+              <div class="summary-box-sub">
+                ${weeklyChoices.total > 0 ? `${weeklyChoices.total} choices logged this week` : 'No choices logged this week'}
+              </div>
+            </div>
+
+            <div class="choices-summary-box running">
+              <div class="summary-box-header">
+                <span class="summary-box-title">Running Total (All Time)</span>
+                <span class="weekly-tally-pill" style="background:var(--bg-elevated);color:var(--text-primary);border-color:var(--border-light);">${runningChoices.total > 0 ? `${runningChoices.ratio}%` : '—'}</span>
+              </div>
+              <div class="summary-box-val">
+                <strong class="good-text">+${runningChoices.totalGood} Good</strong>
+                <span class="tally-vs">vs</span>
+                <strong class="not-text">${runningChoices.totalNot} Not</strong>
+              </div>
+              <div class="summary-box-sub">
+                ${runningChoices.total > 0 ? `${runningChoices.total} all-time • Net: ${runningChoices.net >= 0 ? '+' : ''}${runningChoices.net}` : 'No choices logged yet'}
+              </div>
+            </div>
           </div>
         </div>
       </div>

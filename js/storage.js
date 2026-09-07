@@ -344,6 +344,33 @@ class StorageManager {
     };
   }
 
+  getRunningChoices() {
+    if (!this.data.choicesState || typeof this.data.choicesState !== 'object') {
+      return { totalGood: 0, totalNot: 0, total: 0, ratio: 100, net: 0 };
+    }
+    let totalGood = 0;
+    let totalNot = 0;
+
+    Object.values(this.data.choicesState).forEach(c => {
+      if (c && typeof c === 'object') {
+        totalGood += Math.max(0, parseInt(c.good, 10) || 0);
+        totalNot += Math.max(0, parseInt(c.not, 10) || 0);
+      }
+    });
+
+    const total = totalGood + totalNot;
+    const ratio = total > 0 ? Math.round((totalGood / total) * 100) : 100;
+    const net = totalGood - totalNot;
+
+    return {
+      totalGood,
+      totalNot,
+      total,
+      ratio,
+      net
+    };
+  }
+
   // --- Day-Specific Goals Methods ---
 
   getDayGoals(dateStr = formatDateIso(new Date())) {

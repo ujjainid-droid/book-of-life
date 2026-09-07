@@ -694,6 +694,79 @@
   border: 1px solid var(--primary-border);
 }
 
+/* Good Choices Summary Grid (Weekly vs Running Total) */
+.choices-summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 540px) {
+  .choices-summary-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.choices-summary-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.choices-summary-box.running {
+  background: var(--bg-card);
+}
+
+.summary-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.summary-box-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.summary-box-val {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+}
+
+.summary-box-val .good-text {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.summary-box-val .not-text {
+  color: #EF4444;
+  font-weight: 700;
+}
+
+.summary-box-val .tally-vs {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.summary-box-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
 /* Bottom MARGO Pillars Reference Card Shelf (Matches user reference) */
 .margo-pillars-shelf {
   margin-top: 10px;
