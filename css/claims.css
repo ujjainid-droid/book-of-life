@@ -416,6 +416,37 @@
   color: #DC2626;
 }
 
+.claim-meta-tag {
+  font-size: 0.70rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.claim-meta-tag.tag-provider {
+  background: #F0FDF4;
+  color: #15803D;
+  border-color: #DCFCE7;
+}
+
+.claim-meta-tag.tag-self {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border-color: #DBEAFE;
+}
+
+.claim-meta-tag.tag-payout {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border-color: var(--border-light);
+}
+
 /* Next Action Banner */
 .claim-next-step-box {
   background: var(--bg-surface);

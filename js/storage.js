@@ -470,9 +470,11 @@ class StorageManager {
       date: claimData.date || formatDateIso(new Date()),
       provider: (claimData.provider || '').trim() || 'Provider',
       amountPaid: parseFloat(claimData.amountPaid) || 0,
+      submissionType: claimData.submissionType || 'provider', // 'provider' | 'self'
+      payoutMethod: claimData.payoutMethod || 'direct_deposit', // 'direct_deposit' | 'check'
       superbillStatus: claimData.superbillStatus || 'have',
-      stage: claimData.stage || 'ready_to_send',
-      nextAction: (claimData.nextAction || '').trim() || (typeof getDefaultNextAction === 'function' ? getDefaultNextAction(claimData.stage) : 'Review claim'),
+      stage: claimData.stage || (claimData.submissionType === 'provider' ? 'with_included_health' : 'ready_to_send'),
+      nextAction: (claimData.nextAction || '').trim() || (typeof getDefaultNextAction === 'function' ? getDefaultNextAction(claimData.stage, claimData.payoutMethod, claimData.submissionType) : 'Review claim'),
       reimbursedAmount: parseFloat(claimData.reimbursedAmount) || 0,
       notes: (claimData.notes || '').trim(),
       createdAt: new Date().toISOString()
@@ -580,9 +582,11 @@ class StorageManager {
   }
 
   exportClaimsCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Amount Paid,Superbill Status,Stage,Next Action,Notes\n";
+    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Amount Paid,Submission By,Payout Method,Superbill Status,Stage,Next Action,Notes\n";
     this.getClaims().forEach(c => {
-      csvContent += `"${c.date}","${(c.provider || '').replace(/"/g, '""')}",${c.amountPaid || 0},"${c.superbillStatus}","${c.stage}","${(c.nextAction || '').replace(/"/g, '""')}","${(c.notes || '').replace(/"/g, '""')}"\n`;
+      const sub = (c.submissionType === 'provider') ? 'Provider (Courtesy)' : 'Self / Included Health';
+      const payout = (c.payoutMethod === 'check') ? 'Mailed Check' : 'Direct Deposit';
+      csvContent += `"${c.date}","${(c.provider || '').replace(/"/g, '""')}",${c.amountPaid || 0},"${sub}","${payout}","${c.superbillStatus || 'have'}","${c.stage}","${(c.nextAction || '').replace(/"/g, '""')}","${(c.notes || '').replace(/"/g, '""')}"\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");

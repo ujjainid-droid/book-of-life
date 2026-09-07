@@ -503,16 +503,16 @@ const CLAIM_STAGES = {
   },
   with_included_health: {
     id: 'with_included_health',
-    label: 'With Included Health',
+    label: 'Pending Insurance',
     emoji: '🔵',
-    defaultAction: 'Waiting on Included Health / Insurance review',
-    actor: 'Included Health'
+    defaultAction: 'Waiting on Insurance / EOB review',
+    actor: 'Insurance'
   },
   check_due: {
     id: 'check_due',
     label: 'Check / Deposit Due',
     emoji: '🟢',
-    defaultAction: 'Watch Monarch / Bank for reimbursement deposit',
+    defaultAction: 'Watch Monarch for incoming ACH deposit',
     actor: 'Monarch'
   },
   settled: {
@@ -524,7 +524,17 @@ const CLAIM_STAGES = {
   }
 };
 
-function getDefaultNextAction(stage) {
+function getDefaultNextAction(stage, payoutMethod = 'direct_deposit', submissionType = 'self') {
+  if (stage === 'check_due') {
+    return payoutMethod === 'check'
+      ? 'Watch mailbox for physical check & mobile deposit'
+      : 'Watch Monarch for incoming ACH direct deposit';
+  }
+  if (stage === 'with_included_health') {
+    return submissionType === 'provider'
+      ? 'Provider submitted claim — waiting on insurance EOB'
+      : 'Waiting on Included Health & insurance review';
+  }
   return CLAIM_STAGES[stage] ? CLAIM_STAGES[stage].defaultAction : '';
 }
 
