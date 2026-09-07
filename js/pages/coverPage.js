@@ -347,39 +347,6 @@ function renderDailySheet() {
             <div class="choice-bar-good" style="width: ${goodBarWidth}%;"></div>
             <div class="choice-bar-not" style="width: ${notBarWidth}%;"></div>
           </div>
-
-          <!-- Weekly Count & Running Total Breakdown -->
-          <div class="choices-summary-grid">
-            <div class="choices-summary-box">
-              <div class="summary-box-header">
-                <span class="summary-box-title">This Week (Sun–Sat)</span>
-                <span class="weekly-tally-pill">${weeklyChoices.total > 0 ? `${weeklyChoices.ratio}%` : '—'}</span>
-              </div>
-              <div class="summary-box-val">
-                <strong class="good-text">+${weeklyChoices.totalGood} Good</strong>
-                <span class="tally-vs">vs</span>
-                <strong class="not-text">${weeklyChoices.totalNot} Not</strong>
-              </div>
-              <div class="summary-box-sub">
-                ${weeklyChoices.total > 0 ? `${weeklyChoices.total} choices logged this week` : 'No choices logged this week'}
-              </div>
-            </div>
-
-            <div class="choices-summary-box running">
-              <div class="summary-box-header">
-                <span class="summary-box-title">Running Total (All Time)</span>
-                <span class="weekly-tally-pill" style="background:var(--bg-elevated);color:var(--text-primary);border-color:var(--border-light);">${runningChoices.total > 0 ? `${runningChoices.ratio}%` : '—'}</span>
-              </div>
-              <div class="summary-box-val">
-                <strong class="good-text">+${runningChoices.totalGood} Good</strong>
-                <span class="tally-vs">vs</span>
-                <strong class="not-text">${runningChoices.totalNot} Not</strong>
-              </div>
-              <div class="summary-box-sub">
-                ${runningChoices.total > 0 ? `${runningChoices.total} all-time • Net: ${runningChoices.net >= 0 ? '+' : ''}${runningChoices.net}` : 'No choices logged yet'}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
