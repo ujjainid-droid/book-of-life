@@ -317,8 +317,8 @@ function renderDailySheet() {
       </div>
     </div>
 
-    <!-- 4. Good Choices & Day-Specific Goals Grid (Swapped Order) -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+    <!-- 4. Conscious Tracking Trio: Good Choices, Health Pulse, Day Goals -->
+    <div class="daily-widgets-trio-grid">
       
       <!-- Good Choices (vs Not) Tracker Card (FIRST) -->
       <div class="cover-card">

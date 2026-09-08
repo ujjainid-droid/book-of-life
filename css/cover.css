@@ -141,6 +141,34 @@
   box-shadow: var(--shadow-card);
 }
 
+/* 3-Column Balanced Daily Tracking Grid (No empty spaces) */
+.daily-widgets-trio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+  align-items: stretch;
+}
+
+.daily-widgets-trio-grid .cover-card {
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-bottom: 0;
+}
+
+.daily-widgets-trio-grid .cover-card .card-title-row {
+  margin-bottom: 12px;
+}
+
+@media (max-width: 960px) {
+  .daily-widgets-trio-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
 .card-title-row {
   display: flex;
   align-items: center;
@@ -443,13 +471,13 @@
 .good-choices-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .choice-buttons-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 
 .choice-action-btn {
@@ -457,8 +485,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 14px 12px;
+  gap: 4px;
+  padding: 10px 8px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-light);
   background: var(--bg-surface);
@@ -492,13 +520,13 @@
 }
 
 .choice-btn-title {
-  font-size: 0.86rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
 .choice-btn-count {
   font-family: var(--font-mono);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 800;
 }
 
