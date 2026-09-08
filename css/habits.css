@@ -450,72 +450,81 @@
   transform: translateY(-1px);
 }
 
-/* Habit Stack Options Shelf */
+/* Compact Habit Stack Options Shelf */
 .stack-shelf {
   background: var(--bg-surface);
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--radius-lg);
-  padding: 16px 18px;
-  margin-top: 14px;
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.stack-shelf-header {
-  margin-bottom: 12px;
+.stack-shelf-header-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
 
 .stack-shelf-title {
-  font-size: 0.88rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: var(--text-primary);
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .stack-shelf-sub {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 
-.stack-chips-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 8px;
+.stack-chips-cloud {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  flex: 1;
 }
 
 .stack-chip-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
   border: 1px solid var(--border-light);
   background: var(--bg-card);
   color: var(--text-primary);
-  font-size: 0.85rem;
+  font-size: 0.76rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
-  min-height: 44px;
+  white-space: nowrap;
 }
 
 .stack-chip-btn:hover:not(.stacked) {
   border-color: var(--primary);
   transform: translateY(-1px);
-  box-shadow: 0 2px 10px var(--primary-glow);
+  box-shadow: 0 2px 8px var(--primary-glow);
   background: var(--primary-light);
 }
 
 .stack-chip-btn.stacked {
-  opacity: 0.55;
-  background: var(--bg-surface);
+  opacity: 0.5;
+  background: transparent;
   border-style: dashed;
   cursor: default;
 }
 
 .stack-chip-plus {
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.75rem;
+  font-weight: 800;
   color: var(--primary);
 }
 

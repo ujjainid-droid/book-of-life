@@ -290,17 +290,17 @@ function renderDailySheet() {
         }).join('')}
       </div>
 
-      <!-- 6 Habit Stack Options Shelf (Tap to add anytime) -->
+      <!-- Habit Stack Options Shelf (Compact Pill Cloud) -->
       <div class="stack-shelf">
-        <div class="stack-shelf-header">
-          <div class="stack-shelf-title">
-            <i data-lucide="sparkles" style="color: var(--margo-m); width: 15px; height: 15px;"></i>
-            Habit Stack Options
-          </div>
-          <div class="stack-shelf-sub">Tap any option to add it to your daily habits anytime:</div>
+        <div class="stack-shelf-header-inline">
+          <span class="stack-shelf-title">
+            <i data-lucide="sparkles" style="color: var(--margo-m); width: 13px; height: 13px;"></i>
+            Quick Presets
+          </span>
+          <span class="stack-shelf-sub">Tap to add:</span>
         </div>
 
-        <div class="stack-chips-grid">
+        <div class="stack-chips-cloud">
           ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
             const alreadyAdded = habits.some(h => h.name.toLowerCase() === preset.name.toLowerCase());
             return `
@@ -308,8 +308,8 @@ function renderDailySheet() {
                       ${alreadyAdded ? 'disabled' : ''}
                       onclick="addHabitFromPreset(${pIdx})"
                       title="${preset.description}">
-                <span>${preset.name}</span>
                 <span class="stack-chip-plus">${alreadyAdded ? '✓' : '+'}</span>
+                <span>${preset.name}</span>
               </button>
             `;
           }).join('')}
