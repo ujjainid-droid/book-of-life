@@ -227,12 +227,6 @@ function renderHabitsPage() {
           </div>
 
           <div class="day-goals-card">
-            <!-- Inline Add Form -->
-            <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${selectedTrackingDate}', 'habits-day-goal-input')">
-              <input type="text" class="day-goal-input" id="habits-day-goal-input" placeholder="e.g. 12k steps today..." required>
-              <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
-            </form>
-
             <!-- Goals List -->
             <div class="day-goals-list">
               ${dateDayGoals.map(g => `
@@ -255,6 +249,12 @@ function renderHabitsPage() {
                 </div>
               ` : ''}
             </div>
+
+            <!-- Inline Add Form (Below List) -->
+            <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${selectedTrackingDate}', 'habits-day-goal-input')">
+              <input type="text" class="day-goal-input" id="habits-day-goal-input" placeholder="e.g. 12k steps today..." required>
+              <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
+            </form>
           </div>
         </div>
 

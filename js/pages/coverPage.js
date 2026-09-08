@@ -425,12 +425,6 @@ function renderDailySheet() {
         </div>
 
         <div class="day-goals-card">
-          <!-- Inline Add Form -->
-          <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
-            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="e.g. 12k steps today, call doctor, finish slides..." required>
-            <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
-          </form>
-
           <!-- Goals List -->
           <div class="day-goals-list">
             ${dateDayGoals.map(g => `
@@ -453,6 +447,12 @@ function renderDailySheet() {
               </div>
             ` : ''}
           </div>
+
+          <!-- Inline Add Form (Below List) -->
+          <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
+            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="e.g. 12k steps today, call doctor, finish slides..." required>
+            <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
+          </form>
         </div>
       </div>
 
