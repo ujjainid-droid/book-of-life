@@ -141,32 +141,43 @@
   box-shadow: var(--shadow-card);
 }
 
-/* 3-Column Balanced Daily Tracking Grid (No empty spaces) */
-.daily-widgets-trio-grid {
+/* Daily Conscious Tracking & Goals Layout */
+.daily-widgets-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
   margin-top: 16px;
   align-items: stretch;
 }
 
-.daily-widgets-trio-grid .cover-card {
-  padding: 16px 14px;
+.daily-widgets-grid .cover-card {
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  height: 100%;
   margin-bottom: 0;
 }
 
-.daily-widgets-trio-grid .cover-card .card-title-row {
+.daily-widgets-grid .cover-card .card-title-row {
   margin-bottom: 12px;
 }
 
-@media (max-width: 960px) {
-  .daily-widgets-trio-grid {
+.daily-widgets-grid .day-goals-card-wrapper {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .daily-widgets-grid {
     grid-template-columns: 1fr;
     gap: 14px;
   }
+}
+
+.card-sub-muted {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-top: 2px;
 }
 
 .card-title-row {
@@ -616,8 +627,8 @@
 }
 
 .day-goals-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 8px;
 }
 
@@ -1257,6 +1268,21 @@
 .health-sassy-quote .quote-icon {
   font-size: 1.1rem;
   flex-shrink: 0;
+}
+
+.health-prompt-box {
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
 }
 
 .health-sassy-quote em {

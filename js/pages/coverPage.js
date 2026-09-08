@@ -317,10 +317,10 @@ function renderDailySheet() {
       </div>
     </div>
 
-    <!-- 4. Conscious Tracking Trio: Good Choices, Health Pulse, Day Goals -->
-    <div class="daily-widgets-trio-grid">
+    <!-- 4. Conscious Tracking: Good Choices, Health Pulse, Day Goals -->
+    <div class="daily-widgets-grid">
       
-      <!-- Good Choices (vs Not) Tracker Card (FIRST) -->
+      <!-- Good Choices (vs Not) Tracker Card -->
       <div class="cover-card">
         <div class="card-title-row">
           <div>
@@ -328,7 +328,7 @@ function renderDailySheet() {
               <i data-lucide="check-circle-2" style="color: var(--margo-m);"></i>
               Good Choices (vs Not)
             </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
+            <span class="card-sub-muted">
               Week: <strong style="color:var(--primary);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--primary);">+${runningChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${runningChoices.totalNot}</strong>
             </span>
           </div>
@@ -371,7 +371,7 @@ function renderDailySheet() {
               <i data-lucide="heart-pulse" style="color: var(--danger);"></i>
               How Healthy Do I Feel?
             </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
+            <span class="card-sub-muted">
               ${weeklyHealth.totalDays > 0 ? `Week Avg: <strong style="color:var(--primary);">${weeklyHealth.avgScore}/5</strong> (${weeklyHealth.totalDays}d) • Running: <strong style="color:var(--primary);">${runningHealth.avgScore || '—'}/5</strong> (${runningHealth.totalDays} total)` : 'Tap to log daily vitality'}
             </span>
           </div>
@@ -403,22 +403,22 @@ function renderDailySheet() {
               </div>
             </div>
           ` : `
-            <div style="font-size:0.75rem;color:var(--text-muted);text-align:center;padding:4px 0;">
-              Check in with your body today for +5 XP.
+            <div class="health-prompt-box">
+              <span>Check in with your body today for <strong>+5 XP</strong>.</span>
             </div>
           `}
         </div>
       </div>
 
-      <!-- Day-Specific Goals Card (SECOND) -->
-      <div class="cover-card">
+      <!-- Day-Specific Goals Card (Spans Full Width Below) -->
+      <div class="cover-card day-goals-card-wrapper">
         <div class="card-title-row">
           <div>
             <h3>
               <i data-lucide="zap" style="color: var(--warning);"></i>
               Day-Specific Goals
             </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
+            <span class="card-sub-muted">
               One-off targets for today only (no ongoing habit pressure)
             </span>
           </div>
@@ -427,7 +427,7 @@ function renderDailySheet() {
         <div class="day-goals-card">
           <!-- Inline Add Form -->
           <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
-            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="e.g. 12k steps today, call doctor..." required>
+            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="e.g. 12k steps today, call doctor, finish slides..." required>
             <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
           </form>
 
@@ -448,7 +448,7 @@ function renderDailySheet() {
             `).join('')}
 
             ${dateDayGoals.length === 0 ? `
-              <div style="text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
+              <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
                 No day-specific goals yet today.
               </div>
             ` : ''}
