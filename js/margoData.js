@@ -17,7 +17,7 @@ const MARGO_BUCKETS = {
     colorHex: '#D97768',
     colorClass: 'margo-tag-a',
     icon: 'sparkles',
-    description: 'Skincare AM/PM, signature outfits, grooming'
+    description: 'Skincare, outfits, foot care, hair health, make up, surgery'
   },
   R: {
     letter: 'R',
@@ -71,7 +71,11 @@ const RECOMMENDED_HABIT_PRESETS = [
   { name: 'Close all 3 rings', bucket: 'M', cadence: 'daily', target: 1, icon: 'disc', description: 'Close Move, Exercise, and Stand rings' },
   { name: 'Hit 10k steps', bucket: 'M', cadence: 'daily', target: 1, icon: 'footprints', description: 'Reach 10,000 daily steps' },
   { name: 'Workout x3/week', bucket: 'M', cadence: 'weekly', target: 3, icon: 'dumbbell', description: 'Dedicated workout session 3x per week' },
-  { name: 'Calorie deficit', bucket: 'M', cadence: 'daily', target: 1, icon: 'flame', description: 'Maintain daily nutrition & energy deficit' }
+  { name: 'Calorie deficit', bucket: 'M', cadence: 'daily', target: 1, icon: 'flame', description: 'Maintain daily nutrition & energy deficit' },
+  { name: 'Foot care', bucket: 'A', cadence: 'daily', target: 1, icon: 'sparkles', description: 'Daily foot care & recovery routine' },
+  { name: 'Hair health', bucket: 'A', cadence: 'daily', target: 1, icon: 'sparkles', description: 'Nourishing hair care routine' },
+  { name: 'Make up', bucket: 'A', cadence: 'daily', target: 1, icon: 'sparkles', description: 'Aesthetic makeup routine' },
+  { name: 'Surgery', bucket: 'A', cadence: 'daily', target: 1, icon: 'heart-pulse', description: 'Surgical recovery & daily care' }
 ];
 
 /**
