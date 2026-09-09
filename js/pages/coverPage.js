@@ -475,7 +475,7 @@ function renderDailySheet() {
           <div class="pillar-badge pillar-badge-m">M</div>
           <div class="pillar-title">Move</div>
           <div class="pillar-chips-wrap">
-            ${['10k steps', 'Close rings', 'Calorie deficit', 'Workout'].map(item => `
+            ${['10k steps', 'Close rings', 'Calorie deficit', 'Cardio', 'Yoga', 'Weights'].map(item => `
               <span class="pillar-chip ${storage.isTerrorizing(item) ? 'active-terrorizing' : ''}" 
                     onclick="toggleTerrorizingProject('${item}', 'M')" 
                     title="Click to toggle project">
