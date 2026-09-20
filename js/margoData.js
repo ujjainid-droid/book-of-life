@@ -2,6 +2,16 @@
    Book of Life / Life OS - MARGO Framework & Sunday-Start Habit Engine
    ========================================================================== */
 
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 const MARGO_BUCKETS = {
   M: {
     letter: 'M',
@@ -584,4 +594,51 @@ const HEALTH_LEVELS = {
     sassy: "Official goblin mode. Drink water, crawl under blankets, apologize to nobody."
   }
 };
+
+/* --------------------------------------------------------------------------
+   Sassy Daily Affirmations Catalog & Midnight Rotation Engine
+   -------------------------------------------------------------------------- */
+const SASSY_AFFIRMATIONS = [
+  { emoji: '🥔', text: "You actually got vertical today. Society thanks you for the bare minimum. Let's close Move and Stand before we celebrate." },
+  { emoji: '⚡', text: "Operating at dangerously high momentum. Someone check on your enemies." },
+  { emoji: '👑', text: "The bar was in hell, but look at you walking over it like royalty." },
+  { emoji: '☕', text: "One good choice before 10 AM prevents an existential crisis at 3 PM." },
+  { emoji: '🦁', text: "Discipline is just remembering what you promised yourself when you had energy." },
+  { emoji: '🎯', text: "You don't need to conquer the next 6 months today. Just conquer today's Move and Stand." },
+  { emoji: '👟', text: "Overthinking burned 0 calories. Put your shoes on and take the first step." },
+  { emoji: '🤫', text: "Rumor has it you have your life together today. Let's act like it's totally normal." },
+  { emoji: '☕', text: "Your to-do list is trembling in fear. Or maybe that's just your caffeine intake." },
+  { emoji: '💧', text: "Drink your water or your organs will file a formal grievance with HR." },
+  { emoji: '✨', text: "Look at you prioritizing yourself. Your future self is wiping away a proud tear." },
+  { emoji: '🛡️', text: "You cannot control the chaos of the world, but you can definitely control closing these two rings." },
+  { emoji: '🚀', text: "Rough and shipped beats polished and stalled. Stop over-planning and take the next move." },
+  { emoji: '🧘‍♀️', text: "Self-care isn't just bubble baths; today it's ruthlessly protecting your peace and boundaries." },
+  { emoji: '🔥', text: "Be the positive menace your future self will celebrate tonight." },
+  { emoji: '💼', text: "Remember: you are the executive of your own life, not an unpaid intern." },
+  { emoji: '✈️', text: "If anyone drains your battery today, mentally put them on airplane mode." },
+  { emoji: '🥊', text: "You survived 100% of your hardest days so far. Today's targets stand no chance." },
+  { emoji: '🧱', text: "Consistency is doing the boring foundation so you can be extraordinary when it counts." },
+  { emoji: '🌲', text: "A 20-minute outdoor walk cures about 80% of what's wrong with your mental state right now." },
+  { emoji: '⚡', text: "No one is coming to hand you your momentum. Good thing you create your own." },
+  { emoji: '🌙', text: "Today's goal: make decisions that tonight-you will thank morning-you for." },
+  { emoji: '🌅', text: "Your drive didn't expire overnight. Stand up, shake off the rust, and own the room." },
+  { emoji: '📦', text: "Done is better than perfect. Perfect is a myth made by people who never ship." }
+];
+
+let customAffirmationOffset = 0;
+
+function getDailyAffirmation(dateStr, offset = 0) {
+  if (!SASSY_AFFIRMATIONS || SASSY_AFFIRMATIONS.length === 0) {
+    return { emoji: '✨', text: "Simple. Visible. Next step. Done." };
+  }
+  const dateObj = (typeof parseDateIso === 'function') ? parseDateIso(dateStr) : new Date(dateStr);
+  const startOfYear = new Date(dateObj.getFullYear(), 0, 0);
+  const diff = dateObj - startOfYear;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  
+  const index = Math.abs((dayOfYear + dateObj.getFullYear() + offset) % SASSY_AFFIRMATIONS.length);
+  return SASSY_AFFIRMATIONS[index];
+}
+
 

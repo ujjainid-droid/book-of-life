@@ -1,0 +1,2324 @@
+/* ==========================================================================
+   Book of Life / Life OS - Z Log Stylesheet
+   Nordic Minimalist Care & Behavior Tracker
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Daily Sheet "Z Log Pulse" Card
+   -------------------------------------------------------------------------- */
+.zlog-pulse-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.zlog-pulse-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--primary);
+  opacity: 0.85;
+}
+
+.zlog-pulse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 8px;
+}
+
+.zlog-pulse-title-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-pulse-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zlog-badge-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+}
+
+.zlog-view-all-link {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.zlog-view-all-link:hover {
+  text-decoration: underline;
+  color: var(--primary-hover);
+}
+
+/* 5-Part Rating Selector Group */
+.zlog-rating-section {
+  margin-bottom: 1rem;
+}
+
+.zlog-section-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zlog-rating-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.zlog-rate-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.zlog-rate-btn .rate-emoji {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.zlog-rate-btn .rate-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.zlog-rate-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+/* 5 Rating Active Color Variants */
+.zlog-rate-btn.active[data-level="5"] {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.18);
+}
+.zlog-rate-btn.active[data-level="5"] .rate-title {
+  color: #059669;
+  font-weight: 700;
+}
+
+.zlog-rate-btn.active[data-level="4"] {
+  background: rgba(78, 135, 101, 0.14);
+  border-color: rgba(78, 135, 101, 0.5);
+  box-shadow: 0 2px 6px rgba(78, 135, 101, 0.18);
+}
+.zlog-rate-btn.active[data-level="4"] .rate-title {
+  color: #4E8765;
+  font-weight: 700;
+}
+
+.zlog-rate-btn.active[data-level="3"] {
+  background: rgba(212, 155, 53, 0.14);
+  border-color: rgba(212, 155, 53, 0.5);
+  box-shadow: 0 2px 6px rgba(212, 155, 53, 0.18);
+}
+.zlog-rate-btn.active[data-level="3"] .rate-title {
+  color: #D49B35;
+  font-weight: 700;
+}
+
+.zlog-rate-btn.active[data-level="2"] {
+  background: rgba(224, 109, 83, 0.14);
+  border-color: rgba(224, 109, 83, 0.5);
+  box-shadow: 0 2px 6px rgba(224, 109, 83, 0.18);
+}
+.zlog-rate-btn.active[data-level="2"] .rate-title {
+  color: #E06D53;
+  font-weight: 700;
+}
+
+.zlog-rate-btn.active[data-level="1"] {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.18);
+}
+.zlog-rate-btn.active[data-level="1"] .rate-title {
+  color: #DC2626;
+  font-weight: 700;
+}
+
+/* Aggression Toggle Row */
+.zlog-aggression-row {
+  margin-bottom: 1rem;
+}
+
+.zlog-aggression-toggle-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-aggression-toggle-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: #E06D53;
+  color: var(--text-primary);
+}
+
+.zlog-aggression-toggle-btn.active {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.45);
+  color: #DC2626;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.15);
+}
+
+.zlog-aggression-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(239, 68, 68, 0.2);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* Daily Meds Strip */
+.zlog-meds-section {
+  margin-bottom: 1rem;
+}
+
+.zlog-meds-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zlog-med-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.zlog-med-pill input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.zlog-med-pill.checked {
+  background: rgba(124, 92, 252, 0.10);
+  border-color: var(--primary-border);
+  color: var(--primary);
+}
+
+.zlog-med-code {
+  font-weight: 800;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+
+.zlog-med-label {
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.zlog-med-dose-input {
+  width: 58px;
+  padding: 2px 4px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  outline: none;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.zlog-med-dose-input.wide-dose {
+  width: 74px;
+}
+
+.zlog-med-dose-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+  background: var(--bg-surface);
+}
+
+/* Narrative Log Area */
+.zlog-notes-section textarea {
+  width: 100%;
+  box-sizing: border-box;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  resize: vertical;
+  min-height: 70px;
+  transition: border var(--transition-fast);
+}
+
+.zlog-notes-section textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--bg-card);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+/* --------------------------------------------------------------------------
+   2. Dedicated Z Log Page Container & Navigation
+   -------------------------------------------------------------------------- */
+.daily-sheet-container:has(.zlog-page-container) {
+  max-width: 980px;
+}
+
+.book-header:has(~ #daily-sheet-container .zlog-page-container) {
+  max-width: 980px;
+}
+
+.zlog-page-container {
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding-bottom: 4rem;
+}
+
+/* Header Banner */
+.zlog-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.zlog-page-title-group h2 {
+  font-size: 1.5rem;
+  font-family: var(--font-serif);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-page-subtitle {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+/* Stats Cards Strip */
+.zlog-stats-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.zlog-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.zlog-stat-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.zlog-stat-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.zlog-stat-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Sub-Tab Navigation */
+.zlog-subnav-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 1.25rem;
+}
+
+.zlog-subnav-pills {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 4px;
+}
+
+.zlog-subnav-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-subnav-btn.active {
+  background: var(--bg-card);
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+/* Search & Filter Toolbar */
+.zlog-toolbar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.zlog-search-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zlog-search-input {
+  flex: 1;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border var(--transition-fast);
+}
+
+.zlog-search-input:focus {
+  border-color: var(--primary);
+  background: var(--bg-card);
+}
+
+.zlog-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.zlog-filter-chip {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-filter-chip:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+}
+
+.zlog-filter-chip.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.zlog-filter-chip.chip-aggression.active {
+  background: #DC2626;
+  border-color: #DC2626;
+  color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   3. Timeline Feed Cards
+   -------------------------------------------------------------------------- */
+.zlog-timeline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.zlog-entry-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.zlog-entry-card:hover {
+  border-color: var(--primary-border);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.zlog-entry-card.has-aggression {
+  border-left: 4px solid #DC2626;
+}
+
+.zlog-entry-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.zlog-entry-date-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-entry-date {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.zlog-rating-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.zlog-rating-pill.level-5 {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+.zlog-rating-pill.level-4 {
+  background: rgba(78, 135, 101, 0.12);
+  color: #4E8765;
+  border: 1px solid rgba(78, 135, 101, 0.3);
+}
+.zlog-rating-pill.level-3 {
+  background: rgba(212, 155, 53, 0.12);
+  color: #D49B35;
+  border: 1px solid rgba(212, 155, 53, 0.3);
+}
+.zlog-rating-pill.level-2 {
+  background: rgba(224, 109, 83, 0.12);
+  color: #E06D53;
+  border: 1px solid rgba(224, 109, 83, 0.3);
+}
+.zlog-rating-pill.level-1 {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.zlog-rating-pill.unrated {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-medium);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.7rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.zlog-rating-pill.unrated:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: rgba(124, 92, 252, 0.08);
+}
+
+.zlog-entry-meds-tags {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.zlog-med-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+}
+
+.zlog-med-tag.active {
+  background: rgba(124, 92, 252, 0.1);
+  color: var(--primary);
+  border-color: var(--primary-border);
+}
+
+.zlog-entry-narrative {
+  font-size: 0.83rem;
+  line-height: 1.48;
+  color: var(--text-primary);
+  white-space: normal;
+}
+
+.zlog-entry-card-footer {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Meds & Titration Protocol View
+   -------------------------------------------------------------------------- */
+.zlog-titration-table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-top: 1rem;
+}
+
+.zlog-titration-table-header {
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.zlog-table-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-titration-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.74rem;
+}
+
+.zlog-titration-table th {
+  padding: 8px 6px;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zlog-titration-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+  vertical-align: top;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.zlog-titration-table tr:last-child td {
+  border-bottom: none;
+}
+
+.zlog-titration-table tr:hover td {
+  background: var(--bg-surface);
+}
+
+.zlog-action-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: var(--radius-full);
+}
+
+.zlog-action-started {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.zlog-action-increased {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563EB;
+}
+
+.zlog-action-decreased {
+  background: rgba(224, 109, 83, 0.12);
+  color: #E06D53;
+}
+
+.zlog-action-changed {
+  background: rgba(124, 92, 252, 0.12);
+  color: #7C5CFC;
+}
+
+.zlog-action-stopped {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+
+.zlog-table-select {
+  font-family: inherit;
+  font-size: 0.70rem;
+  font-weight: 600;
+  padding: 3px 14px 3px 5px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%234B5563' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 4px center;
+  background-size: 8px 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-fast);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Clinical Event Cards Alternative View */
+.zlog-titration-cards-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.zlog-titration-event-card {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-light);
+  transition: background var(--transition-fast);
+}
+
+.zlog-titration-event-card:last-child {
+  border-bottom: none;
+}
+
+.zlog-titration-event-card:hover {
+  background: var(--bg-surface);
+}
+
+.zlog-titration-event-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.zlog-tit-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.zlog-tit-med {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-tit-dose {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  background: rgba(124, 92, 252, 0.08);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.zlog-titration-event-notes {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+  margin-top: 4px;
+}
+
+.zlog-table-select:hover, .zlog-table-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(124, 92, 252, 0.15);
+}
+
+.zlog-table-select.action-started {
+  background-color: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border-color: rgba(16, 185, 129, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23059669' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.zlog-table-select.action-increased {
+  background-color: rgba(59, 130, 246, 0.12);
+  color: #2563EB;
+  border-color: rgba(59, 130, 246, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.zlog-table-select.action-decreased {
+  background-color: rgba(224, 109, 83, 0.12);
+  color: #E06D53;
+  border-color: rgba(224, 109, 83, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23E06D53' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.zlog-table-select.action-changed {
+  background-color: rgba(124, 92, 252, 0.12);
+  color: #7C5CFC;
+  border-color: rgba(124, 92, 252, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237C5CFC' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.zlog-table-select.action-stopped {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+  border-color: rgba(239, 68, 68, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23DC2626' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+.zlog-table-select.prescriber-select {
+  font-weight: 600;
+  color: var(--text-primary);
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+}
+
+@media (max-width: 640px) {
+  .zlog-rating-row {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+  .zlog-rate-btn .rate-title {
+    font-size: 0.65rem;
+  }
+  .zlog-stats-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. Month Jump Navigation Bar & Month Accordion Hierarchy
+   -------------------------------------------------------------------------- */
+.zlog-month-jump-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 1.25rem;
+}
+
+.zlog-jump-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.zlog-jump-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zlog-jump-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-jump-action-btn {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-jump-action-btn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+
+.zlog-jump-years {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zlog-jump-year-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zlog-jump-year-label {
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-muted);
+  min-width: 36px;
+}
+
+.zlog-jump-pills {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.zlog-year-matrix {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+}
+
+.zlog-year-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 480px;
+}
+
+.zlog-year-col-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 38px;
+  flex-shrink: 0;
+}
+
+.zlog-year-months-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.zlog-year-months-grid .zlog-jump-pill {
+  justify-content: center;
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.7rem;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.zlog-year-months-grid .zlog-jump-pill span {
+  font-weight: 600;
+}
+
+.zlog-jump-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition-fast);
+}
+
+.zlog-jump-pill:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.zlog-jump-pill.active {
+  background: rgba(124, 92, 252, 0.12);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.zlog-jump-pill.current-month {
+  background: var(--primary) !important;
+  color: #FFFFFF !important;
+  border-color: var(--primary) !important;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(124, 92, 252, 0.35);
+}
+
+.zlog-jump-pill.current-month .zlog-jump-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  padding: 0 4px;
+  border-radius: var(--radius-full);
+}
+
+.zlog-jump-pill.current-month:hover {
+  background: var(--primary-hover, #6849e8) !important;
+  color: #FFFFFF !important;
+}
+
+.zlog-jump-pill.future-month {
+  opacity: 0.32;
+  color: var(--text-muted) !important;
+  background: transparent !important;
+  border: 1px dashed var(--border-light) !important;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
+
+.zlog-jump-pill.no-entries {
+  opacity: 0.4;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  cursor: default;
+  user-select: none;
+}
+
+.zlog-jump-pill-count {
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  opacity: 0.75;
+}
+
+/* Month Accordions */
+.zlog-month-group {
+  margin-bottom: 1.25rem;
+}
+
+.zlog-month-header {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-fast);
+}
+
+.zlog-month-header:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+}
+
+.zlog-month-header.expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: var(--primary-border);
+  background: var(--bg-card);
+}
+
+.zlog-month-title-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-month-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.zlog-month-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.zlog-month-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zlog-month-stats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.zlog-month-chevron {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.zlog-month-header.expanded .zlog-month-chevron {
+  transform: rotate(180deg);
+}
+
+.zlog-month-body {
+  border: 1px solid var(--border-light);
+  border-top: none;
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.01);
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.zlog-month-body.open {
+  display: flex;
+}
+
+/* --------------------------------------------------------------------------
+   6. Structured Note Bullets, School Callouts & Badges
+   -------------------------------------------------------------------------- */
+.zlog-dojo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.zlog-event-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.zlog-event-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+.zlog-ev-bullet {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+  margin-top: 7px;
+  flex-shrink: 0;
+  opacity: 0.75;
+}
+
+.zlog-ev-text {
+  flex: 1;
+}
+
+.zlog-ev-hidden {
+  display: none !important;
+}
+
+.zlog-event-timeline.is-expanded .zlog-ev-hidden {
+  display: flex !important;
+}
+
+.zlog-expand-notes-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 4px 0;
+  margin-top: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity var(--transition-fast);
+}
+
+.zlog-expand-notes-btn:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.zlog-school-callout {
+  margin-top: 10px;
+  background: rgba(59, 130, 246, 0.06);
+  border: 1px solid rgba(59, 130, 246, 0.22);
+  border-left: 3px solid #3B82F6;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+}
+
+.zlog-school-callout-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  color: #2563EB;
+}
+
+.zlog-school-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: rgba(59, 130, 246, 0.14);
+  color: #2563EB;
+}
+
+.zlog-school-callout-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.zlog-school-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 0.81rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.zlog-school-bullet {
+  color: #3B82F6;
+  font-size: 0.65rem;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.zlog-school-text {
+  flex: 1;
+}
+
+.zlog-note-single {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+}
+
+/* --------------------------------------------------------------------------
+   5. Patterns & Insights Sub-Tab & Evidence-Based Playbook
+   -------------------------------------------------------------------------- */
+.zlog-insights-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.zlog-insights-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.zlog-insights-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zlog-insights-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zlog-insights-subtitle {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Playbook Cards */
+.zlog-playbook-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.zlog-playbook-item {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.zlog-playbook-item:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--border-medium);
+}
+
+.zlog-playbook-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.zlog-playbook-tag {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.zlog-playbook-tag.tag-food {
+  background: rgba(245, 158, 11, 0.14);
+  color: #D97706;
+}
+
+.zlog-playbook-tag.tag-transition {
+  background: rgba(124, 92, 252, 0.12);
+  color: #7C5CFC;
+}
+
+.zlog-playbook-tag.tag-med {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.zlog-playbook-tag.tag-sensory {
+  background: rgba(59, 130, 246, 0.12);
+  color: #2563EB;
+}
+
+.zlog-playbook-tag.tag-screen {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+
+.zlog-playbook-proof {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--text-secondary);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+}
+
+.zlog-playbook-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-playbook-desc {
+  font-size: 0.77rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.zlog-playbook-action {
+  margin-top: 4px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: rgba(124, 92, 252, 0.05);
+  border-left: 3px solid var(--primary);
+  font-size: 0.74rem;
+  color: var(--text-primary);
+  line-height: 1.35;
+}
+
+/* Medication Era Matrix */
+.zlog-era-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.zlog-era-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zlog-era-name {
+  font-size: 0.80rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-era-dates {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.zlog-era-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.zlog-era-bar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.70rem;
+  color: var(--text-secondary);
+}
+
+.zlog-era-bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.zlog-era-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+/* Day of Week Bars */
+.zlog-dow-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zlog-dow-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 140px;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.75rem;
+}
+
+.zlog-dow-name {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.zlog-dow-track {
+  height: 8px;
+  background: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  display: flex;
+}
+
+.zlog-dow-fill-good {
+  background: #10B981;
+  height: 100%;
+}
+
+.zlog-dow-fill-agg {
+  background: #EF4444;
+  height: 100%;
+}
+
+.zlog-dow-stats {
+  font-size: 0.70rem;
+  font-family: var(--font-mono);
+  text-align: right;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 600px) {
+  .zlog-dow-row {
+    grid-template-columns: 70px 1fr 100px;
+    gap: 6px;
+  }
+}
+
+/* ==========================================================================
+   Monthly Aggression & Meltdown Trendline Component
+   ========================================================================== */
+.zlog-trendline-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.zlog-trendline-kpi {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.zlog-trendline-kpi-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.zlog-trendline-kpi-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.zlog-trendline-kpi-sub {
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.zlog-trendline-svg-wrap {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px 6px 14px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  position: relative;
+}
+
+.zlog-trendline-svg {
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+  display: block;
+}
+
+.zlog-trendline-bar {
+  transition: opacity 0.2s ease, fill 0.2s ease;
+  cursor: pointer;
+}
+
+.zlog-trendline-bar:hover {
+  fill: rgba(239, 68, 68, 0.45) !important;
+}
+
+.zlog-trendline-node {
+  transition: transform 0.2s ease, r 0.2s ease;
+  cursor: pointer;
+}
+
+.zlog-trendline-node:hover {
+  r: 7;
+  fill: #EF4444;
+}
+
+/* Monthly Breakdown Table */
+.zlog-monthly-table-wrap {
+  margin-top: 14px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 12px;
+}
+
+.zlog-monthly-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+}
+
+.zlog-monthly-table th {
+  text-align: left;
+  padding: 6px 8px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-primary);
+}
+
+.zlog-monthly-table td {
+  padding: 7px 8px;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-primary);
+  vertical-align: middle;
+}
+
+.zlog-monthly-table tr:hover td {
+  background: rgba(124, 92, 252, 0.03);
+}
+
+.zlog-monthly-bar-track {
+  width: 90px;
+  height: 6px;
+  background: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.zlog-monthly-bar-fill-agg {
+  height: 100%;
+  background: #EF4444;
+  border-radius: var(--radius-full);
+}
+
+.zlog-monthly-bar-fill-good {
+  height: 100%;
+  background: #10B981;
+  border-radius: var(--radius-full);
+}
+
+/* ==========================================================================
+   4. Z Log Monthly Calendar View
+   ========================================================================== */
+
+.zlog-calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Calendar Control Header */
+.zlog-cal-header-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.zlog-cal-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.zlog-cal-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-cal-nav-btn {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-cal-nav-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+  color: var(--primary);
+  transform: scale(1.04);
+}
+
+.zlog-cal-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zlog-cal-month-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.zlog-cal-today-btn {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-cal-today-btn:hover {
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.zlog-cal-selectors {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zlog-cal-select {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 4px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.zlog-cal-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+/* Calendar Filter Chips Strip */
+.zlog-cal-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.zlog-cal-filter-label {
+  font-size: 0.70rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+
+.zlog-cal-chip {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all var(--transition-fast);
+  user-select: none;
+}
+
+.zlog-cal-chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.zlog-cal-chip.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(112, 43, 237, 0.25);
+}
+
+.zlog-cal-chip.active.chip-lvl-5 {
+  background: #10B981;
+  border-color: #10B981;
+}
+
+.zlog-cal-chip.active.chip-lvl-4 {
+  background: #4E8765;
+  border-color: #4E8765;
+}
+
+.zlog-cal-chip.active.chip-lvl-3 {
+  background: #D49B35;
+  border-color: #D49B35;
+}
+
+.zlog-cal-chip.active.chip-lvl-2 {
+  background: #E06D53;
+  border-color: #E06D53;
+}
+
+.zlog-cal-chip.active.chip-lvl-1 {
+  background: #EF4444;
+  border-color: #EF4444;
+}
+
+.zlog-cal-chip.active.chip-agg {
+  background: #DC2626;
+  border-color: #DC2626;
+}
+
+/* Monthly KPI Strip */
+.zlog-cal-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.zlog-cal-kpi-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-subtle);
+  position: relative;
+  overflow: hidden;
+}
+
+.zlog-cal-kpi-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.zlog-cal-kpi-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 3px 0 2px;
+  font-family: var(--font-sans);
+}
+
+.zlog-cal-kpi-sub {
+  font-size: 0.70rem;
+  color: var(--text-muted);
+}
+
+/* Distribution Spectrum Bar */
+.zlog-cal-spectrum-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+}
+
+.zlog-cal-spectrum-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.zlog-cal-spectrum-bar {
+  display: flex;
+  height: 8px;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background: var(--border-light);
+  gap: 1px;
+}
+
+.zlog-cal-spec-seg {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.zlog-cal-spec-seg.seg-5 { background: #10B981; }
+.zlog-cal-spec-seg.seg-4 { background: #4E8765; }
+.zlog-cal-spec-seg.seg-3 { background: #D49B35; }
+.zlog-cal-spec-seg.seg-2 { background: #E06D53; }
+.zlog-cal-spec-seg.seg-1 { background: #EF4444; }
+.zlog-cal-spec-seg.seg-unrated { background: var(--border-strong); opacity: 0.5; }
+
+/* Calendar Card & Grid */
+.zlog-cal-board {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+/* Weekday Column Headers (Sun to Sat) */
+.zlog-cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.zlog-cal-weekday-col {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 6px 2px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+}
+
+.zlog-cal-weekday-col.weekend {
+  color: var(--primary);
+  background: rgba(112, 43, 237, 0.05);
+}
+
+/* 7-Column Days Grid */
+.zlog-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+/* Individual Day Cell */
+.zlog-cal-day {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 7px;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 5px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.zlog-cal-day:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(112, 43, 237, 0.08);
+  transform: translateY(-2px);
+  z-index: 2;
+}
+
+/* Day States */
+.zlog-cal-day.today {
+  border: 2px solid var(--primary);
+  box-shadow: 0 0 0 1px var(--primary-border);
+}
+
+.zlog-cal-day.other-month {
+  background: var(--bg-surface);
+  border-color: var(--border-subtle);
+  opacity: 0.38;
+}
+
+.zlog-cal-day.dimmed {
+  opacity: 0.22;
+  filter: grayscale(0.6);
+}
+
+/* Rating Level Card Tints */
+.zlog-cal-day.level-5 {
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, var(--bg-card) 60%);
+  border-color: rgba(16, 185, 129, 0.32);
+}
+
+.zlog-cal-day.level-4 {
+  background: linear-gradient(180deg, rgba(78, 135, 101, 0.08) 0%, var(--bg-card) 60%);
+  border-color: rgba(78, 135, 101, 0.32);
+}
+
+.zlog-cal-day.level-3 {
+  background: linear-gradient(180deg, rgba(212, 155, 53, 0.08) 0%, var(--bg-card) 60%);
+  border-color: rgba(212, 155, 53, 0.32);
+}
+
+.zlog-cal-day.level-2 {
+  background: linear-gradient(180deg, rgba(224, 109, 83, 0.09) 0%, var(--bg-card) 60%);
+  border-color: rgba(224, 109, 83, 0.35);
+}
+
+.zlog-cal-day.level-1 {
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.10) 0%, var(--bg-card) 60%);
+  border-color: rgba(239, 68, 68, 0.40);
+}
+
+.zlog-cal-day.has-aggression {
+  border-left: 3.5px solid #EF4444;
+}
+
+/* Day Top Bar */
+.zlog-cal-day-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  line-height: 1;
+}
+
+.zlog-cal-day-num {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-cal-day.other-month .zlog-cal-day-num {
+  color: var(--text-muted);
+}
+
+.zlog-cal-today-badge {
+  font-size: 0.60rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+.zlog-cal-agg-icon {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #DC2626;
+  background: #FEE2E2;
+  padding: 1px 4px;
+  border-radius: 4px;
+  line-height: 1.1;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Day Rating Pill in Grid */
+.zlog-cal-rating-pill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.zlog-cal-rating-pill.level-5 {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+}
+
+.zlog-cal-rating-pill.level-4 {
+  background: rgba(78, 135, 101, 0.15);
+  color: #4E8765;
+}
+
+.zlog-cal-rating-pill.level-3 {
+  background: rgba(212, 155, 53, 0.15);
+  color: #B45309;
+}
+
+.zlog-cal-rating-pill.level-2 {
+  background: rgba(224, 109, 83, 0.15);
+  color: #C2410C;
+}
+
+.zlog-cal-rating-pill.level-1 {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+}
+
+.zlog-cal-rating-pill.unrated {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.zlog-cal-rating-pill .rating-score {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  opacity: 0.85;
+}
+
+/* Aggression Banner in Day Cell */
+.zlog-cal-agg-strip {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #DC2626;
+  background: rgba(239, 68, 68, 0.10);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 1px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* Meds Mini Strip in Day Cell */
+.zlog-cal-meds-strip {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.zlog-cal-med-tag {
+  font-size: 0.60rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  color: var(--text-secondary);
+}
+
+.zlog-cal-med-tag.med-z {
+  color: #4E8765;
+  border-color: rgba(78, 135, 101, 0.3);
+}
+
+.zlog-cal-med-tag.med-g {
+  color: #7979B8;
+  border-color: rgba(121, 121, 184, 0.3);
+}
+
+.zlog-cal-med-tag.med-rit {
+  color: #7C5CFC;
+  border-color: rgba(124, 92, 252, 0.3);
+}
+
+.zlog-cal-med-tag.med-ris {
+  color: #D97768;
+  border-color: rgba(217, 119, 104, 0.3);
+}
+
+/* Narrative Preview Snippet */
+.zlog-cal-notes-preview {
+  font-size: 0.67rem;
+  line-height: 1.25;
+  color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: auto;
+  opacity: 0.85;
+}
+
+/* Calendar Legend Card */
+.zlog-cal-legend-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.zlog-cal-legend-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.zlog-cal-legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.zlog-cal-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+.zlog-cal-legend-item strong {
+  color: var(--text-primary);
+}
+
+/* Responsive Styles for Calendar */
+@media (max-width: 768px) {
+  .zlog-cal-day {
+    min-height: 84px;
+    padding: 5px 4px;
+  }
+  .zlog-cal-notes-preview {
+    display: none;
+  }
+  .zlog-cal-rating-pill .rating-score {
+    display: none;
+  }
+  .zlog-cal-rating-pill {
+    padding: 2px 4px;
+    font-size: 0.64rem;
+  }
+  .zlog-cal-weekday-col {
+    font-size: 0.65rem;
+    padding: 4px 1px;
+  }
+}
+
+

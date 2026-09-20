@@ -150,12 +150,12 @@
 
 .habit-card.completed {
   background: var(--bg-surface);
-  opacity: 0.88;
+  border-color: rgba(139, 92, 246, 0.25);
 }
 
 .habit-card.completed .habit-title {
-  text-decoration: line-through;
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .habit-main {

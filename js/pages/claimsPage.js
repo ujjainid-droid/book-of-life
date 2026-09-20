@@ -38,7 +38,7 @@ function clearClaimDraft() {
 }
 
 function renderClaimsPage() {
-  const container = document.getElementById('daily-sheet-container');
+  const container = document.getElementById('bunker-subview-frame') || document.getElementById('daily-sheet-container');
   if (!container) return;
 
   const stats = storage.getClaimsStats();
@@ -709,8 +709,9 @@ function updateClaimsHeaderBadge(count) {
   const badge = document.getElementById('header-claims-badge');
   if (!badge) return;
   if (count > 0) {
-    badge.textContent = `${count} action`;
-    badge.style.display = 'inline-block';
+    badge.textContent = count;
+    badge.style.display = 'inline-flex';
+    badge.title = `${count} claims requiring action`;
   } else {
     badge.style.display = 'none';
   }

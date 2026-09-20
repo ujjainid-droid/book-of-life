@@ -3,29 +3,29 @@
    ========================================================================== */
 
 :root {
-  /* Icy Lavender & Frosted Slate (Light / Modern Minimal) */
-  --bg-app: #F4F5FB;
-  --bg-book: #FAFBFD;
+  /* Modern Ethereal Lavender & Frosted Violet */
+  --bg-app: #F8F7FD;
+  --bg-book: #FBFAFE;
   --bg-page: #FFFFFF;
-  --bg-surface: #EEF0F8;
-  --bg-surface-hover: #E5E8F4;
+  --bg-surface: #F3F1FA;
+  --bg-surface-hover: #ECE8F7;
   --bg-card: #FFFFFF;
   
-  --border-light: #E2E6F0;
-  --border-subtle: #EDF0F7;
-  --border-strong: #CBD2E1;
+  --border-light: rgba(139, 92, 246, 0.14);
+  --border-subtle: rgba(139, 92, 246, 0.08);
+  --border-strong: rgba(139, 92, 246, 0.28);
   
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #8492A6;
+  --text-primary: #18122B;
+  --text-secondary: #4A4458;
+  --text-muted: #7E7792;
   --text-inverse: #FFFFFF;
 
-  /* Signature Hero Purple */
-  --primary: #702BED;
-  --primary-hover: #5B21B6;
-  --primary-light: #F3E8FF;
-  --primary-border: #DDD6FE;
-  --primary-glow: rgba(112, 43, 237, 0.18);
+  /* Signature Refined Lavender & Violet */
+  --primary: #8B5CF6;
+  --primary-hover: #7C3AED;
+  --primary-light: #F3EEFF;
+  --primary-border: rgba(139, 92, 246, 0.26);
+  --primary-glow: rgba(139, 92, 246, 0.22);
 
   /* Cool-Leaning MARGO 5-Bucket Palette */
   /* M — Move: Signature Royal Violet */
@@ -89,16 +89,16 @@
 
 /* Dark Mode - Deep Obsidian & Neon Ice */
 [data-theme="dark"] {
-  --bg-app: #080A11;
-  --bg-book: #0D0F18;
-  --bg-page: #101320;
-  --bg-surface: #151928;
-  --bg-surface-hover: #1E2338;
-  --bg-card: #0F121F;
+  --bg-app: #0D0A17;
+  --bg-book: #130F21;
+  --bg-page: #171328;
+  --bg-surface: #1E1933;
+  --bg-surface-hover: #292344;
+  --bg-card: #19142B;
   
-  --border-light: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.04);
-  --border-strong: rgba(255, 255, 255, 0.16);
+  --border-light: rgba(167, 139, 250, 0.14);
+  --border-subtle: rgba(167, 139, 250, 0.08);
+  --border-strong: rgba(167, 139, 250, 0.28);
   
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;

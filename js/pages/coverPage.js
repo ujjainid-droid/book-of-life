@@ -1,21 +1,11 @@
 /* ==========================================================================
-   Book of Life / Life OS - Single Daily Sheet Renderer (Option A)
+   Book of Life / Life OS - margo Sanctuary Daily Sheet Renderer
    ========================================================================== */
 
 let activeTrackingDate = formatDateIso(new Date());
-let corePrinciplesExpanded = false;
-
-function toggleCorePrinciples() {
-  corePrinciplesExpanded = !corePrinciplesExpanded;
-  const list = document.getElementById('reminders-sub-list');
-  const chevron = document.getElementById('reminders-chevron');
-  if (list) {
-    list.style.display = corePrinciplesExpanded ? 'grid' : 'none';
-  }
-  if (chevron) {
-    chevron.textContent = corePrinciplesExpanded ? '▴ Less' : '▾ Principles';
-  }
-}
+let sanctuaryJournalTab = 'today'; // 'today' | 'archive'
+let sanctuaryJournalEditing = false;
+let sanctuaryArchiveFilter = 'all'; // 'all' | 'last_week' | 'this_month'
 
 function renderCoverPage() {
   renderDailySheet();
@@ -28,16 +18,20 @@ function renderDailySheet() {
   const todayIso = formatDateIso(new Date());
   const selectedDateObj = parseDateIso(activeTrackingDate);
   const isToday = (activeTrackingDate === todayIso);
+  const energyMode = (typeof storage !== 'undefined' && typeof storage.getEnergyMode === 'function')
+    ? storage.getEnergyMode()
+    : 'power';
+  const isMaintenance = (energyMode === 'maint');
 
   // Update Header Date Label
   const headerDateLabel = document.getElementById('header-date-label');
   if (headerDateLabel) {
     if (isToday) {
-      const formatted = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-      headerDateLabel.textContent = `Today (${formatted})`;
+      const formatted = selectedDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      headerDateLabel.textContent = `Today, ${formatted}`;
       headerDateLabel.classList.remove('is-past-date');
     } else {
-      const formatted = selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      const formatted = selectedDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       headerDateLabel.textContent = `📅 ${formatted}`;
       headerDateLabel.classList.add('is-past-date');
     }
@@ -46,6 +40,10 @@ function renderDailySheet() {
   // Active Habits & State for this date
   const habits = storage.getHabits();
   const dayHabitsState = storage.data.habitsState[activeTrackingDate] || {};
+
+  // Check Move and Stand completion specifically for Style A Tubes
+  const isMoveDone = !!dayHabitsState['h-move'];
+  const isStandDone = !!dayHabitsState['h-stand'];
 
   let completedTodayCount = 0;
   habits.forEach(h => {
@@ -63,12 +61,13 @@ function renderDailySheet() {
   // Streak calculation
   let maxStreak = 0;
   let moveStreak = storage.data.habitStreaks['h-move'] || 0;
+  let standStreak = storage.data.habitStreaks['h-stand'] || 0;
   habits.forEach(h => {
     const s = storage.data.habitStreaks[h.id] || 0;
     if (s > maxStreak) maxStreak = s;
   });
 
-  // Day-Specific Goals for this date
+  // Day-Specific Bonus Goals for this date
   const dateDayGoals = storage.getDayGoals(activeTrackingDate);
 
   // Good Choices for this date
@@ -91,7 +90,30 @@ function renderDailySheet() {
   // Gamification: Sassy Status & Rewards
   const currentPoints = storage.getPoints();
   const statusInfo = getSassyStatus(currentPoints);
-  const activeTerrorizing = storage.data.activeTerrorizing || [];
+
+  // Daily Sassy Affirmation with rotating visual
+  const dailyAff = (typeof getDailyAffirmation === 'function')
+    ? getDailyAffirmation(activeTrackingDate, customAffirmationOffset)
+    : { emoji: '🥔', text: "You actually got vertical today. Society thanks you for the bare minimum." };
+
+  // Sanctuary Journal entry for this date
+  const journalEntry = (typeof storage.getJournal === 'function')
+    ? storage.getJournal(activeTrackingDate)
+    : null;
+  const allJournals = (typeof storage.getAllJournals === 'function')
+    ? storage.getAllJournals()
+    : [];
+
+  // Quick Thoughts Inbox
+  const activeThoughts = (typeof storage.getQuickThoughts === 'function') 
+    ? storage.getQuickThoughts('active') 
+    : [];
+  const triagedThoughts = (typeof storage.getQuickThoughts === 'function') 
+    ? storage.getQuickThoughts('triaged') 
+    : [];
+
+  // Active Habits without Move and Stand (which have dedicated Momentum Anchors)
+  const additionalHabits = habits.filter(h => h.id !== 'h-move' && h.id !== 'h-stand' && h.name.toLowerCase() !== 'move' && h.name.toLowerCase() !== 'stand');
 
   container.innerHTML = `
     ${!isToday ? `
@@ -101,7 +123,7 @@ function renderDailySheet() {
           <span class="past-date-icon">🕒</span>
           <div>
             <div class="past-date-title">Viewing Past Date: <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</strong></div>
-            <div class="past-date-sub">Any habits, day goals, or good choices you check off below will be recorded for this day.</div>
+            <div class="past-date-sub">Any habits, journal entries, or good choices checked off will be saved to this date.</div>
           </div>
         </div>
         <div class="past-date-actions">
@@ -112,38 +134,47 @@ function renderDailySheet() {
       </div>
     ` : ''}
 
-    <!-- 1. Daily Reminders Banner (Compact & Expandable) -->
-    <div class="daily-reminders-card">
-      <div class="reminders-header" onclick="toggleCorePrinciples()">
-        <div class="reminders-main-anchor">
-          <span class="reminder-icon">✦</span>
-          <span>Simple. Visible. Next step. Done.</span>
+    <!-- Slim Section of Daily Reminder (Core Principles) -->
+    <div class="daily-reminders-section">
+      <div class="daily-reminders-grid">
+        <div class="reminder-pill-card reminder-pill-simple" title="simplest thing that works. ship it.">
+          <div class="reminder-word">simple</div>
         </div>
-        <button type="button" class="reminders-toggle-btn" id="reminders-chevron" onclick="event.stopPropagation(); toggleCorePrinciples()">
-          ${corePrinciplesExpanded ? '▴ Less' : '▾ Principles'}
-        </button>
-      </div>
-      <div class="reminders-sub-grid" id="reminders-sub-list" style="display: ${corePrinciplesExpanded ? 'grid' : 'none'};">
-        <div class="reminder-sub-item">
-          <span class="bullet">•</span>
-          <span>Build the simplest thing that works.</span>
+        <div class="reminder-pill-card reminder-pill-visible" title="can't see it at a glance? fix the display.">
+          <div class="reminder-word">visible</div>
         </div>
-        <div class="reminder-sub-item">
-          <span class="bullet">•</span>
-          <span>If you can't see it at a glance, fix the display, not the data.</span>
+        <div class="reminder-pill-card reminder-pill-next-step" title="know your next move, not the whole map.">
+          <div class="reminder-word">next step</div>
         </div>
-        <div class="reminder-sub-item">
-          <span class="bullet">•</span>
-          <span>Know your next move, not the whole roadmap.</span>
-        </div>
-        <div class="reminder-sub-item">
-          <span class="bullet">•</span>
-          <span>Rough and shipped beats polished and stalled.</span>
+        <div class="reminder-pill-card reminder-pill-done" title="rough and shipped beats pretty and stuck.">
+          <div class="reminder-word">done</div>
         </div>
       </div>
     </div>
 
-    <!-- 2. Sassy Gamification Status & Rewards Widget (Compact) -->
+    <!-- 1. Daily Sassy Self-Deprecating Affirmation Banner -->
+    <div class="sassy-affirmation-card">
+      <div class="affirmation-main-group">
+        <div class="affirmation-emoji-box" id="daily-aff-emoji">
+          ${dailyAff.emoji}
+        </div>
+        <div class="affirmation-content">
+          <div class="affirmation-meta-row">
+            <span class="affirmation-badge">Daily Truth Bomb</span>
+            <span class="affirmation-hint">Rotates each midnight</span>
+          </div>
+          <p class="affirmation-quote" id="daily-aff-text">
+            "${escapeHtml(dailyAff.text)}"
+          </p>
+        </div>
+      </div>
+      <button class="affirmation-shuffle-btn" onclick="shuffleDailyAffirmation()" title="Shuffle sassy affirmation">
+        <span>🎲</span>
+        <span class="shuffle-btn-text">Next</span>
+      </button>
+    </div>
+
+    <!-- 2. Sassy Gamification Status & Rewards Shelf -->
     <div class="sassy-status-card">
       <div class="sassy-status-top">
         <div class="sassy-badge-pill">
@@ -154,9 +185,14 @@ function renderDailySheet() {
           </div>
         </div>
 
-        <div class="sassy-points-badge">
-          <span class="sassy-points-val">${currentPoints}</span>
-          <span class="sassy-points-lbl">XP</span>
+        <div class="sassy-points-group">
+          <button class="sassy-audit-btn" onclick="recalculatePointsAction()" title="Audit & recalculate XP from all completed history">
+            ↺ Audit XP
+          </button>
+          <div class="sassy-points-badge" onclick="promptEditPoints()" title="Click to adjust your XP points directly">
+            <span class="sassy-points-val">${currentPoints}</span>
+            <span class="sassy-points-lbl">XP ✎</span>
+          </div>
         </div>
       </div>
 
@@ -172,7 +208,7 @@ function renderDailySheet() {
         <div class="sassy-max-rank">★ Maximum Menace Level Achieved ★</div>
       `}
 
-      <!-- Self-Reward Box (Compact inline) -->
+      <!-- Self-Reward Box -->
       <div class="sassy-reward-box">
         <div class="sassy-reward-left">
           <span class="sassy-gift-icon">🎁</span>
@@ -185,12 +221,12 @@ function renderDailySheet() {
       </div>
     </div>
 
-    <!-- 3. Simple Streak Tracker (Compact) -->
+    <!-- 2b. Simple Streak Tracker & 7-Day Interactive Consistency Strip -->
     <div class="simple-streak-tracker">
       <div class="streak-stat-group">
         <div class="streak-main-pill">
           <span class="streak-fire-icon">🔥</span>
-          <span class="streak-num">${moveStreak > 0 ? moveStreak : maxStreak}d</span>
+          <span class="streak-num">${Math.max(moveStreak, standStreak, maxStreak)}d</span>
           <span class="streak-label">Anchor Streak</span>
         </div>
 
@@ -210,7 +246,7 @@ function renderDailySheet() {
             return `
               <button class="mini-day-dot ${d.isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" 
                       onclick="jumpToTrackingDate('${d.dateStr}')" 
-                      title="${d.dayFullName} (${d.dateStr}): ${d.completedCount}/${d.totalHabits} done — Click to view and check off">
+                      title="${d.dayFullName} (${d.dateStr}): ${d.completedCount}/${d.totalHabits} habits done — Click to view & check off">
                 <div class="mini-dot-circle ${isAllDone ? 'all-done' : (isPartDone ? 'part-done' : '')}">
                   ${isAllDone ? '✓' : (d.completedCount > 0 ? d.completedCount : '·')}
                 </div>
@@ -226,98 +262,21 @@ function renderDailySheet() {
       </div>
     </div>
 
-    <!-- 3. Daily Habits Section (Anchored by Move) -->
-    <div class="cover-card">
-      <div class="card-title-row">
-        <div>
-          <h3>
-            <i data-lucide="activity" style="color: var(--margo-m);"></i>
-            Daily Habits
-          </h3>
-          <span style="font-size: 0.78rem; color: var(--text-muted);">
-            Anchor: <strong>Move</strong> • ${completedTodayCount} of ${habits.length} completed
-          </span>
+    <!-- Maintenance Mode Banner (Visible when active) -->
+    ${isMaintenance ? `
+      <div class="maintenance-mode-alert">
+        <div class="maintenance-alert-left">
+          <span class="maint-icon">🛡️</span>
+          <div>
+            <div class="maint-title">Maintenance Mode Active</div>
+            <div class="maint-desc">Low-drive day? Perfect. Just protect your Move + Stand baseline. Zero guilt.</div>
+          </div>
         </div>
-        <button class="btn btn-secondary btn-xs" onclick="showAddHabitModal()">
-          <i data-lucide="plus"></i> Custom Habit
-        </button>
+        <button class="maint-resume-btn" onclick="setAppEnergyMode('power')">Switch to Power Mode ⚡</button>
       </div>
+    ` : ''}
 
-      <!-- Active Habits Checklist -->
-      <div class="active-stack-list">
-        ${habits.map((h, idx) => {
-          const isDone = !!dayHabitsState[h.id];
-          const streak = storage.data.habitStreaks[h.id] || 0;
-          const isWeekly = (h.cadence === 'weekly');
-          const weeklyCount = typeof dayHabitsState[h.id] === 'number' ? dayHabitsState[h.id] : (isDone ? 1 : 0);
-
-          return `
-            <div class="habit-card ${isDone ? 'completed' : ''}">
-              <div class="habit-main" onclick="${isWeekly ? '' : `toggleHabitInSheet('${h.id}')`}">
-                <div class="custom-checkbox ${isDone ? 'checked' : ''}">
-                  ${isDone ? '✓' : ''}
-                </div>
-                <div class="habit-details">
-                  <div style="display: flex; align-items: center; gap: 8px;">
-                    <span class="habit-title">${h.name}</span>
-                    ${idx === 0 ? `<span class="anchor-badge" title="Physical Foundation">Anchor #1</span>` : ''}
-                  </div>
-                  <div class="habit-meta">
-                    <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
-                    <span>• ${isWeekly ? `${h.target}x / week` : 'Daily'}</span>
-                    ${h.description ? `<span style="color: var(--text-muted);">• ${h.description}</span>` : ''}
-                  </div>
-                </div>
-              </div>
-
-              <div class="habit-actions">
-                ${isWeekly ? `
-                  <div class="weekly-counter-pill">
-                    <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', -1, event)">-</button>
-                    <span style="font-size: 0.8rem; font-weight: 700;">${weeklyCount}/${h.target}</span>
-                    <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', 1, event)">+</button>
-                  </div>
-                ` : ''}
-                <div class="streak-badge" title="${streak} consecutive days completed">
-                  🔥 ${streak}d
-                </div>
-                <button class="habit-more-btn" title="Edit Habit" onclick="showEditHabitModal('${h.id}', event)">
-                  <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
-                </button>
-              </div>
-            </div>
-          `;
-        }).join('')}
-      </div>
-
-      <!-- Habit Stack Options Shelf (Compact Pill Cloud) -->
-      <div class="stack-shelf">
-        <div class="stack-shelf-header-inline">
-          <span class="stack-shelf-title">
-            <i data-lucide="sparkles" style="color: var(--margo-m); width: 13px; height: 13px;"></i>
-            Quick Presets
-          </span>
-          <span class="stack-shelf-sub">Tap to add:</span>
-        </div>
-
-        <div class="stack-chips-cloud">
-          ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
-            const alreadyAdded = habits.some(h => h.name.toLowerCase() === preset.name.toLowerCase());
-            return `
-              <button class="stack-chip-btn ${alreadyAdded ? 'stacked' : ''}" 
-                      ${alreadyAdded ? 'disabled' : ''}
-                      onclick="addHabitFromPreset(${pIdx})"
-                      title="${preset.description}">
-                <span class="stack-chip-plus">${alreadyAdded ? '✓' : '+'}</span>
-                <span>${preset.name}</span>
-              </button>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    </div>
-
-    <!-- 4. Conscious Tracking: Good Choices, Health Pulse, Day Goals -->
+    <!-- 3. Conscious Check-in: Good Choices & How Healthy Do I Feel? (MOVED UP ABOVE PROGRESS) -->
     <div class="daily-widgets-grid">
       
       <!-- Good Choices (vs Not) Tracker Card -->
@@ -329,7 +288,7 @@ function renderDailySheet() {
               Good Choices (vs Not)
             </h3>
             <span class="card-sub-muted">
-              Week: <strong style="color:var(--primary);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--primary);">+${runningChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${runningChoices.totalNot}</strong>
+              Week: <strong style="color:var(--primary);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--primary);">+${runningChoices.totalGood}</strong>
             </span>
           </div>
         </div>
@@ -351,6 +310,9 @@ function renderDailySheet() {
               ${totalChoices > 0 ? `<strong>${goodRatio}%</strong> today (${dateChoices.good} vs ${dateChoices.not})` : 'No choices logged today'}
             </span>
             <div class="choice-undo-group">
+              ${(dateChoices.good > 0 || dateChoices.not > 0) ? `
+                <button class="choice-undo-btn" style="color: var(--text-muted); font-weight: 500;" title="Reset choices to 0" onclick="resetChoicesAction('${activeTrackingDate}')">↺ 0</button>
+              ` : ''}
               ${dateChoices.good > 0 ? `<button class="choice-undo-btn" title="Undo 1 good" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
               ${dateChoices.not > 0 ? `<button class="choice-undo-btn" title="Undo 1 not" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">- Not</button>` : ''}
             </div>
@@ -372,7 +334,7 @@ function renderDailySheet() {
               How Healthy Do I Feel?
             </h3>
             <span class="card-sub-muted">
-              ${weeklyHealth.totalDays > 0 ? `Week Avg: <strong style="color:var(--primary);">${weeklyHealth.avgScore}/5</strong> (${weeklyHealth.totalDays}d) • Running: <strong style="color:var(--primary);">${runningHealth.avgScore || '—'}/5</strong> (${runningHealth.totalDays} total)` : 'Tap to log daily vitality'}
+              ${weeklyHealth.totalDays > 0 ? `Week Avg: <strong style="color:var(--primary);">${weeklyHealth.avgScore}/5</strong> (${weeklyHealth.totalDays}d) • Running: <strong style="color:var(--primary);">${runningHealth.avgScore || '—'}/5</strong>` : 'Tap to log daily vitality'}
             </span>
           </div>
         </div>
@@ -394,7 +356,6 @@ function renderDailySheet() {
             }).join('')}
           </div>
 
-          <!-- Sassy Saying / Insight -->
           ${currentHealthMeta ? `
             <div class="health-sassy-quote">
               <span class="quote-icon">${currentHealthMeta.emoji}</span>
@@ -410,141 +371,390 @@ function renderDailySheet() {
         </div>
       </div>
 
-      <!-- Day-Specific Goals Card (Spans Full Width Below) -->
-      <div class="cover-card day-goals-card-wrapper">
-        <div class="card-title-row">
-          <div>
-            <h3>
-              <i data-lucide="zap" style="color: var(--warning);"></i>
-              Day-Specific Goals
-            </h3>
-            <span class="card-sub-muted">
-              One-off targets for today only (no ongoing habit pressure)
-            </span>
-          </div>
-        </div>
-
-        <div class="day-goals-card">
-          <!-- Goals List -->
-          <div class="day-goals-list">
-            ${dateDayGoals.map(g => `
-              <div class="day-goal-item ${g.completed ? 'done' : ''}">
-                <div class="day-goal-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                  <div class="custom-checkbox ${g.completed ? 'checked' : ''}">
-                    ${g.completed ? '✓' : ''}
-                  </div>
-                  <span class="day-goal-text">${g.text}</span>
-                </div>
-                <button class="day-goal-delete-btn" title="Delete goal" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                  <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-                </button>
-              </div>
-            `).join('')}
-
-            ${dateDayGoals.length === 0 ? `
-              <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
-                No day-specific goals yet today.
-              </div>
-            ` : ''}
-          </div>
-
-          <!-- Inline Add Form (Below List) -->
-          <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
-            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="e.g. 12k steps today, call doctor, finish slides..." required>
-            <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
-          </form>
-        </div>
-      </div>
-
     </div>
 
-    <!-- 5. Currently Terrorizing (MARGO Active Projects) -->
-    <div class="margo-pillars-shelf">
-      <div class="currently-terrorizing-header">
-        <div class="terrorizing-title-group">
-          <span class="terrorizing-fire">⚡</span>
-          <h2 class="terrorizing-title">Currently Terrorizing</h2>
-          <span class="terrorizing-count-badge">${activeTerrorizing.length} Active</span>
+    <!-- 4. STYLE A: Kinetic Energy Anchors (Move & Stand Momentum Deck) -->
+    <div class="momentum-deck-card">
+      <div class="momentum-deck-header">
+        <div class="momentum-header-left">
+          <span class="momentum-header-badge">Daily Anchors</span>
+          <h3 class="momentum-title">Kinetic Energy Anchors</h3>
         </div>
-        <span class="terrorizing-subtitle">Click items to mark what projects you are actively conquering</span>
-      </div>
-
-      <div class="margo-pillars-grid">
-        <!-- Move -->
-        <div class="pillar-card">
-          <div class="pillar-badge pillar-badge-m">M</div>
-          <div class="pillar-title">Move</div>
-          <div class="pillar-chips-wrap">
-            ${['10k steps', 'Close rings', 'Calorie deficit', 'Cardio', 'Yoga', 'Weights'].map(item => `
-              <span class="pillar-chip ${storage.isTerrorizing(item) ? 'active-terrorizing' : ''}" 
-                    onclick="toggleTerrorizingProject('${item}', 'M')" 
-                    title="Click to toggle project">
-                ${storage.isTerrorizing(item) ? '⚡ ' : ''}${item}
-              </span>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Aesthetic -->
-        <div class="pillar-card">
-          <div class="pillar-badge pillar-badge-a">A</div>
-          <div class="pillar-title">Aesthetic</div>
-          <div class="pillar-chips-wrap">
-            ${['Skincare', 'Signature outfits', 'Foot care', 'Hair health', 'Make up', 'Surgery'].map(item => `
-              <span class="pillar-chip ${storage.isTerrorizing(item) ? 'active-terrorizing' : ''}" 
-                    onclick="toggleTerrorizingProject('${item}', 'A')" 
-                    title="Click to toggle project">
-                ${storage.isTerrorizing(item) ? '⚡ ' : ''}${item}
-              </span>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Reflect -->
-        <div class="pillar-card">
-          <div class="pillar-badge pillar-badge-r">R</div>
-          <div class="pillar-title">Reflect</div>
-          <div class="pillar-chips-wrap">
-            ${['Meditate', 'Journal', 'Me time'].map(item => `
-              <span class="pillar-chip ${storage.isTerrorizing(item) ? 'active-terrorizing' : ''}" 
-                    onclick="toggleTerrorizingProject('${item}', 'R')" 
-                    title="Click to toggle project">
-                ${storage.isTerrorizing(item) ? '⚡ ' : ''}${item}
-              </span>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Grow -->
-        <div class="pillar-card">
-          <div class="pillar-badge pillar-badge-g">G</div>
-          <div class="pillar-title">Grow</div>
-          <div class="pillar-chips-wrap">
-            ${['Hobbies', 'Learning'].map(item => `
-              <span class="pillar-chip ${storage.isTerrorizing(item) ? 'active-terrorizing' : ''}" 
-                    onclick="toggleTerrorizingProject('${item}', 'G')" 
-                    title="Click to toggle project">
-                ${storage.isTerrorizing(item) ? '⚡ ' : ''}${item}
-              </span>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Organize -->
-        <div class="pillar-card">
-          <div class="pillar-badge pillar-badge-o">O</div>
-          <div class="pillar-title">Organize</div>
-          <div class="pillar-chips-wrap">
-            ${['Home projects', 'Finances', 'Travel', 'Everyday chores'].map(item => `
-              <span class="pillar-chip ${storage.isTerrorizing(item) ? 'active-terrorizing' : ''}" 
-                    onclick="toggleTerrorizingProject('${item}', 'O')" 
-                    title="Click to toggle project">
-                ${storage.isTerrorizing(item) ? '⚡ ' : ''}${item}
-              </span>
-            `).join('')}
-          </div>
+        <div class="momentum-streak-pill">
+          🔥 ${Math.max(moveStreak, standStreak, maxStreak)}d Momentum Streak
         </div>
       </div>
+
+      <!-- The Two Hero Momentum Capsules (Side by Side in 2 Columns) -->
+      <div class="anchor-capsules-grid">
+        
+        <!-- Move Anchor Capsule Card -->
+        <div class="anchor-capsule-card ${isMoveDone ? 'completed' : ''}" onclick="toggleHabitInSheet('h-move')">
+          <div class="capsule-card-top">
+            <div class="capsule-title-group">
+              <span class="capsule-tag tag-move">Anchor #1</span>
+              <h4 class="capsule-name">Move</h4>
+            </div>
+            <span class="capsule-streak-tag">🔥 ${moveStreak}d</span>
+          </div>
+
+          <div class="capsule-visual-row">
+            <!-- Modern Glass Tube -->
+            <div class="capsule-glass-tube">
+              <div class="capsule-fluid-liquid liquid-move" style="height: ${isMoveDone ? '100%' : '18%'};"></div>
+              <div class="capsule-glass-gloss"></div>
+            </div>
+            
+            <div class="capsule-stat-readout">
+              <div class="capsule-pct-large ${isMoveDone ? 'done' : ''}">${isMoveDone ? '100%' : '0%'}</div>
+              <div class="capsule-status-badge ${isMoveDone ? 'done' : ''}">
+                ${isMoveDone ? '✓ Closed Today' : 'Tap to Close'}
+              </div>
+              <p class="capsule-micro-desc">Daily physical movement &amp; active rings</p>
+            </div>
+          </div>
+
+          <div class="capsule-card-footer">
+            <button class="capsule-toggle-action-btn ${isMoveDone ? 'done' : ''}" type="button">
+              ${isMoveDone ? '✓ Completed' : '+ Mark as Closed'}
+            </button>
+          </div>
+        </div>
+
+        <!-- Stand Anchor Capsule Card -->
+        <div class="anchor-capsule-card ${isStandDone ? 'completed' : ''}" onclick="toggleHabitInSheet('h-stand')">
+          <div class="capsule-card-top">
+            <div class="capsule-title-group">
+              <span class="capsule-tag tag-stand">Anchor #2</span>
+              <h4 class="capsule-name">Stand</h4>
+            </div>
+            <span class="capsule-streak-tag">🔥 ${standStreak}d</span>
+          </div>
+
+          <div class="capsule-visual-row">
+            <!-- Modern Glass Tube -->
+            <div class="capsule-glass-tube">
+              <div class="capsule-fluid-liquid liquid-stand" style="height: ${isStandDone ? '100%' : '18%'};"></div>
+              <div class="capsule-glass-gloss"></div>
+            </div>
+            
+            <div class="capsule-stat-readout">
+              <div class="capsule-pct-large ${isStandDone ? 'done' : ''}">${isStandDone ? '100%' : '0%'}</div>
+              <div class="capsule-status-badge ${isStandDone ? 'done' : ''}">
+                ${isStandDone ? '✓ Closed Today' : 'Tap to Close'}
+              </div>
+              <p class="capsule-micro-desc">Hourly posture reset &amp; active standing</p>
+            </div>
+          </div>
+
+          <div class="capsule-card-footer">
+            <button class="capsule-toggle-action-btn ${isStandDone ? 'done' : ''}" type="button">
+              ${isStandDone ? '✓ Completed' : '+ Mark as Closed'}
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Additional Staged Habits (If user adds Skincare, Me time, etc.) -->
+      ${additionalHabits.length > 0 ? `
+        <div class="additional-habits-tray">
+          <div class="tray-header">
+            <span class="tray-label">Additional Staged Habits</span>
+          </div>
+          <div class="active-stack-list">
+            ${additionalHabits.map(h => {
+              const isDone = !!dayHabitsState[h.id];
+              const streak = storage.data.habitStreaks[h.id] || 0;
+              const isWeekly = (h.cadence === 'weekly');
+              const weeklyCount = typeof dayHabitsState[h.id] === 'number' ? dayHabitsState[h.id] : (isDone ? 1 : 0);
+
+              return `
+                <div class="habit-card ${isDone ? 'completed' : ''}">
+                  <div class="habit-main" onclick="${isWeekly ? '' : `toggleHabitInSheet('${h.id}')`}">
+                    <div class="custom-checkbox ${isDone ? 'checked' : ''}">
+                      ${isDone ? '✓' : ''}
+                    </div>
+                    <div class="habit-details">
+                      <span class="habit-title">${escapeHtml(h.name)}</span>
+                      <div class="habit-meta">
+                        <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
+                        <span>• ${isWeekly ? `${h.target}x / week` : 'Daily'}</span>
+                        ${h.description ? `<span style="color: var(--text-muted);">• ${escapeHtml(h.description)}</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="habit-actions">
+                    ${isWeekly ? `
+                      <div class="weekly-counter-pill">
+                        <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', -1, event)">-</button>
+                        <span style="font-size: 0.8rem; font-weight: 700;">${weeklyCount}/${h.target}</span>
+                        <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', 1, event)">+</button>
+                      </div>
+                    ` : ''}
+                    <div class="streak-badge">🔥 ${streak}d</div>
+                    <button class="habit-more-btn" title="Edit Habit" onclick="showEditHabitModal('${h.id}', event)">
+                      <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Quick Presets Shelf (Matching 12 Habit Stack Presets) -->
+      <div class="quick-presets-container">
+        <div class="quick-presets-header">
+          <span class="quick-presets-sparkle">✨</span>
+          <span class="quick-presets-title">Quick Presets</span>
+          <span class="quick-presets-subtitle">Tap to add:</span>
+        </div>
+        <div class="quick-presets-pills">
+          ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
+            const isAlreadyAdded = habits.some(h => 
+              h.name.toLowerCase() === preset.name.toLowerCase() || 
+              (preset.name.toLowerCase() === 'stand ring' && (h.name.toLowerCase() === 'stand' || h.id === 'h-stand')) ||
+              (preset.name.toLowerCase() === 'move' && (h.name.toLowerCase() === 'move' || h.id === 'h-move'))
+            );
+            if (isAlreadyAdded) {
+              return `
+                <span class="preset-pill-item added" title="${escapeHtml(preset.name)} is already in your active stack">
+                  <span class="preset-pill-symbol">✓</span>
+                  <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
+                </span>
+              `;
+            } else {
+              return `
+                <button class="preset-pill-item" onclick="addHabitFromPreset(${pIdx})" title="Add ${escapeHtml(preset.name)}: ${escapeHtml(preset.description)}">
+                  <span class="preset-pill-symbol plus">+</span>
+                  <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
+                </button>
+              `;
+            }
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Day-Specific Bonus Goals Card (One-off daily targets) -->
+    <div class="cover-card day-goals-card-wrapper">
+      <div class="card-title-row">
+        <div>
+          <h3>
+            <i data-lucide="zap" style="color: var(--warning);"></i>
+            Day-Specific Bonus Goals
+          </h3>
+          <span class="card-sub-muted">
+            One-off targets for today only (no ongoing habit pressure)
+          </span>
+        </div>
+      </div>
+
+      <div class="day-goals-card">
+        <div class="day-goals-list">
+          ${dateDayGoals.map(g => `
+            <div class="day-goal-item ${g.completed ? 'done' : ''}">
+              <div class="day-goal-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                <div class="custom-checkbox ${g.completed ? 'checked' : ''}">
+                  ${g.completed ? '✓' : ''}
+                </div>
+                <span class="day-goal-text">${escapeHtml(g.text)}</span>
+              </div>
+              <button class="day-goal-delete-btn" title="Delete goal" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+              </button>
+            </div>
+          `).join('')}
+
+          ${dateDayGoals.length === 0 ? `
+            <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
+              No bonus goals logged today. Add any one-off moves below!
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- Inline Add Form -->
+        <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
+          <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="+ e.g. 12k steps today, no iced matcha after 2 PM..." required>
+          <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 6. Quick Thoughts & Idea Inbox (To Triage Later) -->
+    <div class="cover-card quick-thoughts-card">
+      <div class="card-title-row">
+        <div class="thoughts-title-group">
+          <span class="thoughts-header-icon">💭</span>
+          <div>
+            <h3>Quick Thoughts &amp; Brain Dump</h3>
+            <span class="card-sub-muted">Capture fleeting ideas, links &amp; reminders now. Triage whenever you have bandwidth.</span>
+          </div>
+        </div>
+        <span class="thoughts-count-pill">${activeThoughts.length} untriaged</span>
+      </div>
+
+      <!-- Inline Fast Capture Form -->
+      <form class="quick-thought-form" onsubmit="submitQuickThoughtInline(event)">
+        <input type="text" id="quick-thought-input" class="quick-thought-input" placeholder="+ Jot down a thought, link, or random idea (Press Enter)..." autocomplete="off" required>
+        <button type="submit" class="btn btn-primary btn-sm">Capture</button>
+      </form>
+
+      <!-- Active Untriaged Stream -->
+      <div class="quick-thoughts-list">
+        ${activeThoughts.length > 0 ? activeThoughts.map(t => `
+          <div class="thought-item">
+            <div class="thought-content">
+              <span class="thought-bullet">●</span>
+              <span class="thought-text">${escapeHtml(t.text)}</span>
+              <span class="thought-time">${formatThoughtTime(t.createdAt)}</span>
+            </div>
+            <div class="thought-triage-actions">
+              <button class="triage-action-btn btn-triage-done" onclick="toggleQuickThoughtTriageAction('${t.id}')" title="Mark Triaged (+5 XP)">
+                ✓ Triage
+              </button>
+              <button class="triage-action-btn btn-triage-goal" onclick="convertThoughtToGoalAction('${t.id}', '${activeTrackingDate}')" title="Convert to today's Bonus Goal (+10 XP)">
+                ⚡ Goal
+              </button>
+              <button class="triage-action-btn btn-triage-journal" onclick="convertThoughtToJournalAction('${t.id}', '${activeTrackingDate}')" title="Append to today's Sanctuary Journal (+10 XP)">
+                ✍️ Journal
+              </button>
+              <button class="triage-action-btn btn-triage-delete" onclick="deleteQuickThoughtAction('${t.id}')" title="Delete thought">
+                ✕
+              </button>
+            </div>
+          </div>
+        `).join('') : `
+          <div class="thoughts-empty-state">
+            <span>✨</span>
+            <p>Your thought inbox is clean and clear. Jot down any random ideas above to store them safely!</p>
+          </div>
+        `}
+      </div>
+
+      <!-- Collapsible Triaged Drawer -->
+      ${triagedThoughts.length > 0 ? `
+        <div class="thoughts-archive-drawer">
+          <button class="thoughts-toggle-archive-btn" type="button" onclick="toggleShowTriagedThoughts()">
+            ${showTriagedThoughts ? 'Hide Triaged Thoughts ▴' : `View ${triagedThoughts.length} Triaged Thoughts ▾`}
+          </button>
+          ${showTriagedThoughts ? `
+            <div class="triaged-thoughts-list">
+              ${triagedThoughts.map(t => `
+                <div class="thought-item triaged">
+                  <div class="thought-content">
+                    <span class="thought-bullet done">✓</span>
+                    <span class="thought-text done">${escapeHtml(t.text)}</span>
+                    <span class="thought-time">${formatThoughtTime(t.triagedAt || t.createdAt)}</span>
+                  </div>
+                  <div class="thought-triage-actions">
+                    <button class="triage-action-btn btn-triage-undo" onclick="toggleQuickThoughtTriageAction('${t.id}')" title="Restore to active inbox">
+                      ↺ Restore
+                    </button>
+                    <button class="triage-action-btn btn-triage-delete" onclick="deleteQuickThoughtAction('${t.id}')" title="Delete">
+                      ✕
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
+    </div>
+
+    <!-- 7. Unstructured Sanctuary Daily Journal & Brain Dump with Square Cards Archive -->
+    <div class="cover-card sanctuary-journal-card">
+      <div class="journal-card-header">
+        <div class="journal-header-left">
+          <span class="journal-header-icon">✍️</span>
+          <div>
+            <h3>Daily Sanctuary Journal &amp; Brain Dump</h3>
+            <span class="card-sub-muted">Unstructured raw thoughts, evening reflections &amp; memories</span>
+          </div>
+        </div>
+
+        <div class="journal-view-toggle">
+          <button class="journal-toggle-btn ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
+            Today's Entry
+          </button>
+          <button class="journal-toggle-btn ${sanctuaryJournalTab === 'archive' ? 'active' : ''}" onclick="setSanctuaryJournalTab('archive')">
+            <span>📚 Past Archive</span>
+            <span class="journal-count-pill">${allJournals.length}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW A: TODAY'S ENTRY -->
+      ${sanctuaryJournalTab === 'today' ? `
+        <div class="journal-today-pane">
+          ${journalEntry && journalEntry.text && !sanctuaryJournalEditing ? `
+            <!-- COMPLETED JOURNAL CARD (Editorial & Serene) -->
+            <div class="journal-completed-card">
+              <div class="journal-completed-meta">
+                <span>Logged for <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong></span>
+                <span class="journal-meta-right">
+                  ${currentHealthMeta ? `${currentHealthMeta.emoji} ${currentHealthMeta.label} • ` : ''}
+                  <span class="journal-word-pill">${journalEntry.wordCount || 0} words</span>
+                </span>
+              </div>
+
+              <div class="journal-completed-text">
+                "${escapeHtml(journalEntry.text)}"
+              </div>
+
+              <div class="journal-completed-footer">
+                <span class="journal-saved-hint">✓ Saved to your personal sanctuary vault</span>
+                <button class="btn btn-secondary btn-xs" onclick="toggleSanctuaryJournalEdit()">
+                  ✎ Edit / Append Entry
+                </button>
+              </div>
+            </div>
+          ` : `
+            <!-- EDITING / ACTIVE TEXTAREA -->
+            <div class="journal-edit-pane">
+              <textarea 
+                class="journal-textarea" 
+                id="sanctuary-journal-input" 
+                rows="4" 
+                placeholder="What's taking up mental bandwidth today? Clear your head here with zero formatting pressure..."
+                oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
+              >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
+
+              <div class="journal-edit-controls">
+                <span class="journal-autosave-indicator" id="journal-autosave-status">
+                  ${journalEntry ? '✓ Auto-saved' : 'Auto-saves continuously as you type'}
+                </span>
+                ${journalEntry && journalEntry.text ? `
+                  <button class="btn btn-primary btn-xs" onclick="toggleSanctuaryJournalEdit()">
+                    Done Editing
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `}
+        </div>
+      ` : `
+        <!-- VIEW B: PAST ENTRIES ARCHIVE (SQUARE CARDS GRID) -->
+        <div class="journal-archive-pane">
+          <div class="archive-filter-row">
+            <div class="archive-filter-pills">
+              <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'all' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('all')">All Entries</button>
+              <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('last_week')">Last Week</button>
+              <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('this_month')">This Month</button>
+            </div>
+            <span class="archive-count-label">${allJournals.length} reflections recorded</span>
+          </div>
+
+          <!-- SQUARE CARD GRID -->
+          <div class="journal-square-grid">
+            ${renderJournalSquareGrid(allJournals, sanctuaryArchiveFilter)}
+          </div>
+        </div>
+      `}
     </div>
   `;
 
@@ -558,17 +768,95 @@ function renderDailySheet() {
 }
 
 /**
- * Toggle Project in Currently Terrorizing Shelf
+ * Render Square Cards Grid for Past Journal Reflections
  */
-function toggleTerrorizingProject(name, bucket) {
-  const isNowActive = storage.toggleTerrorizing(name);
-  if (isNowActive) {
-    storage.addPoints(5);
-    showToast(`⚡ Now Terrorizing: "${name}" (+5 XP)`);
-  } else {
-    showToast(`🕊️ Paused: "${name}"`);
+function renderJournalSquareGrid(allJournals, filter) {
+  if (!allJournals || allJournals.length === 0) {
+    return `
+      <div class="journal-empty-archive">
+        <span>✍️</span>
+        <p>No past journal entries yet. Start typing your thoughts above to build your personal sanctuary archive!</p>
+      </div>
+    `;
   }
+
+  const todayIso = formatDateIso(new Date());
+  let filtered = allJournals;
+
+  if (filter === 'last_week') {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const minIso = formatDateIso(sevenDaysAgo);
+    filtered = allJournals.filter(j => j.date >= minIso);
+  } else if (filter === 'this_month') {
+    const curMonth = todayIso.substring(0, 7);
+    filtered = allJournals.filter(j => j.date.startsWith(curMonth));
+  }
+
+  return filtered.map(j => {
+    const dateObj = parseDateIso(j.date);
+    const dateTitle = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const isToday = (j.date === todayIso);
+    const healthLevel = (typeof storage.getHealthLevel === 'function') ? storage.getHealthLevel(j.date) : null;
+    const healthMeta = (healthLevel && typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[healthLevel] : null;
+
+    return `
+      <div class="journal-square-card" onclick="openJournalEntryModal('${j.date}')" title="Click to view full reflection">
+        <div class="square-card-top">
+          <span class="square-date-tag">${isToday ? 'Today' : dateTitle}</span>
+          ${healthMeta ? `
+            <span class="square-health-pill">${healthMeta.emoji} ${healthMeta.label}</span>
+          ` : ''}
+        </div>
+
+        <div class="square-snippet">
+          "${escapeHtml(j.text)}"
+        </div>
+
+        <div class="square-card-bottom">
+          <span class="square-word-count">${j.wordCount || 0} words</span>
+          <span class="square-expand-hint">Expand ↗</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setSanctuaryJournalTab(tab) {
+  sanctuaryJournalTab = tab;
   renderDailySheet();
+}
+
+function setSanctuaryArchiveFilter(filter) {
+  sanctuaryArchiveFilter = filter;
+  renderDailySheet();
+}
+
+function toggleSanctuaryJournalEdit() {
+  sanctuaryJournalEditing = !sanctuaryJournalEditing;
+  renderDailySheet();
+  if (sanctuaryJournalEditing) {
+    const input = document.getElementById('sanctuary-journal-input');
+    if (input) {
+      input.focus();
+    }
+  }
+}
+
+let journalAutoSaveTimer = null;
+function handleSanctuaryJournalInput(dateStr, value) {
+  const status = document.getElementById('journal-autosave-status');
+  if (status) {
+    status.innerHTML = '<span style="color: var(--warning);">● Saving...</span>';
+  }
+
+  clearTimeout(journalAutoSaveTimer);
+  journalAutoSaveTimer = setTimeout(() => {
+    storage.saveJournal(dateStr, value);
+    if (status) {
+      status.innerHTML = '<span style="color: var(--success); font-weight: 600;">✓ Auto-saved</span>';
+    }
+  }, 400);
 }
 
 /**
@@ -609,6 +897,12 @@ function toggleHabitInSheet(habitId) {
       showToast(`✓ Checked "${hName}" for ${shortDate} (+10 XP)`);
     } else {
       showToast(`Unchecked "${hName}" for ${shortDate}`);
+    }
+  } else {
+    if (nextVal) {
+      showToast(`✓ Checked "${hName}" (+10 XP)`);
+    } else {
+      showToast(`Unchecked "${hName}" (0% / Tap to close)`);
     }
   }
 }
@@ -700,7 +994,6 @@ function renderPastDaysModal() {
   const selectedDateObj = parseDateIso(activeTrackingDate);
   const sundayOfSelectedWeek = getSundayOfWeek(selectedDateObj);
   const weeklyStats = calculateWeeklyStats(sundayOfSelectedWeek, habits, storage.data.habitsState);
-  const todayIso = formatDateIso(new Date());
 
   body.innerHTML = `
     <div class="past-days-modal-content">
@@ -733,7 +1026,7 @@ function renderPastDaysModal() {
                     <div class="modal-habit-info">
                       <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
                       <div class="modal-habit-text">
-                        <span class="modal-habit-name">${h.name}</span>
+                        <span class="modal-habit-name">${escapeHtml(h.name)}</span>
                         <span class="modal-habit-cadence">${h.cadence === 'weekly' ? `${h.target}x/wk` : 'Daily'} • 🔥 ${streak}d</span>
                       </div>
                     </div>
@@ -803,5 +1096,184 @@ function toggleHabitFromMatrix(habitId, dateStr) {
   }
 
   renderPastDaysModal();
+  renderDailySheet();
+}
+
+/**
+ * Good Choices Actions
+ */
+function recordChoiceAction(type, delta, dateStr) {
+  const updated = storage.recordChoice(type, delta, dateStr);
+  renderDailySheet();
+  if (delta > 0) {
+    if (type === 'good') {
+      showToast(`+1 Good Choice! Ratio: ${Math.round((updated.good / (updated.good + updated.not)) * 100)}% (+5 XP)`);
+    } else {
+      showToast(`Logged choice. Focus on your next move!`);
+    }
+  } else if (delta < 0) {
+    showToast(`Undo choice (${updated.good} good / ${updated.not} not)`);
+  }
+}
+
+/**
+ * Reset Good & Not Choices to 0
+ */
+function resetChoicesAction(dateStr) {
+  storage.resetChoices(dateStr);
+  renderDailySheet();
+  showToast('✓ Good Choices reset to 0');
+}
+
+/**
+ * Health Level Action
+ */
+function recordHealthLevelAction(level, dateStr) {
+  storage.setHealthLevel(dateStr, level);
+  renderDailySheet();
+  const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[level] : null;
+  if (meta) {
+    showToast(`${meta.emoji} Logged: ${meta.label} (+5 XP)`);
+  }
+}
+
+/**
+ * Day Goals Actions
+ */
+function toggleDayGoalAction(goalId, dateStr) {
+  storage.toggleDayGoal(dateStr, goalId);
+  renderDailySheet();
+}
+
+function deleteDayGoalAction(goalId, dateStr) {
+  storage.deleteDayGoal(dateStr, goalId);
+  renderDailySheet();
+}
+
+function submitAddDayGoalInline(event, dateStr, inputId) {
+  event.preventDefault();
+  const input = document.getElementById(inputId);
+  if (!input || !input.value.trim()) return;
+
+  storage.addDayGoal(dateStr, input.value.trim());
+  input.value = '';
+  renderDailySheet();
+  showToast('✓ Day-Specific Goal Added (+15 XP when completed)');
+}
+
+function resetToToday() {
+  activeTrackingDate = formatDateIso(new Date());
+  renderDailySheet();
+}
+
+function navigateDate(offset) {
+  const d = parseDateIso(activeTrackingDate);
+  d.setDate(d.getDate() + offset);
+  activeTrackingDate = formatDateIso(d);
+  renderDailySheet();
+}
+
+/* --------------------------------------------------------------------------
+   Quick Thoughts Action Handlers
+   -------------------------------------------------------------------------- */
+let showTriagedThoughts = false;
+
+function toggleShowTriagedThoughts() {
+  showTriagedThoughts = !showTriagedThoughts;
+  renderDailySheet();
+}
+
+function formatThoughtTime(isoStr) {
+  if (!isoStr) return '';
+  const date = new Date(isoStr);
+  const now = new Date();
+  const diffSec = Math.floor((now - date) / 1000);
+
+  if (diffSec < 60) return 'just now';
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+function submitQuickThoughtInline(event) {
+  event.preventDefault();
+  const input = document.getElementById('quick-thought-input');
+  if (!input || !input.value.trim()) return;
+
+  const item = storage.addQuickThought(input.value.trim());
+  input.value = '';
+  renderDailySheet();
+  showToast('💭 Thought captured! Triage whenever you have bandwidth.');
+}
+
+function toggleQuickThoughtTriageAction(id) {
+  const isTriaged = storage.toggleTriageThought(id);
+  renderDailySheet();
+  if (isTriaged) {
+    showToast('✓ Thought triaged (+5 XP)');
+  } else {
+    showToast('Restored thought to active inbox');
+  }
+}
+
+function deleteQuickThoughtAction(id) {
+  storage.deleteQuickThought(id);
+  renderDailySheet();
+}
+
+function convertThoughtToGoalAction(id, dateStr) {
+  storage.convertThoughtToGoal(id, dateStr);
+  renderDailySheet();
+  showToast('⚡ Converted into today\'s Bonus Goal (+10 XP)!');
+}
+
+function convertThoughtToJournalAction(id, dateStr) {
+  storage.convertThoughtToJournal(id, dateStr);
+  renderDailySheet();
+  showToast('✍️ Appended to today\'s Sanctuary Journal (+10 XP)!');
+}
+
+/* --------------------------------------------------------------------------
+   Gamification Points Quick Adjuster & Historical Audit
+   -------------------------------------------------------------------------- */
+function promptEditPoints() {
+  const current = storage.getPoints();
+  const val = prompt('Update your XP / Gamification Points score:', current);
+  if (val !== null) {
+    const parsed = parseInt(val, 10);
+    if (!isNaN(parsed) && parsed >= 0) {
+      storage.setPoints(parsed);
+      renderDailySheet();
+      showToast(`✓ XP updated to ${parsed} XP`);
+    }
+  }
+}
+
+function recalculatePointsAction() {
+  if (typeof storage.restoreAndMergeAllBackups === 'function') {
+    storage.restoreAndMergeAllBackups();
+  }
+  const pts = storage.recalculatePointsFromHistory();
+  renderDailySheet();
+  showToast(`↺ All backups merged & XP restored to ${pts} XP!`);
+}
+
+function addHabitFromPresetName(name, bucket, cadence, target, icon, desc) {
+  const habits = storage.getHabits();
+  const already = habits.some(h => h.name.toLowerCase() === name.toLowerCase());
+  if (already) {
+    showToast(`"${name}" is already in your active stack!`);
+    return;
+  }
+
+  storage.addHabit({
+    name,
+    bucket,
+    cadence,
+    target: target || 1,
+    icon: icon || 'sparkles',
+    description: desc || ''
+  });
+  showToast(`✓ Added "${name}" to your active habits stack!`);
   renderDailySheet();
 }

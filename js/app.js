@@ -3,7 +3,7 @@
    ========================================================================== */
 
 let editingHabitId = null;
-let currentView = 'daily'; // 'daily' | 'claims'
+let currentView = 'daily'; // 'daily' | 'claims' | 'zlog'
 
 /* --------------------------------------------------------------------------
    Boot
@@ -20,11 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Restore saved view (or URL hash)
   const hashView = window.location.hash.replace('#', '');
-  const savedView = (hashView === 'claims' || hashView === 'daily') 
+  const savedView = (hashView === 'claims' || hashView === 'zlog' || hashView === 'bunker') 
     ? hashView 
-    : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'daily');
+    : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'sanctuary');
 
   switchAppView(savedView);
+  updateEnergyDialUI();
 
   // Refresh header badges
   refreshAppBadges();
@@ -36,36 +37,193 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* --------------------------------------------------------------------------
-   View Switching (Daily Sheet vs Medical Claims)
+   View Switching (Sanctuary vs Adulting Bunker [Claims & Z Log])
    -------------------------------------------------------------------------- */
 function switchAppView(viewName) {
-  currentView = (viewName === 'claims') ? 'claims' : 'daily';
+  if (viewName === 'claims' || viewName === 'zlog' || viewName === 'bunker') {
+    currentView = (viewName === 'zlog') ? 'zlog' : 'claims';
+  } else {
+    currentView = 'sanctuary';
+  }
+
   try {
     localStorage.setItem('BOL_ACTIVE_VIEW', currentView);
+    window.location.hash = (currentView === 'sanctuary') ? '' : currentView;
   } catch (e) {}
 
-  const navDaily = document.getElementById('nav-btn-daily');
-  const navClaims = document.getElementById('nav-btn-claims');
   const dateNavContainer = document.getElementById('header-date-nav-container');
+  const energyDial = document.getElementById('header-energy-dial');
+  const bunkerBtn = document.getElementById('btn-bunker-portal');
 
-  if (currentView === 'claims') {
-    if (navDaily) navDaily.classList.remove('active');
-    if (navClaims) navClaims.classList.add('active');
+  updateEnergyDialUI();
+
+  if (currentView === 'claims' || currentView === 'zlog') {
     if (dateNavContainer) dateNavContainer.style.display = 'none';
-    if (typeof renderClaimsPage === 'function') renderClaimsPage();
+    if (energyDial) energyDial.style.display = 'none';
+    if (bunkerBtn) bunkerBtn.classList.add('active');
+
+    renderAdultingBunkerShell(currentView);
   } else {
-    if (navClaims) navClaims.classList.remove('active');
-    if (navDaily) navDaily.classList.add('active');
     if (dateNavContainer) dateNavContainer.style.display = 'inline-flex';
+    if (energyDial) energyDial.style.display = 'inline-flex';
+    if (bunkerBtn) bunkerBtn.classList.remove('active');
+
     if (typeof renderDailySheet === 'function') renderDailySheet();
   }
 
   refreshAppBadges();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function toggleAdultingBunker() {
+  if (currentView === 'sanctuary') {
+    const lastBunker = localStorage.getItem('BOL_LAST_BUNKER_SUBVIEW') || 'claims';
+    switchAppView(lastBunker);
+  } else {
+    switchAppView('sanctuary');
+  }
+}
+
+function renderAdultingBunkerShell(subView) {
+  const container = document.getElementById('daily-sheet-container');
+  if (!container) return;
+
+  try {
+    localStorage.setItem('BOL_LAST_BUNKER_SUBVIEW', subView);
+  } catch (e) {}
+
+  container.innerHTML = `
+    <div class="adulting-bunker-wrapper">
+      <!-- Bunker Header Bar -->
+      <div class="bunker-header-bar">
+        <div class="bunker-header-left">
+          <span class="bunker-badge-icon">💼</span>
+          <div>
+            <div class="bunker-header-title">Adulting Bunker &amp; Command Deck</div>
+            <div class="bunker-header-desc">Utilitarian admin, caretaking logs &amp; medical claims (isolated from Sanctuary)</div>
+          </div>
+        </div>
+
+        <div class="bunker-header-actions">
+          <div class="bunker-tab-group">
+            <button class="bunker-tab-btn ${subView === 'claims' ? 'active' : ''}" onclick="switchAppView('claims')">
+              <i data-lucide="receipt" style="width: 14px; height: 14px;"></i>
+              <span>Medical Claims</span>
+            </button>
+            <button class="bunker-tab-btn ${subView === 'zlog' ? 'active' : ''}" onclick="switchAppView('zlog')">
+              <i data-lucide="heart-pulse" style="width: 14px; height: 14px;"></i>
+              <span>Z Log Protocol</span>
+            </button>
+          </div>
+
+          <button class="bunker-exit-btn" onclick="switchAppView('sanctuary')" title="Return to your personal sanctuary">
+            <span>✕</span>
+            <span>Return to Sanctuary</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bunker Sub-view Content Frame -->
+      <div id="bunker-subview-frame"></div>
+    </div>
+  `;
+
+  if (window.lucide) lucide.createIcons();
+
+  const subFrame = document.getElementById('bunker-subview-frame');
+  if (subFrame) {
+    if (subView === 'zlog') {
+      if (typeof renderZLogPage === 'function') renderZLogPage();
+    } else {
+      if (typeof renderClaimsPage === 'function') renderClaimsPage();
+    }
+  }
+}
+
+function setAppEnergyMode(mode) {
+  if (typeof storage !== 'undefined' && typeof storage.setEnergyMode === 'function') {
+    storage.setEnergyMode(mode);
+  }
+  updateEnergyDialUI();
+  if (typeof renderDailySheet === 'function') {
+    renderDailySheet();
+  }
+  if (typeof showToast === 'function') {
+    if (mode === 'maint') {
+      showToast('🛡️ Maintenance Mode: Protecting Move & Stand baseline (Zero Guilt)');
+    } else {
+      showToast('⚡ Power Mode: Ready to conquer');
+    }
+  }
+}
+
+function updateEnergyDialUI() {
+  const mode = (typeof storage !== 'undefined' && typeof storage.getEnergyMode === 'function') 
+    ? storage.getEnergyMode() 
+    : 'power';
+  const btnPower = document.getElementById('dial-btn-power');
+  const btnMaint = document.getElementById('dial-btn-maint');
+  if (btnPower && btnMaint) {
+    if (mode === 'maint') {
+      btnPower.classList.remove('active');
+      btnMaint.classList.add('active');
+    } else {
+      btnMaint.classList.remove('active');
+      btnPower.classList.add('active');
+    }
+  }
+}
+
+function shuffleDailyAffirmation() {
+  if (typeof customAffirmationOffset !== 'undefined') {
+    customAffirmationOffset++;
+  }
+  if (typeof renderDailySheet === 'function') {
+    renderDailySheet();
+  }
+}
+
+function openJournalEntryModal(dateStr) {
+  const entry = (typeof storage !== 'undefined' && typeof storage.getJournal === 'function') 
+    ? storage.getJournal(dateStr) 
+    : null;
+  if (!entry) return;
+
+  const modal = document.getElementById('modal-journal-view');
+  const title = document.getElementById('journal-modal-title');
+  const subtitle = document.getElementById('journal-modal-subtitle');
+  const content = document.getElementById('journal-modal-content');
+  const jumpBtn = document.getElementById('journal-modal-jump-btn');
+
+  const dateObj = (typeof parseDateIso === 'function') ? parseDateIso(dateStr) : new Date(dateStr);
+  const formatted = dateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  const healthLevel = (typeof storage.getHealthLevel === 'function') ? storage.getHealthLevel(dateStr) : null;
+  const healthMeta = (healthLevel && typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[healthLevel] : null;
+
+  if (title) title.textContent = `Reflection — ${formatted}`;
+  if (subtitle) {
+    subtitle.textContent = `${entry.wordCount || 0} words • ${healthMeta ? `${healthMeta.emoji} ${healthMeta.label}` : 'Personal Entry'}`;
+  }
+  if (content) content.textContent = entry.text;
+
+  if (jumpBtn) {
+    jumpBtn.onclick = () => {
+      closeAllModals();
+      if (typeof jumpToTrackingDate === 'function') {
+        jumpToTrackingDate(dateStr);
+      }
+    };
+  }
+
+  if (modal) modal.classList.add('active');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function renderCurrentView() {
   if (currentView === 'claims') {
-    if (typeof renderClaimsPage === 'function') renderClaimsPage();
+    renderAdultingBunkerShell('claims');
+  } else if (currentView === 'zlog') {
+    renderAdultingBunkerShell('zlog');
   } else {
     if (typeof renderDailySheet === 'function') renderDailySheet();
   }

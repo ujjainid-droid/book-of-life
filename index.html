@@ -23,59 +23,72 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=2.5">
-  <link rel="stylesheet" href="css/layout.css?v=2.5">
-  <link rel="stylesheet" href="css/cover.css?v=3.8">
-  <link rel="stylesheet" href="css/habits.css?v=3.4">
-  <link rel="stylesheet" href="css/tasks.css?v=2.5">
-  <link rel="stylesheet" href="css/settings.css?v=2.5">
-  <link rel="stylesheet" href="css/claims.css?v=2.5">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=7.8.1">
+  <link rel="stylesheet" href="css/layout.css?v=7.8.1">
+  <link rel="stylesheet" href="css/cover.css?v=7.8.1">
+  <link rel="stylesheet" href="css/habits.css?v=7.8.1">
+  <link rel="stylesheet" href="css/tasks.css?v=7.8.1">
+  <link rel="stylesheet" href="css/settings.css?v=7.8.1">
+  <link rel="stylesheet" href="css/claims.css?v=7.8.1">
+  <link rel="stylesheet" href="css/zlog.css?v=7.8.1">
 </head>
 <body>
 
   <div class="book-app">
     <!-- Header -->
     <header class="book-header">
-      <div class="book-title-area">
-        <h1>margo</h1>
+      <div class="header-left">
+        <div class="book-title-area" onclick="switchAppView('sanctuary')" style="cursor: pointer;" title="margo — Personal Sanctuary">
+          <h1>margo</h1>
+        </div>
+
+        <div class="header-date-nav" id="header-date-nav-container">
+          <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
+            <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i>
+          </button>
+          <button class="date-current-btn" id="header-date-label" onclick="handleHeaderDateClick()" title="Jump to Today or Pick Date">
+            Today
+          </button>
+          <input type="date" id="header-date-picker-input" class="hidden-date-picker" onchange="onHeaderDatePicked(this.value)">
+          <button class="date-nav-btn" onclick="navigateDate(1)" title="Next Day">
+            <i data-lucide="chevron-right" style="width: 15px; height: 15px;"></i>
+          </button>
+          <button class="date-nav-btn" onclick="triggerHeaderDatePicker()" title="Pick Specific Date From Calendar">
+            <i data-lucide="calendar" style="width: 13px; height: 13px;"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- View Switcher Navigation (Daily vs Medical Claims) -->
-      <nav class="header-view-nav">
-        <button class="view-nav-btn active" id="nav-btn-daily" onclick="switchAppView('daily')" title="Daily Habits &amp; Momentum">
-          <i data-lucide="check-circle-2" style="width: 14px; height: 14px;"></i>
-          <span>Daily</span>
-        </button>
-        <button class="view-nav-btn" id="nav-btn-claims" onclick="switchAppView('claims')" title="Medical Claims &amp; Recovery Tracker">
-          <i data-lucide="receipt" style="width: 14px; height: 14px;"></i>
-          <span>Claims</span>
-          <span class="claims-badge-pill" id="header-claims-badge" style="display: none;"></span>
-        </button>
-      </nav>
+      <div class="header-right">
+        <!-- Energy Dial (Power vs Maintenance) -->
+        <div class="energy-dial-container" id="header-energy-dial">
+          <button id="dial-btn-power" class="energy-dial-btn active" onclick="setAppEnergyMode('power')" title="Power Mode: Full Stack">
+            <span class="dial-emoji">⚡</span>
+            <span class="dial-label">Power</span>
+          </button>
+          <button id="dial-btn-maint" class="energy-dial-btn" onclick="setAppEnergyMode('maint')" title="Maintenance Mode: Protect Baseline (Move + Stand, Zero Guilt)">
+            <span class="dial-emoji">🛡️</span>
+            <span class="dial-label">Maint</span>
+          </button>
+        </div>
 
-      <div class="header-date-nav" id="header-date-nav-container">
-        <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
-          <i data-lucide="chevron-left" style="width: 16px; height: 16px;"></i>
-        </button>
-        <button class="date-current-btn" id="header-date-label" onclick="handleHeaderDateClick()" title="Jump to Today or Pick Date">
-          Today
-        </button>
-        <input type="date" id="header-date-picker-input" class="hidden-date-picker" onchange="onHeaderDatePicked(this.value)">
-        <button class="date-nav-btn" onclick="navigateDate(1)" title="Next Day">
-          <i data-lucide="chevron-right" style="width: 16px; height: 16px;"></i>
-        </button>
-        <button class="date-nav-btn" onclick="triggerHeaderDatePicker()" title="Pick Specific Date From Calendar">
-          <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
-        </button>
-      </div>
+        <!-- Sassy Portal: Adulting Bunker Door -->
+        <div class="header-portal-area">
+          <button class="bunker-portal-btn" id="btn-bunker-portal" onclick="toggleAdultingBunker()" title="Adulting Bunker: Z Log, Claims & Caretaking Logistics">
+            <span class="bunker-portal-icon">💼</span>
+            <span class="bunker-portal-label">Bunker</span>
+            <span class="bunker-claims-badge" id="header-claims-badge" style="display: none;"></span>
+          </button>
+        </div>
 
-      <div class="header-actions">
-        <button class="icon-btn" title="Toggle Light / Dark Theme" onclick="toggleTheme()">
-          <i data-lucide="moon" id="header-theme-icon" style="width: 18px; height: 18px;"></i>
-        </button>
-        <button class="icon-btn" title="Settings & Preferences" onclick="openSettingsModal()">
-          <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
-        </button>
+        <div class="header-actions">
+          <button class="icon-btn" title="Toggle Light / Dark Theme" onclick="toggleTheme()">
+            <i data-lucide="moon" id="header-theme-icon" style="width: 16px; height: 16px;"></i>
+          </button>
+          <button class="icon-btn" title="Settings & Preferences" onclick="openSettingsModal()">
+            <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
       </div>
     </header>
 
@@ -318,15 +331,37 @@
     </div>
   </div>
 
+  <!-- Modal: View Sanctuary Journal Entry (Square Card Expand) -->
+  <div class="modal-overlay" id="modal-journal-view" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-journal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="journal-modal-title">Sanctuary Journal</h3>
+          <span id="journal-modal-subtitle" style="font-size: 0.76rem; color: var(--text-muted);"></span>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="journal-modal-body" style="padding: 16px 0;">
+        <p id="journal-modal-content" class="journal-reading-text" style="font-family: var(--font-serif); font-style: italic; line-height: 1.7; font-size: 0.95rem; color: var(--text-primary); white-space: pre-wrap;"></p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); pt-3;">
+        <button class="btn btn-secondary btn-sm" id="journal-modal-jump-btn" type="button">📅 Jump to this Day</button>
+        <button class="btn btn-primary btn-sm" onclick="closeAllModals()" type="button">Done Reading</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=3.8"></script>
-  <script src="js/sync.js?v=3.4"></script>
-  <script src="js/storage.js?v=3.4"></script>
-  <script src="js/pages/coverPage.js?v=3.8"></script>
-  <script src="js/pages/claimsPage.js?v=3.4"></script>
-  <script src="js/app.js?v=3.4"></script>
+  <script src="js/margoData.js?v=7.8.1"></script>
+  <script src="js/zlogData.js?v=7.8.1"></script>
+  <script src="js/storage.js?v=7.8.1"></script>
+  <script src="js/sync.js?v=7.8.1"></script>
+  <script src="js/pages/coverPage.js?v=7.8.1"></script>
+  <script src="js/pages/claimsPage.js?v=7.8.1"></script>
+  <script src="js/pages/zlogPage.js?v=7.8.1"></script>
+  <script src="js/app.js?v=7.8.1"></script>
 </body>
 </html>

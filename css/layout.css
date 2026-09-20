@@ -37,22 +37,36 @@ html, body {
   justify-content: space-between;
   margin-bottom: 20px;
   padding: 0 4px;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .book-title-area {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
 .book-title-area h1 {
   font-family: var(--font-sans);
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text-primary);
+  margin: 0;
 }
 
 /* Header Compact Date Navigator */
@@ -63,7 +77,7 @@ html, body {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-full);
-  padding: 2px 6px;
+  padding: 2px 4px;
   box-shadow: var(--shadow-subtle);
 }
 
@@ -71,8 +85,8 @@ html, body {
   background: none;
   border: none;
   color: var(--text-muted);
-  width: 32px;
-  height: 32px;
+  width: 26px;
+  height: 26px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
@@ -90,32 +104,33 @@ html, body {
   background: none;
   border: none;
   font-family: var(--font-sans);
-  font-size: 0.86rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: var(--text-primary);
-  padding: 4px 10px;
+  padding: 3px 8px;
   cursor: pointer;
   border-radius: var(--radius-full);
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .date-current-btn:hover {
   background: var(--bg-surface-hover);
-  color: var(--margo-m);
+  color: var(--primary);
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .icon-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   color: var(--text-secondary);
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -129,6 +144,221 @@ html, body {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
   border-color: var(--border-strong);
+}
+
+/* Header Energy Dial */
+.energy-dial-container {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 2px 4px;
+  gap: 2px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.energy-dial-btn {
+  background: transparent;
+  border: none;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all var(--transition-fast);
+}
+
+.energy-dial-btn:hover {
+  color: var(--text-primary);
+}
+
+.energy-dial-btn.active#dial-btn-power {
+  background: #7C3AED;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.35);
+}
+
+.energy-dial-btn.active#dial-btn-maint {
+  background: #D97706;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35);
+}
+
+/* Header Adulting Bunker Portal Button */
+.header-portal-area {
+  display: flex;
+  align-items: center;
+}
+
+.bunker-portal-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 4px 10px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  box-shadow: var(--shadow-subtle);
+  white-space: nowrap;
+}
+
+.bunker-portal-btn:hover {
+  border-color: var(--border-strong);
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+.bunker-portal-icon {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.bunker-portal-label {
+  font-weight: 700;
+}
+
+.bunker-claims-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #10B981;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.35);
+}
+
+.bunker-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10B981;
+  display: inline-block;
+}
+
+/* Adulting Bunker Shell Wrapper */
+.adulting-bunker-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeInPage var(--transition-page);
+}
+
+.bunker-header-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.bunker-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bunker-badge-icon {
+  font-size: 1.4rem;
+}
+
+.bunker-header-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.bunker-header-desc {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.bunker-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bunker-tab-group {
+  display: inline-flex;
+  background: var(--bg-surface);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  gap: 4px;
+}
+
+.bunker-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bunker-tab-btn:hover {
+  color: var(--text-primary);
+}
+
+.bunker-tab-btn.active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 700;
+  box-shadow: var(--shadow-subtle);
+}
+
+.bunker-exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.bunker-exit-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
 }
 
 /* Single Daily Sheet Wrapper */
@@ -504,21 +734,37 @@ html, body {
 
 @media (max-width: 600px) {
   .book-app {
-    padding: 16px 12px 40px;
+    padding: 14px 10px 40px;
   }
 
   .book-header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 6px;
+    padding: 0;
   }
 
-  .header-date-nav {
-    order: 3;
-    width: 100%;
-    justify-content: space-between;
-    padding: 4px 10px;
+  .header-left {
+    gap: 6px;
+  }
+
+  .header-right {
+    gap: 4px;
+  }
+
+  .dial-label {
+    display: none;
+  }
+
+  .bunker-portal-label {
+    display: none;
+  }
+
+  .date-current-btn {
+    font-size: 0.75rem;
+    padding: 2px 5px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
   }
 }

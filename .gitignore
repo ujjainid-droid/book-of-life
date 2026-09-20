@@ -1,0 +1,12 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Executables & Tunnels
+cloudflared
+
+# Logs
+*.log
+
+# Scratch files
+scratch/
