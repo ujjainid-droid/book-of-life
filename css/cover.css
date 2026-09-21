@@ -1729,20 +1729,27 @@
   font-weight: 700;
   padding: 2px 9px;
   border-radius: var(--radius-full);
-  background: rgba(139, 92, 246, 0.1);
-  color: #7C3AED;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(13, 148, 136, 0.1);
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.24);
 }
 
 .breadcrumbs-progress-pill.all-done {
-  background: rgba(16, 185, 129, 0.12);
-  color: #047857;
-  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(13, 148, 136, 0.18);
+  color: #0F766E;
+  border-color: rgba(13, 148, 136, 0.38);
+}
+
+[data-theme="dark"] .breadcrumbs-progress-pill {
+  background: rgba(20, 184, 166, 0.16);
+  color: #5EEAD4;
+  border-color: rgba(20, 184, 166, 0.32);
 }
 
 [data-theme="dark"] .breadcrumbs-progress-pill.all-done {
-  background: rgba(16, 185, 129, 0.25);
-  color: #6EE7B7;
+  background: rgba(20, 184, 166, 0.28);
+  color: #5EEAD4;
+  border-color: rgba(20, 184, 166, 0.48);
 }
 
 .breadcrumbs-trail {
@@ -1762,11 +1769,11 @@
 .breadcrumb-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   padding: 6px 12px;
   border-radius: var(--radius-full);
   font-family: var(--font-sans);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 600;
   border: 1px solid var(--border-light);
   background: var(--bg-surface);
@@ -1779,32 +1786,35 @@
 
 .breadcrumb-chip:hover {
   transform: translateY(-1px);
-  border-color: #8B5CF6;
+  border-color: #0D9488;
   color: var(--text-primary);
-  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.15);
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.15);
 }
 
+/* Complementary Nordic Pine / Sea Glass Teal (NO yellow, NO amber) */
 .breadcrumb-chip.done {
-  background: rgba(139, 92, 246, 0.12);
-  color: #6D28D9;
-  border-color: rgba(139, 92, 246, 0.3);
+  background: rgba(13, 148, 136, 0.12);
+  color: #0F766E;
+  border-color: rgba(13, 148, 136, 0.32);
 }
 
 [data-theme="dark"] .breadcrumb-chip.done {
-  background: rgba(139, 92, 246, 0.25);
-  color: #DDD6FE;
-  border-color: rgba(139, 92, 246, 0.45);
+  background: rgba(20, 184, 166, 0.22);
+  color: #5EEAD4;
+  border-color: rgba(20, 184, 166, 0.42);
 }
 
+/* Soft Arctic Cyan / Slate for Floor Defended (NO yellow, NO amber) */
 .breadcrumb-chip.floor {
-  background: rgba(245, 158, 11, 0.1);
-  color: #B45309;
-  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(2, 132, 199, 0.1);
+  color: #0369A1;
+  border-color: rgba(2, 132, 199, 0.28);
 }
 
 [data-theme="dark"] .breadcrumb-chip.floor {
-  background: rgba(245, 158, 11, 0.2);
-  color: #FCD34D;
+  background: rgba(56, 189, 248, 0.18);
+  color: #7DD3FC;
+  border-color: rgba(56, 189, 248, 0.38);
 }
 
 .breadcrumb-chip.pending {
@@ -1834,9 +1844,9 @@
 }
 
 @keyframes pulseHighlight {
-  0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.25); border-color: #8B5CF6; }
-  100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(13, 148, 136, 0.22); border-color: #0D9488; }
+  100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
 }
 
 .section-highlight-pulse {

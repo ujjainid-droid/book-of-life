@@ -244,7 +244,7 @@ function renderDailySheet() {
         <!-- 1. Good Choice -->
         <button type="button" class="breadcrumb-chip ${hasChoice ? 'done' : 'pending'}" onclick="scrollToDailySection('section-good-choices')" title="Jump to Good Choices">
           <span class="chip-status-icon">${hasChoice ? '✓' : '○'}</span>
-          <span class="chip-label">${hasChoice ? `Good Choice (${dateChoices.good}G / ${dateChoices.not}N)` : 'Good Choice'}</span>
+          <span class="chip-label">Choices</span>
         </button>
 
         <span class="breadcrumb-separator">›</span>
@@ -252,7 +252,7 @@ function renderDailySheet() {
         <!-- 2. How Healthy Do I Feel -->
         <button type="button" class="breadcrumb-chip ${hasHealth ? 'done' : 'pending'}" onclick="scrollToDailySection('section-health-vitality')" title="Jump to Vitality Check">
           <span class="chip-status-icon">${hasHealth ? '✓' : '○'}</span>
-          <span class="chip-label">${hasHealth ? `Vitality (${currentHealthMeta ? currentHealthMeta.emoji : ''} ${currentHealthLevel}/5)` : 'How Healthy?'}</span>
+          <span class="chip-label">Vitality</span>
         </button>
 
         <span class="breadcrumb-separator">›</span>
@@ -260,7 +260,7 @@ function renderDailySheet() {
         <!-- 3. Daily Anchors -->
         <button type="button" class="breadcrumb-chip ${anchorsDone ? 'done' : (anchorsFloor ? 'floor' : 'pending')}" onclick="scrollToDailySection('section-momentum-anchors')" title="Jump to Daily Anchors">
           <span class="chip-status-icon">${anchorsDone ? '✓' : (anchorsFloor ? '🛡️' : '○')}</span>
-          <span class="chip-label">${anchorsDone ? 'Anchors (Closed)' : (anchorsFloor ? 'Anchors (Defended)' : 'Daily Anchors')}</span>
+          <span class="chip-label">Anchors</span>
         </button>
 
         <span class="breadcrumb-separator">›</span>
@@ -268,7 +268,7 @@ function renderDailySheet() {
         <!-- 4. Sanctuary Journal -->
         <button type="button" class="breadcrumb-chip ${hasJournal ? 'done' : 'pending'}" onclick="scrollToDailySection('section-sanctuary-journal')" title="Jump to Sanctuary Journal">
           <span class="chip-status-icon">${hasJournal ? '✓' : '○'}</span>
-          <span class="chip-label">${hasJournal ? `Journal (${journalEntry.wordCount || 0}w)` : 'Sanctuary Journal'}</span>
+          <span class="chip-label">Journal</span>
         </button>
 
         <span class="breadcrumb-separator">›</span>
@@ -276,7 +276,7 @@ function renderDailySheet() {
         <!-- 5. Day Specific Goals -->
         <button type="button" class="breadcrumb-chip ${hasGoals ? (goalsDone ? 'done' : 'pending') : 'optional'}" onclick="scrollToDailySection('section-day-goals')" title="Jump to Day Goals">
           <span class="chip-status-icon">${hasGoals ? (goalsDone ? '✓' : '○') : '⚡'}</span>
-          <span class="chip-label">${hasGoals ? `Day Goals (${completedDayGoals}/${totalDayGoals})` : 'Day Goals (Optional)'}</span>
+          <span class="chip-label">Goals</span>
         </button>
       </div>
     </div>
