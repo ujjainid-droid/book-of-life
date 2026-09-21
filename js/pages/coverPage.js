@@ -757,9 +757,7 @@ function renderDailySheet() {
                 </span>
               </div>
 
-              <div class="journal-completed-text">
-                "${escapeHtml(journalEntry.text)}"
-              </div>
+              <div class="journal-completed-text">${escapeHtml((journalEntry.text || '').trim())}</div>
 
               <div class="journal-completed-footer">
                 <span class="journal-saved-hint">✓ Saved to your personal sanctuary vault</span>

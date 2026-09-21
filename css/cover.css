@@ -2878,7 +2878,7 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 18px 20px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -2888,9 +2888,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
-  padding-bottom: 8px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -2909,10 +2909,14 @@
 .journal-completed-text {
   font-family: var(--font-serif);
   font-style: italic;
-  font-size: 0.95rem;
-  line-height: 1.65;
+  font-size: 0.98rem;
+  line-height: 1.7;
   color: var(--text-primary);
   white-space: pre-wrap;
+  text-align: left;
+  padding: 4px 0;
+  margin: 0;
+  word-break: break-word;
 }
 
 .journal-completed-footer {
@@ -2921,7 +2925,7 @@
   justify-content: space-between;
   font-size: 0.74rem;
   color: var(--text-muted);
-  padding-top: 8px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-subtle);
   flex-wrap: wrap;
   gap: 8px;
@@ -2930,6 +2934,9 @@
 .journal-saved-hint {
   color: var(--margo-m);
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .journal-edit-pane {
