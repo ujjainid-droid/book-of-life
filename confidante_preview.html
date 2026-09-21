@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Refined Anchor Visual Options & Confidante</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-canvas: #F8F7FD;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(139, 92, 246, 0.12);
+      --card-shadow: 0 4px 20px -2px rgba(139, 92, 246, 0.06);
+      --primary: #8B5CF6;
+      --primary-dark: #6D28D9;
+      --text-primary: #1E1B4B;
+      --text-secondary: #4B5563;
+      --text-muted: #6B7280;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-serif: 'Newsreader', serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      padding: 32px 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .header-area {
+      text-align: center;
+    }
+    .header-area h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .header-area p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Option Picker Bar */
+    .option-switcher {
+      display: flex;
+      background: rgba(139, 92, 246, 0.08);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+    .switch-btn {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .switch-btn.active {
+      background: white;
+      color: var(--primary-dark);
+      box-shadow: 0 2px 8px rgba(139, 92, 246, 0.12);
+    }
+
+    /* Anchor Section */
+    .option-display-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .option-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .option-title-row h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .sub-hint {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    .anchors-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 540px) {
+      .anchors-row { grid-template-columns: 1fr; }
+    }
+
+    /* ================= OPTION C: SEGMENTED PILL TRACK ================= */
+    .track-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+    .track-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .track-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .track-status-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #F3F4F6;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+    .track-status-tag.floor {
+      background: rgba(139, 92, 246, 0.12);
+      color: var(--primary-dark);
+    }
+    .track-status-tag.closed {
+      background: #ECFDF5;
+      color: #059669;
+    }
+
+    /* The 3-Segment Switch Track */
+    .segmented-track {
+      display: flex;
+      background: #F4F3F9;
+      padding: 3px;
+      border-radius: 10px;
+      gap: 2px;
+    }
+    .seg-step {
+      flex: 1;
+      padding: 7px 0;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      font-size: 0.76rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .seg-step.active {
+      background: #FFFFFF;
+      color: var(--text-primary);
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    }
+    .seg-step.active.floor-active {
+      color: var(--primary-dark);
+    }
+    .seg-step.active.closed-active {
+      color: #059669;
+    }
+
+    /* ================= OPTION A: ARCHITECTURAL SEGMENTED BAR ================= */
+    .bar-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+    .bar-card:hover { transform: translateY(-1px); }
+    .bar-segments-row {
+      display: flex;
+      gap: 4px;
+      height: 10px;
+      border-radius: 9999px;
+      background: #E5E7EB;
+      overflow: hidden;
+      padding: 1px;
+    }
+    .bar-seg {
+      flex: 1;
+      border-radius: 9999px;
+      background: transparent;
+      transition: background 0.3s ease;
+    }
+    .bar-seg.filled-floor { background: #A78BFA; }
+    .bar-seg.filled-closed { background: #7C3AED; }
+
+    /* ================= OPTION B: EDITORIAL KINETIC RING ================= */
+    .ring-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ring-svg-wrap {
+      width: 54px;
+      height: 54px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .ring-svg-wrap svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .ring-bg {
+      fill: none;
+      stroke: #E5E7EB;
+      stroke-width: 4;
+    }
+    .ring-val {
+      fill: none;
+      stroke: var(--primary);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 138;
+      stroke-dashoffset: 138;
+      transition: stroke-dashoffset 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .ring-center-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.76rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+
+    /* ================= THE CONFIDANTE (ZERO CLUTTER) ================= */
+    .confidante-box {
+      background: var(--card-bg);
+      border: 1.5px solid rgba(139, 92, 246, 0.22);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .conf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .conf-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .conf-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 9999px;
+      background: var(--primary);
+    }
+    .conf-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .conf-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--primary-dark);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .candor-body {
+      background: rgba(245, 243, 255, 0.65);
+      border-left: 3px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 14px;
+    }
+    .candor-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.96rem;
+      line-height: 1.55;
+      color: var(--text-primary);
+    }
+    .candor-next-step {
+      margin-top: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .conf-input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .conf-input {
+      flex: 1;
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      outline: none;
+      background: white;
+      color: var(--text-primary);
+    }
+    .conf-input:focus {
+      border-color: var(--primary);
+    }
+    .conf-send-btn {
+      padding: 8px 14px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <div class="header-area">
+      <h1>margo — Visual Design Alternatives</h1>
+      <p>Click the options below to preview 3 non-tube designs with the zero-clutter Confidante</p>
+    </div>
+
+    <!-- Option Selector -->
+    <div class="option-switcher">
+      <button class="switch-btn" onclick="showOption('C')">Option C: Tactile Pill Track (Recommended)</button>
+      <button class="switch-btn" onclick="showOption('B')">Option B: Editorial Kinetic Ring</button>
+      <button class="switch-btn active" onclick="showOption('A')">Option A: Segmented Meter</button>
+    </div>
+
+    <!-- The Active Option Display Container -->
+    <div class="option-display-card">
+      <div class="option-title-row">
+        <h3 id="current-option-title">Option A: Architectural Segmented Meter</h3>
+        <span class="sub-hint">Tap anchors to cycle stages</span>
+      </div>
+
+      <div class="anchors-row" id="anchors-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Zero-Clutter Confidante Card (Reads Vitality & Choices Automatically) -->
+    <div class="confidante-box">
+      <div class="conf-header">
+        <div class="conf-title-group">
+          <div class="conf-dot"></div>
+          <span class="conf-title">The Confidante</span>
+        </div>
+        <span class="conf-badge" id="conf-stance-tag">🛡️ Baseline Defended</span>
+      </div>
+
+      <div class="candor-body">
+        <p class="candor-quote" id="conf-quote">
+          "Vitality was 2/5 today. You defended your 50% floor on Move when energy was low. That is real grit. Rest early tonight."
+        </p>
+        <p class="candor-next-step" id="conf-next-step">
+          👉 Next Move: Close your laptop and bank 8 hours of rest.
+        </p>
+      </div>
+
+      <!-- Private Confidante Ask Box (Zero Check-In Pills / Zero Dispatch Button) -->
+      <form class="conf-input-row" onsubmit="askConfidante(event)">
+        <input type="text" class="conf-input" id="conf-input" placeholder="Stuck or rationalizing? Tell the confidante...">
+        <button class="conf-send-btn" type="submit">Ask</button>
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    let activeOption = 'C';
+    let moveStage = 1; // 0: off, 1: floor (50%), 2: closed (100%)
+    let standStage = 2; // 0: off, 1: floor (50%), 2: closed (100%)
+
+    function showOption(opt) {
+      activeOption = opt;
+      document.querySelectorAll('.switch-btn').forEach((btn, idx) => {
+        btn.classList.toggle('active', (idx === 0 && opt === 'C') || (idx === 1 && opt === 'B') || (idx === 2 && opt === 'A'));
+      });
+
+      const titleMap = {
+        'C': 'Option C: Tactile Segmented Pill Track (Direct 3-State Tap)',
+        'B': 'Option B: Editorial Kinetic Ring (Nordic Circular Geometry)',
+        'A': 'Option A: Architectural Segmented Meter (Recessed Scandinavian Bar)'
+      };
+      document.getElementById('current-option-title').textContent = titleMap[opt];
+      renderAnchors();
+    }
+
+    function setAnchorStage(type, stage) {
+      if (type === 'move') moveStage = stage;
+      else standStage = stage;
+      renderAnchors();
+      updateConfidante();
+    }
+
+    function cycleAnchorStage(type) {
+      if (type === 'move') moveStage = (moveStage + 1) % 3;
+      else standStage = (standStage + 1) % 3;
+      renderAnchors();
+      updateConfidante();
+    }
+
+    function renderAnchors() {
+      const container = document.getElementById('anchors-container');
+      const moveLabels = ['0% Off', '50% Floor', '100% Closed'];
+      const standLabels = ['0% Off', '50% Floor', '100% Closed'];
+
+      if (activeOption === 'C') {
+        container.innerHTML = `
+          <!-- Move Pill Track -->
+          <div class="track-card">
+            <div class="track-top">
+              <span class="track-name">🏃 Move</span>
+              <span class="track-status-tag ${moveStage === 1 ? 'floor' : (moveStage === 2 ? 'closed' : '')}">
+                ${moveStage === 1 ? '🛡️ Floor Defended' : (moveStage === 2 ? '✓ Closed Today' : 'Pending')}
+              </span>
+            </div>
+            <div class="segmented-track">
+              <button class="seg-step ${moveStage === 0 ? 'active' : ''}" onclick="setAnchorStage('move', 0)">Off</button>
+              <button class="seg-step ${moveStage === 1 ? 'active floor-active' : ''}" onclick="setAnchorStage('move', 1)">50% Floor</button>
+              <button class="seg-step ${moveStage === 2 ? 'active closed-active' : ''}" onclick="setAnchorStage('move', 2)">100% Closed</button>
+            </div>
+          </div>
+
+          <!-- Stand Pill Track -->
+          <div class="track-card">
+            <div class="track-top">
+              <span class="track-name">🧍 Stand</span>
+              <span class="track-status-tag ${standStage === 1 ? 'floor' : (standStage === 2 ? 'closed' : '')}">
+                ${standStage === 1 ? '🛡️ Floor Defended' : (standStage === 2 ? '✓ Closed Today' : 'Pending')}
+              </span>
+            </div>
+            <div class="segmented-track">
+              <button class="seg-step ${standStage === 0 ? 'active' : ''}" onclick="setAnchorStage('stand', 0)">Off</button>
+              <button class="seg-step ${standStage === 1 ? 'active floor-active' : ''}" onclick="setAnchorStage('stand', 1)">50% Floor</button>
+              <button class="seg-step ${standStage === 2 ? 'active closed-active' : ''}" onclick="setAnchorStage('stand', 2)">100% Closed</button>
+            </div>
+          </div>
+        `;
+      } else if (activeOption === 'A') {
+        container.innerHTML = `
+          <div class="bar-card" onclick="cycleAnchorStage('move')">
+            <div class="track-top">
+              <span class="track-name">🏃 Move</span>
+              <span class="track-status-tag ${moveStage === 1 ? 'floor' : (moveStage === 2 ? 'closed' : '')}">
+                ${moveStage === 1 ? '50% Floor' : (moveStage === 2 ? '100% Closed' : '0%')}
+              </span>
+            </div>
+            <div class="bar-segments-row">
+              <div class="bar-seg ${moveStage >= 1 ? 'filled-floor' : ''}"></div>
+              <div class="bar-seg ${moveStage === 2 ? 'filled-closed' : ''}"></div>
+            </div>
+            <span style="font-size:0.72rem; color:var(--text-muted);">Tap to cycle: 0% → 50% → 100%</span>
+          </div>
+
+          <div class="bar-card" onclick="cycleAnchorStage('stand')">
+            <div class="track-top">
+              <span class="track-name">🧍 Stand</span>
+              <span class="track-status-tag ${standStage === 1 ? 'floor' : (standStage === 2 ? 'closed' : '')}">
+                ${standStage === 1 ? '50% Floor' : (standStage === 2 ? '100% Closed' : '0%')}
+              </span>
+            </div>
+            <div class="bar-segments-row">
+              <div class="bar-seg ${standStage >= 1 ? 'filled-floor' : ''}"></div>
+              <div class="bar-seg ${standStage === 2 ? 'filled-closed' : ''}"></div>
+            </div>
+            <span style="font-size:0.72rem; color:var(--text-muted);">Tap to cycle: 0% → 50% → 100%</span>
+          </div>
+        `;
+      } else if (activeOption === 'B') {
+        const moveOffset = moveStage === 0 ? 138 : (moveStage === 1 ? 69 : 0);
+        const standOffset = standStage === 0 ? 138 : (standStage === 1 ? 69 : 0);
+
+        container.innerHTML = `
+          <div class="ring-card" onclick="cycleAnchorStage('move')">
+            <div class="ring-svg-wrap">
+              <svg viewBox="0 0 48 48">
+                <circle class="ring-bg" cx="24" cy="24" r="22"></circle>
+                <circle class="ring-val" cx="24" cy="24" r="22" style="stroke-dashoffset: ${moveOffset}; stroke: #8B5CF6;"></circle>
+              </svg>
+              <div class="ring-center-text">${moveStage === 0 ? '0%' : (moveStage === 1 ? '50%' : '100%')}</div>
+            </div>
+            <div>
+              <span class="track-name" style="display:block;">🏃 Move</span>
+              <span style="font-size:0.76rem; color:var(--text-secondary); font-weight:500;">
+                ${moveStage === 1 ? 'Floor Defended 🛡️' : (moveStage === 2 ? 'Closed Today ✓' : 'Tap to Log')}
+              </span>
+            </div>
+          </div>
+
+          <div class="ring-card" onclick="cycleAnchorStage('stand')">
+            <div class="ring-svg-wrap">
+              <svg viewBox="0 0 48 48">
+                <circle class="ring-bg" cx="24" cy="24" r="22"></circle>
+                <circle class="ring-val" cx="24" cy="24" r="22" style="stroke-dashoffset: ${standOffset}; stroke: #6366F1;"></circle>
+              </svg>
+              <div class="ring-center-text">${standStage === 0 ? '0%' : (standStage === 1 ? '50%' : '100%')}</div>
+            </div>
+            <div>
+              <span class="track-name" style="display:block;">🧍 Stand</span>
+              <span style="font-size:0.76rem; color:var(--text-secondary); font-weight:500;">
+                ${standStage === 1 ? 'Floor Defended 🛡️' : (standStage === 2 ? 'Closed Today ✓' : 'Tap to Log')}
+              </span>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function updateConfidante() {
+      const tagEl = document.getElementById('conf-stance-tag');
+      const quoteEl = document.getElementById('conf-quote');
+      const nextEl = document.getElementById('conf-next-step');
+
+      if (moveStage === 2 && standStage === 2) {
+        tagEl.textContent = '🔥 Ruthless Execution';
+        quoteEl.textContent = '"Both anchors fully closed. Zero negotiation with your baseline. Momentum locked in."';
+        nextEl.textContent = '👉 Next Move: Bank the XP and recharge. Great work.';
+      } else if (moveStage === 0 && standStage === 0) {
+        tagEl.textContent = '⚠️ Baseline Breached';
+        quoteEl.textContent = '"Zero movement logged. You are negotiating with yourself. You don\'t need 60 minutes—do 15 minutes right now."';
+        nextEl.textContent = '👉 Next Move: Put on shoes. Walk for 15 mins to defend the 50% floor.';
+      } else {
+        tagEl.textContent = '🛡️ Baseline Defended';
+        quoteEl.textContent = '"Vitality was low, but you defended the 50% floor. Defending the baseline on hard days is what keeps streaks alive for months."';
+        nextEl.textContent = '👉 Next Move: Bank today as protected. Tomorrow push for 100%.';
+      }
+    }
+
+    function askConfidante(e) {
+      e.preventDefault();
+      const input = document.getElementById('conf-input');
+      const val = input.value.trim();
+      if (!val) return;
+      document.getElementById('conf-quote').textContent = `"${val}" is your brain rationalizing friction. Strip the task down to 10 minutes and start without negotiating.`;
+      document.getElementById('conf-next-step').textContent = '👉 Next Move: 10-minute timer right now.';
+      input.value = '';
+    }
+
+    showOption('C');
+  </script>
+</body>
+</html>
