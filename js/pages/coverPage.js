@@ -170,6 +170,24 @@ function renderDailySheet() {
     confidanteNextStep = '👉 Next Move: Put on shoes. 15-minute walk right now to defend the 50% floor.';
   }
 
+  // Visual Breadcrumbs: Checkpoints Status Calculations
+  const hasChoice = (dateChoices.good || 0) + (dateChoices.not || 0) > 0;
+  const hasHealth = !!currentHealthLevel;
+  const anchorsDone = (moveStage === 1 && standStage === 1);
+  const anchorsFloor = (moveStage > 0 || standStage > 0);
+  const totalDayGoals = dateDayGoals.length;
+  const completedDayGoals = dateDayGoals.filter(g => g && g.completed).length;
+  const hasGoals = totalDayGoals > 0;
+  const goalsDone = hasGoals && (completedDayGoals === totalDayGoals);
+
+  const totalRequired = hasGoals ? 4 : 3;
+  let completedCheckpoints = 0;
+  if (hasChoice) completedCheckpoints++;
+  if (hasHealth) completedCheckpoints++;
+  if (anchorsFloor) completedCheckpoints++;
+  if (hasGoals && goalsDone) completedCheckpoints++;
+  const allCheckpointsDone = (completedCheckpoints >= totalRequired);
+
   container.innerHTML = `
     ${!isToday ? `
       <!-- Past Date Navigation & Action Banner -->
@@ -204,6 +222,52 @@ function renderDailySheet() {
         <div class="reminder-pill-card reminder-pill-done" title="rough and shipped beats pretty and stuck.">
           <div class="reminder-word">done</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Visual Breadcrumbs: Today's Daily Checkpoints -->
+    <div class="daily-breadcrumbs-bar">
+      <div class="breadcrumbs-header">
+        <div class="breadcrumbs-title-group">
+          <span class="breadcrumbs-icon">🧭</span>
+          <span class="breadcrumbs-title">Daily Checkpoints</span>
+          <span class="breadcrumbs-sub">Tap to jump &amp; log</span>
+        </div>
+        <div class="breadcrumbs-progress-pill ${allCheckpointsDone ? 'all-done' : ''}">
+          ${allCheckpointsDone ? '🎉 All Complete' : `⏳ ${completedCheckpoints}/${totalRequired} Complete`}
+        </div>
+      </div>
+
+      <div class="breadcrumbs-trail">
+        <!-- 1. Good Choice -->
+        <button type="button" class="breadcrumb-chip ${hasChoice ? 'done' : 'pending'}" onclick="scrollToDailySection('section-good-choices')" title="Jump to Good Choices">
+          <span class="chip-status-icon">${hasChoice ? '✓' : '○'}</span>
+          <span class="chip-label">${hasChoice ? `Good Choice (${dateChoices.good}G / ${dateChoices.not}N)` : 'Good Choice'}</span>
+        </button>
+
+        <span class="breadcrumb-separator">›</span>
+
+        <!-- 2. How Healthy Do I Feel -->
+        <button type="button" class="breadcrumb-chip ${hasHealth ? 'done' : 'pending'}" onclick="scrollToDailySection('section-health-vitality')" title="Jump to Vitality Check">
+          <span class="chip-status-icon">${hasHealth ? '✓' : '○'}</span>
+          <span class="chip-label">${hasHealth ? `Vitality (${currentHealthMeta ? currentHealthMeta.emoji : ''} ${currentHealthLevel}/5)` : 'How Healthy?'}</span>
+        </button>
+
+        <span class="breadcrumb-separator">›</span>
+
+        <!-- 3. Daily Anchors -->
+        <button type="button" class="breadcrumb-chip ${anchorsDone ? 'done' : (anchorsFloor ? 'floor' : 'pending')}" onclick="scrollToDailySection('section-momentum-anchors')" title="Jump to Daily Anchors">
+          <span class="chip-status-icon">${anchorsDone ? '✓' : (anchorsFloor ? '🛡️' : '○')}</span>
+          <span class="chip-label">${anchorsDone ? 'Anchors (Closed)' : (anchorsFloor ? 'Anchors (Defended)' : 'Daily Anchors')}</span>
+        </button>
+
+        <span class="breadcrumb-separator">›</span>
+
+        <!-- 4. Day Specific Goals -->
+        <button type="button" class="breadcrumb-chip ${hasGoals ? (goalsDone ? 'done' : 'pending') : 'optional'}" onclick="scrollToDailySection('section-day-goals')" title="Jump to Day Goals">
+          <span class="chip-status-icon">${hasGoals ? (goalsDone ? '✓' : '○') : '⚡'}</span>
+          <span class="chip-label">${hasGoals ? `Day Goals (${completedDayGoals}/${totalDayGoals})` : 'Day Goals (Optional)'}</span>
+        </button>
       </div>
     </div>
 
@@ -335,7 +399,7 @@ function renderDailySheet() {
     <div class="daily-widgets-grid">
       
       <!-- Good Choices (vs Not) Tracker Card -->
-      <div class="cover-card">
+      <div class="cover-card" id="section-good-choices">
         <div class="card-title-row">
           <div>
             <h3>
@@ -381,7 +445,7 @@ function renderDailySheet() {
       </div>
 
       <!-- How Healthy Do I Feel? Widget -->
-      <div class="cover-card">
+      <div class="cover-card" id="section-health-vitality">
         <div class="card-title-row">
           <div>
             <h3>
@@ -429,7 +493,7 @@ function renderDailySheet() {
     </div>
 
     <!-- 4. Tactile Segmented Pill Track & Confidante Momentum Deck -->
-    <div class="momentum-deck-card">
+    <div class="momentum-deck-card" id="section-momentum-anchors">
       <div class="momentum-deck-header">
         <div class="momentum-header-left">
           <span class="momentum-header-badge">Daily Anchors</span>
@@ -595,7 +659,7 @@ function renderDailySheet() {
     </div>
 
     <!-- 5. Day-Specific Bonus Goals Card (One-off daily targets) -->
-    <div class="cover-card day-goals-card-wrapper">
+    <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
       <div class="card-title-row">
         <div>
           <h3>
@@ -1406,3 +1470,17 @@ function askConfidanteAction(event) {
   inputEl.value = '';
 }
 window.askConfidanteAction = askConfidanteAction;
+
+function scrollToDailySection(sectionId) {
+  const el = document.getElementById(sectionId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.remove('section-highlight-pulse');
+    void el.offsetWidth; // trigger reflow to restart animation
+    el.classList.add('section-highlight-pulse');
+    setTimeout(() => {
+      if (el) el.classList.remove('section-highlight-pulse');
+    }, 1600);
+  }
+}
+window.scrollToDailySection = scrollToDailySection;
