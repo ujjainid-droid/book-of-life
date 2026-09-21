@@ -175,16 +175,18 @@ function renderDailySheet() {
   const hasHealth = !!currentHealthLevel;
   const anchorsDone = (moveStage === 1 && standStage === 1);
   const anchorsFloor = (moveStage > 0 || standStage > 0);
+  const hasJournal = !!(journalEntry && journalEntry.text && journalEntry.text.trim().length > 0);
   const totalDayGoals = dateDayGoals.length;
   const completedDayGoals = dateDayGoals.filter(g => g && g.completed).length;
   const hasGoals = totalDayGoals > 0;
   const goalsDone = hasGoals && (completedDayGoals === totalDayGoals);
 
-  const totalRequired = hasGoals ? 4 : 3;
+  const totalRequired = hasGoals ? 5 : 4;
   let completedCheckpoints = 0;
   if (hasChoice) completedCheckpoints++;
   if (hasHealth) completedCheckpoints++;
   if (anchorsFloor) completedCheckpoints++;
+  if (hasJournal) completedCheckpoints++;
   if (hasGoals && goalsDone) completedCheckpoints++;
   const allCheckpointsDone = (completedCheckpoints >= totalRequired);
 
@@ -263,7 +265,15 @@ function renderDailySheet() {
 
         <span class="breadcrumb-separator">›</span>
 
-        <!-- 4. Day Specific Goals -->
+        <!-- 4. Sanctuary Journal -->
+        <button type="button" class="breadcrumb-chip ${hasJournal ? 'done' : 'pending'}" onclick="scrollToDailySection('section-sanctuary-journal')" title="Jump to Sanctuary Journal">
+          <span class="chip-status-icon">${hasJournal ? '✓' : '○'}</span>
+          <span class="chip-label">${hasJournal ? `Journal (${journalEntry.wordCount || 0}w)` : 'Sanctuary Journal'}</span>
+        </button>
+
+        <span class="breadcrumb-separator">›</span>
+
+        <!-- 5. Day Specific Goals -->
         <button type="button" class="breadcrumb-chip ${hasGoals ? (goalsDone ? 'done' : 'pending') : 'optional'}" onclick="scrollToDailySection('section-day-goals')" title="Jump to Day Goals">
           <span class="chip-status-icon">${hasGoals ? (goalsDone ? '✓' : '○') : '⚡'}</span>
           <span class="chip-label">${hasGoals ? `Day Goals (${completedDayGoals}/${totalDayGoals})` : 'Day Goals (Optional)'}</span>
@@ -786,7 +796,7 @@ function renderDailySheet() {
     </div>
 
     <!-- 7. Unstructured Sanctuary Daily Journal & Brain Dump with Square Cards Archive -->
-    <div class="cover-card sanctuary-journal-card">
+    <div class="cover-card sanctuary-journal-card" id="section-sanctuary-journal">
       <div class="journal-card-header">
         <div class="journal-header-left">
           <span class="journal-header-icon">✍️</span>
