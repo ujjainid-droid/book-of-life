@@ -2082,231 +2082,300 @@
   border-radius: var(--radius-full);
 }
 
-/* 2 Hero Capsules Side-by-Side */
-.anchor-capsules-grid {
+/* Tactile Segmented Pill Track (Direction 2: Nordic Monochromatic Lavender) */
+.anchor-tracks-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
 
-.anchor-capsule-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92) 0%, rgba(246, 244, 254, 0.65) 100%);
-  border: 1.5px solid rgba(139, 92, 246, 0.16);
+@media (max-width: 640px) {
+  .anchor-tracks-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.track-card {
+  background: var(--bg-surface);
+  border: 1px solid rgba(139, 92, 246, 0.16);
   border-radius: var(--radius-lg);
-  padding: 18px;
+  padding: 16px 18px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
+  gap: 14px;
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.04);
   transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  position: relative;
 }
 
-[data-theme="dark"] .anchor-capsule-card {
-  background: linear-gradient(145deg, rgba(30, 24, 46, 0.8) 0%, rgba(20, 16, 32, 0.9) 100%);
-  border-color: rgba(139, 92, 246, 0.22);
+.track-card:hover {
+  border-color: rgba(139, 92, 246, 0.32);
 }
 
-.anchor-capsule-card:hover {
-  transform: translateY(-2px);
-  border-color: #8B5CF6;
-  box-shadow: 0 8px 24px -4px rgba(139, 92, 246, 0.16);
-}
-
-.anchor-capsule-card.completed {
-  border-color: rgba(16, 185, 129, 0.4);
-  background: linear-gradient(145deg, rgba(240, 253, 244, 0.8) 0%, rgba(255, 255, 255, 0.95) 100%);
-}
-
-[data-theme="dark"] .anchor-capsule-card.completed {
-  background: linear-gradient(145deg, rgba(6, 40, 28, 0.5) 0%, rgba(20, 16, 32, 0.9) 100%);
-  border-color: rgba(16, 185, 129, 0.45);
-}
-
-.capsule-card-top {
+.track-top {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  align-items: center;
 }
 
-.capsule-title-group {
+.track-title-left {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.capsule-tag {
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+.track-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.track-streak-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--warning);
+  background: rgba(245, 158, 11, 0.1);
   padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.track-status-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+/* Direction 2 Nordic Monochromatic Lavender */
+.track-status-tag.floor {
+  background: rgba(139, 92, 246, 0.12);
+  color: #7C3AED;
+  border-color: rgba(139, 92, 246, 0.28);
+}
+
+[data-theme="dark"] .track-status-tag.floor {
+  background: rgba(139, 92, 246, 0.25);
+  color: #C4B5FD;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.track-status-tag.closed {
+  background: rgba(109, 40, 217, 0.16);
+  color: #6D28D9;
+  border-color: rgba(109, 40, 217, 0.3);
+}
+
+[data-theme="dark"] .track-status-tag.closed {
+  background: rgba(109, 40, 217, 0.35);
+  color: #DDD6FE;
+  border-color: rgba(109, 40, 217, 0.5);
+}
+
+/* The Segmented Switch Track */
+.segmented-track {
+  display: flex;
+  background: rgba(139, 92, 246, 0.08);
+  padding: 3px;
+  border-radius: var(--radius-md);
+  gap: 3px;
+  user-select: none;
+}
+
+[data-theme="dark"] .segmented-track {
+  background: rgba(139, 92, 246, 0.14);
+}
+
+.seg-step {
+  flex: 1;
+  padding: 8px 0;
   border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.tag-move {
-  background: rgba(78, 135, 101, 0.14);
-  color: #3A6B4F;
+.seg-step:hover {
+  color: var(--text-primary);
 }
 
-[data-theme="dark"] .tag-move {
-  color: #4E8765;
-  background: rgba(78, 135, 101, 0.25);
+.seg-step.active {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
-.tag-stand {
-  background: rgba(0, 194, 168, 0.14);
-  color: #008F7A;
+.seg-step.active.floor-active {
+  background: rgba(139, 92, 246, 0.2);
+  color: #6D28D9;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.18);
 }
 
-[data-theme="dark"] .tag-stand {
-  color: #00C2A8;
-  background: rgba(0, 194, 168, 0.25);
+[data-theme="dark"] .seg-step.active.floor-active {
+  background: rgba(139, 92, 246, 0.32);
+  color: #E9D5FF;
 }
 
-.capsule-name {
-  font-size: 1.15rem;
+.seg-step.active.closed-active {
+  background: #6D28D9;
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(109, 40, 217, 0.35);
+}
+
+[data-theme="dark"] .seg-step.active.closed-active {
+  background: #7C3AED;
+  color: #FFFFFF;
+}
+
+/* The Confidante (Radical Candor Audit Card) */
+.confidante-card {
+  background: var(--bg-card);
+  border: 1.5px solid rgba(139, 92, 246, 0.22);
+  border-radius: var(--radius-xl);
+  padding: 20px 22px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 20px -2px rgba(124, 58, 237, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.conf-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.conf-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.conf-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #8B5CF6;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.6);
+}
+
+.conf-title {
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--text-primary);
   letter-spacing: -0.01em;
 }
 
-.capsule-streak-tag {
+.conf-subtitle {
   font-size: 0.74rem;
-  font-weight: 700;
-  color: var(--warning);
-  background: rgba(245, 158, 11, 0.12);
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
-.capsule-visual-row {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  padding: 8px 0;
-}
-
-.capsule-glass-tube {
-  position: relative;
-  width: 52px;
-  height: 115px;
-  border-radius: var(--radius-full);
-  border: 2px solid var(--border-strong);
-  background: var(--bg-surface);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 3px;
-  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.08);
-  flex-shrink: 0;
-}
-
-.capsule-fluid-liquid {
-  width: 100%;
-  border-radius: var(--radius-full);
-  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.liquid-move {
-  background: linear-gradient(to top, #3A6B4F, #4E8765, #68B086);
-  box-shadow: 0 -2px 12px rgba(78, 135, 101, 0.4);
-}
-
-.liquid-stand {
-  background: linear-gradient(to top, #008F7A, #00C2A8, #33DFCA);
-  box-shadow: 0 -2px 12px rgba(0, 194, 168, 0.4);
-}
-
-.capsule-glass-gloss {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  right: 4px;
-  height: 40%;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, transparent 100%);
-  border-radius: var(--radius-full) var(--radius-full) 0 0;
-  pointer-events: none;
-}
-
-.capsule-stat-readout {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.capsule-pct-large {
-  font-family: var(--font-mono);
-  font-size: 1.7rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  line-height: 1.1;
-}
-
-.capsule-pct-large.done {
-  color: #10B981;
-}
-
-.capsule-status-badge {
-  display: inline-block;
+.conf-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-full);
-  background: var(--bg-surface);
-  color: var(--text-muted);
-  width: fit-content;
+  background: rgba(139, 92, 246, 0.1);
+  color: #6D28D9;
+  border: 1px solid rgba(139, 92, 246, 0.24);
 }
 
-.capsule-status-badge.done {
-  background: rgba(16, 185, 129, 0.15);
-  color: #059669;
+[data-theme="dark"] .conf-badge {
+  background: rgba(139, 92, 246, 0.2);
+  color: #DDD6FE;
+  border-color: rgba(139, 92, 246, 0.35);
 }
 
-.capsule-micro-desc {
-  font-size: 0.74rem;
-  color: var(--text-muted);
-  line-height: 1.35;
-  margin-top: 4px;
-}
-
-.capsule-card-footer {
-  margin-top: 14px;
+.candor-body {
+  background: rgba(139, 92, 246, 0.05);
+  border-left: 3px solid #8B5CF6;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 14px 16px;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.capsule-toggle-action-btn {
-  width: 100%;
-  padding: 7px 12px;
+[data-theme="dark"] .candor-body {
+  background: rgba(139, 92, 246, 0.1);
+}
+
+.candor-quote {
+  font-family: var(--font-serif, Georgia, serif);
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+}
+
+.candor-next-step {
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #6D28D9;
+}
+
+[data-theme="dark"] .candor-next-step {
+  color: #C4B5FD;
+}
+
+.conf-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.conf-input {
+  flex: 1;
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  border-radius: var(--radius-md);
+  padding: 9px 14px;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  outline: none;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: border-color var(--transition-fast);
+}
+
+.conf-input:focus {
+  border-color: #8B5CF6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+}
+
+.conf-send-btn {
+  padding: 9px 16px;
+  background: #7C3AED;
+  color: white;
+  border: none;
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  border: 1px solid var(--border-light);
-  background: var(--bg-card);
-  color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  white-space: nowrap;
 }
 
-.capsule-toggle-action-btn:hover {
-  border-color: #8B5CF6;
-  color: #8B5CF6;
-  background: rgba(139, 92, 246, 0.05);
-}
-
-.capsule-toggle-action-btn.done {
-  background: rgba(16, 185, 129, 0.12);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: #059669;
+.conf-send-btn:hover {
+  background: #6D28D9;
 }
 
 /* Additional Staged Habits Tray */
@@ -2712,6 +2781,7 @@
 }
 
 @media (max-width: 640px) {
+  .anchor-tracks-grid,
   .anchor-capsules-grid {
     grid-template-columns: 1fr;
   }

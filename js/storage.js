@@ -594,6 +594,28 @@ class StorageManager {
     return nextVal;
   }
 
+  setAnchorStage(habitId, stage, dateStr = formatDateIso(new Date())) {
+    if (!this.data.habitsState[dateStr]) {
+      this.data.habitsState[dateStr] = {};
+    }
+
+    const prevRaw = this.data.habitsState[dateStr][habitId];
+    const prevPoints = (prevRaw === 1 || prevRaw === true) ? 10 : (prevRaw === 0.5 ? 5 : 0);
+    const newPoints = stage === 1 ? 10 : (stage === 0.5 ? 5 : 0);
+    const delta = newPoints - prevPoints;
+
+    this.data.habitsState[dateStr][habitId] = stage === 0 ? false : stage;
+    if (!this.data.habitsUpdatedAt) this.data.habitsUpdatedAt = {};
+    this.data.habitsUpdatedAt[dateStr] = Date.now();
+
+    if (delta !== 0) {
+      this.addPoints(delta);
+    }
+    this.recalculateStreak(habitId);
+    this.saveData();
+    return stage;
+  }
+
   setWeeklyHabitCount(habitId, dateStr, count) {
     if (!this.data.habitsState[dateStr]) {
       this.data.habitsState[dateStr] = {};
@@ -903,7 +925,7 @@ class StorageManager {
       Object.values(this.data.habitsState).forEach(day => {
         if (day && typeof day === 'object') {
           Object.values(day).forEach(v => {
-            if (v) pts += 10;
+            if (v) pts += (v === 0.5 ? 5 : 10);
           });
         }
       });

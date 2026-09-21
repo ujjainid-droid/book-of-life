@@ -41,9 +41,18 @@ function renderDailySheet() {
   const habits = storage.getHabits();
   const dayHabitsState = storage.data.habitsState[activeTrackingDate] || {};
 
-  // Check Move and Stand completion specifically for Style A Tubes
-  const isMoveDone = !!dayHabitsState['h-move'];
-  const isStandDone = !!dayHabitsState['h-stand'];
+  // Look up Move and Stand habits & 3-stage state (0: off, 0.5: 50% floor, 1: 100% closed)
+  const moveHabit = habits.find(h => h && (h.id === 'h-move' || h.name.toLowerCase().trim() === 'move'));
+  const standHabit = habits.find(h => h && (h.id === 'h-stand' || h.name.toLowerCase().trim() === 'stand' || h.name.toLowerCase().trim() === 'stand ring'));
+  const moveId = moveHabit ? moveHabit.id : 'h-move';
+  const standId = standHabit ? standHabit.id : 'h-stand';
+
+  const rawMove = dayHabitsState[moveId];
+  const moveStage = (rawMove === 1 || rawMove === true) ? 1 : (rawMove === 0.5 ? 0.5 : 0);
+  const rawStand = dayHabitsState[standId];
+  const standStage = (rawStand === 1 || rawStand === true) ? 1 : (rawStand === 0.5 ? 0.5 : 0);
+  const isMoveDone = moveStage > 0;
+  const isStandDone = standStage > 0;
 
   let completedTodayCount = 0;
   habits.forEach(h => {
@@ -60,8 +69,8 @@ function renderDailySheet() {
 
   // Streak calculation
   let maxStreak = 0;
-  let moveStreak = storage.data.habitStreaks['h-move'] || 0;
-  let standStreak = storage.data.habitStreaks['h-stand'] || 0;
+  let moveStreak = storage.data.habitStreaks[moveId] || 0;
+  let standStreak = storage.data.habitStreaks[standId] || 0;
   habits.forEach(h => {
     const s = storage.data.habitStreaks[h.id] || 0;
     if (s > maxStreak) maxStreak = s;
@@ -115,12 +124,51 @@ function renderDailySheet() {
   // Active Habits without Move and Stand (which have dedicated Momentum Anchors)
   const additionalHabits = habits.filter(h => 
     h && 
-    h.id !== 'h-move' && 
-    h.id !== 'h-stand' && 
+    h.id !== moveId && 
+    h.id !== standId && 
     h.name.toLowerCase().trim() !== 'move' && 
     h.name.toLowerCase().trim() !== 'stand' && 
     h.name.toLowerCase().trim() !== 'stand ring'
   );
+
+  // Confidante Radical Candor Synthesis (Move & Stand + Vitality + Choices)
+  let confidanteStance = '⚠️ Baseline Breached';
+  let confidanteQuote = '';
+  let confidanteNextStep = '';
+
+  const bothClosed = (moveStage === 1 && standStage === 1);
+  const floorDefended = (moveStage > 0 || standStage > 0) && !bothClosed;
+  const zeroDefended = (moveStage === 0 && standStage === 0);
+
+  if (bothClosed) {
+    confidanteStance = '🔥 Ruthless Execution';
+    if (currentHealthLevel && currentHealthLevel <= 2) {
+      confidanteQuote = `"Vitality was only ${currentHealthLevel}/5 today, yet you closed both Move & Stand 100%. That is uncompromising discipline. Respect the physiological reality—bank your rest early tonight."`;
+    } else if (currentHealthLevel && currentHealthLevel >= 4) {
+      confidanteQuote = `"High vitality (${currentHealthLevel}/5) paired with 100% closed rings. Textbook execution today. Zero excuses tolerated, none made."`;
+    } else {
+      confidanteQuote = `"Both Move and Stand rings 100% closed. Zero friction, zero negotiation with your baseline. Momentum locked in."`;
+    }
+    confidanteNextStep = '👉 Next Move: Bank the XP and recharge for tomorrow.';
+  } else if (floorDefended) {
+    confidanteStance = '🛡️ Floor Defended';
+    if (currentHealthLevel && currentHealthLevel <= 2) {
+      confidanteQuote = `"Low energy day (${currentHealthLevel}/5), but you defended your 50% floor instead of taking a zero. Defending the baseline when you don't feel like it is what creates real long-term identity."`;
+    } else {
+      confidanteQuote = `"You defended your baseline. If you still have fuel left, take 15–20 minutes to close to 100%. If not, streak is secured."`;
+    }
+    confidanteNextStep = (moveStage === 0.5 || standStage === 0.5) 
+      ? '👉 Next Move: 15 more minutes pushes you to 100%, or rest knowing your streak is protected.' 
+      : '👉 Next Move: Defend the remaining anchor or bank your protected day.';
+  } else {
+    confidanteStance = '⚠️ Baseline Breached';
+    if (currentHealthLevel && currentHealthLevel <= 2) {
+      confidanteQuote = `"You're feeling low energy (${currentHealthLevel}/5), but doing 0% is surrendering to total inertia. Don't do a full session—defend the 50% floor with a 15-minute walk right now."`;
+    } else {
+      confidanteQuote = `"Zero movement logged today. You are negotiating with friction. Put your phone down and move for 15 minutes before the day slips."`;
+    }
+    confidanteNextStep = '👉 Next Move: Put on shoes. 15-minute walk right now to defend the 50% floor.';
+  }
 
   container.innerHTML = `
     ${!isToday ? `
@@ -380,87 +428,84 @@ function renderDailySheet() {
 
     </div>
 
-    <!-- 4. STYLE A: Kinetic Energy Anchors (Move & Stand Momentum Deck) -->
+    <!-- 4. Tactile Segmented Pill Track & Confidante Momentum Deck -->
     <div class="momentum-deck-card">
       <div class="momentum-deck-header">
         <div class="momentum-header-left">
           <span class="momentum-header-badge">Daily Anchors</span>
-          <h3 class="momentum-title">Kinetic Energy Anchors</h3>
+          <h3 class="momentum-title">Momentum Anchors</h3>
         </div>
         <div class="momentum-streak-pill">
           🔥 ${Math.max(moveStreak, standStreak, maxStreak)}d Momentum Streak
         </div>
       </div>
 
-      <!-- The Two Hero Momentum Capsules (Side by Side in 2 Columns) -->
-      <div class="anchor-capsules-grid">
+      <!-- Option C: Tactile Segmented Pill Track (Direction 2: Nordic Monochromatic Lavender) -->
+      <div class="anchor-tracks-grid">
         
-        <!-- Move Anchor Capsule Card -->
-        <div class="anchor-capsule-card ${isMoveDone ? 'completed' : ''}" onclick="toggleHabitInSheet('h-move')">
-          <div class="capsule-card-top">
-            <div class="capsule-title-group">
-              <span class="capsule-tag tag-move">Anchor #1</span>
-              <h4 class="capsule-name">Move</h4>
+        <!-- Move Pill Track -->
+        <div class="track-card">
+          <div class="track-top">
+            <div class="track-title-left">
+              <span class="track-name">🏃 Move</span>
+              <span class="track-streak-badge">🔥 ${moveStreak}d</span>
             </div>
-            <span class="capsule-streak-tag">🔥 ${moveStreak}d</span>
+            <span class="track-status-tag ${moveStage === 0.5 ? 'floor' : (moveStage === 1 ? 'closed' : '')}">
+              ${moveStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (moveStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
+            </span>
           </div>
-
-          <div class="capsule-visual-row">
-            <!-- Modern Glass Tube -->
-            <div class="capsule-glass-tube">
-              <div class="capsule-fluid-liquid liquid-move" style="height: ${isMoveDone ? '100%' : '18%'};"></div>
-              <div class="capsule-glass-gloss"></div>
-            </div>
-            
-            <div class="capsule-stat-readout">
-              <div class="capsule-pct-large ${isMoveDone ? 'done' : ''}">${isMoveDone ? '100%' : '0%'}</div>
-              <div class="capsule-status-badge ${isMoveDone ? 'done' : ''}">
-                ${isMoveDone ? '✓ Closed Today' : 'Tap to Close'}
-              </div>
-              <p class="capsule-micro-desc">Daily physical movement &amp; active rings</p>
-            </div>
-          </div>
-
-          <div class="capsule-card-footer">
-            <button class="capsule-toggle-action-btn ${isMoveDone ? 'done' : ''}" type="button">
-              ${isMoveDone ? '✓ Completed' : '+ Mark as Closed'}
-            </button>
+          <div class="segmented-track">
+            <button type="button" class="seg-step ${moveStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">Off</button>
+            <button type="button" class="seg-step ${moveStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
+            <button type="button" class="seg-step ${moveStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">100% Closed</button>
           </div>
         </div>
 
-        <!-- Stand Anchor Capsule Card -->
-        <div class="anchor-capsule-card ${isStandDone ? 'completed' : ''}" onclick="toggleHabitInSheet('h-stand')">
-          <div class="capsule-card-top">
-            <div class="capsule-title-group">
-              <span class="capsule-tag tag-stand">Anchor #2</span>
-              <h4 class="capsule-name">Stand</h4>
+        <!-- Stand Pill Track -->
+        <div class="track-card">
+          <div class="track-top">
+            <div class="track-title-left">
+              <span class="track-name">🧍 Stand</span>
+              <span class="track-streak-badge">🔥 ${standStreak}d</span>
             </div>
-            <span class="capsule-streak-tag">🔥 ${standStreak}d</span>
+            <span class="track-status-tag ${standStage === 0.5 ? 'floor' : (standStage === 1 ? 'closed' : '')}">
+              ${standStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (standStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
+            </span>
           </div>
-
-          <div class="capsule-visual-row">
-            <!-- Modern Glass Tube -->
-            <div class="capsule-glass-tube">
-              <div class="capsule-fluid-liquid liquid-stand" style="height: ${isStandDone ? '100%' : '18%'};"></div>
-              <div class="capsule-glass-gloss"></div>
-            </div>
-            
-            <div class="capsule-stat-readout">
-              <div class="capsule-pct-large ${isStandDone ? 'done' : ''}">${isStandDone ? '100%' : '0%'}</div>
-              <div class="capsule-status-badge ${isStandDone ? 'done' : ''}">
-                ${isStandDone ? '✓ Closed Today' : 'Tap to Close'}
-              </div>
-              <p class="capsule-micro-desc">Hourly posture reset &amp; active standing</p>
-            </div>
-          </div>
-
-          <div class="capsule-card-footer">
-            <button class="capsule-toggle-action-btn ${isStandDone ? 'done' : ''}" type="button">
-              ${isStandDone ? '✓ Completed' : '+ Mark as Closed'}
-            </button>
+          <div class="segmented-track">
+            <button type="button" class="seg-step ${standStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">Off</button>
+            <button type="button" class="seg-step ${standStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
+            <button type="button" class="seg-step ${standStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">100% Closed</button>
           </div>
         </div>
 
+      </div>
+
+      <!-- The Confidante (Radical Candor Audit Card) -->
+      <div class="confidante-card">
+        <div class="conf-header">
+          <div class="conf-title-group">
+            <div class="conf-dot"></div>
+            <span class="conf-title">The Confidante</span>
+            <span class="conf-subtitle">· Radical Candor Audit</span>
+          </div>
+          <span class="conf-badge" id="conf-stance-tag">${confidanteStance}</span>
+        </div>
+
+        <div class="candor-body">
+          <p class="candor-quote" id="conf-quote">
+            ${confidanteQuote}
+          </p>
+          <p class="candor-next-step" id="conf-next-step">
+            ${confidanteNextStep}
+          </p>
+        </div>
+
+        <!-- Private Confidante Reality Check Input (Zero Clutter / Direct Accountability) -->
+        <form class="conf-input-row" onsubmit="askConfidanteAction(event)">
+          <input type="text" class="conf-input" id="conf-input" placeholder="Stuck or rationalizing? Tell the confidante...">
+          <button class="conf-send-btn" type="submit">Reality Check</button>
+        </form>
       </div>
 
       <!-- Additional Staged Habits (If user adds Skincare, Me time, etc.) -->
@@ -1297,3 +1342,69 @@ function addHabitFromPresetName(name, bucket, cadence, target, icon, desc) {
   showToast(`✓ Added "${name}" to your active habits stack!`);
   renderDailySheet();
 }
+
+/* --------------------------------------------------------------------------
+   Tactile Segmented Pill Track & Radical Candor Confidante Actions
+   -------------------------------------------------------------------------- */
+function setAnchorStageAction(habitId, stage, dateStr = activeTrackingDate) {
+  const nextStage = storage.setAnchorStage(habitId, stage, dateStr);
+  renderDailySheet();
+
+  const habit = storage.getHabit(habitId);
+  const hName = habit ? habit.name : (habitId === 'h-move' ? 'Move' : 'Stand');
+  const todayIso = formatDateIso(new Date());
+  const isToday = (dateStr === todayIso);
+
+  if (nextStage === 1) {
+    showToast(`✓ "${hName}" 100% Closed (+10 XP)`);
+  } else if (nextStage === 0.5) {
+    showToast(`🛡️ "${hName}" 50% Floor Defended (+5 XP, streak protected)`);
+  } else {
+    showToast(`"${hName}" set to Off`);
+  }
+}
+window.setAnchorStageAction = setAnchorStageAction;
+
+function askConfidanteAction(event) {
+  if (event && event.preventDefault) event.preventDefault();
+  const inputEl = document.getElementById('conf-input');
+  if (!inputEl) return;
+  const val = inputEl.value.trim();
+  if (!val) return;
+
+  const quoteEl = document.getElementById('conf-quote');
+  const nextEl = document.getElementById('conf-next-step');
+  const stanceEl = document.getElementById('conf-stance-tag');
+
+  const lower = val.toLowerCase();
+  let responseQuote = '';
+  let responseNext = '';
+
+  if (lower.includes('tired') || lower.includes('exhaust') || lower.includes('sleep') || lower.includes('drain') || lower.includes('sick')) {
+    responseQuote = `"Fatigue is physiological, but inertia is mental. You don't need a grueling workout. Strip expectation to zero and defend the 50% floor with 10–15 gentle minutes. Then shut down completely."`;
+    responseNext = '👉 Next Move: 10-minute floor walk right now, then bed.';
+  } else if (lower.includes('tomorrow') || lower.includes('later') || lower.includes('tonight') || lower.includes('busy') || lower.includes('time')) {
+    responseQuote = `"Tomorrow is where consistency goes to die. If you have 5 minutes to negotiate with yourself, you have 10 minutes to move. Take action immediately."`;
+    responseNext = '👉 Next Move: Start a 10-minute timer and move. Zero negotiation.';
+  } else if (lower.includes('eat') || lower.includes('food') || lower.includes('binge') || lower.includes('sugar') || lower.includes('snack') || lower.includes('diet')) {
+    responseQuote = `"A sub-optimal choice is just one data point, not a ruined week. Don't spiral or rationalize a bad streak. Drink 16oz of water and make the very next choice a clean one."`;
+    responseNext = '👉 Next Move: Drink a tall glass of water. Next choice is clean.';
+  } else if (lower.includes('stress') || lower.includes('overwhelm') || lower.includes('anxi') || lower.includes('stuck') || lower.includes('freeze')) {
+    responseQuote = `"Overthinking magnifies friction. Action cures anxiety. Disconnect your eyes from screens, stand up, and finish one physical micro-loop."`;
+    responseNext = '👉 Next Move: Stand up, stretch, and walk for 5 minutes.';
+  } else {
+    responseQuote = `"${val}" is your brain rationalizing friction. Strip the task down to the 50% floor (10–15 minutes) and execute without negotiating.`;
+    responseNext = '👉 Next Move: 10-minute action timer right now.';
+  }
+
+  if (quoteEl) quoteEl.textContent = responseQuote;
+  if (nextEl) nextEl.textContent = responseNext;
+  if (stanceEl) stanceEl.textContent = '🛡️ Reality Check';
+
+  if (typeof storage.addQuickThought === 'function') {
+    storage.addQuickThought(`Confidante Check: "${val}" -> ${responseQuote}`, 'confidante');
+  }
+
+  inputEl.value = '';
+}
+window.askConfidanteAction = askConfidanteAction;
