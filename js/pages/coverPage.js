@@ -113,7 +113,14 @@ function renderDailySheet() {
     : [];
 
   // Active Habits without Move and Stand (which have dedicated Momentum Anchors)
-  const additionalHabits = habits.filter(h => h.id !== 'h-move' && h.id !== 'h-stand' && h.name.toLowerCase() !== 'move' && h.name.toLowerCase() !== 'stand');
+  const additionalHabits = habits.filter(h => 
+    h && 
+    h.id !== 'h-move' && 
+    h.id !== 'h-stand' && 
+    h.name.toLowerCase().trim() !== 'move' && 
+    h.name.toLowerCase().trim() !== 'stand' && 
+    h.name.toLowerCase().trim() !== 'stand ring'
+  );
 
   container.innerHTML = `
     ${!isToday ? `
@@ -514,14 +521,17 @@ function renderDailySheet() {
         </div>
         <div class="quick-presets-pills">
           ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
-            const isAlreadyAdded = habits.some(h => 
-              h.name.toLowerCase() === preset.name.toLowerCase() || 
-              (preset.name.toLowerCase() === 'stand ring' && (h.name.toLowerCase() === 'stand' || h.id === 'h-stand')) ||
-              (preset.name.toLowerCase() === 'move' && (h.name.toLowerCase() === 'move' || h.id === 'h-move'))
+            const pName = preset.name.toLowerCase().trim();
+            const isAnchor = (pName === 'stand ring' || pName === 'stand' || pName === 'move');
+            const isAlreadyAdded = isAnchor || habits.some(h => 
+              h && h.name.toLowerCase().trim() === pName
             );
             if (isAlreadyAdded) {
+              const tooltip = isAnchor 
+                ? (pName === 'move' ? 'Move is your Hero Anchor #1' : 'Stand is your Hero Anchor #2') 
+                : `${escapeHtml(preset.name)} is already in your active stack`;
               return `
-                <span class="preset-pill-item added" title="${escapeHtml(preset.name)} is already in your active stack">
+                <span class="preset-pill-item added" title="${tooltip}">
                   <span class="preset-pill-symbol">✓</span>
                   <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
                 </span>
@@ -924,6 +934,16 @@ function updateWeeklyCounterInSheet(habitId, delta, event) {
 function addHabitFromPreset(presetIndex) {
   const preset = RECOMMENDED_HABIT_PRESETS[presetIndex];
   if (!preset) return;
+
+  const pName = preset.name.toLowerCase().trim();
+  if (pName === 'stand ring' || pName === 'stand') {
+    showToast(`Stand is already active as Anchor #2!`);
+    return;
+  }
+  if (pName === 'move') {
+    showToast(`Move is already active as Anchor #1!`);
+    return;
+  }
 
   storage.addHabit(preset);
   showToast(`Added "${preset.name}" to your habits!`);

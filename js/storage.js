@@ -14,7 +14,7 @@ class StorageManager {
 
   applyZeroResetFix() {
     const todayStr = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0];
-    const resetMarker = 'BOL_ZERO_RESET_APPLIED_V6';
+    const resetMarker = 'BOL_ZERO_RESET_APPLIED_V7';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(resetMarker)) {
         // Set today's choices explicitly to 0
@@ -56,6 +56,28 @@ class StorageManager {
         }
         if (!this.data.dayGoalsUpdatedAt) this.data.dayGoalsUpdatedAt = {};
         this.data.dayGoalsUpdatedAt[todayStr] = Date.now();
+
+        // Permanently remove duplicate "Stand ring" habit (Anchor #2 is already Stand)
+        if (Array.isArray(this.data.habits)) {
+          const removedIds = [];
+          this.data.habits = this.data.habits.filter(h => {
+            if (!h) return false;
+            const n = (h.name || '').toLowerCase().trim();
+            if (n === 'stand ring' || (n === 'stand' && h.id !== 'h-stand')) {
+              removedIds.push(h.id);
+              return false;
+            }
+            return true;
+          });
+          removedIds.forEach(id => {
+            if (this.data.habitStreaks) delete this.data.habitStreaks[id];
+            if (this.data.habitsState) {
+              Object.values(this.data.habitsState).forEach(dayObj => {
+                if (dayObj && dayObj[id] !== undefined) delete dayObj[id];
+              });
+            }
+          });
+        }
 
         // Clean out legacy V1 from localStorage so it never resurrects stale seeds
         try {
@@ -249,14 +271,16 @@ class StorageManager {
         const s = snap.data;
         if (!s || typeof s !== 'object') continue;
 
-        // 1. Habits: Union by id and name
+        // 1. Habits: Union by id and name (excluding duplicate 'stand ring' as Anchor #2 is Stand)
         if (Array.isArray(s.habits) && s.habits.length > 0) {
           const habitMap = new Map();
           (merged.habits || []).forEach(h => {
-            if (h && h.name) habitMap.set(h.name.toLowerCase().trim(), { ...h });
+            if (h && h.name && h.name.toLowerCase().trim() !== 'stand ring') {
+              habitMap.set(h.name.toLowerCase().trim(), { ...h });
+            }
           });
           s.habits.forEach(h => {
-            if (h && h.name) {
+            if (h && h.name && h.name.toLowerCase().trim() !== 'stand ring') {
               const key = h.name.toLowerCase().trim();
               const existing = habitMap.get(key);
               habitMap.set(key, { ...(existing || {}), ...h });

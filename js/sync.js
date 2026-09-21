@@ -88,20 +88,22 @@ class SyncManager {
       localWasRicher = true;
     }
 
-    // 2. Habits: Union by id & lowercase name - never let cloud erase locally added habits
+    // 2. Habits: Union by id & lowercase name (excluding duplicate 'stand ring' as Anchor #2 is Stand)
     const habitMap = new Map();
     (Array.isArray(storage.data.habits) ? storage.data.habits : []).forEach(h => {
-      if (h && h.name) habitMap.set(h.name.toLowerCase().trim(), { ...h });
+      if (h && h.name && h.name.toLowerCase().trim() !== 'stand ring') {
+        habitMap.set(h.name.toLowerCase().trim(), { ...h });
+      }
     });
     (Array.isArray(incoming.habits) ? incoming.habits : []).forEach(h => {
-      if (h && h.name) {
+      if (h && h.name && h.name.toLowerCase().trim() !== 'stand ring') {
         const key = h.name.toLowerCase().trim();
         const existing = habitMap.get(key);
         habitMap.set(key, { ...(existing || {}), ...h });
       }
     });
     const mergedHabits = Array.from(habitMap.values());
-    if (mergedHabits.length > (Array.isArray(incoming.habits) ? incoming.habits.length : 0)) {
+    if (mergedHabits.length !== (Array.isArray(incoming.habits) ? incoming.habits.length : 0)) {
       localWasRicher = true;
     }
 
