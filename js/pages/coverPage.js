@@ -113,14 +113,6 @@ function renderDailySheet() {
     ? storage.getAllJournals()
     : [];
 
-  // Quick Thoughts Inbox
-  const activeThoughts = (typeof storage.getQuickThoughts === 'function') 
-    ? storage.getQuickThoughts('active') 
-    : [];
-  const triagedThoughts = (typeof storage.getQuickThoughts === 'function') 
-    ? storage.getQuickThoughts('triaged') 
-    : [];
-
   // Active Habits without Move and Stand (which have dedicated Momentum Anchors)
   const additionalHabits = habits.filter(h => 
     h && 
@@ -656,88 +648,6 @@ function renderDailySheet() {
       </div>
     </div>
 
-    <!-- 6. Quick Thoughts & Idea Inbox (To Triage Later) -->
-    <div class="cover-card quick-thoughts-card">
-      <div class="card-title-row">
-        <div class="thoughts-title-group">
-          <span class="thoughts-header-icon">💭</span>
-          <div>
-            <h3>Quick Thoughts &amp; Brain Dump</h3>
-            <span class="card-sub-muted">Capture fleeting ideas, links &amp; reminders now. Triage whenever you have bandwidth.</span>
-          </div>
-        </div>
-        <span class="thoughts-count-pill">${activeThoughts.length} untriaged</span>
-      </div>
-
-      <!-- Inline Fast Capture Form -->
-      <form class="quick-thought-form" onsubmit="submitQuickThoughtInline(event)">
-        <input type="text" id="quick-thought-input" class="quick-thought-input" placeholder="+ Jot down a thought, link, or random idea (Press Enter)..." autocomplete="off" required>
-        <button type="submit" class="btn btn-primary btn-sm">Capture</button>
-      </form>
-
-      <!-- Active Untriaged Stream -->
-      <div class="quick-thoughts-list">
-        ${activeThoughts.length > 0 ? activeThoughts.map(t => `
-          <div class="thought-item">
-            <div class="thought-content">
-              <span class="thought-bullet">●</span>
-              <span class="thought-text">${escapeHtml(t.text)}</span>
-              <span class="thought-time">${formatThoughtTime(t.createdAt)}</span>
-            </div>
-            <div class="thought-triage-actions">
-              <button class="triage-action-btn btn-triage-done" onclick="toggleQuickThoughtTriageAction('${t.id}')" title="Mark Triaged (+5 XP)">
-                ✓ Triage
-              </button>
-              <button class="triage-action-btn btn-triage-goal" onclick="convertThoughtToGoalAction('${t.id}', '${activeTrackingDate}')" title="Convert to today's Bonus Goal (+10 XP)">
-                ⚡ Goal
-              </button>
-              <button class="triage-action-btn btn-triage-journal" onclick="convertThoughtToJournalAction('${t.id}', '${activeTrackingDate}')" title="Append to today's Sanctuary Journal (+10 XP)">
-                ✍️ Journal
-              </button>
-              <button class="triage-action-btn btn-triage-delete" onclick="deleteQuickThoughtAction('${t.id}')" title="Delete thought">
-                ✕
-              </button>
-            </div>
-          </div>
-        `).join('') : `
-          <div class="thoughts-empty-state">
-            <span>✨</span>
-            <p>Your thought inbox is clean and clear. Jot down any random ideas above to store them safely!</p>
-          </div>
-        `}
-      </div>
-
-      <!-- Collapsible Triaged Drawer -->
-      ${triagedThoughts.length > 0 ? `
-        <div class="thoughts-archive-drawer">
-          <button class="thoughts-toggle-archive-btn" type="button" onclick="toggleShowTriagedThoughts()">
-            ${showTriagedThoughts ? 'Hide Triaged Thoughts ▴' : `View ${triagedThoughts.length} Triaged Thoughts ▾`}
-          </button>
-          ${showTriagedThoughts ? `
-            <div class="triaged-thoughts-list">
-              ${triagedThoughts.map(t => `
-                <div class="thought-item triaged">
-                  <div class="thought-content">
-                    <span class="thought-bullet done">✓</span>
-                    <span class="thought-text done">${escapeHtml(t.text)}</span>
-                    <span class="thought-time">${formatThoughtTime(t.triagedAt || t.createdAt)}</span>
-                  </div>
-                  <div class="thought-triage-actions">
-                    <button class="triage-action-btn btn-triage-undo" onclick="toggleQuickThoughtTriageAction('${t.id}')" title="Restore to active inbox">
-                      ↺ Restore
-                    </button>
-                    <button class="triage-action-btn btn-triage-delete" onclick="deleteQuickThoughtAction('${t.id}')" title="Delete">
-                      ✕
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-        </div>
-      ` : ''}
-    </div>
-
     <!-- 7. Unstructured Sanctuary Daily Journal & Brain Dump with Square Cards Archive -->
     <div class="cover-card sanctuary-journal-card" id="section-sanctuary-journal">
       <div class="journal-card-header">
@@ -1251,66 +1161,6 @@ function navigateDate(offset) {
   d.setDate(d.getDate() + offset);
   activeTrackingDate = formatDateIso(d);
   renderDailySheet();
-}
-
-/* --------------------------------------------------------------------------
-   Quick Thoughts Action Handlers
-   -------------------------------------------------------------------------- */
-let showTriagedThoughts = false;
-
-function toggleShowTriagedThoughts() {
-  showTriagedThoughts = !showTriagedThoughts;
-  renderDailySheet();
-}
-
-function formatThoughtTime(isoStr) {
-  if (!isoStr) return '';
-  const date = new Date(isoStr);
-  const now = new Date();
-  const diffSec = Math.floor((now - date) / 1000);
-
-  if (diffSec < 60) return 'just now';
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-}
-
-function submitQuickThoughtInline(event) {
-  event.preventDefault();
-  const input = document.getElementById('quick-thought-input');
-  if (!input || !input.value.trim()) return;
-
-  const item = storage.addQuickThought(input.value.trim());
-  input.value = '';
-  renderDailySheet();
-  showToast('💭 Thought captured! Triage whenever you have bandwidth.');
-}
-
-function toggleQuickThoughtTriageAction(id) {
-  const isTriaged = storage.toggleTriageThought(id);
-  renderDailySheet();
-  if (isTriaged) {
-    showToast('✓ Thought triaged (+5 XP)');
-  } else {
-    showToast('Restored thought to active inbox');
-  }
-}
-
-function deleteQuickThoughtAction(id) {
-  storage.deleteQuickThought(id);
-  renderDailySheet();
-}
-
-function convertThoughtToGoalAction(id, dateStr) {
-  storage.convertThoughtToGoal(id, dateStr);
-  renderDailySheet();
-  showToast('⚡ Converted into today\'s Bonus Goal (+10 XP)!');
-}
-
-function convertThoughtToJournalAction(id, dateStr) {
-  storage.convertThoughtToJournal(id, dateStr);
-  renderDailySheet();
-  showToast('✍️ Appended to today\'s Sanctuary Journal (+10 XP)!');
 }
 
 /* --------------------------------------------------------------------------

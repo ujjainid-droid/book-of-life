@@ -155,16 +155,8 @@ class StorageManager {
       // Sassy Gamification Points & Status (Baseline: 185 XP Functional Menace)
       points: 185,
       claimedRewards: [],
-      // Quick Thoughts & Ideas Inbox (To Triage Later)
-      quickThoughts: [
-        {
-          id: 'qt-1',
-          text: 'Look into walking pad for standing desk during meetings',
-          createdAt: new Date().toISOString(),
-          triaged: false,
-          triagedAt: null
-        }
-      ],
+      // Quick Thoughts & Ideas Inbox
+      quickThoughts: [],
       // Currently Terrorizing active projects list
       activeTerrorizing: ['10k steps', 'Close rings'],
       // Weekly Reflections: { [sundayIso]: { wins: string, focus: string } }
