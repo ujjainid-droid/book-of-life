@@ -247,14 +247,6 @@ function renderDailySheet() {
           <span class="chip-status-icon">${hasGoals ? (goalsDone ? '✓' : '○') : '⚡'}</span>
           <span class="chip-label">Goals</span>
         </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 7. Podcasts -->
-        <button type="button" class="breadcrumb-chip done" onclick="scrollToDailySection('section-podcast-agent')" title="Jump to Podcast Lounge (Bone Valley)">
-          <span class="chip-status-icon">🎧</span>
-          <span class="chip-label">Podcasts</span>
-        </button>
       </div>
     </div>
 
