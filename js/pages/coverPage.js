@@ -752,7 +752,10 @@ function renderDailySheet() {
       `}
     </div>
 
-    <!-- 8. Podcast Sanctuary Lounge & Media Player (Single Serial + Queue) -->
+    <!-- 8. MARGO Framework Pillars (Collapsible Widget) -->
+    ${typeof renderMargoFrameworkWidget === 'function' ? renderMargoFrameworkWidget() : ''}
+
+    <!-- 9. Podcast Sanctuary Lounge & Media Player (Single Serial + Queue) -->
     ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
   `;
 
@@ -1741,4 +1744,97 @@ function renderHairCareCard(dateStr, isToday) {
   `;
 }
 window.renderHairCareCard = renderHairCareCard;
+
+/* ==========================================================================
+   MARGO Framework 5-Bucket Collapsible Widget
+   ========================================================================== */
+
+let margoFrameworkCollapsed = false;
+
+const MARGO_PILLARS_DATA = [
+  {
+    letter: 'M',
+    title: 'Move',
+    badgeClass: 'pillar-badge-m',
+    tags: ['10k steps', 'Close rings', 'Calorie deficit', 'Workout']
+  },
+  {
+    letter: 'A',
+    title: 'Aesthetic',
+    badgeClass: 'pillar-badge-a',
+    tags: ['Skincare', 'Signature outfits']
+  },
+  {
+    letter: 'R',
+    title: 'Reflect',
+    badgeClass: 'pillar-badge-r',
+    tags: ['Meditate', 'Journal', 'Me time']
+  },
+  {
+    letter: 'G',
+    title: 'Grow',
+    badgeClass: 'pillar-badge-g',
+    tags: ['Hobbies', 'Learning']
+  },
+  {
+    letter: 'O',
+    title: 'Organize',
+    badgeClass: 'pillar-badge-o',
+    tags: ['Home projects', 'Finances', 'Travel', 'Everyday chores']
+  }
+];
+
+function toggleMargoFrameworkCollapse() {
+  margoFrameworkCollapsed = !margoFrameworkCollapsed;
+  const drawer = document.getElementById('margo-framework-drawer');
+  const icon = document.getElementById('framework-toggle-icon');
+  if (drawer) {
+    drawer.style.display = margoFrameworkCollapsed ? 'none' : 'block';
+  }
+  if (icon) {
+    icon.textContent = margoFrameworkCollapsed ? '▾ View Pillars' : '▴ Collapse';
+  }
+}
+window.toggleMargoFrameworkCollapse = toggleMargoFrameworkCollapse;
+
+function renderMargoFrameworkWidget() {
+  const cardsHtml = MARGO_PILLARS_DATA.map(p => `
+    <div class="pillar-card">
+      <div class="pillar-badge ${p.badgeClass}">
+        ${p.letter}
+      </div>
+      <h4 class="pillar-title">${escapeHtml(p.title)}</h4>
+      <div class="pillar-tags-list">
+        ${p.tags.map(t => `<span class="pillar-tag-pill">${escapeHtml(t)}</span>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  return `
+    <div class="margo-framework-widget" id="section-margo-framework">
+      <div class="framework-header-row" onclick="toggleMargoFrameworkCollapse()">
+        <div class="framework-header-left">
+          <div class="framework-icon-badge">🧭</div>
+          <div class="framework-title-group">
+            <h3>
+              MARGO Framework
+              <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); background: var(--bg-surface); padding: 2px 8px; border-radius: var(--radius-full); border: 1px solid var(--border-light);">5 Pillars</span>
+            </h3>
+            <span class="card-sub-muted">Daily intentional design buckets &amp; core focus areas</span>
+          </div>
+        </div>
+        <button type="button" class="framework-toggle-btn" id="framework-toggle-btn" onclick="event.stopPropagation(); toggleMargoFrameworkCollapse()">
+          <span id="framework-toggle-icon">${margoFrameworkCollapsed ? '▾ View Pillars' : '▴ Collapse'}</span>
+        </button>
+      </div>
+
+      <div class="framework-drawer-container" id="margo-framework-drawer" style="display: ${margoFrameworkCollapsed ? 'none' : 'block'};">
+        <div class="margo-pillars-grid">
+          ${cardsHtml}
+        </div>
+      </div>
+    </div>
+  `;
+}
+window.renderMargoFrameworkWidget = renderMargoFrameworkWidget;
 

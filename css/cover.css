@@ -3743,3 +3743,188 @@
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* ==========================================================================
+   MARGO Framework 5-Bucket Widget (Collapsible)
+   ========================================================================== */
+.margo-framework-widget {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-card);
+}
+
+.framework-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.framework-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.framework-icon-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+
+.framework-title-group h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.framework-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.framework-toggle-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--primary-border);
+  color: var(--text-primary);
+}
+
+.margo-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.pillar-card {
+  background: var(--bg-page);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.pillar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(112, 43, 237, 0.08);
+  border-color: var(--border-strong);
+}
+
+.pillar-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.pillar-badge-m {
+  background: #6366F1;
+}
+
+.pillar-badge-a {
+  background: #E68A00;
+}
+
+.pillar-badge-r {
+  background: #8B5CF6;
+}
+
+.pillar-badge-g {
+  background: #4F46E5;
+}
+
+.pillar-badge-o {
+  background: #1E1B4B;
+}
+
+[data-theme="dark"] .pillar-badge-o {
+  background: #2E285C;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pillar-title {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.pillar-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.pillar-tag-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: 9999px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.25;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.pillar-tag-pill:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+
+@media (max-width: 900px) {
+  .margo-pillars-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .margo-pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .margo-pillars-grid {
+    grid-template-columns: 1fr;
+  }
+}
