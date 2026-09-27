@@ -1327,7 +1327,8 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Pureology Hydrate Shampoo', desc: 'Dime-sized drop, emulsify in wet palms until frothy, massage scalp thoroughly' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler / Pureology', desc: 'Quick second wash for a clean, rich lather (let suds rinse down lengths)' },
       { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Pureology Hydrate Sheer (or Wonder Water)', desc: 'Apply to mid-lengths/ends only for weightless detangling & slip; rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower & Style', product: 'UNITE 7SECONDS + UNITE BOOSTA', desc: 'Mist UNITE 7Seconds on damp ends; spray UNITE Boosta at roots & blow-dry for lift' }
+      { id: 'post', icon: '💨', label: 'Post-Shower Prep', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle ends + Pantene 10-in-1 on ends for anti-frizz & 450°F heat protection' },
+      { id: 'style', icon: '🚀', label: 'Root Lift & Dry', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray 3–4 spritzes directly onto damp roots; blow-dry on low/medium heat with nozzle pointing down' }
     ]
   },
   2: { // Tuesday
@@ -1353,7 +1354,7 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Olaplex No. 4 Shampoo', desc: 'Rinse No. 3 completely, then massage No. 4 into scalp to cleanse roots' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Olaplex No. 4 (or Hair Filler)', desc: 'Quick second rinse to ensure roots are completely clean and weightless' },
       { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Olaplex No. 5 (or Hydrate Sheer)', desc: 'Apply sparingly to bottom 2 inches only for 2 mins; rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower & Dry', product: 'UNITE 7SECONDS Spray', desc: 'Mist damp lengths/ends; blow-dry roots on low/medium heat with nozzle pointing down' }
+      { id: 'post', icon: '💨', label: 'Post-Shower Protection', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle + Pantene 10-in-1 on damp ends to seal cuticles; blow-dry roots' }
     ]
   },
   4: { // Thursday
@@ -1379,7 +1380,8 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'wash1', icon: '🧼', label: '1st Shampoo (Clarify)', product: 'Garnier Pure Clean Purifying Shampoo', desc: 'Massage scalp for 60 seconds with fingertips to thoroughly detox follicles' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo (Hydrate)', product: 'Pureology Hydrate (dime-size)', desc: 'Lightweight second wash so lengths retain moisture without stripping' },
       { id: 'cond', icon: '✨', label: 'In-Shower Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse clean for zero-weight slip' },
-      { id: 'post', icon: '💨', label: 'Post-Shower & Volume', product: 'UNITE 7SECONDS + UNITE BOOSTA', desc: 'UNITE 7Seconds on ends, UNITE Boosta on roots; blow-dry for maximum volume' }
+      { id: 'post', icon: '💨', label: 'Post-Shower Heat & Frizz Shield', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle + Pantene 10-in-1 on mid-lengths and ends for thermal protection' },
+      { id: 'style', icon: '🚀', label: 'Root Lift & Volume', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray 3–4 pumps directly onto damp roots; blow-dry on low/medium heat for maximum lift' }
     ]
   },
   6: { // Saturday
@@ -1405,7 +1407,8 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Pureology Hydrate Shampoo', desc: 'Dime-sized drop, emulsify in palms, massage scalp thoroughly' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler / Pureology', desc: 'Quick second wash for a clean, rich lather' },
       { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Pureology Hydrate Sheer (or Wonder Water)', desc: 'Apply to ends only for weightless slip; rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower & Style', product: 'UNITE 7SECONDS + UNITE BOOSTA', desc: 'UNITE 7Seconds on damp ends + UNITE Boosta on roots; blow-dry on low/medium heat' }
+      { id: 'post', icon: '💨', label: 'Post-Shower Prep', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle ends + Pantene 10-in-1 on ends for heat protection' },
+      { id: 'style', icon: '🚀', label: 'Root Lift & Dry', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray onto roots; blow-dry on low/medium heat for lift' }
     ]
   }
 };
