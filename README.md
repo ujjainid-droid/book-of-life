@@ -1,5 +1,7 @@
 # ⚡ margo — Life OS
 
+> **Live Web App**: [https://ujjainid-droid.github.io/book-of-life/#](https://ujjainid-droid.github.io/book-of-life/#)
+
 An elegant, high-clarity personal operating system designed around foundational habit tracking starting with **Move**, progressive stacking, and Sunday-to-Saturday weekly performance reviews.
 
 Built with a **Nordic Minimalist** aesthetic for high-agency executive focus and low-cognitive-load, zero-guilt momentum.
