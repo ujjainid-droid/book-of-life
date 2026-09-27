@@ -1323,11 +1323,11 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Regular Wash Day',
     subtitle: 'Gentle cleansing, strand protection & weightless root lift',
     steps: [
-      { id: 'pre', icon: '🥥', label: 'Pre-Shower', product: 'Coconut Oil Weightless Mist', desc: 'Spray onto dry ends only (15–20 mins; avoid roots to prevent hygral fatigue)' },
-      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Massage scalp thoroughly with fingertips to dissolve sebum and dirt' },
-      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Quick second wash for a rich, clean lather (let suds rinse down lengths)' },
-      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to mid-lengths/ends; massage for 8 seconds, then rinse clean' },
-      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist from ears down; blow-dry roots on low/medium heat for maximum volume' }
+      { id: 'pre', icon: '🥥', label: 'Pre-Shower Protection', product: 'OGX Argan Oil / Coconut Mist', desc: 'Apply 2–3 drops to dry ends only (15–20 mins; avoid roots to prevent hygral fatigue)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Pureology Hydrate Shampoo', desc: 'Dime-sized drop, emulsify in wet palms until frothy, massage scalp thoroughly' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler / Pureology', desc: 'Quick second wash for a clean, rich lather (let suds rinse down lengths)' },
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Pureology Hydrate Sheer (or Wonder Water)', desc: 'Apply to mid-lengths/ends only for weightless detangling & slip; rinse thoroughly' },
+      { id: 'post', icon: '💨', label: 'Post-Shower & Style', product: 'UNITE 7SECONDS + UNITE BOOSTA', desc: 'Mist UNITE 7Seconds on damp ends; spray UNITE Boosta at roots & blow-dry for lift' }
     ]
   },
   2: { // Tuesday
@@ -1335,10 +1335,11 @@ const HAIR_CARE_SCHEDULE_MAP = {
     badge: '🛌 Scalp Rest Day',
     badgeClass: 'badge-rest',
     title: 'Scalp Rest Day (Off Day)',
-    subtitle: 'Zero wash friction — protect fragile strands & scalp moisture barrier',
+    subtitle: 'Zero wash friction — protect fragile strands & camouflage scalp',
     steps: [
-      { id: 'care', icon: '🌿', label: 'Low Tension', product: 'Gentle Styling', desc: 'No wash today. Use a silk scrunchie or claw clip if putting hair up (avoid tight tension)' },
-      { id: 'sleep', icon: '🌙', label: 'Night Care', product: 'Satin Pillowcase', desc: 'Sleep on a satin/silk pillowcase to prevent mechanical friction breakage on fine ends' }
+      { id: 'density', icon: '🎯', label: 'Scalp Camouflage (Optional)', product: 'L’Oréal Magic Root Cover Up', desc: 'Lightly mist along part line / hairline for instant visual fullness and scalp shading' },
+      { id: 'texture', icon: '✨', label: 'Volume Refresh', product: 'Moroccanoil Dry Texture Spray', desc: 'Spritz crown and mid-lengths on dry hair and tousle for airy grip without clumping' },
+      { id: 'sleep', icon: '🌙', label: 'Night Protection', product: 'Satin Pillowcase + Silk Scrunchie', desc: 'Sleep on satin/silk pillowcase; use loose silk scrunchie or claw clip (zero tension)' }
     ]
   },
   3: { // Wednesday
@@ -1348,11 +1349,11 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Bond Strengthening Wash Day',
     subtitle: 'Rebuilding internal hair bonds & preventing snap breakage',
     steps: [
-      { id: 'pre', icon: '🔬', label: 'Pre-Shower', product: 'L’Oréal EverPure Bond Pre-Shampoo', desc: 'Dampen lengths/ends & apply generously (leave on 5–10 mins; skip oil today)' },
-      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Rinse bond treatment + massage shampoo into scalp to cleanse roots' },
-      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Second rinse to ensure roots are completely clean and weightless' },
-      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to mid-lengths/ends; massage for 8 seconds, then rinse' },
-      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist damp ends; blow-dry roots on low/medium heat with nozzle pointing down' }
+      { id: 'pre', icon: '🔬', label: 'Pre-Shower Bond Treatment', product: 'Olaplex No. 3 Hair Perfector', desc: 'Dampen lengths/ends & apply nickel-sized amount (leave on 15–20 mins; skip oil today)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Olaplex No. 4 Shampoo', desc: 'Rinse No. 3 completely, then massage No. 4 into scalp to cleanse roots' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Olaplex No. 4 (or Hair Filler)', desc: 'Quick second rinse to ensure roots are completely clean and weightless' },
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Olaplex No. 5 (or Hydrate Sheer)', desc: 'Apply sparingly to bottom 2 inches only for 2 mins; rinse thoroughly' },
+      { id: 'post', icon: '💨', label: 'Post-Shower & Dry', product: 'UNITE 7SECONDS Spray', desc: 'Mist damp lengths/ends; blow-dry roots on low/medium heat with nozzle pointing down' }
     ]
   },
   4: { // Thursday
@@ -1362,8 +1363,9 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Scalp Rest Day (Off Day)',
     subtitle: 'Zero wash friction — allow natural scalp sebum balance',
     steps: [
+      { id: 'density', icon: '🎯', label: 'Scalp Camouflage (Optional)', product: 'L’Oréal Magic Root Cover Up', desc: 'Light mist on part line to conceal scalp show-through' },
       { id: 'care', icon: '🌿', label: 'Gentle Care', product: 'Soft Scalp Brush', desc: 'No wash today. Gently brush scalp to distribute natural oils if roots need a refresh' },
-      { id: 'sleep', icon: '🌙', label: 'Night Care', product: 'Satin Pillowcase', desc: 'Sleep on a satin/silk pillowcase to protect delicate cuticle layers' }
+      { id: 'sleep', icon: '🌙', label: 'Night Protection', product: 'Satin Pillowcase', desc: 'Sleep on a satin/silk pillowcase to protect delicate cuticle layers' }
     ]
   },
   5: { // Friday
@@ -1373,11 +1375,11 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Scalp Clarifying Reset Wash Day',
     subtitle: 'Dissolving stubborn product buildup, hard water minerals & oils',
     steps: [
-      { id: 'pre', icon: '🥥', label: 'Pre-Shower', product: 'Coconut Oil Weightless Mist', desc: 'Spray onto dry ends only (15–20 mins; shields lengths while clarifying scalp)' },
-      { id: 'wash1', icon: '🧼', label: '1st Shampoo (Clarify)', product: 'Garnier Clarifying Shampoo', desc: 'Massage scalp for 60 seconds with fingertips to thoroughly detox follicles' },
-      { id: 'wash2', icon: '🫧', label: '2nd Shampoo (Hydrate)', product: 'Garnier Hair Filler Shampoo', desc: 'Dime-sized wash so lengths retain lightweight hydration without stripping' },
-      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist on lengths/ends; blow-dry roots for maximum lift and bounce' }
+      { id: 'pre', icon: '🥥', label: 'Pre-Shower Protection', product: 'OGX Argan / Coconut Mist', desc: 'Apply 2–3 drops to dry ends only (15–20 mins; shields lengths while clarifying scalp)' },
+      { id: 'wash1', icon: '🧼', label: '1st Shampoo (Clarify)', product: 'Garnier Pure Clean Purifying Shampoo', desc: 'Massage scalp for 60 seconds with fingertips to thoroughly detox follicles' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo (Hydrate)', product: 'Pureology Hydrate (dime-size)', desc: 'Lightweight second wash so lengths retain moisture without stripping' },
+      { id: 'cond', icon: '✨', label: 'In-Shower Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse clean for zero-weight slip' },
+      { id: 'post', icon: '💨', label: 'Post-Shower & Volume', product: 'UNITE 7SECONDS + UNITE BOOSTA', desc: 'UNITE 7Seconds on ends, UNITE Boosta on roots; blow-dry for maximum volume' }
     ]
   },
   6: { // Saturday
@@ -1387,7 +1389,8 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Scalp Rest Day (Off Day)',
     subtitle: 'Enjoy the lightweight volume from yesterday’s clarifying reset',
     steps: [
-      { id: 'care', icon: '✨', label: 'Rest & Style', product: 'Claw Clip / Loose Style', desc: 'No wash today. Keep styling low-heat and low-manipulation' },
+      { id: 'texture', icon: '✨', label: 'Volume Refresh', product: 'Moroccanoil Dry Texture Spray', desc: 'Spritz crown and mid-lengths on dry hair for airy, undone volume' },
+      { id: 'care', icon: '🌿', label: 'Rest & Style', product: 'Claw Clip / Loose Style', desc: 'No wash today. Keep styling low-heat and low-manipulation' },
       { id: 'sleep', icon: '🌙', label: 'Night Care', product: 'Satin Pillowcase', desc: 'Sleep on satin/silk pillowcase to protect hair ends' }
     ]
   },
@@ -1398,11 +1401,11 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Regular Wash Day',
     subtitle: 'Gentle cleansing, strand protection & weightless root lift',
     steps: [
-      { id: 'pre', icon: '🥥', label: 'Pre-Shower', product: 'Coconut Oil Weightless Mist', desc: 'Spray onto dry ends only (15–20 mins; avoid roots)' },
-      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Massage scalp thoroughly with fingertips to dissolve sebum' },
-      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Quick second wash for a clean, rich lather' },
-      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse clean' },
-      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist damp ends; blow-dry roots on low/medium heat' }
+      { id: 'pre', icon: '🥥', label: 'Pre-Shower Protection', product: 'OGX Argan Oil / Coconut Mist', desc: 'Apply 2–3 drops to dry ends only (15–20 mins; avoid roots)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Pureology Hydrate Shampoo', desc: 'Dime-sized drop, emulsify in palms, massage scalp thoroughly' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler / Pureology', desc: 'Quick second wash for a clean, rich lather' },
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Pureology Hydrate Sheer (or Wonder Water)', desc: 'Apply to ends only for weightless slip; rinse thoroughly' },
+      { id: 'post', icon: '💨', label: 'Post-Shower & Style', product: 'UNITE 7SECONDS + UNITE BOOSTA', desc: 'UNITE 7Seconds on damp ends + UNITE Boosta on roots; blow-dry on low/medium heat' }
     ]
   }
 };
