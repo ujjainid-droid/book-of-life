@@ -1589,55 +1589,32 @@ function toggleHairCalendarCollapse() {
 }
 window.toggleHairCalendarCollapse = toggleHairCalendarCollapse;
 
-function toggleHairCareStepAction(dateStr, stepId) {
-  if (typeof storage !== 'undefined' && typeof storage.toggleHairCareStep === 'function') {
-    const nextVal = storage.toggleHairCareStep(dateStr, stepId);
-    const routine = getHairCareRoutineForDate(dateStr);
-    const dayState = storage.getHairCareState(dateStr);
-    const allDone = routine.steps.length > 0 && routine.steps.every(s => !!dayState[s.id]);
-
-    if (allDone && nextVal) {
+function toggleHairCareDayAction(dateStr) {
+  if (typeof storage !== 'undefined' && typeof storage.toggleHairCareDay === 'function') {
+    const nextVal = storage.toggleHairCareDay(dateStr);
+    if (nextVal) {
       if (typeof triggerConfetti === 'function') triggerConfetti();
-      if (typeof showToast === 'function') showToast('✨ All hair care steps completed for today! (+10 XP)');
+      if (typeof showToast === 'function') showToast('✨ Hair care routine completed for today! (+10 XP)');
+    } else {
+      if (typeof showToast === 'function') showToast('Hair care routine marked pending');
     }
   }
   renderDailySheet();
 }
-window.toggleHairCareStepAction = toggleHairCareStepAction;
+window.toggleHairCareDayAction = toggleHairCareDayAction;
+window.toggleHairCareStepAction = toggleHairCareDayAction; // backward compatibility alias
 
 function renderHairCareCard(dateStr, isToday) {
   const routine = getHairCareRoutineForDate(dateStr);
-  const dayState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
-    ? storage.getHairCareState(dateStr)
-    : {};
+  const isDayDone = (typeof storage !== 'undefined' && typeof storage.isHairCareDayDone === 'function')
+    ? storage.isHairCareDayDone(dateStr)
+    : false;
   const todayIso = formatDateIso(new Date());
-
-  const completedCount = routine.steps.filter(s => !!dayState[s.id]).length;
-  const totalSteps = routine.steps.length;
-  const isAllDone = totalSteps > 0 && completedCount >= totalSteps;
 
   const dateObj = parseDateIso(dateStr);
   const formattedDay = isToday 
     ? 'Today' 
     : dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-
-  const stepsHtml = routine.steps.map(s => {
-    const isDone = !!dayState[s.id];
-    return `
-      <div class="hair-step-item ${isDone ? 'done' : ''}" onclick="toggleHairCareStepAction('${dateStr}', '${s.id}')">
-        <div class="custom-checkbox ${isDone ? 'checked' : ''}">
-          ${isDone ? '✓' : ''}
-        </div>
-        <div class="hair-step-content">
-          <div class="hair-step-header">
-            <span>${s.icon} ${escapeHtml(s.label)}:</span>
-            <span class="hair-step-product">${escapeHtml(s.product)}</span>
-          </div>
-          <div class="hair-step-desc">${escapeHtml(s.desc)}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
 
   const calendarGridHtml = `
     <div class="hair-calendar-grid">
@@ -1649,10 +1626,9 @@ function renderHairCareCard(dateStr, isToday) {
               const isSelected = (d.date === dateStr);
               const isTodayCell = (d.date === todayIso);
               const cellRoutine = getHairCareRoutineForDate(d.date);
-              const cellState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
-                ? storage.getHairCareState(d.date)
-                : {};
-              const cellDone = cellRoutine.steps.length > 0 && cellRoutine.steps.every(s => !!cellState[s.id]);
+              const cellDone = (typeof storage !== 'undefined' && typeof storage.isHairCareDayDone === 'function')
+                ? storage.isHairCareDayDone(d.date)
+                : false;
 
               return `
                 <div class="hair-cal-day-cell ${isSelected ? 'is-selected' : ''} ${isTodayCell ? 'is-today' : ''}" 
@@ -1689,15 +1665,44 @@ function renderHairCareCard(dateStr, isToday) {
           <span class="card-sub-muted">${routine.subtitle}</span>
         </div>
         <div class="hair-care-header-right">
-          <span class="hair-progress-pill ${isAllDone ? 'all-done' : ''}">
-            ${isAllDone ? '🎉 All Done' : `${completedCount}/${totalSteps} done`}
+          <span class="hair-progress-pill ${isDayDone ? 'all-done' : ''}">
+            ${isDayDone ? '🎉 Routine Done (+10 XP)' : '1 Checkbox'}
           </span>
         </div>
       </div>
 
-      <!-- Given Day Actionable Checklist ONLY -->
-      <div class="hair-steps-list">
-        ${stepsHtml}
+      <!-- Daily Tracker: Simple 1 Checkbox + Concise Routine to Follow -->
+      <div class="hair-daily-tracker-box ${isDayDone ? 'is-done' : ''}">
+        <div class="hair-tracker-check-row" onclick="toggleHairCareDayAction('${dateStr}')">
+          <div class="custom-checkbox ${isDayDone ? 'checked' : ''}">
+            ${isDayDone ? '✓' : ''}
+          </div>
+          <div class="hair-tracker-check-info">
+            <span class="hair-tracker-check-title">${isDayDone ? 'Routine Completed' : 'Complete Today’s Routine'}</span>
+            <span class="hair-tracker-check-desc">${routine.badge} · 1 tap to check off (+10 XP)</span>
+          </div>
+          <span class="hair-tracker-check-pill ${isDayDone ? 'done' : ''}">${isDayDone ? '✓ Done' : 'Pending'}</span>
+        </div>
+
+        <div class="hair-concise-routine-tray">
+          <div class="hair-concise-tray-header">
+            <span class="hair-concise-tray-title">Today’s Routine Sequence</span>
+            <span class="hair-concise-step-badge">${routine.steps.length} steps</span>
+          </div>
+          <ul class="hair-concise-steps-list">
+            ${routine.steps.map((s, idx) => `
+              <li class="hair-concise-step-item">
+                <span class="step-num">${idx + 1}</span>
+                <span class="step-bullet">${s.icon}</span>
+                <div class="step-text">
+                  <span class="step-label"><strong>${escapeHtml(s.label)}:</strong></span>
+                  <span class="step-product">${escapeHtml(s.product)}</span>
+                  <span class="step-desc">— ${escapeHtml(s.desc)}</span>
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
       </div>
 
       <!-- Collapsible Full 4-Week Schedule Drawer Toggle -->

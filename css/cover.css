@@ -3306,67 +3306,203 @@
   border: 1px solid var(--border-light);
 }
 
-.hair-steps-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.hair-step-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 10px 14px;
+/* Daily Tracker Box: 1 Checkbox + Concise Routine */
+.hair-daily-tracker-box {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  cursor: pointer;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-top: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
   transition: all var(--transition-fast);
 }
 
-.hair-step-item:hover {
-  border-color: var(--margo-a-border);
+.hair-daily-tracker-box:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.hair-daily-tracker-box.is-done {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.03);
+}
+
+[data-theme="dark"] .hair-daily-tracker-box.is-done {
+  background: rgba(139, 92, 246, 0.08);
+}
+
+/* Master Single Checkbox Row */
+.hair-tracker-check-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
   background: var(--bg-surface);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition-fast);
+  border-bottom: 1px solid var(--border-light);
 }
 
-.hair-step-item.done {
-  opacity: 0.65;
-  background: var(--bg-surface);
-  border-color: var(--border-subtle);
+.hair-tracker-check-row:hover {
+  background: var(--bg-surface-hover);
 }
 
-.hair-step-item.done .hair-step-header {
-  text-decoration: line-through;
-  color: var(--text-muted);
-}
-
-.hair-step-content {
+.hair-tracker-check-info {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
 
-.hair-step-header {
+.hair-tracker-check-title {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.hair-daily-tracker-box.is-done .hair-tracker-check-title {
+  color: #7C3AED;
+}
+
+[data-theme="dark"] .hair-daily-tracker-box.is-done .hair-tracker-check-title {
+  color: #C4B5FD;
+}
+
+.hair-tracker-check-desc {
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.hair-tracker-check-pill {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.hair-tracker-check-pill.done {
+  background: rgba(139, 92, 246, 0.15);
+  color: #6D28D9;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+[data-theme="dark"] .hair-tracker-check-pill.done {
+  background: rgba(139, 92, 246, 0.25);
+  color: #DDD6FE;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+/* Concise Routine Sequence Tray */
+.hair-concise-routine-tray {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hair-concise-tray-header {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
+  justify-content: space-between;
+}
+
+.hair-concise-tray-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.hair-concise-step-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #7C3AED;
+  background: rgba(139, 92, 246, 0.1);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+[data-theme="dark"] .hair-concise-step-badge {
+  color: #DDD6FE;
+  background: rgba(139, 92, 246, 0.2);
+}
+
+.hair-concise-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hair-concise-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--text-primary);
+}
+
+.hair-concise-step-item .step-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7C3AED;
+  background: rgba(139, 92, 246, 0.1);
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+[data-theme="dark"] .hair-concise-step-item .step-num {
+  color: #C4B5FD;
+  background: rgba(139, 92, 246, 0.2);
+}
+
+.hair-concise-step-item .step-bullet {
+  font-size: 0.88rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.hair-concise-step-item .step-text {
+  flex: 1;
+}
+
+.hair-concise-step-item .step-label {
   font-weight: 600;
   color: var(--text-primary);
-  flex-wrap: wrap;
 }
 
-.hair-step-product {
+.hair-concise-step-item .step-product {
   font-weight: 700;
-  color: var(--margo-a);
+  color: #7C3AED;
 }
 
-.hair-step-desc {
+[data-theme="dark"] .hair-concise-step-item .step-product {
+  color: #C4B5FD;
+}
+
+.hair-concise-step-item .step-desc {
   font-size: 0.78rem;
   color: var(--text-muted);
-  line-height: 1.35;
 }
 
 .hair-calendar-toggle-btn {

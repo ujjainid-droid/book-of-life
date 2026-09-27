@@ -906,6 +906,40 @@ class StorageManager {
     return this.data.hairCareState[dateStr];
   }
 
+  isHairCareDayDone(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.hairCareState) this.data.hairCareState = {};
+    const day = this.data.hairCareState[dateStr] || {};
+    if (day.completed !== undefined) return !!day.completed;
+    if (typeof getHairCareRoutineForDate === 'function') {
+      const routine = getHairCareRoutineForDate(dateStr);
+      if (routine && routine.steps && routine.steps.length > 0) {
+        return routine.steps.every(s => !!day[s.id]);
+      }
+    }
+    return false;
+  }
+
+  toggleHairCareDay(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.hairCareState) this.data.hairCareState = {};
+    if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
+    const current = this.isHairCareDayDone(dateStr);
+    const nextVal = !current;
+    this.data.hairCareState[dateStr].completed = nextVal;
+
+    if (typeof getHairCareRoutineForDate === 'function') {
+      const routine = getHairCareRoutineForDate(dateStr);
+      if (routine && routine.steps) {
+        routine.steps.forEach(s => {
+          this.data.hairCareState[dateStr][s.id] = nextVal;
+        });
+      }
+    }
+
+    this.addPoints(nextVal ? 10 : -10);
+    this.saveData();
+    return nextVal;
+  }
+
   toggleHairCareStep(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), stepId) {
     if (!this.data.hairCareState) this.data.hairCareState = {};
     if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
