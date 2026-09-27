@@ -3060,6 +3060,30 @@
   border: 1px solid var(--border-light);
 }
 
+.hair-progress-pill.all-done {
+  background: rgba(139, 92, 246, 0.15);
+  color: #6D28D9;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+[data-theme="dark"] .hair-progress-pill.all-done {
+  background: rgba(139, 92, 246, 0.25);
+  color: #DDD6FE;
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.hair-progress-pill.floor-done {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
+  border-color: rgba(2, 132, 199, 0.28);
+}
+
+[data-theme="dark"] .hair-progress-pill.floor-done {
+  background: rgba(2, 132, 199, 0.22);
+  color: #7DD3FC;
+  border-color: rgba(2, 132, 199, 0.38);
+}
+
 /* Daily Tracker Box: 1 Checkbox + Concise Routine */
 .hair-daily-tracker-box {
   background: var(--bg-card);
@@ -3082,6 +3106,15 @@
 
 [data-theme="dark"] .hair-daily-tracker-box.is-done {
   background: rgba(139, 92, 246, 0.08);
+}
+
+.hair-daily-tracker-box.is-skipped {
+  border-color: rgba(2, 132, 199, 0.35);
+  background: rgba(2, 132, 199, 0.03);
+}
+
+[data-theme="dark"] .hair-daily-tracker-box.is-skipped {
+  background: rgba(2, 132, 199, 0.07);
 }
 
 /* Master Single Checkbox Row */
@@ -3124,6 +3157,14 @@
   color: #C4B5FD;
 }
 
+.hair-daily-tracker-box.is-skipped .hair-tracker-check-title {
+  color: #0284C7;
+}
+
+[data-theme="dark"] .hair-daily-tracker-box.is-skipped .hair-tracker-check-title {
+  color: #7DD3FC;
+}
+
 .hair-tracker-check-desc {
   font-family: var(--font-sans);
   font-size: 0.76rem;
@@ -3153,6 +3194,297 @@
   background: rgba(139, 92, 246, 0.25);
   color: #DDD6FE;
   border-color: rgba(139, 92, 246, 0.4);
+}
+
+.hair-tracker-check-pill.skipped {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
+  border-color: rgba(2, 132, 199, 0.25);
+}
+
+[data-theme="dark"] .hair-tracker-check-pill.skipped {
+  background: rgba(2, 132, 199, 0.22);
+  color: #7DD3FC;
+  border-color: rgba(2, 132, 199, 0.35);
+}
+
+/* Skip Prompt Row */
+.hair-skip-prompt-row {
+  padding: 8px 18px;
+  background: rgba(139, 92, 246, 0.03);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.hair-skip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.hair-skip-btn:hover {
+  color: #7C3AED;
+}
+
+[data-theme="dark"] .hair-skip-btn:hover {
+  color: #C4B5FD;
+}
+
+/* Recorded Alternative Banner */
+.hair-skip-recorded-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 18px;
+  background: rgba(2, 132, 199, 0.06);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.18);
+}
+
+[data-theme="dark"] .hair-skip-recorded-banner {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.25);
+}
+
+.hair-skip-recorded-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hair-skip-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(2, 132, 199, 0.14);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.28);
+}
+
+[data-theme="dark"] .hair-skip-badge {
+  background: rgba(2, 132, 199, 0.22);
+  color: #7DD3FC;
+  border-color: rgba(2, 132, 199, 0.35);
+}
+
+.hair-skip-note-text {
+  font-size: 0.82rem;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.hair-skip-note-label {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.hair-skip-note-val {
+  font-weight: 600;
+  color: #0369A1;
+}
+
+[data-theme="dark"] .hair-skip-note-val {
+  color: #BAE6FD;
+}
+
+.hair-skip-recorded-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hair-skip-action-btn {
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hair-skip-action-btn.edit-btn {
+  background: rgba(139, 92, 246, 0.1);
+  color: #6D28D9;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.hair-skip-action-btn.edit-btn:hover {
+  background: rgba(139, 92, 246, 0.18);
+}
+
+[data-theme="dark"] .hair-skip-action-btn.edit-btn {
+  background: rgba(139, 92, 246, 0.2);
+  color: #DDD6FE;
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+.hair-skip-action-btn.undo-btn {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+}
+
+.hair-skip-action-btn.undo-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+/* Inline Skip Drawer / Editor */
+.hair-skip-editor-drawer {
+  padding: 14px 18px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.hair-skip-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hair-skip-editor-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.hair-skip-editor-hint {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #0284C7;
+}
+
+[data-theme="dark"] .hair-skip-editor-hint {
+  color: #7DD3FC;
+}
+
+.hair-skip-quick-chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hair-chips-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.hair-quick-chip {
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hair-quick-chip:hover {
+  border-color: #0284C7;
+  color: #0284C7;
+}
+
+[data-theme="dark"] .hair-quick-chip:hover {
+  border-color: #7DD3FC;
+  color: #7DD3FC;
+}
+
+.hair-skip-input-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.hair-skip-note-input {
+  flex: 1;
+  min-width: 220px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.hair-skip-note-input:focus {
+  border-color: #0284C7;
+}
+
+[data-theme="dark"] .hair-skip-note-input:focus {
+  border-color: #7DD3FC;
+}
+
+.hair-skip-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hair-skip-save-btn {
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: #0284C7;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.hair-skip-save-btn:hover {
+  background: #0369A1;
+}
+
+[data-theme="dark"] .hair-skip-save-btn {
+  background: #0369A1;
+}
+
+[data-theme="dark"] .hair-skip-save-btn:hover {
+  background: #0284C7;
+}
+
+.hair-skip-cancel-btn {
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hair-skip-cancel-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
 }
 
 /* Concise Routine Sequence Tray */
@@ -3350,6 +3682,15 @@
   box-shadow: 0 0 0 1px var(--primary);
 }
 
+.hair-cal-day-cell.is-skipped {
+  border-color: rgba(2, 132, 199, 0.35);
+  background: rgba(2, 132, 199, 0.04);
+}
+
+[data-theme="dark"] .hair-cal-day-cell.is-skipped {
+  background: rgba(2, 132, 199, 0.1);
+}
+
 .cal-day-name {
   font-size: 0.7rem;
   font-weight: 700;
@@ -3369,6 +3710,32 @@
   padding: 1px 4px;
   border-radius: var(--radius-sm);
   white-space: nowrap;
+}
+
+.cal-day-badge.badge-done {
+  background: rgba(13, 148, 136, 0.14);
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.28);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .cal-day-badge.badge-done {
+  background: rgba(13, 148, 136, 0.25);
+  color: #5EEAD4;
+  border-color: rgba(13, 148, 136, 0.4);
+}
+
+.cal-day-badge.badge-skipped {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .cal-day-badge.badge-skipped {
+  background: rgba(2, 132, 199, 0.22);
+  color: #7DD3FC;
+  border-color: rgba(2, 132, 199, 0.35);
 }
 
 @media (max-width: 600px) {

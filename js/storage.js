@@ -901,7 +901,8 @@ class StorageManager {
   isHairCareDayDone(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
     if (!this.data.hairCareState) this.data.hairCareState = {};
     const day = this.data.hairCareState[dateStr] || {};
-    if (day.completed !== undefined) return !!day.completed;
+    if (day.completed) return true;
+    if (day.skipped) return true;
     if (typeof getHairCareRoutineForDate === 'function') {
       const routine = getHairCareRoutineForDate(dateStr);
       if (routine && routine.steps && routine.steps.length > 0) {
@@ -914,15 +915,19 @@ class StorageManager {
   toggleHairCareDay(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
     if (!this.data.hairCareState) this.data.hairCareState = {};
     if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
-    const current = this.isHairCareDayDone(dateStr);
-    const nextVal = !current;
-    this.data.hairCareState[dateStr].completed = nextVal;
+    const day = this.data.hairCareState[dateStr];
+    const isCompleted = !!day.completed;
+    const nextVal = !isCompleted;
+    day.completed = nextVal;
+    if (nextVal) {
+      day.skipped = false;
+    }
 
     if (typeof getHairCareRoutineForDate === 'function') {
       const routine = getHairCareRoutineForDate(dateStr);
       if (routine && routine.steps) {
         routine.steps.forEach(s => {
-          this.data.hairCareState[dateStr][s.id] = nextVal;
+          day[s.id] = nextVal;
         });
       }
     }
@@ -930,6 +935,36 @@ class StorageManager {
     this.addPoints(nextVal ? 10 : -10);
     this.saveData();
     return nextVal;
+  }
+
+  recordHairCareSkip(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), note = '') {
+    if (!this.data.hairCareState) this.data.hairCareState = {};
+    if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
+    const day = this.data.hairCareState[dateStr];
+    const wasAlreadyHandled = day.completed || day.skipped;
+    day.skipped = true;
+    day.completed = false;
+    day.insteadNote = (note || '').trim();
+    day.skippedAt = new Date().toISOString();
+
+    if (!wasAlreadyHandled) {
+      this.addPoints(5);
+    }
+    this.saveData();
+    return day;
+  }
+
+  undoHairCareSkip(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.hairCareState) this.data.hairCareState = {};
+    if (!this.data.hairCareState[dateStr]) return;
+    const day = this.data.hairCareState[dateStr];
+    if (day.skipped) {
+      day.skipped = false;
+      day.insteadNote = '';
+      delete day.skippedAt;
+      this.addPoints(-5);
+      this.saveData();
+    }
   }
 
   toggleHairCareStep(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), stepId) {

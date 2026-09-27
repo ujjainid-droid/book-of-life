@@ -129,9 +129,12 @@ function renderDailySheet() {
   const hasHealth = !!currentHealthLevel;
   const anchorsDone = (moveStage === 1 && standStage === 1);
   const anchorsFloor = (moveStage > 0 || standStage > 0);
-  const hasHairCare = (typeof storage !== 'undefined' && typeof storage.isHairCareDayDone === 'function')
-    ? storage.isHairCareDayDone(activeTrackingDate)
-    : false;
+  const hairCareState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
+    ? storage.getHairCareState(activeTrackingDate)
+    : {};
+  const isHairCompleted = !!hairCareState.completed;
+  const isHairSkipped = !!hairCareState.skipped;
+  const hasHairCare = isHairCompleted || isHairSkipped;
   const hasJournal = !!(journalEntry && journalEntry.text && journalEntry.text.trim().length > 0);
   const totalDayGoals = dateDayGoals.length;
   const completedDayGoals = dateDayGoals.filter(g => g && g.completed).length;
@@ -224,8 +227,8 @@ function renderDailySheet() {
         <span class="breadcrumb-separator">›</span>
 
         <!-- 4. Haircare -->
-        <button type="button" class="breadcrumb-chip ${hasHairCare ? 'done' : 'pending'}" onclick="scrollToDailySection('section-hair-care')" title="Jump to Haircare Routine">
-          <span class="chip-status-icon">${hasHairCare ? '✓' : '○'}</span>
+        <button type="button" class="breadcrumb-chip ${isHairCompleted ? 'done' : (isHairSkipped ? 'floor' : 'pending')}" onclick="scrollToDailySection('section-hair-care')" title="${isHairSkipped ? `Haircare Skipped: "${escapeHtml(hairCareState.insteadNote || 'Alternative')}"` : 'Jump to Haircare Routine'}">
+          <span class="chip-status-icon">${isHairCompleted ? '✓' : (isHairSkipped ? '⏭️' : '○')}</span>
           <span class="chip-label">Haircare</span>
         </button>
 
@@ -1451,6 +1454,62 @@ function toggleHairCalendarCollapse() {
 }
 window.toggleHairCalendarCollapse = toggleHairCalendarCollapse;
 
+let activeHairSkipDate = null;
+
+function openHairSkipEditor(dateStr) {
+  activeHairSkipDate = dateStr;
+  renderDailySheet();
+  setTimeout(() => {
+    const input = document.getElementById('hair-skip-note-input');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }, 60);
+}
+window.openHairSkipEditor = openHairSkipEditor;
+
+function closeHairSkipEditor() {
+  activeHairSkipDate = null;
+  renderDailySheet();
+}
+window.closeHairSkipEditor = closeHairSkipEditor;
+
+function setHairSkipPreset(presetText) {
+  const input = document.getElementById('hair-skip-note-input');
+  if (input) {
+    input.value = presetText;
+    input.focus();
+  }
+}
+window.setHairSkipPreset = setHairSkipPreset;
+
+function submitHairCareSkipAction(dateStr) {
+  const input = document.getElementById('hair-skip-note-input');
+  const note = input ? input.value.trim() : '';
+  if (typeof storage !== 'undefined' && typeof storage.recordHairCareSkip === 'function') {
+    storage.recordHairCareSkip(dateStr, note);
+    if (typeof showToast === 'function') {
+      showToast(`⏭️ Skipped routine: "${note || 'Alternative recorded'}" (+5 XP Floor)`);
+    }
+  }
+  activeHairSkipDate = null;
+  renderDailySheet();
+}
+window.submitHairCareSkipAction = submitHairCareSkipAction;
+
+function undoHairCareSkipAction(dateStr) {
+  if (typeof storage !== 'undefined' && typeof storage.undoHairCareSkip === 'function') {
+    storage.undoHairCareSkip(dateStr);
+    if (typeof showToast === 'function') {
+      showToast('Hair routine skip removed');
+    }
+  }
+  activeHairSkipDate = null;
+  renderDailySheet();
+}
+window.undoHairCareSkipAction = undoHairCareSkipAction;
+
 function toggleHairCareDayAction(dateStr) {
   if (typeof storage !== 'undefined' && typeof storage.toggleHairCareDay === 'function') {
     const nextVal = storage.toggleHairCareDay(dateStr);
@@ -1461,6 +1520,7 @@ function toggleHairCareDayAction(dateStr) {
       if (typeof showToast === 'function') showToast('Hair care routine marked pending');
     }
   }
+  activeHairSkipDate = null;
   renderDailySheet();
 }
 window.toggleHairCareDayAction = toggleHairCareDayAction;
@@ -1468,9 +1528,12 @@ window.toggleHairCareStepAction = toggleHairCareDayAction; // backward compatibi
 
 function renderHairCareCard(dateStr, isToday) {
   const routine = getHairCareRoutineForDate(dateStr);
-  const isDayDone = (typeof storage !== 'undefined' && typeof storage.isHairCareDayDone === 'function')
-    ? storage.isHairCareDayDone(dateStr)
-    : false;
+  const hairCareState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
+    ? storage.getHairCareState(dateStr)
+    : {};
+  const isCompleted = !!hairCareState.completed;
+  const isSkipped = !!hairCareState.skipped;
+  const isEditorOpen = (activeHairSkipDate === dateStr);
   const todayIso = formatDateIso(new Date());
 
   const dateObj = parseDateIso(dateStr);
@@ -1488,18 +1551,34 @@ function renderHairCareCard(dateStr, isToday) {
               const isSelected = (d.date === dateStr);
               const isTodayCell = (d.date === todayIso);
               const cellRoutine = getHairCareRoutineForDate(d.date);
-              const cellDone = (typeof storage !== 'undefined' && typeof storage.isHairCareDayDone === 'function')
-                ? storage.isHairCareDayDone(d.date)
-                : false;
+              const cellState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
+                ? storage.getHairCareState(d.date)
+                : {};
+              const cellCompleted = !!cellState.completed;
+              const cellSkipped = !!cellState.skipped;
+
+              let badgeText = d.badge;
+              let badgeStyleClass = cellRoutine.badgeClass;
+              let cellTitle = `${d.dayName}, ${d.date}: ${cellRoutine.title}`;
+
+              if (cellCompleted) {
+                badgeText = '✓ Done';
+                badgeStyleClass = 'badge-done';
+                cellTitle += ' (Completed +10 XP)';
+              } else if (cellSkipped) {
+                badgeText = '⏭️ Skipped';
+                badgeStyleClass = 'badge-skipped';
+                cellTitle += ` (Skipped: ${cellState.insteadNote || 'Alternative'} +5 XP)`;
+              }
 
               return `
-                <div class="hair-cal-day-cell ${isSelected ? 'is-selected' : ''} ${isTodayCell ? 'is-today' : ''}" 
+                <div class="hair-cal-day-cell ${isSelected ? 'is-selected' : ''} ${isTodayCell ? 'is-today' : ''} ${cellSkipped ? 'is-skipped' : ''}" 
                      onclick="jumpToTrackingDate('${d.date}')"
-                     title="${d.dayName}, ${d.date}: ${cellRoutine.title} (Click to jump to this day)">
+                     title="${escapeHtml(cellTitle)} (Click to jump to this day)">
                   <span class="cal-day-name">${d.dayName}</span>
                   <span class="cal-day-num">${d.num}</span>
-                  <span class="cal-day-badge ${cellRoutine.badgeClass}">
-                    ${cellDone ? '✓ Done' : d.badge}
+                  <span class="cal-day-badge ${badgeStyleClass}">
+                    ${badgeText}
                   </span>
                 </div>
               `;
@@ -1509,6 +1588,17 @@ function renderHairCareCard(dateStr, isToday) {
       `).join('')}
     </div>
   `;
+
+  // Header status pill
+  let headerProgressPill = '1 Checkbox';
+  let headerPillClass = '';
+  if (isCompleted) {
+    headerProgressPill = '🎉 Routine Done (+10 XP)';
+    headerPillClass = 'all-done';
+  } else if (isSkipped) {
+    headerProgressPill = '⏭️ Skipped (+5 XP Floor)';
+    headerPillClass = 'floor-done';
+  }
 
   return `
     <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
@@ -1527,25 +1617,81 @@ function renderHairCareCard(dateStr, isToday) {
           <span class="card-sub-muted">${routine.subtitle}</span>
         </div>
         <div class="hair-care-header-right">
-          <span class="hair-progress-pill ${isDayDone ? 'all-done' : ''}">
-            ${isDayDone ? '🎉 Routine Done (+10 XP)' : '1 Checkbox'}
+          <span class="hair-progress-pill ${headerPillClass}">
+            ${headerProgressPill}
           </span>
         </div>
       </div>
 
-      <!-- Daily Tracker: Simple 1 Checkbox + Concise Routine to Follow -->
-      <div class="hair-daily-tracker-box ${isDayDone ? 'is-done' : ''}">
+      <!-- Daily Tracker: Simple 1 Checkbox + Skip / Alternative Option + Concise Routine -->
+      <div class="hair-daily-tracker-box ${isCompleted ? 'is-done' : (isSkipped ? 'is-skipped' : '')}">
+        <!-- Master 1-Tap Checkbox Row -->
         <div class="hair-tracker-check-row" onclick="toggleHairCareDayAction('${dateStr}')">
-          <div class="custom-checkbox ${isDayDone ? 'checked' : ''}">
-            ${isDayDone ? '✓' : ''}
+          <div class="custom-checkbox ${isCompleted ? 'checked' : ''}">
+            ${isCompleted ? '✓' : ''}
           </div>
           <div class="hair-tracker-check-info">
-            <span class="hair-tracker-check-title">${isDayDone ? 'Routine Completed' : 'Complete Today’s Routine'}</span>
-            <span class="hair-tracker-check-desc">${routine.badge} · 1 tap to check off (+10 XP)</span>
+            <span class="hair-tracker-check-title">${isCompleted ? 'Routine Completed' : (isSkipped ? 'Mark Completed Instead' : 'Complete Today’s Routine')}</span>
+            <span class="hair-tracker-check-desc">${routine.badge} · 1 tap to check off full routine (+10 XP)</span>
           </div>
-          <span class="hair-tracker-check-pill ${isDayDone ? 'done' : ''}">${isDayDone ? '✓ Done' : 'Pending'}</span>
+          <span class="hair-tracker-check-pill ${isCompleted ? 'done' : (isSkipped ? 'skipped' : '')}">
+            ${isCompleted ? '✓ Done' : (isSkipped ? '⏭️ Skipped' : 'Pending')}
+          </span>
         </div>
 
+        <!-- Recorded Alternative Banner (Visible when skipped) -->
+        ${isSkipped ? `
+          <div class="hair-skip-recorded-banner">
+            <div class="hair-skip-recorded-left">
+              <span class="hair-skip-badge">⏭️ Routine Skipped</span>
+              <div class="hair-skip-note-text">
+                <span class="hair-skip-note-label">Instead:</span>
+                <span class="hair-skip-note-val">“${escapeHtml(hairCareState.insteadNote || 'Took alternative path')}”</span>
+              </div>
+            </div>
+            <div class="hair-skip-recorded-actions">
+              <button type="button" class="hair-skip-action-btn edit-btn" onclick="openHairSkipEditor('${dateStr}')" title="Edit recorded alternative">✏️ Edit</button>
+              <button type="button" class="hair-skip-action-btn undo-btn" onclick="undoHairCareSkipAction('${dateStr}')" title="Undo skip and restore pending status">↺ Undo</button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Skip Prompt Row (Visible when not completed and editor not open and not skipped) -->
+        ${(!isCompleted && !isSkipped && !isEditorOpen) ? `
+          <div class="hair-skip-prompt-row">
+            <button type="button" class="hair-skip-btn" onclick="openHairSkipEditor('${dateStr}')">
+              <span class="hair-skip-icon">⏭️</span>
+              <span class="hair-skip-text">Skipped or did something else today? <strong>Record what you did instead →</strong></span>
+            </button>
+          </div>
+        ` : ''}
+
+        <!-- Inline Skip Drawer / Editor -->
+        ${isEditorOpen ? `
+          <div class="hair-skip-editor-drawer" id="hair-skip-editor-drawer">
+            <div class="hair-skip-editor-header">
+              <span class="hair-skip-editor-title">⏭️ Record Alternative for ${formattedDay}</span>
+              <span class="hair-skip-editor-hint">+5 XP Floor streak protection</span>
+            </div>
+            <div class="hair-skip-quick-chips">
+              <span class="hair-chips-label">Quick select:</span>
+              <button type="button" class="hair-quick-chip" onclick="setHairSkipPreset('Dry shampoo only')">Dry shampoo only</button>
+              <button type="button" class="hair-quick-chip" onclick="setHairSkipPreset('Water rinse only')">Water rinse only</button>
+              <button type="button" class="hair-quick-chip" onclick="setHairSkipPreset('Slick claw clip bun')">Slick claw clip bun</button>
+              <button type="button" class="hair-quick-chip" onclick="setHairSkipPreset('Air dry / low tension')">Air dry / low tension</button>
+              <button type="button" class="hair-quick-chip" onclick="setHairSkipPreset('Silk bonnet rest day')">Silk bonnet rest day</button>
+            </div>
+            <div class="hair-skip-input-group">
+              <input type="text" id="hair-skip-note-input" class="hair-skip-note-input" placeholder="What did you do instead? (e.g. Dry shampoo only, claw clip bun...)" value="${escapeHtml(hairCareState.insteadNote || '')}" onkeydown="if(event.key === 'Enter') submitHairCareSkipAction('${dateStr}')" />
+              <div class="hair-skip-actions">
+                <button type="button" class="hair-skip-save-btn" onclick="submitHairCareSkipAction('${dateStr}')">Save Note (+5 XP)</button>
+                <button type="button" class="hair-skip-cancel-btn" onclick="closeHairSkipEditor()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Concise Routine Sequence Tray -->
         <div class="hair-concise-routine-tray">
           <div class="hair-concise-tray-header">
             <span class="hair-concise-tray-title">Today’s Routine Sequence</span>
