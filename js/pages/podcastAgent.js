@@ -30,48 +30,56 @@ function renderPodcastAgentCard() {
     <!-- Podcast Sanctuary Shelf Card -->
     <div class="cover-card podcast-agent-card-wrapper" id="section-podcast-agent" style="margin-bottom: 24px;">
       
-      <!-- Sleek Now Spinning Widget -->
-      <div class="now-spinning-card" style="box-shadow: none; border-radius: 14px; padding: 18px 20px;">
+      <!-- Sleek Audio Deck Widget -->
+      <div class="now-spinning-card podcast-lounge-dock">
         <div class="spinning-top-meta">
           <div class="pulse-indicator">
-            <span class="pulse-dot"></span>
-            Now Spinning • Active Focus
+            <span class="audio-equalizer">
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+            </span>
+            Audio Sanctuary • Active Serial
           </div>
-          <span style="font-size: 0.74rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">
+          <span class="podcast-genre-pill">
             ${now.genre || 'Investigative'}
           </span>
         </div>
 
-        <h1 class="spinning-title" style="font-size: 1.4rem; margin-bottom: 2px;">${now.title || 'No Active Serial'}</h1>
-        <div class="spinning-host" style="margin-bottom: 14px;">Hosted by ${now.host || 'Unknown'}</div>
+        <div class="podcast-title-row">
+          <h1 class="spinning-title">${now.title || 'No Active Serial'}</h1>
+          <span class="podcast-ep-bubble">Ep ${currentEp} / ${totalEp}</span>
+        </div>
+        <div class="spinning-host">Hosted by ${now.host || 'Unknown'}</div>
 
         <!-- Progress Tracker -->
         <div class="episode-progress-bar-wrap">
           <div class="episode-progress-labels">
-            <span>Episode ${currentEp} of ${totalEp}</span>
-            <span>${progressPercent}% Complete</span>
+            <span>Season Progress</span>
+            <span style="font-weight: 700; color: var(--primary);">${progressPercent}%</span>
           </div>
-          <div class="progress-track">
-            <div class="progress-fill" style="width: ${progressPercent}%;"></div>
+          <div class="progress-track podcast-glowing-track">
+            <div class="progress-fill podcast-glowing-fill" style="width: ${progressPercent}%;"></div>
           </div>
         </div>
 
         <!-- Controls -->
-        <div class="progress-controls">
+        <div class="progress-controls podcast-player-controls">
           <div style="display: flex; gap: 6px;">
-            <button class="ep-btn" onclick="adjustPodcastEpisode(-1)" title="Previous Episode">
+            <button class="ep-btn podcast-pill-btn" onclick="adjustPodcastEpisode(-1)" title="Previous Episode">
               <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Prev
             </button>
-            <button class="ep-btn" onclick="adjustPodcastEpisode(1)" title="Next Episode">
+            <button class="ep-btn podcast-pill-btn" onclick="adjustPodcastEpisode(1)" title="Next Episode">
               Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
             </button>
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="ep-btn" onclick="togglePodcastQueueDrawer()" style="color: var(--primary);">
+            <button class="ep-btn podcast-pill-btn" onclick="togglePodcastQueueDrawer()" style="color: var(--primary);">
               <i data-lucide="list-music" style="width: 14px; height: 14px;"></i>
               <span id="podcast-drawer-btn-text">${podcastQueueDrawerOpen ? 'Close Queue ▴' : 'Queue & Vault ▾'}</span>
             </button>
-            <button class="ep-btn primary" onclick="markCurrentSerialComplete()" title="Finish & Archive">
+            <button class="ep-btn primary podcast-done-btn" onclick="markCurrentSerialComplete()" title="Finish & Archive">
               <i data-lucide="check" style="width: 14px; height: 14px;"></i> Done
             </button>
           </div>

@@ -234,15 +234,7 @@ function renderDailySheet() {
 
         <span class="breadcrumb-separator">›</span>
 
-        <!-- 5. Podcasts -->
-        <button type="button" class="breadcrumb-chip done" onclick="scrollToDailySection('section-podcast-agent')" title="Jump to Podcast Focus (Bone Valley)">
-          <span class="chip-status-icon">🎧</span>
-          <span class="chip-label">Podcasts</span>
-        </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 6. Sanctuary Journal -->
+        <!-- 5. Sanctuary Journal -->
         <button type="button" class="breadcrumb-chip ${hasJournal ? 'done' : 'pending'}" onclick="scrollToDailySection('section-sanctuary-journal')" title="Jump to Sanctuary Journal">
           <span class="chip-status-icon">${hasJournal ? '✓' : '○'}</span>
           <span class="chip-label">Journal</span>
@@ -254,6 +246,14 @@ function renderDailySheet() {
         <button type="button" class="breadcrumb-chip ${hasGoals ? (goalsDone ? 'done' : 'pending') : 'optional'}" onclick="scrollToDailySection('section-day-goals')" title="Jump to Day Goals">
           <span class="chip-status-icon">${hasGoals ? (goalsDone ? '✓' : '○') : '⚡'}</span>
           <span class="chip-label">Goals</span>
+        </button>
+
+        <span class="breadcrumb-separator">›</span>
+
+        <!-- 7. Podcasts -->
+        <button type="button" class="breadcrumb-chip done" onclick="scrollToDailySection('section-podcast-agent')" title="Jump to Podcast Lounge (Bone Valley)">
+          <span class="chip-status-icon">🎧</span>
+          <span class="chip-label">Podcasts</span>
         </button>
       </div>
     </div>
@@ -626,10 +626,7 @@ function renderDailySheet() {
     <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
     ${renderHairCareCard(activeTrackingDate, isToday)}
 
-    <!-- 5. Podcast Sanctuary Focus (Single Serial + Queue) -->
-    ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
-
-    <!-- 6. Day-Specific Bonus Goals Card (One-off daily targets) -->
+    <!-- 5. Day-Specific Bonus Goals Card (One-off daily targets) -->
     <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
       <div class="card-title-row">
         <div>
@@ -762,6 +759,9 @@ function renderDailySheet() {
         </div>
       `}
     </div>
+
+    <!-- 8. Podcast Sanctuary Lounge & Media Player (Single Serial + Queue) -->
+    ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
   `;
 
   if (window.lucide) {
