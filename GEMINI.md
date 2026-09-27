@@ -29,7 +29,7 @@
      - `Off` (0 XP, pending)
      - `50% Floor` (+5 XP, protects the streak on low-energy days)
      - `100% Closed` (+10 XP)
-   - **5 Daily Checkpoints**: `Choices`, `Vitality`, `Anchors`, `Journal`, `Goals` with 1-tap smooth-scrolling to the respective section.
+   - **6 Daily Checkpoints**: `Choices`, `Vitality`, `Anchors`, `Haircare`, `Journal`, `Goals` with 1-tap smooth-scrolling to the respective section.
 
 5. **Task Management Philosophy (Church & State)**:
    - **Things 3** handles functional task execution, appointments, errands, and to-do lists.
