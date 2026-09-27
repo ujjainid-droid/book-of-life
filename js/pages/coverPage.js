@@ -668,6 +668,9 @@ function renderDailySheet() {
       </div>
     </div>
 
+    <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
+    ${renderHairCareCard(activeTrackingDate, isToday)}
+
     <!-- 5. Day-Specific Bonus Goals Card (One-off daily targets) -->
     <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
       <div class="card-title-row">
@@ -1494,3 +1497,291 @@ function scrollToDailySection(sectionId) {
   }
 }
 window.scrollToDailySection = scrollToDailySection;
+
+/* ==========================================================================
+   Abbey Yung Hair Care Routine & Collapsible Calendar (Fine & Thinning Hair)
+   ========================================================================== */
+
+let hairCalendarCollapsed = true;
+
+const HAIR_CARE_SCHEDULE_MAP = {
+  1: { // Monday
+    type: 'regular',
+    badge: '💧 Regular Wash',
+    badgeClass: 'badge-regular',
+    title: 'Regular Wash Day',
+    subtitle: 'Gentle cleansing, strand protection & weightless root lift',
+    steps: [
+      { id: 'pre', icon: '🥥', label: 'Pre-Shower', product: 'Coconut Oil Weightless Mist', desc: 'Spray onto dry ends only (15–20 mins; avoid roots to prevent hygral fatigue)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Massage scalp thoroughly with fingertips to dissolve sebum and dirt' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Quick second wash for a rich, clean lather (let suds rinse down lengths)' },
+      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to mid-lengths/ends; massage for 8 seconds, then rinse clean' },
+      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist from ears down; blow-dry roots on low/medium heat for maximum volume' }
+    ]
+  },
+  2: { // Tuesday
+    type: 'rest',
+    badge: '🛌 Scalp Rest Day',
+    badgeClass: 'badge-rest',
+    title: 'Scalp Rest Day (Off Day)',
+    subtitle: 'Zero wash friction — protect fragile strands & scalp moisture barrier',
+    steps: [
+      { id: 'care', icon: '🌿', label: 'Low Tension', product: 'Gentle Styling', desc: 'No wash today. Use a silk scrunchie or claw clip if putting hair up (avoid tight tension)' },
+      { id: 'sleep', icon: '🌙', label: 'Night Care', product: 'Satin Pillowcase', desc: 'Sleep on a satin/silk pillowcase to prevent mechanical friction breakage on fine ends' }
+    ]
+  },
+  3: { // Wednesday
+    type: 'bond',
+    badge: '🧬 Bond Repair Wash',
+    badgeClass: 'badge-bond',
+    title: 'Bond Strengthening Wash Day',
+    subtitle: 'Rebuilding internal hair bonds & preventing snap breakage',
+    steps: [
+      { id: 'pre', icon: '🔬', label: 'Pre-Shower', product: 'L’Oréal EverPure Bond Pre-Shampoo', desc: 'Dampen lengths/ends & apply generously (leave on 5–10 mins; skip oil today)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Rinse bond treatment + massage shampoo into scalp to cleanse roots' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Second rinse to ensure roots are completely clean and weightless' },
+      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to mid-lengths/ends; massage for 8 seconds, then rinse' },
+      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist damp ends; blow-dry roots on low/medium heat with nozzle pointing down' }
+    ]
+  },
+  4: { // Thursday
+    type: 'rest',
+    badge: '🛌 Scalp Rest Day',
+    badgeClass: 'badge-rest',
+    title: 'Scalp Rest Day (Off Day)',
+    subtitle: 'Zero wash friction — allow natural scalp sebum balance',
+    steps: [
+      { id: 'care', icon: '🌿', label: 'Gentle Care', product: 'Soft Scalp Brush', desc: 'No wash today. Gently brush scalp to distribute natural oils if roots need a refresh' },
+      { id: 'sleep', icon: '🌙', label: 'Night Care', product: 'Satin Pillowcase', desc: 'Sleep on a satin/silk pillowcase to protect delicate cuticle layers' }
+    ]
+  },
+  5: { // Friday
+    type: 'clarify',
+    badge: '🌿 Scalp Clarifying Reset',
+    badgeClass: 'badge-clarify',
+    title: 'Scalp Clarifying Reset Wash Day',
+    subtitle: 'Dissolving stubborn product buildup, hard water minerals & oils',
+    steps: [
+      { id: 'pre', icon: '🥥', label: 'Pre-Shower', product: 'Coconut Oil Weightless Mist', desc: 'Spray onto dry ends only (15–20 mins; shields lengths while clarifying scalp)' },
+      { id: 'wash1', icon: '🧼', label: '1st Shampoo (Clarify)', product: 'Garnier Clarifying Shampoo', desc: 'Massage scalp for 60 seconds with fingertips to thoroughly detox follicles' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo (Hydrate)', product: 'Garnier Hair Filler Shampoo', desc: 'Dime-sized wash so lengths retain lightweight hydration without stripping' },
+      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse thoroughly' },
+      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist on lengths/ends; blow-dry roots for maximum lift and bounce' }
+    ]
+  },
+  6: { // Saturday
+    type: 'rest',
+    badge: '🛌 Scalp Rest Day',
+    badgeClass: 'badge-rest',
+    title: 'Scalp Rest Day (Off Day)',
+    subtitle: 'Enjoy the lightweight volume from yesterday’s clarifying reset',
+    steps: [
+      { id: 'care', icon: '✨', label: 'Rest & Style', product: 'Claw Clip / Loose Style', desc: 'No wash today. Keep styling low-heat and low-manipulation' },
+      { id: 'sleep', icon: '🌙', label: 'Night Care', product: 'Satin Pillowcase', desc: 'Sleep on satin/silk pillowcase to protect hair ends' }
+    ]
+  },
+  0: { // Sunday
+    type: 'regular',
+    badge: '💧 Regular Wash',
+    badgeClass: 'badge-regular',
+    title: 'Regular Wash Day',
+    subtitle: 'Gentle cleansing, strand protection & weightless root lift',
+    steps: [
+      { id: 'pre', icon: '🥥', label: 'Pre-Shower', product: 'Coconut Oil Weightless Mist', desc: 'Spray onto dry ends only (15–20 mins; avoid roots)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Massage scalp thoroughly with fingertips to dissolve sebum' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler Shampoo', desc: 'Quick second wash for a clean, rich lather' },
+      { id: 'cond', icon: '✨', label: 'Lamellar Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse clean' },
+      { id: 'post', icon: '💨', label: 'Post-Shower', product: 'Pantene 10-in-1 Spray', desc: 'Mist damp ends; blow-dry roots on low/medium heat' }
+    ]
+  }
+};
+
+const FOUR_WEEK_SCHEDULE_DATA = [
+  { week: 'Week 1 (Sep 28 – Oct 4)', days: [
+    { date: '2026-09-28', dayName: 'Mon', num: '28', type: 'regular', badge: 'Regular' },
+    { date: '2026-09-29', dayName: 'Tue', num: '29', type: 'rest', badge: 'Rest' },
+    { date: '2026-09-30', dayName: 'Wed', num: '30', type: 'bond', badge: 'Bond Repair' },
+    { date: '2026-10-01', dayName: 'Thu', num: '1', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-02', dayName: 'Fri', num: '2', type: 'clarify', badge: 'Clarify' },
+    { date: '2026-10-03', dayName: 'Sat', num: '3', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-04', dayName: 'Sun', num: '4', type: 'regular', badge: 'Regular' }
+  ]},
+  { week: 'Week 2 (Oct 5 – Oct 11)', days: [
+    { date: '2026-10-05', dayName: 'Mon', num: '5', type: 'regular', badge: 'Regular' },
+    { date: '2026-10-06', dayName: 'Tue', num: '6', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-07', dayName: 'Wed', num: '7', type: 'bond', badge: 'Bond Repair' },
+    { date: '2026-10-08', dayName: 'Thu', num: '8', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-09', dayName: 'Fri', num: '9', type: 'clarify', badge: 'Clarify' },
+    { date: '2026-10-10', dayName: 'Sat', num: '10', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-11', dayName: 'Sun', num: '11', type: 'regular', badge: 'Regular' }
+  ]},
+  { week: 'Week 3 (Oct 12 – Oct 18)', days: [
+    { date: '2026-10-12', dayName: 'Mon', num: '12', type: 'regular', badge: 'Regular' },
+    { date: '2026-10-13', dayName: 'Tue', num: '13', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-14', dayName: 'Wed', num: '14', type: 'bond', badge: 'Bond Repair' },
+    { date: '2026-10-15', dayName: 'Thu', num: '15', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-16', dayName: 'Fri', num: '16', type: 'clarify', badge: 'Clarify' },
+    { date: '2026-10-17', dayName: 'Sat', num: '17', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-18', dayName: 'Sun', num: '18', type: 'regular', badge: 'Regular' }
+  ]},
+  { week: 'Week 4 (Oct 19 – Oct 25)', days: [
+    { date: '2026-10-19', dayName: 'Mon', num: '19', type: 'regular', badge: 'Regular' },
+    { date: '2026-10-20', dayName: 'Tue', num: '20', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-21', dayName: 'Wed', num: '21', type: 'bond', badge: 'Bond Repair' },
+    { date: '2026-10-22', dayName: 'Thu', num: '22', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-23', dayName: 'Fri', num: '23', type: 'clarify', badge: 'Clarify' },
+    { date: '2026-10-24', dayName: 'Sat', num: '24', type: 'rest', badge: 'Rest' },
+    { date: '2026-10-25', dayName: 'Sun', num: '25', type: 'regular', badge: 'Regular' }
+  ]}
+];
+
+function getHairCareRoutineForDate(dateStr) {
+  const dObj = parseDateIso(dateStr);
+  const dayOfWeek = dObj.getDay();
+  return HAIR_CARE_SCHEDULE_MAP[dayOfWeek] || HAIR_CARE_SCHEDULE_MAP[1];
+}
+
+function toggleHairCalendarCollapse() {
+  hairCalendarCollapsed = !hairCalendarCollapsed;
+  const drawer = document.getElementById('hair-calendar-drawer');
+  const text = document.getElementById('hair-calendar-toggle-text');
+  if (drawer) {
+    drawer.style.display = hairCalendarCollapsed ? 'none' : 'block';
+  }
+  if (text) {
+    text.textContent = hairCalendarCollapsed ? '▾ View Full Calendar' : '▴ Hide Calendar';
+  }
+}
+window.toggleHairCalendarCollapse = toggleHairCalendarCollapse;
+
+function toggleHairCareStepAction(dateStr, stepId) {
+  if (typeof storage !== 'undefined' && typeof storage.toggleHairCareStep === 'function') {
+    const nextVal = storage.toggleHairCareStep(dateStr, stepId);
+    const routine = getHairCareRoutineForDate(dateStr);
+    const dayState = storage.getHairCareState(dateStr);
+    const allDone = routine.steps.length > 0 && routine.steps.every(s => !!dayState[s.id]);
+
+    if (allDone && nextVal) {
+      if (typeof triggerConfetti === 'function') triggerConfetti();
+      if (typeof showToast === 'function') showToast('✨ All hair care steps completed for today! (+10 XP)');
+    }
+  }
+  renderDailySheet();
+}
+window.toggleHairCareStepAction = toggleHairCareStepAction;
+
+function renderHairCareCard(dateStr, isToday) {
+  const routine = getHairCareRoutineForDate(dateStr);
+  const dayState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
+    ? storage.getHairCareState(dateStr)
+    : {};
+  const todayIso = formatDateIso(new Date());
+
+  const completedCount = routine.steps.filter(s => !!dayState[s.id]).length;
+  const totalSteps = routine.steps.length;
+  const isAllDone = totalSteps > 0 && completedCount >= totalSteps;
+
+  const dateObj = parseDateIso(dateStr);
+  const formattedDay = isToday 
+    ? 'Today' 
+    : dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  const stepsHtml = routine.steps.map(s => {
+    const isDone = !!dayState[s.id];
+    return `
+      <div class="hair-step-item ${isDone ? 'done' : ''}" onclick="toggleHairCareStepAction('${dateStr}', '${s.id}')">
+        <div class="custom-checkbox ${isDone ? 'checked' : ''}">
+          ${isDone ? '✓' : ''}
+        </div>
+        <div class="hair-step-content">
+          <div class="hair-step-header">
+            <span>${s.icon} ${escapeHtml(s.label)}:</span>
+            <span class="hair-step-product">${escapeHtml(s.product)}</span>
+          </div>
+          <div class="hair-step-desc">${escapeHtml(s.desc)}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const calendarGridHtml = `
+    <div class="hair-calendar-grid">
+      ${FOUR_WEEK_SCHEDULE_DATA.map(w => `
+        <div class="hair-cal-week-row">
+          <span class="hair-cal-week-title">${w.week}</span>
+          <div class="hair-cal-days-strip">
+            ${w.days.map(d => {
+              const isSelected = (d.date === dateStr);
+              const isTodayCell = (d.date === todayIso);
+              const cellRoutine = getHairCareRoutineForDate(d.date);
+              const cellState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
+                ? storage.getHairCareState(d.date)
+                : {};
+              const cellDone = cellRoutine.steps.length > 0 && cellRoutine.steps.every(s => !!cellState[s.id]);
+
+              return `
+                <div class="hair-cal-day-cell ${isSelected ? 'is-selected' : ''} ${isTodayCell ? 'is-today' : ''}" 
+                     onclick="jumpToTrackingDate('${d.date}')"
+                     title="${d.dayName}, ${d.date}: ${cellRoutine.title} (Click to jump to this day)">
+                  <span class="cal-day-name">${d.dayName}</span>
+                  <span class="cal-day-num">${d.num}</span>
+                  <span class="cal-day-badge ${cellRoutine.badgeClass}">
+                    ${cellDone ? '✓ Done' : d.badge}
+                  </span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  return `
+    <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
+    <div class="cover-card hair-care-card" id="section-hair-care">
+      <div class="card-title-row">
+        <div class="hair-care-title-left">
+          <div class="hair-care-title-badge-row">
+            <span class="margo-tag margo-tag-a">A — Aesthetic</span>
+            <span class="hair-type-tag ${routine.badgeClass}">${routine.badge}</span>
+            <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 500;">(${formattedDay})</span>
+          </div>
+          <h3 class="hair-care-heading" style="display: flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 700; margin-top: 4px;">
+            <i data-lucide="sparkles" style="color: var(--margo-a); width: 17px; height: 17px;"></i>
+            Abbey Yung Hair Routine
+          </h3>
+          <span class="card-sub-muted">${routine.subtitle}</span>
+        </div>
+        <div class="hair-care-header-right">
+          <span class="hair-progress-pill ${isAllDone ? 'all-done' : ''}">
+            ${isAllDone ? '🎉 All Done' : `${completedCount}/${totalSteps} done`}
+          </span>
+        </div>
+      </div>
+
+      <!-- Given Day Actionable Checklist ONLY -->
+      <div class="hair-steps-list">
+        ${stepsHtml}
+      </div>
+
+      <!-- Collapsible Full 4-Week Schedule Drawer Toggle -->
+      <button type="button" class="hair-calendar-toggle-btn" onclick="toggleHairCalendarCollapse()">
+        <span class="toggle-btn-left">
+          <i data-lucide="calendar" style="width: 14px; height: 14px; color: var(--margo-a);"></i>
+          <span>Full 4-Week Schedule (Sep 28 – Oct 25)</span>
+        </span>
+        <span class="toggle-btn-right" id="hair-calendar-toggle-text">
+          ${hairCalendarCollapsed ? '▾ View Full Calendar' : '▴ Hide Calendar'}
+        </span>
+      </button>
+
+      <!-- Collapsible Calendar Drawer -->
+      <div class="hair-calendar-drawer" id="hair-calendar-drawer" style="display: ${hairCalendarCollapsed ? 'none' : 'block'};">
+        ${calendarGridHtml}
+      </div>
+    </div>
+  `;
+}
+window.renderHairCareCard = renderHairCareCard;
+

@@ -3333,3 +3333,243 @@
   }
 }
 
+
+/* ==========================================================================
+   Abbey Yung Hair Care Routine & Collapsible Calendar
+   ========================================================================== */
+.hair-care-card {
+  border-left: 3px solid var(--margo-a);
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.hair-care-title-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.hair-type-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+}
+
+.badge-regular {
+  background: var(--margo-g-light);
+  color: var(--margo-g-dark);
+  border: 1px solid var(--margo-g-border);
+}
+
+.badge-bond {
+  background: var(--margo-a-light);
+  color: var(--margo-a-dark);
+  border: 1px solid var(--margo-a-border);
+}
+
+.badge-clarify {
+  background: var(--margo-m-light);
+  color: var(--margo-m-dark);
+  border: 1px solid var(--margo-m-border);
+}
+
+.badge-rest {
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+}
+
+.hair-progress-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.hair-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.hair-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hair-step-item:hover {
+  border-color: var(--margo-a-border);
+  background: var(--bg-surface);
+}
+
+.hair-step-item.done {
+  opacity: 0.65;
+  background: var(--bg-surface);
+  border-color: var(--border-subtle);
+}
+
+.hair-step-item.done .hair-step-header {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.hair-step-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hair-step-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  flex-wrap: wrap;
+}
+
+.hair-step-product {
+  font-weight: 700;
+  color: var(--margo-a);
+}
+
+.hair-step-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.hair-calendar-toggle-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding: 9px 14px;
+  border: 1px dashed var(--border-light);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hair-calendar-toggle-btn:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--margo-a);
+  color: var(--text-primary);
+}
+
+.toggle-btn-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hair-calendar-drawer {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+}
+
+.hair-calendar-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hair-cal-week-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hair-cal-week-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hair-cal-days-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.hair-cal-day-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 4px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition-fast);
+}
+
+.hair-cal-day-cell:hover {
+  border-color: var(--primary);
+  background: var(--bg-surface-hover);
+}
+
+.hair-cal-day-cell.is-selected {
+  border: 2px solid var(--margo-a);
+  background: var(--margo-a-light);
+}
+
+.hair-cal-day-cell.is-today {
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.cal-day-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.cal-day-num {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 2px 0;
+}
+
+.cal-day-badge {
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .hair-cal-days-strip {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

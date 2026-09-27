@@ -150,6 +150,8 @@ class StorageManager {
       // Day-Specific Goals (one-off daily targets): { [dateStr]: [ { id, text, completed } ] }
       dayGoals: {},
       dayGoalsUpdatedAt: {},
+      // Abbey Yung Hair Care Routine State: { [dateStr]: { [stepId]: boolean } }
+      hairCareState: {},
       // Sassy Gamification Points & Status (Baseline: 185 XP Functional Menace)
       points: 185,
       claimedRewards: [],
@@ -894,6 +896,24 @@ class StorageManager {
     this.data.dayGoalsUpdatedAt[dateStr] = Date.now();
     this.saveData();
     return true;
+  }
+
+  // --- Abbey Yung Hair Care Routine Methods ---
+
+  getHairCareState(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.hairCareState) this.data.hairCareState = {};
+    if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
+    return this.data.hairCareState[dateStr];
+  }
+
+  toggleHairCareStep(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), stepId) {
+    if (!this.data.hairCareState) this.data.hairCareState = {};
+    if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
+    const current = !!this.data.hairCareState[dateStr][stepId];
+    this.data.hairCareState[dateStr][stepId] = !current;
+    this.addPoints(!current ? 5 : -5);
+    this.saveData();
+    return !current;
   }
 
   // --- Gamification Points & Sassy Status Methods ---
