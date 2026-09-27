@@ -131,44 +131,6 @@ function renderDailySheet() {
     h.name.toLowerCase().trim() !== 'stand ring'
   );
 
-  // Confidante Radical Candor Synthesis (Move & Stand + Vitality + Choices)
-  let confidanteStance = '⚠️ Baseline Breached';
-  let confidanteQuote = '';
-  let confidanteNextStep = '';
-
-  const bothClosed = (moveStage === 1 && standStage === 1);
-  const floorDefended = (moveStage > 0 || standStage > 0) && !bothClosed;
-  const zeroDefended = (moveStage === 0 && standStage === 0);
-
-  if (bothClosed) {
-    confidanteStance = '🔥 Ruthless Execution';
-    if (currentHealthLevel && currentHealthLevel <= 2) {
-      confidanteQuote = `"Vitality was only ${currentHealthLevel}/5 today, yet you closed both Move & Stand 100%. That is uncompromising discipline. Respect the physiological reality—bank your rest early tonight."`;
-    } else if (currentHealthLevel && currentHealthLevel >= 4) {
-      confidanteQuote = `"High vitality (${currentHealthLevel}/5) paired with 100% closed rings. Textbook execution today. Zero excuses tolerated, none made."`;
-    } else {
-      confidanteQuote = `"Both Move and Stand rings 100% closed. Zero friction, zero negotiation with your baseline. Momentum locked in."`;
-    }
-    confidanteNextStep = '👉 Next Move: Bank the XP and recharge for tomorrow.';
-  } else if (floorDefended) {
-    confidanteStance = '🛡️ Floor Defended';
-    if (currentHealthLevel && currentHealthLevel <= 2) {
-      confidanteQuote = `"Low energy day (${currentHealthLevel}/5), but you defended your 50% floor instead of taking a zero. Defending the baseline when you don't feel like it is what creates real long-term identity."`;
-    } else {
-      confidanteQuote = `"You defended your baseline. If you still have fuel left, take 15–20 minutes to close to 100%. If not, streak is secured."`;
-    }
-    confidanteNextStep = (moveStage === 0.5 || standStage === 0.5) 
-      ? '👉 Next Move: 15 more minutes pushes you to 100%, or rest knowing your streak is protected.' 
-      : '👉 Next Move: Defend the remaining anchor or bank your protected day.';
-  } else {
-    confidanteStance = '⚠️ Baseline Breached';
-    if (currentHealthLevel && currentHealthLevel <= 2) {
-      confidanteQuote = `"You're feeling low energy (${currentHealthLevel}/5), but doing 0% is surrendering to total inertia. Don't do a full session—defend the 50% floor with a 15-minute walk right now."`;
-    } else {
-      confidanteQuote = `"Zero movement logged today. You are negotiating with friction. Put your phone down and move for 15 minutes before the day slips."`;
-    }
-    confidanteNextStep = '👉 Next Move: Put on shoes. 15-minute walk right now to defend the 50% floor.';
-  }
 
   // Visual Breadcrumbs: Checkpoints Status Calculations
   const hasChoice = (dateChoices.good || 0) + (dateChoices.not || 0) > 0;
@@ -553,33 +515,6 @@ function renderDailySheet() {
           </div>
         </div>
 
-      </div>
-
-      <!-- The Confidante (Radical Candor Audit Card) -->
-      <div class="confidante-card">
-        <div class="conf-header">
-          <div class="conf-title-group">
-            <div class="conf-dot"></div>
-            <span class="conf-title">The Confidante</span>
-            <span class="conf-subtitle">· Radical Candor Audit</span>
-          </div>
-          <span class="conf-badge" id="conf-stance-tag">${confidanteStance}</span>
-        </div>
-
-        <div class="candor-body">
-          <p class="candor-quote" id="conf-quote">
-            ${confidanteQuote}
-          </p>
-          <p class="candor-next-step" id="conf-next-step">
-            ${confidanteNextStep}
-          </p>
-        </div>
-
-        <!-- Private Confidante Reality Check Input (Zero Clutter / Direct Accountability) -->
-        <form class="conf-input-row" onsubmit="askConfidanteAction(event)">
-          <input type="text" class="conf-input" id="conf-input" placeholder="Stuck or rationalizing? Tell the confidante...">
-          <button class="conf-send-btn" type="submit">Reality Check</button>
-        </form>
       </div>
 
       <!-- Additional Staged Habits (If user adds Skincare, Me time, etc.) -->
@@ -1439,50 +1374,6 @@ function setAnchorStageAction(habitId, stage, dateStr = activeTrackingDate) {
   }
 }
 window.setAnchorStageAction = setAnchorStageAction;
-
-function askConfidanteAction(event) {
-  if (event && event.preventDefault) event.preventDefault();
-  const inputEl = document.getElementById('conf-input');
-  if (!inputEl) return;
-  const val = inputEl.value.trim();
-  if (!val) return;
-
-  const quoteEl = document.getElementById('conf-quote');
-  const nextEl = document.getElementById('conf-next-step');
-  const stanceEl = document.getElementById('conf-stance-tag');
-
-  const lower = val.toLowerCase();
-  let responseQuote = '';
-  let responseNext = '';
-
-  if (lower.includes('tired') || lower.includes('exhaust') || lower.includes('sleep') || lower.includes('drain') || lower.includes('sick')) {
-    responseQuote = `"Fatigue is physiological, but inertia is mental. You don't need a grueling workout. Strip expectation to zero and defend the 50% floor with 10–15 gentle minutes. Then shut down completely."`;
-    responseNext = '👉 Next Move: 10-minute floor walk right now, then bed.';
-  } else if (lower.includes('tomorrow') || lower.includes('later') || lower.includes('tonight') || lower.includes('busy') || lower.includes('time')) {
-    responseQuote = `"Tomorrow is where consistency goes to die. If you have 5 minutes to negotiate with yourself, you have 10 minutes to move. Take action immediately."`;
-    responseNext = '👉 Next Move: Start a 10-minute timer and move. Zero negotiation.';
-  } else if (lower.includes('eat') || lower.includes('food') || lower.includes('binge') || lower.includes('sugar') || lower.includes('snack') || lower.includes('diet')) {
-    responseQuote = `"A sub-optimal choice is just one data point, not a ruined week. Don't spiral or rationalize a bad streak. Drink 16oz of water and make the very next choice a clean one."`;
-    responseNext = '👉 Next Move: Drink a tall glass of water. Next choice is clean.';
-  } else if (lower.includes('stress') || lower.includes('overwhelm') || lower.includes('anxi') || lower.includes('stuck') || lower.includes('freeze')) {
-    responseQuote = `"Overthinking magnifies friction. Action cures anxiety. Disconnect your eyes from screens, stand up, and finish one physical micro-loop."`;
-    responseNext = '👉 Next Move: Stand up, stretch, and walk for 5 minutes.';
-  } else {
-    responseQuote = `"${val}" is your brain rationalizing friction. Strip the task down to the 50% floor (10–15 minutes) and execute without negotiating.`;
-    responseNext = '👉 Next Move: 10-minute action timer right now.';
-  }
-
-  if (quoteEl) quoteEl.textContent = responseQuote;
-  if (nextEl) nextEl.textContent = responseNext;
-  if (stanceEl) stanceEl.textContent = '🛡️ Reality Check';
-
-  if (typeof storage.addQuickThought === 'function') {
-    storage.addQuickThought(`Confidante Check: "${val}" -> ${responseQuote}`, 'confidante');
-  }
-
-  inputEl.value = '';
-}
-window.askConfidanteAction = askConfidanteAction;
 
 function scrollToDailySection(sectionId) {
   const el = document.getElementById(sectionId);

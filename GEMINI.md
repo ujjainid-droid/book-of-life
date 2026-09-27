@@ -33,4 +33,4 @@
 
 5. **Task Management Philosophy (Church & State)**:
    - **Things 3** handles functional task execution, appointments, errands, and to-do lists.
-   - **margo** handles personal identity, physical momentum, vitality, reflection, and radical candor audits.
+   - **margo** handles personal identity, physical momentum, vitality, and reflection.
