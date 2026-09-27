@@ -567,13 +567,18 @@ function renderDailySheet() {
       ` : ''}
 
       <!-- Quick Presets Shelf (Matching 12 Habit Stack Presets) -->
-      <div class="quick-presets-container">
-        <div class="quick-presets-header">
-          <span class="quick-presets-sparkle">✨</span>
-          <span class="quick-presets-title">Quick Presets</span>
-          <span class="quick-presets-subtitle">Tap to add:</span>
+      <div class="quick-presets-container ${quickPresetsCollapsed ? 'is-collapsed' : ''}" id="quick-presets-container">
+        <div class="quick-presets-top-bar" onclick="toggleQuickPresetsCollapse(event)">
+          <div class="quick-presets-header">
+            <span class="quick-presets-sparkle">✨</span>
+            <span class="quick-presets-title">Quick Presets</span>
+            <span class="quick-presets-subtitle">Tap to add:</span>
+          </div>
+          <button type="button" class="quick-presets-toggle-btn" id="quick-presets-toggle-btn" onclick="toggleQuickPresetsCollapse(event)" title="${quickPresetsCollapsed ? 'Expand presets' : 'Collapse presets'}">
+            <span id="quick-presets-toggle-text">${quickPresetsCollapsed ? 'Expand ▾' : 'Collapse ▴'}</span>
+          </button>
         </div>
-        <div class="quick-presets-pills">
+        <div class="quick-presets-pills" id="quick-presets-pills" style="display: ${quickPresetsCollapsed ? 'none' : 'flex'};">
           ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
             const pName = preset.name.toLowerCase().trim();
             const isAnchor = (pName === 'stand ring' || pName === 'stand' || pName === 'move');
@@ -1353,8 +1358,47 @@ function addHabitFromPresetName(name, bucket, cadence, target, icon, desc) {
   renderDailySheet();
 }
 
+let quickPresetsCollapsed = (function() {
+  try {
+    return localStorage.getItem('margo_quick_presets_collapsed') === 'true';
+  } catch(e) {
+    return false;
+  }
+})();
+
+function toggleQuickPresetsCollapse(event) {
+  if (event && event.stopPropagation) event.stopPropagation();
+  quickPresetsCollapsed = !quickPresetsCollapsed;
+  try {
+    localStorage.setItem('margo_quick_presets_collapsed', quickPresetsCollapsed ? 'true' : 'false');
+  } catch(e) {}
+
+  const container = document.getElementById('quick-presets-container');
+  const pills = document.getElementById('quick-presets-pills');
+  const text = document.getElementById('quick-presets-toggle-text');
+  const bar = document.querySelector('.quick-presets-top-bar');
+  const btn = document.getElementById('quick-presets-toggle-btn');
+
+  if (container) {
+    container.classList.toggle('is-collapsed', quickPresetsCollapsed);
+  }
+  if (pills) {
+    pills.style.display = quickPresetsCollapsed ? 'none' : 'flex';
+  }
+  if (text) {
+    text.textContent = quickPresetsCollapsed ? 'Expand ▾' : 'Collapse ▴';
+  }
+  if (bar) {
+    bar.title = quickPresetsCollapsed ? 'Expand presets' : 'Collapse presets';
+  }
+  if (btn) {
+    btn.title = quickPresetsCollapsed ? 'Expand presets' : 'Collapse presets';
+  }
+}
+window.toggleQuickPresetsCollapse = toggleQuickPresetsCollapse;
+
 /* --------------------------------------------------------------------------
-   Tactile Segmented Pill Track & Radical Candor Confidante Actions
+   Tactile Segmented Pill Track Actions
    -------------------------------------------------------------------------- */
 function setAnchorStageAction(habitId, stage, dateStr = activeTrackingDate) {
   const nextStage = storage.setAnchorStage(habitId, stage, dateStr);
