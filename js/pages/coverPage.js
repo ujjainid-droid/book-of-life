@@ -234,7 +234,15 @@ function renderDailySheet() {
 
         <span class="breadcrumb-separator">›</span>
 
-        <!-- 5. Sanctuary Journal -->
+        <!-- 5. Podcasts -->
+        <button type="button" class="breadcrumb-chip done" onclick="scrollToDailySection('section-podcast-agent')" title="Jump to Podcast Focus (Bone Valley)">
+          <span class="chip-status-icon">🎧</span>
+          <span class="chip-label">Podcasts</span>
+        </button>
+
+        <span class="breadcrumb-separator">›</span>
+
+        <!-- 6. Sanctuary Journal -->
         <button type="button" class="breadcrumb-chip ${hasJournal ? 'done' : 'pending'}" onclick="scrollToDailySection('section-sanctuary-journal')" title="Jump to Sanctuary Journal">
           <span class="chip-status-icon">${hasJournal ? '✓' : '○'}</span>
           <span class="chip-label">Journal</span>
@@ -618,7 +626,10 @@ function renderDailySheet() {
     <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
     ${renderHairCareCard(activeTrackingDate, isToday)}
 
-    <!-- 5. Day-Specific Bonus Goals Card (One-off daily targets) -->
+    <!-- 5. Podcast Sanctuary Focus (Single Serial + Queue) -->
+    ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
+
+    <!-- 6. Day-Specific Bonus Goals Card (One-off daily targets) -->
     <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
       <div class="card-title-row">
         <div>

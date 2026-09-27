@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Restore saved view (or URL hash)
   const hashView = window.location.hash.replace('#', '');
-  const savedView = (hashView === 'claims' || hashView === 'zlog' || hashView === 'bunker') 
+  const savedView = (hashView === 'claims' || hashView === 'zlog' || hashView === 'bunker' || hashView === 'podcasts') 
     ? hashView 
     : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'sanctuary');
 
@@ -37,11 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* --------------------------------------------------------------------------
-   View Switching (Sanctuary vs Adulting Bunker [Claims & Z Log])
+   View Switching (Sanctuary vs Adulting Bunker vs Podcasts)
    -------------------------------------------------------------------------- */
 function switchAppView(viewName) {
   if (viewName === 'claims' || viewName === 'zlog' || viewName === 'bunker') {
     currentView = (viewName === 'zlog') ? 'zlog' : 'claims';
+  } else if (viewName === 'podcasts') {
+    currentView = 'podcasts';
   } else {
     currentView = 'sanctuary';
   }
@@ -63,6 +65,12 @@ function switchAppView(viewName) {
     if (bunkerBtn) bunkerBtn.classList.add('active');
 
     renderAdultingBunkerShell(currentView);
+  } else if (currentView === 'podcasts') {
+    if (dateNavContainer) dateNavContainer.style.display = 'none';
+    if (energyDial) energyDial.style.display = 'none';
+    if (bunkerBtn) bunkerBtn.classList.remove('active');
+
+    if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
   } else {
     if (dateNavContainer) dateNavContainer.style.display = 'inline-flex';
     if (energyDial) energyDial.style.display = 'inline-flex';
