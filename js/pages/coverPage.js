@@ -1756,13 +1756,13 @@ const MARGO_PILLARS_DATA = [
     letter: 'M',
     title: 'Move',
     badgeClass: 'pillar-badge-m',
-    tags: ['10k steps', 'Close rings', 'Calorie deficit', 'Workout']
+    tags: ['10k steps', 'Close rings', 'Calorie deficit', 'Cardio', 'Yoga', 'Weights']
   },
   {
     letter: 'A',
     title: 'Aesthetic',
     badgeClass: 'pillar-badge-a',
-    tags: ['Skincare', 'Signature outfits']
+    tags: ['Skincare', 'Signature outfits', 'Hair health', 'Footcare', 'Makeup']
   },
   {
     letter: 'R',
