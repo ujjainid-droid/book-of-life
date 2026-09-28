@@ -488,9 +488,19 @@ class StorageManager {
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);
-      if (!merged.titrationSeedVersion || merged.titrationSeedVersion < 6 || !Array.isArray(merged.titrationHistory) || merged.titrationHistory.length < 34 || hasMissingPrescribers) {
-        merged.titrationHistory = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY)) : [];
-        merged.titrationSeedVersion = 6;
+      const hasTit35 = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => r && (r.id === 'tit-35' || (r.date === '2026-09-19' && r.medication && r.medication.includes('Risperdal'))));
+      if (!merged.titrationSeedVersion || merged.titrationSeedVersion < 7 || !Array.isArray(merged.titrationHistory) || merged.titrationHistory.length < 35 || hasMissingPrescribers || !hasTit35) {
+        if (Array.isArray(merged.titrationHistory) && merged.titrationHistory.length > 0 && !hasTit35) {
+          const tit35 = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? DEFAULT_TITRATION_HISTORY.find(t => t.id === 'tit-35') : null;
+          if (tit35) {
+            merged.titrationHistory.push(JSON.parse(JSON.stringify(tit35)));
+          } else {
+            merged.titrationHistory = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY)) : [];
+          }
+        } else {
+          merged.titrationHistory = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY)) : [];
+        }
+        merged.titrationSeedVersion = 7;
       }
 
       if (!Array.isArray(merged.zlogActiveMeds) || merged.zlogActiveMeds.length === 0) {

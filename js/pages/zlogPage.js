@@ -18,14 +18,16 @@ function renderZLogPage() {
   const container = document.getElementById('bunker-subview-frame') || document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
 
-  // Unconditional auto-repair check: if storage has old seed version, < 34 titrations, old defaulted >300 good days, or missing 2026-09-12
+  // Unconditional auto-repair check: if storage has old seed version, < 35 titrations, old defaulted >300 good days, or missing 2026-09-19 entry
   const currentStats = storage.getZLogStats();
   const currentTitration = storage.getTitrationHistory();
+  const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
     storage.data.zlogSeedVersion < 6 ||
     !storage.data.titrationSeedVersion ||
-    storage.data.titrationSeedVersion < 6 ||
-    currentTitration.length < 34 ||
+    storage.data.titrationSeedVersion < 7 ||
+    currentTitration.length < 35 ||
+    !hasTit35 ||
     currentStats.goodDays > 300 ||
     !storage.data.zlogEntries ||
     !storage.data.zlogEntries['2026-09-12'];
@@ -44,8 +46,18 @@ function renderZLogPage() {
       storage.data.zlogSeedVersion = 6;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
-      storage.data.titrationHistory = JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY));
-      storage.data.titrationSeedVersion = 6;
+      const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
+      const tit35Exists = existing.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
+      if (!tit35Exists) {
+        const tit35 = DEFAULT_TITRATION_HISTORY.find(t => t.id === 'tit-35');
+        if (tit35) {
+          existing.push(JSON.parse(JSON.stringify(tit35)));
+          storage.data.titrationHistory = existing;
+        } else {
+          storage.data.titrationHistory = JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY));
+        }
+      }
+      storage.data.titrationSeedVersion = 7;
     }
     storage.saveData();
     if (typeof sync !== 'undefined' && sync.isConfigured && sync.isConfigured()) {
@@ -69,7 +81,7 @@ function renderZLogPage() {
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px;">
-          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 34 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #7C5CFC; border-color: rgba(124, 92, 252, 0.3);">
+          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #7C5CFC; border-color: rgba(124, 92, 252, 0.3);">
             <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
             <span>Sync Data</span>
           </button>
@@ -1294,10 +1306,10 @@ function renderZLogTitration() {
         </div>
 
         <div class="zlog-stat-card" style="border-left: 4px solid #D97768;">
-          <div class="zlog-stat-label">Active Prescribed</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 2px 0;">Risperdone</div>
-          <div style="font-size: 0.8rem; font-family: var(--font-mono); color: #D97768; font-weight: 700;">0.25 mg (Active)</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Prescriber: Dr. Barness</div>
+          <div class="zlog-stat-label">Active Regimen</div>
+          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 2px 0;">Risperdal (risperidone)</div>
+          <div style="font-size: 0.8rem; font-family: var(--font-mono); color: #D97768; font-weight: 700;">PRN / As Needed (0 mg regular)</div>
+          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Prescriber: Dr. Barness (Stopped regular 9/19)</div>
         </div>
 
         <div class="zlog-stat-card" style="border-left: 4px solid #7C5CFC;">
@@ -2236,7 +2248,7 @@ function forceSyncZLogDefaults() {
   }
   if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
     storage.data.titrationHistory = JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY));
-    storage.data.titrationSeedVersion = 6;
+    storage.data.titrationSeedVersion = 7;
   }
   storage.saveData();
   if (typeof sync !== 'undefined' && sync.isConfigured && sync.isConfigured()) {

@@ -399,6 +399,16 @@ const DEFAULT_TITRATION_HISTORY = [
     "notes": "Re-started 0.25 mg per recommendation from Dr. Barness",
     "prescriber": "Dr Barness",
     "snapshot": ""
+  },
+  {
+    "id": "tit-35",
+    "date": "2026-09-19",
+    "medication": "Risperdal (risperidone)",
+    "dosage": "0 mg",
+    "action": "Stopped",
+    "notes": "stopped regular daily dosage; to be given on as needed basis only going forward",
+    "prescriber": "Dr Barness",
+    "snapshot": "AM - Z 75mg, G 2mg XR; optional - Rit 15mg IR; PM - none; Risperdal PRN"
   }
 ];
 
