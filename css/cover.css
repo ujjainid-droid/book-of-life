@@ -3966,8 +3966,8 @@
 
 .header-nav-tab.active {
   background: var(--bg-card);
-  color: var(--primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: #0D9488;
+  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.14);
 }
 
 .cover-hub-container {
@@ -4014,64 +4014,69 @@
 }
 
 .mantra-simple {
-  background: #EDE9FE;
-  color: #5B21B6;
-  border: 1px solid #DDD6FE;
+  background: #E8F5E9;
+  color: #1B5E20;
+  border: 1px solid #C8E6C9;
 }
 
 .mantra-visible {
-  background: #D1FAE5;
-  color: #065F46;
-  border: 1px solid #A7F3D0;
+  background: #E0F2F1;
+  color: #004D40;
+  border: 1px solid #B2DFDB;
 }
 
 .mantra-next {
-  background: #DBEAFE;
-  color: #1E40AF;
-  border: 1px solid #BFDBFE;
+  background: #E0F7FA;
+  color: #006064;
+  border: 1px solid #B2EBF2;
 }
 
 .mantra-done {
   background: #CCFBF1;
-  color: #115E59;
+  color: #0F766E;
   border: 1px solid #99F6E4;
 }
 
 [data-theme="dark"] .mantra-simple {
-  background: rgba(139, 92, 246, 0.22);
-  color: #DDD6FE;
-  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(46, 125, 50, 0.22);
+  color: #A5D6A7;
+  border-color: rgba(46, 125, 50, 0.35);
 }
 
 [data-theme="dark"] .mantra-visible {
-  background: rgba(16, 185, 129, 0.22);
-  color: #A7F3D0;
-  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(0, 105, 92, 0.22);
+  color: #80CBC4;
+  border-color: rgba(0, 105, 92, 0.35);
 }
 
 [data-theme="dark"] .mantra-next {
-  background: rgba(59, 130, 246, 0.22);
-  color: #BFDBFE;
-  border-color: rgba(59, 130, 246, 0.35);
+  background: rgba(0, 131, 143, 0.22);
+  color: #80DEEA;
+  border-color: rgba(0, 131, 143, 0.35);
 }
 
 [data-theme="dark"] .mantra-done {
-  background: rgba(20, 184, 166, 0.22);
+  background: rgba(15, 118, 110, 0.22);
   color: #99F6E4;
-  border-color: rgba(20, 184, 166, 0.35);
+  border-color: rgba(15, 118, 110, 0.35);
 }
 
-/* Cover Welcome Banner */
+/* Cover Welcome Banner — Calming Spa Gradient */
 .cover-welcome-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-surface) 100%);
-  border: 1px solid var(--border-light);
+  background: linear-gradient(135deg, rgba(204, 251, 241, 0.5) 0%, rgba(240, 253, 250, 0.85) 45%, var(--bg-card) 100%);
+  border: 1px solid rgba(13, 148, 136, 0.22);
   border-radius: var(--radius-lg);
-  padding: 16px 22px;
-  box-shadow: var(--shadow-sm);
+  padding: 18px 24px;
+  box-shadow: 0 2px 12px rgba(13, 148, 136, 0.06);
+}
+
+[data-theme="dark"] .cover-welcome-banner {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.16) 0%, rgba(15, 118, 110, 0.08) 50%, var(--bg-card) 100%);
+  border-color: rgba(13, 148, 136, 0.3);
 }
 
 .welcome-banner-left {
@@ -4101,7 +4106,7 @@
 
 .welcome-subtitle {
   font-size: 0.8rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   display: block;
   margin-top: 2px;
 }
@@ -4111,25 +4116,25 @@
   align-items: center;
   gap: 8px;
   padding: 9px 18px;
-  background: var(--primary);
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-full);
   font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.28);
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
 
 .btn-jump-today:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.38);
 }
 
-/* Top of Mind Scratchpad */
+/* Top of Mind Scratchpad — Spa Calm */
 .top-mind-pads-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -4139,21 +4144,21 @@
 
 .top-mind-pad {
   background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  border: 1px solid rgba(13, 148, 136, 0.16);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.04);
 }
 
 .pad-now {
-  border-top: 3px solid var(--primary);
+  border-top: 3px solid #0D9488;
 }
 
 .pad-later {
-  border-top: 3px solid #0D9488;
+  border-top: 3px solid #14B8A6;
 }
 
 .pad-header {
@@ -4177,23 +4182,27 @@
 }
 
 .badge-now {
-  background: #EDE9FE;
-  color: #6D28D9;
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.25);
 }
 
 [data-theme="dark"] .badge-now {
-  background: rgba(139, 92, 246, 0.25);
-  color: #DDD6FE;
+  background: rgba(20, 184, 166, 0.22);
+  color: #5EEAD4;
+  border-color: rgba(20, 184, 166, 0.35);
 }
 
 .badge-later {
-  background: #CCFBF1;
-  color: #0F766E;
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid rgba(14, 165, 233, 0.25);
 }
 
 [data-theme="dark"] .badge-later {
-  background: rgba(20, 184, 166, 0.25);
-  color: #99F6E4;
+  background: rgba(14, 165, 233, 0.22);
+  color: #7DD3FC;
+  border-color: rgba(14, 165, 233, 0.35);
 }
 
 .pad-subtitle {
@@ -4229,12 +4238,12 @@
 }
 
 .pad-input:focus {
-  border-color: var(--primary);
+  border-color: #0D9488;
 }
 
 .pad-add-btn {
   padding: 8px 14px;
-  background: var(--primary);
+  background: #0D9488;
   color: #ffffff;
   border: none;
   border-radius: var(--radius-md);
@@ -4242,11 +4251,11 @@
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;
-  transition: opacity var(--transition-fast);
+  transition: all var(--transition-fast);
 }
 
 .pad-add-btn:hover {
-  opacity: 0.9;
+  background: #0F766E;
 }
 
 .pad-items-list {
@@ -4270,17 +4279,17 @@
 
 .pad-item:hover {
   background: var(--bg-surface-hover);
-  border-color: var(--border-strong);
+  border-color: rgba(13, 148, 136, 0.3);
 }
 
 .pad-item-bullet {
-  color: var(--primary);
+  color: #0D9488;
   font-size: 1.1rem;
   line-height: 1;
 }
 
 .pad-later .pad-item-bullet {
-  color: #0D9488;
+  color: #14B8A6;
 }
 
 .pad-item-text {
@@ -4314,8 +4323,8 @@
 }
 
 .pad-shift-btn:hover {
-  color: var(--primary);
-  border-color: var(--primary);
+  color: #0D9488;
+  border-color: #0D9488;
 }
 
 .pad-shift-btn.shift-back:hover {
@@ -4352,7 +4361,7 @@
   text-align: center;
 }
 
-/* Domain Streamlining Hub (Where Info Lives) */
+/* Domain Streamlining Hub (Where Info Lives) — Spa Harmony */
 .topic-audits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -4362,18 +4371,19 @@
 
 .topic-audit-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  border: 1px solid rgba(13, 148, 136, 0.16);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.04);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .topic-audit-card:hover {
-  border-color: var(--border-strong);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.08);
   transform: translateY(-1px);
 }
 
@@ -4402,31 +4412,37 @@
 .status-streamlined {
   background: #D1FAE5;
   color: #065F46;
+  border: 1px solid rgba(16, 185, 129, 0.25);
 }
 
 [data-theme="dark"] .status-streamlined {
   background: rgba(16, 185, 129, 0.22);
   color: #6EE7B7;
+  border-color: rgba(16, 185, 129, 0.35);
 }
 
 .status-in-progress {
-  background: #DBEAFE;
-  color: #1E40AF;
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.25);
 }
 
 [data-theme="dark"] .status-in-progress {
-  background: rgba(59, 130, 246, 0.22);
-  color: #93C5FD;
+  background: rgba(13, 148, 136, 0.22);
+  color: #5EEAD4;
+  border-color: rgba(13, 148, 136, 0.35);
 }
 
 .status-disorganized {
   background: #FEE2E2;
   color: #991B1B;
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 [data-theme="dark"] .status-disorganized {
   background: rgba(239, 68, 68, 0.22);
   color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 .audit-meta-label {
@@ -4567,7 +4583,7 @@
 }
 
 .audit-btn-edit:hover {
-  color: var(--primary);
+  color: #0D9488;
 }
 
 .audit-btn-delete {
@@ -4585,6 +4601,13 @@
 
 .audit-btn-delete:hover {
   color: #EF4444;
+}
+
+.cover-hub-container .margo-framework-shelf,
+.cover-hub-container .habit-presets-shelf {
+  border: 1px solid rgba(13, 148, 136, 0.16);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.04);
 }
 
 .presets-shelf-pills {

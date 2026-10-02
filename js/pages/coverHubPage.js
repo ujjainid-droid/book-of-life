@@ -62,7 +62,7 @@ function renderCoverHubPage() {
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="pin" style="color: var(--primary); width: 17px; height: 17px;"></i>
+              <i data-lucide="pin" style="color: #0D9488; width: 17px; height: 17px;"></i>
               Top of Mind Scratchpad
             </h3>
             <span class="card-sub-muted">Low-friction mental capture &bull; Split into Active Focus vs. Parking Lot</span>
@@ -165,14 +165,14 @@ function renderCoverHubPage() {
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="layers" style="color: var(--primary); width: 17px; height: 17px;"></i>
+              <i data-lucide="layers" style="color: #0D9488; width: 17px; height: 17px;"></i>
               Where Info Lives
             </h3>
             <span class="card-sub-muted">
               A calm map of your notes, tools, and docs &bull; Streamlining one area at a time
             </span>
           </div>
-          <button type="button" class="btn btn-secondary btn-sm" onclick="openTopicAuditModal()" style="font-size: 0.78rem; padding: 5px 12px;">
+          <button type="button" class="btn btn-sm" onclick="openTopicAuditModal()" style="font-size: 0.78rem; padding: 5px 14px; background: rgba(13, 148, 136, 0.12); color: #0F766E; border: 1px solid rgba(13, 148, 136, 0.25); border-radius: var(--radius-full); font-weight: 600; cursor: pointer;">
             <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
             <span>+ Add Topic</span>
           </button>
@@ -248,7 +248,7 @@ function renderCoverHubPage() {
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="sparkles" style="color: var(--margo-a); width: 17px; height: 17px;"></i>
+              <i data-lucide="sparkles" style="color: #0D9488; width: 17px; height: 17px;"></i>
               Habit Presets Repository
             </h3>
             <span class="card-sub-muted">Tap any preset to instantly add it to your daily tracking stack</span>
@@ -405,7 +405,7 @@ function openTopicAuditModal(editId = null) {
 
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
           <button type="button" class="btn btn-secondary" onclick="closeTopicAuditModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">${audit ? 'Save Changes' : 'Add Topic'}</button>
+          <button type="submit" class="btn btn-primary" style="background: #0D9488; border-color: #0D9488;">${audit ? 'Save Changes' : 'Add Topic'}</button>
         </div>
       </form>
     </div>
