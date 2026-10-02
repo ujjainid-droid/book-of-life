@@ -312,7 +312,7 @@ function jumpToMonth(monthKey) {
 function expandAllMonths() {
   const headers = document.querySelectorAll('.zlog-month-header');
   const bodies = document.querySelectorAll('.zlog-month-body');
-  const pills = document.querySelectorAll('.zlog-jump-pill');
+  const pills = document.querySelectorAll('.zlog-month-chip, .zlog-jump-pill');
 
   headers.forEach(h => h.classList.add('expanded'));
   bodies.forEach(b => {
@@ -326,7 +326,7 @@ function expandAllMonths() {
 function collapseAllMonths() {
   const headers = document.querySelectorAll('.zlog-month-header');
   const bodies = document.querySelectorAll('.zlog-month-body');
-  const pills = document.querySelectorAll('.zlog-jump-pill');
+  const pills = document.querySelectorAll('.zlog-month-chip, .zlog-jump-pill');
 
   headers.forEach(h => h.classList.remove('expanded'));
   bodies.forEach(b => {
@@ -456,100 +456,89 @@ function renderZLogTimeline() {
 
   const now = new Date();
   const currentY = now.getFullYear(); // 2026
-  const currentM = now.getMonth(); // 8 for September
-  const yearsList = ['2026', '2025', '2024'];
+  const currentM = now.getMonth(); // Current month index
 
-  const matrixRowsHtml = yearsList.map(yr => {
-    const monthsHtml = allMonthShorts.map((shortName, mIdx) => {
-      const mNumStr = String(mIdx + 1).padStart(2, '0');
-      const monthKey = `${yr}-${mNumStr}`;
-      const count = allEntriesMonthMap[monthKey] || 0;
+  // Option 2: Active-only month chips for the selected year (or all years)
+  const candidateYears = (zlogPeriodFilter === 'all') 
+    ? sortedYears 
+    : [zlogPeriodFilter];
 
-      const isCurrentMonth = (Number(yr) === currentY && mIdx === currentM);
-      const isFutureMonth = (Number(yr) > currentY) || (Number(yr) === currentY && mIdx > currentM);
-
-      if (isFutureMonth) {
-        return `
-          <span class="zlog-jump-pill future-month" title="${allMonthNames[mIdx]} ${yr} (Future)">
-            <span>${shortName}</span>
-          </span>
-        `;
-      }
-
-      if (isCurrentMonth) {
-        return `
-          <button 
-            type="button"
-            class="zlog-jump-pill current-month ${zlogExpandedMonths[monthKey] ? 'active' : ''}" 
-            id="jump-pill-${monthKey}" 
-            onclick="jumpToMonth('${monthKey}')" 
-            title="${allMonthNames[mIdx]} ${yr} (Current Month - ${count} entries)"
-          >
-            <span>${shortName}</span>
-          </button>
-        `;
-      }
-
+  const activeMonthChips = [];
+  candidateYears.forEach(yr => {
+    for (let m = 12; m >= 1; m--) {
+      const mStr = String(m).padStart(2, '0');
+      const mKey = `${yr}-${mStr}`;
+      const count = allEntriesMonthMap[mKey] || 0;
       if (count > 0) {
-        return `
+        const isCurrent = (Number(yr) === currentY && (m - 1) === currentM);
+        const isExpanded = !!zlogExpandedMonths[mKey];
+        const chipLabel = (zlogPeriodFilter === 'all') 
+          ? `${allMonthShorts[m - 1]} '${yr.slice(2)}` 
+          : allMonthShorts[m - 1];
+
+        activeMonthChips.push(`
           <button 
-            type="button"
-            class="zlog-jump-pill ${zlogExpandedMonths[monthKey] ? 'active' : ''}" 
-            id="jump-pill-${monthKey}" 
-            onclick="jumpToMonth('${monthKey}')" 
-            title="${allMonthNames[mIdx]} ${yr} (${count} entries)"
+            type="button" 
+            class="zlog-month-chip ${isExpanded ? 'active' : ''} ${isCurrent ? 'current-month' : ''}" 
+            id="jump-pill-${mKey}" 
+            onclick="jumpToMonth('${mKey}')" 
+            title="${allMonthNames[m - 1]} ${yr} (${count} ${count === 1 ? 'entry' : 'entries'})"
           >
-            <span>${shortName}</span>
+            <span>${chipLabel}</span>
+            <span class="zlog-chip-count">${count}</span>
           </button>
-        `;
+        `);
       }
+    }
+  });
 
-      // Past month with no entries
-      return `
-        <span class="zlog-jump-pill no-entries" title="${allMonthNames[mIdx]} ${yr} (No entries)">
-          <span>${shortName}</span>
-        </span>
-      `;
-    }).join('');
-
-    return `
-      <div class="zlog-year-row">
-        <span class="zlog-year-col-label">${yr}</span>
-        <div class="zlog-year-months-grid">
-          ${monthsHtml}
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // Render Month Jump Matrix: Left column Years (2026, 2025, 2024), rows Jan to Dec
+  // Render Year Segmented Tabs & Active Month Chips (Option 2)
   const jumpBarHtml = `
-    <div class="zlog-month-jump-bar" style="flex-direction: column; align-items: stretch; gap: 8px;">
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <span style="font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;">Month Navigation</span>
-        <div class="zlog-jump-actions">
-          <button type="button" class="btn btn-secondary" onclick="switchZLogSubTab('calendar')" style="font-size: 0.72rem; padding: 2px 8px; color: var(--primary);" title="Switch to Monthly Calendar view">
-            <i data-lucide="calendar" style="width: 12px; height: 12px;"></i>
-            <span>Calendar View</span>
+    <div class="zlog-month-nav-card">
+      <!-- Line 1: Year Segmented Tabs & Actions -->
+      <div class="zlog-nav-top-row">
+        <div class="zlog-nav-year-segmented">
+          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === 'all' ? 'active' : ''}" onclick="setZLogPeriodFilter('all')" title="Show entries across all years">
+            <span>All</span>
+            <span class="zlog-nav-count">${allEntries.length}</span>
           </button>
-          <button type="button" class="btn btn-secondary" onclick="expandAllMonths()" style="font-size: 0.72rem; padding: 2px 8px;" title="Expand all month sections">
+          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === '2026' ? 'active' : ''}" onclick="setZLogPeriodFilter('2026')" title="Filter to 2026">
+            <span>2026</span>
+            <span class="zlog-nav-count">${count2026}</span>
+          </button>
+          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === '2025' ? 'active' : ''}" onclick="setZLogPeriodFilter('2025')" title="Filter to 2025">
+            <span>2025</span>
+            <span class="zlog-nav-count">${count2025}</span>
+          </button>
+          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === '2024' ? 'active' : ''}" onclick="setZLogPeriodFilter('2024')" title="Filter to 2024">
+            <span>2024</span>
+            <span class="zlog-nav-count">${count2024}</span>
+          </button>
+        </div>
+
+        <div class="zlog-nav-actions">
+          <button type="button" class="zlog-nav-action-btn" onclick="expandAllMonths()" title="Expand all month accordions">
             Expand All
           </button>
-          <button type="button" class="btn btn-secondary" onclick="collapseAllMonths()" style="font-size: 0.72rem; padding: 2px 8px;" title="Collapse all month sections">
+          <button type="button" class="zlog-nav-action-btn" onclick="collapseAllMonths()" title="Collapse all month accordions">
             Collapse All
           </button>
         </div>
       </div>
 
-      <div class="zlog-year-matrix">
-        ${matrixRowsHtml}
+      <!-- Line 2: Active-Only Month Chips -->
+      <div class="zlog-nav-months-row">
+        <span class="zlog-nav-months-label">Jump:</span>
+        <div class="zlog-nav-months-chips">
+          ${activeMonthChips.join('')}
+        </div>
       </div>
     </div>
   `;
 
   container.innerHTML = `
-    <!-- Search and Filter Toolbar -->
-    <div class="zlog-toolbar">
+    <!-- Search Toolbar -->
+    <div class="zlog-toolbar" style="margin-bottom: 12px;">
       <div class="zlog-search-row">
         <i data-lucide="search" style="width: 16px; height: 16px; color: var(--text-muted);"></i>
         <input 
@@ -566,26 +555,9 @@ function renderZLogTimeline() {
           </button>
         ` : ''}
       </div>
-
-      <!-- Year Filter Chips -->
-      <div class="zlog-filter-chips">
-        <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); margin-right: 4px;">Year:</span>
-        <button class="zlog-filter-chip ${zlogPeriodFilter === 'all' ? 'active' : ''}" onclick="setZLogPeriodFilter('all')">
-          All Logs (${allEntries.length})
-        </button>
-        <button class="zlog-filter-chip ${zlogPeriodFilter === '2026' ? 'active' : ''}" onclick="setZLogPeriodFilter('2026')">
-          2026 (${count2026})
-        </button>
-        <button class="zlog-filter-chip ${zlogPeriodFilter === '2025' ? 'active' : ''}" onclick="setZLogPeriodFilter('2025')">
-          2025 (${count2025})
-        </button>
-        <button class="zlog-filter-chip ${zlogPeriodFilter === '2024' ? 'active' : ''}" onclick="setZLogPeriodFilter('2024')">
-          2024 (${count2024})
-        </button>
-      </div>
     </div>
 
-    <!-- Quick Month Jump Bar -->
+    <!-- Quick Month Jump Bar (Option 2) -->
     ${jumpBarHtml}
 
     <!-- Timeline Entries Grouped By Month -->
