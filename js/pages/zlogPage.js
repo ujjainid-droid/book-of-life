@@ -1149,6 +1149,66 @@ function renderZLogCalendar() {
 
 let zlogTitrationSortOrder = 'desc';
 let zlogTitrationDisplayMode = 'table'; // 'table' or 'cards'
+let zlogTitrationGroupBy = 'medication'; // 'medication' | 'timeline' | 'year'
+let zlogTitrationMedFilter = 'all'; // 'all', 'guanfacine', 'sertraline', 'ritalin', 'risperdal'
+let zlogTitrationYearFilter = 'all'; // 'all', '2026', '2025'
+let zlogTitrationSearchQuery = '';
+
+const TITRATION_MEDS_CONFIG = {
+  guanfacine: {
+    key: 'guanfacine',
+    name: 'Guanfacine',
+    fullName: 'Guanfacine XR & IR',
+    color: '#7979B8',
+    bgLight: 'rgba(121, 121, 184, 0.12)',
+    currentDose: '2 mg XR (Active)',
+    statusLabel: 'Active Prescribed',
+    statusClass: 'status-active',
+    statusColor: '#7979B8'
+  },
+  sertraline: {
+    key: 'sertraline',
+    name: 'Sertraline',
+    fullName: 'Sertraline (Zoloft)',
+    color: '#4E8765',
+    bgLight: 'rgba(78, 135, 101, 0.12)',
+    currentDose: '75 mg (Active)',
+    statusLabel: 'Active Prescribed',
+    statusClass: 'status-active',
+    statusColor: '#4E8765'
+  },
+  ritalin: {
+    key: 'ritalin',
+    name: 'Ritalin',
+    fullName: 'Methylphenidate (Ritalin IR)',
+    color: '#7C5CFC',
+    bgLight: 'rgba(124, 92, 252, 0.12)',
+    currentDose: '15 mg AM + 10 mg School (Active)',
+    statusLabel: 'Active Prescribed',
+    statusClass: 'status-active',
+    statusColor: '#7C5CFC'
+  },
+  risperdal: {
+    key: 'risperdal',
+    name: 'Risperdal',
+    fullName: 'Risperdal (risperidone)',
+    color: '#D97768',
+    bgLight: 'rgba(217, 119, 104, 0.12)',
+    currentDose: 'PRN (0 mg regular daily)',
+    statusLabel: 'Discontinued regular 9/19 (PRN)',
+    statusClass: 'status-prn',
+    statusColor: '#94A3B8'
+  }
+};
+
+function getTitrationMedKey(medName) {
+  const m = (medName || '').toLowerCase();
+  if (m.includes('guanfacine')) return 'guanfacine';
+  if (m.includes('sertraline') || m.includes('zoloft')) return 'sertraline';
+  if (m.includes('ritalin') || m.includes('methylphenidate')) return 'ritalin';
+  if (m.includes('risperdal') || m.includes('risperidone')) return 'risperdal';
+  return 'other';
+}
 
 function onTitrationRowActionChange(recordId, newAction) {
   if (typeof storage !== 'undefined' && typeof storage.updateTitrationEvent === 'function') {
@@ -1176,6 +1236,287 @@ function setTitrationDisplayMode(mode) {
   renderZLogTitration();
 }
 
+function setTitrationGroupBy(mode) {
+  zlogTitrationGroupBy = mode;
+  renderZLogTitration();
+}
+
+function setTitrationMedFilter(medKey) {
+  zlogTitrationMedFilter = (zlogTitrationMedFilter === medKey) ? 'all' : medKey;
+  renderZLogTitration();
+}
+
+function setTitrationYearFilter(year) {
+  zlogTitrationYearFilter = (zlogTitrationYearFilter === year) ? 'all' : year;
+  renderZLogTitration();
+}
+
+function setTitrationSearchQuery(q) {
+  zlogTitrationSearchQuery = q;
+  renderZLogTitration();
+  const input = document.getElementById('zlog-titration-search-box');
+  if (input) {
+    input.focus();
+    input.setSelectionRange(input.value.length, input.value.length);
+  }
+}
+
+function clearTitrationSearch() {
+  zlogTitrationSearchQuery = '';
+  renderZLogTitration();
+}
+
+function sortTitrationRecords(records, order = 'desc') {
+  return [...records].sort((a, b) => {
+    const dComp = (b.date || '').localeCompare(a.date || '');
+    if (dComp !== 0) return (order === 'desc') ? dComp : -dComp;
+    const idA = parseInt((a.id || '').replace(/\D/g, ''), 10) || 0;
+    const idB = parseInt((b.id || '').replace(/\D/g, ''), 10) || 0;
+    return (order === 'desc') ? (idB - idA) : (idA - idB);
+  });
+}
+
+function renderTitrationActionSelect(record) {
+  let actionClassSuffix = 'started';
+  const a = (record.action || '').toLowerCase();
+  if (a.includes('increase')) actionClassSuffix = 'increased';
+  else if (a.includes('decrease') || a.includes('drop')) actionClassSuffix = 'decreased';
+  else if (a.includes('change')) actionClassSuffix = 'changed';
+  else if (a.includes('stop')) actionClassSuffix = 'stopped';
+
+  return `
+    <select class="zlog-table-select action-${actionClassSuffix}" onchange="onTitrationRowActionChange('${record.id}', this.value)" title="Change Action for ${escapeHtml(record.medication)} (${record.date})">
+      <option value="Started" ${record.action === 'Started' ? 'selected' : ''}>✨ Started</option>
+      <option value="Increased" ${record.action === 'Increased' ? 'selected' : ''}>▲ Increased</option>
+      <option value="Decreased" ${record.action === 'Decreased' ? 'selected' : ''}>▼ Decreased</option>
+      <option value="Changed" ${record.action === 'Changed' ? 'selected' : ''}>🔄 Changed</option>
+      <option value="Stopped" ${record.action === 'Stopped' ? 'selected' : ''}>⏹ Stopped</option>
+    </select>
+  `;
+}
+
+function renderTitrationPrescriberSelect(record) {
+  return `
+    <select class="zlog-table-select prescriber-select" onchange="onTitrationRowPrescriberChange('${record.id}', this.value)" title="Prescriber">
+      <option value="Dr Barness" ${record.prescriber && record.prescriber.includes('Barness') ? 'selected' : ''}>Dr Barness</option>
+      <option value="Tara Gleeson" ${record.prescriber && record.prescriber.includes('Gleeson') ? 'selected' : ''}>Tara Gleeson</option>
+      <option value="GAP" ${record.prescriber === 'GAP' ? 'selected' : ''}>GAP</option>
+      ${(!record.prescriber || (!record.prescriber.includes('Barness') && !record.prescriber.includes('Gleeson') && record.prescriber !== 'GAP')) ? `<option value="${escapeHtml(record.prescriber || '')}" selected>${escapeHtml(record.prescriber || 'Select...')}</option>` : ''}
+    </select>
+  `;
+}
+
+function renderTitrationMedBadge(medName) {
+  const medKey = getTitrationMedKey(medName);
+  const cfg = TITRATION_MEDS_CONFIG[medKey] || {
+    name: medName,
+    color: 'var(--primary)',
+    bgLight: 'rgba(124, 92, 252, 0.08)'
+  };
+
+  let subTag = '';
+  if (medName.includes('XR')) subTag = '<span class="zlog-med-badge-sub">XR</span>';
+  else if (medName.includes('IR')) subTag = '<span class="zlog-med-badge-sub">IR</span>';
+
+  return `
+    <span class="zlog-med-badge" style="border-left: 3px solid ${cfg.color};" title="${escapeHtml(medName)}">
+      <span class="zlog-med-dot" style="background: ${cfg.color};"></span>
+      <span>${escapeHtml(cfg.name)}</span>
+      ${subTag}
+    </span>
+  `;
+}
+
+function renderTitrationDosePill(record) {
+  const isStopped = (record.action === 'Stopped' || record.dosage === '0 mg');
+  return `<span class="zlog-tit-dose-pill ${isStopped ? 'is-stopped' : ''}">${escapeHtml(record.dosage)}</span>`;
+}
+
+function buildTitrationTableHtml(records) {
+  if (records.length === 0) {
+    return `<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.80rem;">No adjustments match the active filters.</div>`;
+  }
+  return `
+    <div style="width: 100%; overflow: hidden;">
+      <table class="zlog-titration-table">
+        <colgroup>
+          <col style="width: 12%;">
+          <col style="width: 18%;">
+          <col style="width: 15%;">
+          <col style="width: 15%;">
+          <col style="width: 27%;">
+          <col style="width: 13%;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th style="cursor: pointer; user-select: none;" onclick="toggleTitrationSortOrder()" title="Click to reverse sort order">Date ${zlogTitrationSortOrder === 'desc' ? '▾' : '▴'}</th>
+            <th>Medication</th>
+            <th>Action</th>
+            <th>Dosage</th>
+            <th>Reason / Notes</th>
+            <th>Prescriber</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${records.map(record => `
+            <tr>
+              <td style="font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600;">${record.date}</td>
+              <td>${renderTitrationMedBadge(record.medication)}</td>
+              <td>${renderTitrationActionSelect(record)}</td>
+              <td>${renderTitrationDosePill(record)}</td>
+              <td style="color: var(--text-primary); font-size: 0.74rem; line-height: 1.35;">
+                <div>${escapeHtml(record.notes || '—')}</div>
+                ${record.snapshot ? `<div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">📷 ${escapeHtml(record.snapshot)}</div>` : ''}
+              </td>
+              <td>${renderTitrationPrescriberSelect(record)}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function buildTitrationCardsHtml(records) {
+  if (records.length === 0) {
+    return `<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.80rem;">No adjustments match the active filters.</div>`;
+  }
+  return `
+    <div class="zlog-titration-cards-list">
+      ${records.map(record => `
+        <div class="zlog-titration-event-card">
+          <div class="zlog-titration-event-header">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span class="zlog-tit-date" style="cursor: pointer;" onclick="toggleTitrationSortOrder()" title="Click to reverse sort order">
+                ${record.date}
+              </span>
+              ${renderTitrationMedBadge(record.medication)}
+              ${renderTitrationDosePill(record)}
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              ${renderTitrationActionSelect(record)}
+              ${renderTitrationPrescriberSelect(record)}
+            </div>
+          </div>
+          ${record.notes ? `
+            <div class="zlog-titration-event-notes">
+              ${escapeHtml(record.notes)}
+            </div>
+          ` : ''}
+          ${record.snapshot ? `
+            <div style="font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px;">
+              📷 ${escapeHtml(record.snapshot)}
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function buildTitrationByMedicationHtml(records) {
+  const medKeys = ['guanfacine', 'sertraline', 'ritalin', 'risperdal'];
+  const displayKeys = (zlogTitrationMedFilter !== 'all') ? [zlogTitrationMedFilter] : medKeys;
+
+  const cardsHtml = displayKeys.map(key => {
+    const cfg = TITRATION_MEDS_CONFIG[key];
+    if (!cfg) return '';
+    const medRecords = records.filter(r => getTitrationMedKey(r.medication) === key);
+    if (medRecords.length === 0 && zlogTitrationMedFilter === 'all') return '';
+
+    const sortedMedRecords = sortTitrationRecords(medRecords, zlogTitrationSortOrder);
+    const oldestDate = medRecords.length > 0 ? [...medRecords].sort((a,b)=>(a.date||'').localeCompare(b.date||''))[0].date : '—';
+    const latestDate = medRecords.length > 0 ? [...medRecords].sort((a,b)=>(b.date||'').localeCompare(a.date||''))[0].date : '—';
+    const prescribers = Array.from(new Set(medRecords.map(r => r.prescriber).filter(Boolean))).join(', ');
+
+    return `
+      <div class="zlog-med-group-card" style="border-left: 4px solid ${cfg.color};">
+        <div class="zlog-med-group-header">
+          <div class="zlog-med-group-title-area">
+            <span class="zlog-med-dot" style="background: ${cfg.color}; width: 9px; height: 9px;"></span>
+            <span class="zlog-med-group-title">${escapeHtml(cfg.fullName)}</span>
+            <span class="zlog-med-group-status" style="background: ${cfg.bgLight}; color: ${cfg.color}; border: 1px solid ${cfg.color}35;">
+              ${escapeHtml(cfg.currentDose)}
+            </span>
+          </div>
+          <div class="zlog-med-group-meta">
+            <strong>${medRecords.length}</strong> adjustments &middot; ${oldestDate} &rarr; ${latestDate} &middot; Prescribers: ${escapeHtml(prescribers || 'Dr Barness')}
+          </div>
+        </div>
+
+        <div class="zlog-med-ladder">
+          ${sortedMedRecords.map((record, idx) => {
+            const stepNum = (zlogTitrationSortOrder === 'desc') ? (sortedMedRecords.length - idx) : (idx + 1);
+            return `
+              <div class="zlog-ladder-step">
+                <div class="zlog-ladder-step-num" title="Adjustment #${stepNum}">#${stepNum}</div>
+                <div class="zlog-ladder-step-date">${record.date}</div>
+                <div class="zlog-ladder-step-action">${renderTitrationActionSelect(record)}</div>
+                <div class="zlog-ladder-step-dose">${renderTitrationDosePill(record)}</div>
+                <div class="zlog-ladder-step-body">
+                  <div>${escapeHtml(record.notes || '—')}</div>
+                  ${record.snapshot ? `<div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">📷 ${escapeHtml(record.snapshot)}</div>` : ''}
+                </div>
+                <div class="zlog-ladder-step-prescriber">${renderTitrationPrescriberSelect(record)}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }).filter(Boolean).join('');
+
+  if (!cardsHtml) {
+    return `<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.80rem;">No adjustments found for the selected medication and filters.</div>`;
+  }
+
+  return `<div class="zlog-med-group-list">${cardsHtml}</div>`;
+}
+
+function buildTitrationByYearHtml(records) {
+  const years = ['2026', '2025'];
+  const displayYears = (zlogTitrationYearFilter !== 'all') ? [zlogTitrationYearFilter] : years;
+
+  const yearsHtml = displayYears.map(year => {
+    const yearRecords = records.filter(r => (r.date || '').startsWith(year));
+    if (yearRecords.length === 0 && zlogTitrationYearFilter === 'all') return '';
+
+    const sortedYearRecords = sortTitrationRecords(yearRecords, zlogTitrationSortOrder);
+    const counts = { guanfacine: 0, sertraline: 0, ritalin: 0, risperdal: 0 };
+    yearRecords.forEach(r => {
+      const k = getTitrationMedKey(r.medication);
+      if (counts[k] !== undefined) counts[k]++;
+    });
+    const breakdown = [
+      counts.guanfacine > 0 ? `Guanfacine (${counts.guanfacine})` : null,
+      counts.sertraline > 0 ? `Sertraline (${counts.sertraline})` : null,
+      counts.ritalin > 0 ? `Ritalin (${counts.ritalin})` : null,
+      counts.risperdal > 0 ? `Risperdal (${counts.risperdal})` : null
+    ].filter(Boolean).join(' &middot; ');
+
+    return `
+      <div class="zlog-titration-table-card" style="margin-bottom: 1.25rem;">
+        <div class="zlog-titration-table-header" style="background: var(--bg-surface); padding: 10px 14px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.90rem; font-weight: 800; color: var(--text-primary);">${year} Adjustments</span>
+            <span class="zlog-chip-count" style="font-size: 0.70rem; padding: 2px 7px;">${yearRecords.length} changes</span>
+          </div>
+          <div style="font-size: 0.70rem; color: var(--text-muted);">
+            ${breakdown}
+          </div>
+        </div>
+        ${zlogTitrationDisplayMode === 'table' ? buildTitrationTableHtml(sortedYearRecords) : buildTitrationCardsHtml(sortedYearRecords)}
+      </div>
+    `;
+  }).filter(Boolean).join('');
+
+  if (!yearsHtml) {
+    return `<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 0.80rem;">No adjustments found for the selected year and filters.</div>`;
+  }
+
+  return `<div>${yearsHtml}</div>`;
+}
+
 /* --------------------------------------------------------------------------
    Sub-Tab 2: Meds & Titration Protocol
    -------------------------------------------------------------------------- */
@@ -1188,45 +1529,90 @@ function renderZLogTitration() {
     titrationList = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? [...DEFAULT_TITRATION_HISTORY] : [];
   }
 
-  // Sort (newest on top by default)
-  const sortedList = [...titrationList];
-  sortedList.sort((a, b) => {
-    const dComp = (b.date || '').localeCompare(a.date || '');
-    if (dComp !== 0) return (zlogTitrationSortOrder === 'desc') ? dComp : -dComp;
-    const idA = parseInt((a.id || '').replace(/\D/g, ''), 10) || 0;
-    const idB = parseInt((b.id || '').replace(/\D/g, ''), 10) || 0;
-    return (zlogTitrationSortOrder === 'desc') ? (idB - idA) : (idA - idB);
+  // Pre-calculate counts for filter chips
+  const medCounts = { all: titrationList.length, guanfacine: 0, sertraline: 0, ritalin: 0, risperdal: 0 };
+  const yearCounts = { all: titrationList.length, '2026': 0, '2025': 0 };
+  titrationList.forEach(r => {
+    const k = getTitrationMedKey(r.medication);
+    if (medCounts[k] !== undefined) medCounts[k]++;
+    const y = (r.date || '').substring(0, 4);
+    if (yearCounts[y] !== undefined) yearCounts[y]++;
   });
 
+  // Filter records
+  const filteredList = titrationList.filter(record => {
+    if (zlogTitrationMedFilter !== 'all') {
+      const k = getTitrationMedKey(record.medication);
+      if (k !== zlogTitrationMedFilter) return false;
+    }
+    if (zlogTitrationYearFilter !== 'all') {
+      const y = (record.date || '').substring(0, 4);
+      if (y !== zlogTitrationYearFilter) return false;
+    }
+    if (zlogTitrationSearchQuery.trim()) {
+      const q = zlogTitrationSearchQuery.toLowerCase().trim();
+      const hay = `${record.date} ${record.medication} ${record.dosage} ${record.action} ${record.notes || ''} ${record.prescriber || ''} ${record.snapshot || ''}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const sortedFilteredList = sortTitrationRecords(filteredList, zlogTitrationSortOrder);
+
   container.innerHTML = `
-    <!-- Current Active Prescriptions -->
-    <div style="margin-bottom: 1.5rem;">
-      <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 8px;">
-        Current Active Regimen
+    <!-- Current Active Prescriptions (Click to Filter) -->
+    <div style="margin-bottom: 1.25rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <span style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);">
+          Current Active Regimen
+        </span>
+        <span style="font-size: 0.68rem; color: var(--text-muted);">
+          Click card to isolate medication
+        </span>
       </div>
       <div class="zlog-regimen-grid">
-        <div class="zlog-stat-card zlog-regimen-card" style="border-left: 4px solid #7979B8;">
+        <div 
+          class="zlog-stat-card zlog-regimen-card ${zlogTitrationMedFilter === 'guanfacine' ? 'is-active-filter' : ''}" 
+          style="border-left: 4px solid #7979B8;" 
+          onclick="setTitrationMedFilter('guanfacine')"
+          title="Click to filter titration history to Guanfacine"
+        >
           <div class="zlog-stat-label">Active Prescribed</div>
           <div class="zlog-regimen-name" title="Guanfacine XR">Guanfacine XR</div>
           <div class="zlog-regimen-dose" style="color: #7979B8;">2 mg (Active)</div>
           <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
-        <div class="zlog-stat-card zlog-regimen-card" style="border-left: 4px solid #4E8765;">
+        <div 
+          class="zlog-stat-card zlog-regimen-card ${zlogTitrationMedFilter === 'sertraline' ? 'is-active-filter' : ''}" 
+          style="border-left: 4px solid #4E8765;" 
+          onclick="setTitrationMedFilter('sertraline')"
+          title="Click to filter titration history to Sertraline"
+        >
           <div class="zlog-stat-label">Active Prescribed</div>
           <div class="zlog-regimen-name" title="Sertraline (Zoloft)">Sertraline (Zoloft)</div>
           <div class="zlog-regimen-dose" style="color: #4E8765;">75 mg (Active)</div>
           <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
-        <div class="zlog-stat-card zlog-regimen-card" style="border-left: 4px solid #7C5CFC;">
+        <div 
+          class="zlog-stat-card zlog-regimen-card ${zlogTitrationMedFilter === 'ritalin' ? 'is-active-filter' : ''}" 
+          style="border-left: 4px solid #7C5CFC;" 
+          onclick="setTitrationMedFilter('ritalin')"
+          title="Click to filter titration history to Ritalin"
+        >
           <div class="zlog-stat-label">Active Prescribed</div>
           <div class="zlog-regimen-name" title="Ritalin">Ritalin</div>
           <div class="zlog-regimen-dose" style="color: #7C5CFC;">15 mg + 10 mg</div>
           <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
-        <div class="zlog-stat-card zlog-regimen-card is-discontinued" style="border-left: 4px solid #94A3B8; opacity: 0.65; background: var(--bg-surface);">
+        <div 
+          class="zlog-stat-card zlog-regimen-card is-discontinued ${zlogTitrationMedFilter === 'risperdal' ? 'is-active-filter' : ''}" 
+          style="border-left: 4px solid #94A3B8; opacity: 0.75; background: var(--bg-surface);" 
+          onclick="setTitrationMedFilter('risperdal')"
+          title="Click to filter titration history to Risperdal"
+        >
           <div class="zlog-stat-label" style="color: var(--text-muted);">As Needed / PRN</div>
           <div class="zlog-regimen-name" style="color: var(--text-secondary);" title="Risperdal (risperidone)">Risperdal</div>
           <div class="zlog-regimen-dose" style="color: #64748B;">PRN (0 mg regular)</div>
@@ -1235,145 +1621,140 @@ function renderZLogTitration() {
       </div>
     </div>
 
-    <!-- Historical Titration Adjustments Card -->
-    <div class="zlog-titration-table-card">
-      <div class="zlog-titration-table-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-        <div>
-          <span class="zlog-table-title">Dosage Adjustment History &amp; Clinical Notes</span>
-          <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 8px;">
-            ${sortedList.length} adjustments logged
+    <!-- Titration Control Deck: Grouping, Search & Filter Toolbar -->
+    <div class="zlog-titration-deck">
+      <!-- Top Row: Title & Group By Selector -->
+      <div class="zlog-titration-deck-top">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
+            Dosage Adjustment History &amp; Clinical Notes
+          </span>
+          <span class="zlog-chip-count">
+            ${filteredList.length} of ${titrationList.length} shown
           </span>
         </div>
 
-        <!-- View Switcher Toggle: Table vs Cards (Zero Scroll) -->
-        <div style="display: flex; align-items: center; gap: 2px; background: var(--bg-hover); padding: 3px; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
-          <button type="button" class="btn ${zlogTitrationDisplayMode === 'table' ? 'btn-primary' : 'btn-ghost'}" onclick="setTitrationDisplayMode('table')" style="font-size: 0.70rem; padding: 2px 9px; height: 24px; border-radius: var(--radius-sm);" title="Compact 6-Column Table">
-            <i data-lucide="table" style="width: 12px; height: 12px;"></i>
-            <span>Table</span>
+        <!-- 3-Way Group By Selector -->
+        <div style="display: flex; align-items: center; gap: 4px; background: var(--bg-hover); padding: 3px; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+          <span style="font-size: 0.66rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin: 0 4px 0 2px;">Group By</span>
+          <button 
+            type="button" 
+            class="btn ${zlogTitrationGroupBy === 'medication' ? 'btn-primary' : 'btn-ghost'}" 
+            onclick="setTitrationGroupBy('medication')" 
+            style="font-size: 0.70rem; padding: 2px 8px; height: 24px; border-radius: var(--radius-sm);" 
+            title="Group by individual drug with chronological step ladders"
+          >
+            <span>💊 By Medication</span>
           </button>
-          <button type="button" class="btn ${zlogTitrationDisplayMode === 'cards' ? 'btn-primary' : 'btn-ghost'}" onclick="setTitrationDisplayMode('cards')" style="font-size: 0.70rem; padding: 2px 9px; height: 24px; border-radius: var(--radius-sm);" title="Clinical Feed / Event Cards (Full Width Notes)">
-            <i data-lucide="layout-list" style="width: 12px; height: 12px;"></i>
-            <span>Cards</span>
+          <button 
+            type="button" 
+            class="btn ${zlogTitrationGroupBy === 'timeline' ? 'btn-primary' : 'btn-ghost'}" 
+            onclick="setTitrationGroupBy('timeline')" 
+            style="font-size: 0.70rem; padding: 2px 8px; height: 24px; border-radius: var(--radius-sm);" 
+            title="Continuous chronological timeline of all adjustments"
+          >
+            <span>📅 Timeline</span>
+          </button>
+          <button 
+            type="button" 
+            class="btn ${zlogTitrationGroupBy === 'year' ? 'btn-primary' : 'btn-ghost'}" 
+            onclick="setTitrationGroupBy('year')" 
+            style="font-size: 0.70rem; padding: 2px 8px; height: 24px; border-radius: var(--radius-sm);" 
+            title="Group adjustments by Year (2026 vs 2025)"
+          >
+            <span>🗓 By Year</span>
           </button>
         </div>
       </div>
 
-      ${zlogTitrationDisplayMode === 'table' ? `
-        <!-- Table View: Fixed Proportional Layout with Zero Overflow -->
-        <div style="width: 100%; overflow: hidden;">
-          <table class="zlog-titration-table">
-            <colgroup>
-              <col style="width: 13%;">
-              <col style="width: 20%;">
-              <col style="width: 14%;">
-              <col style="width: 14%;">
-              <col style="width: 25%;">
-              <col style="width: 14%;">
-            </colgroup>
-            <thead>
-              <tr>
-                <th style="cursor: pointer; user-select: none;" onclick="toggleTitrationSortOrder()" title="Click to sort by date">Date ${zlogTitrationSortOrder === 'desc' ? '▾' : '▴'}</th>
-                <th>Medication</th>
-                <th>Dosage</th>
-                <th>Action</th>
-                <th>Reason / Notes</th>
-                <th>Prescriber</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${sortedList.map(record => {
-                let actionClassSuffix = 'started';
-                const a = (record.action || '').toLowerCase();
-                if (a.includes('increase')) actionClassSuffix = 'increased';
-                else if (a.includes('decrease') || a.includes('drop')) actionClassSuffix = 'decreased';
-                else if (a.includes('change')) actionClassSuffix = 'changed';
-                else if (a.includes('stop')) actionClassSuffix = 'stopped';
-
-                return `
-                  <tr>
-                    <td style="font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600;">${record.date}</td>
-                    <td style="font-weight: 600; font-size: 0.74rem;">${escapeHtml(record.medication)}</td>
-                    <td style="font-family: var(--font-mono); font-weight: 600; font-size: 0.72rem;">${escapeHtml(record.dosage)}</td>
-                    <td>
-                      <select class="zlog-table-select action-${actionClassSuffix}" onchange="onTitrationRowActionChange('${record.id}', this.value)" title="Action">
-                        <option value="Started" ${record.action === 'Started' ? 'selected' : ''}>Started</option>
-                        <option value="Increased" ${record.action === 'Increased' ? 'selected' : ''}>Increased</option>
-                        <option value="Decreased" ${record.action === 'Decreased' ? 'selected' : ''}>Decreased</option>
-                        <option value="Changed" ${record.action === 'Changed' ? 'selected' : ''}>Changed</option>
-                        <option value="Stopped" ${record.action === 'Stopped' ? 'selected' : ''}>Stopped</option>
-                      </select>
-                    </td>
-                    <td style="color: var(--text-primary); font-size: 0.74rem; line-height: 1.35;">
-                      <div>${escapeHtml(record.notes || '—')}</div>
-                      ${record.snapshot ? `<div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">📷 ${escapeHtml(record.snapshot)}</div>` : ''}
-                    </td>
-                    <td>
-                      <select class="zlog-table-select prescriber-select" onchange="onTitrationRowPrescriberChange('${record.id}', this.value)" title="Prescriber">
-                        <option value="Dr Barness" ${record.prescriber && record.prescriber.includes('Barness') ? 'selected' : ''}>Dr Barness</option>
-                        <option value="Tara Gleeson" ${record.prescriber && record.prescriber.includes('Gleeson') ? 'selected' : ''}>Tara Gleeson</option>
-                        <option value="GAP" ${record.prescriber === 'GAP' ? 'selected' : ''}>GAP</option>
-                        ${(!record.prescriber || (!record.prescriber.includes('Barness') && !record.prescriber.includes('Gleeson') && record.prescriber !== 'GAP')) ? `<option value="${escapeHtml(record.prescriber || '')}" selected>${escapeHtml(record.prescriber || 'Select...')}</option>` : ''}
-                      </select>
-                    </td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
+      <!-- Bottom Row: Search, Medication Chips & Year Chips -->
+      <div class="zlog-titration-deck-bottom">
+        <!-- Search Input -->
+        <div class="zlog-titration-search">
+          <i data-lucide="search" class="zlog-titration-search-icon"></i>
+          <input 
+            type="text" 
+            id="zlog-titration-search-box" 
+            placeholder="Search notes, dose, doctor..." 
+            value="${escapeHtml(zlogTitrationSearchQuery)}"
+            oninput="setTitrationSearchQuery(this.value)"
+          >
+          ${zlogTitrationSearchQuery ? `
+            <button type="button" onclick="clearTitrationSearch()" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.8rem; padding: 0 4px;">&times;</button>
+          ` : ''}
         </div>
-      ` : `
-        <!-- Cards View: Elegant, Scannable 2-Line Clinical Stream (Zero Overflow) -->
-        <div class="zlog-titration-cards-list">
-          ${sortedList.map(record => {
-            let actionClassSuffix = 'started';
-            const a = (record.action || '').toLowerCase();
-            if (a.includes('increase')) actionClassSuffix = 'increased';
-            else if (a.includes('decrease') || a.includes('drop')) actionClassSuffix = 'decreased';
-            else if (a.includes('change')) actionClassSuffix = 'changed';
-            else if (a.includes('stop')) actionClassSuffix = 'stopped';
 
-            return `
-              <div class="zlog-titration-event-card">
-                <div class="zlog-titration-event-header">
-                  <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                    <span class="zlog-tit-date" style="cursor: pointer;" onclick="toggleTitrationSortOrder()" title="Click to reverse sort order">
-                      ${record.date}
-                    </span>
-                    <span class="zlog-tit-med">${escapeHtml(record.medication)}</span>
-                    <span class="zlog-tit-dose">${escapeHtml(record.dosage)}</span>
-                  </div>
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <select class="zlog-table-select action-${actionClassSuffix}" style="width: auto; padding-right: 18px;" onchange="onTitrationRowActionChange('${record.id}', this.value)" title="Action">
-                      <option value="Started" ${record.action === 'Started' ? 'selected' : ''}>Started</option>
-                      <option value="Increased" ${record.action === 'Increased' ? 'selected' : ''}>Increased</option>
-                      <option value="Decreased" ${record.action === 'Decreased' ? 'selected' : ''}>Decreased</option>
-                      <option value="Changed" ${record.action === 'Changed' ? 'selected' : ''}>Changed</option>
-                      <option value="Stopped" ${record.action === 'Stopped' ? 'selected' : ''}>Stopped</option>
-                    </select>
-                    <select class="zlog-table-select prescriber-select" style="width: auto; padding-right: 18px;" onchange="onTitrationRowPrescriberChange('${record.id}', this.value)" title="Prescriber">
-                      <option value="Dr Barness" ${record.prescriber && record.prescriber.includes('Barness') ? 'selected' : ''}>Dr Barness</option>
-                      <option value="Tara Gleeson" ${record.prescriber && record.prescriber.includes('Gleeson') ? 'selected' : ''}>Tara Gleeson</option>
-                      <option value="GAP" ${record.prescriber === 'GAP' ? 'selected' : ''}>GAP</option>
-                      ${(!record.prescriber || (!record.prescriber.includes('Barness') && !record.prescriber.includes('Gleeson') && record.prescriber !== 'GAP')) ? `<option value="${escapeHtml(record.prescriber || '')}" selected>${escapeHtml(record.prescriber || 'Select...')}</option>` : ''}
-                    </select>
-                  </div>
-                </div>
-                ${record.notes ? `
-                  <div class="zlog-titration-event-notes">
-                    ${escapeHtml(record.notes)}
-                  </div>
-                ` : ''}
-                ${record.snapshot ? `
-                  <div style="font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px;">
-                    📷 ${escapeHtml(record.snapshot)}
-                  </div>
-                ` : ''}
-              </div>
-            `;
-          }).join('')}
+        <!-- Filter Chips: Meds -->
+        <div class="zlog-titration-chip-group">
+          <button type="button" class="zlog-titration-chip ${zlogTitrationMedFilter === 'all' ? 'active' : ''}" onclick="setTitrationMedFilter('all')">
+            <span>All Meds</span>
+            <span class="zlog-chip-count">${medCounts.all}</span>
+          </button>
+          <button type="button" class="zlog-titration-chip ${zlogTitrationMedFilter === 'guanfacine' ? 'active' : ''}" onclick="setTitrationMedFilter('guanfacine')">
+            <span class="zlog-med-dot" style="background: #7979B8;"></span>
+            <span>Guanfacine</span>
+            <span class="zlog-chip-count">${medCounts.guanfacine}</span>
+          </button>
+          <button type="button" class="zlog-titration-chip ${zlogTitrationMedFilter === 'sertraline' ? 'active' : ''}" onclick="setTitrationMedFilter('sertraline')">
+            <span class="zlog-med-dot" style="background: #4E8765;"></span>
+            <span>Sertraline</span>
+            <span class="zlog-chip-count">${medCounts.sertraline}</span>
+          </button>
+          <button type="button" class="zlog-titration-chip ${zlogTitrationMedFilter === 'ritalin' ? 'active' : ''}" onclick="setTitrationMedFilter('ritalin')">
+            <span class="zlog-med-dot" style="background: #7C5CFC;"></span>
+            <span>Ritalin</span>
+            <span class="zlog-chip-count">${medCounts.ritalin}</span>
+          </button>
+          <button type="button" class="zlog-titration-chip ${zlogTitrationMedFilter === 'risperdal' ? 'active' : ''}" onclick="setTitrationMedFilter('risperdal')">
+            <span class="zlog-med-dot" style="background: #D97768;"></span>
+            <span>Risperdal</span>
+            <span class="zlog-chip-count">${medCounts.risperdal}</span>
+          </button>
         </div>
-      `}
+
+        <!-- Filter Chips: Years & View Toggle -->
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <div class="zlog-titration-chip-group">
+            <button type="button" class="zlog-titration-chip ${zlogTitrationYearFilter === 'all' ? 'active' : ''}" onclick="setTitrationYearFilter('all')">
+              <span>All Years</span>
+            </button>
+            <button type="button" class="zlog-titration-chip ${zlogTitrationYearFilter === '2026' ? 'active' : ''}" onclick="setTitrationYearFilter('2026')">
+              <span>2026</span>
+              <span class="zlog-chip-count">${yearCounts['2026']}</span>
+            </button>
+            <button type="button" class="zlog-titration-chip ${zlogTitrationYearFilter === '2025' ? 'active' : ''}" onclick="setTitrationYearFilter('2025')">
+              <span>2025</span>
+              <span class="zlog-chip-count">${yearCounts['2025']}</span>
+            </button>
+          </div>
+
+          <!-- Table vs Cards Toggle (Available in Timeline & Year views) -->
+          ${zlogTitrationGroupBy !== 'medication' ? `
+            <div style="display: flex; align-items: center; gap: 2px; background: var(--bg-hover); padding: 2px; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <button type="button" class="btn ${zlogTitrationDisplayMode === 'table' ? 'btn-primary' : 'btn-ghost'}" onclick="setTitrationDisplayMode('table')" style="font-size: 0.68rem; padding: 2px 7px; height: 22px; border-radius: var(--radius-sm);" title="Compact Table">
+                <i data-lucide="table" style="width: 11px; height: 11px;"></i>
+                <span>Table</span>
+              </button>
+              <button type="button" class="btn ${zlogTitrationDisplayMode === 'cards' ? 'btn-primary' : 'btn-ghost'}" onclick="setTitrationDisplayMode('cards')" style="font-size: 0.68rem; padding: 2px 7px; height: 22px; border-radius: var(--radius-sm);" title="Event Cards">
+                <i data-lucide="layout-list" style="width: 11px; height: 11px;"></i>
+                <span>Cards</span>
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
     </div>
+
+    <!-- View Mode Container -->
+    ${zlogTitrationGroupBy === 'medication' ? `
+      ${buildTitrationByMedicationHtml(filteredList)}
+    ` : (zlogTitrationGroupBy === 'year' ? `
+      ${buildTitrationByYearHtml(filteredList)}
+    ` : `
+      <div class="zlog-titration-table-card">
+        ${zlogTitrationDisplayMode === 'table' ? buildTitrationTableHtml(sortedFilteredList) : buildTitrationCardsHtml(sortedFilteredList)}
+      </div>
+    `)}
   `;
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
