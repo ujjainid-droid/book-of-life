@@ -330,16 +330,16 @@
    2. Dedicated Z Log Page Container & Navigation
    -------------------------------------------------------------------------- */
 .daily-sheet-container:has(.zlog-page-container) {
-  max-width: 980px;
+  max-width: 680px;
 }
 
 .book-header:has(~ #daily-sheet-container .zlog-page-container) {
-  max-width: 980px;
+  max-width: 680px;
 }
 
 .zlog-page-container {
   width: 100%;
-  max-width: 980px;
+  max-width: 680px;
   margin: 0 auto;
   padding-bottom: 4rem;
 }
@@ -421,13 +421,20 @@
 }
 
 .zlog-subnav-pills {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-full);
   padding: 3px;
   gap: 4px;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: none;
+}
+
+.zlog-subnav-pills::-webkit-scrollbar {
+  display: none;
 }
 
 .zlog-subnav-btn {
@@ -437,15 +444,17 @@
   background: transparent;
   border: none;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--text-secondary);
-  padding: 5px 14px;
+  padding: 5px 10px;
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--transition-fast);
-  min-width: 165px;
+  flex: 1 1 0;
+  min-width: 120px;
   text-align: center;
+  white-space: nowrap;
 }
 
 .zlog-subnav-btn.active {
