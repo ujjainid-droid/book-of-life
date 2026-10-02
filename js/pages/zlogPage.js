@@ -458,12 +458,12 @@ function renderZLogTimeline() {
   const currentY = now.getFullYear(); // 2026
   const currentM = now.getMonth(); // Current month index
 
-  // Option 2: Active-only month chips for the selected year (or all years)
+  // Option 1: Clean Dual Dropdowns (Year Filter + Jump to Month)
   const candidateYears = (zlogPeriodFilter === 'all') 
     ? sortedYears 
     : [zlogPeriodFilter];
 
-  const activeMonthChips = [];
+  const monthOptionsList = [];
   candidateYears.forEach(yr => {
     for (let m = 12; m >= 1; m--) {
       const mStr = String(m).padStart(2, '0');
@@ -471,67 +471,47 @@ function renderZLogTimeline() {
       const count = allEntriesMonthMap[mKey] || 0;
       if (count > 0) {
         const isCurrent = (Number(yr) === currentY && (m - 1) === currentM);
-        const isExpanded = !!zlogExpandedMonths[mKey];
-        const chipLabel = (zlogPeriodFilter === 'all') 
-          ? `${allMonthShorts[m - 1]} '${yr.slice(2)}` 
-          : allMonthShorts[m - 1];
+        const label = `${allMonthNames[m - 1]} ${yr}`;
 
-        activeMonthChips.push(`
-          <button 
-            type="button" 
-            class="zlog-month-chip ${isExpanded ? 'active' : ''} ${isCurrent ? 'current-month' : ''}" 
-            id="jump-pill-${mKey}" 
-            onclick="jumpToMonth('${mKey}')" 
-            title="${allMonthNames[m - 1]} ${yr} (${count} ${count === 1 ? 'entry' : 'entries'})"
-          >
-            <span>${chipLabel}</span>
-            <span class="zlog-chip-count">${count}</span>
-          </button>
+        monthOptionsList.push(`
+          <option value="${mKey}">
+            ${label} (${count} ${count === 1 ? 'entry' : 'entries'})${isCurrent ? ' • Current' : ''}
+          </option>
         `);
       }
     }
   });
 
-  // Render Year Segmented Tabs & Active Month Chips (Option 2)
+  // Render Dual Dropdown Controls (Option 1)
   const jumpBarHtml = `
-    <div class="zlog-month-nav-card">
-      <!-- Line 1: Year Segmented Tabs & Actions -->
-      <div class="zlog-nav-top-row">
-        <div class="zlog-nav-year-segmented">
-          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === 'all' ? 'active' : ''}" onclick="setZLogPeriodFilter('all')" title="Show entries across all years">
-            <span>All</span>
-            <span class="zlog-nav-count">${allEntries.length}</span>
-          </button>
-          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === '2026' ? 'active' : ''}" onclick="setZLogPeriodFilter('2026')" title="Filter to 2026">
-            <span>2026</span>
-            <span class="zlog-nav-count">${count2026}</span>
-          </button>
-          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === '2025' ? 'active' : ''}" onclick="setZLogPeriodFilter('2025')" title="Filter to 2025">
-            <span>2025</span>
-            <span class="zlog-nav-count">${count2025}</span>
-          </button>
-          <button type="button" class="zlog-nav-year-btn ${zlogPeriodFilter === '2024' ? 'active' : ''}" onclick="setZLogPeriodFilter('2024')" title="Filter to 2024">
-            <span>2024</span>
-            <span class="zlog-nav-count">${count2024}</span>
-          </button>
+    <div class="zlog-month-nav-card zlog-dual-dropdown-card">
+      <div class="zlog-dropdown-controls">
+        <div class="zlog-dropdown-item">
+          <label class="zlog-dropdown-label" for="zlog-year-picker">Year:</label>
+          <select class="zlog-picker-select" id="zlog-year-picker" onchange="setZLogPeriodFilter(this.value)">
+            <option value="all" ${zlogPeriodFilter === 'all' ? 'selected' : ''}>All Years (${allEntries.length})</option>
+            <option value="2026" ${zlogPeriodFilter === '2026' ? 'selected' : ''}>2026 (${count2026})</option>
+            <option value="2025" ${zlogPeriodFilter === '2025' ? 'selected' : ''}>2025 (${count2025})</option>
+            <option value="2024" ${zlogPeriodFilter === '2024' ? 'selected' : ''}>2024 (${count2024})</option>
+          </select>
         </div>
 
-        <div class="zlog-nav-actions">
-          <button type="button" class="zlog-nav-action-btn" onclick="expandAllMonths()" title="Expand all month accordions">
-            Expand All
-          </button>
-          <button type="button" class="zlog-nav-action-btn" onclick="collapseAllMonths()" title="Collapse all month accordions">
-            Collapse All
-          </button>
+        <div class="zlog-dropdown-item">
+          <label class="zlog-dropdown-label" for="zlog-month-picker">Jump to Month:</label>
+          <select class="zlog-picker-select" id="zlog-month-picker" onchange="if(this.value) jumpToMonth(this.value)">
+            <option value="" disabled selected>Select month...</option>
+            ${monthOptionsList.join('')}
+          </select>
         </div>
       </div>
 
-      <!-- Line 2: Active-Only Month Chips -->
-      <div class="zlog-nav-months-row">
-        <span class="zlog-nav-months-label">Jump:</span>
-        <div class="zlog-nav-months-chips">
-          ${activeMonthChips.join('')}
-        </div>
+      <div class="zlog-nav-actions">
+        <button type="button" class="zlog-nav-action-btn" onclick="expandAllMonths()" title="Expand all month accordions">
+          Expand All
+        </button>
+        <button type="button" class="zlog-nav-action-btn" onclick="collapseAllMonths()" title="Collapse all month accordions">
+          Collapse All
+        </button>
       </div>
     </div>
   `;

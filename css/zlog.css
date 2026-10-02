@@ -958,70 +958,67 @@
    5. Month Jump Navigation Bar & Month Accordion Hierarchy
    -------------------------------------------------------------------------- */
 /* ==========================================================================
-   5. Month Jump Navigation Bar (Option 2: Year Segmented Tabs + Active Month Chips)
+   5. Month Jump Navigation Bar (Option 1: Clean Dual Dropdowns)
    ========================================================================== */
-.zlog-month-nav-card {
+.zlog-month-nav-card.zlog-dual-dropdown-card {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 12px 16px;
+  padding: 10px 16px;
   margin-bottom: 1.25rem;
   box-shadow: var(--shadow-sm);
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.zlog-nav-top-row {
-  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
-.zlog-nav-year-segmented {
-  display: inline-flex;
+.zlog-dropdown-controls {
+  display: flex;
   align-items: center;
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-full);
-  padding: 3px;
-  gap: 2px;
+  gap: 14px;
+  flex-wrap: wrap;
+  flex: 1;
 }
 
-.zlog-nav-year-btn {
-  display: inline-flex;
+.zlog-dropdown-item {
+  display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 4px 12px;
-  border-radius: var(--radius-full);
-  border: none;
-  background: transparent;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--transition-fast);
+  gap: 7px;
+}
+
+.zlog-dropdown-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   white-space: nowrap;
 }
 
-.zlog-nav-year-btn:hover {
+.zlog-picker-select {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  font-family: var(--font-sans);
+  font-size: 0.80rem;
+  font-weight: 600;
   color: var(--text-primary);
+  outline: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-picker-select:hover {
+  border-color: var(--border-strong);
   background: var(--bg-surface-hover);
 }
 
-.zlog-nav-year-btn.active {
-  background: var(--primary);
-  color: #FFFFFF;
-  box-shadow: 0 1px 4px rgba(109, 40, 217, 0.2);
-}
-
-.zlog-nav-year-btn .zlog-nav-count {
-  font-size: 0.70rem;
-  opacity: 0.85;
-  font-family: var(--font-mono);
+.zlog-picker-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
 }
 
 .zlog-nav-actions {
@@ -1034,93 +1031,20 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  padding: 4px 9px;
+  padding: 5px 10px;
   font-family: var(--font-sans);
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .zlog-nav-action-btn:hover {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
   border-color: var(--border-strong);
-}
-
-.zlog-nav-months-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-top: 8px;
-  border-top: 1px solid var(--border-light);
-}
-
-.zlog-nav-months-label {
-  font-size: 0.70rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.zlog-nav-months-chips {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.zlog-month-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 9px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-light);
-  background: var(--bg-surface);
-  font-family: var(--font-sans);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-}
-
-.zlog-month-chip:hover {
-  background: var(--bg-surface-hover);
-  color: var(--text-primary);
-  border-color: var(--border-strong);
-  transform: translateY(-1px);
-}
-
-.zlog-month-chip.active {
-  background: rgba(109, 40, 217, 0.12);
-  color: var(--primary);
-  border-color: var(--primary);
-  font-weight: 700;
-}
-
-[data-theme="dark"] .zlog-month-chip.active {
-  background: rgba(139, 92, 246, 0.22);
-  color: #C4B5FD;
-}
-
-.zlog-month-chip.current-month {
-  border-color: var(--primary);
-  color: var(--primary);
-  font-weight: 700;
-  box-shadow: 0 0 0 1px var(--primary-light);
-}
-
-.zlog-chip-count {
-  font-size: 0.66rem;
-  opacity: 0.75;
-  font-family: var(--font-mono);
 }
 
 /* Month Accordions */
