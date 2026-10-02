@@ -151,6 +151,20 @@ function renderDailySheet() {
   if (hasGoals && goalsDone) completedCheckpoints++;
   const allCheckpointsDone = (completedCheckpoints >= totalRequired);
 
+  // Z Log status for active tracking date
+  const todayZLog = (typeof storage !== 'undefined' && typeof storage.getZLogEntry === 'function')
+    ? storage.getZLogEntry(activeTrackingDate)
+    : null;
+  const isZLogLogged = !!(todayZLog && (
+    (todayZLog.rating !== null && todayZLog.rating !== undefined) || 
+    (todayZLog.notes && todayZLog.notes.trim().length > 0) || 
+    (todayZLog.aggression) ||
+    (todayZLog.meds && (todayZLog.meds.z || todayZLog.meds.g || todayZLog.meds.rit || todayZLog.meds.mag || todayZLog.meds.mel || todayZLog.meds.ris))
+  ));
+  const zlogRatingObj = (todayZLog && todayZLog.rating && typeof ZLOG_RATINGS !== 'undefined')
+    ? ZLOG_RATINGS[todayZLog.rating]
+    : null;
+
   container.innerHTML = `
     ${!isToday ? `
       <!-- Past Date Navigation & Action Banner -->
@@ -196,8 +210,18 @@ function renderDailySheet() {
           <span class="breadcrumbs-title">Daily Checkpoints</span>
           <span class="breadcrumbs-sub">Tap to jump &amp; log</span>
         </div>
-        <div class="breadcrumbs-progress-pill ${allCheckpointsDone ? 'all-done' : ''}">
-          ${allCheckpointsDone ? '🎉 All Complete' : `⏳ ${completedCheckpoints}/${totalRequired} Complete`}
+        <div class="breadcrumbs-right-group">
+          <button type="button" 
+                  class="btn-today-zlog ${isZLogLogged ? 'is-logged' : ''}" 
+                  onclick="openZLogEntryModal('${activeTrackingDate}')" 
+                  title="Log or edit Z Log for ${activeTrackingDate}">
+            <span class="zlog-today-icon">🌱</span>
+            <span class="zlog-today-label">${isZLogLogged ? (zlogRatingObj ? `${zlogRatingObj.emoji} Z Log (${zlogRatingObj.shortLabel})` : 'Z Log Done') : 'Log Z Log'}</span>
+            <span class="zlog-today-badge">${isZLogLogged ? '✎' : '+10 XP'}</span>
+          </button>
+          <div class="breadcrumbs-progress-pill ${allCheckpointsDone ? 'all-done' : ''}">
+            ${allCheckpointsDone ? '🎉 All Complete' : `⏳ ${completedCheckpoints}/${totalRequired} Complete`}
+          </div>
         </div>
       </div>
 
@@ -466,6 +490,25 @@ function renderDailySheet() {
               <span>Check in with your body today for <strong>+5 XP</strong>.</span>
             </div>
           `}
+
+          <!-- Z Log Quick Entry Row -->
+          <div class="health-zlog-shortcut-row">
+            <div class="zlog-shortcut-info">
+              <span class="zlog-shortcut-icon">🌱</span>
+              <div>
+                <div class="zlog-shortcut-title">Z Log • Care &amp; Daily Regulation</div>
+                <div class="zlog-shortcut-sub">
+                  ${isZLogLogged 
+                    ? `Logged: <strong>${zlogRatingObj ? `${zlogRatingObj.emoji} ${zlogRatingObj.label}` : 'Recorded'}</strong>${todayZLog.aggression ? ' • <span style="color:#EF4444; font-weight:700;">⚠️ Aggression</span>' : ''}${todayZLog.notes ? ' • <em>Notes saved</em>' : ''}`
+                    : 'Track behavior, 1-5 rating &amp; medications'}
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn btn-secondary btn-xs zlog-shortcut-btn" onclick="openZLogEntryModal('${activeTrackingDate}')">
+              <i data-lucide="${isZLogLogged ? 'edit-3' : 'plus'}" style="width: 13px; height: 13px;"></i>
+              <span>${isZLogLogged ? 'Edit Z Log' : 'Log Z Log'}</span>
+            </button>
+          </div>
         </div>
       </div>
 

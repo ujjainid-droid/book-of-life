@@ -2474,9 +2474,15 @@ function submitZLogEntryModal(event) {
   storage.saveZLogEntry(dateStr, entryData);
   closeZLogModal();
 
+  if (typeof showToast === 'function') {
+    showToast(`🌱 Z Log saved for ${dateStr}`);
+  }
+
   if (currentView === 'zlog') {
     renderZLogPage();
-  } else if (currentView === 'daily') {
+  } else if (currentView === 'sanctuary' || currentView === 'daily') {
+    renderDailySheet();
+  } else if (typeof renderDailySheet === 'function') {
     renderDailySheet();
   }
 }

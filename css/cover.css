@@ -1752,6 +1752,130 @@
   border-color: rgba(20, 184, 166, 0.48);
 }
 
+.breadcrumbs-right-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-today-zlog {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  border-radius: var(--radius-full);
+  background: rgba(13, 148, 136, 0.08);
+  color: #0F766E;
+  border: 1.5px solid rgba(13, 148, 136, 0.28);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.06);
+}
+
+.btn-today-zlog:hover {
+  background: rgba(13, 148, 136, 0.16);
+  border-color: rgba(13, 148, 136, 0.48);
+  transform: translateY(-1px);
+}
+
+.btn-today-zlog.is-logged {
+  background: rgba(78, 135, 101, 0.1);
+  color: #2D5A3C;
+  border-color: rgba(78, 135, 101, 0.35);
+}
+
+.btn-today-zlog.is-logged:hover {
+  background: rgba(78, 135, 101, 0.18);
+  border-color: rgba(78, 135, 101, 0.55);
+}
+
+.zlog-today-icon {
+  font-size: 0.82rem;
+  line-height: 1;
+}
+
+.zlog-today-label {
+  letter-spacing: -0.01em;
+}
+
+.zlog-today-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+
+[data-theme="dark"] .btn-today-zlog {
+  background: rgba(20, 184, 166, 0.12);
+  color: #5EEAD4;
+  border-color: rgba(20, 184, 166, 0.3);
+}
+
+[data-theme="dark"] .btn-today-zlog:hover {
+  background: rgba(20, 184, 166, 0.22);
+  border-color: rgba(20, 184, 166, 0.5);
+}
+
+[data-theme="dark"] .btn-today-zlog.is-logged {
+  background: rgba(78, 135, 101, 0.2);
+  color: #86EFAC;
+  border-color: rgba(78, 135, 101, 0.45);
+}
+
+[data-theme="dark"] .btn-today-zlog.is-logged:hover {
+  background: rgba(78, 135, 101, 0.3);
+  border-color: rgba(78, 135, 101, 0.6);
+}
+
+/* Vitality Card Z Log Shortcut Row */
+.health-zlog-shortcut-row {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.zlog-shortcut-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.zlog-shortcut-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.zlog-shortcut-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-shortcut-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.zlog-shortcut-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font-weight: 600;
+  font-size: 0.75rem;
+  padding: 5px 12px;
+}
+
 .breadcrumbs-trail {
   display: flex;
   align-items: center;
