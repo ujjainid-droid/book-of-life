@@ -527,11 +527,17 @@
   font-size: 0.8rem;
   font-weight: 600;
   color: var(--text-muted, #7E7792);
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.15s ease;
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 105px;
+  text-align: center;
 }
 
 .vault-tab-btn.active {

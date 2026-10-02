@@ -431,6 +431,9 @@
 }
 
 .zlog-subnav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
   font-family: var(--font-sans);
@@ -441,6 +444,8 @@
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--transition-fast);
+  min-width: 165px;
+  text-align: center;
 }
 
 .zlog-subnav-btn.active {

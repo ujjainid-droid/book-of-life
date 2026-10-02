@@ -170,6 +170,9 @@ html, body {
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  text-align: center;
   gap: 4px;
   transition: all var(--transition-fast);
 }
@@ -316,8 +319,9 @@ html, body {
 .bunker-tab-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: var(--radius-sm);
   border: none;
   background: transparent;
@@ -327,6 +331,8 @@ html, body {
   color: var(--text-muted);
   cursor: pointer;
   transition: all var(--transition-fast);
+  min-width: 145px;
+  text-align: center;
 }
 
 .bunker-tab-btn:hover {
