@@ -234,12 +234,10 @@ function renderClaimsPage() {
             <table class="claims-data-table">
               <thead>
                 <tr>
-                  <th class="col-date">Date</th>
-                  <th class="col-provider">Provider &amp; Method</th>
-                  <th class="col-amount">Amount</th>
-                  <th class="col-stage">Status</th>
-                  <th class="col-next">Next Action</th>
-                  <th class="col-actions">Actions</th>
+                  <th class="col-claim">Claim</th>
+                  <th class="col-status">Status &amp; Next Step</th>
+                  <th class="col-amount text-right">Amount</th>
+                  <th class="col-actions text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -311,15 +309,12 @@ function renderClaimRowHtml(claim) {
 
   return `
     <tr class="claim-table-row claim-stage-${claim.stage} ${isSettled ? 'is-settled' : 'is-active'}" id="claim-row-${claim.id}">
-      <!-- 1. Date -->
-      <td class="cell-date">
-        <span class="claim-date-text">${formattedDate}</span>
-      </td>
-
-      <!-- 2. Provider & Method -->
-      <td class="cell-provider">
+      <!-- 1. Claim (Provider & Date & Badges) -->
+      <td class="cell-claim">
         <div class="claim-provider-name">${escapeHtml(claim.provider)}</div>
         <div class="claim-sub-tags">
+          <span class="claim-date-text">${formattedDate}</span>
+          <span class="claim-sub-dot">•</span>
           <span class="claim-sub-tag">${isProviderSubmits ? '🏢 Provider' : '👤 Included Health'}</span>
           <span class="claim-sub-dot">•</span>
           <span class="claim-sub-tag">${isCheckPayout ? '✉️ Check' : '🏦 ACH'}</span>
@@ -335,13 +330,8 @@ function renderClaimRowHtml(claim) {
         </div>
       </td>
 
-      <!-- 3. Amount -->
-      <td class="cell-amount">
-        <span class="claim-amount-mono">$${(claim.amountPaid || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-      </td>
-
-      <!-- 4. Status / Stage Dropdown -->
-      <td class="cell-stage">
+      <!-- 2. Status & Next Step -->
+      <td class="cell-status">
         <div class="stage-select-wrap">
           <select class="stage-pill ${claim.stage}" 
                   onchange="quickUpdateClaimStage('${claim.id}', this.value)"
@@ -353,12 +343,8 @@ function renderClaimRowHtml(claim) {
             <option value="settled" ${claim.stage === 'settled' ? 'selected' : ''}>⚪ Settled</option>
           </select>
         </div>
-      </td>
-
-      <!-- 5. Next Action -->
-      <td class="cell-next">
         ${isSettled ? `
-          <span class="settled-reconciled-hint">✓ Reconciled in Monarch</span>
+          <div class="settled-reconciled-hint">✓ Reconciled in Monarch</div>
         ` : `
           <div class="active-next-action" title="${escapeHtml(nextStepText)}">
             <span class="next-action-arrow">↳</span>
@@ -367,8 +353,13 @@ function renderClaimRowHtml(claim) {
         `}
       </td>
 
-      <!-- 6. Actions -->
-      <td class="cell-actions">
+      <!-- 3. Amount -->
+      <td class="cell-amount text-right">
+        <span class="claim-amount-mono">$${(claim.amountPaid || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+      </td>
+
+      <!-- 4. Actions -->
+      <td class="cell-actions text-right">
         <div class="claim-actions-cluster">
           ${!isSettled ? `
             <button class="claim-row-action-btn btn-settle" onclick="quickSettleClaim('${claim.id}')" title="Mark Settled in Monarch">
