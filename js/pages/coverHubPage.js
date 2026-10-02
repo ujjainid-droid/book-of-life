@@ -44,7 +44,7 @@ function renderCoverHubPage() {
       <div class="cover-welcome-banner">
         <div class="welcome-banner-left">
           <div class="welcome-banner-greeting">
-            <span class="greeting-symbol">🪻</span>
+            <span class="greeting-symbol">🌿</span>
             <div>
               <h2 class="welcome-title">The Sanctuary Index</h2>
               <span class="welcome-subtitle">Quiet headspace, what's on deck, and where everything lives</span>
@@ -62,7 +62,7 @@ function renderCoverHubPage() {
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="pin" style="color: #7C6EE6; width: 17px; height: 17px;"></i>
+              <i data-lucide="pin" style="color: #3D5A45; width: 17px; height: 17px;"></i>
               Top of Mind Scratchpad
             </h3>
             <span class="card-sub-muted">Low-friction mental capture &bull; Split into Active Focus vs. Parking Lot</span>
@@ -165,14 +165,14 @@ function renderCoverHubPage() {
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="layers" style="color: #7C6EE6; width: 17px; height: 17px;"></i>
+              <i data-lucide="layers" style="color: #3D5A45; width: 17px; height: 17px;"></i>
               Where Info Lives
             </h3>
             <span class="card-sub-muted">
               A calm map of your notes, tools, and docs &bull; Streamlining one area at a time
             </span>
           </div>
-          <button type="button" class="btn btn-sm" onclick="openTopicAuditModal()" style="font-size: 0.78rem; padding: 5px 14px; background: rgba(124, 110, 230, 0.12); color: #5B21B6; border: 1px solid rgba(124, 110, 230, 0.25); border-radius: var(--radius-full); font-weight: 600; cursor: pointer;">
+          <button type="button" class="btn btn-sm" onclick="openTopicAuditModal()" style="font-size: 0.78rem; padding: 5px 14px; background: rgba(61, 90, 69, 0.12); color: #1C4427; border: 1px solid rgba(61, 90, 69, 0.25); border-radius: var(--radius-full); font-weight: 600; cursor: pointer;">
             <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
             <span>+ Add Topic</span>
           </button>
@@ -248,7 +248,7 @@ function renderCoverHubPage() {
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="sparkles" style="color: #7C6EE6; width: 17px; height: 17px;"></i>
+              <i data-lucide="sparkles" style="color: #3D5A45; width: 17px; height: 17px;"></i>
               Habit Presets Repository
             </h3>
             <span class="card-sub-muted">Tap any preset to instantly add it to your daily tracking stack</span>
@@ -405,7 +405,7 @@ function openTopicAuditModal(editId = null) {
 
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
           <button type="button" class="btn btn-secondary" onclick="closeTopicAuditModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" style="background: #7C6EE6; border-color: #7C6EE6;">${audit ? 'Save Changes' : 'Add Topic'}</button>
+          <button type="submit" class="btn btn-primary" style="background: #3D5A45; border-color: #3D5A45;">${audit ? 'Save Changes' : 'Add Topic'}</button>
         </div>
       </form>
     </div>
