@@ -522,7 +522,7 @@ function renderZLogTimeline() {
     <!-- Search Toolbar -->
     <div class="zlog-toolbar" style="margin-bottom: 12px;">
       <div class="zlog-search-row">
-        <i data-lucide="search" style="width: 16px; height: 16px; color: var(--text-muted);"></i>
+        <i data-lucide="search" style="width: 16px; height: 16px; color: var(--primary);"></i>
         <input 
           type="text" 
           class="zlog-search-input" 

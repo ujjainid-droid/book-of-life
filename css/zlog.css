@@ -466,15 +466,15 @@
 
 /* Search & Filter Toolbar */
 .zlog-toolbar {
-  background: var(--bg-card);
+  background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 12px 16px;
-  margin-bottom: 1.25rem;
+  padding: 10px 14px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
 .zlog-search-row {
@@ -485,19 +485,20 @@
 
 .zlog-search-input {
   flex: 1;
-  background: var(--bg-surface);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 7px 12px;
   font-size: 0.82rem;
   color: var(--text-primary);
   outline: none;
-  transition: border var(--transition-fast);
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .zlog-search-input:focus {
   border-color: var(--primary);
-  background: var(--bg-card);
+  box-shadow: 0 0 0 2px var(--primary-light);
 }
 
 .zlog-filter-chips {
@@ -970,12 +971,12 @@
    5. Month Jump Navigation Bar (Option 1: Clean Dual Dropdowns)
    ========================================================================== */
 .zlog-month-nav-card.zlog-dual-dropdown-card {
-  background: var(--bg-card);
+  background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
   padding: 8px 14px;
   margin-bottom: 1.25rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1002,7 +1003,7 @@
 .zlog-dropdown-label {
   font-size: 0.70rem;
   font-weight: 700;
-  color: var(--text-muted);
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
@@ -1010,7 +1011,7 @@
 }
 
 .zlog-picker-select {
-  background: var(--bg-surface);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
   padding: 5px 10px;
@@ -1024,10 +1025,11 @@
   white-space: nowrap;
   max-width: 140px;
   text-overflow: ellipsis;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .zlog-picker-select:hover {
-  border-color: var(--border-strong);
+  border-color: var(--primary-border);
   background: var(--bg-surface-hover);
 }
 
@@ -1044,7 +1046,7 @@
 }
 
 .zlog-nav-action-btn {
-  background: var(--bg-surface);
+  background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
   padding: 4px 8px;
@@ -1055,11 +1057,13 @@
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .zlog-nav-action-btn:hover {
   background: var(--bg-surface-hover);
-  color: var(--text-primary);
+  color: var(--primary);
+  border-color: var(--primary-border);
 }
 
 @media (max-width: 520px) {
