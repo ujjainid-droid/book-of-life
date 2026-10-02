@@ -162,7 +162,7 @@ class StorageManager {
       // Cover Page: Top of Mind Scratchpad (Now vs. Later)
       coverTopMind: {
         now: [
-          { id: 'tm-1', text: 'Abbey Yung 4-week hair wash & rest protocol' },
+          { id: 'tm-1', text: 'AY 4-week hair wash & rest protocol' },
           { id: 'tm-2', text: 'Included Health claims audit & superbill settlement' },
           { id: 'tm-3', text: 'Skincare routine consolidation & product audit' }
         ],
@@ -1600,6 +1600,17 @@ class StorageManager {
     }
     if (!Array.isArray(this.data.coverTopMind.now)) this.data.coverTopMind.now = [];
     if (!Array.isArray(this.data.coverTopMind.later)) this.data.coverTopMind.later = [];
+    // Auto-update legacy Abbey Yung naming to AY
+    this.data.coverTopMind.now.forEach(item => {
+      if (item && item.text && item.text.includes('Abbey Yung')) {
+        item.text = item.text.replace(/Abbey Yung/g, 'AY');
+      }
+    });
+    this.data.coverTopMind.later.forEach(item => {
+      if (item && item.text && item.text.includes('Abbey Yung')) {
+        item.text = item.text.replace(/Abbey Yung/g, 'AY');
+      }
+    });
     return this.data.coverTopMind;
   }
 

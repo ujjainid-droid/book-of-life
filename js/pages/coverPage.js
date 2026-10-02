@@ -1581,7 +1581,7 @@ function renderHairCareCard(dateStr, isToday) {
           </div>
           <h3 class="hair-care-heading" style="display: flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 700; margin-top: 4px;">
             <i data-lucide="sparkles" style="color: var(--margo-a); width: 17px; height: 17px;"></i>
-            Abbey Yung Hair Routine
+            AY Hair Routine
           </h3>
           <span class="card-sub-muted">${routine.subtitle}</span>
         </div>
