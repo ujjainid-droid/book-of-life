@@ -237,16 +237,10 @@ function renderCoverHubPage() {
                   </div>
                 </div>
 
-                <!-- Goal / Next Step -->
-                <div class="audit-goal-block">
-                  <span class="audit-meta-label">How to simplify:</span>
-                  <p class="audit-goal-text">${escapeHtml(audit.goal || 'No simplification note set yet.')}</p>
-                </div>
-
                 <!-- Footer Actions -->
                 <div class="audit-card-footer">
                   <button type="button" class="audit-btn-edit" onclick="editTopicAuditAction('${audit.id}')">
-                    <span>✏️ Edit Notes &amp; Tools</span>
+                    <span>✏️ Edit</span>
                   </button>
                   <button type="button" class="audit-btn-delete" onclick="deleteTopicAuditAction('${audit.id}')" title="Delete topic">
                     <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
@@ -386,7 +380,6 @@ function openTopicAuditModal(editId = null) {
   const topicVal = audit ? audit.topic : '';
   const toolsVal = audit && Array.isArray(audit.tools) ? audit.tools.join(', ') : '';
   const statusVal = audit ? audit.status : 'in_progress';
-  const goalVal = audit ? audit.goal : '';
 
   modal.innerHTML = `
     <div class="modal-card" style="max-width: 480px;">
@@ -418,11 +411,6 @@ function openTopicAuditModal(editId = null) {
           </select>
         </div>
 
-        <div class="form-group">
-          <label class="form-label">How to Simplify / Next Step</label>
-          <textarea class="form-input" id="audit-form-goal" rows="3" placeholder="What is the plan to simplify this? e.g. Consolidate notes into Margo; archive messy screenshot notes...">${escapeHtml(goalVal)}</textarea>
-        </div>
-
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
           <button type="button" class="btn btn-secondary" onclick="closeTopicAuditModal()">Cancel</button>
           <button type="submit" class="btn btn-primary" style="background: #3D5A45; border-color: #3D5A45;">${audit ? 'Save Changes' : 'Add Topic'}</button>
@@ -448,14 +436,13 @@ function submitTopicAuditModal(event) {
   const topic = document.getElementById('audit-form-topic').value.trim();
   const tools = document.getElementById('audit-form-tools').value.split(',').map(s => s.trim()).filter(Boolean);
   const status = document.getElementById('audit-form-status').value;
-  const goal = document.getElementById('audit-form-goal').value.trim();
 
   if (typeof storage !== 'undefined') {
     if (editingTopicAuditId) {
-      storage.updateCoverTopicAudit(editingTopicAuditId, { topic, tools, status, goal });
+      storage.updateCoverTopicAudit(editingTopicAuditId, { topic, tools, status });
       if (typeof showToast === 'function') showToast(`Updated "${topic}"`);
     } else {
-      storage.addCoverTopicAudit({ topic, tools, status, goal });
+      storage.addCoverTopicAudit({ topic, tools, status });
       if (typeof showToast === 'function') showToast(`Added "${topic}"`);
     }
   }
