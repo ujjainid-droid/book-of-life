@@ -3966,8 +3966,8 @@
 
 .header-nav-tab.active {
   background: var(--bg-card);
-  color: #0D9488;
-  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.14);
+  color: #7C6EE6;
+  box-shadow: 0 1px 4px rgba(124, 110, 230, 0.16);
 }
 
 .cover-hub-container {
@@ -3980,17 +3980,17 @@
   padding-bottom: 40px;
 }
 
-/* Mantra Strip (Matching Operating Philosophy) */
+/* Mantra Strip — Thermal Bath & Lavender Steam Progression */
 .cover-mantra-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  border: 1px solid rgba(124, 110, 230, 0.18);
   border-radius: var(--radius-lg);
   padding: 12px 18px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 10px rgba(124, 110, 230, 0.04);
 }
 
 .mantra-pill {
@@ -4013,70 +4013,74 @@
   transform: translateY(-1px);
 }
 
+/* 1. River Pebble Stone */
 .mantra-simple {
-  background: #E8F5E9;
-  color: #1B5E20;
-  border: 1px solid #C8E6C9;
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid #CBD5E1;
 }
 
+/* 2. Cool Periwinkle Steam */
 .mantra-visible {
-  background: #E0F2F1;
-  color: #004D40;
-  border: 1px solid #B2DFDB;
+  background: #EEF2FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
 }
 
+/* 3. Frosted Lavender Mist */
 .mantra-next {
-  background: #E0F7FA;
-  color: #006064;
-  border: 1px solid #B2EBF2;
+  background: #F5F3FF;
+  color: #5B21B6;
+  border: 1px solid #DDD6FE;
 }
 
+/* 4. Deep Mineral Iris */
 .mantra-done {
-  background: #CCFBF1;
-  color: #0F766E;
-  border: 1px solid #99F6E4;
+  background: #EDE9FE;
+  color: #4338CA;
+  border: 1px solid #C4B5FD;
 }
 
 [data-theme="dark"] .mantra-simple {
-  background: rgba(46, 125, 50, 0.22);
-  color: #A5D6A7;
-  border-color: rgba(46, 125, 50, 0.35);
+  background: rgba(100, 116, 139, 0.22);
+  color: #CBD5E1;
+  border-color: rgba(100, 116, 139, 0.35);
 }
 
 [data-theme="dark"] .mantra-visible {
-  background: rgba(0, 105, 92, 0.22);
-  color: #80CBC4;
-  border-color: rgba(0, 105, 92, 0.35);
+  background: rgba(99, 102, 241, 0.22);
+  color: #C7D2FE;
+  border-color: rgba(99, 102, 241, 0.35);
 }
 
 [data-theme="dark"] .mantra-next {
-  background: rgba(0, 131, 143, 0.22);
-  color: #80DEEA;
-  border-color: rgba(0, 131, 143, 0.35);
+  background: rgba(139, 92, 246, 0.22);
+  color: #DDD6FE;
+  border-color: rgba(139, 92, 246, 0.35);
 }
 
 [data-theme="dark"] .mantra-done {
-  background: rgba(15, 118, 110, 0.22);
-  color: #99F6E4;
-  border-color: rgba(15, 118, 110, 0.35);
+  background: rgba(124, 110, 230, 0.25);
+  color: #E0E7FF;
+  border-color: rgba(124, 110, 230, 0.35);
 }
 
-/* Cover Welcome Banner — Calming Spa Gradient */
+/* Cover Welcome Banner — Lavender Steam & Mineral Mist Gradient */
 .cover-welcome-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: linear-gradient(135deg, rgba(204, 251, 241, 0.5) 0%, rgba(240, 253, 250, 0.85) 45%, var(--bg-card) 100%);
-  border: 1px solid rgba(13, 148, 136, 0.22);
+  background: linear-gradient(135deg, rgba(237, 233, 254, 0.55) 0%, rgba(245, 243, 255, 0.85) 45%, var(--bg-card) 100%);
+  border: 1px solid rgba(124, 110, 230, 0.22);
   border-radius: var(--radius-lg);
   padding: 18px 24px;
-  box-shadow: 0 2px 12px rgba(13, 148, 136, 0.06);
+  box-shadow: 0 2px 12px rgba(124, 110, 230, 0.06);
 }
 
 [data-theme="dark"] .cover-welcome-banner {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.16) 0%, rgba(15, 118, 110, 0.08) 50%, var(--bg-card) 100%);
-  border-color: rgba(13, 148, 136, 0.3);
+  background: linear-gradient(135deg, rgba(124, 110, 230, 0.16) 0%, rgba(99, 102, 241, 0.08) 50%, var(--bg-card) 100%);
+  border-color: rgba(124, 110, 230, 0.3);
 }
 
 .welcome-banner-left {
@@ -4116,25 +4120,25 @@
   align-items: center;
   gap: 8px;
   padding: 9px 18px;
-  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+  background: linear-gradient(135deg, #7C6EE6 0%, #6366F1 100%);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-full);
   font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.28);
+  box-shadow: 0 4px 14px rgba(124, 110, 230, 0.28);
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
 
 .btn-jump-today:hover {
-  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
+  background: linear-gradient(135deg, #8B7CF6 0%, #7C6EE6 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.38);
+  box-shadow: 0 6px 18px rgba(124, 110, 230, 0.38);
 }
 
-/* Top of Mind Scratchpad — Spa Calm */
+/* Top of Mind Scratchpad — Mineral Iris & River Pebble */
 .top-mind-pads-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -4144,21 +4148,21 @@
 
 .top-mind-pad {
   background: var(--bg-card);
-  border: 1px solid rgba(13, 148, 136, 0.16);
+  border: 1px solid rgba(124, 110, 230, 0.16);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.04);
+  box-shadow: 0 2px 10px rgba(124, 110, 230, 0.04);
 }
 
 .pad-now {
-  border-top: 3px solid #0D9488;
+  border-top: 3px solid #7C6EE6;
 }
 
 .pad-later {
-  border-top: 3px solid #14B8A6;
+  border-top: 3px solid #64748B;
 }
 
 .pad-header {
@@ -4182,27 +4186,27 @@
 }
 
 .badge-now {
-  background: #CCFBF1;
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: #EDE9FE;
+  color: #5B21B6;
+  border: 1px solid rgba(124, 110, 230, 0.25);
 }
 
 [data-theme="dark"] .badge-now {
-  background: rgba(20, 184, 166, 0.22);
-  color: #5EEAD4;
-  border-color: rgba(20, 184, 166, 0.35);
+  background: rgba(124, 110, 230, 0.22);
+  color: #DDD6FE;
+  border-color: rgba(124, 110, 230, 0.35);
 }
 
 .badge-later {
-  background: #E0F2FE;
-  color: #0369A1;
-  border: 1px solid rgba(14, 165, 233, 0.25);
+  background: #F1F5F9;
+  color: #334155;
+  border: 1px solid rgba(100, 116, 139, 0.25);
 }
 
 [data-theme="dark"] .badge-later {
-  background: rgba(14, 165, 233, 0.22);
-  color: #7DD3FC;
-  border-color: rgba(14, 165, 233, 0.35);
+  background: rgba(100, 116, 139, 0.22);
+  color: #CBD5E1;
+  border-color: rgba(100, 116, 139, 0.35);
 }
 
 .pad-subtitle {
@@ -4238,12 +4242,12 @@
 }
 
 .pad-input:focus {
-  border-color: #0D9488;
+  border-color: #7C6EE6;
 }
 
 .pad-add-btn {
   padding: 8px 14px;
-  background: #0D9488;
+  background: #7C6EE6;
   color: #ffffff;
   border: none;
   border-radius: var(--radius-md);
@@ -4255,7 +4259,7 @@
 }
 
 .pad-add-btn:hover {
-  background: #0F766E;
+  background: #6366F1;
 }
 
 .pad-items-list {
@@ -4279,17 +4283,17 @@
 
 .pad-item:hover {
   background: var(--bg-surface-hover);
-  border-color: rgba(13, 148, 136, 0.3);
+  border-color: rgba(124, 110, 230, 0.3);
 }
 
 .pad-item-bullet {
-  color: #0D9488;
+  color: #7C6EE6;
   font-size: 1.1rem;
   line-height: 1;
 }
 
 .pad-later .pad-item-bullet {
-  color: #14B8A6;
+  color: #64748B;
 }
 
 .pad-item-text {
@@ -4323,13 +4327,13 @@
 }
 
 .pad-shift-btn:hover {
-  color: #0D9488;
-  border-color: #0D9488;
+  color: #7C6EE6;
+  border-color: #7C6EE6;
 }
 
 .pad-shift-btn.shift-back:hover {
-  color: #0D9488;
-  border-color: #0D9488;
+  color: #64748B;
+  border-color: #64748B;
 }
 
 .pad-delete-btn {
@@ -4371,19 +4375,19 @@
 
 .topic-audit-card {
   background: var(--bg-card);
-  border: 1px solid rgba(13, 148, 136, 0.16);
+  border: 1px solid rgba(124, 110, 230, 0.16);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.04);
+  box-shadow: 0 2px 10px rgba(124, 110, 230, 0.04);
   transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .topic-audit-card:hover {
-  border-color: rgba(13, 148, 136, 0.35);
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.08);
+  border-color: rgba(124, 110, 230, 0.35);
+  box-shadow: 0 4px 14px rgba(124, 110, 230, 0.08);
   transform: translateY(-1px);
 }
 
@@ -4410,7 +4414,7 @@
 }
 
 .status-streamlined {
-  background: #D1FAE5;
+  background: #ECFDF5;
   color: #065F46;
   border: 1px solid rgba(16, 185, 129, 0.25);
 }
@@ -4422,15 +4426,15 @@
 }
 
 .status-in-progress {
-  background: #CCFBF1;
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: #EDE9FE;
+  color: #5B21B6;
+  border: 1px solid rgba(124, 110, 230, 0.25);
 }
 
 [data-theme="dark"] .status-in-progress {
-  background: rgba(13, 148, 136, 0.22);
-  color: #5EEAD4;
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(124, 110, 230, 0.22);
+  color: #DDD6FE;
+  border-color: rgba(124, 110, 230, 0.35);
 }
 
 .status-disorganized {
@@ -4583,7 +4587,7 @@
 }
 
 .audit-btn-edit:hover {
-  color: #0D9488;
+  color: #7C6EE6;
 }
 
 .audit-btn-delete {
@@ -4605,9 +4609,9 @@
 
 .cover-hub-container .margo-framework-shelf,
 .cover-hub-container .habit-presets-shelf {
-  border: 1px solid rgba(13, 148, 136, 0.16);
+  border: 1px solid rgba(124, 110, 230, 0.16);
   border-radius: var(--radius-lg);
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.04);
+  box-shadow: 0 2px 10px rgba(124, 110, 230, 0.04);
 }
 
 .presets-shelf-pills {
