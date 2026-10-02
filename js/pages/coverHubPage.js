@@ -44,15 +44,15 @@ function renderCoverHubPage() {
       <div class="cover-welcome-banner">
         <div class="welcome-banner-left">
           <div class="welcome-banner-greeting">
-            <span class="greeting-symbol">🧭</span>
+            <span class="greeting-symbol">🌿</span>
             <div>
-              <h2 class="welcome-title">Executive Cover &amp; System Compass</h2>
-              <span class="welcome-subtitle">Macro clarity, top-of-mind focus, and domain streamlining</span>
+              <h2 class="welcome-title">The Sanctuary Index</h2>
+              <span class="welcome-subtitle">Quiet headspace, what's on deck, and where everything lives</span>
             </div>
           </div>
         </div>
-        <button type="button" class="btn-jump-today" onclick="switchAppView('sanctuary')" title="Jump into today's execution cockpit">
-          <span>Today's Daily Cockpit</span>
+        <button type="button" class="btn-jump-today" onclick="switchAppView('sanctuary')" title="Jump into today's sanctuary">
+          <span>Today's Sanctuary</span>
           <span class="jump-arrow">☀️ &rarr;</span>
         </button>
       </div>
@@ -160,21 +160,21 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- 3. Where Info Lives: Domain-by-Domain Streamlining Audit -->
+      <!-- 3. Where Info Lives: Life Areas & Tool Map -->
       <div class="cover-card topic-audits-card" id="section-where-info-lives">
         <div class="card-title-row">
           <div class="title-with-desc">
             <h3>
-              <i data-lucide="compass" style="color: var(--margo-m); width: 17px; height: 17px;"></i>
-              Where Info Lives (Domain Streamlining Hub)
+              <i data-lucide="layers" style="color: var(--primary); width: 17px; height: 17px;"></i>
+              Where Info Lives
             </h3>
             <span class="card-sub-muted">
-              Audit tools across your life areas (Notes, Margo, Drive, Things 3) &bull; Streamline one by one
+              A calm map of your notes, tools, and docs &bull; Streamlining one area at a time
             </span>
           </div>
           <button type="button" class="btn btn-secondary btn-sm" onclick="openTopicAuditModal()" style="font-size: 0.78rem; padding: 5px 12px;">
             <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
-            <span>+ Add Domain</span>
+            <span>+ Add Topic</span>
           </button>
         </div>
 
@@ -184,10 +184,10 @@ function renderCoverHubPage() {
             let statusLabel = '🟡 In Progress';
             if (audit.status === 'streamlined') {
               statusBadgeClass = 'status-streamlined';
-              statusLabel = '✅ Streamlined';
+              statusLabel = '✅ Organized';
             } else if (audit.status === 'disorganized') {
               statusBadgeClass = 'status-disorganized';
-              statusLabel = '⚠️ Disorganized';
+              statusLabel = '⚠️ Cluttered';
             }
 
             return `
@@ -219,16 +219,16 @@ function renderCoverHubPage() {
 
                 <!-- Goal / Next Step -->
                 <div class="audit-goal-block">
-                  <span class="audit-meta-label">Streamlining Goal:</span>
-                  <p class="audit-goal-text">${escapeHtml(audit.goal || 'No goal set yet.')}</p>
+                  <span class="audit-meta-label">How to simplify:</span>
+                  <p class="audit-goal-text">${escapeHtml(audit.goal || 'No simplification note set yet.')}</p>
                 </div>
 
                 <!-- Footer Actions -->
                 <div class="audit-card-footer">
                   <button type="button" class="audit-btn-edit" onclick="editTopicAuditAction('${audit.id}')">
-                    <span>✏️ Edit Goal &amp; Tools</span>
+                    <span>✏️ Edit Notes &amp; Tools</span>
                   </button>
-                  <button type="button" class="audit-btn-delete" onclick="deleteTopicAuditAction('${audit.id}')" title="Delete domain audit">
+                  <button type="button" class="audit-btn-delete" onclick="deleteTopicAuditAction('${audit.id}')" title="Delete topic">
                     <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
                   </button>
                 </div>
@@ -371,18 +371,18 @@ function openTopicAuditModal(editId = null) {
   modal.innerHTML = `
     <div class="modal-card" style="max-width: 480px;">
       <div class="modal-header">
-        <h3>${audit ? '✏️ Edit Domain Audit' : '🧭 Audit New Domain'}</h3>
+        <h3>${audit ? '✏️ Edit Topic' : '🌿 Add Topic'}</h3>
         <button class="icon-btn" onclick="closeTopicAuditModal()"><i data-lucide="x"></i></button>
       </div>
 
       <form onsubmit="submitTopicAuditModal(event)">
         <div class="form-group">
-          <label class="form-label">Life Domain / Topic</label>
-          <input type="text" class="form-input" id="audit-form-topic" placeholder="e.g. Skincare, Finances, Wardrobe, Kids Medical..." value="${escapeHtml(topicVal)}" required>
+          <label class="form-label">Topic / Life Area</label>
+          <input type="text" class="form-input" id="audit-form-topic" placeholder="e.g. Skincare, Kids Health, Wardrobe, Home Logistics..." value="${escapeHtml(topicVal)}" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Tools Used Currently (Comma Separated)</label>
+          <label class="form-label">Where It Lives Currently (Comma Separated)</label>
           <input type="text" class="form-input" id="audit-form-tools" placeholder="e.g. Apple Notes, Margo, Google Drive, Things 3..." value="${escapeHtml(toolsVal)}" required>
           <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; display: block;">
             Examples: Apple Notes, Margo, Things 3, Google Drive, iCloud, Email, Photos
@@ -390,22 +390,22 @@ function openTopicAuditModal(editId = null) {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Streamlining Status</label>
+          <label class="form-label">Status</label>
           <select class="form-select" id="audit-form-status">
-            <option value="in_progress" ${statusVal === 'in_progress' ? 'selected' : ''}>🟡 In Progress (Streamlining)</option>
-            <option value="streamlined" ${statusVal === 'streamlined' ? 'selected' : ''}>✅ Streamlined (Single source of truth)</option>
-            <option value="disorganized" ${statusVal === 'disorganized' ? 'selected' : ''}>⚠️ Disorganized (Needs cleanup)</option>
+            <option value="in_progress" ${statusVal === 'in_progress' ? 'selected' : ''}>🟡 In Progress (Untangling &amp; organizing)</option>
+            <option value="streamlined" ${statusVal === 'streamlined' ? 'selected' : ''}>✅ Organized (Clear &amp; simplified)</option>
+            <option value="disorganized" ${statusVal === 'disorganized' ? 'selected' : ''}>⚠️ Cluttered (Needs cleanup)</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Streamlining Goal &amp; Next Action</label>
-          <textarea class="form-input" id="audit-form-goal" rows="3" placeholder="What is the plan to simplify this? e.g. Consolidate notes into Margo; delete duplicate docs...">${escapeHtml(goalVal)}</textarea>
+          <label class="form-label">How to Simplify / Next Step</label>
+          <textarea class="form-input" id="audit-form-goal" rows="3" placeholder="What is the plan to simplify this? e.g. Consolidate notes into Margo; archive messy screenshot notes...">${escapeHtml(goalVal)}</textarea>
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
           <button type="button" class="btn btn-secondary" onclick="closeTopicAuditModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">${audit ? 'Save Changes' : 'Add Domain'}</button>
+          <button type="submit" class="btn btn-primary">${audit ? 'Save Changes' : 'Add Topic'}</button>
         </div>
       </form>
     </div>
@@ -436,7 +436,7 @@ function submitTopicAuditModal(event) {
       if (typeof showToast === 'function') showToast(`Updated "${topic}"`);
     } else {
       storage.addCoverTopicAudit({ topic, tools, status, goal });
-      if (typeof showToast === 'function') showToast(`Added domain "${topic}"`);
+      if (typeof showToast === 'function') showToast(`Added "${topic}"`);
     }
   }
 
@@ -451,11 +451,11 @@ function editTopicAuditAction(id) {
 window.editTopicAuditAction = editTopicAuditAction;
 
 function deleteTopicAuditAction(id) {
-  if (confirm('Delete this domain audit from your system compass?')) {
+  if (confirm('Delete this topic from Where Info Lives?')) {
     if (typeof storage !== 'undefined') {
       storage.deleteCoverTopicAudit(id);
       renderCoverHubPage();
-      if (typeof showToast === 'function') showToast('Domain removed');
+      if (typeof showToast === 'function') showToast('Topic removed');
     }
   }
 }
