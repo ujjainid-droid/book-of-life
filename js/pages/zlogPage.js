@@ -1104,28 +1104,40 @@ function renderZLogCalendar() {
         <div class="zlog-cal-legend-title">Day Rating Levels &amp; Behavioral Key</div>
         <div class="zlog-cal-legend-grid">
           <div class="zlog-cal-legend-item">
-            <span class="zlog-rating-pill level-5" style="font-size: 0.68rem; padding: 2px 6px;">🌟 Level 5</span>
-            <div><strong>Great Day:</strong> Peak calm, collaborative &amp; high momentum</div>
+            <span class="zlog-rating-pill level-5">🌟 Level 5</span>
+            <div class="zlog-cal-legend-text">
+              <strong>Great Day:</strong> <span>Peak calm, collaborative &amp; high momentum</span>
+            </div>
           </div>
           <div class="zlog-cal-legend-item">
-            <span class="zlog-rating-pill level-4" style="font-size: 0.68rem; padding: 2px 6px;">🟢 Level 4</span>
-            <div><strong>Good Day:</strong> Solid standard positive day, smooth routines</div>
+            <span class="zlog-rating-pill level-4">🟢 Level 4</span>
+            <div class="zlog-cal-legend-text">
+              <strong>Good Day:</strong> <span>Solid standard positive day, smooth routines</span>
+            </div>
           </div>
           <div class="zlog-cal-legend-item">
-            <span class="zlog-rating-pill level-3" style="font-size: 0.68rem; padding: 2px 6px;">🟡 Level 3</span>
-            <div><strong>Almost Good:</strong> Minor bumps or whiny, recovered well</div>
+            <span class="zlog-rating-pill level-3">🌊 Level 3</span>
+            <div class="zlog-cal-legend-text">
+              <strong>Almost Good:</strong> <span>Minor bumps or whiny, recovered well</span>
+            </div>
           </div>
           <div class="zlog-cal-legend-item">
-            <span class="zlog-rating-pill level-2" style="font-size: 0.68rem; padding: 2px 6px;">🟠 Level 2</span>
-            <div><strong>Difficult:</strong> Behavioral resistance, noticeable friction</div>
+            <span class="zlog-rating-pill level-2">🟠 Level 2</span>
+            <div class="zlog-cal-legend-text">
+              <strong>Difficult:</strong> <span>Behavioral resistance, noticeable friction</span>
+            </div>
           </div>
           <div class="zlog-cal-legend-item">
-            <span class="zlog-rating-pill level-1" style="font-size: 0.68rem; padding: 2px 6px;">🔴 Level 1</span>
-            <div><strong>Rough Day:</strong> Severe escalation, meltdowns, or crisis</div>
+            <span class="zlog-rating-pill level-1">🔴 Level 1</span>
+            <div class="zlog-cal-legend-text">
+              <strong>Rough Day:</strong> <span>Severe escalation, meltdowns, or crisis</span>
+            </div>
           </div>
           <div class="zlog-cal-legend-item">
-            <span class="zlog-aggression-pill" style="font-size: 0.65rem; padding: 2px 6px;">⚡ Aggression</span>
-            <div>Acute physical aggression or meltdown incident reported</div>
+            <span class="zlog-aggression-pill">⚡ Aggression</span>
+            <div class="zlog-cal-legend-text">
+              <strong>Meltdown / Aggression:</strong> <span>Acute physical aggression or meltdown incident reported</span>
+            </div>
           </div>
         </div>
       </div>

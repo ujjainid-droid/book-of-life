@@ -220,6 +220,9 @@
 }
 
 .zlog-aggression-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 0.7rem;
   font-weight: 700;
   padding: 2px 8px;
@@ -227,6 +230,8 @@
   background: rgba(239, 68, 68, 0.2);
   color: #DC2626;
   border: 1px solid rgba(239, 68, 68, 0.4);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Daily Meds Strip */
@@ -638,6 +643,8 @@
   font-weight: 700;
   padding: 2px 8px;
   border-radius: var(--radius-full);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .zlog-rating-pill.level-5 {
@@ -2262,11 +2269,12 @@
 
 /* Calendar Legend Card */
 .zlog-cal-legend-card {
-  background: var(--bg-card);
+  background: var(--bg-surface);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 12px 14px;
-  box-shadow: var(--shadow-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  margin-top: 1rem;
 }
 
 .zlog-cal-legend-title {
@@ -2274,26 +2282,41 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--text-muted);
-  margin-bottom: 8px;
+  color: var(--primary);
+  margin-bottom: 10px;
 }
 
 .zlog-cal-legend-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px 18px;
 }
 
 .zlog-cal-legend-item {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.74rem;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  line-height: 1.4;
   color: var(--text-secondary);
 }
 
-.zlog-cal-legend-item strong {
+.zlog-cal-legend-item .zlog-rating-pill,
+.zlog-cal-legend-item .zlog-aggression-pill {
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  padding: 2px 7px;
+  margin-top: 1px;
+}
+
+.zlog-cal-legend-text {
+  flex: 1;
+}
+
+.zlog-cal-legend-text strong {
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 /* Responsive Styles for Calendar */
