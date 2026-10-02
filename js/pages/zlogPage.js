@@ -497,7 +497,7 @@ function renderZLogTimeline() {
         </div>
 
         <div class="zlog-dropdown-item">
-          <label class="zlog-dropdown-label" for="zlog-month-picker">Jump to Month:</label>
+          <label class="zlog-dropdown-label" for="zlog-month-picker">Month:</label>
           <select class="zlog-picker-select" id="zlog-month-picker" onchange="if(this.value) jumpToMonth(this.value)">
             <option value="" disabled selected>Select month...</option>
             ${monthOptionsList.join('')}

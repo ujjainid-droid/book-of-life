@@ -973,28 +973,31 @@
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 10px 16px;
+  padding: 8px 16px;
   margin-bottom: 1.25rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .zlog-dropdown-controls {
   display: flex;
   align-items: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  flex: 1;
+  gap: 16px;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .zlog-dropdown-item {
   display: flex;
   align-items: center;
   gap: 7px;
+  flex-shrink: 0;
 }
 
 .zlog-dropdown-label {
@@ -1010,7 +1013,7 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 6px 12px;
+  padding: 5px 12px;
   font-family: var(--font-sans);
   font-size: 0.80rem;
   font-weight: 600;
@@ -1018,6 +1021,7 @@
   outline: none;
   cursor: pointer;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .zlog-picker-select:hover {
@@ -1034,6 +1038,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .zlog-nav-action-btn {
