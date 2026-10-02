@@ -199,7 +199,23 @@ function renderClaimsPage() {
         </form>
       </div>
 
-      <!-- 3. Filter Navigation Pills -->
+      <!-- 3. Weekly Maintenance Routine Reminder -->
+      <div class="claims-routine-card">
+        <div class="claims-routine-icon">
+          <i data-lucide="calendar-clock" style="width:20px;height:20px;"></i>
+        </div>
+        <div class="claims-routine-content">
+          <h4>The 2-Minute Sunday Review (Tied to Monarch)</h4>
+          <p>
+            <strong>1. Provider Courtesy Claims:</strong> If insurance approved, switch to <em>Check/Deposit Due</em>.<br>
+            <strong>2. Direct Deposit (ACH):</strong> Match incoming deposit in Monarch → Click <strong>Mark Settled</strong>.<br>
+            <strong>3. Paper Check:</strong> Mobile-deposit check when received in mail → Click <strong>Mark Settled</strong>.<br>
+            <strong>4. Self-File / Included Health:</strong> Batch send any superbills via <strong>Copy for Included Health</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- 4. Filter Navigation Pills -->
       <div class="claims-filter-bar">
         <button class="claims-filter-pill ${activeClaimsFilter === 'all' ? 'active' : ''}" onclick="setClaimsFilter('all')">
           All (${counts.all})
@@ -221,7 +237,7 @@ function renderClaimsPage() {
         </button>
       </div>
 
-      <!-- 4. Claims Scannable Data Table (Option 3) -->
+      <!-- 5. Claims Scannable Data Table (Option 3) -->
       <div class="claims-table-card">
         ${filteredClaims.length === 0 ? `
           <div class="claims-empty-card">
@@ -246,22 +262,6 @@ function renderClaimsPage() {
             </table>
           </div>
         `}
-      </div>
-
-      <!-- 5. Weekly Maintenance Routine Reminder -->
-      <div class="claims-routine-card">
-        <div class="claims-routine-icon">
-          <i data-lucide="calendar-clock" style="width:20px;height:20px;"></i>
-        </div>
-        <div class="claims-routine-content">
-          <h4>The 2-Minute Sunday Review (Tied to Monarch)</h4>
-          <p>
-            <strong>1. Provider Courtesy Claims:</strong> If insurance approved, switch to <em>Check/Deposit Due</em>.<br>
-            <strong>2. Direct Deposit (ACH):</strong> Match incoming deposit in Monarch → Click <strong>Mark Settled</strong>.<br>
-            <strong>3. Paper Check:</strong> Mobile-deposit check when received in mail → Click <strong>Mark Settled</strong>.<br>
-            <strong>4. Self-File / Included Health:</strong> Batch send any superbills via <strong>Copy for Included Health</strong>.
-          </p>
-        </div>
       </div>
 
     </div>
