@@ -177,37 +177,32 @@ class StorageManager {
         {
           id: 'top-1',
           topic: 'Skincare & Daily Regimen',
-          tools: ['Apple Notes', 'Margo'],
-          status: 'disorganized',
-          goal: 'Consolidate active AM/PM routine into Margo; archive messy screenshot notes in Apple Notes.'
+          tools: ['Apple notes', 'margo'],
+          status: 'disorganized'
         },
         {
           id: 'top-2',
           topic: 'Hair Health Protocol',
-          tools: ['Margo', 'Photos'],
-          status: 'streamlined',
-          goal: 'Margo calendar is the single source of truth; follow daily wash/rest badge.'
+          tools: ['margo', 'Apple notes'],
+          status: 'streamlined'
         },
         {
           id: 'top-3',
           topic: 'Medical Claims & Superbills',
-          tools: ['Margo', 'Google Drive'],
-          status: 'in_progress',
-          goal: 'Download PDF directly to Drive folder → update claim status in Margo.'
+          tools: ['margo', 'Google Drive', 'emails'],
+          status: 'in_progress'
         },
         {
           id: 'top-4',
           topic: 'Child Health & Meds (Z-Log)',
-          tools: ['Margo', 'Google Drive', 'Things 3'],
-          status: 'in_progress',
-          goal: 'Z-Log daily, doctor appointment tasks go to Things 3.'
+          tools: ['margo', 'Google Drive', 'Things 3'],
+          status: 'in_progress'
         },
         {
           id: 'top-5',
           topic: 'Home Logistics & Errands',
           tools: ['Things 3', 'iCloud'],
-          status: 'streamlined',
-          goal: 'Strict rule: Keep completely out of Margo; execute directly in Things 3.'
+          status: 'streamlined'
         }
       ],
       // Weekly Reflections: { [sundayIso]: { wins: string, focus: string } }

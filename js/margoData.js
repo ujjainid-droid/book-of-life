@@ -637,4 +637,16 @@ function getDailyAffirmation(dateStr, offset = 0) {
   return SASSY_AFFIRMATIONS[index];
 }
 
+/**
+ * Where Info Lives: Potential Information Sources
+ */
+const POTENTIAL_INFO_SOURCES = [
+  { id: 'margo', label: 'margo', tagClass: 'tool-margo' },
+  { id: 'icloud', label: 'iCloud', tagClass: 'tool-icloud' },
+  { id: 'drive', label: 'Google Drive', tagClass: 'tool-drive' },
+  { id: 'things', label: 'Things 3', tagClass: 'tool-things' },
+  { id: 'email', label: 'emails', tagClass: 'tool-email' },
+  { id: 'notes', label: 'Apple notes', tagClass: 'tool-notes' }
+];
+
 

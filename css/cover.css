@@ -4459,6 +4459,77 @@
   margin-bottom: 4px;
 }
 
+/* Potential Sources Strip under Where Info Lives */
+.cover-potential-sources-strip {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--bg-surface);
+  border: 1px dashed rgba(61, 90, 69, 0.24);
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.sources-strip-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #3D5A45;
+}
+
+[data-theme="dark"] .sources-strip-label {
+  color: #8EBA99;
+}
+
+.sources-strip-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Modal Source Picker Pills */
+.source-picker-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.source-toggle-pill {
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 4px 11px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-light);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.source-toggle-pill:hover {
+  background: var(--bg-surface-hover);
+  border-color: rgba(61, 90, 69, 0.35);
+  color: var(--text-primary);
+}
+
+.source-toggle-pill.selected {
+  background: rgba(61, 90, 69, 0.14);
+  border-color: #3D5A45;
+  color: #1C4427;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .source-toggle-pill.selected {
+  background: rgba(61, 90, 69, 0.32);
+  color: #C6D8CA;
+  border-color: #5A8366;
+}
+
 .audit-tools-strip {
   display: flex;
   flex-wrap: wrap;

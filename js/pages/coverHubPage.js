@@ -198,6 +198,19 @@ function renderCoverHubPage() {
           </button>
         </div>
 
+        <!-- Potential Sources Strip -->
+        <div class="cover-potential-sources-strip">
+          <span class="sources-strip-label">Potential Sources:</span>
+          <div class="sources-strip-chips">
+            <span class="tool-tag tool-margo">margo</span>
+            <span class="tool-tag tool-icloud">iCloud</span>
+            <span class="tool-tag tool-drive">Google Drive</span>
+            <span class="tool-tag tool-things">Things 3</span>
+            <span class="tool-tag tool-email">emails</span>
+            <span class="tool-tag tool-notes">Apple notes</span>
+          </div>
+        </div>
+
         <div class="topic-audits-grid">
           ${topicAudits.map(audit => {
             let statusBadgeClass = 'status-in-progress';
@@ -395,10 +408,35 @@ function openTopicAuditModal(editId = null) {
         </div>
 
         <div class="form-group">
-          <label class="form-label">Where It Lives Currently (Comma Separated)</label>
-          <input type="text" class="form-input" id="audit-form-tools" placeholder="e.g. Apple Notes, Margo, Google Drive, Things 3..." value="${escapeHtml(toolsVal)}" required>
-          <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; display: block;">
-            Examples: Apple Notes, Margo, Things 3, Google Drive, iCloud, Email, Photos
+          <label class="form-label">Where It Lives Currently</label>
+          <div style="margin-bottom: 8px;">
+            <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-bottom: 6px;">
+              Potential Sources (tap to toggle):
+            </span>
+            <div class="source-picker-pills" id="source-picker-pills">
+              ${(typeof POTENTIAL_INFO_SOURCES !== 'undefined' ? POTENTIAL_INFO_SOURCES : [
+                { id: 'margo', label: 'margo' },
+                { id: 'icloud', label: 'iCloud' },
+                { id: 'drive', label: 'Google Drive' },
+                { id: 'things', label: 'Things 3' },
+                { id: 'email', label: 'emails' },
+                { id: 'notes', label: 'Apple notes' }
+              ]).map(src => {
+                const currentArr = audit && Array.isArray(audit.tools) ? audit.tools : [];
+                const isSelected = currentArr.some(t => t.toLowerCase() === src.label.toLowerCase());
+                return `
+                  <button type="button" 
+                          class="source-toggle-pill ${isSelected ? 'selected' : ''}" 
+                          onclick="toggleSourcePickerPill('${escapeHtml(src.label)}', this)">
+                    ${isSelected ? '✓ ' : '+ '}${escapeHtml(src.label)}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </div>
+          <input type="text" class="form-input" id="audit-form-tools" placeholder="e.g. margo, Apple notes, Google Drive..." value="${escapeHtml(toolsVal)}" required>
+          <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; display: block;">
+            Tap chips above or type custom comma-separated sources
           </span>
         </div>
 
@@ -423,6 +461,28 @@ function openTopicAuditModal(editId = null) {
   if (window.lucide) lucide.createIcons();
 }
 window.openTopicAuditModal = openTopicAuditModal;
+
+function toggleSourcePickerPill(sourceName, btn) {
+  const input = document.getElementById('audit-form-tools');
+  if (!input) return;
+  let currentList = input.value.split(',').map(s => s.trim()).filter(Boolean);
+  const idx = currentList.findIndex(s => s.toLowerCase() === sourceName.toLowerCase());
+  if (idx !== -1) {
+    currentList.splice(idx, 1);
+    if (btn) {
+      btn.classList.remove('selected');
+      btn.textContent = '+ ' + sourceName;
+    }
+  } else {
+    currentList.push(sourceName);
+    if (btn) {
+      btn.classList.add('selected');
+      btn.textContent = '✓ ' + sourceName;
+    }
+  }
+  input.value = currentList.join(', ');
+}
+window.toggleSourcePickerPill = toggleSourcePickerPill;
 
 function closeTopicAuditModal() {
   const modal = document.getElementById('modal-topic-audit');
