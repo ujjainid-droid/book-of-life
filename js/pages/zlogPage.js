@@ -1204,33 +1204,33 @@ function renderZLogTitration() {
       <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 8px;">
         Current Active Regimen
       </div>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px;">
-        <div class="zlog-stat-card" style="border-left: 4px solid #7979B8;">
+      <div class="zlog-regimen-grid">
+        <div class="zlog-stat-card zlog-regimen-card" style="border-left: 4px solid #7979B8;">
           <div class="zlog-stat-label">Active Prescribed</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 2px 0;">Guanfacine XR</div>
-          <div style="font-size: 0.8rem; font-family: var(--font-mono); color: #7979B8; font-weight: 700;">2 mg (Active)</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Prescriber: Dr. Barness</div>
+          <div class="zlog-regimen-name" title="Guanfacine XR">Guanfacine XR</div>
+          <div class="zlog-regimen-dose" style="color: #7979B8;">2 mg (Active)</div>
+          <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
-        <div class="zlog-stat-card" style="border-left: 4px solid #4E8765;">
+        <div class="zlog-stat-card zlog-regimen-card" style="border-left: 4px solid #4E8765;">
           <div class="zlog-stat-label">Active Prescribed</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 2px 0;">Sertraline (Zoloft)</div>
-          <div style="font-size: 0.8rem; font-family: var(--font-mono); color: #4E8765; font-weight: 700;">75 mg (Active)</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Prescriber: Dr. Barness</div>
+          <div class="zlog-regimen-name" title="Sertraline (Zoloft)">Sertraline (Zoloft)</div>
+          <div class="zlog-regimen-dose" style="color: #4E8765;">75 mg (Active)</div>
+          <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
-        <div class="zlog-stat-card" style="border-left: 4px solid #D97768;">
-          <div class="zlog-stat-label">Active Regimen</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 2px 0;">Risperdal (risperidone)</div>
-          <div style="font-size: 0.8rem; font-family: var(--font-mono); color: #D97768; font-weight: 700;">PRN / As Needed (0 mg regular)</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Prescriber: Dr. Barness (Stopped regular 9/19)</div>
+        <div class="zlog-stat-card zlog-regimen-card" style="border-left: 4px solid #7C5CFC;">
+          <div class="zlog-stat-label">Active Prescribed</div>
+          <div class="zlog-regimen-name" title="Ritalin">Ritalin</div>
+          <div class="zlog-regimen-dose" style="color: #7C5CFC;">15 mg + 10 mg</div>
+          <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
-        <div class="zlog-stat-card" style="border-left: 4px solid #7C5CFC;">
-          <div class="zlog-stat-label">Active Prescribed</div>
-          <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 2px 0;">Ritalin</div>
-          <div style="font-size: 0.8rem; font-family: var(--font-mono); color: #7C5CFC; font-weight: 700;">15 mg + 10 mg (Active)</div>
-          <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 4px;">Prescriber: Dr. Barness</div>
+        <div class="zlog-stat-card zlog-regimen-card is-discontinued" style="border-left: 4px solid #94A3B8; opacity: 0.65; background: var(--bg-surface);">
+          <div class="zlog-stat-label" style="color: var(--text-muted);">As Needed / PRN</div>
+          <div class="zlog-regimen-name" style="color: var(--text-secondary);" title="Risperdal (risperidone)">Risperdal</div>
+          <div class="zlog-regimen-dose" style="color: #64748B;">PRN (0 mg regular)</div>
+          <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness (Stopped regular 9/19)">Stopped regular 9/19</div>
         </div>
       </div>
     </div>
