@@ -221,15 +221,33 @@ function renderClaimsPage() {
         </button>
       </div>
 
-      <!-- 4. Claims Active Cards List -->
-      <div class="claims-list">
+      <!-- 4. Claims Scannable Data Table (Option 3) -->
+      <div class="claims-table-card">
         ${filteredClaims.length === 0 ? `
           <div class="claims-empty-card">
             <i data-lucide="inbox" style="width:36px;height:36px;"></i>
             <div style="font-weight:600;color:var(--text-primary);">No claims in this view</div>
             <div style="font-size:0.8rem;max-width:320px;">Use the quick add form above to log an out-of-network service, or switch filters.</div>
           </div>
-        ` : filteredClaims.map(claim => renderClaimItemHtml(claim)).join('')}
+        ` : `
+          <div class="claims-table-wrapper">
+            <table class="claims-data-table">
+              <thead>
+                <tr>
+                  <th class="col-date">Date</th>
+                  <th class="col-provider">Provider &amp; Method</th>
+                  <th class="col-amount">Amount</th>
+                  <th class="col-stage">Status</th>
+                  <th class="col-next">Next Action</th>
+                  <th class="col-actions">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${filteredClaims.map(claim => renderClaimRowHtml(claim)).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
       </div>
 
       <!-- 5. Weekly Maintenance Routine Reminder -->
@@ -257,9 +275,9 @@ function renderClaimsPage() {
 }
 
 /**
- * Render single claim card HTML
+ * Render single claim table row HTML (Option 3: Scannable Data Table)
  */
-function renderClaimItemHtml(claim) {
+function renderClaimRowHtml(claim) {
   const stageMeta = CLAIM_STAGES[claim.stage] || {
     id: claim.stage,
     label: claim.stage,
@@ -279,7 +297,7 @@ function renderClaimItemHtml(claim) {
   const isSuperbillHave = (claim.superbillStatus === 'have');
   const isSettled = (claim.stage === 'settled');
 
-  // Determine actor for the Next Step banner
+  // Determine actor for the Next Step
   let actorName = stageMeta.actor;
   if (claim.stage === 'check_due') {
     actorName = isCheckPayout ? 'Mailbox / Bank' : 'Monarch';
@@ -292,92 +310,84 @@ function renderClaimItemHtml(claim) {
     : stageMeta.defaultAction);
 
   return `
-    <div class="claim-item-card claim-stage-${claim.stage}" id="claim-card-${claim.id}">
-      <!-- Top Row: Provider, Date & Amount -->
-      <div class="claim-header-row">
-        <div class="claim-provider-info">
-          <span class="claim-provider-name">${claim.provider}</span>
-          <span class="claim-date-tag">• ${formattedDate}</span>
-        </div>
-        <div class="claim-amount-badge">
-          $${(claim.amountPaid || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-        </div>
-      </div>
+    <tr class="claim-table-row claim-stage-${claim.stage} ${isSettled ? 'is-settled' : 'is-active'}" id="claim-row-${claim.id}">
+      <!-- 1. Date -->
+      <td class="cell-date">
+        <span class="claim-date-text">${formattedDate}</span>
+      </td>
 
-      <!-- Meta Row: Badges & Quick Stage Selector -->
-      <div class="claim-meta-row">
-        <div class="claim-stage-badges">
-          <!-- Stage Badge with Dropdown Switcher -->
-          <div style="position:relative;display:inline-block;">
-            <select class="stage-pill ${claim.stage}" 
-                    style="cursor:pointer;outline:none;" 
-                    onchange="quickUpdateClaimStage('${claim.id}', this.value)"
-                    title="Change stage">
-              <option value="with_included_health" ${claim.stage === 'with_included_health' ? 'selected' : ''}>🔵 Pending Insurance</option>
-              <option value="check_due" ${claim.stage === 'check_due' ? 'selected' : ''}>🟢 Check / Deposit Due</option>
-              <option value="ready_to_send" ${claim.stage === 'ready_to_send' ? 'selected' : ''}>🟡 Send to Included Health</option>
-              <option value="need_superbill" ${claim.stage === 'need_superbill' ? 'selected' : ''}>🔴 Need Superbill</option>
-              <option value="settled" ${claim.stage === 'settled' ? 'selected' : ''}>⚪ Settled</option>
-            </select>
-          </div>
-
-          <!-- Submission Tag -->
-          <span class="claim-meta-tag ${isProviderSubmits ? 'tag-provider' : 'tag-self'}" title="Filing method">
-            ${isProviderSubmits ? '🏢 Provider Filed' : '👤 Included Health'}
-          </span>
-
-          <!-- Payout Method Tag -->
-          <span class="claim-meta-tag tag-payout" title="Expected reimbursement channel">
-            ${isCheckPayout ? '✉️ Check in Mail' : '🏦 Direct Deposit'}
-          </span>
-
-          <!-- Superbill Tag (shown if self-filing) -->
+      <!-- 2. Provider & Method -->
+      <td class="cell-provider">
+        <div class="claim-provider-name">${escapeHtml(claim.provider)}</div>
+        <div class="claim-sub-tags">
+          <span class="claim-sub-tag">${isProviderSubmits ? '🏢 Provider' : '👤 Included Health'}</span>
+          <span class="claim-sub-dot">•</span>
+          <span class="claim-sub-tag">${isCheckPayout ? '✉️ Check' : '🏦 ACH'}</span>
           ${!isProviderSubmits ? `
-            <button class="superbill-tag ${isSuperbillHave ? 'have' : 'need'}" 
-                    onclick="toggleClaimSuperbill('${claim.id}')"
-                    title="Click to toggle superbill status">
-              ${isSuperbillHave ? '<i data-lucide="check" style="width:12px;height:12px;"></i> Superbill' : '<i data-lucide="alert-circle" style="width:12px;height:12px;"></i> Need Superbill'}
+            <span class="claim-sub-dot">•</span>
+            <button class="claim-superbill-inline ${isSuperbillHave ? 'have' : 'need'}" onclick="toggleClaimSuperbill('${claim.id}')" title="Toggle superbill">
+              ${isSuperbillHave ? '✓ Superbill' : '⚠️ Need Superbill'}
             </button>
           ` : ''}
-
           ${claim.notes ? `
-            <span style="font-size:0.75rem;color:var(--text-muted);" title="${claim.notes}">
-              💬 ${claim.notes.length > 30 ? claim.notes.substring(0, 27) + '...' : claim.notes}
-            </span>
+            <span class="claim-notes-preview" title="${escapeHtml(claim.notes)}">💬 ${escapeHtml(claim.notes.length > 24 ? claim.notes.substring(0, 21) + '...' : claim.notes)}</span>
           ` : ''}
         </div>
+      </td>
 
-        <!-- Action Buttons -->
-        <div class="claim-actions-group">
+      <!-- 3. Amount -->
+      <td class="cell-amount">
+        <span class="claim-amount-mono">$${(claim.amountPaid || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+      </td>
+
+      <!-- 4. Status / Stage Dropdown -->
+      <td class="cell-stage">
+        <div class="stage-select-wrap">
+          <select class="stage-pill ${claim.stage}" 
+                  onchange="quickUpdateClaimStage('${claim.id}', this.value)"
+                  title="Change stage">
+            <option value="with_included_health" ${claim.stage === 'with_included_health' ? 'selected' : ''}>🔵 Pending Insurance</option>
+            <option value="check_due" ${claim.stage === 'check_due' ? 'selected' : ''}>🟢 Check / Deposit Due</option>
+            <option value="ready_to_send" ${claim.stage === 'ready_to_send' ? 'selected' : ''}>🟡 Send to Included Health</option>
+            <option value="need_superbill" ${claim.stage === 'need_superbill' ? 'selected' : ''}>🔴 Need Superbill</option>
+            <option value="settled" ${claim.stage === 'settled' ? 'selected' : ''}>⚪ Settled</option>
+          </select>
+        </div>
+      </td>
+
+      <!-- 5. Next Action -->
+      <td class="cell-next">
+        ${isSettled ? `
+          <span class="settled-reconciled-hint">✓ Reconciled in Monarch</span>
+        ` : `
+          <div class="active-next-action" title="${escapeHtml(nextStepText)}">
+            <span class="next-action-arrow">↳</span>
+            <span class="next-action-text">${escapeHtml(nextStepText)}</span>
+          </div>
+        `}
+      </td>
+
+      <!-- 6. Actions -->
+      <td class="cell-actions">
+        <div class="claim-actions-cluster">
           ${!isSettled ? `
-            <button class="claim-icon-btn settle-btn" onclick="quickSettleClaim('${claim.id}')" title="Mark Settled &amp; Reconciled in Monarch">
-              <i data-lucide="check-circle-2" style="width:15px;height:15px;"></i>
+            <button class="claim-row-action-btn btn-settle" onclick="quickSettleClaim('${claim.id}')" title="Mark Settled in Monarch">
+              <i data-lucide="check" style="width:13px;height:13px;"></i>
             </button>
           ` : `
-            <button class="claim-icon-btn" onclick="quickUpdateClaimStage('${claim.id}', 'with_included_health')" title="Reopen Claim">
-              <i data-lucide="rotate-ccw" style="width:14px;height:14px;"></i>
+            <button class="claim-row-action-btn btn-reopen" onclick="quickUpdateClaimStage('${claim.id}', 'with_included_health')" title="Reopen Claim">
+              <i data-lucide="rotate-ccw" style="width:12px;height:12px;"></i>
             </button>
           `}
-          <button class="claim-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit details">
-            <i data-lucide="edit-3" style="width:14px;height:14px;"></i>
+          <button class="claim-row-action-btn btn-edit" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
+            <i data-lucide="edit-3" style="width:12px;height:12px;"></i>
           </button>
-          <button class="claim-icon-btn delete-btn" onclick="confirmDeleteClaim('${claim.id}')" title="Delete claim">
-            <i data-lucide="trash-2" style="width:14px;height:14px;"></i>
+          <button class="claim-row-action-btn btn-delete" onclick="confirmDeleteClaim('${claim.id}')" title="Delete Claim">
+            <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
           </button>
         </div>
-      </div>
-
-      <!-- Bottom: The Next Step Callout -->
-      <div class="claim-next-step-box">
-        <div class="claim-next-step-label">
-          <i data-lucide="${claim.stage === 'check_due' ? (isCheckPayout ? 'mail' : 'building-2') : 'arrow-right-circle'}" style="width:14px;height:14px;color:var(--primary);"></i>
-          <span>Next Step (${actorName}):</span>
-        </div>
-        <div class="claim-next-step-text">
-          ${nextStepText}
-        </div>
-      </div>
-    </div>
+      </td>
+    </tr>
   `;
 }
 
