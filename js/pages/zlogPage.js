@@ -66,7 +66,6 @@ function renderZLogPage() {
   }
 
   const stats = storage.getZLogStats();
-  const titrationRecords = storage.getTitrationHistory();
 
   container.innerHTML = `
     <div class="zlog-page-container">
@@ -117,11 +116,6 @@ function renderZLogPage() {
           <div class="zlog-stat-label">Average Rating</div>
           <div class="zlog-stat-val" style="color: #7C5CFC;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
-        </div>
-        <div class="zlog-stat-card">
-          <div class="zlog-stat-label">Titration Changes</div>
-          <div class="zlog-stat-val" style="color: #3E5C76;">${titrationRecords.length}</div>
-          <div class="zlog-stat-sub">Adjustments on record</div>
         </div>
       </div>
 
