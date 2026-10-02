@@ -83,11 +83,7 @@ const RECOMMENDED_HABIT_PRESETS = [
   { name: 'Cardio', bucket: 'M', cadence: 'weekly', target: 3, icon: 'heart-pulse', description: 'Cardio / aerobic session' },
   { name: 'Yoga', bucket: 'M', cadence: 'daily', target: 1, icon: 'activity', description: 'Yoga, stretch & mobility flow' },
   { name: 'Weights', bucket: 'M', cadence: 'weekly', target: 3, icon: 'dumbbell', description: 'Strength training & weights session' },
-  { name: 'Calorie deficit', bucket: 'M', cadence: 'daily', target: 1, icon: 'flame', description: 'Maintain daily nutrition & energy deficit' },
-  { name: 'Foot care', bucket: 'A', cadence: 'daily', target: 1, icon: 'sparkles', description: 'Daily foot care & recovery routine' },
-  { name: 'Hair health', bucket: 'A', cadence: 'daily', target: 1, icon: 'sparkles', description: 'Nourishing hair care routine' },
-  { name: 'Make up', bucket: 'A', cadence: 'daily', target: 1, icon: 'sparkles', description: 'Aesthetic makeup routine' },
-  { name: 'Surgery', bucket: 'A', cadence: 'daily', target: 1, icon: 'heart-pulse', description: 'Surgical recovery & daily care' }
+  { name: 'Calorie deficit', bucket: 'M', cadence: 'daily', target: 1, icon: 'flame', description: 'Maintain daily nutrition & energy deficit' }
 ];
 
 /**
