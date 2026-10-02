@@ -1799,6 +1799,36 @@
   box-shadow: 0 0 0 2px var(--primary-light);
 }
 
+.zlog-cal-filter-select {
+  padding: 5px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.zlog-cal-filter-select:hover {
+  border-color: var(--primary-border);
+}
+
+.zlog-cal-filter-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.zlog-cal-filter-select.is-filtered {
+  border-color: var(--primary);
+  background: rgba(139, 92, 246, 0.1);
+  color: var(--primary);
+  font-weight: 700;
+}
+
 /* Calendar Filter Chips Strip */
 .zlog-cal-filter-bar {
   display: flex;

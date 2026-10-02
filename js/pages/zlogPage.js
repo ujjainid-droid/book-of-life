@@ -749,7 +749,11 @@ function setZLogCalendarYear(y) {
 }
 
 function setZLogCalendarFilter(filterVal) {
-  zlogCalendarRatingFilter = filterVal;
+  if (['1', '2', '3', '4', '5'].includes(String(filterVal))) {
+    zlogCalendarRatingFilter = parseInt(filterVal, 10);
+  } else {
+    zlogCalendarRatingFilter = filterVal;
+  }
   renderZLogCalendar();
 }
 
@@ -1008,78 +1012,20 @@ function renderZLogCalendar() {
               <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
               <span>Log Day</span>
             </button>
-          </div>
-        </div>
 
-        <!-- Rating Filter Chips Strip -->
-        <div class="zlog-cal-filter-bar">
-          <span class="zlog-cal-filter-label">Filter Day Rating:</span>
-          <button 
-            type="button" 
-            class="zlog-cal-chip ${zlogCalendarRatingFilter === 'all' ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter('all')"
-          >
-            <span>All Days</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${daysInMonth})</span>
-          </button>
-          <button 
-            type="button" 
-            class="zlog-cal-chip chip-lvl-5 ${zlogCalendarRatingFilter === 5 ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter(5)"
-          >
-            <span>🌟 Great (5)</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${count5})</span>
-          </button>
-          <button 
-            type="button" 
-            class="zlog-cal-chip chip-lvl-4 ${zlogCalendarRatingFilter === 4 ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter(4)"
-          >
-            <span>🟢 Good (4)</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${count4})</span>
-          </button>
-          <button 
-            type="button" 
-            class="zlog-cal-chip chip-lvl-3 ${zlogCalendarRatingFilter === 3 ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter(3)"
-          >
-            <span>🟡 Almost Good (3)</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${count3})</span>
-          </button>
-          <button 
-            type="button" 
-            class="zlog-cal-chip chip-lvl-2 ${zlogCalendarRatingFilter === 2 ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter(2)"
-          >
-            <span>🟠 Difficult (2)</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${count2})</span>
-          </button>
-          <button 
-            type="button" 
-            class="zlog-cal-chip chip-lvl-1 ${zlogCalendarRatingFilter === 1 ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter(1)"
-          >
-            <span>🔴 Rough (1)</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${count1})</span>
-          </button>
-          <button 
-            type="button" 
-            class="zlog-cal-chip chip-agg ${zlogCalendarRatingFilter === 'aggression' ? 'active' : ''}" 
-            onclick="setZLogCalendarFilter('aggression')"
-          >
-            <span>⚡ Aggression</span>
-            <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${countAggression})</span>
-          </button>
-          ${countUnrated > 0 ? `
-            <button 
-              type="button" 
-              class="zlog-cal-chip ${zlogCalendarRatingFilter === 'unrated' ? 'active' : ''}" 
-              onclick="setZLogCalendarFilter('unrated')"
-            >
-              <span>⚪ Unrated</span>
-              <span style="opacity: 0.8; font-family: var(--font-mono); font-size: 0.66rem;">(${countUnrated})</span>
-            </button>
-          ` : ''}
+            <select class="zlog-cal-select zlog-cal-filter-select ${zlogCalendarRatingFilter !== 'all' ? 'is-filtered' : ''}" onchange="setZLogCalendarFilter(this.value)" title="Filter by Day Rating">
+              <option value="all" ${zlogCalendarRatingFilter === 'all' ? 'selected' : ''}>Filter: All Days (${daysInMonth})</option>
+              <option value="5" ${(zlogCalendarRatingFilter === 5 || zlogCalendarRatingFilter === '5') ? 'selected' : ''}>🌟 Great (5) (${count5})</option>
+              <option value="4" ${(zlogCalendarRatingFilter === 4 || zlogCalendarRatingFilter === '4') ? 'selected' : ''}>🟢 Good (4) (${count4})</option>
+              <option value="3" ${(zlogCalendarRatingFilter === 3 || zlogCalendarRatingFilter === '3') ? 'selected' : ''}>🌊 Almost Good (3) (${count3})</option>
+              <option value="2" ${(zlogCalendarRatingFilter === 2 || zlogCalendarRatingFilter === '2') ? 'selected' : ''}>🟠 Difficult (2) (${count2})</option>
+              <option value="1" ${(zlogCalendarRatingFilter === 1 || zlogCalendarRatingFilter === '1') ? 'selected' : ''}>🔴 Rough (1) (${count1})</option>
+              <option value="aggression" ${zlogCalendarRatingFilter === 'aggression' ? 'selected' : ''}>⚡ Aggression (${countAggression})</option>
+              ${countUnrated > 0 ? `
+                <option value="unrated" ${zlogCalendarRatingFilter === 'unrated' ? 'selected' : ''}>⚪ Unrated (${countUnrated})</option>
+              ` : ''}
+            </select>
+          </div>
         </div>
       </div>
 
