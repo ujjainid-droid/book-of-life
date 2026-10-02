@@ -6,6 +6,26 @@
 let editingTopicAuditId = null;
 
 function renderCoverHubPage() {
+  currentView = 'cover';
+  try {
+    localStorage.setItem('BOL_ACTIVE_VIEW', 'cover');
+    if (window.location.hash !== '#cover') {
+      window.location.hash = 'cover';
+    }
+  } catch (e) {}
+
+  const dateNavContainer = document.getElementById('header-date-nav-container');
+  const energyDial = document.getElementById('header-energy-dial');
+  const bunkerBtn = document.getElementById('btn-bunker-portal');
+  const coverTab = document.getElementById('nav-btn-cover');
+  const todayTab = document.getElementById('nav-btn-today');
+
+  if (coverTab) coverTab.classList.add('active');
+  if (todayTab) todayTab.classList.remove('active');
+  if (dateNavContainer) dateNavContainer.style.display = 'none';
+  if (energyDial) energyDial.style.display = 'none';
+  if (bunkerBtn) bunkerBtn.classList.remove('active');
+
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
 

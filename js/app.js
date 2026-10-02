@@ -242,14 +242,18 @@ function openJournalEntryModal(dateStr) {
 }
 
 function renderCurrentView() {
-  if (currentView === 'claims') {
-    renderAdultingBunkerShell('claims');
-  } else if (currentView === 'zlog') {
-    renderAdultingBunkerShell('zlog');
+  const active = currentView || localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover';
+  if (active === 'cover') {
+    if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
+  } else if (active === 'claims' || active === 'zlog') {
+    renderAdultingBunkerShell(active);
+  } else if (active === 'podcasts') {
+    if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
   } else {
     if (typeof renderDailySheet === 'function') renderDailySheet();
   }
 }
+window.renderCurrentView = renderCurrentView;
 
 function refreshAppBadges() {
   if (typeof storage !== 'undefined' && typeof storage.getClaimsStats === 'function') {

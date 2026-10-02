@@ -310,10 +310,28 @@ class SyncManager {
       localWasRicher = true;
     }
 
+    // 11. Cover Page: Top of Mind & Topic Audits
+    let mergedTopMind = incoming.coverTopMind;
+    if (!mergedTopMind || (!Array.isArray(mergedTopMind.now) && !Array.isArray(mergedTopMind.later))) {
+      mergedTopMind = storage.data.coverTopMind || { now: [], later: [] };
+      if (storage.data.coverTopMind) localWasRicher = true;
+    }
+    let mergedTopicAudits = incoming.coverTopicAudits;
+    if (!Array.isArray(mergedTopicAudits) || mergedTopicAudits.length === 0) {
+      if (Array.isArray(storage.data.coverTopicAudits) && storage.data.coverTopicAudits.length > 0) {
+        mergedTopicAudits = storage.data.coverTopicAudits;
+        localWasRicher = true;
+      } else {
+        mergedTopicAudits = incoming.coverTopicAudits || [];
+      }
+    }
+
     // Apply consolidated data
     storage.data = {
       ...storage.data,
       ...incoming,
+      coverTopMind: mergedTopMind,
+      coverTopicAudits: mergedTopicAudits,
       points: mergedPoints,
       habits: mergedHabits,
       habitsState: mergedHabitsState,
