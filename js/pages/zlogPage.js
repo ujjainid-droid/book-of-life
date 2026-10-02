@@ -617,10 +617,26 @@ function renderZLogEntryCard(entry) {
     dateFormatted = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   } catch (e) {}
 
+  // Build condensed medication chip
+  const medParts = [];
+  if (meds.z) medParts.push(`Z: ${escapeHtml(String(meds.zDose || '75mg'))}`);
+  if (meds.g) medParts.push(`G: ${escapeHtml(String(meds.gDose || '2mg'))}`);
+  if (meds.rit) medParts.push(`Rit: ${escapeHtml(String(meds.ritDose || (typeof meds.rit === 'string' ? meds.rit : '5mg')))}`);
+  if (meds.mag) medParts.push(`Mag${meds.magDose ? `: ${escapeHtml(String(meds.magDose))}` : ''}`);
+  if (meds.mel) medParts.push(`Mel${meds.melDose ? `: ${escapeHtml(String(meds.melDose))}` : ''}`);
+  if (meds.ris) medParts.push(`Ris${meds.risDose ? `: ${escapeHtml(String(meds.risDose))}` : ''}`);
+
+  const medsHtml = medParts.length > 0 ? `
+    <span class="zlog-condensed-meds" title="Active Medications: ${medParts.join(', ')}">
+      <span class="zlog-med-pill-icon">💊</span>
+      <span>${medParts.join(' • ')}</span>
+    </span>
+  ` : '';
+
   return `
     <div class="zlog-entry-card ${entry.aggression ? 'has-aggression' : ''}">
       <div class="zlog-entry-card-header">
-        <div class="zlog-entry-date-group">
+        <div class="zlog-entry-header-left">
           <span class="zlog-entry-date">${dateFormatted}</span>
 
           ${ratingMeta ? `
@@ -638,28 +654,20 @@ function renderZLogEntryCard(entry) {
           ${entry.aggression ? `
             <span class="zlog-aggression-pill">⚠️ Aggression Reported</span>
           ` : ''}
+
+          ${medsHtml}
         </div>
 
-        <!-- Meds Tag Badges -->
-        <div class="zlog-entry-meds-tags">
-          ${meds.z ? `<span class="zlog-med-tag active" title="Zoloft">Z: ${escapeHtml(String(meds.zDose || '75mg'))}</span>` : ''}
-          ${meds.g ? `<span class="zlog-med-tag active" title="Guanfacine XR">G: ${escapeHtml(String(meds.gDose || '2mg'))}</span>` : ''}
-          ${meds.rit ? `<span class="zlog-med-tag active" title="Ritalin: ${escapeHtml(String(meds.ritDose || (typeof meds.rit === 'string' ? meds.rit : '5mg')))}">Rit: ${escapeHtml(String(meds.ritDose || (typeof meds.rit === 'string' ? meds.rit : '5mg')))}</span>` : ''}
-          ${meds.mag ? `<span class="zlog-med-tag active" title="Magnesium">Mag${meds.magDose ? `: ${escapeHtml(String(meds.magDose))}` : ''}</span>` : ''}
-          ${meds.mel ? `<span class="zlog-med-tag active" title="Melatonin">Mel: ${escapeHtml(String(meds.melDose || 'Bedtime'))}</span>` : ''}
-          ${meds.ris ? `<span class="zlog-med-tag active" title="Risperidone">Ris${meds.risDose ? `: ${escapeHtml(String(meds.risDose))}` : ''}</span>` : ''}
+        <div class="zlog-entry-header-actions">
+          <button type="button" class="btn btn-secondary zlog-entry-edit-btn" onclick="openZLogEntryModal('${entry.date}')" title="Edit entry for ${dateFormatted}">
+            <i data-lucide="edit-3" style="width: 12px; height: 12px;"></i>
+            <span>Edit</span>
+          </button>
         </div>
       </div>
 
       <!-- Structured Narrative Content -->
       ${formatStructuredNotes(entry.notes, entry.date)}
-
-      <div class="zlog-entry-card-footer">
-        <button class="btn btn-secondary" onclick="openZLogEntryModal('${entry.date}')" style="font-size: 0.72rem; padding: 3px 8px;">
-          <i data-lucide="edit-3" style="width: 12px; height: 12px;"></i>
-          <span>Edit</span>
-        </button>
-      </div>
     </div>
   `;
 }

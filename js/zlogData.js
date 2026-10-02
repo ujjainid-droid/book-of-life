@@ -26,8 +26,8 @@ const ZLOG_RATINGS = {
     label: "Almost Good",
     shortLabel: "Almost Good",
     badgeClass: "zlog-rating-3",
-    emoji: "🟡",
-    colorHex: "#D49B35",
+    emoji: "🌊",
+    colorHex: "#0D9488",
     description: "Minor bumps or whiny moments, recovered well"
   },
   2: {
@@ -54,7 +54,7 @@ const DEFAULT_ZLOG_MEDS = [
   { key: "z", name: "Zoloft", short: "Z", defaultDose: "75mg", color: "#4E8765", hasDoseInput: true },
   { key: "g", name: "Guanfacine XR", short: "G", defaultDose: "2mg", color: "#7979B8", hasDoseInput: true },
   { key: "rit", name: "Ritalin", short: "Rit", defaultDose: "15mg + 10mg", color: "#7C5CFC", hasDoseInput: true },
-  { key: "mag", name: "Magnesium", short: "Mag", defaultDose: "Daily", color: "#D49B35", hasDoseInput: true },
+  { key: "mag", name: "Magnesium", short: "Mag", defaultDose: "Daily", color: "#0D9488", hasDoseInput: true },
   { key: "mel", name: "Melatonin", short: "Mel", defaultDose: "Bedtime", color: "#3E5C76", hasDoseInput: true },
   { key: "ris", name: "Risperidone", short: "Ris", defaultDose: "0.25mg", color: "#D97768", hasDoseInput: true }
 ];
