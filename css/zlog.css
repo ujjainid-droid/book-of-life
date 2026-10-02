@@ -973,55 +973,57 @@
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-lg);
-  padding: 8px 16px;
+  padding: 8px 14px;
   margin-bottom: 1.25rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: nowrap;
-  overflow-x: auto;
-  scrollbar-width: thin;
 }
 
 .zlog-dropdown-controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: nowrap;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .zlog-dropdown-item {
   display: flex;
   align-items: center;
-  gap: 7px;
-  flex-shrink: 0;
+  gap: 6px;
+  min-width: 0;
 }
 
 .zlog-dropdown-label {
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .zlog-picker-select {
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 5px 12px;
+  padding: 5px 10px;
   font-family: var(--font-sans);
-  font-size: 0.80rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-primary);
   outline: none;
   cursor: pointer;
   transition: all var(--transition-fast);
   white-space: nowrap;
+  max-width: 140px;
+  text-overflow: ellipsis;
 }
 
 .zlog-picker-select:hover {
@@ -1045,9 +1047,9 @@
   background: var(--bg-surface);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-sm);
-  padding: 5px 10px;
+  padding: 4px 8px;
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 600;
   color: var(--text-secondary);
   cursor: pointer;
@@ -1058,7 +1060,21 @@
 .zlog-nav-action-btn:hover {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
-  border-color: var(--border-strong);
+}
+
+@media (max-width: 520px) {
+  .zlog-month-nav-card.zlog-dual-dropdown-card {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .zlog-dropdown-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .zlog-nav-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }
 
 /* Month Accordions */

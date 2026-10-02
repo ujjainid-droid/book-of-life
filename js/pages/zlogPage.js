@@ -471,11 +471,13 @@ function renderZLogTimeline() {
       const count = allEntriesMonthMap[mKey] || 0;
       if (count > 0) {
         const isCurrent = (Number(yr) === currentY && (m - 1) === currentM);
-        const label = `${allMonthNames[m - 1]} ${yr}`;
+        const label = (zlogPeriodFilter === 'all') 
+          ? `${allMonthShorts[m - 1]} '${yr.slice(2)}` 
+          : allMonthNames[m - 1];
 
         monthOptionsList.push(`
           <option value="${mKey}">
-            ${label} (${count} ${count === 1 ? 'entry' : 'entries'})${isCurrent ? ' • Current' : ''}
+            ${label} (${count})${isCurrent ? ' • Current' : ''}
           </option>
         `);
       }
@@ -489,7 +491,7 @@ function renderZLogTimeline() {
         <div class="zlog-dropdown-item">
           <label class="zlog-dropdown-label" for="zlog-year-picker">Year:</label>
           <select class="zlog-picker-select" id="zlog-year-picker" onchange="setZLogPeriodFilter(this.value)">
-            <option value="all" ${zlogPeriodFilter === 'all' ? 'selected' : ''}>All Years (${allEntries.length})</option>
+            <option value="all" ${zlogPeriodFilter === 'all' ? 'selected' : ''}>All (${allEntries.length})</option>
             <option value="2026" ${zlogPeriodFilter === '2026' ? 'selected' : ''}>2026 (${count2026})</option>
             <option value="2025" ${zlogPeriodFilter === '2025' ? 'selected' : ''}>2025 (${count2025})</option>
             <option value="2024" ${zlogPeriodFilter === '2024' ? 'selected' : ''}>2024 (${count2024})</option>
@@ -499,7 +501,7 @@ function renderZLogTimeline() {
         <div class="zlog-dropdown-item">
           <label class="zlog-dropdown-label" for="zlog-month-picker">Month:</label>
           <select class="zlog-picker-select" id="zlog-month-picker" onchange="if(this.value) jumpToMonth(this.value)">
-            <option value="" disabled selected>Select month...</option>
+            <option value="" disabled selected>Month...</option>
             ${monthOptionsList.join('')}
           </select>
         </div>
@@ -507,10 +509,10 @@ function renderZLogTimeline() {
 
       <div class="zlog-nav-actions">
         <button type="button" class="zlog-nav-action-btn" onclick="expandAllMonths()" title="Expand all month accordions">
-          Expand All
+          Expand
         </button>
         <button type="button" class="zlog-nav-action-btn" onclick="collapseAllMonths()" title="Collapse all month accordions">
-          Collapse All
+          Collapse
         </button>
       </div>
     </div>
