@@ -159,6 +159,57 @@ class StorageManager {
       quickThoughts: [],
       // Currently Terrorizing active projects list
       activeTerrorizing: ['10k steps', 'Close rings'],
+      // Cover Page: Top of Mind Scratchpad (Now vs. Later)
+      coverTopMind: {
+        now: [
+          { id: 'tm-1', text: 'Abbey Yung 4-week hair wash & rest protocol' },
+          { id: 'tm-2', text: 'Included Health claims audit & superbill settlement' },
+          { id: 'tm-3', text: 'Skincare routine consolidation & product audit' }
+        ],
+        later: [
+          { id: 'tm-4', text: 'Winter wardrobe capsule curation' },
+          { id: 'tm-5', text: 'Schedule annual dental cleaning' },
+          { id: 'tm-6', text: 'Q1 family vacation booking window' }
+        ]
+      },
+      // Cover Page: Where Info Lives (Topic Streamlining Audit)
+      coverTopicAudits: [
+        {
+          id: 'top-1',
+          topic: 'Skincare & Daily Regimen',
+          tools: ['Apple Notes', 'Margo'],
+          status: 'disorganized',
+          goal: 'Consolidate active AM/PM routine into Margo; archive messy screenshot notes in Apple Notes.'
+        },
+        {
+          id: 'top-2',
+          topic: 'Hair Health Protocol',
+          tools: ['Margo', 'Photos'],
+          status: 'streamlined',
+          goal: 'Margo calendar is the single source of truth; follow daily wash/rest badge.'
+        },
+        {
+          id: 'top-3',
+          topic: 'Medical Claims & Superbills',
+          tools: ['Margo', 'Google Drive'],
+          status: 'in_progress',
+          goal: 'Download PDF directly to Drive folder → update claim status in Margo.'
+        },
+        {
+          id: 'top-4',
+          topic: 'Child Health & Meds (Z-Log)',
+          tools: ['Margo', 'Google Drive', 'Things 3'],
+          status: 'in_progress',
+          goal: 'Z-Log daily, doctor appointment tasks go to Things 3.'
+        },
+        {
+          id: 'top-5',
+          topic: 'Home Logistics & Errands',
+          tools: ['Things 3', 'iCloud'],
+          status: 'streamlined',
+          goal: 'Strict rule: Keep completely out of Margo; execute directly in Things 3.'
+        }
+      ],
       // Weekly Reflections: { [sundayIso]: { wins: string, focus: string } }
       weeklyReflections: {},
       backlog: [...DEFAULT_BACKLOG_HABITS],
@@ -401,6 +452,15 @@ class StorageManager {
         if (Array.isArray(s.activeTerrorizing) && s.activeTerrorizing.length > 0) {
           merged.activeTerrorizing = Array.from(new Set([...(merged.activeTerrorizing || []), ...s.activeTerrorizing]));
         }
+        if (s.coverTopMind && typeof s.coverTopMind === 'object') {
+          merged.coverTopMind = {
+            now: Array.isArray(s.coverTopMind.now) ? s.coverTopMind.now : (defaults.coverTopMind.now || []),
+            later: Array.isArray(s.coverTopMind.later) ? s.coverTopMind.later : (defaults.coverTopMind.later || [])
+          };
+        }
+        if (Array.isArray(s.coverTopicAudits) && s.coverTopicAudits.length > 0) {
+          merged.coverTopicAudits = s.coverTopicAudits;
+        }
       }
 
       // Ensure 'Move' and 'Stand' exist in habits
@@ -505,6 +565,13 @@ class StorageManager {
 
       if (!Array.isArray(merged.zlogActiveMeds) || merged.zlogActiveMeds.length === 0) {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
+      }
+
+      if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
+        merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
+      }
+      if (!Array.isArray(merged.coverTopicAudits) || merged.coverTopicAudits.length === 0) {
+        merged.coverTopicAudits = JSON.parse(JSON.stringify(defaults.coverTopicAudits));
       }
 
       // Persist the consolidated state
@@ -1529,6 +1596,106 @@ class StorageManager {
     this.data.energyMode = (mode === 'maint') ? 'maint' : 'power';
     this.saveData();
     return this.data.energyMode;
+  }
+
+  // --- Cover Page: Top of Mind Scratchpad (Now vs. Later) ---
+  getCoverTopMind() {
+    if (!this.data.coverTopMind) {
+      this.data.coverTopMind = { now: [], later: [] };
+    }
+    if (!Array.isArray(this.data.coverTopMind.now)) this.data.coverTopMind.now = [];
+    if (!Array.isArray(this.data.coverTopMind.later)) this.data.coverTopMind.later = [];
+    return this.data.coverTopMind;
+  }
+
+  addCoverTopMindItem(targetList, text) {
+    const listKey = (targetList === 'later') ? 'later' : 'now';
+    const topMind = this.getCoverTopMind();
+    const item = {
+      id: 'tm-' + Date.now(),
+      text: (text || '').trim()
+    };
+    if (item.text) {
+      topMind[listKey].unshift(item);
+      this.saveData();
+    }
+    return item;
+  }
+
+  moveCoverTopMindItem(id, fromList, toList) {
+    const topMind = this.getCoverTopMind();
+    const fromArr = topMind[fromList] || [];
+    const idx = fromArr.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      const [item] = fromArr.splice(idx, 1);
+      if (!topMind[toList]) topMind[toList] = [];
+      topMind[toList].unshift(item);
+      this.saveData();
+    }
+  }
+
+  deleteCoverTopMindItem(id, listName) {
+    const topMind = this.getCoverTopMind();
+    const arr = topMind[listName] || [];
+    const idx = arr.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      arr.splice(idx, 1);
+      this.saveData();
+    }
+  }
+
+  updateCoverTopMindItem(id, listName, newText) {
+    const topMind = this.getCoverTopMind();
+    const arr = topMind[listName] || [];
+    const item = arr.find(x => x.id === id);
+    if (item) {
+      item.text = (newText || '').trim();
+      this.saveData();
+    }
+  }
+
+  // --- Cover Page: Where Info Lives (Topic Audits) ---
+  getCoverTopicAudits() {
+    if (!Array.isArray(this.data.coverTopicAudits)) {
+      this.data.coverTopicAudits = [];
+    }
+    return this.data.coverTopicAudits;
+  }
+
+  addCoverTopicAudit(audit) {
+    const audits = this.getCoverTopicAudits();
+    const newAudit = {
+      id: 'top-' + Date.now(),
+      topic: (audit.topic || 'New Domain').trim(),
+      tools: Array.isArray(audit.tools) ? audit.tools : (audit.tools ? String(audit.tools).split(',').map(s => s.trim()).filter(Boolean) : []),
+      status: audit.status || 'in_progress',
+      goal: (audit.goal || '').trim()
+    };
+    audits.push(newAudit);
+    this.saveData();
+    return newAudit;
+  }
+
+  updateCoverTopicAudit(id, updates) {
+    const audits = this.getCoverTopicAudits();
+    const item = audits.find(x => x.id === id);
+    if (item) {
+      if (updates.topic !== undefined) item.topic = updates.topic.trim();
+      if (updates.tools !== undefined) item.tools = Array.isArray(updates.tools) ? updates.tools : String(updates.tools).split(',').map(s => s.trim()).filter(Boolean);
+      if (updates.status !== undefined) item.status = updates.status;
+      if (updates.goal !== undefined) item.goal = updates.goal.trim();
+      this.saveData();
+    }
+    return item;
+  }
+
+  deleteCoverTopicAudit(id) {
+    const audits = this.getCoverTopicAudits();
+    const idx = audits.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      audits.splice(idx, 1);
+      this.saveData();
+    }
   }
 
   resetToDefaults() {

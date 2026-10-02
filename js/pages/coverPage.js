@@ -573,46 +573,6 @@ function renderDailySheet() {
         </div>
       ` : ''}
 
-      <!-- Quick Presets Shelf (Matching 12 Habit Stack Presets) -->
-      <div class="quick-presets-container ${quickPresetsCollapsed ? 'is-collapsed' : ''}" id="quick-presets-container">
-        <div class="quick-presets-top-bar" onclick="toggleQuickPresetsCollapse(event)">
-          <div class="quick-presets-header">
-            <span class="quick-presets-sparkle">✨</span>
-            <span class="quick-presets-title">Quick Presets</span>
-            <span class="quick-presets-subtitle">Tap to add:</span>
-          </div>
-          <button type="button" class="quick-presets-toggle-btn" id="quick-presets-toggle-btn" onclick="toggleQuickPresetsCollapse(event)" title="${quickPresetsCollapsed ? 'Expand presets' : 'Collapse presets'}">
-            <span id="quick-presets-toggle-text">${quickPresetsCollapsed ? 'Expand ▾' : 'Collapse ▴'}</span>
-          </button>
-        </div>
-        <div class="quick-presets-pills" id="quick-presets-pills" style="display: ${quickPresetsCollapsed ? 'none' : 'flex'};">
-          ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
-            const pName = preset.name.toLowerCase().trim();
-            const isAnchor = (pName === 'stand ring' || pName === 'stand' || pName === 'move');
-            const isAlreadyAdded = isAnchor || habits.some(h => 
-              h && h.name.toLowerCase().trim() === pName
-            );
-            if (isAlreadyAdded) {
-              const tooltip = isAnchor 
-                ? (pName === 'move' ? 'Move is your Hero Anchor #1' : 'Stand is your Hero Anchor #2') 
-                : `${escapeHtml(preset.name)} is already in your active stack`;
-              return `
-                <span class="preset-pill-item added" title="${tooltip}">
-                  <span class="preset-pill-symbol">✓</span>
-                  <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
-                </span>
-              `;
-            } else {
-              return `
-                <button class="preset-pill-item" onclick="addHabitFromPreset(${pIdx})" title="Add ${escapeHtml(preset.name)}: ${escapeHtml(preset.description)}">
-                  <span class="preset-pill-symbol plus">+</span>
-                  <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
-                </button>
-              `;
-            }
-          }).join('')}
-        </div>
-      </div>
     </div>
 
     <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
@@ -751,9 +711,6 @@ function renderDailySheet() {
         </div>
       `}
     </div>
-
-    <!-- 8. MARGO Framework Pillars (Collapsible Widget) -->
-    ${typeof renderMargoFrameworkWidget === 'function' ? renderMargoFrameworkWidget() : ''}
 
     <!-- 9. Podcast Sanctuary Lounge & Media Player (Single Serial + Queue) -->
     ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}

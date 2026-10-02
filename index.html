@@ -23,15 +23,15 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=8.2.8">
-  <link rel="stylesheet" href="css/layout.css?v=8.2.8">
-  <link rel="stylesheet" href="css/cover.css?v=8.2.8">
-  <link rel="stylesheet" href="css/habits.css?v=8.2.8">
-  <link rel="stylesheet" href="css/tasks.css?v=8.2.8">
-  <link rel="stylesheet" href="css/settings.css?v=8.2.8">
-  <link rel="stylesheet" href="css/claims.css?v=8.2.8">
-  <link rel="stylesheet" href="css/zlog.css?v=8.2.8">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=8.2.8">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=8.3.0">
+  <link rel="stylesheet" href="css/layout.css?v=8.3.0">
+  <link rel="stylesheet" href="css/cover.css?v=8.3.0">
+  <link rel="stylesheet" href="css/habits.css?v=8.3.0">
+  <link rel="stylesheet" href="css/tasks.css?v=8.3.0">
+  <link rel="stylesheet" href="css/settings.css?v=8.3.0">
+  <link rel="stylesheet" href="css/claims.css?v=8.3.0">
+  <link rel="stylesheet" href="css/zlog.css?v=8.3.0">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=8.3.0">
 </head>
 <body>
 
@@ -39,8 +39,17 @@
     <!-- Header -->
     <header class="book-header">
       <div class="header-left">
-        <div class="book-title-area" onclick="switchAppView('sanctuary')" style="cursor: pointer;" title="margo — Personal Sanctuary">
+        <div class="book-title-area" onclick="switchAppView('cover')" style="cursor: pointer;" title="margo — Executive Cover">
           <h1>margo</h1>
+        </div>
+
+        <div class="header-nav-tabs">
+          <button id="nav-btn-cover" class="header-nav-tab" onclick="switchAppView('cover')" title="Executive Cover &amp; System Compass">
+            <span>📖 Cover</span>
+          </button>
+          <button id="nav-btn-today" class="header-nav-tab active" onclick="switchAppView('sanctuary')" title="Today's Execution Cockpit">
+            <span>☀️ Today</span>
+          </button>
         </div>
 
         <div class="header-date-nav" id="header-date-nav-container">
@@ -356,15 +365,16 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=8.2.8"></script>
-  <script src="js/zlogData.js?v=8.2.8"></script>
-  <script src="js/podcastData.js?v=8.2.8"></script>
-  <script src="js/storage.js?v=8.2.8"></script>
-  <script src="js/sync.js?v=8.2.8"></script>
-  <script src="js/pages/coverPage.js?v=8.2.8"></script>
-  <script src="js/pages/claimsPage.js?v=8.2.8"></script>
-  <script src="js/pages/zlogPage.js?v=8.2.8"></script>
-  <script src="js/pages/podcastAgent.js?v=8.2.8"></script>
-  <script src="js/app.js?v=8.2.8"></script>
+  <script src="js/margoData.js?v=8.3.0"></script>
+  <script src="js/zlogData.js?v=8.3.0"></script>
+  <script src="js/podcastData.js?v=8.3.0"></script>
+  <script src="js/storage.js?v=8.3.0"></script>
+  <script src="js/sync.js?v=8.3.0"></script>
+  <script src="js/pages/coverPage.js?v=8.3.0"></script>
+  <script src="js/pages/coverHubPage.js?v=8.3.0"></script>
+  <script src="js/pages/claimsPage.js?v=8.3.0"></script>
+  <script src="js/pages/zlogPage.js?v=8.3.0"></script>
+  <script src="js/pages/podcastAgent.js?v=8.3.0"></script>
+  <script src="js/app.js?v=8.3.0"></script>
 </body>
 </html>

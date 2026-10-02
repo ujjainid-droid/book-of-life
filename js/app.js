@@ -20,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Restore saved view (or URL hash)
   const hashView = window.location.hash.replace('#', '');
-  const savedView = (hashView === 'claims' || hashView === 'zlog' || hashView === 'bunker' || hashView === 'podcasts') 
+  const savedView = (hashView === 'claims' || hashView === 'zlog' || hashView === 'bunker' || hashView === 'podcasts' || hashView === 'cover') 
     ? hashView 
-    : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'sanctuary');
+    : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover');
 
   switchAppView(savedView);
   updateEnergyDialUI();
@@ -37,25 +37,32 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* --------------------------------------------------------------------------
-   View Switching (Sanctuary vs Adulting Bunker vs Podcasts)
+   View Switching (Cover vs Sanctuary vs Adulting Bunker vs Podcasts)
    -------------------------------------------------------------------------- */
 function switchAppView(viewName) {
   if (viewName === 'claims' || viewName === 'zlog' || viewName === 'bunker') {
     currentView = (viewName === 'zlog') ? 'zlog' : 'claims';
   } else if (viewName === 'podcasts') {
     currentView = 'podcasts';
+  } else if (viewName === 'cover') {
+    currentView = 'cover';
   } else {
     currentView = 'sanctuary';
   }
 
   try {
     localStorage.setItem('BOL_ACTIVE_VIEW', currentView);
-    window.location.hash = (currentView === 'sanctuary') ? '' : currentView;
+    window.location.hash = (currentView === 'cover') ? 'cover' : (currentView === 'sanctuary' ? '' : currentView);
   } catch (e) {}
 
   const dateNavContainer = document.getElementById('header-date-nav-container');
   const energyDial = document.getElementById('header-energy-dial');
   const bunkerBtn = document.getElementById('btn-bunker-portal');
+  const coverTab = document.getElementById('nav-btn-cover');
+  const todayTab = document.getElementById('nav-btn-today');
+
+  if (coverTab) coverTab.classList.toggle('active', currentView === 'cover');
+  if (todayTab) todayTab.classList.toggle('active', currentView === 'sanctuary');
 
   updateEnergyDialUI();
 
@@ -71,6 +78,12 @@ function switchAppView(viewName) {
     if (bunkerBtn) bunkerBtn.classList.remove('active');
 
     if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
+  } else if (currentView === 'cover') {
+    if (dateNavContainer) dateNavContainer.style.display = 'none';
+    if (energyDial) energyDial.style.display = 'none';
+    if (bunkerBtn) bunkerBtn.classList.remove('active');
+
+    if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
   } else {
     if (dateNavContainer) dateNavContainer.style.display = 'inline-flex';
     if (energyDial) energyDial.style.display = 'inline-flex';
@@ -84,11 +97,12 @@ function switchAppView(viewName) {
 }
 
 function toggleAdultingBunker() {
-  if (currentView === 'sanctuary') {
+  if (currentView === 'sanctuary' || currentView === 'cover') {
     const lastBunker = localStorage.getItem('BOL_LAST_BUNKER_SUBVIEW') || 'claims';
     switchAppView(lastBunker);
   } else {
-    switchAppView('sanctuary');
+    const returnView = localStorage.getItem('BOL_ACTIVE_VIEW') === 'cover' ? 'cover' : 'sanctuary';
+    switchAppView(returnView);
   }
 }
 
