@@ -4,6 +4,7 @@
 
 let activeClaimsFilter = 'all';
 let editingClaimId = null;
+let isClaimOptionsDrawerOpen = false;
 
 function getClaimDraft() {
   try {
@@ -74,6 +75,8 @@ function renderClaimsPage() {
   const formSuperbill = (draft && draft.superbillStatus) ? draft.superbillStatus : 'have';
   const formNextAction = (draft && draft.nextAction) ? draft.nextAction : 'Provider submitted claim — waiting on insurance EOB';
 
+  const isDrawerOpen = isClaimOptionsDrawerOpen || formSubmission === 'self' || formStage !== 'with_included_health';
+
   container.innerHTML = `
     <div class="claims-container">
       
@@ -123,78 +126,86 @@ function renderClaimsPage() {
         </div>
       </div>
 
-      <!-- 2. Quick Add New Claim Card -->
+      <!-- 2. Quick Add New Claim Card (Option 1: Streamlined Fast Log with Smart Defaults) -->
       <div class="claims-add-card">
         <div class="claims-card-header">
           <div class="claims-card-title">
-            <i data-lucide="plus-circle" style="color:var(--primary);width:17px;height:17px;"></i>
+            <i data-lucide="plus-circle" style="color:var(--primary);width:16px;height:16px;"></i>
             <span>Quick Log Medical Service</span>
           </div>
-          <span style="font-size:0.75rem;color:var(--text-muted);">Simple. Visible. Next step.</span>
+          <span style="font-size:0.75rem;color:var(--text-muted);">Fast, smart defaults.</span>
         </div>
 
         <form id="quick-add-claim-form" onsubmit="handleQuickAddClaim(event)">
-          <div class="claims-grid-form">
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Date of Service</label>
-              <input type="date" class="form-input" id="claim-date-input" value="${formDate}" oninput="saveClaimDraft()" onchange="saveClaimDraft()" required>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Provider / Doctor</label>
+          <!-- Primary 1-Row Grid -->
+          <div class="claims-fast-row">
+            <div class="form-group form-group-provider" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:0.70rem;">Provider / Doctor</label>
               <input type="text" class="form-input" id="claim-provider-input" value="${formProvider}" oninput="saveClaimDraft()" placeholder="e.g. Dr. Adams, Physical Therapy" required>
             </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Bill / Charge Amount ($)</label>
-              <input type="number" step="0.01" min="0" class="form-input" id="claim-amount-input" value="${formAmount}" oninput="saveClaimDraft()" placeholder="e.g. 250.00 (billed or paid)" required>
+            <div class="form-group form-group-amount" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:0.70rem;">Amount ($)</label>
+              <input type="number" step="0.01" min="0" class="form-input" id="claim-amount-input" value="${formAmount}" oninput="saveClaimDraft()" placeholder="250.00" required>
+            </div>
+            <div class="form-group form-group-date" style="margin-bottom:0;">
+              <label class="form-label" style="font-size:0.70rem;">Date</label>
+              <input type="date" class="form-input" id="claim-date-input" value="${formDate}" oninput="saveClaimDraft()" onchange="saveClaimDraft()" required>
+            </div>
+            <div class="form-group form-group-btn" style="margin-bottom:0;">
+              <button type="submit" class="btn btn-primary claims-fast-add-btn">
+                <i data-lucide="plus" style="width:14px;height:14px;"></i>
+                <span>Add</span>
+              </button>
             </div>
           </div>
 
-          <div class="claims-form-row-2">
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Who Submits Claim?</label>
-              <select class="form-select" id="claim-submission-select" onchange="handleSubmissionTypeChange(this.value)">
-                <option value="provider" ${formSubmission === 'provider' ? 'selected' : ''}>🏢 Provider Submits (Courtesy)</option>
-                <option value="self" ${formSubmission === 'self' ? 'selected' : ''}>👤 I / Included Health Submit</option>
-              </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Expected Payout</label>
-              <select class="form-select" id="claim-payout-select" onchange="handlePayoutMethodChange(this.value)">
-                <option value="direct_deposit" ${formPayout === 'direct_deposit' ? 'selected' : ''}>🏦 Direct Deposit (Monarch)</option>
-                <option value="check" ${formPayout === 'check' ? 'selected' : ''}>✉️ Mailed Paper Check</option>
-              </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Current Stage</label>
-              <select class="form-select" id="claim-stage-select" onchange="handleStageSelectChange(this.value)">
-                <option value="with_included_health" ${formStage === 'with_included_health' ? 'selected' : ''}>🔵 Pending Insurance</option>
-                <option value="check_due" ${formStage === 'check_due' ? 'selected' : ''}>🟢 Check / Deposit Due</option>
-                <option value="ready_to_send" ${formStage === 'ready_to_send' ? 'selected' : ''}>🟡 Send to Included Health</option>
-                <option value="need_superbill" ${formStage === 'need_superbill' ? 'selected' : ''}>🔴 Need Superbill</option>
-                <option value="settled" ${formStage === 'settled' ? 'selected' : ''}>⚪ Settled &amp; Reconciled</option>
-              </select>
-            </div>
-          </div>
+          <!-- Discreet Toggle for More Options -->
+          <button type="button" class="claims-options-toggle" onclick="toggleClaimOptionsDrawer()" id="claims-options-toggle-btn">
+            <span id="claims-options-toggle-text">${isDrawerOpen ? '▴ Hide extra options' : '▾ More options (Filing, Payout, Notes)'}</span>
+          </button>
 
-          <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;">
-            <div class="form-group" id="claim-superbill-group" style="display:${formSubmission === 'self' ? 'block' : 'none'};margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Superbill Status</label>
-              <select class="form-select" id="claim-superbill-select" onchange="handleSuperbillStatusChange(this.value)">
-                <option value="have" ${formSuperbill === 'have' ? 'selected' : ''}>✅ Have Superbill / Invoice</option>
-                <option value="need" ${formSuperbill === 'need' ? 'selected' : ''}>❌ Need Superbill from Office</option>
-              </select>
+          <!-- Drawer for Advanced Options -->
+          <div class="claims-options-drawer ${isDrawerOpen ? 'open' : ''}" id="claims-options-drawer">
+            <div class="claims-drawer-grid">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:0.70rem;">Who Submits Claim?</label>
+                <select class="form-select" id="claim-submission-select" onchange="handleSubmissionTypeChange(this.value)">
+                  <option value="provider" ${formSubmission === 'provider' ? 'selected' : ''}>🏢 Provider Submits (Courtesy)</option>
+                  <option value="self" ${formSubmission === 'self' ? 'selected' : ''}>👤 I / Included Health Submit</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:0.70rem;">Expected Payout</label>
+                <select class="form-select" id="claim-payout-select" onchange="handlePayoutMethodChange(this.value)">
+                  <option value="direct_deposit" ${formPayout === 'direct_deposit' ? 'selected' : ''}>🏦 Direct Deposit (Monarch)</option>
+                  <option value="check" ${formPayout === 'check' ? 'selected' : ''}>✉️ Mailed Paper Check</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:0.70rem;">Current Stage</label>
+                <select class="form-select" id="claim-stage-select" onchange="handleStageSelectChange(this.value)">
+                  <option value="with_included_health" ${formStage === 'with_included_health' ? 'selected' : ''}>🔵 Pending Insurance</option>
+                  <option value="check_due" ${formStage === 'check_due' ? 'selected' : ''}>🟢 Check / Deposit Due</option>
+                  <option value="ready_to_send" ${formStage === 'ready_to_send' ? 'selected' : ''}>🟡 Send to Included Health</option>
+                  <option value="need_superbill" ${formStage === 'need_superbill' ? 'selected' : ''}>🔴 Need Superbill</option>
+                  <option value="settled" ${formStage === 'settled' ? 'selected' : ''}>⚪ Settled &amp; Reconciled</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group" style="margin-bottom:0;">
-              <label class="form-label" style="font-size:0.75rem;">Next Action (Immediate step)</label>
-              <input type="text" class="form-input" id="claim-nextaction-input" value="${formNextAction}" oninput="saveClaimDraft()">
-            </div>
-          </div>
 
-          <div class="claims-add-btn-wrap">
-            <button type="submit" class="btn btn-primary btn-sm">
-              <i data-lucide="plus" style="width:14px;height:14px;"></i>
-              <span>Add Claim</span>
-            </button>
+            <div style="display:grid;grid-template-columns:1fr;gap:10px;margin-top:10px;">
+              <div class="form-group" id="claim-superbill-group" style="display:${formSubmission === 'self' ? 'block' : 'none'};margin-bottom:0;">
+                <label class="form-label" style="font-size:0.70rem;">Superbill Status</label>
+                <select class="form-select" id="claim-superbill-select" onchange="handleSuperbillStatusChange(this.value)">
+                  <option value="have" ${formSuperbill === 'have' ? 'selected' : ''}>✅ Have Superbill / Invoice</option>
+                  <option value="need" ${formSuperbill === 'need' ? 'selected' : ''}>❌ Need Superbill from Office</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:0.70rem;">Next Action (Immediate step)</label>
+                <input type="text" class="form-input" id="claim-nextaction-input" value="${formNextAction}" oninput="saveClaimDraft()">
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -391,6 +402,19 @@ function setClaimsFilter(filter) {
 }
 
 /**
+ * Toggle Options Drawer in Quick Add Form
+ */
+function toggleClaimOptionsDrawer() {
+  isClaimOptionsDrawerOpen = !isClaimOptionsDrawerOpen;
+  const drawer = document.getElementById('claims-options-drawer');
+  const text = document.getElementById('claims-options-toggle-text');
+  if (drawer) drawer.classList.toggle('open', isClaimOptionsDrawerOpen);
+  if (text) {
+    text.innerText = isClaimOptionsDrawerOpen ? '▴ Hide extra options' : '▾ More options (Filing, Payout, Notes)';
+  }
+}
+
+/**
  * Form changes: auto-fill next action & toggle fields
  */
 function handleSubmissionTypeChange(val) {
@@ -493,6 +517,7 @@ function handleQuickAddClaim(e) {
   });
 
   clearClaimDraft();
+  isClaimOptionsDrawerOpen = false;
 
   // Reset inputs
   document.getElementById('claim-provider-input').value = '';

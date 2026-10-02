@@ -203,35 +203,82 @@
   gap: 8px;
 }
 
-.claims-grid-form {
+/* Quick Add Fast Row (Option 1: Streamlined Fast Log) */
+.claims-fast-row {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1fr;
+  grid-template-columns: 2fr 1.1fr 1.2fr auto;
   gap: 10px;
+  align-items: flex-end;
 }
 
-@media (max-width: 540px) {
-  .claims-grid-form {
-    grid-template-columns: 1fr;
+.claims-fast-add-btn {
+  height: 38px;
+  padding: 0 16px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 580px) {
+  .claims-fast-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .form-group-provider {
+    grid-column: span 2;
+  }
+  .form-group-btn {
+    grid-column: span 2;
+  }
+  .claims-fast-add-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
-.claims-form-row-2 {
+.claims-options-toggle {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  margin-top: 10px;
+  font-family: var(--font-sans);
+  transition: opacity var(--transition-fast);
+}
+
+.claims-options-toggle:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+.claims-options-drawer {
+  display: none;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-light);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.claims-options-drawer.open {
+  display: block;
+}
+
+.claims-drawer-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 10px;
-  margin-top: 10px;
 }
 
 @media (max-width: 540px) {
-  .claims-form-row-2 {
+  .claims-drawer-grid {
     grid-template-columns: 1fr;
   }
-}
-
-.claims-add-btn-wrap {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 12px;
 }
 
 /* Filter Bar */
