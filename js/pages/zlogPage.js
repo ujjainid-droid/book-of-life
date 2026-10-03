@@ -3,20 +3,64 @@
    Dedicated Behavior Timeline, 5-Star Ratings, Aggression Tracker & Titration
    ========================================================================== */
 
-let activeZLogSubTab = 'timeline'; // 'timeline' | 'calendar' | 'titration' | 'insights'
+function getInitialZLogSubTab() {
+  try {
+    const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+    if (rawHash.startsWith('zlog')) {
+      const parts = rawHash.split(/[\/\-_?]/);
+      if (parts.length > 1) {
+        const sub = parts[1].replace('tab=', '').toLowerCase();
+        if (['timeline', 'calendar', 'titration', 'insights'].includes(sub)) {
+          return sub;
+        }
+      }
+    }
+    const saved = localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB');
+    if (saved && ['timeline', 'calendar', 'titration', 'insights'].includes(saved)) {
+      return saved;
+    }
+  } catch (e) {}
+  return 'timeline';
+}
+
+let activeZLogSubTab = getInitialZLogSubTab();
 let zlogRatingFilter = 'all'; // 'all' | 5 | 4 | 3 | 2 | 1
 let zlogPeriodFilter = 'all'; // 'all' | '2026' | '2025' | '2024'
 let zlogAggressionFilter = false; // true | false
 let zlogSearchQuery = '';
 let zlogTimelineLimit = 50;
 let zlogExpandedMonths = {};
-let zlogCalendarYear = (typeof new Date === 'function') ? new Date().getFullYear() : 2026;
-let zlogCalendarMonth = (typeof new Date === 'function') ? (new Date().getMonth() + 1) : 9;
-let zlogCalendarRatingFilter = 'all'; // 'all' | 5 | 4 | 3 | 2 | 1 | 'good' | 'aggression' | 'unrated'
+let zlogCalendarYear = (() => {
+  try {
+    const savedY = parseInt(localStorage.getItem('BOL_ZLOG_CAL_YEAR'), 10);
+    if (!isNaN(savedY) && savedY >= 2024 && savedY <= 2030) return savedY;
+  } catch (e) {}
+  return (typeof new Date === 'function') ? new Date().getFullYear() : 2026;
+})();
+let zlogCalendarMonth = (() => {
+  try {
+    const savedM = parseInt(localStorage.getItem('BOL_ZLOG_CAL_MONTH'), 10);
+    if (!isNaN(savedM) && savedM >= 1 && savedM <= 12) return savedM;
+  } catch (e) {}
+  return (typeof new Date === 'function') ? (new Date().getMonth() + 1) : 9;
+})();
+let zlogCalendarRatingFilter = (() => {
+  try {
+    const savedF = localStorage.getItem('BOL_ZLOG_CAL_FILTER');
+    if (savedF) return savedF;
+  } catch (e) {}
+  return 'all';
+})();
 
-function renderZLogPage() {
+function renderZLogPage(targetSubTab) {
   const container = document.getElementById('bunker-subview-frame') || document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
+
+  if (targetSubTab && ['timeline', 'calendar', 'titration', 'insights'].includes(targetSubTab)) {
+    activeZLogSubTab = targetSubTab;
+  } else if (!activeZLogSubTab) {
+    activeZLogSubTab = getInitialZLogSubTab();
+  }
 
   // Unconditional auto-repair check: if storage has old seed version, < 35 titrations, old defaulted >300 good days, or missing 2026-09-19 entry
   const currentStats = storage.getZLogStats();
@@ -163,8 +207,19 @@ function renderZLogPage() {
 }
 
 function switchZLogSubTab(subTab) {
-  activeZLogSubTab = subTab;
-  renderZLogPage();
+  if (['timeline', 'calendar', 'titration', 'insights'].includes(subTab)) {
+    activeZLogSubTab = subTab;
+    try {
+      localStorage.setItem('BOL_ZLOG_ACTIVE_SUBTAB', subTab);
+      const targetHash = (subTab === 'timeline') ? 'zlog' : `zlog/${subTab}`;
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', `#${targetHash}`);
+      } else {
+        window.location.hash = targetHash;
+      }
+    } catch (e) {}
+  }
+  renderZLogPage(subTab);
 }
 
 /* --------------------------------------------------------------------------
@@ -711,9 +766,12 @@ function openMonthInCalendar(monthKey) {
     const parts = monthKey.split('-');
     zlogCalendarYear = parseInt(parts[0], 10);
     zlogCalendarMonth = parseInt(parts[1], 10);
+    try {
+      localStorage.setItem('BOL_ZLOG_CAL_YEAR', zlogCalendarYear);
+      localStorage.setItem('BOL_ZLOG_CAL_MONTH', zlogCalendarMonth);
+    } catch (e) {}
   }
-  activeZLogSubTab = 'calendar';
-  renderZLogPage();
+  switchZLogSubTab('calendar');
 }
 
 function navigateZLogCalendarMonth(delta) {
@@ -728,6 +786,10 @@ function navigateZLogCalendarMonth(delta) {
   }
   zlogCalendarMonth = m;
   zlogCalendarYear = y;
+  try {
+    localStorage.setItem('BOL_ZLOG_CAL_YEAR', zlogCalendarYear);
+    localStorage.setItem('BOL_ZLOG_CAL_MONTH', zlogCalendarMonth);
+  } catch (e) {}
   renderZLogCalendar();
 }
 
@@ -735,16 +797,22 @@ function jumpZLogCalendarToday() {
   const now = new Date();
   zlogCalendarYear = now.getFullYear();
   zlogCalendarMonth = now.getMonth() + 1;
+  try {
+    localStorage.setItem('BOL_ZLOG_CAL_YEAR', zlogCalendarYear);
+    localStorage.setItem('BOL_ZLOG_CAL_MONTH', zlogCalendarMonth);
+  } catch (e) {}
   renderZLogCalendar();
 }
 
 function setZLogCalendarMonth(m) {
   zlogCalendarMonth = parseInt(m, 10);
+  try { localStorage.setItem('BOL_ZLOG_CAL_MONTH', zlogCalendarMonth); } catch (e) {}
   renderZLogCalendar();
 }
 
 function setZLogCalendarYear(y) {
   zlogCalendarYear = parseInt(y, 10);
+  try { localStorage.setItem('BOL_ZLOG_CAL_YEAR', zlogCalendarYear); } catch (e) {}
   renderZLogCalendar();
 }
 
@@ -754,6 +822,7 @@ function setZLogCalendarFilter(filterVal) {
   } else {
     zlogCalendarRatingFilter = filterVal;
   }
+  try { localStorage.setItem('BOL_ZLOG_CAL_FILTER', zlogCalendarRatingFilter); } catch (e) {}
   renderZLogCalendar();
 }
 
@@ -1862,8 +1931,20 @@ function renderZLogTitration() {
 /* --------------------------------------------------------------------------
    Sub-Tab 3: Patterns, Triangulation & "What Works" Playbook
    -------------------------------------------------------------------------- */
-let zlogInsightsTimeframe = '3m'; // '3m' default (focus on last 3 months for rapid developmental pace), '6m', '12m', 'all'
-let zlogInsightsCompareMode = 'none'; // 'none', 'prev', 'baseline'
+let zlogInsightsTimeframe = (() => {
+  try {
+    const s = localStorage.getItem('BOL_ZLOG_INSIGHTS_TIMEFRAME');
+    if (s && ['all', '3m', '6m', '12m'].includes(s)) return s;
+  } catch (e) {}
+  return '3m'; // '3m' default (focus on last 3 months for rapid developmental pace), '6m', '12m', 'all'
+})();
+let zlogInsightsCompareMode = (() => {
+  try {
+    const s = localStorage.getItem('BOL_ZLOG_INSIGHTS_COMPARE');
+    if (s && ['none', 'prev', 'baseline'].includes(s)) return s;
+  } catch (e) {}
+  return 'none'; // 'none', 'prev', 'baseline'
+})();
 let zlogInsightsCocktailA = 'cocktail_peak';
 let zlogInsightsCocktailB = 'cocktail_sertraline_boost';
 
@@ -2198,11 +2279,13 @@ function getCocktailComparisonNarrative(cA, cB) {
 
 function setInsightsTimeframe(val) {
   zlogInsightsTimeframe = val;
+  try { localStorage.setItem('BOL_ZLOG_INSIGHTS_TIMEFRAME', val); } catch (e) {}
   renderZLogInsights();
 }
 
 function setInsightsCompareMode(val) {
   zlogInsightsCompareMode = val;
+  try { localStorage.setItem('BOL_ZLOG_INSIGHTS_COMPARE', val); } catch (e) {}
   renderZLogInsights();
 }
 
@@ -2224,7 +2307,13 @@ function selectInsightsCocktailCard(cocktailId) {
   renderZLogInsights();
 }
 
-let zlogRegimenContextFilter = 'all'; // 'all', 'school', 'home'
+let zlogRegimenContextFilter = (() => {
+  try {
+    const s = localStorage.getItem('BOL_ZLOG_REGIMEN_CONTEXT');
+    if (s && ['all', 'school', 'home'].includes(s)) return s;
+  } catch (e) {}
+  return 'all'; // 'all', 'school', 'home'
+})();
 let zlogExpandedRegimenId = null;
 
 function isSchoolDay(e) {

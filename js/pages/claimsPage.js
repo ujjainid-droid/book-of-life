@@ -2,7 +2,13 @@
    Book of Life / Life OS - Medical Claims & Recovery Tracker Page
    ========================================================================== */
 
-let activeClaimsFilter = 'all';
+let activeClaimsFilter = (() => {
+  try {
+    const s = localStorage.getItem('BOL_CLAIMS_FILTER');
+    if (s) return s;
+  } catch (e) {}
+  return 'all';
+})();
 let editingClaimId = null;
 let isClaimOptionsDrawerOpen = false;
 
@@ -398,6 +404,9 @@ function renderClaimRowHtml(claim) {
  */
 function setClaimsFilter(filter) {
   activeClaimsFilter = filter;
+  try {
+    localStorage.setItem('BOL_CLAIMS_FILTER', filter);
+  } catch (e) {}
   renderClaimsPage();
 }
 

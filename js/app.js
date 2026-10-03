@@ -19,16 +19,39 @@ document.addEventListener('DOMContentLoaded', () => {
   updateThemeIcon();
 
   // Restore saved view (or URL hash)
-  const hashView = window.location.hash.replace('#', '');
-  const savedView = (hashView === 'claims' || hashView === 'zlog' || hashView === 'bunker' || hashView === 'podcasts' || hashView === 'cover') 
-    ? hashView 
-    : (localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover');
+  function parseHashRoute() {
+    const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+    if (!rawHash) {
+      const saved = localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover';
+      return { view: saved, subView: null };
+    }
 
-  switchAppView(savedView);
+    if (rawHash.startsWith('zlog')) {
+      const parts = rawHash.split(/[\/\-_?]/);
+      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : null;
+      return { view: 'zlog', subView: sub };
+    }
+    if (rawHash.startsWith('claims')) return { view: 'claims', subView: null };
+    if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
+    if (rawHash.startsWith('cover')) return { view: 'cover', subView: null };
+    if (rawHash.startsWith('sanctuary') || rawHash.startsWith('today')) return { view: 'sanctuary', subView: null };
+    return { view: rawHash, subView: null };
+  }
+
+  const initialRoute = parseHashRoute();
+  switchAppView(initialRoute.view, initialRoute.subView);
   updateEnergyDialUI();
 
   // Refresh header badges
   refreshAppBadges();
+
+  // Hash change listener for browser forward/back buttons
+  window.addEventListener('hashchange', () => {
+    const r = parseHashRoute();
+    if (r.view !== currentView || (r.view === 'zlog' && r.subView && typeof activeZLogSubTab !== 'undefined' && r.subView !== activeZLogSubTab)) {
+      switchAppView(r.view, r.subView);
+    }
+  });
 
   // Keyboard: Escape closes modals
   document.addEventListener('keydown', (e) => {
@@ -39,9 +62,15 @@ document.addEventListener('DOMContentLoaded', () => {
 /* --------------------------------------------------------------------------
    View Switching (Cover vs Sanctuary vs Adulting Bunker vs Podcasts)
    -------------------------------------------------------------------------- */
-function switchAppView(viewName) {
+function switchAppView(viewName, subViewName) {
+  if (viewName && typeof viewName === 'string' && viewName.includes('/')) {
+    const parts = viewName.split('/');
+    viewName = parts[0];
+    if (!subViewName) subViewName = parts[1];
+  }
+
   if (viewName === 'claims' || viewName === 'zlog' || viewName === 'bunker') {
-    currentView = (viewName === 'zlog') ? 'zlog' : 'claims';
+    currentView = (viewName === 'zlog') ? 'zlog' : (viewName === 'bunker' ? (localStorage.getItem('BOL_LAST_BUNKER_SUBVIEW') || 'zlog') : 'claims');
   } else if (viewName === 'podcasts') {
     currentView = 'podcasts';
   } else if (viewName === 'cover') {
@@ -50,9 +79,38 @@ function switchAppView(viewName) {
     currentView = 'sanctuary';
   }
 
+  // Determine subview for zlog if provided
+  if (currentView === 'zlog') {
+    if (subViewName && ['timeline', 'calendar', 'titration', 'insights'].includes(subViewName)) {
+      try { localStorage.setItem('BOL_ZLOG_ACTIVE_SUBTAB', subViewName); } catch (e) {}
+      if (typeof activeZLogSubTab !== 'undefined') activeZLogSubTab = subViewName;
+    }
+  }
+
   try {
     localStorage.setItem('BOL_ACTIVE_VIEW', currentView);
-    window.location.hash = (currentView === 'cover') ? 'cover' : (currentView === 'sanctuary' ? '' : currentView);
+    let targetHash = '';
+    if (currentView === 'cover') {
+      targetHash = 'cover';
+    } else if (currentView === 'zlog') {
+      const zTab = subViewName || (typeof activeZLogSubTab !== 'undefined' ? activeZLogSubTab : localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB')) || 'timeline';
+      targetHash = (zTab && zTab !== 'timeline') ? `zlog/${zTab}` : 'zlog';
+    } else if (currentView === 'claims') {
+      targetHash = 'claims';
+    } else if (currentView === 'podcasts') {
+      targetHash = 'podcasts';
+    } else if (currentView === 'sanctuary') {
+      targetHash = '';
+    }
+
+    const currentHash = window.location.hash.replace(/^#\/?/, '');
+    if (currentHash !== targetHash) {
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', targetHash ? `#${targetHash}` : window.location.pathname + window.location.search);
+      } else {
+        window.location.hash = targetHash;
+      }
+    }
   } catch (e) {}
 
   const dateNavContainer = document.getElementById('header-date-nav-container');
@@ -71,7 +129,7 @@ function switchAppView(viewName) {
     if (energyDial) energyDial.style.display = 'none';
     if (bunkerBtn) bunkerBtn.classList.add('active');
 
-    renderAdultingBunkerShell(currentView);
+    renderAdultingBunkerShell(currentView, subViewName);
   } else if (currentView === 'podcasts') {
     if (dateNavContainer) dateNavContainer.style.display = 'none';
     if (energyDial) energyDial.style.display = 'none';
@@ -106,7 +164,7 @@ function toggleAdultingBunker() {
   }
 }
 
-function renderAdultingBunkerShell(subView) {
+function renderAdultingBunkerShell(subView, zlogSubTab) {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
 
@@ -155,7 +213,7 @@ function renderAdultingBunkerShell(subView) {
   const subFrame = document.getElementById('bunker-subview-frame');
   if (subFrame) {
     if (subView === 'zlog') {
-      if (typeof renderZLogPage === 'function') renderZLogPage();
+      if (typeof renderZLogPage === 'function') renderZLogPage(zlogSubTab);
     } else {
       if (typeof renderClaimsPage === 'function') renderClaimsPage();
     }
