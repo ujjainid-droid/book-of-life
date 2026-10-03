@@ -2224,6 +2224,119 @@ function selectInsightsCocktailCard(cocktailId) {
   renderZLogInsights();
 }
 
+let zlogRegimenContextFilter = 'all'; // 'all', 'school', 'home'
+let zlogExpandedRegimenId = null;
+
+function isSchoolDay(e) {
+  if (!e || !e.date) return false;
+  const parts = e.date.split('-').map(Number);
+  if (parts.length < 3) return false;
+  const dt = new Date(parts[0], parts[1] - 1, parts[2]);
+  const day = dt.getDay();
+  if (day === 0 || day === 6) return false;
+
+  const dateStr = e.date;
+  const notesLower = (e.notes || '').toLowerCase();
+  if (notesLower.includes('no school') || notesLower.includes('spring break') || notesLower.includes('winter break') || notesLower.includes('thanksgiving')) {
+    return false;
+  }
+
+  if ((dateStr >= '2025-06-25' && dateStr <= '2025-08-31') || 
+      (dateStr >= '2026-06-19' && dateStr <= '2026-08-31')) {
+    return false;
+  }
+
+  return true;
+}
+
+function computeRegimenMetrics(list) {
+  const total = list.length;
+  if (total === 0) {
+    return {
+      total: 0,
+      aggDays: 0,
+      pctAgg: 0,
+      goodDays: 0,
+      pctGood: 0,
+      schoolTotal: 0,
+      schoolAgg: 0,
+      pctSchoolAgg: 0,
+      homeTotal: 0,
+      homeAgg: 0,
+      pctHomeAgg: 0,
+      avgRating: '0.0',
+      rawAvg: 0
+    };
+  }
+
+  let aggDays = 0;
+  let goodDays = 0;
+  let ratingSum = 0;
+  let ratedCount = 0;
+
+  let schoolTotal = 0;
+  let schoolAgg = 0;
+  let homeTotal = 0;
+  let homeAgg = 0;
+
+  list.forEach(e => {
+    const isAgg = (e.tags && (e.tags.includes('aggression') || e.tags.includes('meltdown'))) ||
+                  (e.indicators && (e.indicators.includes('aggression') || e.indicators.includes('meltdown'))) ||
+                  Boolean(e.aggression);
+    if (isAgg) aggDays++;
+
+    const isGood = (e.rating && e.rating >= 4) ||
+                   (e.tags && (e.tags.includes('calm') || e.tags.includes('happy') || e.tags.includes('focused')));
+    if (isGood) goodDays++;
+
+    if (e.rating && typeof e.rating === 'number' && e.rating > 0) {
+      ratingSum += e.rating;
+      ratedCount++;
+    }
+
+    if (isSchoolDay(e)) {
+      schoolTotal++;
+      if (isAgg) schoolAgg++;
+    } else {
+      homeTotal++;
+      if (isAgg) homeAgg++;
+    }
+  });
+
+  const pctAgg = Math.round((aggDays / total) * 100);
+  const pctGood = Math.round((goodDays / total) * 100);
+  const pctSchoolAgg = schoolTotal > 0 ? Math.round((schoolAgg / schoolTotal) * 100) : 0;
+  const pctHomeAgg = homeTotal > 0 ? Math.round((homeAgg / homeTotal) * 100) : 0;
+  const rawAvg = ratedCount > 0 ? (ratingSum / ratedCount) : 0;
+  const avgRating = ratedCount > 0 ? rawAvg.toFixed(2) : 'N/A';
+
+  return {
+    total,
+    aggDays,
+    pctAgg,
+    goodDays,
+    pctGood,
+    schoolTotal,
+    schoolAgg,
+    pctSchoolAgg,
+    homeTotal,
+    homeAgg,
+    pctHomeAgg,
+    avgRating,
+    rawAvg
+  };
+}
+
+function setRegimenContextFilter(filter) {
+  zlogRegimenContextFilter = filter;
+  renderZLogInsights();
+}
+
+function toggleRegimenDrawer(id) {
+  zlogExpandedRegimenId = zlogExpandedRegimenId === id ? null : id;
+  renderZLogInsights();
+}
+
 // Backward-compatible aliases
 const getEraComparisonNarrative = getCocktailComparisonNarrative;
 const setInsightsEraComparison = setInsightsCocktailComparison;
@@ -2236,6 +2349,8 @@ window.setInsightsCocktailComparison = setInsightsCocktailComparison;
 window.selectInsightsCocktailCard = selectInsightsCocktailCard;
 window.setInsightsEraComparison = setInsightsEraComparison;
 window.selectInsightsEraCard = selectInsightsEraCard;
+window.setRegimenContextFilter = setRegimenContextFilter;
+window.toggleRegimenDrawer = toggleRegimenDrawer;
 
 function renderZLogInsights() {
   const container = document.getElementById('zlog-subview-container');
@@ -2256,15 +2371,25 @@ function renderZLogInsights() {
   const curDowStats = computeDowStats(curEntries);
   const cmpDowStats = cmpEntries ? computeDowStats(cmpEntries) : null;
 
-  // Cocktail stats (ranked 1 to 5)
-  const cocktailStatsList = CLINICAL_COCKTAILS.map(c => {
+  // Cocktail stats with school day metrics & aggression-weighted sorting
+  const rawCocktailList = CLINICAL_COCKTAILS.map(c => {
     const cEntries = allEntries.filter(e => e.date && e.date >= c.start && e.date <= c.end);
-    const pStats = computePeriodStats(cEntries);
+    const pStats = computeRegimenMetrics(cEntries);
     return { ...c, ...pStats };
   });
 
-  const selectedCocktailA = cocktailStatsList.find(e => e.id === zlogInsightsCocktailA) || cocktailStatsList[0];
-  const selectedCocktailB = cocktailStatsList.find(e => e.id === zlogInsightsCocktailB) || cocktailStatsList[3];
+  // Sort cocktails: Lowest School Aggression Rate is #1
+  const rankedCocktailList = [...rawCocktailList].sort((a, b) => {
+    if (zlogRegimenContextFilter === 'school') {
+      return a.pctSchoolAgg - b.pctSchoolAgg;
+    } else if (zlogRegimenContextFilter === 'home') {
+      return a.pctHomeAgg - b.pctHomeAgg;
+    } else {
+      const scoreA = a.pctSchoolAgg * 0.7 + a.pctAgg * 0.3;
+      const scoreB = b.pctSchoolAgg * 0.7 + b.pctAgg * 0.3;
+      return scoreA - scoreB;
+    }
+  });
 
   container.innerHTML = `
     <div class="zlog-insights-container">
@@ -2365,172 +2490,142 @@ function renderZLogInsights() {
       <!-- SECTION 1: Monthly Aggression & Meltdown Trendline (2025 - 2026) -->
       ${buildMonthlyTrendlineSection(allEntries)}
 
-      <!-- SECTION 2: Medication Combination & Cocktails Leaderboard (Option 1) -->
+      <!-- SECTION 2: Medication Combination Scorecard (Ranked by Behavior Control) -->
       <div class="zlog-insights-card">
-        <div class="zlog-insights-header">
+        <div class="zlog-insights-header" style="margin-bottom: 8px;">
           <div>
             <div class="zlog-insights-title">
               <i data-lucide="layers" style="color: #7C5CFC; width: 18px; height: 18px;"></i>
-              <span>Medication Combination Leaderboard &amp; Efficacy Scorecard</span>
+              <span>Medication Regimen Scorecard &amp; Efficacy</span>
             </div>
             <div class="zlog-insights-subtitle">
-              Evaluating distinct multi-drug cocktails tested across 2 years to identify which exact combination provides the highest behavioral regulation and lowest aggression rate.
+              Ranked primarily by <strong>lowest Aggression &amp; Meltdown Rate</strong>, factoring in high-demand <strong>School Days</strong> vs. Weekends &amp; Breaks.
             </div>
           </div>
-          <span style="font-size: 0.70rem; font-weight: 700; color: var(--primary); background: rgba(124, 92, 252, 0.1); padding: 2px 8px; border-radius: var(--radius-full);">
-            5 Cocktails Analyzed
+          <span style="font-size: 0.70rem; font-weight: 700; color: var(--primary); background: rgba(124, 92, 252, 0.1); padding: 3px 10px; border-radius: var(--radius-full);">
+            5 Regimens Tested
           </span>
         </div>
 
-        <!-- #1 Winning Cocktail Spotlight -->
-        <div class="zlog-cocktail-spotlight">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="zlog-rank-badge rank-1">🏆 #1 Ranked Regimen</span>
-              <strong style="font-size: 0.95rem; color: var(--text-primary);">${cocktailStatsList[0].title}</strong>
-            </div>
-            <span style="font-size: 0.72rem; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.12); padding: 3px 10px; border-radius: var(--radius-full);">
-              ${cocktailStatsList[0].pctGood}% Good Days &middot; ${cocktailStatsList[0].pctAgg}% Aggression (${cocktailStatsList[0].total}d)
-            </span>
+        <!-- Filter Context Pills (All vs School vs Home) -->
+        <div class="zlog-context-toggle-bar">
+          <div style="font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+            <span>Ranking Focus:</span>
           </div>
-          <div style="margin: 8px 0; display: flex; flex-wrap: wrap; gap: 6px;">
-            ${cocktailStatsList[0].meds.map(m => `<span class="zlog-med-pill pill-${m.type}">${m.name} ${m.dose}</span>`).join('')}
-          </div>
-          <div style="font-size: 0.74rem; line-height: 1.45; color: var(--text-secondary);">
-            <strong>Why this combination worked best:</strong> Guanfacine XR (2mg) maintained a 24-hour emotional regulation baseline; the 11:00 AM Ritalin booster eliminated the 12:45 PM focus/mood crash; and low-dose Risperdal (0.125mg) provided a crucial safety brake against explosive meltdowns without oversedation.
-          </div>
-        </div>
-
-        <!-- Ranked Cocktails Grid -->
-        <div class="zlog-era-grid">
-          ${cocktailStatsList.map(c => {
-            const isCocktailA = c.id === zlogInsightsCocktailA;
-            const isCocktailB = c.id === zlogInsightsCocktailB;
-            const cardClass = isCocktailA ? 'zlog-era-card is-era-a' : (isCocktailB ? 'zlog-era-card is-era-b' : 'zlog-era-card');
-            const roleBadge = isCocktailA ? '<span class="zlog-delta-tag" style="background: rgba(124, 92, 252, 0.15); color: var(--primary);">Cocktail A [Selected]</span>' : (isCocktailB ? '<span class="zlog-delta-tag" style="background: rgba(13, 148, 136, 0.15); color: #0D9488;">Cocktail B [Selected]</span>' : '');
-
-            return `
-              <div class="${cardClass}" onclick="selectInsightsCocktailCard('${c.id}')" style="border-left: 3px solid ${c.border};">
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 4px;">
-                  <div>
-                    <span class="zlog-rank-badge rank-${c.rank}">#${c.rank} Rank</span>
-                    <div class="zlog-era-name" style="margin-top: 4px;">${c.title}</div>
-                  </div>
-                  ${roleBadge}
-                </div>
-                <div class="zlog-era-dates">${c.dates} (${c.total} days)</div>
-
-                <!-- Medication Pills -->
-                <div style="display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0;">
-                  ${c.meds.map(m => `<span class="zlog-med-pill pill-${m.type}">${m.name} ${m.dose}</span>`).join('')}
-                </div>
-
-                <div class="zlog-era-bar-container">
-                  <div class="zlog-era-bar-row">
-                    <span>Good Days</span>
-                    <strong style="color: #10B981;">${c.pctGood}%</strong>
-                  </div>
-                  <div class="zlog-era-bar-track">
-                    <div class="zlog-era-bar-fill" style="width: ${c.pctGood}%; background: #10B981;"></div>
-                  </div>
-                  <div class="zlog-era-bar-row" style="margin-top: 4px;">
-                    <span>Aggression Rate</span>
-                    <strong style="color: #EF4444;">${c.pctAgg}%</strong>
-                  </div>
-                  <div class="zlog-era-bar-track">
-                    <div class="zlog-era-bar-fill" style="width: ${c.pctAgg}%; background: #EF4444;"></div>
-                  </div>
-                </div>
-
-                <div style="display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); margin-top: 6px; padding-top: 4px; border-top: 1px dashed var(--border-light);">
-                  <span>Avg Rating: <strong>${c.avgRating} / 5.0</strong></span>
-                  <span>${c.goodDays} Good &middot; ${c.aggDays} Agg</span>
-                </div>
-                <div style="font-size: 0.67rem; color: var(--text-secondary); margin-top: 4px; line-height: 1.35;">${c.summary}</div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-
-        <!-- Interactive Cocktail Comparison Box -->
-        <div class="zlog-era-compare-container">
-          <div class="zlog-era-compare-header">
-            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--text-primary);">
-              <i data-lucide="scale" style="width: 16px; height: 16px; color: var(--primary);"></i>
-              <span>Head-to-Head Cocktail Delta Analysis</span>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <div style="display: inline-flex; align-items: center; gap: 4px;">
-                <span style="font-size: 0.68rem; font-weight: 700; color: var(--primary);">Cocktail A:</span>
-                <select class="zlog-insights-select" onchange="setInsightsCocktailComparison(this.value, zlogInsightsCocktailB)">
-                  ${cocktailStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsCocktailA ? 'selected' : ''}>#${e.rank} ${e.title}</option>`).join('')}
-                </select>
-              </div>
-              <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">vs</span>
-              <div style="display: inline-flex; align-items: center; gap: 4px;">
-                <span style="font-size: 0.68rem; font-weight: 700; color: #0D9488;">Cocktail B:</span>
-                <select class="zlog-insights-select" onchange="setInsightsCocktailComparison(zlogInsightsCocktailA, this.value)">
-                  ${cocktailStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsCocktailB ? 'selected' : ''}>#${e.rank} ${e.title}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Comparison Metrics Row -->
-          <div class="zlog-era-compare-grid">
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #10B981;">Good Days Rate</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
-                <span>${selectedCocktailA.pctGood}% &rarr; ${selectedCocktailB.pctGood}%</span>
-                ${formatDeltaBadge(selectedCocktailB.pctGood, selectedCocktailA.pctGood, true)}
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedCocktailA.goodDays}d vs ${selectedCocktailB.goodDays}d</div>
-            </div>
-
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #EF4444;">Aggression Rate</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
-                <span>${selectedCocktailA.pctAgg}% &rarr; ${selectedCocktailB.pctAgg}%</span>
-                ${formatDeltaBadge(selectedCocktailB.pctAgg, selectedCocktailA.pctAgg, false)}
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedCocktailA.aggDays}d vs ${selectedCocktailB.aggDays}d</div>
-            </div>
-
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">Avg Day Rating</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
-                <span>${selectedCocktailA.avgRating} &rarr; ${selectedCocktailB.avgRating}</span>
-                ${formatDeltaBadge(Number(selectedCocktailB.rawAvg), Number(selectedCocktailA.rawAvg), true, '')}
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Rated sample days</div>
-            </div>
-
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Monitored Duration</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
-                <span>${selectedCocktailA.total}d vs ${selectedCocktailB.total}d</span>
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Total logs analyzed</div>
-            </div>
-          </div>
-
-          <div style="font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary); background: rgba(124, 92, 252, 0.04); border-radius: var(--radius-sm); padding: 8px 10px; border: 1px dashed var(--border-light);">
-            ${getCocktailComparisonNarrative(selectedCocktailA, selectedCocktailB)}
+          <div class="zlog-context-pills">
+            <button type="button" class="zlog-context-pill ${zlogRegimenContextFilter === 'all' ? 'active' : ''}" onclick="setRegimenContextFilter('all')">
+              ⚖️ Weighted (70% School + 30% Overall)
+            </button>
+            <button type="button" class="zlog-context-pill ${zlogRegimenContextFilter === 'school' ? 'active' : ''}" onclick="setRegimenContextFilter('school')">
+              🏫 School Days Only (Primary)
+            </button>
+            <button type="button" class="zlog-context-pill ${zlogRegimenContextFilter === 'home' ? 'active' : ''}" onclick="setRegimenContextFilter('home')">
+              🏡 Weekends &amp; Breaks
+            </button>
           </div>
         </div>
 
-        <!-- Clinical Takeaways for Consultation -->
-        <div style="margin-top: 12px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 10px 12px;">
-          <div style="font-size: 0.70rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--primary); display: flex; align-items: center; gap: 6px;">
-            <i data-lucide="clipboard-check" style="width: 14px; height: 14px;"></i>
-            <span>Key Clinical Takeaways from Combination Data:</span>
+        <!-- Scorecard Table -->
+        <div class="zlog-regimen-table-container">
+          <table class="zlog-regimen-table">
+            <thead>
+              <tr>
+                <th style="width: 50px; text-align: center;">Rank</th>
+                <th>Medication Regimen &amp; Formulation</th>
+                <th class="hero-col" style="text-align: center;">🏫 School Aggression (Hero)</th>
+                <th style="text-align: center;">🏡 Home Aggression</th>
+                <th style="text-align: center;">Total Agg %</th>
+                <th style="text-align: center;">Good Days %</th>
+                <th style="text-align: center;">Monitored</th>
+                <th style="text-align: center; width: 75px;">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rankedCocktailList.map((c, idx) => {
+                const isExpanded = zlogExpandedRegimenId === c.id;
+                const schoolChipCls = c.pctSchoolAgg <= 15 ? 'low' : (c.pctSchoolAgg <= 30 ? 'med' : 'high');
+                const homeChipCls = c.pctHomeAgg <= 15 ? 'low' : (c.pctHomeAgg <= 30 ? 'med' : 'high');
+                const totalChipCls = c.pctAgg <= 15 ? 'low' : (c.pctAgg <= 30 ? 'med' : 'high');
+                const rankBadge = idx === 0 
+                  ? `<span class="zlog-rank-badge rank-1" style="font-weight: 800;">🏆 #1</span>`
+                  : `<span class="zlog-rank-badge rank-${Math.min(idx + 1, 5)}">#${idx + 1}</span>`;
+
+                return `
+                  <tr class="zlog-regimen-row" style="${idx === 0 ? 'background: rgba(16, 185, 129, 0.03);' : ''}">
+                    <td style="text-align: center; vertical-align: middle;">
+                      ${rankBadge}
+                    </td>
+                    <td>
+                      <div style="font-weight: 700; color: var(--text-primary); font-size: 0.82rem; display: flex; align-items: center; gap: 6px;">
+                        <span>${c.title}</span>
+                        ${idx === 0 ? `<span style="font-size: 0.65rem; color: #059669; font-weight: 700; background: rgba(16, 185, 129, 0.12); padding: 1px 6px; border-radius: var(--radius-full);">Most Effective</span>` : ''}
+                      </div>
+                      <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">
+                        ${c.dates}
+                      </div>
+                      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px;">
+                        ${c.meds.map(m => `<span class="zlog-med-pill pill-${m.type}">${m.name} ${m.dose}</span>`).join('')}
+                      </div>
+                    </td>
+                    <td class="hero-col" style="text-align: center; vertical-align: middle;">
+                      <div class="zlog-agg-chip ${schoolChipCls}">
+                        <span>${c.pctSchoolAgg}%</span>
+                        <span style="font-size: 0.66rem; font-weight: 500; opacity: 0.85;">(${c.schoolAgg}/${c.schoolTotal}d)</span>
+                      </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                      <div class="zlog-agg-chip ${homeChipCls}">
+                        <span>${c.pctHomeAgg}%</span>
+                        <span style="font-size: 0.66rem; font-weight: 500; opacity: 0.85;">(${c.homeAgg}/${c.homeTotal}d)</span>
+                      </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                      <div class="zlog-agg-chip ${totalChipCls}">
+                        <span>${c.pctAgg}%</span>
+                        <span style="font-size: 0.66rem; font-weight: 500; opacity: 0.85;">(${c.aggDays}/${c.total}d)</span>
+                      </div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                      <strong style="color: #10B981; font-size: 0.85rem;">${c.pctGood}%</strong>
+                      <div style="font-size: 0.66rem; color: var(--text-muted);">${c.goodDays}d good</div>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle; font-size: 0.74rem; color: var(--text-muted); white-space: nowrap;">
+                      <strong>${c.total}</strong> days
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                      <button type="button" class="btn btn-secondary" onclick="toggleRegimenDrawer('${c.id}')" style="font-size: 0.68rem; padding: 3px 8px; white-space: nowrap;" title="Show clinical context">
+                        ${isExpanded ? '▲ Hide' : '💬 Note'}
+                      </button>
+                    </td>
+                  </tr>
+                  ${isExpanded ? `
+                    <tr>
+                      <td colspan="8" style="padding: 0; border-bottom: 1px solid var(--border-medium);">
+                        <div class="zlog-regimen-drawer">
+                          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 3px; display: flex; align-items: center; gap: 6px;">
+                            <i data-lucide="stethoscope" style="width: 13px; height: 13px; color: var(--primary);"></i>
+                            <span>Clinical Context: ${c.title}</span>
+                          </div>
+                          <div style="margin-bottom: 4px;">${c.summary}</div>
+                          <div style="color: var(--primary); font-weight: 600;">
+                            💡 ${c.clinicalNote}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ` : ''}
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Single Clean Clinical Takeaway Strip -->
+        <div style="margin-top: 10px; background: rgba(124, 92, 252, 0.05); border: 1px solid rgba(124, 92, 252, 0.15); border-radius: var(--radius-sm); padding: 8px 12px; display: flex; align-items: flex-start; gap: 8px;">
+          <i data-lucide="info" style="width: 16px; height: 16px; color: var(--primary); flex-shrink: 0; margin-top: 2px;"></i>
+          <div style="font-size: 0.73rem; line-height: 1.45; color: var(--text-secondary);">
+            <strong>Core Finding for Dr. Barness:</strong> School days expose true medication efficacy under academic and social demands. Under unbuffered or single-agent regimens (Cocktails #4 &amp; #5), school-day aggression surged up to <strong>44%</strong> (e.g. the Sep 11 after-school crisis). The complete <strong>4-pillar synergy</strong> (Guanfacine XR 2mg + Zoloft 50mg + Ritalin midday booster + low-dose Risperdal 0.125mg) maintained the lowest school aggression at <strong>14%</strong> while sustaining <strong>72% Good Days</strong>.
           </div>
-          <ul style="font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary); margin: 6px 0 0 16px; padding: 0;">
-            <li><strong>Synergy Required:</strong> Single-drug therapies (or Zoloft + Guanfacine alone) left aggression at 32–48%. Achieving &gt;64% Good Days required the complete 4-pillar cocktail (Guanfacine 2mg XR + Zoloft 50mg + Ritalin + low-dose Risperdal).</li>
-            <li><strong>Midday Booster is Essential:</strong> Adding the 11:00 AM Ritalin booster (10mg) bridged through early afternoon classes and prevented the 12:45 PM rebound focus crash.</li>
-            <li><strong>Low-Dose Floor Sufficiency:</strong> Halving Risperdal to 0.125mg was completely sufficient when anchored by Guanfacine XR and Ritalin, maintaining the 72% Good Days record without sedation.</li>
-          </ul>
         </div>
       </div>
 

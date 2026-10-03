@@ -2159,13 +2159,121 @@
   padding: 8px 12px;
 }
 
-/* Medication Cocktail Leaderboard & Scorecard */
-.zlog-cocktail-spotlight {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(124, 92, 252, 0.08));
-  border: 1px solid rgba(16, 185, 129, 0.3);
+/* Clean Medication Regimen Scorecard Table */
+.zlog-regimen-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-light);
   border-radius: var(--radius-md);
-  padding: 12px 14px;
-  margin-bottom: 12px;
+  background: var(--bg-card);
+  margin-top: 10px;
+}
+
+.zlog-regimen-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  text-align: left;
+}
+
+.zlog-regimen-table th {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-medium);
+  white-space: nowrap;
+}
+
+.zlog-regimen-table th.hero-col {
+  color: #DC2626;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.zlog-regimen-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-light);
+  vertical-align: middle;
+}
+
+.zlog-regimen-table tr.zlog-regimen-row:hover {
+  background: var(--bg-hover);
+}
+
+.zlog-regimen-table td.hero-col {
+  background: rgba(239, 68, 68, 0.03);
+}
+
+.zlog-agg-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  font-weight: 800;
+  font-size: 0.86rem;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.zlog-agg-chip.low {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.zlog-agg-chip.med {
+  background: rgba(124, 92, 252, 0.12);
+  color: #7C5CFC;
+}
+
+.zlog-agg-chip.high {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+
+.zlog-regimen-drawer {
+  background: var(--bg-surface);
+  padding: 10px 14px;
+  font-size: 0.73rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  border-top: 1px dashed var(--border-light);
+}
+
+.zlog-context-toggle-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.zlog-context-pills {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  padding: 2px 4px;
+  border-radius: var(--radius-full);
+}
+
+.zlog-context-pill {
+  font-size: 0.70rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.zlog-context-pill.active {
+  background: var(--primary);
+  color: #FFFFFF;
 }
 
 .zlog-rank-badge {
