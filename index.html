@@ -23,15 +23,15 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=8.3.42">
-  <link rel="stylesheet" href="css/layout.css?v=8.3.42">
-  <link rel="stylesheet" href="css/cover.css?v=8.3.42">
-  <link rel="stylesheet" href="css/habits.css?v=8.3.42">
-  <link rel="stylesheet" href="css/tasks.css?v=8.3.42">
-  <link rel="stylesheet" href="css/settings.css?v=8.3.42">
-  <link rel="stylesheet" href="css/claims.css?v=8.3.42">
-  <link rel="stylesheet" href="css/zlog.css?v=8.3.42">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=8.3.42">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=8.3.43">
+  <link rel="stylesheet" href="css/layout.css?v=8.3.43">
+  <link rel="stylesheet" href="css/cover.css?v=8.3.43">
+  <link rel="stylesheet" href="css/habits.css?v=8.3.43">
+  <link rel="stylesheet" href="css/tasks.css?v=8.3.43">
+  <link rel="stylesheet" href="css/settings.css?v=8.3.43">
+  <link rel="stylesheet" href="css/claims.css?v=8.3.43">
+  <link rel="stylesheet" href="css/zlog.css?v=8.3.43">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=8.3.43">
 </head>
 <body>
 
@@ -39,11 +39,31 @@
     <!-- Header -->
     <header class="book-header">
       <div class="header-left">
-        <div class="book-title-area" onclick="switchAppView('cover')" style="cursor: pointer;" title="margo — The Sanctuary Index">
+        <div class="book-title-area" onclick="switchDomain('sanctuary')" style="cursor: pointer;" title="margo — Sanctuary &amp; Reflections">
           <h1>margo</h1>
         </div>
 
-        <div class="header-nav-tabs">
+        <!-- 3-Domain Capsule Switcher (Option A) -->
+        <nav class="domain-capsule-switcher" id="domain-capsule-switcher" aria-label="Main Life Domains">
+          <button id="domain-btn-sanctuary" class="domain-capsule-btn active" onclick="switchDomain('sanctuary')" title="margo Sanctuary: Daily Identity, Momentum &amp; Reflection">
+            <span class="domain-btn-icon">☀️</span>
+            <span class="domain-btn-label">Sanctuary</span>
+          </button>
+          <button id="domain-btn-zhub" class="domain-capsule-btn" onclick="switchDomain('zhub')" title="Z Hub: Care, Meds, School &amp; Insights">
+            <span class="domain-btn-icon">🌱</span>
+            <span class="domain-btn-label">Z Hub</span>
+          </button>
+          <button id="domain-btn-finance" class="domain-capsule-btn" onclick="switchDomain('finance')" title="Finance: Burn, Subscriptions &amp; Reimbursements">
+            <span class="domain-btn-icon">💳</span>
+            <span class="domain-btn-label">Finance</span>
+            <span class="domain-badge" id="domain-claims-badge" style="display: none;"></span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="header-right">
+        <!-- Sub-Navigation for Sanctuary: Cover vs Today -->
+        <div class="header-nav-tabs" id="sanctuary-subnav">
           <button id="nav-btn-cover" class="header-nav-tab" onclick="switchAppView('cover')" title="The Sanctuary Index &amp; Headspace">
             <span>📖 Cover</span>
           </button>
@@ -52,6 +72,7 @@
           </button>
         </div>
 
+        <!-- Header Compact Date Navigator -->
         <div class="header-date-nav" id="header-date-nav-container">
           <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
             <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i>
@@ -67,9 +88,7 @@
             <i data-lucide="calendar" style="width: 13px; height: 13px;"></i>
           </button>
         </div>
-      </div>
 
-      <div class="header-right">
         <!-- Energy Dial (Power vs Maintenance) -->
         <div class="energy-dial-container" id="header-energy-dial">
           <button id="dial-btn-power" class="energy-dial-btn active" onclick="setAppEnergyMode('power')" title="Power Mode: Full Stack">
@@ -79,15 +98,6 @@
           <button id="dial-btn-maint" class="energy-dial-btn" onclick="setAppEnergyMode('maint')" title="Maintenance Mode: Protect Baseline (Move + Stand, Zero Guilt)">
             <span class="dial-emoji">🛡️</span>
             <span class="dial-label">Maint</span>
-          </button>
-        </div>
-
-        <!-- Sassy Portal: Adulting Bunker Door -->
-        <div class="header-portal-area">
-          <button class="bunker-portal-btn" id="btn-bunker-portal" onclick="toggleAdultingBunker()" title="Adulting Bunker: Z Log, Claims & Caretaking Logistics">
-            <span class="bunker-portal-icon">💼</span>
-            <span class="bunker-portal-label">Bunker</span>
-            <span class="bunker-claims-badge" id="header-claims-badge" style="display: none;"></span>
           </button>
         </div>
 
@@ -365,16 +375,16 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=8.3.42"></script>
-  <script src="js/zlogData.js?v=8.3.42"></script>
-  <script src="js/podcastData.js?v=8.3.42"></script>
-  <script src="js/storage.js?v=8.3.42"></script>
-  <script src="js/sync.js?v=8.3.42"></script>
-  <script src="js/pages/coverPage.js?v=8.3.42"></script>
-  <script src="js/pages/coverHubPage.js?v=8.3.42"></script>
-  <script src="js/pages/claimsPage.js?v=8.3.42"></script>
-  <script src="js/pages/zlogPage.js?v=8.3.42"></script>
-  <script src="js/pages/podcastAgent.js?v=8.3.42"></script>
-  <script src="js/app.js?v=8.3.42"></script>
+  <script src="js/margoData.js?v=8.3.43"></script>
+  <script src="js/zlogData.js?v=8.3.43"></script>
+  <script src="js/podcastData.js?v=8.3.43"></script>
+  <script src="js/storage.js?v=8.3.43"></script>
+  <script src="js/sync.js?v=8.3.43"></script>
+  <script src="js/pages/coverPage.js?v=8.3.43"></script>
+  <script src="js/pages/coverHubPage.js?v=8.3.43"></script>
+  <script src="js/pages/claimsPage.js?v=8.3.43"></script>
+  <script src="js/pages/zlogPage.js?v=8.3.43"></script>
+  <script src="js/pages/podcastAgent.js?v=8.3.43"></script>
+  <script src="js/app.js?v=8.3.43"></script>
 </body>
 </html>

@@ -26,12 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
       return { view: saved, subView: null };
     }
 
-    if (rawHash.startsWith('zlog')) {
+    if (rawHash.startsWith('zhub') || rawHash.startsWith('zlog')) {
       const parts = rawHash.split(/[\/\-_?]/);
       const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : null;
       return { view: 'zlog', subView: sub };
     }
-    if (rawHash.startsWith('claims')) return { view: 'claims', subView: null };
+    if (rawHash.startsWith('finance') || rawHash.startsWith('claims')) return { view: 'finance', subView: null };
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
     if (rawHash.startsWith('cover')) return { view: 'cover', subView: null };
     if (rawHash.startsWith('sanctuary') || rawHash.startsWith('today')) return { view: 'sanctuary', subView: null };
@@ -60,8 +60,21 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* --------------------------------------------------------------------------
-   View Switching (Cover vs Sanctuary vs Adulting Bunker vs Podcasts)
+   Domain & View Switching (Sanctuary vs Z Hub vs Finance)
    -------------------------------------------------------------------------- */
+function switchDomain(domain) {
+  if (domain === 'zhub' || domain === 'zlog') {
+    switchAppView('zlog');
+  } else if (domain === 'finance' || domain === 'claims') {
+    switchAppView('finance');
+  } else {
+    // Return to last sanctuary view (cover or sanctuary)
+    const lastSanctuary = localStorage.getItem('BOL_LAST_SANCTUARY_VIEW') || 'sanctuary';
+    switchAppView(lastSanctuary);
+  }
+}
+window.switchDomain = switchDomain;
+
 function switchAppView(viewName, subViewName) {
   if (viewName && typeof viewName === 'string' && viewName.includes('/')) {
     const parts = viewName.split('/');
@@ -69,14 +82,18 @@ function switchAppView(viewName, subViewName) {
     if (!subViewName) subViewName = parts[1];
   }
 
-  if (viewName === 'claims' || viewName === 'zlog' || viewName === 'bunker') {
-    currentView = (viewName === 'zlog') ? 'zlog' : (viewName === 'bunker' ? (localStorage.getItem('BOL_LAST_BUNKER_SUBVIEW') || 'zlog') : 'claims');
+  if (viewName === 'claims' || viewName === 'finance') {
+    currentView = 'finance';
+  } else if (viewName === 'zlog' || viewName === 'zhub' || viewName === 'bunker') {
+    currentView = 'zlog';
   } else if (viewName === 'podcasts') {
     currentView = 'podcasts';
   } else if (viewName === 'cover') {
     currentView = 'cover';
+    localStorage.setItem('BOL_LAST_SANCTUARY_VIEW', 'cover');
   } else {
     currentView = 'sanctuary';
+    localStorage.setItem('BOL_LAST_SANCTUARY_VIEW', 'sanctuary');
   }
 
   // Determine subview for zlog if provided
@@ -94,9 +111,9 @@ function switchAppView(viewName, subViewName) {
       targetHash = 'cover';
     } else if (currentView === 'zlog') {
       const zTab = subViewName || (typeof activeZLogSubTab !== 'undefined' ? activeZLogSubTab : localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB')) || 'timeline';
-      targetHash = (zTab && zTab !== 'timeline') ? `zlog/${zTab}` : 'zlog';
-    } else if (currentView === 'claims') {
-      targetHash = 'claims';
+      targetHash = (zTab && zTab !== 'timeline') ? `zhub/${zTab}` : 'zhub';
+    } else if (currentView === 'finance') {
+      targetHash = 'finance';
     } else if (currentView === 'podcasts') {
       targetHash = 'podcasts';
     } else if (currentView === 'sanctuary') {
@@ -115,38 +132,47 @@ function switchAppView(viewName, subViewName) {
 
   const dateNavContainer = document.getElementById('header-date-nav-container');
   const energyDial = document.getElementById('header-energy-dial');
-  const bunkerBtn = document.getElementById('btn-bunker-portal');
+  const sanctuarySubnav = document.getElementById('sanctuary-subnav');
+  const domainBtnSanctuary = document.getElementById('domain-btn-sanctuary');
+  const domainBtnZHub = document.getElementById('domain-btn-zhub');
+  const domainBtnFinance = document.getElementById('domain-btn-finance');
   const coverTab = document.getElementById('nav-btn-cover');
   const todayTab = document.getElementById('nav-btn-today');
 
+  const isSanctuaryDomain = (currentView === 'sanctuary' || currentView === 'cover');
+  const isZHubDomain = (currentView === 'zlog');
+  const isFinanceDomain = (currentView === 'finance');
+
+  // Update 3-Domain Capsule Switcher active states
+  if (domainBtnSanctuary) domainBtnSanctuary.classList.toggle('active', isSanctuaryDomain);
+  if (domainBtnZHub) domainBtnZHub.classList.toggle('active', isZHubDomain);
+  if (domainBtnFinance) domainBtnFinance.classList.toggle('active', isFinanceDomain);
+
+  // Update Sanctuary sub-nav active states
   if (coverTab) coverTab.classList.toggle('active', currentView === 'cover');
   if (todayTab) todayTab.classList.toggle('active', currentView === 'sanctuary');
 
+  // Contextual controls: Sanctuary subnav, date nav, and energy dial only display in Sanctuary
+  if (sanctuarySubnav) sanctuarySubnav.style.display = isSanctuaryDomain ? 'flex' : 'none';
+  if (dateNavContainer) dateNavContainer.style.display = isSanctuaryDomain ? 'inline-flex' : 'none';
+  if (energyDial) energyDial.style.display = isSanctuaryDomain ? 'inline-flex' : 'none';
+
   updateEnergyDialUI();
 
-  if (currentView === 'claims' || currentView === 'zlog') {
-    if (dateNavContainer) dateNavContainer.style.display = 'none';
-    if (energyDial) energyDial.style.display = 'none';
-    if (bunkerBtn) bunkerBtn.classList.add('active');
-
-    renderAdultingBunkerShell(currentView, subViewName);
+  // Render view directly into the daily sheet container
+  if (currentView === 'zlog') {
+    if (typeof renderZLogPage === 'function') renderZLogPage(subViewName);
+  } else if (currentView === 'finance') {
+    if (typeof renderFinancePage === 'function') {
+      renderFinancePage();
+    } else if (typeof renderClaimsPage === 'function') {
+      renderClaimsPage();
+    }
   } else if (currentView === 'podcasts') {
-    if (dateNavContainer) dateNavContainer.style.display = 'none';
-    if (energyDial) energyDial.style.display = 'none';
-    if (bunkerBtn) bunkerBtn.classList.remove('active');
-
     if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
   } else if (currentView === 'cover') {
-    if (dateNavContainer) dateNavContainer.style.display = 'none';
-    if (energyDial) energyDial.style.display = 'none';
-    if (bunkerBtn) bunkerBtn.classList.remove('active');
-
     if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
   } else {
-    if (dateNavContainer) dateNavContainer.style.display = 'inline-flex';
-    if (energyDial) energyDial.style.display = 'inline-flex';
-    if (bunkerBtn) bunkerBtn.classList.remove('active');
-
     if (typeof renderDailySheet === 'function') renderDailySheet();
   }
 
@@ -154,69 +180,20 @@ function switchAppView(viewName, subViewName) {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+// Backward compatibility alias
 function toggleAdultingBunker() {
   if (currentView === 'sanctuary' || currentView === 'cover') {
-    const lastBunker = localStorage.getItem('BOL_LAST_BUNKER_SUBVIEW') || 'claims';
-    switchAppView(lastBunker);
+    switchDomain('zhub');
   } else {
-    const returnView = localStorage.getItem('BOL_ACTIVE_VIEW') === 'cover' ? 'cover' : 'sanctuary';
-    switchAppView(returnView);
+    switchDomain('sanctuary');
   }
 }
 
 function renderAdultingBunkerShell(subView, zlogSubTab) {
-  const container = document.getElementById('daily-sheet-container');
-  if (!container) return;
-
-  try {
-    localStorage.setItem('BOL_LAST_BUNKER_SUBVIEW', subView);
-  } catch (e) {}
-
-  container.innerHTML = `
-    <div class="adulting-bunker-wrapper">
-      <!-- Bunker Header Bar -->
-      <div class="bunker-header-bar">
-        <div class="bunker-header-left">
-          <span class="bunker-badge-icon">💼</span>
-          <div>
-            <div class="bunker-header-title">Adulting Bunker &amp; Command Deck</div>
-            <div class="bunker-header-desc">Utilitarian admin, caretaking logs &amp; medical claims (isolated from Sanctuary)</div>
-          </div>
-        </div>
-
-        <div class="bunker-header-actions">
-          <div class="bunker-tab-group">
-            <button class="bunker-tab-btn ${subView === 'claims' ? 'active' : ''}" onclick="switchAppView('claims')">
-              <i data-lucide="receipt" style="width: 14px; height: 14px;"></i>
-              <span>Medical Claims</span>
-            </button>
-            <button class="bunker-tab-btn ${subView === 'zlog' ? 'active' : ''}" onclick="switchAppView('zlog')">
-              <i data-lucide="heart-pulse" style="width: 14px; height: 14px;"></i>
-              <span>Z Log Protocol</span>
-            </button>
-          </div>
-
-          <button class="bunker-exit-btn" onclick="switchAppView('sanctuary')" title="Return to your personal sanctuary">
-            <span>✕</span>
-            <span>Return to Sanctuary</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bunker Sub-view Content Frame -->
-      <div id="bunker-subview-frame"></div>
-    </div>
-  `;
-
-  if (window.lucide) lucide.createIcons();
-
-  const subFrame = document.getElementById('bunker-subview-frame');
-  if (subFrame) {
-    if (subView === 'zlog') {
-      if (typeof renderZLogPage === 'function') renderZLogPage(zlogSubTab);
-    } else {
-      if (typeof renderClaimsPage === 'function') renderClaimsPage();
-    }
+  if (subView === 'zlog') {
+    if (typeof renderZLogPage === 'function') renderZLogPage(zlogSubTab);
+  } else {
+    if (typeof renderClaimsPage === 'function') renderClaimsPage();
   }
 }
 

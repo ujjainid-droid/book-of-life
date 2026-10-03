@@ -741,7 +741,7 @@ function submitEditClaim(e) {
  * Helper to update header badge
  */
 function updateClaimsHeaderBadge(count) {
-  const badge = document.getElementById('header-claims-badge');
+  const badge = document.getElementById('domain-claims-badge') || document.getElementById('header-claims-badge');
   if (!badge) return;
   if (count > 0) {
     badge.textContent = count;

@@ -70,6 +70,75 @@ html, body {
   margin: 0;
 }
 
+/* 3-Domain Capsule Switcher (Option A) */
+.domain-capsule-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 3px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.domain-capsule-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.domain-capsule-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.domain-capsule-btn.active#domain-btn-sanctuary {
+  background: #7C3AED;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.35);
+}
+
+.domain-capsule-btn.active#domain-btn-zhub {
+  background: #2563EB;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
+}
+
+.domain-capsule-btn.active#domain-btn-finance {
+  background: #059669;
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.35);
+}
+
+.domain-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: #EF4444;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
 /* Header Compact Date Navigator */
 .header-date-nav {
   display: inline-flex;
