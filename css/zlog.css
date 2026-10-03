@@ -2159,6 +2159,106 @@
   padding: 8px 12px;
 }
 
+/* Medication Cocktail Leaderboard & Scorecard */
+.zlog-cocktail-spotlight {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(124, 92, 252, 0.08));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.zlog-rank-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zlog-rank-badge.rank-1 {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.zlog-rank-badge.rank-2 {
+  background: rgba(13, 148, 136, 0.15);
+  color: #0D9488;
+  border: 1px solid rgba(13, 148, 136, 0.3);
+}
+
+.zlog-rank-badge.rank-3 {
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.zlog-rank-badge.rank-4 {
+  background: rgba(249, 115, 22, 0.12);
+  color: #C2410C;
+  border: 1px solid rgba(249, 115, 22, 0.3);
+}
+
+.zlog-rank-badge.rank-5 {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+.zlog-med-pill {
+  font-size: 0.66rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.zlog-med-pill.pill-zoloft {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.zlog-med-pill.pill-guan {
+  background: rgba(124, 92, 252, 0.1);
+  color: #7C5CFC;
+  border: 1px solid rgba(124, 92, 252, 0.25);
+}
+
+.zlog-med-pill.pill-rit {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4F46E5;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+.zlog-med-pill.pill-ris {
+  background: rgba(239, 68, 68, 0.08);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.zlog-med-pill.pill-stopped {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px dashed var(--border-medium);
+  text-decoration: line-through;
+  opacity: 0.75;
+}
+
+.zlog-med-pill.pill-none {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border-light);
+  opacity: 0.6;
+}
+
 @media (max-width: 600px) {
   .zlog-dow-row {
     grid-template-columns: 70px 1fr 100px;
