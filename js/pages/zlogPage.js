@@ -1100,9 +1100,9 @@ function renderZLogCalendar() {
 
       <!-- Month KPIs Strip -->
       <div class="zlog-cal-kpi-row">
-        <div class="zlog-cal-kpi-card" style="border-left: 3px solid #7C5CFC;">
+        <div class="zlog-cal-kpi-card" style="border-left: 3px solid #2563EB;">
           <div class="zlog-cal-kpi-label">Monthly Average Rating</div>
-          <div class="zlog-cal-kpi-val" style="color: #7C5CFC;">
+          <div class="zlog-cal-kpi-val" style="color: #2563EB;">
             ${avgRating} <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">/ 5</span>
           </div>
           <div class="zlog-cal-kpi-sub">${totalRatedDays} rated of ${daysInMonth} days</div>
@@ -1250,12 +1250,12 @@ const TITRATION_MEDS_CONFIG = {
     key: 'ritalin',
     name: 'Ritalin',
     fullName: 'Methylphenidate (Ritalin IR)',
-    color: '#7C5CFC',
-    bgLight: 'rgba(124, 92, 252, 0.12)',
+    color: '#2563EB',
+    bgLight: 'rgba(37, 99, 235, 0.12)',
     currentDose: '15 mg AM + 10 mg School (Active)',
     statusLabel: 'Active Prescribed',
     statusClass: 'status-active',
-    statusColor: '#7C5CFC'
+    statusColor: '#2563EB'
   },
   risperdal: {
     key: 'risperdal',
@@ -1406,7 +1406,7 @@ function renderTitrationMedBadge(medName) {
   const cfg = TITRATION_MEDS_CONFIG[medKey] || {
     name: medName,
     color: 'var(--primary)',
-    bgLight: 'rgba(124, 92, 252, 0.08)'
+    bgLight: 'rgba(37, 99, 235, 0.08)'
   };
 
   let subTag = '';
@@ -1755,13 +1755,13 @@ function renderZLogTitration() {
 
         <div 
           class="zlog-stat-card zlog-regimen-card ${zlogTitrationMedFilter === 'ritalin' ? 'is-active-filter' : ''}" 
-          style="border-left: 4px solid #7C5CFC;" 
+          style="border-left: 4px solid #2563EB;" 
           onclick="setTitrationMedFilter('ritalin')"
           title="Click to filter titration history to Ritalin"
         >
           <div class="zlog-stat-label">Active Prescribed</div>
           <div class="zlog-regimen-name" title="Ritalin">Ritalin</div>
-          <div class="zlog-regimen-dose" style="color: #7C5CFC;">15 mg + 10 mg</div>
+          <div class="zlog-regimen-dose" style="color: #2563EB;">15 mg + 10 mg</div>
           <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness">Prescriber: Dr. Barness</div>
         </div>
 
@@ -1869,7 +1869,7 @@ function renderZLogTitration() {
             <span class="zlog-chip-count">${medCounts.sertraline}</span>
           </button>
           <button type="button" class="zlog-titration-chip ${zlogTitrationMedFilter === 'ritalin' ? 'active' : ''}" onclick="setTitrationMedFilter('ritalin')">
-            <span class="zlog-med-dot" style="background: #7C5CFC;"></span>
+            <span class="zlog-med-dot" style="background: #2563EB;"></span>
             <span>Ritalin</span>
             <span class="zlog-chip-count">${medCounts.ritalin}</span>
           </button>
@@ -1999,7 +1999,7 @@ const CLINICAL_COCKTAILS = [
       { name: 'Ritalin', dose: 'None (Pre-Stimulant)', type: 'none' }
     ],
     statusTag: '#3 Established Emotional Floor',
-    border: '#8B5CF6',
+    border: '#2563EB',
     summary: 'Shifted full Guanfacine XR to mornings with daily 0.25mg Risperdal floor before any stimulant was introduced.',
     clinicalNote: 'Maintained 56% good days across 140 days. Reduced baseline aggression from 48% to 32%, but child still struggled with midday executive fatigue.'
   },
@@ -2524,7 +2524,7 @@ function renderZLogInsights() {
       </div>
 
       <!-- Top Clinical Pulse Strip -->
-      <div class="zlog-insights-card" style="background: linear-gradient(135deg, rgba(124, 92, 252, 0.05), rgba(78, 135, 101, 0.05));">
+      <div class="zlog-insights-card" style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(78, 135, 101, 0.05));">
         <div class="zlog-insights-header">
           <div>
             <div class="zlog-insights-title">
@@ -2679,13 +2679,13 @@ function renderZLogInsights() {
                     <div class="zlog-drawer-grid">
                       <div class="zlog-drawer-stat-pill">
                         <div class="zlog-drawer-stat-pill-label">🏫 School Aggression</div>
-                        <div class="zlog-drawer-stat-pill-val" style="color: ${schoolVal <= 15 ? '#059669' : (schoolVal <= 30 ? '#7C5CFC' : '#DC2626')};">
+                        <div class="zlog-drawer-stat-pill-val" style="color: ${schoolVal <= 15 ? '#059669' : (schoolVal <= 30 ? '#2563EB' : '#DC2626')};">
                           ${c.pctSchoolAgg}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.schoolAgg}/${c.schoolTotal}d)</span>
                         </div>
                       </div>
                       <div class="zlog-drawer-stat-pill">
                         <div class="zlog-drawer-stat-pill-label">🏡 Home &amp; Breaks</div>
-                        <div class="zlog-drawer-stat-pill-val" style="color: ${c.pctHomeAgg <= 15 ? '#059669' : (c.pctHomeAgg <= 30 ? '#7C5CFC' : '#DC2626')};">
+                        <div class="zlog-drawer-stat-pill-val" style="color: ${c.pctHomeAgg <= 15 ? '#059669' : (c.pctHomeAgg <= 30 ? '#2563EB' : '#DC2626')};">
                           ${c.pctHomeAgg}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.homeAgg}/${c.homeTotal}d)</span>
                         </div>
                       </div>
@@ -3124,8 +3124,8 @@ function buildMonthlyTrendlineSection(entries) {
 
     // Milestone flag badge
     if (ms && (ms.isPeak || ms.isBest || ms.isKey)) {
-      const flagColor = ms.isPeak ? '#DC2626' : (ms.isBest ? '#059669' : '#7C5CFC');
-      const flagBg = ms.isPeak ? '#FEE2E2' : (ms.isBest ? '#D1FAE5' : '#EDE9FE');
+      const flagColor = ms.isPeak ? '#DC2626' : (ms.isBest ? '#059669' : '#2563EB');
+      const flagBg = ms.isPeak ? '#FEE2E2' : (ms.isBest ? '#D1FAE5' : '#EFF6FF');
       const flagText = ms.tag;
       const tagW = flagText.length * 5.8 + 12;
       flagsSvg.push(`
@@ -3156,7 +3156,7 @@ function buildMonthlyTrendlineSection(entries) {
       <tr>
         <td style="font-weight: 700; white-space: nowrap;">
           ${mo} ${yr}
-          ${ms ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 4px; ${ms.isPeak ? 'background: #FEE2E2; color: #DC2626;' : (ms.isBest ? 'background: #D1FAE5; color: #059669;' : 'background: #EDE9FE; color: #7C5CFC;')} font-weight: 600;">${ms.tag}</span>` : ''}
+          ${ms ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 4px; ${ms.isPeak ? 'background: #FEE2E2; color: #DC2626;' : (ms.isBest ? 'background: #D1FAE5; color: #059669;' : 'background: #EFF6FF; color: #2563EB;')} font-weight: 600;">${ms.tag}</span>` : ''}
         </td>
         <td style="font-family: monospace;">${m.total}d</td>
         <td>
@@ -3210,9 +3210,9 @@ function buildMonthlyTrendlineSection(entries) {
           <div class="zlog-trendline-kpi-val" style="color: #DC2626;">67%</div>
           <div class="zlog-trendline-kpi-sub">Sep 2025 (20 incident days)</div>
         </div>
-        <div class="zlog-trendline-kpi" style="border-left: 3px solid #7C5CFC;">
+        <div class="zlog-trendline-kpi" style="border-left: 3px solid #2563EB;">
           <div class="zlog-trendline-kpi-label">Stabilization Window</div>
-          <div class="zlog-trendline-kpi-val" style="color: #7C5CFC;">26%</div>
+          <div class="zlog-trendline-kpi-val" style="color: #2563EB;">26%</div>
           <div class="zlog-trendline-kpi-sub">Feb – Jun 2026 (Risperdal Active)</div>
         </div>
         <div class="zlog-trendline-kpi" style="border-left: 3px solid #059669;">
@@ -3439,7 +3439,7 @@ function openZLogEntryModal(targetDate = null) {
             </label>
             <label class="zlog-med-pill ${meds.rit ? 'checked' : ''}">
               <input type="checkbox" id="zlog-m-rit" ${meds.rit ? 'checked' : ''} onchange="this.closest('.zlog-med-pill').classList.toggle('checked', this.checked)">
-              <span class="zlog-med-code" style="color: #7C5CFC;">Rit</span>
+              <span class="zlog-med-code" style="color: #2563EB;">Rit</span>
               <span class="zlog-med-label">Ritalin</span>
               <input type="text" class="zlog-med-dose-input" id="zlog-m-rit-dose" placeholder="5mg" value="${escapeHtml(String(meds.ritDose || (typeof meds.rit === 'string' ? meds.rit : '5mg')))}" onclick="event.stopPropagation()">
             </label>

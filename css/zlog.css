@@ -266,7 +266,7 @@
 }
 
 .zlog-med-pill.checked {
-  background: rgba(124, 92, 252, 0.10);
+  background: rgba(37, 99, 235, 0.10);
   border-color: var(--primary-border);
   color: var(--primary);
 }
@@ -342,13 +342,27 @@
   max-width: 680px;
 }
 
-.zlog-page-container {
+.zlog-page-container,
+.modal-zlog-card,
+#modal-zlog-entry,
+.zlog-pulse-card {
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-light: #EFF6FF;
+  --primary-border: #DBEAFE;
+  --primary-subtle: #F0F7FF;
+  --primary-glow: rgba(37, 99, 235, 0.25);
+  --accent: #2563EB;
+
   --zlog-blue: #2563EB;
   --zlog-blue-dark: #1D4ED8;
   --zlog-blue-light: #EFF6FF;
   --zlog-blue-border: #DBEAFE;
   --zlog-blue-text: #1E40AF;
   --zlog-blue-shadow: rgba(37, 99, 235, 0.25);
+}
+
+.zlog-page-container {
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
@@ -356,7 +370,21 @@
 }
 
 [data-theme="dark"] .zlog-page-container,
-body.dark-mode .zlog-page-container {
+[data-theme="dark"] .modal-zlog-card,
+[data-theme="dark"] #modal-zlog-entry,
+[data-theme="dark"] .zlog-pulse-card,
+body.dark-mode .zlog-page-container,
+body.dark-mode .modal-zlog-card,
+body.dark-mode #modal-zlog-entry,
+body.dark-mode .zlog-pulse-card {
+  --primary: #3B82F6;
+  --primary-hover: #60A5FA;
+  --primary-light: rgba(37, 99, 235, 0.15);
+  --primary-border: rgba(59, 130, 246, 0.3);
+  --primary-subtle: rgba(37, 99, 235, 0.08);
+  --primary-glow: rgba(59, 130, 246, 0.35);
+  --accent: #3B82F6;
+
   --zlog-blue: #3B82F6;
   --zlog-blue-dark: #60A5FA;
   --zlog-blue-light: rgba(37, 99, 235, 0.15);
@@ -708,8 +736,8 @@ body.dark-mode .zlog-subnav-btn.active {
   font-weight: 600;
   padding: 2px 7px;
   border-radius: var(--radius-sm);
-  background: rgba(124, 92, 252, 0.08);
-  border: 1px solid rgba(124, 92, 252, 0.22);
+  background: rgba(37, 99, 235, 0.08);
+  border: 1px solid rgba(37, 99, 235, 0.22);
   color: var(--primary);
   max-width: 100%;
 }
@@ -770,7 +798,7 @@ body.dark-mode .zlog-subnav-btn.active {
 .zlog-rating-pill.unrated:hover {
   border-color: var(--primary);
   color: var(--primary);
-  background: rgba(124, 92, 252, 0.08);
+  background: rgba(37, 99, 235, 0.08);
 }
 
 .zlog-entry-narrative {
@@ -865,9 +893,9 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-action-increased {
-  background: rgba(139, 92, 246, 0.12);
-  color: #7C3AED;
-  border-color: rgba(139, 92, 246, 0.30);
+  background: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
+  border-color: rgba(37, 99, 235, 0.30);
 }
 
 .zlog-action-decreased {
@@ -962,7 +990,7 @@ body.dark-mode .zlog-subnav-btn.active {
   font-size: 0.78rem;
   font-weight: 700;
   color: var(--primary);
-  background: rgba(124, 92, 252, 0.08);
+  background: rgba(37, 99, 235, 0.08);
   padding: 1px 6px;
   border-radius: var(--radius-sm);
 }
@@ -976,7 +1004,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-table-select:hover, .zlog-table-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(124, 92, 252, 0.15);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
 .zlog-table-select.action-started {
@@ -987,10 +1015,10 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-table-select.action-increased {
-  background-color: rgba(139, 92, 246, 0.12);
-  color: #7C3AED;
-  border-color: rgba(139, 92, 246, 0.35);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%237C3AED' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-color: rgba(37, 99, 235, 0.12);
+  color: #1D4ED8;
+  border-color: rgba(37, 99, 235, 0.35);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%231D4ED8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
 .zlog-table-select.action-decreased {
@@ -1024,9 +1052,9 @@ body.dark-mode .zlog-subnav-btn.active {
 
 [data-theme="dark"] .zlog-action-increased,
 [data-theme="dark"] .zlog-table-select.action-increased {
-  background-color: rgba(139, 92, 246, 0.22);
+  background-color: rgba(37, 99, 235, 0.22);
   color: #C4B5FD;
-  border-color: rgba(139, 92, 246, 0.45);
+  border-color: rgba(37, 99, 235, 0.45);
 }
 
 [data-theme="dark"] .zlog-action-decreased,
@@ -1120,7 +1148,7 @@ body.dark-mode .zlog-subnav-btn.active {
   background: var(--primary);
   border-color: var(--primary);
   color: #fff;
-  box-shadow: 0 1px 3px rgba(139, 92, 246, 0.25);
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
 }
 
 .zlog-titration-chip.active .zlog-chip-count {
@@ -1159,7 +1187,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-titration-search input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
 }
 
 .zlog-titration-search-icon {
@@ -1257,7 +1285,7 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-note-btn.active {
-  background: rgba(139, 92, 246, 0.12);
+  background: rgba(37, 99, 235, 0.12);
   border-color: var(--primary);
   color: var(--primary);
   font-weight: 700;
@@ -1882,8 +1910,8 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-playbook-tag.tag-transition {
-  background: rgba(124, 92, 252, 0.12);
-  color: #7C5CFC;
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563EB;
 }
 
 .zlog-playbook-tag.tag-med {
@@ -1928,7 +1956,7 @@ body.dark-mode .zlog-subnav-btn.active {
   margin-top: 4px;
   padding: 6px 8px;
   border-radius: var(--radius-sm);
-  background: rgba(124, 92, 252, 0.05);
+  background: rgba(37, 99, 235, 0.05);
   border-left: 3px solid var(--primary);
   font-size: 0.74rem;
   color: var(--text-primary);
@@ -2039,7 +2067,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-dow-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 10px rgba(124, 92, 252, 0.08);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.08);
 }
 
 .zlog-dow-card.is-calmest {
@@ -2107,7 +2135,7 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-dow-hero-stat.low { color: #059669; }
-.zlog-dow-hero-stat.med { color: #7C5CFC; }
+.zlog-dow-hero-stat.med { color: #2563EB; }
 .zlog-dow-hero-stat.high { color: #DC2626; }
 
 .zlog-dow-hero-label {
@@ -2245,7 +2273,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-era-card.is-era-a {
   border-color: var(--primary) !important;
-  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.35);
 }
 
 .zlog-era-card.is-era-b {
@@ -2304,7 +2332,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-regimen-card:hover {
   border-color: var(--primary);
-  box-shadow: 0 3px 10px rgba(124, 92, 252, 0.08);
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.08);
 }
 
 .zlog-regimen-card.is-best {
@@ -2395,7 +2423,7 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-regimen-stat-val.low { color: #059669; }
-.zlog-regimen-stat-val.med { color: #7C5CFC; }
+.zlog-regimen-stat-val.med { color: #2563EB; }
 .zlog-regimen-stat-val.high { color: #DC2626; }
 
 .zlog-regimen-stat-label {
@@ -2527,9 +2555,9 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-rank-badge.rank-3 {
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(37, 99, 235, 0.15);
   color: var(--primary);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(37, 99, 235, 0.3);
 }
 
 .zlog-rank-badge.rank-4 {
@@ -2562,9 +2590,9 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-med-pill.pill-guan {
-  background: rgba(124, 92, 252, 0.1);
-  color: #7C5CFC;
-  border: 1px solid rgba(124, 92, 252, 0.25);
+  background: rgba(37, 99, 235, 0.1);
+  color: #2563EB;
+  border: 1px solid rgba(37, 99, 235, 0.25);
 }
 
 .zlog-med-pill.pill-rit {
@@ -2707,7 +2735,7 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-monthly-table tr:hover td {
-  background: rgba(124, 92, 252, 0.03);
+  background: rgba(37, 99, 235, 0.03);
 }
 
 .zlog-monthly-bar-track {
@@ -2870,7 +2898,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-cal-filter-select.is-filtered {
   border-color: var(--primary);
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(37, 99, 235, 0.1);
   color: var(--primary);
   font-weight: 700;
 }
@@ -2920,7 +2948,7 @@ body.dark-mode .zlog-subnav-btn.active {
   border-color: var(--primary);
   color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 1px 4px rgba(112, 43, 237, 0.25);
+  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.25);
 }
 
 .zlog-cal-chip.active.chip-lvl-5 {
@@ -3064,7 +3092,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-cal-weekday-col.weekend {
   color: var(--primary);
-  background: rgba(112, 43, 237, 0.05);
+  background: rgba(37, 99, 235, 0.05);
 }
 
 /* 7-Column Days Grid */
@@ -3093,7 +3121,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 .zlog-cal-day:hover {
   border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(112, 43, 237, 0.08);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
   transform: translateY(-2px);
   z-index: 2;
 }
@@ -3283,8 +3311,8 @@ body.dark-mode .zlog-subnav-btn.active {
 }
 
 .zlog-cal-med-tag.med-rit {
-  color: #7C5CFC;
-  border-color: rgba(124, 92, 252, 0.3);
+  color: #2563EB;
+  border-color: rgba(37, 99, 235, 0.3);
 }
 
 .zlog-cal-med-tag.med-ris {
