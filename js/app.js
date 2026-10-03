@@ -31,7 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : null;
       return { view: 'zlog', subView: sub };
     }
-    if (rawHash.startsWith('finance') || rawHash.startsWith('claims')) return { view: 'finance', subView: null };
+    if (rawHash.startsWith('finance') || rawHash.startsWith('claims')) {
+      const parts = rawHash.split(/[\/\-_?]/);
+      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : null);
+      return { view: 'finance', subView: sub };
+    }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
     if (rawHash.startsWith('cover')) return { view: 'cover', subView: null };
     if (rawHash.startsWith('sanctuary') || rawHash.startsWith('today')) return { view: 'sanctuary', subView: null };
@@ -164,7 +168,7 @@ function switchAppView(viewName, subViewName) {
     if (typeof renderZLogPage === 'function') renderZLogPage(subViewName);
   } else if (currentView === 'finance') {
     if (typeof renderFinancePage === 'function') {
-      renderFinancePage();
+      renderFinancePage(subViewName);
     } else if (typeof renderClaimsPage === 'function') {
       renderClaimsPage();
     }

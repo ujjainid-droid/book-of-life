@@ -16,7 +16,7 @@ function getInitialZLogSubTab() {
       }
     }
     const saved = localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB');
-    if (saved && ['timeline', 'calendar', 'titration', 'insights'].includes(saved)) {
+    if (saved && ['timeline', 'calendar', 'titration', 'insights', 'school'].includes(saved)) {
       return saved;
     }
   } catch (e) {}
@@ -56,7 +56,7 @@ function renderZLogPage(targetSubTab) {
   const container = document.getElementById('bunker-subview-frame') || document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
 
-  if (targetSubTab && ['timeline', 'calendar', 'titration', 'insights'].includes(targetSubTab)) {
+  if (targetSubTab && ['timeline', 'calendar', 'titration', 'insights', 'school'].includes(targetSubTab)) {
     activeZLogSubTab = targetSubTab;
   } else if (!activeZLogSubTab) {
     activeZLogSubTab = getInitialZLogSubTab();
@@ -178,6 +178,9 @@ function renderZLogPage(targetSubTab) {
           <button class="zlog-subnav-btn ${activeZLogSubTab === 'insights' ? 'active' : ''}" onclick="switchZLogSubTab('insights')">
             📊 Patterns &amp; Insights
           </button>
+          <button class="zlog-subnav-btn ${activeZLogSubTab === 'school' ? 'active' : ''}" onclick="switchZLogSubTab('school')">
+            🏫 School &amp; IEP
+          </button>
         </div>
 
         ${activeZLogSubTab === 'titration' ? `
@@ -201,13 +204,15 @@ function renderZLogPage(targetSubTab) {
     renderZLogTitration();
   } else if (activeZLogSubTab === 'insights') {
     renderZLogInsights();
+  } else if (activeZLogSubTab === 'school') {
+    renderZLogSchool();
   }
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function switchZLogSubTab(subTab) {
-  if (['timeline', 'calendar', 'titration', 'insights'].includes(subTab)) {
+  if (['timeline', 'calendar', 'titration', 'insights', 'school'].includes(subTab)) {
     activeZLogSubTab = subTab;
     try {
       localStorage.setItem('BOL_ZLOG_ACTIVE_SUBTAB', subTab);
@@ -3668,4 +3673,652 @@ function submitTitrationModal(event) {
 function closeTitrationModal() {
   const modal = document.getElementById('modal-titration-add');
   if (modal) modal.classList.remove('active');
+}
+
+
+/* ==========================================================================
+   Z Log - School & IEP / Out-of-District Module Implementation
+   ========================================================================== */
+
+let activeSchoolAccFilter = 'all';
+
+function renderZLogSchool() {
+  const subviewContainer = document.getElementById('zlog-subview-container');
+  if (!subviewContainer) return;
+
+  const schoolData = storage.getZLogSchool();
+  const placement = schoolData.placement || {};
+  const ood = schoolData.outOfDistrict || {};
+  const transport = ood.transportation || {};
+  const funding = ood.fundingSettlement || {};
+  const accommodations = schoolData.accommodations || [];
+  const team = schoolData.team || [];
+
+  // Filter accommodations
+  let filteredAccs = accommodations;
+  if (activeSchoolAccFilter !== 'all') {
+    filteredAccs = accommodations.filter(a => a.category === activeSchoolAccFilter);
+  }
+
+  // Count active accommodations
+  const totalAccs = accommodations.length;
+  const activeAccs = accommodations.filter(a => a.active !== false).length;
+
+  // Scan recent Z Log entries for Dojo points and teacher notes
+  const allEntries = storage.getAllZLogEntries();
+  const schoolEntries = allEntries.filter(e => {
+    return e && e.notes && (e.notes.includes('School') || e.notes.includes('Teacher') || e.notes.includes('Dojo'));
+  }).slice(0, 5);
+
+  let dojoScores = [];
+  schoolEntries.forEach(e => {
+    const m = (e.notes || '').match(/(?:earned\s*|Today\s*I\s*earned\s*)(?:__)?(\d+)(?:__)?\s*Dojo\s*Points/i);
+    if (m) dojoScores.push(parseInt(m[1], 10));
+  });
+  const avgDojo = dojoScores.length > 0 ? Math.round(dojoScores.reduce((a, b) => a + b, 0) / dojoScores.length) : 21;
+
+  subviewContainer.innerHTML = `
+    <div class="zlog-school-container">
+      
+      <!-- Top Hero & KPI Overview -->
+      <div class="zlog-school-hero">
+        <div class="zlog-school-hero-top">
+          <div>
+            <h2 class="zlog-school-title">
+              <span>🏫</span>
+              <span>${escapeHtml(placement.schoolName || 'Specialized Day Placement')}</span>
+            </h2>
+            <p class="zlog-school-subtitle">
+              ${escapeHtml(placement.programType || 'Specialized Out-of-District Placement')} &bull; ${escapeHtml(placement.campus || '')}
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="openEditSchoolPlacementModal()" style="font-size: 0.78rem; padding: 6px 12px;">
+              <i data-lucide="edit-3" style="width: 14px; height: 14px;"></i>
+              <span>Edit Placement</span>
+            </button>
+            <button class="btn btn-secondary" onclick="exportSchoolIEPSummary()" style="font-size: 0.78rem; padding: 6px 12px;">
+              <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+              <span>Copy IEP Brief</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="zlog-school-kpis">
+          <div class="zlog-school-kpi">
+            <span class="zlog-school-kpi-label"><i data-lucide="shield-check" style="width: 13px; height: 13px; color: #059669;"></i> Placement Status</span>
+            <span class="zlog-school-kpi-val" style="color: #059669;">${escapeHtml(funding.status || 'District Funded')}</span>
+            <span class="zlog-school-kpi-sub">Sending District: ${escapeHtml(ood.sendingDistrict || 'Public District')}</span>
+          </div>
+
+          <div class="zlog-school-kpi">
+            <span class="zlog-school-kpi-label"><i data-lucide="calendar" style="width: 13px; height: 13px; color: #2563EB;"></i> Next CSE Review</span>
+            <span class="zlog-school-kpi-val">${escapeHtml(ood.annualReviewDate || 'May 14, 2026')}</span>
+            <span class="zlog-school-kpi-sub">Triennial: ${escapeHtml(ood.triennialDate || 'Oct 2027')}</span>
+          </div>
+
+          <div class="zlog-school-kpi">
+            <span class="zlog-school-kpi-label"><i data-lucide="bus" style="width: 13px; height: 13px; color: #D97706;"></i> Transit Logistics</span>
+            <span class="zlog-school-kpi-val">${escapeHtml(transport.routeNumber || 'Route 14-Special')}</span>
+            <span class="zlog-school-kpi-sub">${escapeHtml(transport.busDriver || 'Mr. Dave')} &bull; Matron on board</span>
+          </div>
+
+          <div class="zlog-school-kpi">
+            <span class="zlog-school-kpi-label"><i data-lucide="check-circle-2" style="width: 13px; height: 13px; color: #2563EB;"></i> Active Accommodations</span>
+            <span class="zlog-school-kpi-val">${activeAccs} of ${totalAccs} Active</span>
+            <span class="zlog-school-kpi-sub">Sensory, Transition &amp; Crisis Matrix</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. Dedicated Out-of-District Placement & Funding Section -->
+      <div class="zlog-section-box">
+        <div class="zlog-section-header">
+          <h3 class="zlog-section-title">
+            <i data-lucide="building-2" style="width: 18px; height: 18px; color: #2563EB;"></i>
+            <span>Out-of-District Placement &amp; Funding Logistics</span>
+          </h3>
+          <span class="zlog-ood-badge funded">
+            ✓ 100% District Funded (10-Mo + 30-Day ESY)
+          </span>
+        </div>
+
+        <div class="zlog-ood-grid">
+          <!-- Placement Campus Info -->
+          <div class="zlog-ood-card">
+            <div class="zlog-ood-card-title">
+              <span>📍 Campus &amp; Front Office</span>
+              <span class="zlog-ood-badge">Campus</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Facility Address</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(placement.address || 'Mountain Lakes, NJ')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Daily Bell Schedule</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(placement.hours || '8:20 AM – 2:50 PM')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Office &amp; Nurse</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(placement.contact || 'Front Desk: (973) 334-1295')}</span>
+            </div>
+          </div>
+
+          <!-- Sending District CSE Liaison -->
+          <div class="zlog-ood-card">
+            <div class="zlog-ood-card-title">
+              <span>🏛️ Sending District CSE</span>
+              <span class="zlog-ood-badge">Committee</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Sending School District</span>
+              <span class="zlog-ood-detail-val"><strong>${escapeHtml(ood.sendingDistrict || 'Local Public Schools')}</strong></span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">CSE Chairperson</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(ood.cseChairperson || 'Director of Special Services')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">District Case Manager</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(ood.caseManager || 'Rachel Vance, MSW')} (${escapeHtml(ood.caseManagerPhone || 'Cell/Direct')})</span>
+            </div>
+          </div>
+
+          <!-- Transportation & Sensory Logistics -->
+          <div class="zlog-ood-card">
+            <div class="zlog-ood-card-title">
+              <span>🚐 Specialized Transit</span>
+              <span class="zlog-ood-badge">Sensory Van</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Route &amp; Times</span>
+              <span class="zlog-ood-detail-val"><strong>${escapeHtml(transport.routeNumber || 'Route 14-Special')}</strong> &bull; Pickup ${escapeHtml(transport.pickupTime || '7:45 AM')} | Drop ${escapeHtml(transport.dropoffTime || '3:25 PM')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Driver &amp; Matron</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(transport.busDriver || 'Driver')} &bull; Matron: ${escapeHtml(transport.matron || 'Ms. Carmen')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Sensory Accommodations</span>
+              <span class="zlog-ood-detail-val" style="font-size: 0.74rem;">${escapeHtml(transport.accommodations || 'Front single seat, headphones allowed, quiet environment')}</span>
+            </div>
+          </div>
+
+          <!-- Tuition & Settlement Agreement -->
+          <div class="zlog-ood-card">
+            <div class="zlog-ood-card-title">
+              <span>⚖️ Funding &amp; Settlement</span>
+              <span class="zlog-ood-badge funded">Settlement</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Tuition Billing</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(funding.tuitionStatus || 'Direct District Billing')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Next Settlement Review</span>
+              <span class="zlog-ood-detail-val">${escapeHtml(funding.nextSettlementReview || 'Annual IEP Meeting')}</span>
+            </div>
+            <div class="zlog-ood-detail-row">
+              <span class="zlog-ood-detail-label">Agreement Scope</span>
+              <span class="zlog-ood-detail-val" style="font-size: 0.74rem;">${escapeHtml(funding.notes || 'Full tuition, van transit, plus 30-day Extended School Year (ESY).')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. IEP Accommodations Matrix -->
+      <div class="zlog-section-box">
+        <div class="zlog-section-header">
+          <div>
+            <h3 class="zlog-section-title">
+              <i data-lucide="check-square" style="width: 18px; height: 18px; color: #2563EB;"></i>
+              <span>IEP Accommodations &amp; Support Matrix</span>
+            </h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Classroom-ready operational directives for aides, teachers, and specialists</span>
+          </div>
+          <button class="btn btn-secondary" onclick="openAddAccommodationModal()" style="font-size: 0.78rem; padding: 4px 10px;">
+            <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
+            <span>Add Accommodation</span>
+          </button>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="zlog-acc-filters">
+          <button class="zlog-acc-filter-btn ${activeSchoolAccFilter === 'all' ? 'active' : ''}" onclick="filterSchoolAccommodations('all')">
+            All Accommodations (${accommodations.length})
+          </button>
+          <button class="zlog-acc-filter-btn ${activeSchoolAccFilter === 'sensory' ? 'active' : ''}" onclick="filterSchoolAccommodations('sensory')">
+            🎧 Sensory &amp; Regulation (${accommodations.filter(a => a.category === 'sensory').length})
+          </button>
+          <button class="zlog-acc-filter-btn ${activeSchoolAccFilter === 'transitions' ? 'active' : ''}" onclick="filterSchoolAccommodations('transitions')">
+            ⏱️ Transitions (${accommodations.filter(a => a.category === 'transitions').length})
+          </button>
+          <button class="zlog-acc-filter-btn ${activeSchoolAccFilter === 'instruction' ? 'active' : ''}" onclick="filterSchoolAccommodations('instruction')">
+            🗣️ Instruction (${accommodations.filter(a => a.category === 'instruction').length})
+          </button>
+          <button class="zlog-acc-filter-btn ${activeSchoolAccFilter === 'behavior' ? 'active' : ''}" onclick="filterSchoolAccommodations('behavior')">
+            🛡️ Behavior &amp; Crisis (${accommodations.filter(a => a.category === 'behavior').length})
+          </button>
+          <button class="zlog-acc-filter-btn ${activeSchoolAccFilter === 'testing' ? 'active' : ''}" onclick="filterSchoolAccommodations('testing')">
+            📝 Testing (${accommodations.filter(a => a.category === 'testing').length})
+          </button>
+        </div>
+
+        <!-- Accommodations Grid -->
+        <div class="zlog-acc-grid">
+          ${filteredAccs.map(acc => `
+            <div class="zlog-acc-card ${acc.active === false ? 'inactive' : ''}">
+              <div class="zlog-acc-top">
+                <h4 class="zlog-acc-title">${escapeHtml(acc.title)}</h4>
+                <span class="zlog-acc-cat-tag">${escapeHtml(acc.category)}</span>
+              </div>
+              <p class="zlog-acc-desc">${escapeHtml(acc.description)}</p>
+              <div class="zlog-acc-footer">
+                <label style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+                  <input type="checkbox" ${acc.active !== false ? 'checked' : ''} onchange="toggleZLogAccommodationActive('${acc.id}')" style="accent-color: #2563EB;">
+                  <span style="font-weight: 600; color: ${acc.active !== false ? '#1D4ED8' : 'var(--text-muted)'};">
+                    ${acc.active !== false ? 'Active in IEP' : 'Inactive / Paused'}
+                  </span>
+                </label>
+                <button type="button" class="btn-text-danger" onclick="deleteZLogAccommodationItem('${acc.id}')" style="background: none; border: none; font-size: 0.7rem; color: var(--text-muted); cursor: pointer;" title="Delete accommodation">
+                  <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+      <!-- 3. ClassDojo & Classroom Momentum -->
+      <div class="zlog-section-box">
+        <div class="zlog-section-header">
+          <div>
+            <h3 class="zlog-section-title">
+              <i data-lucide="award" style="width: 18px; height: 18px; color: #10B981;"></i>
+              <span>ClassDojo &amp; Teacher Momentum</span>
+            </h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Real-time school performance parsed from daily log entries</span>
+          </div>
+          <button class="btn btn-secondary" onclick="openZLogEntryModal(formatDateIso(new Date()))" style="font-size: 0.78rem; padding: 4px 10px;">
+            <i data-lucide="edit" style="width: 13px; height: 13px;"></i>
+            <span>Log Today's Notes</span>
+          </button>
+        </div>
+
+        <div class="zlog-dojo-banner">
+          <div>
+            <div class="zlog-dojo-title">
+              <span>🏅 Current Dojo Point Baseline: ~${avgDojo} Points/Day</span>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 2px;">
+              Reinforced daily through positive behavior tokens &amp; OT regulation breaks.
+            </div>
+          </div>
+          <div style="font-size: 0.8rem; font-weight: 700; color: #047857;">
+            ${schoolEntries.length} Recent Teacher Notes Logged
+          </div>
+        </div>
+
+        <div class="zlog-recent-school-list">
+          ${schoolEntries.length === 0 ? `
+            <div style="font-size: 0.82rem; color: var(--text-muted); font-style: italic; padding: 8px;">No recent school notes logged yet. Use the daily log to record teacher reports.</div>
+          ` : schoolEntries.map(e => {
+            const dojoMatch = (e.notes || '').match(/(?:earned\s*|Today\s*I\s*earned\s*)(?:__)?(\d+)(?:__)?\s*Dojo\s*Points/i);
+            const scoreBadge = dojoMatch ? `<span class="zlog-ood-badge" style="background: #D1FAE5; color: #065F46;">🏅 ${dojoMatch[1]} Dojo</span>` : '';
+            return `
+              <div class="zlog-recent-school-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: #2563EB;">🗓️ ${escapeHtml(e.date)}</strong>
+                  ${scoreBadge}
+                </div>
+                <div style="color: var(--text-secondary); line-height: 1.4;">
+                  ${formatSchoolSnippet(e.notes)}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- 4. School & Clinical Support Team Directory -->
+      <div class="zlog-section-box">
+        <div class="zlog-section-header">
+          <div>
+            <h3 class="zlog-section-title">
+              <i data-lucide="users" style="width: 18px; height: 18px; color: #2563EB;"></i>
+              <span>School &amp; Clinical Support Team</span>
+            </h3>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">Direct contacts for special ed classroom, therapists, and specialists</span>
+          </div>
+          <button class="btn btn-secondary" onclick="openAddTeamMemberModal()" style="font-size: 0.78rem; padding: 4px 10px;">
+            <i data-lucide="user-plus" style="width: 13px; height: 13px;"></i>
+            <span>Add Member</span>
+          </button>
+        </div>
+
+        <div class="zlog-team-grid">
+          ${team.map(m => `
+            <div class="zlog-team-card">
+              <span class="zlog-team-role">${escapeHtml(m.role)}</span>
+              <span class="zlog-team-name">${escapeHtml(m.name)}</span>
+              <div class="zlog-team-contact">
+                ${m.email ? `<div><i data-lucide="mail" style="width: 11px; height: 11px; display: inline;"></i> <a href="mailto:${escapeHtml(m.email)}">${escapeHtml(m.email)}</a></div>` : ''}
+                ${m.phone ? `<div><i data-lucide="phone" style="width: 11px; height: 11px; display: inline;"></i> <span>${escapeHtml(m.phone)}</span></div>` : ''}
+              </div>
+              ${m.notes ? `<div class="zlog-team-notes">${escapeHtml(m.notes)}</div>` : ''}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function formatSchoolSnippet(notes) {
+  if (!notes) return '';
+  const marker = '🏫 School / Teacher Notes:';
+  const idx = notes.indexOf(marker);
+  if (idx !== -1) {
+    const snip = notes.substring(idx + marker.length).trim().replace(/\n+/g, ' ');
+    return escapeHtml(snip.length > 200 ? snip.substring(0, 200) + '...' : snip);
+  }
+  const clean = notes.replace(/\n+/g, ' ');
+  return escapeHtml(clean.length > 200 ? clean.substring(0, 200) + '...' : clean);
+}
+
+function filterSchoolAccommodations(cat) {
+  activeSchoolAccFilter = cat;
+  renderZLogSchool();
+}
+
+function toggleZLogAccommodationActive(id) {
+  storage.toggleZLogAccommodation(id);
+  renderZLogSchool();
+}
+
+function deleteZLogAccommodationItem(id) {
+  if (confirm('Delete this accommodation from the IEP matrix?')) {
+    storage.deleteZLogAccommodation(id);
+    renderZLogSchool();
+  }
+}
+
+/* Modals for School & IEP */
+
+function openAddAccommodationModal() {
+  let modal = document.getElementById('modal-add-accommodation');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-add-accommodation';
+    modal.className = 'modal-overlay';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Add IEP Accommodation</h3>
+        <button class="modal-close-btn" onclick="closeAddAccommodationModal()">&times;</button>
+      </div>
+      <form onsubmit="submitAddAccommodationModal(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select id="acc-modal-category" class="form-control" required>
+              <option value="sensory">🎧 Sensory &amp; Regulation</option>
+              <option value="transitions">⏱️ Transitions &amp; Schedule</option>
+              <option value="instruction">🗣️ Instruction &amp; Communication</option>
+              <option value="behavior">🛡️ Behavior &amp; Crisis Support</option>
+              <option value="testing">📝 Testing &amp; Workload</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title / Accommodation Name</label>
+            <input type="text" id="acc-modal-title" class="form-control" placeholder="e.g. 5-Minute Warning &amp; First/Then Board" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Classroom Directive / Implementation Notes</label>
+            <textarea id="acc-modal-desc" class="form-control" rows="3" placeholder="Specific actionable guidance for classroom teachers and aides..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddAccommodationModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Accommodation</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  modal.classList.add('active');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function submitAddAccommodationModal(e) {
+  e.preventDefault();
+  const acc = {
+    category: document.getElementById('acc-modal-category').value,
+    title: document.getElementById('acc-modal-title').value.trim(),
+    description: document.getElementById('acc-modal-desc').value.trim()
+  };
+  storage.addZLogAccommodation(acc);
+  closeAddAccommodationModal();
+  renderZLogSchool();
+}
+
+function closeAddAccommodationModal() {
+  const m = document.getElementById('modal-add-accommodation');
+  if (m) m.classList.remove('active');
+}
+
+function openEditSchoolPlacementModal() {
+  let modal = document.getElementById('modal-edit-placement');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-edit-placement';
+    modal.className = 'modal-overlay';
+    document.body.appendChild(modal);
+  }
+
+  const s = storage.getZLogSchool();
+  const p = s.placement || {};
+  const o = s.outOfDistrict || {};
+  const t = o.transportation || {};
+
+  modal.innerHTML = `
+    <div class="modal-card" style="max-width: 520px; max-height: 90vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title">Edit Out-of-District Placement Details</h3>
+        <button class="modal-close-btn" onclick="closeEditSchoolPlacementModal()">&times;</button>
+      </div>
+      <form onsubmit="submitEditSchoolPlacementModal(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px;">
+          <h4 style="font-size: 0.82rem; font-weight: 700; color: #2563EB; margin: 0;">Campus &amp; Program</h4>
+          <div class="form-group">
+            <label class="form-label">School Name</label>
+            <input type="text" id="edit-school-name" class="form-control" value="${escapeHtml(p.schoolName || '')}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address</label>
+            <input type="text" id="edit-school-addr" class="form-control" value="${escapeHtml(p.address || '')}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bell Schedule / Hours</label>
+            <input type="text" id="edit-school-hours" class="form-control" value="${escapeHtml(p.hours || '')}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone &amp; Front Desk</label>
+            <input type="text" id="edit-school-contact" class="form-control" value="${escapeHtml(p.contact || '')}">
+          </div>
+
+          <h4 style="font-size: 0.82rem; font-weight: 700; color: #2563EB; margin: 8px 0 0 0;">Sending District &amp; CSE</h4>
+          <div class="form-group">
+            <label class="form-label">Sending School District</label>
+            <input type="text" id="edit-sending-district" class="form-control" value="${escapeHtml(o.sendingDistrict || '')}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CSE Chairperson</label>
+            <input type="text" id="edit-cse-chair" class="form-control" value="${escapeHtml(o.cseChairperson || '')}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Annual Review Date</label>
+            <input type="date" id="edit-annual-review" class="form-control" value="${escapeHtml(o.annualReviewDate || '')}">
+          </div>
+
+          <h4 style="font-size: 0.82rem; font-weight: 700; color: #2563EB; margin: 8px 0 0 0;">Specialized Van &amp; Route</h4>
+          <div class="form-group">
+            <label class="form-label">Route Number</label>
+            <input type="text" id="edit-bus-route" class="form-control" value="${escapeHtml(t.routeNumber || '')}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Driver &amp; Matron</label>
+            <input type="text" id="edit-bus-driver" class="form-control" value="${escapeHtml(t.busDriver || '')}">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeEditSchoolPlacementModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  modal.classList.add('active');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function submitEditSchoolPlacementModal(e) {
+  e.preventDefault();
+  const s = storage.getZLogSchool();
+  if (!s.placement) s.placement = {};
+  if (!s.outOfDistrict) s.outOfDistrict = {};
+  if (!s.outOfDistrict.transportation) s.outOfDistrict.transportation = {};
+
+  s.placement.schoolName = document.getElementById('edit-school-name').value.trim();
+  s.placement.address = document.getElementById('edit-school-addr').value.trim();
+  s.placement.hours = document.getElementById('edit-school-hours').value.trim();
+  s.placement.contact = document.getElementById('edit-school-contact').value.trim();
+
+  s.outOfDistrict.sendingDistrict = document.getElementById('edit-sending-district').value.trim();
+  s.outOfDistrict.cseChairperson = document.getElementById('edit-cse-chair').value.trim();
+  s.outOfDistrict.annualReviewDate = document.getElementById('edit-annual-review').value;
+
+  s.outOfDistrict.transportation.routeNumber = document.getElementById('edit-bus-route').value.trim();
+  s.outOfDistrict.transportation.busDriver = document.getElementById('edit-bus-driver').value.trim();
+
+  storage.saveZLogSchool(s);
+  closeEditSchoolPlacementModal();
+  renderZLogSchool();
+}
+
+function closeEditSchoolPlacementModal() {
+  const m = document.getElementById('modal-edit-placement');
+  if (m) m.classList.remove('active');
+}
+
+function openAddTeamMemberModal() {
+  let modal = document.getElementById('modal-add-teammember');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-add-teammember';
+    modal.className = 'modal-overlay';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Add School Team Member</h3>
+        <button class="modal-close-btn" onclick="closeAddTeamMemberModal()">&times;</button>
+      </div>
+      <form onsubmit="submitAddTeamMemberModal(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Role</label>
+            <input type="text" id="team-modal-role" class="form-control" placeholder="e.g. Reading Specialist, Paraprofessional" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input type="text" id="team-modal-name" class="form-control" placeholder="e.g. Ms. Jane Foster" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="team-modal-email" class="form-control" placeholder="name@school.org">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone / Extension</label>
+            <input type="text" id="team-modal-phone" class="form-control" placeholder="e.g. Ext 215">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes / Preferences</label>
+            <input type="text" id="team-modal-notes" class="form-control" placeholder="e.g. Attends Thursday team meeting">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeAddTeamMemberModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Member</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  modal.classList.add('active');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function submitAddTeamMemberModal(e) {
+  e.preventDefault();
+  const s = storage.getZLogSchool();
+  if (!Array.isArray(s.team)) s.team = [];
+  s.team.push({
+    id: 'tm-' + Date.now(),
+    role: document.getElementById('team-modal-role').value.trim(),
+    name: document.getElementById('team-modal-name').value.trim(),
+    email: document.getElementById('team-modal-email').value.trim(),
+    phone: document.getElementById('team-modal-phone').value.trim(),
+    notes: document.getElementById('team-modal-notes').value.trim()
+  });
+  storage.saveZLogSchool(s);
+  closeAddTeamMemberModal();
+  renderZLogSchool();
+}
+
+function closeAddTeamMemberModal() {
+  const m = document.getElementById('modal-add-teammember');
+  if (m) m.classList.remove('active');
+}
+
+function exportSchoolIEPSummary() {
+  const s = storage.getZLogSchool();
+  const p = s.placement || {};
+  const o = s.outOfDistrict || {};
+  const accs = s.accommodations || [];
+
+  let text = `==========================================================\n`;
+  text += `Z - SCHOOL & IEP ACCOMMODATIONS SUMMARY\n`;
+  text += `==========================================================\n\n`;
+  text += `Placement: ${p.schoolName || 'Specialized Placement'}\n`;
+  text += `Program: ${p.programType || ''}\n`;
+  text += `Campus Address: ${p.address || ''}\n`;
+  text += `Sending District: ${o.sendingDistrict || ''}\n`;
+  text += `Funding Status: ${o.fundingSettlement?.status || 'District Funded'}\n`;
+  text += `Next CSE Review: ${o.annualReviewDate || ''}\n\n`;
+  text += `ACTIVE IEP ACCOMMODATIONS (${accs.filter(a => a.active !== false).length}):\n`;
+  accs.filter(a => a.active !== false).forEach((a, idx) => {
+    text += `${idx + 1}. [${a.category.toUpperCase()}] ${a.title}\n   Directive: ${a.description}\n\n`;
+  });
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      if (typeof showToast === 'function') {
+        showToast('IEP Brief copied to clipboard!', 'success');
+      } else {
+        alert('IEP Brief copied to clipboard!');
+      }
+    });
+  } else {
+    alert(text);
+  }
 }

@@ -44,8 +44,8 @@ function clearClaimDraft() {
   } catch (e) {}
 }
 
-function renderClaimsPage() {
-  const container = document.getElementById('bunker-subview-frame') || document.getElementById('daily-sheet-container');
+function renderClaimsPage(targetContainer) {
+  const container = targetContainer || document.getElementById('finance-subview-container') || document.getElementById('bunker-subview-frame') || document.getElementById('daily-sheet-container');
   if (!container) return;
 
   const stats = storage.getClaimsStats();

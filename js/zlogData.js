@@ -9909,3 +9909,130 @@ const DEFAULT_BARNESS_CLAIMS = [
     "notes": "Dr Barness"
   }
 ];
+
+
+/* ==========================================================================
+   Z Log School, Out-of-District Placement & IEP Accommodations Data
+   ========================================================================== */
+
+const DEFAULT_ZLOG_SCHOOL_DATA = {
+  placement: {
+    schoolName: "The Craig School",
+    campus: "Lower & Middle School Campus",
+    address: "15 Tower Hill Rd, Mountain Lakes, NJ 07046",
+    contact: "Front Desk: (973) 334-1295 | Nurse: ext 102",
+    hours: "8:20 AM – 2:50 PM (Early Dismissal: 12:30 PM)",
+    programType: "Specialized Out-of-District Day School (LD/ADHD/Executive Function Support)"
+  },
+  outOfDistrict: {
+    sendingDistrict: "Local Public School District",
+    cseChairperson: "Dr. Sarah Jenkins, Director of Special Services",
+    cseEmail: "sjenkins@district.k12.nj.us",
+    caseManager: "Rachel Vance, MSW, LCSW",
+    caseManagerPhone: "(973) 555-0142",
+    annualReviewDate: "2026-05-14",
+    triennialDate: "2027-10-22",
+    transportation: {
+      busCompany: "Jordan Transportation",
+      routeNumber: "Route 14-Special",
+      busDriver: "Mr. Dave (Cell: 973-555-8821)",
+      matron: "Ms. Carmen (1:1 / Small Van Matron)",
+      pickupTime: "7:45 AM",
+      dropoffTime: "3:25 PM",
+      accommodations: "Single seat, front row, noise-canceling headphones allowed, fidget permitted, no loud music on bus"
+    },
+    fundingSettlement: {
+      status: "District Funded / Approved Placement",
+      tuitionStatus: "Direct District Billing (Paid by Sending District)",
+      transportStatus: "District-Provided Specialized Van",
+      nextSettlementReview: "May 2027 Annual IEP Meeting",
+      notes: "Settlement agreement covers 10-month placement + 30-day ESY (Extended School Year) summer programming."
+    }
+  },
+  accommodations: [
+    {
+      id: "acc-1",
+      category: "sensory",
+      title: "Noise-Canceling Headphones & Sensory Room",
+      description: "Immediate access to over-ear active noise cancellation during assemblies, cafeteria, and loud group transitions. 10-min sensory recharge pass.",
+      active: true
+    },
+    {
+      id: "acc-2",
+      category: "transitions",
+      title: "Visual Countdown & Transition Warnings",
+      description: "5-minute and 2-minute visual and verbal heads-up before changing subjects or rooms. First/Then board utilized during low-compliance moments.",
+      active: true
+    },
+    {
+      id: "acc-3",
+      category: "instruction",
+      title: "Chunked Instructions & Written Checklists",
+      description: "Deliver multi-step tasks one step at a time. Provide a visual checklist on desk to check off as completed.",
+      active: true
+    },
+    {
+      id: "acc-4",
+      category: "behavior",
+      title: "Calm-Down Protocol & Movement Breaks",
+      description: "When agitation or voice volume rises, prompt with 'Let\'s take a heavy-work movement break' (wall push-ups or errand to office) before academic demand.",
+      active: true
+    },
+    {
+      id: "acc-5",
+      category: "sensory",
+      title: "Desk Seating & Fidget Accommodations",
+      description: "Wobble stool / resistance band on chair legs. Tactile fidget permitted at desk during listening time.",
+      active: true
+    },
+    {
+      id: "acc-6",
+      category: "testing",
+      title: "Extended Time & Alternate Testing Setting",
+      description: "1.5x extended time on written evaluations in a quiet, low-distraction testing room with oral reading of directions.",
+      active: true
+    }
+  ],
+  team: [
+    {
+      id: "tm-1",
+      role: "Lead Special Ed Teacher",
+      name: "Mrs. Miller",
+      email: "kmiller@craigschool.org",
+      phone: "Ext 204",
+      notes: "Classroom Dojo primary sender. Preferred contact via ClassDojo message before 3:30 PM."
+    },
+    {
+      id: "tm-2",
+      role: "1:1 Support Paraprofessional",
+      name: "Mr. Marcus",
+      email: "mmarcus@craigschool.org",
+      phone: "Ext 204",
+      notes: "Accompanies during transitions, specials (gym/art/music), and cafeteria lunch."
+    },
+    {
+      id: "tm-3",
+      role: "Occupational Therapist (OT)",
+      name: "Lisa Chen, MS, OTR/L",
+      email: "lchen@craigschool.org",
+      phone: "Ext 310",
+      notes: "2x 30-min weekly pull-out session (fine motor, proprioceptive regulation)."
+    },
+    {
+      id: "tm-4",
+      role: "Speech-Language Pathologist",
+      name: "Sarah Goldstein, CCC-SLP",
+      email: "sgoldstein@craigschool.org",
+      phone: "Ext 312",
+      notes: "2x 30-min weekly session (social pragmatics, expressive narrative)."
+    },
+    {
+      id: "tm-5",
+      role: "BCBA / Behavior Specialist",
+      name: "David Roberts, BCBA",
+      email: "droberts@craigschool.org",
+      phone: "Ext 118",
+      notes: "Manages positive behavior support plan and oversees Dojo reinforcement tokens."
+    }
+  ]
+};

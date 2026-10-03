@@ -1704,6 +1704,164 @@ class StorageManager {
     }
   }
 
+  /* --------------------------------------------------------------------------
+     Z Log School & Out-of-District IEP Methods
+     -------------------------------------------------------------------------- */
+  getZLogSchool() {
+    if (!this.data.zlogSchool) {
+      this.data.zlogSchool = JSON.parse(JSON.stringify(typeof DEFAULT_ZLOG_SCHOOL_DATA !== 'undefined' ? DEFAULT_ZLOG_SCHOOL_DATA : {}));
+      this.saveData();
+    }
+    return this.data.zlogSchool;
+  }
+
+  saveZLogSchool(schoolData) {
+    this.data.zlogSchool = schoolData;
+    this.saveData();
+    return this.data.zlogSchool;
+  }
+
+  toggleZLogAccommodation(id) {
+    const school = this.getZLogSchool();
+    if (school && Array.isArray(school.accommodations)) {
+      const item = school.accommodations.find(a => a.id === id);
+      if (item) {
+        item.active = !item.active;
+        this.saveData();
+        return item;
+      }
+    }
+    return null;
+  }
+
+  addZLogAccommodation(acc) {
+    const school = this.getZLogSchool();
+    if (!school.accommodations) school.accommodations = [];
+    const newAcc = {
+      id: 'acc-' + Date.now(),
+      category: acc.category || 'sensory',
+      title: (acc.title || '').trim(),
+      description: (acc.description || '').trim(),
+      active: true
+    };
+    school.accommodations.push(newAcc);
+    this.saveData();
+    return newAcc;
+  }
+
+  deleteZLogAccommodation(id) {
+    const school = this.getZLogSchool();
+    if (school && Array.isArray(school.accommodations)) {
+      school.accommodations = school.accommodations.filter(a => a.id !== id);
+      this.saveData();
+    }
+  }
+
+  updateZLogSchoolPlacement(placement) {
+    const school = this.getZLogSchool();
+    school.placement = Object.assign({}, school.placement || {}, placement);
+    this.saveData();
+    return school.placement;
+  }
+
+  updateZLogSchoolOutOfDistrict(ood) {
+    const school = this.getZLogSchool();
+    school.outOfDistrict = Object.assign({}, school.outOfDistrict || {}, ood);
+    this.saveData();
+    return school.outOfDistrict;
+  }
+
+  /* --------------------------------------------------------------------------
+     Personal Finance Hub Methods
+     -------------------------------------------------------------------------- */
+  getFinanceData() {
+    if (!this.data.finance) {
+      this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
+      this.saveData();
+    }
+    return this.data.finance;
+  }
+
+  saveFinanceData(data) {
+    this.data.finance = data;
+    this.saveData();
+    return this.data.finance;
+  }
+
+  saveMonarchTransactions(transactions) {
+    const fin = this.getFinanceData();
+    fin.transactions = transactions;
+    this.saveData();
+    return fin.transactions;
+  }
+
+  updateFinanceCategoryBudget(catId, newBudget) {
+    const fin = this.getFinanceData();
+    if (Array.isArray(fin.categories)) {
+      const cat = fin.categories.find(c => c.id === catId);
+      if (cat) {
+        cat.budget = parseFloat(newBudget) || 0;
+        this.saveData();
+        return cat;
+      }
+    }
+    return null;
+  }
+
+  addFinanceSubscription(sub) {
+    const fin = this.getFinanceData();
+    if (!Array.isArray(fin.subscriptions)) fin.subscriptions = [];
+    const newSub = {
+      id: 'sub-' + Date.now(),
+      name: (sub.name || '').trim(),
+      cost: parseFloat(sub.cost) || 0,
+      cadence: sub.cadence || 'monthly',
+      category: sub.category || 'General',
+      nextRenewal: sub.nextRenewal || '',
+      status: sub.status || 'active',
+      autoRenew: sub.autoRenew !== false,
+      notes: (sub.notes || '').trim()
+    };
+    fin.subscriptions.push(newSub);
+    this.saveData();
+    return newSub;
+  }
+
+  updateFinanceSubscription(id, updates) {
+    const fin = this.getFinanceData();
+    if (Array.isArray(fin.subscriptions)) {
+      const sub = fin.subscriptions.find(s => s.id === id);
+      if (sub) {
+        Object.assign(sub, updates);
+        this.saveData();
+        return sub;
+      }
+    }
+    return null;
+  }
+
+  deleteFinanceSubscription(id) {
+    const fin = this.getFinanceData();
+    if (Array.isArray(fin.subscriptions)) {
+      fin.subscriptions = fin.subscriptions.filter(s => s.id !== id);
+      this.saveData();
+    }
+  }
+
+  updateFinanceAccount(accId, updates) {
+    const fin = this.getFinanceData();
+    if (Array.isArray(fin.accounts)) {
+      const acc = fin.accounts.find(a => a.id === accId);
+      if (acc) {
+        Object.assign(acc, updates);
+        acc.updated = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0];
+        this.saveData();
+        return acc;
+      }
+    }
+    return null;
+  }
+
   resetToDefaults() {
     this.data = this.getDefaultState();
     this.saveData();
