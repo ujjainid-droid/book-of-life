@@ -1261,6 +1261,32 @@ function setTitrationSearchQuery(q) {
   }
 }
 
+let zlogTitrationAllNotesOpen = false;
+
+function toggleTitrationNote(drawerId, btnEl) {
+  const el = document.getElementById(drawerId);
+  if (!el) return;
+  const isHidden = (el.style.display === 'none' || !el.style.display);
+  el.style.display = isHidden ? (el.tagName === 'TR' ? 'table-row' : 'block') : 'none';
+  if (btnEl) {
+    btnEl.classList.toggle('active', isHidden);
+  }
+}
+
+function toggleAllTitrationNotes() {
+  zlogTitrationAllNotesOpen = !zlogTitrationAllNotesOpen;
+  document.querySelectorAll('.zlog-titration-note-drawer-target').forEach(el => {
+    el.style.display = zlogTitrationAllNotesOpen ? (el.tagName === 'TR' ? 'table-row' : 'block') : 'none';
+  });
+  document.querySelectorAll('.zlog-note-btn').forEach(btn => {
+    btn.classList.toggle('active', zlogTitrationAllNotesOpen);
+  });
+  const label = document.getElementById('zlog-toggle-all-notes-btn-text');
+  if (label) {
+    label.textContent = zlogTitrationAllNotesOpen ? 'Hide All Notes' : 'Expand All Notes';
+  }
+}
+
 function clearTitrationSearch() {
   zlogTitrationSearchQuery = '';
   renderZLogTitration();
@@ -1340,12 +1366,12 @@ function buildTitrationTableHtml(records) {
     <div style="width: 100%; overflow: hidden;">
       <table class="zlog-titration-table">
         <colgroup>
-          <col style="width: 12%;">
-          <col style="width: 18%;">
-          <col style="width: 15%;">
-          <col style="width: 15%;">
-          <col style="width: 27%;">
           <col style="width: 13%;">
+          <col style="width: 19%;">
+          <col style="width: 16%;">
+          <col style="width: 22%;">
+          <col style="width: 14%;">
+          <col style="width: 16%;">
         </colgroup>
         <thead>
           <tr>
@@ -1353,24 +1379,54 @@ function buildTitrationTableHtml(records) {
             <th>Medication</th>
             <th>Action</th>
             <th>Dosage</th>
-            <th>Reason / Notes</th>
+            <th style="text-align: center;">Clinical Note</th>
             <th>Prescriber</th>
           </tr>
         </thead>
         <tbody>
-          ${records.map(record => `
-            <tr>
-              <td style="font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600;">${record.date}</td>
-              <td>${renderTitrationMedBadge(record.medication)}</td>
-              <td>${renderTitrationActionSelect(record)}</td>
-              <td>${renderTitrationDosePill(record)}</td>
-              <td style="color: var(--text-primary); font-size: 0.74rem; line-height: 1.35;">
-                <div>${escapeHtml(record.notes || '—')}</div>
-                ${record.snapshot ? `<div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">📷 ${escapeHtml(record.snapshot)}</div>` : ''}
-              </td>
-              <td>${renderTitrationPrescriberSelect(record)}</td>
-            </tr>
-          `).join('')}
+          ${records.map(record => {
+            const hasNotes = !!((record.notes && record.notes.trim()) || record.snapshot);
+            return `
+              <tr>
+                <td style="font-family: var(--font-mono); font-size: 0.70rem; font-weight: 600;">${record.date}</td>
+                <td>${renderTitrationMedBadge(record.medication)}</td>
+                <td>${renderTitrationActionSelect(record)}</td>
+                <td>${renderTitrationDosePill(record)}</td>
+                <td style="text-align: center;">
+                  ${hasNotes ? `
+                    <button type="button" class="zlog-note-btn ${zlogTitrationAllNotesOpen ? 'active' : ''}" onclick="toggleTitrationNote('tit-note-${record.id}', this)" title="Click to view clinical note">
+                      💬 Note
+                    </button>
+                  ` : `<span style="color: var(--text-muted); font-size: 0.70rem;">—</span>`}
+                </td>
+                <td>${renderTitrationPrescriberSelect(record)}</td>
+              </tr>
+              ${hasNotes ? `
+                <tr id="tit-note-${record.id}" class="zlog-titration-note-row zlog-titration-note-drawer-target" style="display: ${zlogTitrationAllNotesOpen ? 'table-row' : 'none'};">
+                  <td colspan="6" style="padding: 0 12px 10px 12px; border-bottom: 1px solid var(--border-light);">
+                    <div class="zlog-titration-note-drawer">
+                      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
+                        <span style="font-weight: 700; color: var(--primary); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em;">
+                          Clinical Rationale &middot; ${record.date} &middot; ${escapeHtml(record.medication)} (${escapeHtml(record.dosage)})
+                        </span>
+                        <button type="button" onclick="toggleTitrationNote('tit-note-${record.id}', null)" style="background: none; border: none; font-size: 0.85rem; line-height: 1; color: var(--text-muted); cursor: pointer; padding: 0 4px;" title="Close note">&times;</button>
+                      </div>
+                      ${record.notes ? `
+                        <div style="margin-top: 4px; color: var(--text-primary); font-size: 0.74rem; line-height: 1.45;">
+                          ${escapeHtml(record.notes)}
+                        </div>
+                      ` : ''}
+                      ${record.snapshot ? `
+                        <div class="note-snapshot">
+                          📷 Snapshot: ${escapeHtml(record.snapshot)}
+                        </div>
+                      ` : ''}
+                    </div>
+                  </td>
+                </tr>
+              ` : ''}
+            `;
+          }).join('')}
         </tbody>
       </table>
     </div>
@@ -1383,33 +1439,41 @@ function buildTitrationCardsHtml(records) {
   }
   return `
     <div class="zlog-titration-cards-list">
-      ${records.map(record => `
-        <div class="zlog-titration-event-card">
-          <div class="zlog-titration-event-header">
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span class="zlog-tit-date" style="cursor: pointer;" onclick="toggleTitrationSortOrder()" title="Click to reverse sort order">
-                ${record.date}
-              </span>
-              ${renderTitrationMedBadge(record.medication)}
-              ${renderTitrationDosePill(record)}
+      ${records.map(record => {
+        const hasNotes = !!((record.notes && record.notes.trim()) || record.snapshot);
+        return `
+          <div class="zlog-titration-event-card">
+            <div class="zlog-titration-event-header">
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span class="zlog-tit-date" style="cursor: pointer;" onclick="toggleTitrationSortOrder()" title="Click to reverse sort order">
+                  ${record.date}
+                </span>
+                ${renderTitrationMedBadge(record.medication)}
+                ${renderTitrationDosePill(record)}
+                ${hasNotes ? `
+                  <button type="button" class="zlog-note-btn ${zlogTitrationAllNotesOpen ? 'active' : ''}" onclick="toggleTitrationNote('card-note-${record.id}', this)" title="Click to view clinical note">
+                    💬 Note
+                  </button>
+                ` : ''}
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                ${renderTitrationActionSelect(record)}
+                ${renderTitrationPrescriberSelect(record)}
+              </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              ${renderTitrationActionSelect(record)}
-              ${renderTitrationPrescriberSelect(record)}
-            </div>
+            ${hasNotes ? `
+              <div id="card-note-${record.id}" class="zlog-titration-note-drawer-target" style="display: ${zlogTitrationAllNotesOpen ? 'block' : 'none'}; margin-top: 6px; padding: 8px 10px; background: var(--bg-hover); border-left: 3px solid var(--primary); border-radius: var(--radius-sm);">
+                ${record.notes ? `<div style="font-size: 0.74rem; line-height: 1.45; color: var(--text-primary);">${escapeHtml(record.notes)}</div>` : ''}
+                ${record.snapshot ? `
+                  <div style="font-size: 0.66rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; border-top: 1px dashed var(--border-light); padding-top: 4px;">
+                    📷 ${escapeHtml(record.snapshot)}
+                  </div>
+                ` : ''}
+              </div>
+            ` : ''}
           </div>
-          ${record.notes ? `
-            <div class="zlog-titration-event-notes">
-              ${escapeHtml(record.notes)}
-            </div>
-          ` : ''}
-          ${record.snapshot ? `
-            <div style="font-size: 0.68rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px;">
-              📷 ${escapeHtml(record.snapshot)}
-            </div>
-          ` : ''}
-        </div>
-      `).join('')}
+        `;
+      }).join('')}
     </div>
   `;
 }
@@ -1447,18 +1511,43 @@ function buildTitrationByMedicationHtml(records) {
         <div class="zlog-med-ladder">
           ${sortedMedRecords.map((record, idx) => {
             const stepNum = (zlogTitrationSortOrder === 'desc') ? (sortedMedRecords.length - idx) : (idx + 1);
+            const hasNotes = !!((record.notes && record.notes.trim()) || record.snapshot);
+
             return `
               <div class="zlog-ladder-step">
                 <div class="zlog-ladder-step-num" title="Adjustment #${stepNum}">#${stepNum}</div>
                 <div class="zlog-ladder-step-date">${record.date}</div>
                 <div class="zlog-ladder-step-action">${renderTitrationActionSelect(record)}</div>
                 <div class="zlog-ladder-step-dose">${renderTitrationDosePill(record)}</div>
-                <div class="zlog-ladder-step-body">
-                  <div>${escapeHtml(record.notes || '—')}</div>
-                  ${record.snapshot ? `<div style="font-size: 0.65rem; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">📷 ${escapeHtml(record.snapshot)}</div>` : ''}
+                <div class="zlog-ladder-step-note">
+                  ${hasNotes ? `
+                    <button type="button" class="zlog-note-btn ${zlogTitrationAllNotesOpen ? 'active' : ''}" onclick="toggleTitrationNote('med-note-${record.id}', this)" title="Click to view notes">
+                      💬 Note
+                    </button>
+                  ` : `<span style="color: var(--text-muted); font-size: 0.70rem;">—</span>`}
                 </div>
                 <div class="zlog-ladder-step-prescriber">${renderTitrationPrescriberSelect(record)}</div>
               </div>
+              ${hasNotes ? `
+                <div id="med-note-${record.id}" class="zlog-med-note-drawer zlog-titration-note-drawer-target" style="display: ${zlogTitrationAllNotesOpen ? 'block' : 'none'};">
+                  <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;">
+                    <span style="font-weight: 700; color: var(--primary); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em;">
+                      Clinical Rationale &middot; ${record.date}
+                    </span>
+                    <button type="button" onclick="toggleTitrationNote('med-note-${record.id}', null)" style="background: none; border: none; font-size: 0.85rem; line-height: 1; color: var(--text-muted); cursor: pointer; padding: 0 4px;" title="Close note">&times;</button>
+                  </div>
+                  ${record.notes ? `
+                    <div style="margin-top: 3px; color: var(--text-primary); font-size: 0.74rem; line-height: 1.45;">
+                      ${escapeHtml(record.notes)}
+                    </div>
+                  ` : ''}
+                  ${record.snapshot ? `
+                    <div class="note-snapshot">
+                      📷 Snapshot: ${escapeHtml(record.snapshot)}
+                    </div>
+                  ` : ''}
+                </div>
+              ` : ''}
             `;
           }).join('')}
         </div>
@@ -1623,15 +1712,25 @@ function renderZLogTitration() {
 
     <!-- Titration Control Deck: Grouping, Search & Filter Toolbar -->
     <div class="zlog-titration-deck">
-      <!-- Top Row: Title & Group By Selector -->
+      <!-- Top Row: Title, Notes Toggle & Group By Selector -->
       <div class="zlog-titration-deck-top">
-        <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">
-            Dosage Adjustment History &amp; Clinical Notes
+            Dosage Adjustment History
           </span>
           <span class="zlog-chip-count">
             ${filteredList.length} of ${titrationList.length} shown
           </span>
+          <button 
+            type="button" 
+            class="zlog-note-btn ${zlogTitrationAllNotesOpen ? 'active' : ''}" 
+            onclick="toggleAllTitrationNotes()" 
+            title="Expand or hide all clinical notes across all rows"
+            style="margin-left: 4px;"
+          >
+            <i data-lucide="message-square" style="width: 11px; height: 11px;"></i>
+            <span id="zlog-toggle-all-notes-btn-text">${zlogTitrationAllNotesOpen ? 'Hide All Notes' : 'Expand All Notes'}</span>
+          </button>
         </div>
 
         <!-- 3-Way Group By Selector -->
