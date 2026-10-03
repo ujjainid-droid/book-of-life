@@ -2459,6 +2459,10 @@ function renderZLogInsights() {
   // Day-of-week stats
   const curDowStats = computeDowStats(curEntries);
   const cmpDowStats = cmpEntries ? computeDowStats(cmpEntries) : null;
+  const dowShortNames = { 0: 'Sun', 1: 'Mon', 2: 'Tue', 3: 'Wed', 4: 'Thu', 5: 'Fri', 6: 'Sat' };
+  const orderedDowDays = [1, 2, 3, 4, 5, 6, 0].map(key => curDowStats.find(d => d.dayIndex === key)).filter(Boolean);
+  const minDowAggDay = [...curDowStats].sort((a, b) => a.pctAgg - b.pctAgg)[0];
+  const maxDowAggDay = [...curDowStats].sort((a, b) => b.pctAgg - a.pctAgg)[0];
 
   // Cocktail stats with school day metrics & aggression-weighted sorting
   const rawCocktailList = CLINICAL_COCKTAILS.map(c => {
@@ -2714,54 +2718,59 @@ function renderZLogInsights() {
 
       </div>
 
-      <!-- SECTION 3: Day-of-Week Volatility Heatmap -->
+      <!-- SECTION 3: Day-of-Week Meltdown Volatility (Option 1: 7-Day Strip) -->
       <div class="zlog-insights-card">
         <div class="zlog-insights-header">
           <div>
             <div class="zlog-insights-title">
               <i data-lucide="calendar" style="color: #3B82F6; width: 18px; height: 18px;"></i>
-              <span>Day-of-Week Volatility &amp; Structure Patterns</span>
+              <span>Day-of-Week Meltdown Volatility</span>
             </div>
             <div class="zlog-insights-subtitle">
-              Behavioral distribution across days of the week in <strong>${filteredData.currentRangeLabel}</strong>${cmpStats ? ` compared to <em>${filteredData.compareLabel}</em>` : ''}.
+              Weekly distribution across days in <strong>${filteredData.currentRangeLabel}</strong>${cmpStats ? ` compared to <em>${filteredData.compareLabel}</em>` : ''}.
             </div>
           </div>
         </div>
 
-        <div class="zlog-dow-list">
-          ${curDowStats.map(d => {
+        <div class="zlog-dow-strip">
+          ${orderedDowDays.map(d => {
             const cmpD = cmpDowStats ? cmpDowStats.find(c => c.dayIndex === d.dayIndex) : null;
-            let rowStyle = '';
-            let nameStyle = '';
-            let statLabel = `${d.pctGood}% Good &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
+            const shortName = dowShortNames[d.dayIndex] || d.name.substring(0, 3);
+            const isCalmest = minDowAggDay && d.dayIndex === minDowAggDay.dayIndex && d.pctAgg <= 15;
+            const isSpike = maxDowAggDay && d.dayIndex === maxDowAggDay.dayIndex && d.pctAgg >= 30;
 
-            if (d.highlight === 'agg') {
-              rowStyle = 'background: rgba(239, 68, 68, 0.04); padding: 4px 6px; border-radius: 4px;';
-              nameStyle = 'font-weight: 700; color: #DC2626;';
-              statLabel = `${d.pctGood}% Good &middot; <strong style="color: #EF4444;">${d.pctAgg}% Agg (${d.label})</strong>`;
+            let tagText = d.label || 'Steady';
+            let tagCls = 'neutral';
+            if (isCalmest) {
+              tagText = '★ Calmest';
+              tagCls = 'good';
+            } else if (isSpike) {
+              tagText = '⚠️ Peak Spike';
+              tagCls = 'risk';
             } else if (d.highlight === 'good') {
-              rowStyle = 'background: rgba(16, 185, 129, 0.04); padding: 4px 6px; border-radius: 4px;';
-              nameStyle = 'font-weight: 700; color: #059669;';
-              statLabel = `<strong style="color: #059669;">${d.pctGood}% Good (${d.label})</strong> &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
+              tagCls = 'good';
+            } else if (d.highlight === 'agg') {
+              tagCls = 'risk';
             }
 
+            const heroCls = d.pctAgg <= 15 ? 'low' : (d.pctAgg <= 30 ? 'med' : 'high');
+            const cardCls = isCalmest ? 'is-calmest' : (isSpike ? 'is-spike' : '');
+
             return `
-              <div class="zlog-dow-row" style="${rowStyle}">
-                <span class="zlog-dow-name" style="${nameStyle}">${d.name}</span>
-                <div class="zlog-dow-track">
-                  <div class="zlog-dow-fill-good" style="width: ${d.pctGood}%;" title="${d.pctGood}% Good Days (${d.good}/${d.total})"></div>
-                  <div class="zlog-dow-fill-agg" style="width: ${d.pctAgg}%;" title="${d.pctAgg}% Aggression (${d.agg}/${d.total})"></div>
+              <div class="zlog-dow-card ${cardCls}">
+                <div class="zlog-dow-day-title">${shortName}</div>
+                <div class="zlog-dow-pill-tag ${tagCls}">${tagText}</div>
+                <div class="zlog-dow-hero-stat ${heroCls}">${d.pctAgg}%</div>
+                <div class="zlog-dow-hero-label">Meltdowns</div>
+                <div class="zlog-dow-sub-stat">
+                  <strong style="color: #059669;">${d.pctGood}%</strong> Good
+                  <div style="font-size: 0.62rem; color: var(--text-muted); margin-top: 1px;">${d.agg} of ${d.total}d</div>
                 </div>
-                <div>
-                  <div class="zlog-dow-stats">${statLabel}</div>
-                  ${cmpD ? `
-                    <div class="zlog-dow-compare-sub">
-                      <span>vs cmp:</span>
-                      <span>Good ${formatDeltaBadge(d.pctGood, cmpD.pctGood, true)}</span>
-                      <span>Agg ${formatDeltaBadge(d.pctAgg, cmpD.pctAgg, false)}</span>
-                    </div>
-                  ` : ''}
-                </div>
+                ${cmpD ? `
+                  <div class="zlog-dow-sub-cmp">
+                    vs cmp: ${formatDeltaBadge(d.pctAgg, cmpD.pctAgg, false)}
+                  </div>
+                ` : ''}
               </div>
             `;
           }).join('')}

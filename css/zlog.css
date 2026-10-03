@@ -1957,60 +1957,122 @@
   border-radius: var(--radius-full);
 }
 
-/* Day of Week Bars */
-.zlog-dow-list {
+/* 7-Day Horizontal Weekly Strip (Option 1) */
+.zlog-dow-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 10px;
+}
+
+@media (max-width: 800px) {
+  .zlog-dow-strip {
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  }
+}
+
+.zlog-dow-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 8px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.zlog-dow-row {
-  display: grid;
-  grid-template-columns: 80px 1fr 140px;
   align-items: center;
-  gap: 10px;
-  font-size: 0.75rem;
+  text-align: center;
+  gap: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-fast);
 }
 
-.zlog-dow-name {
-  font-weight: 600;
-  color: var(--text-primary);
+.zlog-dow-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 4px 10px rgba(124, 92, 252, 0.08);
 }
 
-.zlog-dow-track {
-  height: 8px;
-  background: var(--border-light);
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  display: flex;
+.zlog-dow-card.is-calmest {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, var(--bg-card) 100%);
 }
 
-.zlog-dow-fill-good {
-  background: #10B981;
-  height: 100%;
+.zlog-dow-card.is-spike {
+  border-color: rgba(239, 68, 68, 0.35);
+  background: linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, var(--bg-card) 100%);
 }
 
-.zlog-dow-fill-agg {
-  background: #EF4444;
-  height: 100%;
-}
-
-.zlog-dow-stats {
-  font-size: 0.70rem;
-  font-family: var(--font-mono);
-  text-align: right;
+.zlog-dow-day-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--text-secondary);
 }
 
-.zlog-dow-compare-sub {
-  font-size: 0.65rem;
+.zlog-dow-card.is-calmest .zlog-dow-day-title {
+  color: #059669;
+}
+
+.zlog-dow-card.is-spike .zlog-dow-day-title {
+  color: #DC2626;
+}
+
+.zlog-dow-pill-tag {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.zlog-dow-pill-tag.good {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.zlog-dow-pill-tag.risk {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+
+.zlog-dow-pill-tag.neutral {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.zlog-dow-hero-stat {
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: var(--font-mono, monospace);
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+.zlog-dow-hero-stat.low { color: #059669; }
+.zlog-dow-hero-stat.med { color: #7C5CFC; }
+.zlog-dow-hero-stat.high { color: #DC2626; }
+
+.zlog-dow-hero-label {
+  font-size: 0.63rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+}
+
+.zlog-dow-sub-stat {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  padding-top: 4px;
+  border-top: 1px dashed var(--border-light);
+  width: 100%;
+}
+
+.zlog-dow-sub-cmp {
+  font-size: 0.62rem;
   color: var(--text-muted);
   margin-top: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  flex-wrap: wrap;
 }
 
 /* Insights Timeframe & Comparison Toolbar */
