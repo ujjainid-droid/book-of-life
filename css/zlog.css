@@ -2002,6 +2002,163 @@
   color: var(--text-secondary);
 }
 
+.zlog-dow-compare-sub {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Insights Timeframe & Comparison Toolbar */
+.zlog-insights-toolbar {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.zlog-insights-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.zlog-insights-control-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.zlog-insights-control-label {
+  font-size: 0.70rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.zlog-insights-select {
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast);
+}
+
+.zlog-insights-select:focus {
+  border-color: var(--primary);
+}
+
+.zlog-insights-range-badge {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-card);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+}
+
+.zlog-delta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+.zlog-delta-tag.good {
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.zlog-delta-tag.bad {
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+
+.zlog-delta-tag.neutral {
+  background: var(--bg-hover);
+  color: var(--text-muted);
+}
+
+/* Era Comparison Box & Cards */
+.zlog-era-card {
+  cursor: pointer;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.zlog-era-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(15, 23, 42, 0.08);
+}
+
+.zlog-era-card.is-era-a {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.35);
+}
+
+.zlog-era-card.is-era-b {
+  border-color: #0D9488 !important;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.35);
+}
+
+.zlog-era-compare-container {
+  margin-top: 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.zlog-era-compare-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zlog-era-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.zlog-era-compare-cell {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
 @media (max-width: 600px) {
   .zlog-dow-row {
     grid-template-columns: 70px 1fr 100px;

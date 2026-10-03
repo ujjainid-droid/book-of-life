@@ -1862,16 +1862,392 @@ function renderZLogTitration() {
 /* --------------------------------------------------------------------------
    Sub-Tab 3: Patterns, Triangulation & "What Works" Playbook
    -------------------------------------------------------------------------- */
+let zlogInsightsTimeframe = 'all'; // 'all', '3m', '6m', '12m'
+let zlogInsightsCompareMode = 'none'; // 'none', 'prev', 'baseline'
+let zlogInsightsEraA = 'pre_risperdal';
+let zlogInsightsEraB = 'active_risperdal';
+
+const CLINICAL_ERAS = [
+  {
+    id: 'pre_risperdal',
+    name: 'Pre-Risperdal',
+    badge: 'Baseline Phase',
+    dates: 'Apr 2025 – Nov 2025',
+    start: '2025-04-09',
+    end: '2025-11-20',
+    color: '#64748B',
+    border: 'var(--border-light)',
+    note: 'High baseline volatility; explosive reactions without a brake.'
+  },
+  {
+    id: 'active_risperdal',
+    name: 'Active Daily Risperdal',
+    badge: 'Stabilized Phase',
+    dates: 'Nov 2025 – Jun 2026',
+    start: '2025-11-21',
+    end: '2026-06-01',
+    color: '#10B981',
+    border: '#10B981',
+    note: 'Aggression dropped by 13%; established stabilizing floor.'
+  },
+  {
+    id: 'early_summer',
+    name: 'Early Summer Halving',
+    badge: 'Low Demand',
+    dates: 'Jun 2026 – Jul 2026',
+    start: '2026-06-02',
+    end: '2026-07-10',
+    color: '#3B82F6',
+    border: '#3B82F6',
+    note: 'Low-demand summer proof: thrives with lower meds when calm.'
+  },
+  {
+    id: 'risperdal_stopped',
+    name: 'Risperdal Stopped',
+    badge: 'Crisis / Re-entry',
+    dates: 'Aug 15 – Sep 11, 2026',
+    start: '2026-08-15',
+    end: '2026-09-11',
+    color: '#EF4444',
+    border: '#EF4444',
+    note: 'School demands without daily buffer caused acute crisis → Re-started 0.25mg.'
+  }
+];
+
+function parseLocalDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split('-');
+  if (parts.length < 3) return null;
+  return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+}
+
+function formatDateStr(dateObj) {
+  const y = dateObj.getFullYear();
+  const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+  const d = String(dateObj.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+function formatPrettyDate(dateStr) {
+  if (!dateStr) return '';
+  const d = parseLocalDate(dateStr);
+  if (!d) return dateStr;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function computePeriodStats(list) {
+  if (!list || list.length === 0) {
+    return { total: 0, goodDays: 0, pctGood: 0, aggDays: 0, pctAgg: 0, avgRating: '0.0', rawAvg: 0, ratedCount: 0 };
+  }
+  let goodDays = 0;
+  let aggDays = 0;
+  let ratingSum = 0;
+  let ratedCount = 0;
+
+  list.forEach(e => {
+    const isAgg = (e.tags && (e.tags.includes('aggression') || e.tags.includes('meltdown'))) ||
+                  (e.indicators && (e.indicators.includes('aggression') || e.indicators.includes('meltdown'))) ||
+                  Boolean(e.aggression);
+    if (isAgg) aggDays++;
+
+    const isGood = (e.rating && e.rating >= 4) ||
+                   (e.tags && (e.tags.includes('calm') || e.tags.includes('happy') || e.tags.includes('focused')));
+    if (isGood) goodDays++;
+
+    if (e.rating && typeof e.rating === 'number' && e.rating > 0) {
+      ratingSum += e.rating;
+      ratedCount++;
+    }
+  });
+
+  const pctGood = Math.round((goodDays / list.length) * 100);
+  const pctAgg = Math.round((aggDays / list.length) * 100);
+  const rawAvg = ratedCount > 0 ? (ratingSum / ratedCount) : 0;
+  const avgRating = ratedCount > 0 ? rawAvg.toFixed(2) : 'N/A';
+
+  return { total: list.length, goodDays, pctGood, aggDays, pctAgg, avgRating, rawAvg, ratedCount };
+}
+
+function formatDeltaBadge(currVal, prevVal, isHigherBetter = true, suffix = '%') {
+  if (prevVal === undefined || prevVal === null || isNaN(prevVal) || isNaN(currVal)) return '';
+  const diff = Number((currVal - prevVal).toFixed(1));
+  if (diff === 0) {
+    return `<span class="zlog-delta-tag neutral">0${suffix}</span>`;
+  }
+  const isPositive = diff > 0;
+  const isGood = isHigherBetter ? isPositive : !isPositive;
+  const sign = isPositive ? '+' : '';
+  const cls = isGood ? 'good' : 'bad';
+  return `<span class="zlog-delta-tag ${cls}">${sign}${diff}${suffix}</span>`;
+}
+
+function getInsightsFilteredData(allEntries, timeframe, compareMode) {
+  if (!allEntries || allEntries.length === 0) {
+    return {
+      currentEntries: [],
+      compareEntries: null,
+      currentRangeLabel: 'No data',
+      compareLabel: null
+    };
+  }
+
+  const sorted = [...allEntries].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  const latestDateStr = sorted[sorted.length - 1].date || '2026-09-13';
+  const latestDate = parseLocalDate(latestDateStr);
+
+  let currentStart = null;
+  let currentEnd = latestDateStr;
+  let compareStart = null;
+  let compareEnd = null;
+  let currentRangeLabel = '';
+  let compareLabel = null;
+
+  if (timeframe === '3m') {
+    const dStart = new Date(latestDate.getTime() - 91 * 86400000);
+    currentStart = formatDateStr(dStart);
+    currentRangeLabel = `${formatPrettyDate(currentStart)} – ${formatPrettyDate(currentEnd)}`;
+
+    if (compareMode === 'prev') {
+      const dCmpEnd = new Date(dStart.getTime() - 86400000);
+      const dCmpStart = new Date(dCmpEnd.getTime() - 91 * 86400000);
+      compareStart = formatDateStr(dCmpStart);
+      compareEnd = formatDateStr(dCmpEnd);
+      compareLabel = `Prior 3 Months (${formatPrettyDate(compareStart)} – ${formatPrettyDate(compareEnd)})`;
+    } else if (compareMode === 'baseline') {
+      compareLabel = 'All-Time Baseline (426 days)';
+    }
+  } else if (timeframe === '6m') {
+    const dStart = new Date(latestDate.getTime() - 182 * 86400000);
+    currentStart = formatDateStr(dStart);
+    currentRangeLabel = `${formatPrettyDate(currentStart)} – ${formatPrettyDate(currentEnd)}`;
+
+    if (compareMode === 'prev') {
+      const dCmpEnd = new Date(dStart.getTime() - 86400000);
+      const dCmpStart = new Date(dCmpEnd.getTime() - 182 * 86400000);
+      compareStart = formatDateStr(dCmpStart);
+      compareEnd = formatDateStr(dCmpEnd);
+      compareLabel = `Prior 6 Months (${formatPrettyDate(compareStart)} – ${formatPrettyDate(compareEnd)})`;
+    } else if (compareMode === 'baseline') {
+      compareLabel = 'All-Time Baseline (426 days)';
+    }
+  } else if (timeframe === '12m') {
+    const dStart = new Date(latestDate.getTime() - 365 * 86400000);
+    currentStart = formatDateStr(dStart);
+    currentRangeLabel = `${formatPrettyDate(currentStart)} – ${formatPrettyDate(currentEnd)}`;
+
+    if (compareMode === 'prev') {
+      const dCmpEnd = new Date(dStart.getTime() - 86400000);
+      const dCmpStart = new Date(dCmpEnd.getTime() - 365 * 86400000);
+      compareStart = formatDateStr(dCmpStart);
+      compareEnd = formatDateStr(dCmpEnd);
+      compareLabel = `Prior 12 Months (${formatPrettyDate(compareStart)} – ${formatPrettyDate(compareEnd)})`;
+    } else if (compareMode === 'baseline') {
+      compareLabel = 'All-Time Baseline (426 days)';
+    }
+  } else {
+    // 'all'
+    const earliestDateStr = sorted[0].date || '2024-09-24';
+    currentRangeLabel = `Sep 2024 – Sep 2026 (Full 2-Year Dataset)`;
+    if (compareMode === 'prev') {
+      const dMid = new Date(latestDate.getTime() - 365 * 86400000);
+      currentStart = formatDateStr(dMid);
+      compareEnd = formatDateStr(new Date(dMid.getTime() - 86400000));
+      compareStart = earliestDateStr;
+      currentRangeLabel = `Past 12 Months (${formatPrettyDate(currentStart)} – ${formatPrettyDate(currentEnd)})`;
+      compareLabel = `Prior Year Baseline (${formatPrettyDate(compareStart)} – ${formatPrettyDate(compareEnd)})`;
+    } else if (compareMode === 'baseline') {
+      compareLabel = 'Full Historical Baseline';
+    }
+  }
+
+  const currentEntries = currentStart 
+    ? allEntries.filter(e => e.date && e.date >= currentStart && e.date <= currentEnd)
+    : allEntries;
+
+  let compareEntries = null;
+  if (compareMode === 'baseline') {
+    compareEntries = allEntries;
+  } else if (compareMode === 'prev' && compareStart && compareEnd) {
+    compareEntries = allEntries.filter(e => e.date && e.date >= compareStart && e.date <= compareEnd);
+  }
+
+  return {
+    currentEntries,
+    compareEntries,
+    currentRangeLabel,
+    compareLabel
+  };
+}
+
+function computeDowStats(list) {
+  const dows = [
+    { name: 'Sunday', key: 0, highlight: false },
+    { name: 'Monday', key: 1, highlight: 'agg', label: 'School Re-entry' },
+    { name: 'Tuesday', key: 2, highlight: 'good', label: 'Peak' },
+    { name: 'Wednesday', key: 3, highlight: false },
+    { name: 'Thursday', key: 4, highlight: false },
+    { name: 'Friday', key: 5, highlight: false },
+    { name: 'Saturday', key: 6, highlight: 'agg', label: 'Weekly Spike' }
+  ];
+
+  const counts = Array.from({ length: 7 }, () => ({ total: 0, good: 0, agg: 0 }));
+
+  list.forEach(e => {
+    if (!e.date) return;
+    const dt = parseLocalDate(e.date);
+    if (!dt) return;
+    const day = dt.getDay();
+    counts[day].total++;
+
+    const isAgg = (e.tags && (e.tags.includes('aggression') || e.tags.includes('meltdown'))) ||
+                  (e.indicators && (e.indicators.includes('aggression') || e.indicators.includes('meltdown'))) ||
+                  Boolean(e.aggression);
+    if (isAgg) counts[day].agg++;
+
+    const isGood = (e.rating && e.rating >= 4) ||
+                   (e.tags && (e.tags.includes('calm') || e.tags.includes('happy') || e.tags.includes('focused')));
+    if (isGood) counts[day].good++;
+  });
+
+  return dows.map(d => {
+    const c = counts[d.key];
+    const pctGood = c.total > 0 ? Math.round((c.good / c.total) * 100) : 0;
+    const pctAgg = c.total > 0 ? Math.round((c.agg / c.total) * 100) : 0;
+    return {
+      name: d.name,
+      dayIndex: d.key,
+      total: c.total,
+      good: c.good,
+      agg: c.agg,
+      pctGood,
+      pctAgg,
+      highlight: d.highlight,
+      label: d.label
+    };
+  });
+}
+
+function getEraComparisonNarrative(eraA, eraB) {
+  if (eraA.id === eraB.id) {
+    return `Both selectors are set to <strong>${eraA.name}</strong>. Choose two different eras to see direct deltas and clinical impact.`;
+  }
+  if ((eraA.id === 'pre_risperdal' && eraB.id === 'active_risperdal') || (eraA.id === 'active_risperdal' && eraB.id === 'pre_risperdal')) {
+    return `<strong>Clinical Conclusion:</strong> Active daily Risperidone (0.25–0.5mg) drove an immediate 13% reduction in aggression days (48% down to 35%) and raised Good Days by +9% (46% to 55%), confirming it provides an essential neurological brake against severe meltdowns.`;
+  }
+  if ((eraA.id === 'active_risperdal' && eraB.id === 'early_summer') || (eraA.id === 'early_summer' && eraB.id === 'active_risperdal')) {
+    return `<strong>Clinical Conclusion:</strong> During early summer with zero school demands, halving the dosage resulted in Good Days jumping to 72% and aggression dropping to 15%. This demonstrates high sensitivity to environmental load: when demand is low, lower medication is viable.`;
+  }
+  if ((eraA.id === 'active_risperdal' && eraB.id === 'risperdal_stopped') || (eraA.id === 'risperdal_stopped' && eraB.id === 'active_risperdal')) {
+    return `<strong>Clinical Conclusion:</strong> Completely discontinuing Risperidone right as school re-entered removed the behavioral brake, precipitating severe dismissal/after-care refusals and the Sep 11 escalation. This directly supported restarting 0.25mg daily.`;
+  }
+  const goodDiff = eraB.pctGood - eraA.pctGood;
+  const aggDiff = eraB.pctAgg - eraA.pctAgg;
+  const signGood = goodDiff >= 0 ? '+' : '';
+  const signAgg = aggDiff >= 0 ? '+' : '';
+  return `Comparing <strong>${eraA.name}</strong> to <strong>${eraB.name}</strong> shows a ${signGood}${goodDiff}% change in Good Days and a ${signAgg}${aggDiff}% change in Aggression frequency across ${eraA.total + eraB.total} total monitored days.`;
+}
+
+function setInsightsTimeframe(val) {
+  zlogInsightsTimeframe = val;
+  renderZLogInsights();
+}
+
+function setInsightsCompareMode(val) {
+  zlogInsightsCompareMode = val;
+  renderZLogInsights();
+}
+
+function setInsightsEraComparison(valA, valB) {
+  if (valA) zlogInsightsEraA = valA;
+  if (valB) zlogInsightsEraB = valB;
+  renderZLogInsights();
+}
+
+function selectInsightsEraCard(eraId) {
+  if (zlogInsightsEraA === eraId) return;
+  if (zlogInsightsEraB === eraId) {
+    const temp = zlogInsightsEraA;
+    zlogInsightsEraA = zlogInsightsEraB;
+    zlogInsightsEraB = temp;
+  } else {
+    zlogInsightsEraB = eraId;
+  }
+  renderZLogInsights();
+}
+
+// Attach to window for inline HTML handlers
+window.setInsightsTimeframe = setInsightsTimeframe;
+window.setInsightsCompareMode = setInsightsCompareMode;
+window.setInsightsEraComparison = setInsightsEraComparison;
+window.selectInsightsEraCard = selectInsightsEraCard;
+
 function renderZLogInsights() {
   const container = document.getElementById('zlog-subview-container');
   if (!container) return;
 
-  const stats = storage.getZLogStats();
-  const entries = storage.getAllZLogEntries();
+  const allEntries = storage.getAllZLogEntries();
   const titrationList = storage.getTitrationHistory();
+
+  // Filter current & comparison sets
+  const filteredData = getInsightsFilteredData(allEntries, zlogInsightsTimeframe, zlogInsightsCompareMode);
+  const curEntries = filteredData.currentEntries;
+  const cmpEntries = filteredData.compareEntries;
+
+  const curStats = computePeriodStats(curEntries);
+  const cmpStats = cmpEntries ? computePeriodStats(cmpEntries) : null;
+
+  // Day-of-week stats
+  const curDowStats = computeDowStats(curEntries);
+  const cmpDowStats = cmpEntries ? computeDowStats(cmpEntries) : null;
+
+  // Era stats
+  const eraStatsList = CLINICAL_ERAS.map(era => {
+    const eraEntries = allEntries.filter(e => e.date && e.date >= era.start && e.date <= era.end);
+    const pStats = computePeriodStats(eraEntries);
+    return { ...era, ...pStats };
+  });
+
+  const selectedEraA = eraStatsList.find(e => e.id === zlogInsightsEraA) || eraStatsList[0];
+  const selectedEraB = eraStatsList.find(e => e.id === zlogInsightsEraB) || eraStatsList[1];
 
   container.innerHTML = `
     <div class="zlog-insights-container">
+
+      <!-- Dynamic Timeframe & Comparison Toolbar -->
+      <div class="zlog-insights-toolbar">
+        <div class="zlog-insights-controls">
+          <div class="zlog-insights-control-item">
+            <span class="zlog-insights-control-label">
+              <i data-lucide="filter" style="width: 13px; height: 13px;"></i>
+              Timeframe:
+            </span>
+            <select class="zlog-insights-select" onchange="setInsightsTimeframe(this.value)">
+              <option value="all" ${zlogInsightsTimeframe === 'all' ? 'selected' : ''}>All Time (Full 2-Year Dataset)</option>
+              <option value="3m" ${zlogInsightsTimeframe === '3m' ? 'selected' : ''}>Past 3 Months</option>
+              <option value="6m" ${zlogInsightsTimeframe === '6m' ? 'selected' : ''}>Past 6 Months</option>
+              <option value="12m" ${zlogInsightsTimeframe === '12m' ? 'selected' : ''}>Past 12 Months</option>
+            </select>
+          </div>
+
+          <div class="zlog-insights-control-item">
+            <span class="zlog-insights-control-label">
+              <i data-lucide="git-compare" style="width: 13px; height: 13px;"></i>
+              Compare:
+            </span>
+            <select class="zlog-insights-select" onchange="setInsightsCompareMode(this.value)">
+              <option value="none" ${zlogInsightsCompareMode === 'none' ? 'selected' : ''}>None (Standard View)</option>
+              <option value="prev" ${zlogInsightsCompareMode === 'prev' ? 'selected' : ''}>vs. Previous Period (Same Length)</option>
+              <option value="baseline" ${zlogInsightsCompareMode === 'baseline' ? 'selected' : ''}>vs. All-Time Baseline (426d)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="zlog-insights-range-badge">
+          <i data-lucide="calendar" style="width: 13px; height: 13px; color: var(--primary);"></i>
+          <span><strong>Active Window:</strong> ${filteredData.currentRangeLabel} (${curStats.total} logs)</span>
+          ${filteredData.compareLabel ? `<span style="opacity: 0.8; font-size: 0.68rem; margin-left: 4px;">· <em>vs. ${filteredData.compareLabel}</em></span>` : ''}
+        </div>
+      </div>
 
       <!-- Top Clinical Pulse Strip -->
       <div class="zlog-insights-card" style="background: linear-gradient(135deg, rgba(124, 92, 252, 0.05), rgba(78, 135, 101, 0.05));">
@@ -1882,7 +2258,7 @@ function renderZLogInsights() {
               <span>Behavioral Triangulation &amp; Clinical Insights</span>
             </div>
             <div class="zlog-insights-subtitle">
-              Cross-analyzing ${stats.totalLogged} daily log entries and ${titrationList.length} titration events to isolate triggers, med correlations, and effective interventions.
+              Analyzing ${curStats.total} daily log entries in selected window across ${titrationList.length} titration milestones.
             </div>
           </div>
           <button type="button" class="btn btn-secondary" onclick="copyDoctorBrief()" style="font-size: 0.72rem; padding: 4px 10px;" title="Copy clean summary for Dr. Barness consultation">
@@ -1893,30 +2269,45 @@ function renderZLogInsights() {
 
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-top: 10px;">
           <div style="background: var(--bg-card); border: 1px solid var(--border-light); padding: 8px 10px; border-radius: var(--radius-sm);">
-            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Total Logged Days</div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary);">${stats.totalLogged}</div>
-            <div style="font-size: 0.65rem; color: var(--text-muted);">Sep 2024 – Sep 2026</div>
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Logged Days</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: baseline; gap: 6px;">
+              <span>${curStats.total}</span>
+              ${cmpStats ? `<span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">vs ${cmpStats.total}</span>` : ''}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--text-muted);">${filteredData.currentRangeLabel}</div>
           </div>
+
           <div style="background: var(--bg-card); border: 1px solid var(--border-light); padding: 8px 10px; border-radius: var(--radius-sm);">
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: #10B981;">Good / Great Days</div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: #10B981;">${stats.percentGood}%</div>
-            <div style="font-size: 0.65rem; color: var(--text-muted);">${stats.goodDays} of ${stats.totalLogged} days</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: #10B981; display: flex; align-items: center; gap: 6px;">
+              <span>${curStats.pctGood}%</span>
+              ${cmpStats ? formatDeltaBadge(curStats.pctGood, cmpStats.pctGood, true) : ''}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--text-muted);">${curStats.goodDays} of ${curStats.total} days ${cmpStats ? `(vs ${cmpStats.pctGood}%)` : ''}</div>
           </div>
+
           <div style="background: var(--bg-card); border: 1px solid var(--border-light); padding: 8px 10px; border-radius: var(--radius-sm);">
             <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: #EF4444;">Aggression Days</div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: #EF4444;">${stats.totalLogged > 0 ? Math.round((stats.aggressionDays / stats.totalLogged) * 100) : 0}%</div>
-            <div style="font-size: 0.65rem; color: var(--text-muted);">${stats.aggressionDays} of ${stats.totalLogged} days</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: #EF4444; display: flex; align-items: center; gap: 6px;">
+              <span>${curStats.pctAgg}%</span>
+              ${cmpStats ? formatDeltaBadge(curStats.pctAgg, cmpStats.pctAgg, false) : ''}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--text-muted);">${curStats.aggDays} of ${curStats.total} days ${cmpStats ? `(vs ${cmpStats.pctAgg}%)` : ''}</div>
           </div>
+
           <div style="background: var(--bg-card); border: 1px solid var(--border-light); padding: 8px 10px; border-radius: var(--radius-sm);">
-            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">Active Regimen</div>
-            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">Guanfacine XR 2mg</div>
-            <div style="font-size: 0.65rem; color: var(--text-muted);">Sertraline 75 · Rit 15+10 · Ris 0.25</div>
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">Avg Day Rating</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 6px;">
+              <span>${curStats.avgRating} <span style="font-size: 0.72rem; font-weight: 500; color: var(--text-muted);">/ 5.0</span></span>
+              ${cmpStats ? formatDeltaBadge(Number(curStats.rawAvg), Number(cmpStats.rawAvg), true, '') : ''}
+            </div>
+            <div style="font-size: 0.65rem; color: var(--text-muted);">${curStats.ratedCount} rated days ${cmpStats ? `(vs ${cmpStats.avgRating})` : ''}</div>
           </div>
         </div>
       </div>
 
       <!-- SECTION 1: Monthly Aggression & Meltdown Trendline (2025 - 2026) -->
-      ${buildMonthlyTrendlineSection(entries)}
+      ${buildMonthlyTrendlineSection(allEntries)}
 
       <!-- SECTION 2: Evidence-Based Playbook ("What the Data Shows Works") -->
       <div class="zlog-insights-card" style="border-left: 4px solid #10B981;">
@@ -2058,7 +2449,7 @@ function renderZLogInsights() {
         </div>
       </div>
 
-      <!-- SECTION 2: Medication Regimen vs Behavioral Outcomes Matrix -->
+      <!-- SECTION 3: Medication Regimen vs Behavioral Outcomes Matrix & Comparative Analytics -->
       <div class="zlog-insights-card">
         <div class="zlog-insights-header">
           <div>
@@ -2067,107 +2458,121 @@ function renderZLogInsights() {
               <span>Medication Regimen vs Behavioral Outcomes</span>
             </div>
             <div class="zlog-insights-subtitle">
-              Correlation between medication eras (from titration history) and aggression rates &amp; good days.
+              Correlation between clinical titration eras and behavioral outcomes. Click any era or use the comparison engine below to inspect side-by-side deltas.
             </div>
           </div>
+          <span style="font-size: 0.70rem; font-weight: 700; color: var(--primary); background: rgba(124, 92, 252, 0.1); padding: 2px 8px; border-radius: var(--radius-full);">
+            Interactive Era Analysis
+          </span>
         </div>
 
+        <!-- 4 Era Cards Grid -->
         <div class="zlog-era-grid">
-          <!-- Era 1 -->
-          <div class="zlog-era-card">
-            <div class="zlog-era-name">Pre-Risperdal</div>
-            <div class="zlog-era-dates">Apr 2025 – Nov 2025 (121d)</div>
-            <div class="zlog-era-bar-container">
-              <div class="zlog-era-bar-row">
-                <span>Good Days</span>
-                <strong style="color: #10B981;">46%</strong>
+          ${eraStatsList.map(era => {
+            const isEraA = era.id === zlogInsightsEraA;
+            const isEraB = era.id === zlogInsightsEraB;
+            const cardClass = isEraA ? 'zlog-era-card is-era-a' : (isEraB ? 'zlog-era-card is-era-b' : 'zlog-era-card');
+            const roleBadge = isEraA ? '<span class="zlog-delta-tag" style="background: rgba(124, 92, 252, 0.15); color: var(--primary);">Era A [Selected]</span>' : (isEraB ? '<span class="zlog-delta-tag" style="background: rgba(13, 148, 136, 0.15); color: #0D9488;">Era B [Selected]</span>' : '');
+
+            return `
+              <div class="${cardClass}" onclick="selectInsightsEraCard('${era.id}')" style="border-left: 3px solid ${era.border};">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 4px;">
+                  <div class="zlog-era-name">${era.name}</div>
+                  ${roleBadge}
+                </div>
+                <div class="zlog-era-dates">${era.dates} (${era.total}d)</div>
+                <div class="zlog-era-bar-container">
+                  <div class="zlog-era-bar-row">
+                    <span>Good Days</span>
+                    <strong style="color: #10B981;">${era.pctGood}%</strong>
+                  </div>
+                  <div class="zlog-era-bar-track">
+                    <div class="zlog-era-bar-fill" style="width: ${era.pctGood}%; background: #10B981;"></div>
+                  </div>
+                  <div class="zlog-era-bar-row" style="margin-top: 4px;">
+                    <span>Aggression Rate</span>
+                    <strong style="color: #EF4444;">${era.pctAgg}%</strong>
+                  </div>
+                  <div class="zlog-era-bar-track">
+                    <div class="zlog-era-bar-fill" style="width: ${era.pctAgg}%; background: #EF4444;"></div>
+                  </div>
+                </div>
+                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">${era.note}</div>
               </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 46%; background: #10B981;"></div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Interactive Era Comparison Box -->
+        <div class="zlog-era-compare-container">
+          <div class="zlog-era-compare-header">
+            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--text-primary);">
+              <i data-lucide="scale" style="width: 16px; height: 16px; color: var(--primary);"></i>
+              <span>Side-by-Side Regimen Comparison</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <div style="display: inline-flex; align-items: center; gap: 4px;">
+                <span style="font-size: 0.68rem; font-weight: 700; color: var(--primary);">Era A:</span>
+                <select class="zlog-insights-select" onchange="setInsightsEraComparison(this.value, zlogInsightsEraB)">
+                  ${eraStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsEraA ? 'selected' : ''}>${e.name}</option>`).join('')}
+                </select>
               </div>
-              <div class="zlog-era-bar-row" style="margin-top: 4px;">
-                <span>Aggression Rate</span>
-                <strong style="color: #EF4444;">48%</strong>
-              </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 48%; background: #EF4444;"></div>
+              <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">vs</span>
+              <div style="display: inline-flex; align-items: center; gap: 4px;">
+                <span style="font-size: 0.68rem; font-weight: 700; color: #0D9488;">Era B:</span>
+                <select class="zlog-insights-select" onchange="setInsightsEraComparison(zlogInsightsEraA, this.value)">
+                  ${eraStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsEraB ? 'selected' : ''}>${e.name}</option>`).join('')}
+                </select>
               </div>
             </div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">High baseline volatility; explosive reactions without a brake.</div>
           </div>
 
-          <!-- Era 2 -->
-          <div class="zlog-era-card" style="border-left: 3px solid #10B981;">
-            <div class="zlog-era-name">Active Daily Risperdal</div>
-            <div class="zlog-era-dates">Nov 2025 – Jun 2026 (193d)</div>
-            <div class="zlog-era-bar-container">
-              <div class="zlog-era-bar-row">
-                <span>Good Days</span>
-                <strong style="color: #10B981;">55%</strong>
+          <!-- Comparison Metrics Row -->
+          <div class="zlog-era-compare-grid">
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #10B981;">Good Days Rate</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>${selectedEraA.pctGood}% &rarr; ${selectedEraB.pctGood}%</span>
+                ${formatDeltaBadge(selectedEraB.pctGood, selectedEraA.pctGood, true)}
               </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 55%; background: #10B981;"></div>
-              </div>
-              <div class="zlog-era-bar-row" style="margin-top: 4px;">
-                <span>Aggression Rate</span>
-                <strong style="color: #EF4444;">35%</strong>
-              </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 35%; background: #EF4444;"></div>
-              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedEraA.goodDays}d vs ${selectedEraB.goodDays}d</div>
             </div>
-            <div style="font-size: 0.68rem; color: #059669; margin-top: 4px;">Aggression dropped by 13%; established stabilizing floor.</div>
+
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #EF4444;">Aggression Rate</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>${selectedEraA.pctAgg}% &rarr; ${selectedEraB.pctAgg}%</span>
+                ${formatDeltaBadge(selectedEraB.pctAgg, selectedEraA.pctAgg, false)}
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedEraA.aggDays}d vs ${selectedEraB.aggDays}d</div>
+            </div>
+
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">Avg Day Rating</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>${selectedEraA.avgRating} &rarr; ${selectedEraB.avgRating}</span>
+                ${formatDeltaBadge(Number(selectedEraB.rawAvg), Number(selectedEraA.rawAvg), true, '')}
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Rated sample days</div>
+            </div>
+
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Monitored Duration</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
+                <span>${selectedEraA.total}d vs ${selectedEraB.total}d</span>
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Total daily logs logged</div>
+            </div>
           </div>
 
-          <!-- Era 3 -->
-          <div class="zlog-era-card">
-            <div class="zlog-era-name">Early Summer Halving</div>
-            <div class="zlog-era-dates">Jun 2026 – Jul 2026 (39d)</div>
-            <div class="zlog-era-bar-container">
-              <div class="zlog-era-bar-row">
-                <span>Good Days</span>
-                <strong style="color: #10B981;">72%</strong>
-              </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 72%; background: #10B981;"></div>
-              </div>
-              <div class="zlog-era-bar-row" style="margin-top: 4px;">
-                <span>Aggression Rate</span>
-                <strong style="color: #EF4444;">15%</strong>
-              </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 15%; background: #EF4444;"></div>
-              </div>
-            </div>
-            <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">Low-demand summer proof: thrives with lower meds when calm.</div>
-          </div>
-
-          <!-- Era 4 -->
-          <div class="zlog-era-card" style="border-left: 3px solid #EF4444;">
-            <div class="zlog-era-name">Risperdal Stopped</div>
-            <div class="zlog-era-dates">Aug 15 – Sep 11, 2026 (28d)</div>
-            <div class="zlog-era-bar-container">
-              <div class="zlog-era-bar-row">
-                <span>Good Days</span>
-                <strong style="color: #10B981;">54%</strong>
-              </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 54%; background: #10B981;"></div>
-              </div>
-              <div class="zlog-era-bar-row" style="margin-top: 4px;">
-                <span>School Re-entry</span>
-                <strong style="color: #EF4444;">Sep 11 Crisis</strong>
-              </div>
-              <div class="zlog-era-bar-track">
-                <div class="zlog-era-bar-fill" style="width: 80%; background: #EF4444;"></div>
-              </div>
-            </div>
-            <div style="font-size: 0.68rem; color: #DC2626; margin-top: 4px;">School demands without daily buffer caused acute crisis &rarr; Re-started 0.25mg.</div>
+          <div style="font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary); background: rgba(124, 92, 252, 0.04); border-radius: var(--radius-sm); padding: 8px 10px; border: 1px dashed var(--border-light);">
+            ${getEraComparisonNarrative(selectedEraA, selectedEraB)}
           </div>
         </div>
       </div>
 
-      <!-- SECTION 3: Day-of-Week Volatility Heatmap -->
+      <!-- SECTION 4: Day-of-Week Volatility Heatmap -->
       <div class="zlog-insights-card">
         <div class="zlog-insights-header">
           <div>
@@ -2176,74 +2581,48 @@ function renderZLogInsights() {
               <span>Day-of-Week Volatility &amp; Structure Patterns</span>
             </div>
             <div class="zlog-insights-subtitle">
-              Comparing behavioral outcomes across days of the week highlights where structure protects vs where open schedules fail.
+              Behavioral distribution across days of the week in <strong>${filteredData.currentRangeLabel}</strong>${cmpStats ? ` compared to <em>${filteredData.compareLabel}</em>` : ''}.
             </div>
           </div>
         </div>
 
         <div class="zlog-dow-list">
-          <div class="zlog-dow-row">
-            <span class="zlog-dow-name">Sunday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 61%;" title="61% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 32%;" title="32% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats">61% Good &middot; <span style="color: #EF4444;">32% Agg</span></span>
-          </div>
+          ${curDowStats.map(d => {
+            const cmpD = cmpDowStats ? cmpDowStats.find(c => c.dayIndex === d.dayIndex) : null;
+            let rowStyle = '';
+            let nameStyle = '';
+            let statLabel = `${d.pctGood}% Good &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
 
-          <div class="zlog-dow-row" style="background: rgba(239, 68, 68, 0.04); padding: 4px 6px; border-radius: 4px;">
-            <span class="zlog-dow-name" style="font-weight: 700; color: #DC2626;">Monday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 43%;" title="43% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 39%;" title="39% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats">43% Good &middot; <strong style="color: #EF4444;">39% Agg (School Re-entry)</strong></span>
-          </div>
+            if (d.highlight === 'agg') {
+              rowStyle = 'background: rgba(239, 68, 68, 0.04); padding: 4px 6px; border-radius: 4px;';
+              nameStyle = 'font-weight: 700; color: #DC2626;';
+              statLabel = `${d.pctGood}% Good &middot; <strong style="color: #EF4444;">${d.pctAgg}% Agg (${d.label})</strong>`;
+            } else if (d.highlight === 'good') {
+              rowStyle = 'background: rgba(16, 185, 129, 0.04); padding: 4px 6px; border-radius: 4px;';
+              nameStyle = 'font-weight: 700; color: #059669;';
+              statLabel = `<strong style="color: #059669;">${d.pctGood}% Good (${d.label})</strong> &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
+            }
 
-          <div class="zlog-dow-row" style="background: rgba(16, 185, 129, 0.04); padding: 4px 6px; border-radius: 4px;">
-            <span class="zlog-dow-name" style="font-weight: 700; color: #059669;">Tuesday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 65%;" title="65% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 32%;" title="32% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats"><strong style="color: #059669;">65% Good (Peak)</strong> &middot; <span style="color: #EF4444;">32% Agg</span></span>
-          </div>
-
-          <div class="zlog-dow-row">
-            <span class="zlog-dow-name">Wednesday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 48%;" title="48% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 34%;" title="34% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats">48% Good &middot; <span style="color: #EF4444;">34% Agg</span></span>
-          </div>
-
-          <div class="zlog-dow-row">
-            <span class="zlog-dow-name">Thursday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 58%;" title="58% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 34%;" title="34% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats">58% Good &middot; <span style="color: #EF4444;">34% Agg</span></span>
-          </div>
-
-          <div class="zlog-dow-row">
-            <span class="zlog-dow-name">Friday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 53%;" title="53% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 32%;" title="32% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats">53% Good &middot; <span style="color: #EF4444;">32% Agg</span></span>
-          </div>
-
-          <div class="zlog-dow-row" style="background: rgba(239, 68, 68, 0.06); padding: 4px 6px; border-radius: 4px;">
-            <span class="zlog-dow-name" style="font-weight: 800; color: #DC2626;">Saturday</span>
-            <div class="zlog-dow-track">
-              <div class="zlog-dow-fill-good" style="width: 51%;" title="51% Good Days"></div>
-              <div class="zlog-dow-fill-agg" style="width: 47%;" title="47% Aggression"></div>
-            </div>
-            <span class="zlog-dow-stats">51% Good &middot; <strong style="color: #DC2626; font-size: 0.74rem;">47% Agg (Weekly Spike)</strong></span>
-          </div>
+            return `
+              <div class="zlog-dow-row" style="${rowStyle}">
+                <span class="zlog-dow-name" style="${nameStyle}">${d.name}</span>
+                <div class="zlog-dow-track">
+                  <div class="zlog-dow-fill-good" style="width: ${d.pctGood}%;" title="${d.pctGood}% Good Days (${d.good}/${d.total})"></div>
+                  <div class="zlog-dow-fill-agg" style="width: ${d.pctAgg}%;" title="${d.pctAgg}% Aggression (${d.agg}/${d.total})"></div>
+                </div>
+                <div>
+                  <div class="zlog-dow-stats">${statLabel}</div>
+                  ${cmpD ? `
+                    <div class="zlog-dow-compare-sub">
+                      <span>vs cmp:</span>
+                      <span>Good ${formatDeltaBadge(d.pctGood, cmpD.pctGood, true)}</span>
+                      <span>Agg ${formatDeltaBadge(d.pctAgg, cmpD.pctAgg, false)}</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
         </div>
       </div>
 
@@ -2253,9 +2632,19 @@ function renderZLogInsights() {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+
 function copyDoctorBrief() {
+  const allEntries = storage.getAllZLogEntries();
+  const titrationList = storage.getTitrationHistory();
+  const filtered = getInsightsFilteredData(allEntries, zlogInsightsTimeframe, zlogInsightsCompareMode);
+  const curStats = computePeriodStats(filtered.currentEntries);
+
+  const windowHeader = zlogInsightsTimeframe !== 'all'
+    ? `Active Focus Window: ${filtered.currentRangeLabel} (${curStats.total} Logs | Good: ${curStats.pctGood}% | Aggression: ${curStats.pctAgg}% | Avg: ${curStats.avgRating}/5.0)\nFull Historical Dataset: ${allEntries.length} Daily Logs (Sep 2024 - Sep 2026) | ${titrationList.length} Titration Events`
+    : `Analyzed Dataset: ${allEntries.length} Daily Logs (Sep 2024 - Sep 2026) | ${titrationList.length} Titration Events\nLongitudinal Rate: Good/Great Days: ${curStats.pctGood}% | Aggression Rate: ${curStats.pctAgg}% | Avg Rating: ${curStats.avgRating}/5.0`;
+
   const briefText = `Z LOG CLINICAL APPOINTMENT BRIEF (Dr. Barness)
-Analyzed Dataset: 424 Daily Logs (Sep 2024 - Sep 2026) | 34 Titration Events
+${windowHeader}
 
 1. KEY MEDICATION FINDINGS:
 - Active Risperdal (0.25mg-0.5mg): Aggression dropped from 48% (pre-Risperdal baseline) down to 35%, with Good Days increasing from 46% to 55%.
