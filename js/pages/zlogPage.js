@@ -2709,13 +2709,7 @@ function renderZLogInsights() {
           </table>
         </div>
 
-        <!-- Single Clean Clinical Takeaway Strip -->
-        <div style="margin-top: 10px; background: rgba(124, 92, 252, 0.05); border: 1px solid rgba(124, 92, 252, 0.15); border-radius: var(--radius-sm); padding: 8px 12px; display: flex; align-items: flex-start; gap: 8px;">
-          <i data-lucide="info" style="width: 16px; height: 16px; color: var(--primary); flex-shrink: 0; margin-top: 2px;"></i>
-          <div style="font-size: 0.73rem; line-height: 1.45; color: var(--text-secondary);">
-            <strong>Core Finding for Dr. Barness:</strong> School days expose true medication efficacy under academic and social demands. Under unbuffered or single-agent regimens (Cocktails #4 &amp; #5), school-day aggression surged up to <strong>44%</strong> (e.g. the Sep 11 after-school crisis). The complete <strong>4-pillar synergy</strong> (Guanfacine XR 2mg + Zoloft 50mg + Ritalin midday booster + low-dose Risperdal 0.125mg) maintained the lowest school aggression at <strong>14%</strong> while sustaining <strong>72% Good Days</strong>.
-          </div>
-        </div>
+
       </div>
 
       <!-- SECTION 3: Day-of-Week Volatility Heatmap -->
