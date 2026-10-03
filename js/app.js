@@ -3,7 +3,7 @@
    ========================================================================== */
 
 let editingHabitId = null;
-let currentView = 'daily'; // 'daily' | 'claims' | 'zlog'
+let currentView = 'sanctuary'; // 'sanctuary' | 'cover' | 'zlog' | 'finance' | 'podcasts'
 
 /* --------------------------------------------------------------------------
    Boot
@@ -23,17 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
     if (!rawHash) {
       const saved = localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover';
-      return { view: saved, subView: null };
+      let sub = null;
+      if (saved === 'finance' || saved === 'claims') {
+        sub = localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn';
+      } else if (saved === 'zlog' || saved === 'zhub') {
+        sub = localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline';
+      }
+      return { view: saved, subView: sub };
     }
 
     if (rawHash.startsWith('zhub') || rawHash.startsWith('zlog')) {
       const parts = rawHash.split(/[\/\-_?]/);
-      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : null;
+      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
       return { view: 'zlog', subView: sub };
     }
     if (rawHash.startsWith('finance') || rawHash.startsWith('claims')) {
       const parts = rawHash.split(/[\/\-_?]/);
-      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : null);
+      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn'));
       return { view: 'finance', subView: sub };
     }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
@@ -52,7 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hash change listener for browser forward/back buttons
   window.addEventListener('hashchange', () => {
     const r = parseHashRoute();
-    if (r.view !== currentView || (r.view === 'zlog' && r.subView && typeof activeZLogSubTab !== 'undefined' && r.subView !== activeZLogSubTab)) {
+    const isZLogSubChange = (r.view === 'zlog' && r.subView && typeof activeZLogSubTab !== 'undefined' && r.subView !== activeZLogSubTab);
+    const isFinanceSubChange = (r.view === 'finance' && r.subView && typeof activeFinanceSubTab !== 'undefined' && r.subView !== activeFinanceSubTab);
+    if (r.view !== currentView || isZLogSubChange || isFinanceSubChange) {
       switchAppView(r.view, r.subView);
     }
   });
@@ -68,9 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
    -------------------------------------------------------------------------- */
 function switchDomain(domain) {
   if (domain === 'zhub' || domain === 'zlog') {
-    switchAppView('zlog');
+    const lastSub = localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline';
+    switchAppView('zlog', lastSub);
   } else if (domain === 'finance' || domain === 'claims') {
-    switchAppView('finance');
+    const lastSub = localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn';
+    switchAppView('finance', lastSub);
   } else {
     // Return to last sanctuary view (cover or sanctuary)
     const lastSanctuary = localStorage.getItem('BOL_LAST_SANCTUARY_VIEW') || 'sanctuary';
@@ -102,9 +112,14 @@ function switchAppView(viewName, subViewName) {
 
   // Determine subview for zlog if provided
   if (currentView === 'zlog') {
-    if (subViewName && ['timeline', 'calendar', 'titration', 'insights'].includes(subViewName)) {
+    if (subViewName && ['timeline', 'calendar', 'titration', 'insights', 'school'].includes(subViewName)) {
       try { localStorage.setItem('BOL_ZLOG_ACTIVE_SUBTAB', subViewName); } catch (e) {}
       if (typeof activeZLogSubTab !== 'undefined') activeZLogSubTab = subViewName;
+    }
+  } else if (currentView === 'finance') {
+    if (subViewName && ['burn', 'subscriptions', 'claims', 'runway'].includes(subViewName)) {
+      try { localStorage.setItem('BOL_FINANCE_ACTIVE_SUBTAB', subViewName); } catch (e) {}
+      if (typeof activeFinanceSubTab !== 'undefined') activeFinanceSubTab = subViewName;
     }
   }
 
@@ -117,7 +132,8 @@ function switchAppView(viewName, subViewName) {
       const zTab = subViewName || (typeof activeZLogSubTab !== 'undefined' ? activeZLogSubTab : localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB')) || 'timeline';
       targetHash = (zTab && zTab !== 'timeline') ? `zhub/${zTab}` : 'zhub';
     } else if (currentView === 'finance') {
-      targetHash = 'finance';
+      const finTab = subViewName || (typeof activeFinanceSubTab !== 'undefined' ? activeFinanceSubTab : localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB')) || 'burn';
+      targetHash = (finTab && finTab !== 'burn') ? `finance/${finTab}` : 'finance';
     } else if (currentView === 'podcasts') {
       targetHash = 'podcasts';
     } else if (currentView === 'sanctuary') {
@@ -281,16 +297,14 @@ function openJournalEntryModal(dateStr) {
 }
 
 function renderCurrentView() {
-  const active = currentView || localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover';
-  if (active === 'cover') {
-    if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
-  } else if (active === 'claims' || active === 'zlog') {
-    renderAdultingBunkerShell(active);
-  } else if (active === 'podcasts') {
-    if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
-  } else {
-    if (typeof renderDailySheet === 'function') renderDailySheet();
+  const active = currentView || localStorage.getItem('BOL_ACTIVE_VIEW') || 'sanctuary';
+  let sub = null;
+  if (active === 'zlog' || active === 'zhub') {
+    sub = (typeof activeZLogSubTab !== 'undefined') ? activeZLogSubTab : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
+  } else if (active === 'finance' || active === 'claims') {
+    sub = (typeof activeFinanceSubTab !== 'undefined') ? activeFinanceSubTab : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn');
   }
+  switchAppView(active, sub);
 }
 window.renderCurrentView = renderCurrentView;
 
