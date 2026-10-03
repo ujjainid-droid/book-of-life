@@ -1862,7 +1862,7 @@ function renderZLogTitration() {
 /* --------------------------------------------------------------------------
    Sub-Tab 3: Patterns, Triangulation & "What Works" Playbook
    -------------------------------------------------------------------------- */
-let zlogInsightsTimeframe = 'all'; // 'all', '3m', '6m', '12m'
+let zlogInsightsTimeframe = '3m'; // '3m' default (focus on last 3 months for rapid developmental pace), '6m', '12m', 'all'
 let zlogInsightsCompareMode = 'none'; // 'none', 'prev', 'baseline'
 let zlogInsightsEraA = 'pre_risperdal';
 let zlogInsightsEraB = 'active_risperdal';
@@ -2309,7 +2309,184 @@ function renderZLogInsights() {
       <!-- SECTION 1: Monthly Aggression & Meltdown Trendline (2025 - 2026) -->
       ${buildMonthlyTrendlineSection(allEntries)}
 
-      <!-- SECTION 2: Evidence-Based Playbook ("What the Data Shows Works") -->
+      <!-- SECTION 2: Medication Regimen vs Behavioral Outcomes Matrix & Comparative Analytics -->
+      <div class="zlog-insights-card">
+        <div class="zlog-insights-header">
+          <div>
+            <div class="zlog-insights-title">
+              <i data-lucide="pill" style="color: #7C5CFC; width: 18px; height: 18px;"></i>
+              <span>Medication Regimen vs Behavioral Outcomes</span>
+            </div>
+            <div class="zlog-insights-subtitle">
+              Correlation between clinical titration eras and behavioral outcomes. Click any era or use the comparison engine below to inspect side-by-side deltas.
+            </div>
+          </div>
+          <span style="font-size: 0.70rem; font-weight: 700; color: var(--primary); background: rgba(124, 92, 252, 0.1); padding: 2px 8px; border-radius: var(--radius-full);">
+            Interactive Era Analysis
+          </span>
+        </div>
+
+        <!-- 4 Era Cards Grid -->
+        <div class="zlog-era-grid">
+          ${eraStatsList.map(era => {
+            const isEraA = era.id === zlogInsightsEraA;
+            const isEraB = era.id === zlogInsightsEraB;
+            const cardClass = isEraA ? 'zlog-era-card is-era-a' : (isEraB ? 'zlog-era-card is-era-b' : 'zlog-era-card');
+            const roleBadge = isEraA ? '<span class="zlog-delta-tag" style="background: rgba(124, 92, 252, 0.15); color: var(--primary);">Era A [Selected]</span>' : (isEraB ? '<span class="zlog-delta-tag" style="background: rgba(13, 148, 136, 0.15); color: #0D9488;">Era B [Selected]</span>' : '');
+
+            return `
+              <div class="${cardClass}" onclick="selectInsightsEraCard('${era.id}')" style="border-left: 3px solid ${era.border};">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 4px;">
+                  <div class="zlog-era-name">${era.name}</div>
+                  ${roleBadge}
+                </div>
+                <div class="zlog-era-dates">${era.dates} (${era.total}d)</div>
+                <div class="zlog-era-bar-container">
+                  <div class="zlog-era-bar-row">
+                    <span>Good Days</span>
+                    <strong style="color: #10B981;">${era.pctGood}%</strong>
+                  </div>
+                  <div class="zlog-era-bar-track">
+                    <div class="zlog-era-bar-fill" style="width: ${era.pctGood}%; background: #10B981;"></div>
+                  </div>
+                  <div class="zlog-era-bar-row" style="margin-top: 4px;">
+                    <span>Aggression Rate</span>
+                    <strong style="color: #EF4444;">${era.pctAgg}%</strong>
+                  </div>
+                  <div class="zlog-era-bar-track">
+                    <div class="zlog-era-bar-fill" style="width: ${era.pctAgg}%; background: #EF4444;"></div>
+                  </div>
+                </div>
+                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">${era.note}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Interactive Era Comparison Box -->
+        <div class="zlog-era-compare-container">
+          <div class="zlog-era-compare-header">
+            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--text-primary);">
+              <i data-lucide="scale" style="width: 16px; height: 16px; color: var(--primary);"></i>
+              <span>Side-by-Side Regimen Comparison</span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <div style="display: inline-flex; align-items: center; gap: 4px;">
+                <span style="font-size: 0.68rem; font-weight: 700; color: var(--primary);">Era A:</span>
+                <select class="zlog-insights-select" onchange="setInsightsEraComparison(this.value, zlogInsightsEraB)">
+                  ${eraStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsEraA ? 'selected' : ''}>${e.name}</option>`).join('')}
+                </select>
+              </div>
+              <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">vs</span>
+              <div style="display: inline-flex; align-items: center; gap: 4px;">
+                <span style="font-size: 0.68rem; font-weight: 700; color: #0D9488;">Era B:</span>
+                <select class="zlog-insights-select" onchange="setInsightsEraComparison(zlogInsightsEraA, this.value)">
+                  ${eraStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsEraB ? 'selected' : ''}>${e.name}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparison Metrics Row -->
+          <div class="zlog-era-compare-grid">
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #10B981;">Good Days Rate</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>${selectedEraA.pctGood}% &rarr; ${selectedEraB.pctGood}%</span>
+                ${formatDeltaBadge(selectedEraB.pctGood, selectedEraA.pctGood, true)}
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedEraA.goodDays}d vs ${selectedEraB.goodDays}d</div>
+            </div>
+
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #EF4444;">Aggression Rate</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>${selectedEraA.pctAgg}% &rarr; ${selectedEraB.pctAgg}%</span>
+                ${formatDeltaBadge(selectedEraB.pctAgg, selectedEraA.pctAgg, false)}
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedEraA.aggDays}d vs ${selectedEraB.aggDays}d</div>
+            </div>
+
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">Avg Day Rating</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
+                <span>${selectedEraA.avgRating} &rarr; ${selectedEraB.avgRating}</span>
+                ${formatDeltaBadge(Number(selectedEraB.rawAvg), Number(selectedEraA.rawAvg), true, '')}
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Rated sample days</div>
+            </div>
+
+            <div class="zlog-era-compare-cell">
+              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Monitored Duration</div>
+              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
+                <span>${selectedEraA.total}d vs ${selectedEraB.total}d</span>
+              </div>
+              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Total daily logs logged</div>
+            </div>
+          </div>
+
+          <div style="font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary); background: rgba(124, 92, 252, 0.04); border-radius: var(--radius-sm); padding: 8px 10px; border: 1px dashed var(--border-light);">
+            ${getEraComparisonNarrative(selectedEraA, selectedEraB)}
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Day-of-Week Volatility Heatmap -->
+      <div class="zlog-insights-card">
+        <div class="zlog-insights-header">
+          <div>
+            <div class="zlog-insights-title">
+              <i data-lucide="calendar" style="color: #3B82F6; width: 18px; height: 18px;"></i>
+              <span>Day-of-Week Volatility &amp; Structure Patterns</span>
+            </div>
+            <div class="zlog-insights-subtitle">
+              Behavioral distribution across days of the week in <strong>${filteredData.currentRangeLabel}</strong>${cmpStats ? ` compared to <em>${filteredData.compareLabel}</em>` : ''}.
+            </div>
+          </div>
+        </div>
+
+        <div class="zlog-dow-list">
+          ${curDowStats.map(d => {
+            const cmpD = cmpDowStats ? cmpDowStats.find(c => c.dayIndex === d.dayIndex) : null;
+            let rowStyle = '';
+            let nameStyle = '';
+            let statLabel = `${d.pctGood}% Good &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
+
+            if (d.highlight === 'agg') {
+              rowStyle = 'background: rgba(239, 68, 68, 0.04); padding: 4px 6px; border-radius: 4px;';
+              nameStyle = 'font-weight: 700; color: #DC2626;';
+              statLabel = `${d.pctGood}% Good &middot; <strong style="color: #EF4444;">${d.pctAgg}% Agg (${d.label})</strong>`;
+            } else if (d.highlight === 'good') {
+              rowStyle = 'background: rgba(16, 185, 129, 0.04); padding: 4px 6px; border-radius: 4px;';
+              nameStyle = 'font-weight: 700; color: #059669;';
+              statLabel = `<strong style="color: #059669;">${d.pctGood}% Good (${d.label})</strong> &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
+            }
+
+            return `
+              <div class="zlog-dow-row" style="${rowStyle}">
+                <span class="zlog-dow-name" style="${nameStyle}">${d.name}</span>
+                <div class="zlog-dow-track">
+                  <div class="zlog-dow-fill-good" style="width: ${d.pctGood}%;" title="${d.pctGood}% Good Days (${d.good}/${d.total})"></div>
+                  <div class="zlog-dow-fill-agg" style="width: ${d.pctAgg}%;" title="${d.pctAgg}% Aggression (${d.agg}/${d.total})"></div>
+                </div>
+                <div>
+                  <div class="zlog-dow-stats">${statLabel}</div>
+                  ${cmpD ? `
+                    <div class="zlog-dow-compare-sub">
+                      <span>vs cmp:</span>
+                      <span>Good ${formatDeltaBadge(d.pctGood, cmpD.pctGood, true)}</span>
+                      <span>Agg ${formatDeltaBadge(d.pctAgg, cmpD.pctAgg, false)}</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- SECTION 4: Evidence-Based Playbook ("What the Data Shows Works") -->
       <div class="zlog-insights-card" style="border-left: 4px solid #10B981;">
         <div class="zlog-insights-header">
           <div>
@@ -2318,7 +2495,7 @@ function renderZLogInsights() {
               <span>Evidence-Based Playbook: What the Data Shows Works</span>
             </div>
             <div class="zlog-insights-subtitle">
-              Actionable interventions and proactive habits proven by 2 years of daily logs to prevent meltdowns and support regulation.
+              Actionable interventions and proactive habits proven by recent behavioral patterns and longitudinal logs to prevent meltdowns and support regulation.
             </div>
           </div>
           <span style="font-size: 0.70rem; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: var(--radius-full);">
@@ -2446,183 +2623,6 @@ function renderZLogInsights() {
               <strong>Action:</strong> Proactively schedule food outings on high-stress days (e.g. IEP meetings, doctor visits) before dysregulation peaks.
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- SECTION 3: Medication Regimen vs Behavioral Outcomes Matrix & Comparative Analytics -->
-      <div class="zlog-insights-card">
-        <div class="zlog-insights-header">
-          <div>
-            <div class="zlog-insights-title">
-              <i data-lucide="pill" style="color: #7C5CFC; width: 18px; height: 18px;"></i>
-              <span>Medication Regimen vs Behavioral Outcomes</span>
-            </div>
-            <div class="zlog-insights-subtitle">
-              Correlation between clinical titration eras and behavioral outcomes. Click any era or use the comparison engine below to inspect side-by-side deltas.
-            </div>
-          </div>
-          <span style="font-size: 0.70rem; font-weight: 700; color: var(--primary); background: rgba(124, 92, 252, 0.1); padding: 2px 8px; border-radius: var(--radius-full);">
-            Interactive Era Analysis
-          </span>
-        </div>
-
-        <!-- 4 Era Cards Grid -->
-        <div class="zlog-era-grid">
-          ${eraStatsList.map(era => {
-            const isEraA = era.id === zlogInsightsEraA;
-            const isEraB = era.id === zlogInsightsEraB;
-            const cardClass = isEraA ? 'zlog-era-card is-era-a' : (isEraB ? 'zlog-era-card is-era-b' : 'zlog-era-card');
-            const roleBadge = isEraA ? '<span class="zlog-delta-tag" style="background: rgba(124, 92, 252, 0.15); color: var(--primary);">Era A [Selected]</span>' : (isEraB ? '<span class="zlog-delta-tag" style="background: rgba(13, 148, 136, 0.15); color: #0D9488;">Era B [Selected]</span>' : '');
-
-            return `
-              <div class="${cardClass}" onclick="selectInsightsEraCard('${era.id}')" style="border-left: 3px solid ${era.border};">
-                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 4px;">
-                  <div class="zlog-era-name">${era.name}</div>
-                  ${roleBadge}
-                </div>
-                <div class="zlog-era-dates">${era.dates} (${era.total}d)</div>
-                <div class="zlog-era-bar-container">
-                  <div class="zlog-era-bar-row">
-                    <span>Good Days</span>
-                    <strong style="color: #10B981;">${era.pctGood}%</strong>
-                  </div>
-                  <div class="zlog-era-bar-track">
-                    <div class="zlog-era-bar-fill" style="width: ${era.pctGood}%; background: #10B981;"></div>
-                  </div>
-                  <div class="zlog-era-bar-row" style="margin-top: 4px;">
-                    <span>Aggression Rate</span>
-                    <strong style="color: #EF4444;">${era.pctAgg}%</strong>
-                  </div>
-                  <div class="zlog-era-bar-track">
-                    <div class="zlog-era-bar-fill" style="width: ${era.pctAgg}%; background: #EF4444;"></div>
-                  </div>
-                </div>
-                <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">${era.note}</div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-
-        <!-- Interactive Era Comparison Box -->
-        <div class="zlog-era-compare-container">
-          <div class="zlog-era-compare-header">
-            <div style="display: flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.82rem; color: var(--text-primary);">
-              <i data-lucide="scale" style="width: 16px; height: 16px; color: var(--primary);"></i>
-              <span>Side-by-Side Regimen Comparison</span>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <div style="display: inline-flex; align-items: center; gap: 4px;">
-                <span style="font-size: 0.68rem; font-weight: 700; color: var(--primary);">Era A:</span>
-                <select class="zlog-insights-select" onchange="setInsightsEraComparison(this.value, zlogInsightsEraB)">
-                  ${eraStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsEraA ? 'selected' : ''}>${e.name}</option>`).join('')}
-                </select>
-              </div>
-              <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">vs</span>
-              <div style="display: inline-flex; align-items: center; gap: 4px;">
-                <span style="font-size: 0.68rem; font-weight: 700; color: #0D9488;">Era B:</span>
-                <select class="zlog-insights-select" onchange="setInsightsEraComparison(zlogInsightsEraA, this.value)">
-                  ${eraStatsList.map(e => `<option value="${e.id}" ${e.id === zlogInsightsEraB ? 'selected' : ''}>${e.name}</option>`).join('')}
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Comparison Metrics Row -->
-          <div class="zlog-era-compare-grid">
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #10B981;">Good Days Rate</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
-                <span>${selectedEraA.pctGood}% &rarr; ${selectedEraB.pctGood}%</span>
-                ${formatDeltaBadge(selectedEraB.pctGood, selectedEraA.pctGood, true)}
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedEraA.goodDays}d vs ${selectedEraB.goodDays}d</div>
-            </div>
-
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #EF4444;">Aggression Rate</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
-                <span>${selectedEraA.pctAgg}% &rarr; ${selectedEraB.pctAgg}%</span>
-                ${formatDeltaBadge(selectedEraB.pctAgg, selectedEraA.pctAgg, false)}
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">${selectedEraA.aggDays}d vs ${selectedEraB.aggDays}d</div>
-            </div>
-
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--primary);">Avg Day Rating</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; display: flex; align-items: center; gap: 6px;">
-                <span>${selectedEraA.avgRating} &rarr; ${selectedEraB.avgRating}</span>
-                ${formatDeltaBadge(Number(selectedEraB.rawAvg), Number(selectedEraA.rawAvg), true, '')}
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Rated sample days</div>
-            </div>
-
-            <div class="zlog-era-compare-cell">
-              <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted);">Monitored Duration</div>
-              <div style="font-size: 1.05rem; font-weight: 800; color: var(--text-primary); margin-top: 2px;">
-                <span>${selectedEraA.total}d vs ${selectedEraB.total}d</span>
-              </div>
-              <div style="font-size: 0.65rem; color: var(--text-muted); margin-top: 2px;">Total daily logs logged</div>
-            </div>
-          </div>
-
-          <div style="font-size: 0.72rem; line-height: 1.45; color: var(--text-secondary); background: rgba(124, 92, 252, 0.04); border-radius: var(--radius-sm); padding: 8px 10px; border: 1px dashed var(--border-light);">
-            ${getEraComparisonNarrative(selectedEraA, selectedEraB)}
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 4: Day-of-Week Volatility Heatmap -->
-      <div class="zlog-insights-card">
-        <div class="zlog-insights-header">
-          <div>
-            <div class="zlog-insights-title">
-              <i data-lucide="calendar" style="color: #3B82F6; width: 18px; height: 18px;"></i>
-              <span>Day-of-Week Volatility &amp; Structure Patterns</span>
-            </div>
-            <div class="zlog-insights-subtitle">
-              Behavioral distribution across days of the week in <strong>${filteredData.currentRangeLabel}</strong>${cmpStats ? ` compared to <em>${filteredData.compareLabel}</em>` : ''}.
-            </div>
-          </div>
-        </div>
-
-        <div class="zlog-dow-list">
-          ${curDowStats.map(d => {
-            const cmpD = cmpDowStats ? cmpDowStats.find(c => c.dayIndex === d.dayIndex) : null;
-            let rowStyle = '';
-            let nameStyle = '';
-            let statLabel = `${d.pctGood}% Good &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
-
-            if (d.highlight === 'agg') {
-              rowStyle = 'background: rgba(239, 68, 68, 0.04); padding: 4px 6px; border-radius: 4px;';
-              nameStyle = 'font-weight: 700; color: #DC2626;';
-              statLabel = `${d.pctGood}% Good &middot; <strong style="color: #EF4444;">${d.pctAgg}% Agg (${d.label})</strong>`;
-            } else if (d.highlight === 'good') {
-              rowStyle = 'background: rgba(16, 185, 129, 0.04); padding: 4px 6px; border-radius: 4px;';
-              nameStyle = 'font-weight: 700; color: #059669;';
-              statLabel = `<strong style="color: #059669;">${d.pctGood}% Good (${d.label})</strong> &middot; <span style="color: #EF4444;">${d.pctAgg}% Agg</span>`;
-            }
-
-            return `
-              <div class="zlog-dow-row" style="${rowStyle}">
-                <span class="zlog-dow-name" style="${nameStyle}">${d.name}</span>
-                <div class="zlog-dow-track">
-                  <div class="zlog-dow-fill-good" style="width: ${d.pctGood}%;" title="${d.pctGood}% Good Days (${d.good}/${d.total})"></div>
-                  <div class="zlog-dow-fill-agg" style="width: ${d.pctAgg}%;" title="${d.pctAgg}% Aggression (${d.agg}/${d.total})"></div>
-                </div>
-                <div>
-                  <div class="zlog-dow-stats">${statLabel}</div>
-                  ${cmpD ? `
-                    <div class="zlog-dow-compare-sub">
-                      <span>vs cmp:</span>
-                      <span>Good ${formatDeltaBadge(d.pctGood, cmpD.pctGood, true)}</span>
-                      <span>Agg ${formatDeltaBadge(d.pctAgg, cmpD.pctAgg, false)}</span>
-                    </div>
-                  ` : ''}
-                </div>
-              </div>
-            `;
-          }).join('')}
         </div>
       </div>
 
