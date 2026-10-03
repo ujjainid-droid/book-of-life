@@ -2739,14 +2739,23 @@ function renderZLogInsights() {
             const isCalmest = minDowAggDay && d.dayIndex === minDowAggDay.dayIndex && d.pctAgg <= 15;
             const isSpike = maxDowAggDay && d.dayIndex === maxDowAggDay.dayIndex && d.pctAgg >= 30;
 
-            let tagText = d.label || 'Steady';
+            let tagText = 'Steady';
             let tagCls = 'neutral';
             if (isCalmest) {
-              tagText = '★ Calmest';
+              tagText = '★ Calm';
               tagCls = 'good';
             } else if (isSpike) {
-              tagText = '⚠️ Peak Spike';
+              tagText = '⚠️ Spike';
               tagCls = 'risk';
+            } else if (d.dayIndex === 1) { // Monday
+              tagText = 'Re-entry';
+              tagCls = 'risk';
+            } else if (d.dayIndex === 4 && d.pctAgg >= 30) { // Thursday
+              tagText = 'Fatigue';
+              tagCls = 'risk';
+            } else if (d.dayIndex === 0) { // Sunday
+              tagText = 'Reset';
+              tagCls = 'neutral';
             } else if (d.highlight === 'good') {
               tagCls = 'good';
             } else if (d.highlight === 'agg') {
