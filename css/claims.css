@@ -939,3 +939,94 @@
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
 }
+
+
+/* --------------------------------------------------------------------------
+   3-Way Reconciliation Match Capsule & Submission Lane Switcher
+   -------------------------------------------------------------------------- */
+.claim-match-capsule {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 2px 4px;
+}
+
+.match-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.match-pill-btn:hover {
+  background: rgba(5, 150, 105, 0.08);
+  color: var(--text-primary);
+}
+
+.match-pill-btn.matched {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-border);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .match-pill-btn.matched {
+  background: rgba(16, 185, 129, 0.18);
+  color: #6EE7B7;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.match-pill-btn.missing {
+  color: #DC2626;
+  background: #FEE2E2;
+  border-color: #FECACA;
+}
+
+[data-theme="dark"] .match-pill-btn.missing {
+  background: rgba(239, 68, 68, 0.18);
+  color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.claims-lane-switcher {
+  display: inline-flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 12px;
+}
+
+.claims-lane-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.claims-lane-btn.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.25);
+}
