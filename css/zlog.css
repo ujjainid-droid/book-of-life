@@ -2159,85 +2159,181 @@
   padding: 8px 12px;
 }
 
-/* Clean Medication Regimen Scorecard Table */
-.zlog-regimen-table-container {
-  overflow-x: auto;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  background: var(--bg-card);
+/* Minimalist Regimen Row Cards (Option 1) */
+.zlog-regimen-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   margin-top: 10px;
 }
 
-.zlog-regimen-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.78rem;
-  text-align: left;
+.zlog-regimen-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 13px 16px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-.zlog-regimen-table th {
+.zlog-regimen-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 3px 10px rgba(124, 92, 252, 0.08);
+}
+
+.zlog-regimen-card.is-best {
+  border-left: 4px solid #059669;
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.03) 0%, var(--bg-card) 100%);
+}
+
+.zlog-regimen-card-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.zlog-regimen-card-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.zlog-rank-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   background: var(--bg-surface);
   color: var(--text-secondary);
-  font-size: 0.68rem;
+  border: 1px solid var(--border-medium);
+  font-size: 0.78rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.zlog-rank-circle.best {
+  background: #059669;
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+}
+
+.zlog-regimen-info-col {
+  min-width: 0;
+}
+
+.zlog-regimen-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.zlog-regimen-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.zlog-regimen-formula-text {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  margin-top: 3px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.zlog-regimen-card-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.zlog-regimen-stat-block {
+  text-align: right;
+}
+
+.zlog-regimen-stat-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-family: var(--font-mono, monospace);
+  line-height: 1.1;
+}
+
+.zlog-regimen-stat-val.low { color: #059669; }
+.zlog-regimen-stat-val.med { color: #7C5CFC; }
+.zlog-regimen-stat-val.high { color: #DC2626; }
+
+.zlog-regimen-stat-label {
+  font-size: 0.65rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--border-medium);
-  white-space: nowrap;
+  color: var(--text-muted);
+  margin-top: 2px;
 }
 
-.zlog-regimen-table th.hero-col {
-  color: #DC2626;
-  background: rgba(239, 68, 68, 0.05);
+.zlog-regimen-stat-sub {
+  font-size: 0.66rem;
+  color: var(--text-muted);
 }
 
-.zlog-regimen-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border-light);
-  vertical-align: middle;
+.zlog-regimen-chevron {
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
 }
 
-.zlog-regimen-table tr.zlog-regimen-row:hover {
-  background: var(--bg-hover);
+.zlog-regimen-chevron.open {
+  transform: rotate(180deg);
+  color: var(--primary);
 }
 
-.zlog-regimen-table td.hero-col {
-  background: rgba(239, 68, 68, 0.03);
-}
-
-.zlog-agg-chip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  font-weight: 800;
-  font-size: 0.86rem;
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-}
-
-.zlog-agg-chip.low {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
-}
-
-.zlog-agg-chip.med {
-  background: rgba(124, 92, 252, 0.12);
-  color: #7C5CFC;
-}
-
-.zlog-agg-chip.high {
-  background: rgba(239, 68, 68, 0.12);
-  color: #DC2626;
-}
-
-.zlog-regimen-drawer {
-  background: var(--bg-surface);
-  padding: 10px 14px;
-  font-size: 0.73rem;
-  line-height: 1.45;
-  color: var(--text-secondary);
+.zlog-regimen-card-drawer {
+  margin-top: 12px;
+  padding-top: 12px;
   border-top: 1px dashed var(--border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.zlog-drawer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.zlog-drawer-stat-pill {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+}
+
+.zlog-drawer-stat-pill-label {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.zlog-drawer-stat-pill-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-top: 1px;
 }
 
 .zlog-context-toggle-bar {

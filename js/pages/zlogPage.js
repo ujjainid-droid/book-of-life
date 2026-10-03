@@ -2614,99 +2614,101 @@ function renderZLogInsights() {
           </div>
         </div>
 
-        <!-- Scorecard Table -->
-        <div class="zlog-regimen-table-container">
-          <table class="zlog-regimen-table">
-            <thead>
-              <tr>
-                <th style="width: 50px; text-align: center;">Rank</th>
-                <th>Medication Regimen &amp; Formulation</th>
-                <th class="hero-col" style="text-align: center;">🏫 School Aggression (Hero)</th>
-                <th style="text-align: center;">🏡 Home Aggression</th>
-                <th style="text-align: center;">Total Agg %</th>
-                <th style="text-align: center;">Good Days %</th>
-                <th style="text-align: center;">Monitored</th>
-                <th style="text-align: center; width: 75px;">Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${rankedCocktailList.map((c, idx) => {
-                const isExpanded = zlogExpandedRegimenId === c.id;
-                const schoolChipCls = c.pctSchoolAgg <= 15 ? 'low' : (c.pctSchoolAgg <= 30 ? 'med' : 'high');
-                const homeChipCls = c.pctHomeAgg <= 15 ? 'low' : (c.pctHomeAgg <= 30 ? 'med' : 'high');
-                const totalChipCls = c.pctAgg <= 15 ? 'low' : (c.pctAgg <= 30 ? 'med' : 'high');
-                const rankBadge = idx === 0 
-                  ? `<span class="zlog-rank-badge rank-1" style="font-weight: 800;">🏆 #1</span>`
-                  : `<span class="zlog-rank-badge rank-${Math.min(idx + 1, 5)}">#${idx + 1}</span>`;
+        <!-- Option 1: Minimalist Regimen Row Cards -->
+        <div class="zlog-regimen-list">
+          ${rankedCocktailList.map((c, idx) => {
+            const isExpanded = zlogExpandedRegimenId === c.id;
+            const schoolVal = c.pctSchoolAgg;
+            const heroColorCls = schoolVal <= 15 ? 'low' : (schoolVal <= 30 ? 'med' : 'high');
+            
+            // Clean status tag
+            let statusTagHtml = '';
+            if (idx === 0) {
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">★ Best Regulation</span>`;
+            } else if (c.id === 'cocktail_spring_focus') {
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #0D9488; background: rgba(13, 148, 136, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">Solid Focus</span>`;
+            } else if (c.id === 'cocktail_baseline_floor') {
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #7C5CFC; background: rgba(124, 92, 252, 0.10); padding: 2px 8px; border-radius: var(--radius-full);">Baseline Floor</span>`;
+            } else if (c.id === 'cocktail_sertraline_boost') {
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #DC2626; background: rgba(239, 68, 68, 0.10); padding: 2px 8px; border-radius: var(--radius-full);">⚠️ Crisis Risk (Sep 11)</span>`;
+            } else if (c.id === 'cocktail_early_baseline') {
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #DC2626; background: rgba(239, 68, 68, 0.10); padding: 2px 8px; border-radius: var(--radius-full);">Unbuffered</span>`;
+            }
 
-                return `
-                  <tr class="zlog-regimen-row" style="${idx === 0 ? 'background: rgba(16, 185, 129, 0.03);' : ''}">
-                    <td style="text-align: center; vertical-align: middle;">
-                      ${rankBadge}
-                    </td>
-                    <td>
-                      <div style="font-weight: 700; color: var(--text-primary); font-size: 0.82rem; display: flex; align-items: center; gap: 6px;">
-                        <span>${c.title}</span>
-                        ${idx === 0 ? `<span style="font-size: 0.65rem; color: #059669; font-weight: 700; background: rgba(16, 185, 129, 0.12); padding: 1px 6px; border-radius: var(--radius-full);">Most Effective</span>` : ''}
+            // Clean formula string
+            const formulaStr = c.meds.map(m => `${m.name} ${m.dose}`).join(' · ');
+
+            return `
+              <div class="zlog-regimen-card ${idx === 0 ? 'is-best' : ''}" onclick="toggleRegimenDrawer('${c.id}')">
+                <div class="zlog-regimen-card-main">
+                  <div class="zlog-regimen-card-left">
+                    <div class="zlog-rank-circle ${idx === 0 ? 'best' : ''}">
+                      #${idx + 1}
+                    </div>
+                    <div class="zlog-regimen-info-col">
+                      <div class="zlog-regimen-title-row">
+                        <span class="zlog-regimen-title">${c.title}</span>
+                        ${statusTagHtml}
                       </div>
-                      <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 2px;">
-                        ${c.dates}
+                      <div class="zlog-regimen-formula-text" title="${formulaStr}">
+                        ${formulaStr} <span style="color: var(--text-muted); font-size: 0.68rem;">(${c.dates})</span>
                       </div>
-                      <div style="display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px;">
-                        ${c.meds.map(m => `<span class="zlog-med-pill pill-${m.type}">${m.name} ${m.dose}</span>`).join('')}
+                    </div>
+                  </div>
+
+                  <div class="zlog-regimen-card-right">
+                    <div class="zlog-regimen-stat-block">
+                      <div class="zlog-regimen-stat-val ${heroColorCls}">
+                        ${schoolVal}%
                       </div>
-                    </td>
-                    <td class="hero-col" style="text-align: center; vertical-align: middle;">
-                      <div class="zlog-agg-chip ${schoolChipCls}">
-                        <span>${c.pctSchoolAgg}%</span>
-                        <span style="font-size: 0.66rem; font-weight: 500; opacity: 0.85;">(${c.schoolAgg}/${c.schoolTotal}d)</span>
-                      </div>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle;">
-                      <div class="zlog-agg-chip ${homeChipCls}">
-                        <span>${c.pctHomeAgg}%</span>
-                        <span style="font-size: 0.66rem; font-weight: 500; opacity: 0.85;">(${c.homeAgg}/${c.homeTotal}d)</span>
-                      </div>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle;">
-                      <div class="zlog-agg-chip ${totalChipCls}">
-                        <span>${c.pctAgg}%</span>
-                        <span style="font-size: 0.66rem; font-weight: 500; opacity: 0.85;">(${c.aggDays}/${c.total}d)</span>
-                      </div>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle;">
-                      <strong style="color: #10B981; font-size: 0.85rem;">${c.pctGood}%</strong>
-                      <div style="font-size: 0.66rem; color: var(--text-muted);">${c.goodDays}d good</div>
-                    </td>
-                    <td style="text-align: center; vertical-align: middle; font-size: 0.74rem; color: var(--text-muted); white-space: nowrap;">
-                      <strong>${c.total}</strong> days
-                    </td>
-                    <td style="text-align: center; vertical-align: middle;">
-                      <button type="button" class="btn btn-secondary" onclick="toggleRegimenDrawer('${c.id}')" style="font-size: 0.68rem; padding: 3px 8px; white-space: nowrap;" title="Show clinical context">
-                        ${isExpanded ? '▲ Hide' : '💬 Note'}
-                      </button>
-                    </td>
-                  </tr>
-                  ${isExpanded ? `
-                    <tr>
-                      <td colspan="8" style="padding: 0; border-bottom: 1px solid var(--border-medium);">
-                        <div class="zlog-regimen-drawer">
-                          <div style="font-weight: 700; color: var(--text-primary); margin-bottom: 3px; display: flex; align-items: center; gap: 6px;">
-                            <i data-lucide="stethoscope" style="width: 13px; height: 13px; color: var(--primary);"></i>
-                            <span>Clinical Context: ${c.title}</span>
-                          </div>
-                          <div style="margin-bottom: 4px;">${c.summary}</div>
-                          <div style="color: var(--primary); font-weight: 600;">
-                            💡 ${c.clinicalNote}
-                          </div>
+                      <div class="zlog-regimen-stat-label">School Meltdowns</div>
+                      <div class="zlog-regimen-stat-sub">${c.schoolAgg} of ${c.schoolTotal} school days</div>
+                    </div>
+                    <div class="zlog-regimen-chevron ${isExpanded ? 'open' : ''}">
+                      <i data-lucide="chevron-down" style="width: 16px; height: 16px;"></i>
+                    </div>
+                  </div>
+                </div>
+
+                ${isExpanded ? `
+                  <div class="zlog-regimen-card-drawer" onclick="event.stopPropagation()">
+                    <div class="zlog-drawer-grid">
+                      <div class="zlog-drawer-stat-pill">
+                        <div class="zlog-drawer-stat-pill-label">🏫 School Aggression</div>
+                        <div class="zlog-drawer-stat-pill-val" style="color: ${schoolVal <= 15 ? '#059669' : (schoolVal <= 30 ? '#7C5CFC' : '#DC2626')};">
+                          ${c.pctSchoolAgg}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.schoolAgg}/${c.schoolTotal}d)</span>
                         </div>
-                      </td>
-                    </tr>
-                  ` : ''}
-                `;
-              }).join('')}
-            </tbody>
-          </table>
+                      </div>
+                      <div class="zlog-drawer-stat-pill">
+                        <div class="zlog-drawer-stat-pill-label">🏡 Home &amp; Breaks</div>
+                        <div class="zlog-drawer-stat-pill-val" style="color: ${c.pctHomeAgg <= 15 ? '#059669' : (c.pctHomeAgg <= 30 ? '#7C5CFC' : '#DC2626')};">
+                          ${c.pctHomeAgg}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.homeAgg}/${c.homeTotal}d)</span>
+                        </div>
+                      </div>
+                      <div class="zlog-drawer-stat-pill">
+                        <div class="zlog-drawer-stat-pill-label">☀️ Good Days (≥4★)</div>
+                        <div class="zlog-drawer-stat-pill-val" style="color: #059669;">
+                          ${c.pctGood}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.goodDays}/${c.total}d)</span>
+                        </div>
+                      </div>
+                      <div class="zlog-drawer-stat-pill">
+                        <div class="zlog-drawer-stat-pill-label">📊 Days Tested</div>
+                        <div class="zlog-drawer-stat-pill-val">
+                          ${c.total} days <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(Avg: ${c.avgRating}★)</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div style="font-size: 0.74rem; line-height: 1.45; color: var(--text-secondary); margin-top: 4px;">
+                      <strong>Clinical Context:</strong> ${c.summary}
+                    </div>
+                    <div style="font-size: 0.73rem; line-height: 1.4; color: var(--primary); font-weight: 600; margin-top: 4px;">
+                      💡 ${c.clinicalNote}
+                    </div>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
         </div>
 
 
