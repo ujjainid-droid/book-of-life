@@ -124,7 +124,7 @@ function renderZLogPage(targetSubTab) {
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px;">
-          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #7C5CFC; border-color: rgba(124, 92, 252, 0.3);">
+          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #2563EB; border-color: rgba(37, 99, 235, 0.3);">
             <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
             <span>Sync Data</span>
           </button>
@@ -132,7 +132,7 @@ function renderZLogPage(targetSubTab) {
             <i data-lucide="download" style="width: 14px; height: 14px;"></i>
             <span>Export CSV</span>
           </button>
-          <button class="btn btn-primary" onclick="openZLogEntryModal()" style="font-size: 0.8rem; padding: 6px 14px;">
+          <button class="btn btn-primary" onclick="openZLogEntryModal()" style="font-size: 0.8rem; padding: 6px 14px; background: #2563EB; border-color: #1D4ED8;">
             <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
             <span>Log Entry</span>
           </button>
@@ -158,7 +158,7 @@ function renderZLogPage(targetSubTab) {
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">Average Rating</div>
-          <div class="zlog-stat-val" style="color: #7C5CFC;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
+          <div class="zlog-stat-val" style="color: #2563EB;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
         </div>
       </div>
@@ -2588,14 +2588,14 @@ function renderZLogInsights() {
         <div class="zlog-insights-header" style="margin-bottom: 8px;">
           <div>
             <div class="zlog-insights-title">
-              <i data-lucide="layers" style="color: #7C5CFC; width: 18px; height: 18px;"></i>
+              <i data-lucide="layers" style="color: #2563EB; width: 18px; height: 18px;"></i>
               <span>Medication Regimen Scorecard &amp; Efficacy</span>
             </div>
             <div class="zlog-insights-subtitle">
               Ranked primarily by <strong>lowest Aggression &amp; Meltdown Rate</strong>, factoring in high-demand <strong>School Days</strong> vs. Weekends &amp; Breaks.
             </div>
           </div>
-          <span style="font-size: 0.70rem; font-weight: 700; color: var(--primary); background: rgba(124, 92, 252, 0.1); padding: 3px 10px; border-radius: var(--radius-full);">
+          <span style="font-size: 0.70rem; font-weight: 700; color: #1D4ED8; background: #DBEAFE; padding: 3px 10px; border-radius: var(--radius-full); border: 1px solid #BFDBFE;">
             5 Regimens Tested
           </span>
         </div>
@@ -2632,7 +2632,7 @@ function renderZLogInsights() {
             } else if (c.id === 'cocktail_spring_focus') {
               statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #0D9488; background: rgba(13, 148, 136, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">Solid Focus</span>`;
             } else if (c.id === 'cocktail_baseline_floor') {
-              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #7C5CFC; background: rgba(124, 92, 252, 0.10); padding: 2px 8px; border-radius: var(--radius-full);">Baseline Floor</span>`;
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #1E40AF; background: #DBEAFE; padding: 2px 8px; border-radius: var(--radius-full); border: 1px solid #BFDBFE;">Baseline Floor</span>`;
             } else if (c.id === 'cocktail_sertraline_boost') {
               statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #DC2626; background: rgba(239, 68, 68, 0.10); padding: 2px 8px; border-radius: var(--radius-full);">⚠️ Crisis Risk (Sep 11)</span>`;
             } else if (c.id === 'cocktail_early_baseline') {
