@@ -1345,10 +1345,10 @@ const HAIR_CARE_SCHEDULE_MAP = {
     title: 'Bond Strengthening Wash Day',
     subtitle: 'Rebuilding internal hair bonds & preventing snap breakage',
     steps: [
-      { id: 'pre', icon: '🔬', label: 'Pre-Shower Bond Treatment', product: 'Olaplex No. 3 Hair Perfector', desc: 'Dampen lengths/ends & apply nickel-sized amount (leave on 15–20 mins; skip oil today)' },
-      { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Olaplex No. 4 Shampoo', desc: 'Rinse No. 3 completely, then massage No. 4 into scalp to cleanse roots' },
-      { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Olaplex No. 4 (or Hair Filler)', desc: 'Quick second rinse to ensure roots are completely clean and weightless' },
-      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Redken Volume Injection Conditioner (or Olaplex No. 5)', desc: 'Apply sparingly to bottom 2 inches only for 1–2 mins; weightless slip and filloxane body' },
+      { id: 'pre', icon: '🔬', label: 'Pre-Shower Bond Treatment', product: 'Olaplex No. 3 Hair Perfector', desc: 'Dampen lengths/ends & apply nickel-sized amount from chin down (15–20 mins; rebuilds disulfide bonds)' },
+      { id: 'wash1', icon: '🫧', label: '1st Shampoo (Rinse Out No. 3)', product: 'L’Oréal EverPure Bond Repair+ Shampoo', desc: 'Rinse No. 3 thoroughly; massage nickel-sized amount of L’Oréal Bond Shampoo into scalp for 60s' },
+      { id: 'wash2', icon: '🫧', label: '2nd Shampoo (Cleanse & Citric Bond)', product: 'L’Oréal Bond Repair+ (or Olaplex No. 4)', desc: 'Quick second wash with dime-sized amount to guarantee zero heavy residue on fine roots' },
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Redken Volume Injection Conditioner (or Olaplex No. 5)', desc: 'Nickel-sized amount to bottom 2 inches only for 1–2 mins; weightless filloxane body & slip' },
       { id: 'post', icon: '💨', label: 'Post-Shower Protection (Single Product Only)', product: 'Pantene 10-in-1 (if blow-dry) OR UNITE 7Seconds (if air-dry)', desc: 'Pick ONE product only! 1–2 pumps into hands, smooth through ends only to seal bonds without grease' }
     ]
   },
