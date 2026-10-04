@@ -1321,9 +1321,9 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'pre', icon: '🥥', label: 'Pre-Shower Protection', product: 'OGX Argan Oil / Coconut Mist', desc: 'Apply 2–3 drops to dry ends only (15–20 mins; avoid roots to prevent hygral fatigue)' },
       { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Pureology Hydrate Shampoo', desc: 'Dime-sized drop, emulsify in wet palms until frothy, massage scalp thoroughly' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler / Pureology', desc: 'Quick second wash for a clean, rich lather (let suds rinse down lengths)' },
-      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Pureology Hydrate Sheer (or Wonder Water)', desc: 'Apply to mid-lengths/ends only for weightless detangling & slip; rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower Prep', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle ends + Pantene 10-in-1 on ends for anti-frizz & 450°F heat protection' },
-      { id: 'style', icon: '🚀', label: 'Root Lift & Dry', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray 3–4 spritzes directly onto damp roots; blow-dry on low/medium heat with nozzle pointing down' }
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Redken Volume Injection Conditioner', desc: 'Nickel-sized amount to mid-lengths/ends only (1–2 mins); weightless filloxane body that rinses 100% clean' },
+      { id: 'post', icon: '💨', label: 'Post-Shower Prep (Single Product Only)', product: 'Pantene 10-in-1 (if blow-dry) OR UNITE 7Seconds (if air-dry)', desc: 'Pick ONE only to avoid buildup! Spray 1–2 pumps in palms, apply chin down only. Never spray roots' },
+      { id: 'style', icon: '🚀', label: 'Root Lift & Dry', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray 2–3 spritzes directly onto damp roots; blow-dry on low/medium heat with nozzle pointing down' }
     ]
   },
   2: { // Tuesday
@@ -1348,8 +1348,8 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'pre', icon: '🔬', label: 'Pre-Shower Bond Treatment', product: 'Olaplex No. 3 Hair Perfector', desc: 'Dampen lengths/ends & apply nickel-sized amount (leave on 15–20 mins; skip oil today)' },
       { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Olaplex No. 4 Shampoo', desc: 'Rinse No. 3 completely, then massage No. 4 into scalp to cleanse roots' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Olaplex No. 4 (or Hair Filler)', desc: 'Quick second rinse to ensure roots are completely clean and weightless' },
-      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Olaplex No. 5 (or Hydrate Sheer)', desc: 'Apply sparingly to bottom 2 inches only for 2 mins; rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower Protection', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle + Pantene 10-in-1 on damp ends to seal cuticles; blow-dry roots' }
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Redken Volume Injection Conditioner (or Olaplex No. 5)', desc: 'Apply sparingly to bottom 2 inches only for 1–2 mins; weightless slip and filloxane body' },
+      { id: 'post', icon: '💨', label: 'Post-Shower Protection (Single Product Only)', product: 'Pantene 10-in-1 (if blow-dry) OR UNITE 7Seconds (if air-dry)', desc: 'Pick ONE product only! 1–2 pumps into hands, smooth through ends only to seal bonds without grease' }
     ]
   },
   4: { // Thursday
@@ -1374,9 +1374,9 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'pre', icon: '🥥', label: 'Pre-Shower Protection', product: 'OGX Argan / Coconut Mist', desc: 'Apply 2–3 drops to dry ends only (15–20 mins; shields lengths while clarifying scalp)' },
       { id: 'wash1', icon: '🧼', label: '1st Shampoo (Clarify)', product: 'Garnier Pure Clean Purifying Shampoo', desc: 'Massage scalp for 60 seconds with fingertips to thoroughly detox follicles' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo (Hydrate)', product: 'Pureology Hydrate (dime-size)', desc: 'Lightweight second wash so lengths retain moisture without stripping' },
-      { id: 'cond', icon: '✨', label: 'In-Shower Gloss', product: 'L’Oréal Wonder Water', desc: 'Apply 1 dose to ends; massage for 8 seconds, then rinse clean for zero-weight slip' },
-      { id: 'post', icon: '💨', label: 'Post-Shower Heat & Frizz Shield', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle + Pantene 10-in-1 on mid-lengths and ends for thermal protection' },
-      { id: 'style', icon: '🚀', label: 'Root Lift & Volume', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray 3–4 pumps directly onto damp roots; blow-dry on low/medium heat for maximum lift' }
+      { id: 'cond', icon: '✨', label: 'Lamellar Rinse (1x/Week Wonder Water)', product: 'L’Oréal 8-Second Wonder Water', desc: 'Apply 1 dose directly to wet ends (chin down); massage 8 secs until warm & silky, rinse thoroughly (replaces heavy conditioner with weightless glass shine!)' },
+      { id: 'post', icon: '💨', label: 'Post-Shower Heat & Frizz Shield (Single Product Only)', product: 'Pantene 10-in-1 (if blow-dry) OR UNITE 7Seconds (if air-dry)', desc: 'Pick ONE product only! 1–2 pumps into hands, apply chin down. Keep 100% off roots to preserve clarifying lift' },
+      { id: 'style', icon: '🚀', label: 'Root Lift & Volume', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray 2–3 pumps directly onto damp roots; blow-dry on low/medium heat for maximum lift' }
     ]
   },
   6: { // Saturday
@@ -1401,8 +1401,8 @@ const HAIR_CARE_SCHEDULE_MAP = {
       { id: 'pre', icon: '🥥', label: 'Pre-Shower Protection', product: 'OGX Argan Oil / Coconut Mist', desc: 'Apply 2–3 drops to dry ends only (15–20 mins; avoid roots)' },
       { id: 'wash1', icon: '🫧', label: '1st Shampoo', product: 'Pureology Hydrate Shampoo', desc: 'Dime-sized drop, emulsify in palms, massage scalp thoroughly' },
       { id: 'wash2', icon: '🫧', label: '2nd Shampoo', product: 'Garnier Hair Filler / Pureology', desc: 'Quick second wash for a clean, rich lather' },
-      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Pureology Hydrate Sheer (or Wonder Water)', desc: 'Apply to ends only for weightless slip; rinse thoroughly' },
-      { id: 'post', icon: '💨', label: 'Post-Shower Prep', product: 'UNITE 7SECONDS + Pantene 10-in-1 Spray', desc: 'Mist UNITE 7Seconds to detangle ends + Pantene 10-in-1 on ends for heat protection' },
+      { id: 'cond', icon: '✨', label: 'Conditioner', product: 'Redken Volume Injection Conditioner', desc: 'Apply nickel-sized amount to mid-lengths/ends only; weightless detangling & bouncy body' },
+      { id: 'post', icon: '💨', label: 'Post-Shower Prep (Single Product Only)', product: 'Pantene 10-in-1 (if blow-dry) OR UNITE 7Seconds (if air-dry)', desc: 'Pick ONE only! 1–2 pumps into hands, apply chin down to keep fine hair light and bouncy' },
       { id: 'style', icon: '🚀', label: 'Root Lift & Dry', product: 'UNITE BOOSTA Volumizing Spray', desc: 'Spray onto roots; blow-dry on low/medium heat for lift' }
     ]
   }
