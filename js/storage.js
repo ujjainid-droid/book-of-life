@@ -14,7 +14,7 @@ class StorageManager {
   }
 
   applyWhereInfoLivesAuditUpdate() {
-    const marker = 'BOL_WHERE_INFO_LIVES_AUDIT_V4';
+    const marker = 'BOL_WHERE_INFO_LIVES_AUDIT_V5';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (!Array.isArray(this.data.coverTopicAudits)) {
