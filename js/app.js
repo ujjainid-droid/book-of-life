@@ -112,7 +112,7 @@ function switchAppView(viewName, subViewName) {
 
   // Determine subview for zlog if provided
   if (currentView === 'zlog') {
-    if (subViewName && ['timeline', 'calendar', 'titration', 'insights', 'school'].includes(subViewName)) {
+    if (subViewName && ['timeline', 'calendar', 'titration', 'insights'].includes(subViewName)) {
       try { localStorage.setItem('BOL_ZLOG_ACTIVE_SUBTAB', subViewName); } catch (e) {}
       if (typeof activeZLogSubTab !== 'undefined') activeZLogSubTab = subViewName;
     }

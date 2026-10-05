@@ -1388,13 +1388,16 @@ class StorageManager {
      -------------------------------------------------------------------------- */
   getZLogEntry(dateStr) {
     if (!this.data.zlogEntries) this.data.zlogEntries = {};
-    return this.data.zlogEntries[dateStr] || {
+    const entry = this.data.zlogEntries[dateStr] || {
       date: dateStr,
       rating: null,
       aggression: false,
       notes: '',
-      meds: { z: false, g: false, ris: false, rit: '', mag: false, mel: false, melDose: '' }
+      meds: { z: false, g: false, ris: false, rit: '', mag: false, mel: false, melDose: '' },
+      attachments: []
     };
+    if (!entry.attachments) entry.attachments = [];
+    return entry;
   }
 
   saveZLogEntry(dateStr, entryData) {
@@ -1404,10 +1407,29 @@ class StorageManager {
       ...current,
       ...entryData,
       date: dateStr,
+      attachments: entryData.attachments || current.attachments || [],
       updatedAt: new Date().toISOString()
     };
     this.saveData();
     return this.data.zlogEntries[dateStr];
+  }
+
+  addZLogAttachment(dateStr, attachmentMeta) {
+    const entry = this.getZLogEntry(dateStr);
+    if (!entry.attachments) entry.attachments = [];
+    // Prevent duplicate ID
+    entry.attachments = entry.attachments.filter(a => a.id !== attachmentMeta.id);
+    entry.attachments.push(attachmentMeta);
+    return this.saveZLogEntry(dateStr, entry);
+  }
+
+  removeZLogAttachment(dateStr, attachmentId) {
+    const entry = this.getZLogEntry(dateStr);
+    if (entry.attachments) {
+      entry.attachments = entry.attachments.filter(a => a.id !== attachmentId);
+      return this.saveZLogEntry(dateStr, entry);
+    }
+    return entry;
   }
 
   setZLogRating(dateStr, rating) {
@@ -1704,72 +1726,6 @@ class StorageManager {
     }
   }
 
-  /* --------------------------------------------------------------------------
-     Z Log School & Out-of-District IEP Methods
-     -------------------------------------------------------------------------- */
-  getZLogSchool() {
-    if (!this.data.zlogSchool) {
-      this.data.zlogSchool = JSON.parse(JSON.stringify(typeof DEFAULT_ZLOG_SCHOOL_DATA !== 'undefined' ? DEFAULT_ZLOG_SCHOOL_DATA : {}));
-      this.saveData();
-    }
-    return this.data.zlogSchool;
-  }
-
-  saveZLogSchool(schoolData) {
-    this.data.zlogSchool = schoolData;
-    this.saveData();
-    return this.data.zlogSchool;
-  }
-
-  toggleZLogAccommodation(id) {
-    const school = this.getZLogSchool();
-    if (school && Array.isArray(school.accommodations)) {
-      const item = school.accommodations.find(a => a.id === id);
-      if (item) {
-        item.active = !item.active;
-        this.saveData();
-        return item;
-      }
-    }
-    return null;
-  }
-
-  addZLogAccommodation(acc) {
-    const school = this.getZLogSchool();
-    if (!school.accommodations) school.accommodations = [];
-    const newAcc = {
-      id: 'acc-' + Date.now(),
-      category: acc.category || 'sensory',
-      title: (acc.title || '').trim(),
-      description: (acc.description || '').trim(),
-      active: true
-    };
-    school.accommodations.push(newAcc);
-    this.saveData();
-    return newAcc;
-  }
-
-  deleteZLogAccommodation(id) {
-    const school = this.getZLogSchool();
-    if (school && Array.isArray(school.accommodations)) {
-      school.accommodations = school.accommodations.filter(a => a.id !== id);
-      this.saveData();
-    }
-  }
-
-  updateZLogSchoolPlacement(placement) {
-    const school = this.getZLogSchool();
-    school.placement = Object.assign({}, school.placement || {}, placement);
-    this.saveData();
-    return school.placement;
-  }
-
-  updateZLogSchoolOutOfDistrict(ood) {
-    const school = this.getZLogSchool();
-    school.outOfDistrict = Object.assign({}, school.outOfDistrict || {}, ood);
-    this.saveData();
-    return school.outOfDistrict;
-  }
 
   /* --------------------------------------------------------------------------
      Personal Finance Hub Methods
