@@ -185,18 +185,15 @@ function renderCoverHubPage() {
         <div class="blueprint-card-header">
           <div class="blueprint-title-row">
             <span class="blueprint-icon">🧭</span>
-            <div>
-              <h3 class="blueprint-title">What Tools for What Work</h3>
-              <span class="blueprint-sub" style="font-size: 0.74rem; color: #64748B;">Clear boundaries &bull; Zero tool confusion &bull; Every tool has one exact purpose</span>
-            </div>
+            <h3 class="blueprint-title">What Tools for What Work</h3>
           </div>
-          <span class="blueprint-badge">Tool Blueprint</span>
+          <span class="blueprint-badge">Tool Architecture</span>
         </div>
 
         <!-- 5-Tool Architecture Grid -->
         <div class="tools-work-grid-5">
           
-          <!-- 1. margo -->
+          <!-- margo -->
           <div class="tool-work-card tool-card-margo">
             <div class="tool-work-header">
               <span class="tool-work-symbol">🌿</span>
@@ -206,12 +203,9 @@ function renderCoverHubPage() {
             <p class="tool-work-desc">
               10,000-ft executive radar, habit momentum, waiting-on horizon, and 1-tap launchers.
             </p>
-            <div class="tool-work-example">
-              <strong>Example:</strong> Radar card for School admissions + Oct 8 tour ping.
-            </div>
           </div>
 
-          <!-- 2. Apple Notes -->
+          <!-- Apple Notes -->
           <div class="tool-work-card tool-card-notes">
             <div class="tool-work-header">
               <span class="tool-work-symbol">📝</span>
@@ -221,12 +215,9 @@ function renderCoverHubPage() {
             <p class="tool-work-desc">
               Deep working notes, strategy synthesis, project roadmaps, and complete master task lists.
             </p>
-            <div class="tool-work-example">
-              <strong>Example:</strong> <code># SCHOOL 01_BATTLE PLAN</code> master checklist.
-            </div>
           </div>
 
-          <!-- 3. Google Drive -->
+          <!-- Google Drive -->
           <div class="tool-work-card tool-card-drive">
             <div class="tool-work-header">
               <span class="tool-work-symbol">📁</span>
@@ -234,14 +225,11 @@ function renderCoverHubPage() {
             </div>
             <span class="tool-work-badge badge-drive">Digital files</span>
             <p class="tool-work-desc">
-              Static evidence vault: signed IEP PDFs, neuropsych evaluations, official incident records, spreadsheets.
+              Permanent digital file vault: signed PDFs, official records, evaluations, and spreadsheets.
             </p>
-            <div class="tool-work-example">
-              <strong>Example:</strong> Folder <code>📁 Z Records</code> with official PDFs.
-            </div>
           </div>
 
-          <!-- 4. Things 3 -->
+          <!-- Things 3 -->
           <div class="tool-work-card tool-card-things">
             <div class="tool-work-header">
               <span class="tool-work-symbol">⚡</span>
@@ -251,12 +239,9 @@ function renderCoverHubPage() {
             <p class="tool-work-desc">
               The execution trigger chamber &mdash; only the next 1–2 physical strikes sitting in Today. Zero task bloat.
             </p>
-            <div class="tool-work-example">
-              <strong>Example:</strong> <code>📞 Call Windsor admissions re: tour</code>.
-            </div>
           </div>
 
-          <!-- 5. Gmail -->
+          <!-- Gmail -->
           <div class="tool-work-card tool-card-gmail">
             <div class="tool-work-header">
               <span class="tool-work-symbol">✉️</span>
@@ -266,19 +251,16 @@ function renderCoverHubPage() {
             <p class="tool-work-desc">
               Inbound and outbound communications, dedicated domain labels, zero inbox clutter.
             </p>
-            <div class="tool-work-example">
-              <strong>Example:</strong> Filter <code>label:OOD-Placement</code>.
-            </div>
           </div>
 
         </div>
 
-        <!-- The Golden Rule Banner -->
+        <!-- The Generic Closed-Loop Rule Banner -->
         <div class="workflow-loop-strip">
           <div class="loop-strip-left">
-            <span class="loop-strip-tag">The Golden Rule</span>
+            <span class="loop-strip-tag">The Closed-Loop Rule</span>
             <span class="loop-strip-formula">
-              Master lists stay in <span class="formula-highlight">Apple Notes</span> &bull; Files stay in <span class="formula-highlight">Google Drive</span> &bull; Only today's 1–2 strikes enter <span class="formula-highlight">Things 3</span> &bull; Status tracked in <span class="formula-highlight">margo</span>
+              <span class="formula-highlight">⚡ Active Strike</span> in Things 3 &rarr; Action taken &rarr; Flips to <span class="formula-highlight">⏳ Waiting On</span> in margo &rarr; Ping date arrives &rarr; Push <span class="formula-highlight">⚡ Next Strike</span> to Things 3
             </span>
           </div>
         </div>
