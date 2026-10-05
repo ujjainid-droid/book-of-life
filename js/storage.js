@@ -8,8 +8,46 @@ class StorageManager {
   constructor() {
     this.data = this.loadData();
     this.applyZeroResetFix();
+    this.applyWhereInfoLivesAuditUpdate();
     this.recalculateAllStreaks();
     this.recalculatePointsFromHistory();
+  }
+
+  applyWhereInfoLivesAuditUpdate() {
+    const marker = 'BOL_WHERE_INFO_LIVES_AUDIT_V4';
+    try {
+      if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
+        if (!Array.isArray(this.data.coverTopicAudits)) {
+          this.data.coverTopicAudits = [];
+        }
+
+        this.data.coverTopicAudits.forEach(a => {
+          if (!a) return;
+          const isSchool = a.topic && (a.topic.toLowerCase().includes('school') || a.topic.toLowerCase().includes('iep'));
+          if (isSchool) {
+            a.status = 'streamlined';
+            delete a.breakdown;
+          } else {
+            a.status = 'disorganized';
+          }
+        });
+
+        const hasSchool = this.data.coverTopicAudits.some(a => a && a.topic && (a.topic.toLowerCase().includes('school') || a.topic.toLowerCase().includes('iep')));
+        if (!hasSchool) {
+          this.data.coverTopicAudits.push({
+            id: 'top-school-iep',
+            topic: 'School Notes + IEP',
+            tools: ['Apple notes', 'Google Drive', 'emails', 'Things 3'],
+            status: 'streamlined'
+          });
+        }
+
+        try { localStorage.setItem(marker, 'true'); } catch (e) {}
+        this.saveData();
+      }
+    } catch (e) {
+      console.warn('Where Info Lives update check failed', e);
+    }
   }
 
   applyZeroResetFix() {
@@ -184,37 +222,31 @@ class StorageManager {
           id: 'top-2',
           topic: 'Hair Health Protocol',
           tools: ['margo', 'Apple notes'],
-          status: 'streamlined'
+          status: 'disorganized'
         },
         {
           id: 'top-3',
           topic: 'Medical Claims & Superbills',
           tools: ['margo', 'Google Drive', 'emails'],
-          status: 'in_progress'
+          status: 'disorganized'
         },
         {
           id: 'top-4',
           topic: 'Child Health & Meds (Z-Log)',
           tools: ['margo', 'Google Drive', 'Things 3'],
-          status: 'in_progress'
+          status: 'disorganized'
         },
         {
           id: 'top-5',
           topic: 'Home Logistics & Errands',
           tools: ['Things 3', 'iCloud'],
-          status: 'streamlined'
+          status: 'disorganized'
         },
         {
           id: 'top-school-iep',
           topic: 'School Notes + IEP',
           tools: ['Apple notes', 'Google Drive', 'emails', 'Things 3'],
-          status: 'streamlined',
-          breakdown: [
-            { category: 'Active Front-Line & Notes', tool: 'Apple Notes (pinned folder)', desc: 'Meeting notes, raw thoughts, candidate school notes, active checklist.' },
-            { category: 'Static Evidence & Paperwork', tool: 'Google Drive', desc: 'PDFs, official evaluations, incident reports, signed IEPs.' },
-            { category: 'Communications', tool: 'Gmail (1 label only)', desc: 'All incoming/outgoing emails tagged OOD-Placement.' },
-            { category: 'Execution (Strike Team)', tool: 'Things 3 (1 lean project)', desc: 'Max 3–5 active tasks. Only next 1–3 real-world triggers.' }
-          ]
+          status: 'streamlined'
         }
       ],
       // Weekly Reflections: { [sundayIso]: { wins: string, focus: string } }
@@ -1705,13 +1737,7 @@ class StorageManager {
         id: 'top-school-iep',
         topic: 'School Notes + IEP',
         tools: ['Apple notes', 'Google Drive', 'emails', 'Things 3'],
-        status: 'streamlined',
-        breakdown: [
-          { category: 'Active Front-Line & Notes', tool: 'Apple Notes (pinned folder)', desc: 'Meeting notes, raw thoughts, candidate school notes, active checklist.' },
-          { category: 'Static Evidence & Paperwork', tool: 'Google Drive', desc: 'PDFs, official evaluations, incident reports, signed IEPs.' },
-          { category: 'Communications', tool: 'Gmail (1 label only)', desc: 'All incoming/outgoing emails tagged OOD-Placement.' },
-          { category: 'Execution (Strike Team)', tool: 'Things 3 (1 lean project)', desc: 'Max 3–5 active tasks. Only next 1–3 real-world triggers.' }
-        ]
+        status: 'streamlined'
       });
       this.saveData();
     }

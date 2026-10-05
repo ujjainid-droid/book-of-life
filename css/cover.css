@@ -4669,15 +4669,41 @@
 }
 
 .status-disorganized {
-  background: #FEE2E2;
-  color: #991B1B;
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  background: #E2E8F0;
+  color: #475569;
+  border: 1px solid #CBD5E1;
 }
 
 [data-theme="dark"] .status-disorganized {
-  background: rgba(239, 68, 68, 0.22);
-  color: #FCA5A5;
-  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  color: #94A3B8;
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Neutral/Grey fill for widgets that need organizing */
+.topic-audit-card.cluttered-neutral {
+  background: var(--bg-surface-alt, #F1F3F5);
+  border: 1px dashed var(--border-color, #CBD5E1);
+  box-shadow: none;
+}
+
+[data-theme="dark"] .topic-audit-card.cluttered-neutral {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+/* Organized topic card emphasis */
+.topic-audit-card.is-streamlined {
+  background: var(--bg-card);
+  border: 1.5px solid rgba(13, 148, 136, 0.45);
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.08);
+}
+
+[data-theme="dark"] .topic-audit-card.is-streamlined {
+  background: var(--bg-card);
+  border-color: rgba(45, 212, 191, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .audit-meta-label {
@@ -4863,61 +4889,6 @@
   color: var(--text-primary);
   line-height: 1.45;
   margin: 0;
-}
-
-/* Breakdown of specific tool roles in Where Info Lives */
-.audit-breakdown-list {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  margin-top: 4px;
-}
-
-.audit-breakdown-item {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm, 6px);
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-[data-theme="dark"] .audit-breakdown-item {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.08);
-}
-
-.audit-breakdown-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.audit-breakdown-cat {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-
-.audit-breakdown-tool {
-  font-size: 0.76rem;
-  font-weight: 700;
-  color: #0F766E; /* Nordic Teal */
-}
-
-[data-theme="dark"] .audit-breakdown-tool {
-  color: #2DD4BF;
-}
-
-.audit-breakdown-desc {
-  font-size: 0.74rem;
-  color: var(--text-secondary);
-  line-height: 1.4;
 }
 
 .audit-card-footer {

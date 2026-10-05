@@ -213,18 +213,20 @@ function renderCoverHubPage() {
 
         <div class="topic-audits-grid">
           ${topicAudits.map(audit => {
+            const isCluttered = (audit.status === 'disorganized');
+            const isStreamlined = (audit.status === 'streamlined');
             let statusBadgeClass = 'status-in-progress';
             let statusLabel = '🟡 In Progress';
-            if (audit.status === 'streamlined') {
+            if (isStreamlined) {
               statusBadgeClass = 'status-streamlined';
               statusLabel = '✅ Organized';
-            } else if (audit.status === 'disorganized') {
+            } else if (isCluttered) {
               statusBadgeClass = 'status-disorganized';
               statusLabel = '⚠️ Cluttered';
             }
 
             return `
-              <div class="topic-audit-card">
+              <div class="topic-audit-card ${isCluttered ? 'cluttered-neutral' : (isStreamlined ? 'is-streamlined' : '')}">
                 <div class="audit-card-top">
                   <div class="audit-topic-title">${escapeHtml(audit.topic)}</div>
                   <span class="audit-status-tag ${statusBadgeClass}">${statusLabel}</span>
@@ -249,20 +251,6 @@ function renderCoverHubPage() {
                     }).join('')}
                   </div>
                 </div>
-
-                ${audit.breakdown && audit.breakdown.length > 0 ? `
-                  <div class="audit-breakdown-list">
-                    ${audit.breakdown.map(item => `
-                      <div class="audit-breakdown-item">
-                        <div class="audit-breakdown-header">
-                          <span class="audit-breakdown-cat">${escapeHtml(item.category)}</span>
-                          <span class="audit-breakdown-tool">${escapeHtml(item.tool)}</span>
-                        </div>
-                        <div class="audit-breakdown-desc">${escapeHtml(item.desc)}</div>
-                      </div>
-                    `).join('')}
-                  </div>
-                ` : ''}
 
                 <!-- Footer Actions -->
                 <div class="audit-card-footer">
