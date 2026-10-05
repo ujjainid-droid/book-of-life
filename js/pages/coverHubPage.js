@@ -180,118 +180,105 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- 3. Precise Life OS Workflow (Cover Page Blueprint) -->
+      <!-- 3. What Tools for What Work (Tool Architecture Blueprint) -->
       <div class="cover-card blueprint-map-card" id="section-architecture-blueprint">
         <div class="blueprint-card-header">
           <div class="blueprint-title-row">
             <span class="blueprint-icon">🧭</span>
             <div>
-              <h3 class="blueprint-title">Your Precise Life OS Workflow (Model: School Admissions &amp; OOD)</h3>
-              <span class="blueprint-sub" style="font-size: 0.74rem; color: #64748B;">How incoming info transforms into clean execution with zero duplicate tracking</span>
+              <h3 class="blueprint-title">What Tools for What Work</h3>
+              <span class="blueprint-sub" style="font-size: 0.74rem; color: #64748B;">Clear boundaries &bull; Zero tool confusion &bull; Every tool has one exact purpose</span>
             </div>
           </div>
-          <span class="blueprint-badge">Executive Blueprint</span>
+          <span class="blueprint-badge">Tool Blueprint</span>
         </div>
 
-        <!-- 4-Step Pipeline Grid -->
-        <div class="workflow-pipeline-grid">
+        <!-- 5-Tool Architecture Grid -->
+        <div class="tools-work-grid-5">
           
-          <!-- STEP 1 -->
-          <div class="workflow-step-card">
-            <div class="step-card-num-row">
-              <span class="workflow-step-num">Step 1</span>
-              <span class="workflow-step-flow-arrow">&rarr;</span>
+          <!-- 1. margo -->
+          <div class="tool-work-card tool-card-margo">
+            <div class="tool-work-header">
+              <span class="tool-work-symbol">🌿</span>
+              <h4 class="tool-work-name">margo</h4>
             </div>
-            <h4 class="workflow-step-tool-title">
-              <span>📁</span> Drive &amp; Gmail
-            </h4>
-            <span class="workflow-step-role">Permanent Evidence &amp; Inbox Capture</span>
-            <div class="workflow-step-school-box">
-              <span class="school-box-label">School Model</span>
-              <span class="school-box-content">
-                &bull; Emails tagged <code>label:OOD-Placement</code><br>
-                &bull; Signed IEP PDFs, neuropsych evals &amp; PWNs saved to <code>📁 Z Records</code>
-              </span>
-            </div>
-            <div class="workflow-step-golden-rule">
-              Rule: Search once, find forever. Zero files cluttering task lists.
+            <span class="tool-work-badge badge-margo">Central command + analytics</span>
+            <p class="tool-work-desc">
+              10,000-ft executive radar, habit momentum, waiting-on horizon, and 1-tap launchers.
+            </p>
+            <div class="tool-work-example">
+              <strong>Example:</strong> Radar card for School admissions + Oct 8 tour ping.
             </div>
           </div>
 
-          <!-- STEP 2 -->
-          <div class="workflow-step-card">
-            <div class="step-card-num-row">
-              <span class="workflow-step-num">Step 2</span>
-              <span class="workflow-step-flow-arrow">&rarr;</span>
+          <!-- 2. Apple Notes -->
+          <div class="tool-work-card tool-card-notes">
+            <div class="tool-work-header">
+              <span class="tool-work-symbol">📝</span>
+              <h4 class="tool-work-name">Apple Notes</h4>
             </div>
-            <h4 class="workflow-step-tool-title">
-              <span>📝</span> Apple Notes
-            </h4>
-            <span class="workflow-step-role">Working Brain &amp; Strategy Synthesis</span>
-            <div class="workflow-step-school-box">
-              <span class="school-box-label">School Model</span>
-              <span class="school-box-content">
-                &bull; Master note <code># SCHOOL 01_BATTLE PLAN</code><br>
-                &bull; Windsor profiles, tour impressions, raw meeting thoughts &amp; timeline
-              </span>
-            </div>
-            <div class="workflow-step-golden-rule">
-              Rule: Messy thinking &amp; research stay here without task anxiety.
+            <span class="tool-work-badge badge-notes">Master notes + Master tasks</span>
+            <p class="tool-work-desc">
+              Deep working notes, strategy synthesis, project roadmaps, and complete master task lists.
+            </p>
+            <div class="tool-work-example">
+              <strong>Example:</strong> <code># SCHOOL 01_BATTLE PLAN</code> master checklist.
             </div>
           </div>
 
-          <!-- STEP 3 -->
-          <div class="workflow-step-card">
-            <div class="step-card-num-row">
-              <span class="workflow-step-num">Step 3</span>
-              <span class="workflow-step-flow-arrow">&rarr;</span>
+          <!-- 3. Google Drive -->
+          <div class="tool-work-card tool-card-drive">
+            <div class="tool-work-header">
+              <span class="tool-work-symbol">📁</span>
+              <h4 class="tool-work-name">Google Drive</h4>
             </div>
-            <h4 class="workflow-step-tool-title">
-              <span>🌿</span> margo Cover
-            </h4>
-            <span class="workflow-step-role">Executive Radar &amp; Horizon Tracker</span>
-            <div class="workflow-step-school-box">
-              <span class="school-box-label">School Model</span>
-              <span class="school-box-content">
-                &bull; Radar card tracks state: <strong>Active Strike</strong> vs. <strong>Waiting On</strong><br>
-                &bull; Pings: Oct 8 Windsor tour &bull; 1-tap launchers
-              </span>
-            </div>
-            <div class="workflow-step-golden-rule">
-              Rule: 10,000-ft horizon. Know who has the ball in 3 seconds.
+            <span class="tool-work-badge badge-drive">Digital files</span>
+            <p class="tool-work-desc">
+              Static evidence vault: signed IEP PDFs, neuropsych evaluations, official incident records, spreadsheets.
+            </p>
+            <div class="tool-work-example">
+              <strong>Example:</strong> Folder <code>📁 Z Records</code> with official PDFs.
             </div>
           </div>
 
-          <!-- STEP 4 -->
-          <div class="workflow-step-card">
-            <div class="step-card-num-row">
-              <span class="workflow-step-num">Step 4</span>
-              <span class="workflow-step-flow-arrow">✓</span>
+          <!-- 4. Things 3 -->
+          <div class="tool-work-card tool-card-things">
+            <div class="tool-work-header">
+              <span class="tool-work-symbol">⚡</span>
+              <h4 class="tool-work-name">Things 3</h4>
             </div>
-            <h4 class="workflow-step-tool-title">
-              <span>⚡</span> Things 3
-            </h4>
-            <span class="workflow-step-role">Today's Strike Execution</span>
-            <div class="workflow-step-school-box">
-              <span class="school-box-label">School Model</span>
-              <span class="school-box-content">
-                &bull; Max 1 active strike: <code>📞 Call Windsor admissions re: tour</code><br>
-                &bull; When done &rarr; flips margo card to <em>Waiting On</em>
-              </span>
+            <span class="tool-work-badge badge-things">Immediate to do</span>
+            <p class="tool-work-desc">
+              The execution trigger chamber &mdash; only the next 1–2 physical strikes sitting in Today. Zero task bloat.
+            </p>
+            <div class="tool-work-example">
+              <strong>Example:</strong> <code>📞 Call Windsor admissions re: tour</code>.
             </div>
-            <div class="workflow-step-golden-rule">
-              Rule: No 20-subtask overwhelm. Only the immediate physical punch.
+          </div>
+
+          <!-- 5. Gmail -->
+          <div class="tool-work-card tool-card-gmail">
+            <div class="tool-work-header">
+              <span class="tool-work-symbol">✉️</span>
+              <h4 class="tool-work-name">Gmail</h4>
+            </div>
+            <span class="tool-work-badge badge-gmail">Email comms</span>
+            <p class="tool-work-desc">
+              Inbound and outbound communications, dedicated domain labels, zero inbox clutter.
+            </p>
+            <div class="tool-work-example">
+              <strong>Example:</strong> Filter <code>label:OOD-Placement</code>.
             </div>
           </div>
 
         </div>
 
-        <!-- The Closed-Loop Ping-Pong Rule Strip -->
+        <!-- The Golden Rule Banner -->
         <div class="workflow-loop-strip">
           <div class="loop-strip-left">
-            <span class="loop-strip-tag">The Closed-Loop Rule</span>
+            <span class="loop-strip-tag">The Golden Rule</span>
             <span class="loop-strip-formula">
-              <span class="formula-highlight">⚡ Active Strike</span> in Things 3 &rarr; Call made &rarr; Flips to <span class="formula-highlight">⏳ Waiting On</span> in margo &rarr; Ping date arrives &rarr; Push <span class="formula-highlight">⚡ Next Strike</span> to Things 3
+              Master lists stay in <span class="formula-highlight">Apple Notes</span> &bull; Files stay in <span class="formula-highlight">Google Drive</span> &bull; Only today's 1–2 strikes enter <span class="formula-highlight">Things 3</span> &bull; Status tracked in <span class="formula-highlight">margo</span>
             </span>
           </div>
         </div>

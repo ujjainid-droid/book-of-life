@@ -5009,111 +5009,101 @@
   border-radius: var(--radius-full);
 }
 
-/* Precise Life OS Workflow Pipeline Grid */
-.workflow-pipeline-grid {
+/* What Tools for What Work — 5-Tool Architecture Grid */
+.tools-work-grid-5 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 12px;
   width: 100%;
   margin-top: 6px;
 }
 
-.workflow-step-card {
+.tool-work-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 14px 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  gap: 8px;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.workflow-step-card:hover {
+.tool-work-card:hover {
   transform: translateY(-2px);
   border-color: rgba(45, 90, 60, 0.35);
-  box-shadow: 0 4px 12px rgba(45, 90, 60, 0.06);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
 }
 
-.step-card-num-row {
+.tool-card-margo { border-top: 3px solid #2D5A3C; }
+.tool-card-notes { border-top: 3px solid #64748B; }
+.tool-card-drive { border-top: 3px solid #2563EB; }
+.tool-card-things { border-top: 3px solid #C26344; }
+.tool-card-gmail { border-top: 3px solid #DC2626; }
+
+.tool-work-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
 }
 
-.workflow-step-num {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.68rem;
-  font-weight: 800;
-  color: #C26344;
-  background: rgba(194, 99, 68, 0.1);
-  padding: 2px 7px;
-  border-radius: 9999px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+.tool-work-symbol {
+  font-size: 1.15rem;
+  line-height: 1;
 }
 
-.workflow-step-flow-arrow {
-  color: #94A3B8;
-  font-size: 0.85rem;
-  font-weight: 700;
-}
-
-.workflow-step-tool-title {
-  font-size: 0.88rem;
+.tool-work-name {
+  font-size: 0.90rem;
   font-weight: 800;
   color: #0F172A;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
-.workflow-step-role {
-  font-size: 0.72rem;
-  color: #64748B;
-  font-weight: 600;
+.tool-work-badge {
+  font-size: 0.70rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 9999px;
   line-height: 1.25;
+  width: fit-content;
+  letter-spacing: -0.01em;
 }
 
-.workflow-step-school-box {
+.badge-margo { background: #E8F2EC; color: #2D5A3C; }
+.badge-notes { background: #F1F5F9; color: #334155; }
+.badge-drive { background: #EFF6FF; color: #1D4ED8; }
+.badge-things { background: rgba(194, 99, 68, 0.1); color: #C26344; }
+.badge-gmail { background: #FEE2E2; color: #B91C1C; }
+
+.tool-work-desc {
+  font-size: 0.73rem;
+  color: #475569;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.tool-work-example {
   background: #FAFDFB;
-  border: 1px solid rgba(45, 90, 60, 0.18);
+  border: 1px solid #E2E8F0;
   border-left: 3px solid #2D5A3C;
   border-radius: 8px;
-  padding: 8px 10px;
-  margin-top: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.school-box-label {
-  font-size: 0.64rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #2D5A3C;
-}
-
-.school-box-content {
-  font-size: 0.73rem;
+  padding: 6px 8px;
+  font-size: 0.71rem;
   color: #1E293B;
-  line-height: 1.35;
-}
-
-.workflow-step-golden-rule {
-  font-size: 0.69rem;
-  color: #475569;
-  font-style: italic;
-  margin-top: auto;
-  padding-top: 6px;
-  border-top: 1px dashed #E2E8F0;
   line-height: 1.3;
+  margin-top: auto;
 }
 
-/* Closed-Loop Ping-Pong Banner */
+.tool-work-example code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* System Law Strip */
 .workflow-loop-strip {
   margin-top: 14px;
   background: #FAFDFB;
@@ -5973,6 +5963,9 @@ body.dark-mode .protocol-sample-btn {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+  .tools-work-grid-5 {
+    grid-template-columns: 1fr;
+  }
   .workflow-pipeline-grid {
     grid-template-columns: 1fr;
   }
