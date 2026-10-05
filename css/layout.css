@@ -446,6 +446,13 @@ html, body {
   flex-direction: column;
   gap: 20px;
   padding-bottom: 60px;
+  transition: max-width 0.2s ease;
+}
+
+/* Allow wider container for executive multi-column views */
+.daily-sheet-container:has(.cover-hub-container),
+.daily-sheet-container:has(.finance-page-container) {
+  max-width: 960px;
 }
 
 .tab-category-title {
