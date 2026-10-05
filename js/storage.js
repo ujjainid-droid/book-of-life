@@ -202,7 +202,7 @@ class StorageManager {
         now: [
           {
             id: 'camp-school',
-            title: 'Z: School Admissions & OOD Placement',
+            title: 'Z school, ood, IEP',
             status: 'strike', // 'strike' | 'waiting' | 'review' | 'ondeck'
             tools: [
               { label: 'Apple Note', noteQuery: '# SCHOOL 01_BATTLE PLAN' },
@@ -1759,6 +1759,15 @@ class StorageManager {
     }
     if (!Array.isArray(this.data.coverCampaigns.now)) this.data.coverCampaigns.now = [];
     if (!Array.isArray(this.data.coverCampaigns.later)) this.data.coverCampaigns.later = [];
+    // Auto-update legacy title to 'Z school, ood, IEP'
+    let migrated = false;
+    [...this.data.coverCampaigns.now, ...this.data.coverCampaigns.later].forEach(item => {
+      if (item && item.id === 'camp-school' && item.title !== 'Z school, ood, IEP') {
+        item.title = 'Z school, ood, IEP';
+        migrated = true;
+      }
+    });
+    if (migrated) this.saveData();
     return this.data.coverCampaigns;
   }
 

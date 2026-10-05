@@ -5716,6 +5716,39 @@
   border-left: 3.5px solid #C26344;
 }
 
+/* Greyed-out Standby State for widgets waiting to be tackled */
+.simplified-campaign-card.is-standby {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+  border-left: 3.5px solid #CBD5E1;
+  opacity: 0.52;
+  filter: grayscale(40%);
+  box-shadow: none;
+  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.simplified-campaign-card.is-standby .sample-domain-title {
+  color: #64748B;
+}
+
+.simplified-campaign-card.is-standby:hover {
+  opacity: 0.95;
+  filter: grayscale(0%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  border-color: #CBD5E1;
+}
+
+.simplified-campaign-card.is-standby:hover .sample-domain-title {
+  color: #0F172A;
+}
+
+/* Active Highlight for current focus (School card) */
+.simplified-campaign-card:not(.is-standby) {
+  border-color: rgba(45, 90, 60, 0.35);
+  box-shadow: 0 4px 14px rgba(45, 90, 60, 0.07);
+}
+
 .sample-card-top {
   display: flex;
   align-items: flex-start;

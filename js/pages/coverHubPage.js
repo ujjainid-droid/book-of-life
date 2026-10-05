@@ -483,8 +483,11 @@ function renderUnifiedCampaignCard(camp, tier) {
     }
   }).join('');
 
+  const isSchoolCard = (camp.id === 'camp-school');
+  const standbyClass = isSchoolCard ? '' : 'is-standby';
+
   return `
-    <div class="campaign-sample-card simplified-campaign-card tier-${tier}">
+    <div class="campaign-sample-card simplified-campaign-card tier-${tier} ${standbyClass}">
       <div class="sample-card-top">
         <h4 class="sample-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title.replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title)}</h4>
         <div class="card-status-wrapper">
