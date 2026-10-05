@@ -180,85 +180,485 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- 3. Where Info Lives: Life Areas & Tool Map -->
-      <div class="cover-card topic-audits-card" id="section-where-info-lives">
+      <!-- 3. Active Campaigns & Life Architecture Dashboard + Collapsed Domain Matrix -->
+      <div class="cover-card active-campaigns-dashboard" id="section-active-campaigns">
         <div class="card-title-row">
           <div class="title-with-desc">
-            <h3>
-              <i data-lucide="layers" style="color: #3D5A45; width: 17px; height: 17px;"></i>
-              Where Info Lives
-            </h3>
-            <span class="card-sub-muted">
-              A calm map of your notes, tools, and docs &bull; Streamlining one area at a time
-            </span>
-          </div>
-          <button type="button" class="btn btn-sm" onclick="openTopicAuditModal()" style="font-size: 0.78rem; padding: 5px 14px; background: rgba(61, 90, 69, 0.12); color: #1C4427; border: 1px solid rgba(61, 90, 69, 0.25); border-radius: var(--radius-full); font-weight: 600; cursor: pointer;">
-            <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
-            <span>+ Add Topic</span>
-          </button>
-        </div>
-
-        <!-- Potential Sources Strip -->
-        <div class="cover-potential-sources-strip">
-          <span class="sources-strip-label">Potential Sources:</span>
-          <div class="sources-strip-chips">
-            <span class="tool-tag tool-margo">margo</span>
-            <span class="tool-tag tool-icloud">iCloud</span>
-            <span class="tool-tag tool-drive">Google Drive</span>
-            <span class="tool-tag tool-things">Things 3</span>
-            <span class="tool-tag tool-email">emails</span>
-            <span class="tool-tag tool-notes">Apple notes</span>
+            <div class="campaigns-badge-row">
+              <span class="campaigns-eyebrow"><i data-lucide="compass" style="width: 14px; height: 14px;"></i> EXECUTIVE COMMAND CENTER</span>
+              <span class="campaigns-count-badge">7 Domains Mapped</span>
+            </div>
+            <h3 class="campaigns-main-title">Active Campaigns &amp; Life Architecture</h3>
+            <span class="card-sub-muted">Executive 10,000-ft visibility &bull; One home for each stream &bull; Zero fragmented friction</span>
           </div>
         </div>
 
-        <div class="topic-audits-grid">
-          ${topicAudits.map(audit => {
-            const isSchool = audit.topic && (audit.topic.toLowerCase().includes('school') || audit.topic.toLowerCase().includes('iep'));
-            const isCluttered = !isSchool;
-            const isStreamlined = isSchool;
+        <!-- Tier 1: High-Stakes Campaigns -->
+        <div class="campaigns-tier-header">
+          <div class="tier-indicator tier-high-stakes">
+            <span class="tier-symbol">🏛️</span>
+            <div>
+              <h4 class="tier-title">High-Stakes Campaigns</h4>
+              <span class="tier-subtitle">Active execution, waiting-on radar, and single-strike momentum</span>
+            </div>
+          </div>
+        </div>
 
-            const statusBadgeClass = isSchool ? 'status-streamlined' : 'status-disorganized';
-            const statusLabel = isSchool ? '✅ Organized' : '⚠️ Cluttered';
-
-            return `
-              <div class="topic-audit-card ${isCluttered ? 'is-cluttered' : 'is-streamlined'}">
-                <div class="audit-card-top">
-                  <div class="audit-topic-title">${escapeHtml(audit.topic)}</div>
-                  <span class="audit-status-tag ${statusBadgeClass}">${statusLabel}</span>
+        <div class="campaigns-cards-grid">
+          <!-- Card 1: School Admissions -->
+          <div class="campaign-card" id="card-campaign-school">
+            <div class="campaign-card-header">
+              <div class="campaign-card-domain">
+                <span class="campaign-icon">🏫</span>
+                <div>
+                  <h5 class="campaign-name">Z: School Admissions &amp; OOD Placement</h5>
+                  <span class="campaign-target-meta">Out-of-District Search &amp; Placement</span>
                 </div>
+              </div>
+              <span class="campaign-phase-pill phase-school">Phase 2: Tours &amp; Intake</span>
+            </div>
 
-                <!-- Tools List -->
-                <div class="audit-tools-row">
-                  <span class="audit-meta-label">Where it lives:</span>
-                  <div class="audit-tools-strip">
-                    ${(audit.tools || []).map(tool => {
-                      const tLower = tool.toLowerCase();
-                      let tClass = 'tool-generic';
-                      if (tLower.includes('margo')) tClass = 'tool-margo';
-                      else if (tLower.includes('apple') || tLower.includes('notes')) tClass = 'tool-notes';
-                      else if (tLower.includes('things')) tClass = 'tool-things';
-                      else if (tLower.includes('drive') || tLower.includes('google')) tClass = 'tool-drive';
-                      else if (tLower.includes('icloud')) tClass = 'tool-icloud';
-                      else if (tLower.includes('photo')) tClass = 'tool-photos';
-                      else if (tLower.includes('email')) tClass = 'tool-email';
-
-                      return `<span class="tool-tag ${tClass}">${escapeHtml(tool)}</span>`;
-                    }).join('')}
-                  </div>
+            <div class="campaign-card-body">
+              <div class="campaign-strike-box" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Click to copy strike to clipboard">
+                <div class="strike-box-label">
+                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
+                  <span class="strike-sub-hint">Max 1 physical move</span>
                 </div>
+                <div class="strike-box-content">
+                  <span class="strike-text">📞 Call Windsor admissions re: tour</span>
+                  <i data-lucide="copy" class="strike-copy-icon"></i>
+                </div>
+              </div>
 
-                <!-- Footer Actions -->
-                <div class="audit-card-footer">
-                  <button type="button" class="audit-btn-edit" onclick="editTopicAuditAction('${audit.id}')">
-                    <span>✏️ Edit</span>
+              <div class="campaign-radar-box">
+                <div class="radar-box-header">
+                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> WAITING-ON RADAR</span>
+                  <span class="radar-tag-date">Follow-up: Oct 8</span>
+                </div>
+                <p class="radar-box-content">
+                  Waiting on Dr. K for updated neuropsych addendum &amp; PWN packet.
+                </p>
+              </div>
+
+              <div class="campaign-launchers-strip">
+                <span class="launchers-label">🔗 Quick Launchers:</span>
+                <div class="launchers-buttons">
+                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# SCHOOL 01_BATTLE PLAN')" title="Copy Apple Note title to search/open">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text"># SCHOOL 01_BATTLE PLAN</span>
                   </button>
-                  <button type="button" class="audit-btn-delete" onclick="deleteTopicAuditAction('${audit.id}')" title="Delete topic">
-                    <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i>
+                  <button type="button" class="launcher-btn launcher-drive" onclick="openDriveFolder('Z Records')" title="Open Google Drive folder">
+                    <span class="btn-icon">📁</span>
+                    <span class="btn-text">📁 Z Records (PWNs, IEPs)</span>
+                  </button>
+                  <button type="button" class="launcher-btn launcher-gmail" onclick="openGmailLabel('OOD-Placement')" title="Open Gmail label">
+                    <span class="btn-icon">✉️</span>
+                    <span class="btn-text">Label: OOD-Placement</span>
                   </button>
                 </div>
               </div>
-            `;
-          }).join('')}
+            </div>
+          </div>
+
+          <!-- Card 2: Out-of-Network Claims -->
+          <div class="campaign-card" id="card-campaign-claims">
+            <div class="campaign-card-header">
+              <div class="campaign-card-domain">
+                <span class="campaign-icon">⚖️</span>
+                <div>
+                  <h5 class="campaign-name">Out-of-Network Insurance Claims</h5>
+                  <span class="campaign-target-meta">Superbills, Reimbursements &amp; Included Health</span>
+                </div>
+              </div>
+              <span class="campaign-phase-pill phase-claims">Phase 1: Claim Filing</span>
+            </div>
+
+            <div class="campaign-card-body">
+              <div class="campaign-strike-box" onclick="copyThingsStrike('📄 Upload superbills for Sept sessions')" title="Click to copy strike to clipboard">
+                <div class="strike-box-label">
+                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
+                  <span class="strike-sub-hint">Max 1 physical move</span>
+                </div>
+                <div class="strike-box-content">
+                  <span class="strike-text">📄 Upload superbills for Sept sessions</span>
+                  <i data-lucide="copy" class="strike-copy-icon"></i>
+                </div>
+              </div>
+
+              <div class="campaign-radar-box">
+                <div class="radar-box-header">
+                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> WAITING-ON RADAR</span>
+                  <span class="radar-tag-date">Follow-up: Oct 12</span>
+                </div>
+                <p class="radar-box-content">
+                  Waiting on Aetna for claim #8921 adjudication &amp; check issuance.
+                </p>
+              </div>
+
+              <div class="campaign-launchers-strip">
+                <span class="launchers-label">🔗 Quick Launchers:</span>
+                <div class="launchers-buttons">
+                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# CLAIMS 01_TRACKER')" title="Copy Apple Note title">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text"># CLAIMS 01_TRACKER</span>
+                  </button>
+                  <button type="button" class="launcher-btn launcher-drive" onclick="openDriveFolder('Superbills & EOBs')" title="Open Google Drive folder">
+                    <span class="btn-icon">📁</span>
+                    <span class="btn-text">📁 Superbills &amp; EOBs</span>
+                  </button>
+                  <button type="button" class="launcher-btn launcher-gmail" onclick="openGmailLabel('OON-Claims')" title="Open Gmail label">
+                    <span class="btn-icon">✉️</span>
+                    <span class="btn-text">Label: OON-Claims</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Personal Finance -->
+          <div class="campaign-card" id="card-campaign-finance">
+            <div class="campaign-card-header">
+              <div class="campaign-card-domain">
+                <span class="campaign-icon">💳</span>
+                <div>
+                  <h5 class="campaign-name">Personal Finance &amp; Tax Prep</h5>
+                  <span class="campaign-target-meta">Cashflow Burn, Invoicing &amp; Quarterly Taxes</span>
+                </div>
+              </div>
+              <span class="campaign-phase-pill phase-finance">Quarterly Review</span>
+            </div>
+
+            <div class="campaign-card-body">
+              <div class="campaign-strike-box" onclick="copyThingsStrike('📊 Categorize Sept business & personal expenses')" title="Click to copy strike to clipboard">
+                <div class="strike-box-label">
+                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
+                  <span class="strike-sub-hint">Max 1 physical move</span>
+                </div>
+                <div class="strike-box-content">
+                  <span class="strike-text">📊 Categorize Sept business &amp; personal expenses</span>
+                  <i data-lucide="copy" class="strike-copy-icon"></i>
+                </div>
+              </div>
+
+              <div class="campaign-radar-box">
+                <div class="radar-box-header">
+                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> WAITING-ON RADAR</span>
+                  <span class="radar-tag-date">Pending Response</span>
+                </div>
+                <p class="radar-box-content">
+                  Waiting on CPA for Q3 estimated tax voucher &amp; payroll reconciliation.
+                </p>
+              </div>
+
+              <div class="campaign-launchers-strip">
+                <span class="launchers-label">🔗 Quick Launchers:</span>
+                <div class="launchers-buttons">
+                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# FINANCE 01_OVERVIEW')" title="Copy Apple Note title">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text"># FINANCE 01_OVERVIEW</span>
+                  </button>
+                  <button type="button" class="launcher-btn launcher-drive" onclick="openDriveFolder('Tax Docs 2026')" title="Open Google Drive folder">
+                    <span class="btn-icon">📁</span>
+                    <span class="btn-text">📁 Tax Docs 2026</span>
+                  </button>
+                  <button type="button" class="launcher-btn launcher-sheet" onclick="openDriveFolder('Cashflow Master')" title="Open Spreadsheet">
+                    <span class="btn-icon">📊</span>
+                    <span class="btn-text">📊 Cashflow Master</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Home Decluttering -->
+          <div class="campaign-card" id="card-campaign-home">
+            <div class="campaign-card-header">
+              <div class="campaign-card-domain">
+                <span class="campaign-icon">📦</span>
+                <div>
+                  <h5 class="campaign-name">Home Decluttering &amp; Zone Reset</h5>
+                  <span class="campaign-target-meta">Orderly Environment &bull; 1 Zone at a Time</span>
+                </div>
+              </div>
+              <span class="campaign-phase-pill phase-home">Zone 2: Primary Closet</span>
+            </div>
+
+            <div class="campaign-card-body">
+              <div class="campaign-strike-box" onclick="copyThingsStrike('📦 Bag 5 donation items from top shelf')" title="Click to copy strike to clipboard">
+                <div class="strike-box-label">
+                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
+                  <span class="strike-sub-hint">Max 1 physical move</span>
+                </div>
+                <div class="strike-box-content">
+                  <span class="strike-text">📦 Bag 5 donation items from top shelf</span>
+                  <i data-lucide="copy" class="strike-copy-icon"></i>
+                </div>
+              </div>
+
+              <div class="campaign-radar-box">
+                <div class="radar-box-header">
+                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> RADAR STATUS</span>
+                  <span class="radar-tag-date">Zero Blockers</span>
+                </div>
+                <p class="radar-box-content">
+                  All clear &bull; Self-paced momentum &bull; Next donation run scheduled Oct 15.
+                </p>
+              </div>
+
+              <div class="campaign-launchers-strip">
+                <span class="launchers-label">🔗 Quick Launchers:</span>
+                <div class="launchers-buttons">
+                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# HOME 01_ZONES')" title="Copy Apple Note title">
+                    <span class="btn-icon">📝</span>
+                    <span class="btn-text"># HOME 01_ZONES</span>
+                  </button>
+                  <button type="button" class="launcher-btn launcher-photos" onclick="copyAppleNoteLauncher('# HOME 01_PHOTOS')" title="Photo Tracker">
+                    <span class="btn-icon">📷</span>
+                    <span class="btn-text">📷 Before &amp; After Album</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier 2: Personal Protocols -->
+        <div class="campaigns-tier-header" style="margin-top: 24px;">
+          <div class="tier-indicator tier-protocols">
+            <span class="tier-symbol">🌿</span>
+            <div>
+              <h4 class="tier-title">Personal Protocols (Maintenance &amp; Flow)</h4>
+              <span class="tier-subtitle">Daily rituals &amp; wardrobe rotations &bull; Kept separate to preserve focus</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="protocols-grid">
+          <!-- Protocol 1: Skincare -->
+          <div class="protocol-card">
+            <div class="protocol-card-header">
+              <span class="protocol-icon">🧴</span>
+              <div>
+                <h5 class="protocol-name">Skincare Routine</h5>
+                <span class="protocol-current">Evening Barrier Repair Protocol</span>
+              </div>
+            </div>
+            <div class="protocol-details">
+              <div class="protocol-meta-item">
+                <span class="meta-label">Anchor:</span>
+                <span class="meta-val">Daily Checkpoint #2 (Vitality)</span>
+              </div>
+              <div class="protocol-meta-item">
+                <span class="meta-label">Next Refill:</span>
+                <span class="meta-val">Ceramide Barrier Cream (~2 wks)</span>
+              </div>
+            </div>
+            <div class="protocol-action-row">
+              <button type="button" class="protocol-btn" onclick="copyAppleNoteLauncher('# BEAUTY 01_SKINCARE')">
+                <span>📝 Open Skincare Protocol</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Protocol 2: Haircare -->
+          <div class="protocol-card">
+            <div class="protocol-card-header">
+              <span class="protocol-icon">🌿</span>
+              <div>
+                <h5 class="protocol-name">Haircare Rituals</h5>
+                <span class="protocol-current">Scalp oiling &amp; bonding treatment</span>
+              </div>
+            </div>
+            <div class="protocol-details">
+              <div class="protocol-meta-item">
+                <span class="meta-label">Anchor:</span>
+                <span class="meta-val">Daily Checkpoint #4 (Haircare)</span>
+              </div>
+              <div class="protocol-meta-item">
+                <span class="meta-label">Deep Mask:</span>
+                <span class="meta-val">Sunday evening ritual</span>
+              </div>
+            </div>
+            <div class="protocol-action-row">
+              <button type="button" class="protocol-btn" onclick="jumpToHaircareCheckpoint()">
+                <span>☀️ Jump to Haircare Checkpoint</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Protocol 3: Wardrobe -->
+          <div class="protocol-card">
+            <div class="protocol-card-header">
+              <span class="protocol-icon">👗</span>
+              <div>
+                <h5 class="protocol-name">Capsule Wardrobe</h5>
+                <span class="protocol-current">Fall Seasonal Rotation (24 pieces)</span>
+              </div>
+            </div>
+            <div class="protocol-details">
+              <div class="protocol-meta-item">
+                <span class="meta-label">Strike:</span>
+                <span class="meta-val">Pull winter knits from storage bin</span>
+              </div>
+              <div class="protocol-meta-item">
+                <span class="meta-label">Lookbook:</span>
+                <span class="meta-val">12 core outfits documented</span>
+              </div>
+            </div>
+            <div class="protocol-action-row">
+              <button type="button" class="protocol-btn" onclick="copyAppleNoteLauncher('# STYLE 01_CAPSULE')">
+                <span>📝 View Lookbook Note</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tier 3: Collapsible Detailed Domain Matrix (Collapsed by default) -->
+        <div class="domain-matrix-accordion-wrap">
+          <details class="domain-matrix-details" id="domain-matrix-details">
+            <summary class="domain-matrix-summary">
+              <div class="summary-left">
+                <div class="summary-title-row">
+                  <span class="matrix-pill-badge">Expanded Tool Guide</span>
+                  <h4 class="summary-title">📋 Detailed Domain Matrix</h4>
+                </div>
+                <span class="summary-sub">Tap to view complete tool-by-tool breakdown across margo, Apple Notes, Google Drive, Things 3, and Gmail</span>
+              </div>
+              <div class="summary-toggle-indicator">
+                <span class="toggle-status-text">View Matrix</span>
+                <i data-lucide="chevron-down" class="matrix-chevron"></i>
+              </div>
+            </summary>
+
+            <div class="domain-matrix-table-container">
+              <table class="domain-matrix-table">
+                <thead>
+                  <tr>
+                    <th class="th-num">#</th>
+                    <th class="th-domain">Domain / Life Project</th>
+                    <th class="th-tool"><span class="tool-head-pill pill-margo">🌿 margo</span></th>
+                    <th class="th-tool"><span class="tool-head-pill pill-notes">📝 Apple Notes</span></th>
+                    <th class="th-tool"><span class="tool-head-pill pill-drive">📁 Google Drive / Docs</span></th>
+                    <th class="th-tool"><span class="tool-head-pill pill-things">⚡ Things 3</span></th>
+                    <th class="th-tool"><span class="tool-head-pill pill-gmail">✉️ Gmail</span></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- 1. School (Populated) -->
+                  <tr class="row-populated">
+                    <td class="col-num">01</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Z: School Admissions &amp; OOD Placement</div>
+                      <span class="domain-status-tag status-active">Active Campaign</span>
+                    </td>
+                    <td class="col-content-cell cell-margo">
+                      <div class="cell-main-highlight">Radar Card: Phase 2 (Tours)</div>
+                      <div class="cell-desc-text">Waiting-On tracker, Direct links to Notes &amp; Drive</div>
+                    </td>
+                    <td class="col-content-cell cell-notes">
+                      <code class="note-code-badge"># SCHOOL 01_BATTLE PLAN</code>
+                      <div class="cell-desc-text">School profiles, intake notes, incident timeline</div>
+                    </td>
+                    <td class="col-content-cell cell-drive">
+                      <div class="cell-main-highlight">📁 Z Records:</div>
+                      <div class="cell-desc-text">IEP PDFs, Neuropsych evals, PWNs</div>
+                    </td>
+                    <td class="col-content-cell cell-things">
+                      <div class="cell-main-highlight">📞 Call Windsor admissions re: tour</div>
+                      <div class="cell-desc-sub muted">(Max 1 active task)</div>
+                    </td>
+                    <td class="col-content-cell cell-gmail">
+                      <span class="gmail-label-pill">Label: OOD-Placement</span>
+                    </td>
+                  </tr>
+
+                  <!-- 2. Out-of-Network Claims (Unpopulated) -->
+                  <tr class="row-pending">
+                    <td class="col-num">02</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Out-of-Network Claims</div>
+                      <span class="domain-status-tag status-pending">Pending Fill</span>
+                    </td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                  </tr>
+
+                  <!-- 3. Personal Finance (Unpopulated) -->
+                  <tr class="row-pending">
+                    <td class="col-num">03</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Personal Finance</div>
+                      <span class="domain-status-tag status-pending">Pending Fill</span>
+                    </td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                  </tr>
+
+                  <!-- 4. Home Decluttering (Unpopulated) -->
+                  <tr class="row-pending">
+                    <td class="col-num">04</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Home Decluttering</div>
+                      <span class="domain-status-tag status-pending">Pending Fill</span>
+                    </td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                  </tr>
+
+                  <!-- 5. Skincare (Unpopulated) -->
+                  <tr class="row-pending">
+                    <td class="col-num">05</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Skincare</div>
+                      <span class="domain-status-tag status-pending">Pending Fill</span>
+                    </td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                  </tr>
+
+                  <!-- 6. Haircare (Unpopulated) -->
+                  <tr class="row-pending">
+                    <td class="col-num">06</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Haircare</div>
+                      <span class="domain-status-tag status-pending">Pending Fill</span>
+                    </td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                  </tr>
+
+                  <!-- 7. Outfits & Wardrobe (Unpopulated) -->
+                  <tr class="row-pending">
+                    <td class="col-num">07</td>
+                    <td class="col-domain-cell">
+                      <div class="domain-title">Outfits &amp; Wardrobe</div>
+                      <span class="domain-status-tag status-pending">Pending Fill</span>
+                    </td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                    <td class="col-content-cell cell-empty">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
         </div>
       </div>
 
@@ -540,3 +940,72 @@ function addHabitFromPresetCover(presetIndex) {
   renderCoverHubPage();
 }
 window.addHabitFromPresetCover = addHabitFromPresetCover;
+
+/* --------------------------------------------------------------------------
+   Active Campaigns & Life Architecture Interactive Helpers
+   -------------------------------------------------------------------------- */
+function copyAppleNoteLauncher(noteTitle) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(noteTitle).then(() => {
+      if (typeof showToast === 'function') {
+        showToast(`📋 Copied "${noteTitle}" — paste or search in Apple Notes`);
+      }
+    }).catch(() => {
+      if (typeof showToast === 'function') showToast(`Apple Note: ${noteTitle}`);
+    });
+  } else if (typeof showToast === 'function') {
+    showToast(`Apple Note: ${noteTitle}`);
+  }
+}
+window.copyAppleNoteLauncher = copyAppleNoteLauncher;
+
+function copyThingsStrike(strikeText) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(strikeText).then(() => {
+      if (typeof showToast === 'function') {
+        showToast(`⚡ Copied strike to clipboard: "${strikeText}"`);
+      }
+    }).catch(() => {
+      if (typeof showToast === 'function') showToast(`Strike: ${strikeText}`);
+    });
+  } else if (typeof showToast === 'function') {
+    showToast(`Strike: ${strikeText}`);
+  }
+}
+window.copyThingsStrike = copyThingsStrike;
+
+function openDriveFolder(folderName) {
+  const url = 'https://drive.google.com/drive/search?q=' + encodeURIComponent(folderName);
+  window.open(url, '_blank', 'noopener,noreferrer');
+  if (typeof showToast === 'function') {
+    showToast(`📁 Opening Google Drive search for "${folderName}"`);
+  }
+}
+window.openDriveFolder = openDriveFolder;
+
+function openGmailLabel(labelName) {
+  const url = 'https://mail.google.com/mail/u/0/#search/label%3A' + encodeURIComponent(labelName);
+  window.open(url, '_blank', 'noopener,noreferrer');
+  if (typeof showToast === 'function') {
+    showToast(`✉️ Opening Gmail for label "${labelName}"`);
+  }
+}
+window.openGmailLabel = openGmailLabel;
+
+function jumpToHaircareCheckpoint() {
+  if (typeof switchAppView === 'function') {
+    switchAppView('sanctuary');
+  }
+  setTimeout(() => {
+    const el = document.getElementById('checkpoint-haircare') || 
+               document.querySelector('[data-checkpoint="haircare"]') || 
+               document.getElementById('section-haircare');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (typeof showToast === 'function') {
+      showToast('☀️ Jumped to Sanctuary for Haircare Checkpoint');
+    }
+  }, 120);
+}
+window.jumpToHaircareCheckpoint = jumpToHaircareCheckpoint;
+
