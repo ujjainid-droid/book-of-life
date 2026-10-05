@@ -197,7 +197,96 @@ class StorageManager {
       quickThoughts: [],
       // Currently Terrorizing active projects list
       activeTerrorizing: ['10k steps', 'Close rings'],
-      // Cover Page: Top of Mind Scratchpad (Now vs. Later)
+      // Cover Page: Unified Life Architecture & Focus Board (Now vs Later)
+      coverCampaigns: {
+        now: [
+          {
+            id: 'camp-school',
+            title: 'Z: School Admissions & OOD Placement',
+            status: 'strike', // 'strike' | 'waiting' | 'review' | 'ondeck'
+            tools: [
+              { label: 'Apple Note', noteQuery: '# SCHOOL 01_BATTLE PLAN' },
+              { label: 'Google Drive', folder: 'Z Records' },
+              { label: 'Gmail', emailQuery: 'OOD-Placement' },
+              { label: 'Roadmap', isRoadmap: true }
+            ]
+          },
+          {
+            id: 'camp-claims',
+            title: 'Out-of-network claims',
+            status: 'waiting',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# CLAIMS 01_TRACKER' },
+              { label: 'Google Drive', folder: 'Superbills & EOBs' },
+              { label: 'Gmail', emailQuery: 'OON-Claims' }
+            ]
+          },
+          {
+            id: 'camp-finance',
+            title: 'Personal finance',
+            status: 'review',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# FINANCE 01_OVERVIEW' },
+              { label: 'Google Drive', folder: 'Tax Docs 2026' },
+              { label: 'Spreadsheet', folder: 'Cashflow Master' }
+            ]
+          },
+          {
+            id: 'camp-home',
+            title: 'Home decluttering',
+            status: 'strike',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# HOME 01_ZONES' },
+              { label: 'Photos', noteQuery: '# HOME 01_PHOTOS' }
+            ]
+          },
+          {
+            id: 'camp-haircare',
+            title: 'Haircare Protocol',
+            status: 'strike',
+            tools: [
+              { label: "Today's Checkpoint", action: 'checkpoint' },
+              { label: 'Apple Note', noteQuery: '# BEAUTY 02_HAIR' }
+            ]
+          }
+        ],
+        later: [
+          {
+            id: 'camp-skincare',
+            title: 'Skincare Routine & Audit',
+            status: 'ondeck',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# BEAUTY 01_SKINCARE' }
+            ]
+          },
+          {
+            id: 'camp-wardrobe',
+            title: 'Capsule Wardrobe (Fall/Winter)',
+            status: 'ondeck',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# STYLE 01_CAPSULE' }
+            ]
+          },
+          {
+            id: 'camp-undereye',
+            title: 'Under Eye Bags Research',
+            status: 'ondeck',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# BEAUTY 03_EYES' }
+            ]
+          },
+          {
+            id: 'camp-vault',
+            title: 'Digital Vault Organization',
+            status: 'ondeck',
+            tools: [
+              { label: 'Google Drive', folder: 'Master Vault' },
+              { label: 'Apple Note', noteQuery: '# SYSTEM 01_VAULT' }
+            ]
+          }
+        ]
+      },
+      // Cover Page: Top of Mind Scratchpad (legacy preserved)
       coverTopMind: {
         now: [
           { id: 'tm-1', text: 'AY 4-week hair wash & rest protocol' },
@@ -606,6 +695,9 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
+      if (!merged.coverCampaigns || !Array.isArray(merged.coverCampaigns.now)) {
+        merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
+      }
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
       }
@@ -1657,6 +1749,73 @@ class StorageManager {
     this.data.energyMode = (mode === 'maint') ? 'maint' : 'power';
     this.saveData();
     return this.data.energyMode;
+  }
+
+  // --- Cover Page: Unified Life Architecture & Focus Board (Now vs. Later) ---
+  getCoverCampaigns() {
+    if (!this.data.coverCampaigns) {
+      const defaults = this.getDefaultState();
+      this.data.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
+    }
+    if (!Array.isArray(this.data.coverCampaigns.now)) this.data.coverCampaigns.now = [];
+    if (!Array.isArray(this.data.coverCampaigns.later)) this.data.coverCampaigns.later = [];
+    return this.data.coverCampaigns;
+  }
+
+  addCoverCampaign(targetList, itemData) {
+    const campaigns = this.getCoverCampaigns();
+    const listKey = (targetList === 'later') ? 'later' : 'now';
+    const newCamp = {
+      id: 'camp-' + Date.now(),
+      title: (itemData.title || 'Untitled Focus').trim(),
+      status: itemData.status || (listKey === 'now' ? 'strike' : 'ondeck'),
+      tools: Array.isArray(itemData.tools) ? itemData.tools : [
+        { label: 'Apple Note', noteQuery: itemData.title }
+      ]
+    };
+    campaigns[listKey].push(newCamp);
+    this.saveData();
+    return newCamp;
+  }
+
+  moveCoverCampaign(id, fromList, toList) {
+    const campaigns = this.getCoverCampaigns();
+    const fromArr = campaigns[fromList] || [];
+    const idx = fromArr.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      const [item] = fromArr.splice(idx, 1);
+      if (!campaigns[toList]) campaigns[toList] = [];
+      if (toList === 'now' && item.status === 'ondeck') {
+        item.status = 'strike';
+      } else if (toList === 'later' && item.status === 'strike') {
+        item.status = 'ondeck';
+      }
+      campaigns[toList].unshift(item);
+      this.saveData();
+      return item;
+    }
+    return null;
+  }
+
+  deleteCoverCampaign(id, listName) {
+    const campaigns = this.getCoverCampaigns();
+    const arr = campaigns[listName] || [];
+    const idx = arr.findIndex(x => x.id === id);
+    if (idx !== -1) {
+      arr.splice(idx, 1);
+      this.saveData();
+    }
+  }
+
+  updateCoverCampaignStatus(id, newStatus) {
+    const campaigns = this.getCoverCampaigns();
+    let found = campaigns.now.find(x => x.id === id);
+    if (!found) found = campaigns.later.find(x => x.id === id);
+    if (found) {
+      found.status = newStatus;
+      this.saveData();
+    }
+    return found;
   }
 
   // --- Cover Page: Top of Mind Scratchpad (Now vs. Later) ---

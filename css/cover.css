@@ -5536,6 +5536,247 @@
   color: #64748B;
 }
 
+/* ==========================================================================
+   Unified Life Architecture & Focus Board (Now vs. Later)
+   Single Elevated White Card with Simplified Cards (Title + Status + Tool Pills)
+   ========================================================================== */
+.unified-board-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.unified-board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #F1F5F9;
+  padding-bottom: 12px;
+}
+
+.unified-board-counts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.board-count-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+}
+
+.board-count-pill.count-now {
+  background: #E8F2EC;
+  color: #2D5A3C;
+  border: 1px solid rgba(45, 90, 60, 0.25);
+}
+
+.board-count-pill.count-later {
+  background: rgba(194, 99, 68, 0.1);
+  color: #C26344;
+  border: 1px solid rgba(194, 99, 68, 0.25);
+}
+
+.focus-tier-block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.focus-tier-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.tier-title-group {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.focus-tier-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 6px;
+  letter-spacing: 0.03em;
+}
+
+.tier-badge-now {
+  background: #2D5A3C;
+  color: #FFFFFF;
+}
+
+.tier-badge-later {
+  background: #C26344;
+  color: #FFFFFF;
+}
+
+.focus-tier-heading {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.focus-tier-sub {
+  font-size: 0.75rem;
+  color: #64748B;
+}
+
+.btn-tier-add {
+  background: #F8FAFC;
+  border: 1px solid #CBD5E1;
+  color: #334155;
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-tier-add:hover {
+  background: #2D5A3C;
+  color: #FFFFFF;
+  border-color: #2D5A3C;
+}
+
+.focus-tier-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, #E2E8F0 20%, #E2E8F0 80%, transparent 100%);
+  margin: 8px 0;
+}
+
+.tier-empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 24px;
+  font-size: 0.82rem;
+  font-style: italic;
+  color: #94A3B8;
+  background: #F8FAFC;
+  border: 1px dashed #E2E8F0;
+  border-radius: 12px;
+}
+
+/* Simplified Cards: Lean, Clean White with Tool Pills & State Badge */
+.simplified-campaign-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.simplified-campaign-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(45, 90, 60, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.simplified-campaign-card.tier-now {
+  border-left: 3.5px solid #2D5A3C;
+}
+
+.simplified-campaign-card.tier-later {
+  border-left: 3.5px solid #C26344;
+}
+
+.card-status-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.sample-phase-pill {
+  font-size: 0.70rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.sample-phase-pill:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.pill-state-ondeck {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
+}
+
+.simplified-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 2px;
+  border-top: 1px solid #F8FAFC;
+}
+
+.simplified-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-tier-shift {
+  background: transparent;
+  border: 1px solid #E2E8F0;
+  color: #64748B;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-tier-shift:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+
+.btn-camp-delete {
+  background: transparent;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.btn-camp-delete:hover {
+  color: #EF4444;
+  background-color: #FEE2E2;
+}
+
 .protocol-sample-btn {
   margin-top: 6px;
   background: #F8FAFC;

@@ -29,8 +29,8 @@ function renderCoverHubPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
 
-  const topMind = (typeof storage !== 'undefined' && typeof storage.getCoverTopMind === 'function')
-    ? storage.getCoverTopMind()
+  const campaignsData = (typeof storage !== 'undefined' && typeof storage.getCoverCampaigns === 'function')
+    ? storage.getCoverCampaigns()
     : { now: [], later: [] };
 
   const topicAudits = (typeof storage !== 'undefined' && typeof storage.getCoverTopicAudits === 'function')
@@ -77,110 +77,7 @@ function renderCoverHubPage() {
         </button>
       </div>
 
-      <!-- 2. Top of Mind: "Now vs. Later" Scratchpad -->
-      <div class="cover-card top-mind-card" id="section-top-mind">
-        <div class="card-title-row">
-          <div class="title-with-desc">
-            <h3>
-              <i data-lucide="pin" style="color: #3D5A45; width: 17px; height: 17px;"></i>
-              Top of Mind Scratchpad
-            </h3>
-            <span class="card-sub-muted">Low-friction mental capture &bull; Split into Active Focus vs. Parking Lot</span>
-          </div>
-        </div>
-
-        <div class="top-mind-pads-grid">
-          
-          <!-- PAD 1: NOW (Active Focus) -->
-          <div class="top-mind-pad pad-now">
-            <div class="pad-header">
-              <div class="pad-title-group">
-                <span class="pad-badge badge-now">📌 NOW</span>
-                <span class="pad-subtitle">Active Focus (Max 3–5 items)</span>
-              </div>
-              <span class="pad-count-pill">${topMind.now.length}</span>
-            </div>
-
-            <!-- Inline Add Form -->
-            <form class="pad-add-form" onsubmit="submitAddTopMind(event, 'now')">
-              <input type="text" id="input-top-mind-now" class="pad-input" placeholder="+ Add something holding mental space..." required autocomplete="off" />
-              <button type="submit" class="pad-add-btn">+ Add</button>
-            </form>
-
-            <!-- Items List -->
-            <div class="pad-items-list">
-              ${topMind.now.map(item => `
-                <div class="pad-item" id="item-${item.id}">
-                  <span class="pad-item-bullet">&bull;</span>
-                  <div class="pad-item-text" onclick="promptEditTopMind('${item.id}', 'now', '${escapeHtml(item.text.replace(/'/g, "\\'"))}')" title="Click to edit">
-                    ${escapeHtml(item.text)}
-                  </div>
-                  <div class="pad-item-actions">
-                    <button type="button" class="pad-shift-btn" onclick="moveTopMindAction('${item.id}', 'now', 'later')" title="Move to Later (Parking Lot)">
-                      <span>Later &rarr;</span>
-                    </button>
-                    <button type="button" class="pad-delete-btn" onclick="deleteTopMindAction('${item.id}', 'now')" title="Delete item">
-                      <i data-lucide="x" style="width: 13px; height: 13px;"></i>
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
-
-              ${topMind.now.length === 0 ? `
-                <div class="pad-empty-state">
-                  <span>Nothing on your immediate plate. Enjoy the headspace!</span>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-
-          <!-- PAD 2: LATER (On Deck / Parking Lot) -->
-          <div class="top-mind-pad pad-later">
-            <div class="pad-header">
-              <div class="pad-title-group">
-                <span class="pad-badge badge-later">⏳ LATER</span>
-                <span class="pad-subtitle">On Deck &amp; Parking Lot</span>
-              </div>
-              <span class="pad-count-pill">${topMind.later.length}</span>
-            </div>
-
-            <!-- Inline Add Form -->
-            <form class="pad-add-form" onsubmit="submitAddTopMind(event, 'later')">
-              <input type="text" id="input-top-mind-later" class="pad-input" placeholder="+ Add ideas or future projects..." required autocomplete="off" />
-              <button type="submit" class="pad-add-btn">+ Add</button>
-            </form>
-
-            <!-- Items List -->
-            <div class="pad-items-list">
-              ${topMind.later.map(item => `
-                <div class="pad-item" id="item-${item.id}">
-                  <span class="pad-item-bullet">&bull;</span>
-                  <div class="pad-item-text" onclick="promptEditTopMind('${item.id}', 'later', '${escapeHtml(item.text.replace(/'/g, "\\'"))}')" title="Click to edit">
-                    ${escapeHtml(item.text)}
-                  </div>
-                  <div class="pad-item-actions">
-                    <button type="button" class="pad-shift-btn shift-back" onclick="moveTopMindAction('${item.id}', 'later', 'now')" title="Move to Now (Active Focus)">
-                      <span>&larr; Now</span>
-                    </button>
-                    <button type="button" class="pad-delete-btn" onclick="deleteTopMindAction('${item.id}', 'later')" title="Delete item">
-                      <i data-lucide="x" style="width: 13px; height: 13px;"></i>
-                    </button>
-                  </div>
-                </div>
-              `).join('')}
-
-              ${topMind.later.length === 0 ? `
-                <div class="pad-empty-state">
-                  <span>No parked thoughts. Add ideas you want to tackle next!</span>
-                </div>
-              ` : ''}
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- 3. What Tools for What Work (Tool Architecture Blueprint) -->
+      <!-- 2. What Tools for What Work (Tool Architecture Blueprint) -->
       <div class="cover-card blueprint-map-card" id="section-architecture-blueprint">
         <div class="blueprint-card-header">
           <div class="blueprint-title-row">
@@ -266,145 +163,69 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- 4. Active Campaigns & Life Architecture (White & Shadow Card) -->
+      <!-- 3. Unified Life Architecture & Focus Board: Now vs. Later (Clean White & Shadow Card) -->
       <div class="active-campaigns-section" id="section-active-campaigns">
-        <!-- Prominent Headline (Direct from Sample) -->
+        <!-- Hero Header -->
         <div class="campaigns-hero-heading">
-          <h2 class="campaigns-hero-title">Active Campaigns &amp; Life Architecture</h2>
-          <span class="campaigns-hero-sub">Executive 10,000-ft visibility &bull; One home for each stream &bull; Zero fragmented friction</span>
+          <h2 class="campaigns-hero-title">Life Architecture &amp; Focus Board</h2>
+          <span class="campaigns-hero-sub">Executive 10,000-ft visibility &bull; Actions live strictly in Apple Notes &amp; Things 3 &bull; Zero clutter</span>
         </div>
 
-        <!-- Big Elevated White Card Container (Matching Sample) -->
-        <div class="campaigns-white-card">
-          <div class="white-card-brand">margo</div>
-
-          <!-- High-Stakes Campaigns -->
-          <div class="campaigns-tier-title">High-Stakes Campaigns</div>
-
-          <div class="campaigns-grid-2x2">
-            <!-- 1. School Admissions & OOD Placement -->
-            <div class="campaign-sample-card">
-              <div class="sample-card-top">
-                <h4 class="sample-domain-title">Z: School Admissions &amp; OOD Placement</h4>
-                <span class="sample-phase-pill pill-state-strike" title="Ball in your court — 1 active strike in Things 3">⚡ Active Strike</span>
-              </div>
-              <div class="sample-strike-line" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next in Things 3:</span>
-                <span class="strike-action">📞 Call Windsor admissions re: tour</span>
-              </div>
-              <div class="sample-strike-line" onclick="copyThingsStrike('📄 Request police incident report from precinct')" title="Click to copy strike to Things 3" style="margin-top: -3px;">
-                <span class="strike-prefix">parallel strike:</span>
-                <span class="strike-action">📄 Request police incident report</span>
-              </div>
-              <div class="sample-card-bottom">
-                <div class="sample-radar-pill" title="Waiting on tour confirmation from Windsor admissions">
-                  <span class="radar-dot"></span>
-                  <span class="radar-label">waiting-on radar</span>
-                  <span class="radar-sub-date">Oct 8 &bull; Windsor Tour</span>
-                </div>
-                <div class="sample-launchers-group">
-                  <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# SCHOOL 01_BATTLE PLAN')" title="Copy Apple Note title">Apple Note</button>
-                  <button type="button" class="sample-launch-btn" onclick="openDriveFolder('Z Records')" title="Open Google Drive folder">Google Drive</button>
-                  <button type="button" class="sample-launch-btn" onclick="openGmailLabel('OOD-Placement')" title="Open Gmail label">Gmail</button>
-                  <button type="button" class="sample-roadmap-trigger" onclick="openSchoolBattlePlanModal()" title="View complete step-by-step roadmap">🗺️ Roadmap</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 2. Out-of-network claims -->
-            <div class="campaign-sample-card">
-              <div class="sample-card-top">
-                <h4 class="sample-domain-title">Out-of-network claims</h4>
-                <span class="sample-phase-pill pill-state-waiting" title="Ball in insurer's court — waiting on EOB reimbursement">⏳ Waiting On</span>
-              </div>
-              <div class="sample-strike-line" onclick="copyThingsStrike('📄 Upload superbills for Sept sessions')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next in Things 3:</span>
-                <span class="strike-action">📄 Upload superbills for Sept sessions</span>
-              </div>
-              <div class="sample-card-bottom">
-                <div class="sample-radar-pill">
-                  <span class="radar-dot"></span>
-                  <span class="radar-label">waiting-on radar</span>
-                  <span class="radar-sub-date">Oct 12 &bull; EOB</span>
-                </div>
-                <div class="sample-launchers-group">
-                  <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# CLAIMS 01_TRACKER')" title="Copy Apple Note title">Apple Note</button>
-                  <button type="button" class="sample-launch-btn" onclick="openDriveFolder('Superbills & EOBs')" title="Open Google Drive folder">Google Drive</button>
-                  <button type="button" class="sample-launch-btn" onclick="openGmailLabel('OON-Claims')" title="Open Gmail label">Gmail</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 3. Personal finance -->
-            <div class="campaign-sample-card">
-              <div class="sample-card-top">
-                <h4 class="sample-domain-title">Personal finance</h4>
-                <span class="sample-phase-pill pill-state-review" title="Scheduled monthly/quarterly checkpoint">🔍 Periodic Review</span>
-              </div>
-              <div class="sample-strike-line" onclick="copyThingsStrike('📊 Categorize Sept business & personal expenses')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next in Things 3:</span>
-                <span class="strike-action">📊 Categorize Sept expenses</span>
-              </div>
-              <div class="sample-card-bottom">
-                <div class="sample-action-pill">
-                  <span class="action-arrow">&rarr;</span>
-                  <span class="action-label">quick action</span>
-                  <span class="action-sub-note">CPA Q3</span>
-                </div>
-                <div class="sample-launchers-group">
-                  <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# FINANCE 01_OVERVIEW')" title="Copy Apple Note title">Apple Note</button>
-                  <button type="button" class="sample-launch-btn" onclick="openDriveFolder('Tax Docs 2026')" title="Open Google Drive folder">Google Drive</button>
-                  <button type="button" class="sample-launch-btn" onclick="openDriveFolder('Cashflow Master')" title="Open Spreadsheet">Spreadsheet</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 4. Home decluttering -->
-            <div class="campaign-sample-card">
-              <div class="sample-card-top">
-                <h4 class="sample-domain-title">Home decluttering</h4>
-                <span class="sample-phase-pill pill-state-strike" title="Ball in your court — 1 active strike in Things 3">⚡ Active Strike</span>
-              </div>
-              <div class="sample-strike-line" onclick="copyThingsStrike('📦 Bag 5 donation items from top shelf')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next in Things 3:</span>
-                <span class="strike-action">📦 Bag 5 donation items</span>
-              </div>
-              <div class="sample-card-bottom">
-                <div class="sample-action-pill">
-                  <span class="action-arrow">&rarr;</span>
-                  <span class="action-label">quick action</span>
-                  <span class="action-sub-note">Pickup Oct 15</span>
-                </div>
-                <div class="sample-launchers-group">
-                  <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# HOME 01_ZONES')" title="Copy Apple Note title">Apple Note</button>
-                  <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# HOME 01_PHOTOS')" title="Photo Tracker">Photos</button>
-                </div>
-              </div>
+        <!-- Single Elevated White Card Container -->
+        <div class="campaigns-white-card unified-board-card">
+          <div class="unified-board-header">
+            <div class="white-card-brand">margo</div>
+            <div class="unified-board-counts">
+              <span class="board-count-pill count-now">📌 ${campaignsData.now.length} Active (Now)</span>
+              <span class="board-count-pill count-later">⏳ ${campaignsData.later.length} On Deck (Later)</span>
             </div>
           </div>
 
-          <!-- Personal Protocols -->
-          <div class="campaigns-tier-title" style="margin-top: 24px;">Personal Protocols</div>
-
-          <div class="protocols-grid-3">
-            <div class="protocol-sample-card">
-              <div class="protocol-sample-name">Skincare</div>
-              <span class="protocol-sample-sub">Evening Barrier Repair</span>
-              <button type="button" class="protocol-sample-btn" onclick="copyAppleNoteLauncher('# BEAUTY 01_SKINCARE')">Apple Note</button>
+          <!-- ================= SECTION 1: NOW ================= -->
+          <div class="focus-tier-block tier-now-block">
+            <div class="focus-tier-header">
+              <div class="tier-title-group">
+                <span class="focus-tier-badge tier-badge-now">📌 NOW</span>
+                <h3 class="focus-tier-heading">Active Focus</h3>
+                <span class="focus-tier-sub">In flight &bull; Ball in court or actively tracked</span>
+              </div>
+              <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('now')" title="Add item to Active Focus">+ Add Focus</button>
             </div>
 
-            <div class="protocol-sample-card">
-              <div class="protocol-sample-name">Haircare</div>
-              <span class="protocol-sample-sub">Scalp Oiling &amp; Bonding</span>
-              <button type="button" class="protocol-sample-btn" onclick="jumpToHaircareCheckpoint()">Today's Checkpoint</button>
-            </div>
-
-            <div class="protocol-sample-card">
-              <div class="protocol-sample-name">Capsule Wardrobe</div>
-              <span class="protocol-sample-sub">Fall Rotation (24 pcs)</span>
-              <button type="button" class="protocol-sample-btn" onclick="copyAppleNoteLauncher('# STYLE 01_CAPSULE')">View Lookbook</button>
+            <div class="campaigns-grid-2x2">
+              ${campaignsData.now.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+              ${campaignsData.now.length === 0 ? `
+                <div class="tier-empty-state">
+                  <span>Nothing currently active. Enjoy the mental headspace!</span>
+                </div>
+              ` : ''}
             </div>
           </div>
+
+          <!-- Divider -->
+          <div class="focus-tier-divider"></div>
+
+          <!-- ================= SECTION 2: LATER ================= -->
+          <div class="focus-tier-block tier-later-block">
+            <div class="focus-tier-header">
+              <div class="tier-title-group">
+                <span class="focus-tier-badge tier-badge-later">⏳ LATER</span>
+                <h3 class="focus-tier-heading">On Deck &amp; Parking Lot</h3>
+                <span class="focus-tier-sub">Parked initiatives &bull; Next in queue once bandwidth opens</span>
+              </div>
+              <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('later')" title="Add item to Parking Lot">+ Add to Later</button>
+            </div>
+
+            <div class="campaigns-grid-2x2">
+              ${campaignsData.later.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
+              ${campaignsData.later.length === 0 ? `
+                <div class="tier-empty-state">
+                  <span>No parked items. Add initiatives you want to explore later!</span>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
         </div>
 
         <!-- Collapsible Detailed Domain Matrix -->
@@ -615,54 +436,147 @@ function renderCoverHubPage() {
 window.renderCoverHubPage = renderCoverHubPage;
 
 /* --------------------------------------------------------------------------
-   Top of Mind Event Handlers
+   Unified Life Architecture Card Renderer & Handlers
    -------------------------------------------------------------------------- */
-function submitAddTopMind(event, targetList) {
-  event.preventDefault();
-  const input = document.getElementById(`input-top-mind-${targetList}`);
-  if (!input) return;
-  const val = input.value.trim();
-  if (val && typeof storage !== 'undefined') {
-    storage.addCoverTopMindItem(targetList, val);
-    input.value = '';
-    renderCoverHubPage();
-    if (typeof showToast === 'function') {
-      showToast(`Added to ${targetList === 'now' ? 'Active Focus (Now)' : 'Parking Lot (Later)'}`);
+function renderUnifiedCampaignCard(camp, tier) {
+  const isNow = tier === 'now';
+  const oppositeTier = isNow ? 'later' : 'now';
+  const shiftBtnLabel = isNow ? 'Park in Later &rarr;' : '&larr; Move to Now';
+
+  // Status configuration
+  let statusBadgeHtml = '';
+  if (camp.status === 'strike') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-strike" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⚡ Active Strike</button>`;
+  } else if (camp.status === 'waiting') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-waiting" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⏳ Waiting On</button>`;
+  } else if (camp.status === 'review') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-review" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">🔍 Periodic Review</button>`;
+  } else {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-ondeck" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⏳ On Deck</button>`;
+  }
+
+  // Tools pills (strictly Apple Notes, Drive, Gmail, Roadmap, etc.)
+  const toolsHtml = (Array.isArray(camp.tools) ? camp.tools : []).map(tool => {
+    const label = tool.label || tool;
+    if (tool.isRoadmap) {
+      return `<button type="button" class="sample-roadmap-trigger" onclick="openSchoolBattlePlanModal()" title="View battle plan roadmap">🗺️ Roadmap</button>`;
+    } else if (tool.action === 'checkpoint') {
+      return `<button type="button" class="sample-launch-btn" onclick="jumpToHaircareCheckpoint()" title="Jump to daily checkpoint">Today's Checkpoint</button>`;
+    } else if (tool.folder) {
+      return `<button type="button" class="sample-launch-btn" onclick="openDriveFolder('${escapeHtml(tool.folder)}')" title="Open Google Drive folder">${escapeHtml(label)}</button>`;
+    } else if (tool.emailQuery) {
+      return `<button type="button" class="sample-launch-btn" onclick="openGmailLabel('${escapeHtml(tool.emailQuery)}')" title="Open Gmail label">${escapeHtml(label)}</button>`;
+    } else if (tool.noteQuery) {
+      return `<button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('${escapeHtml(tool.noteQuery)}')" title="Launch Apple Note">${escapeHtml(label)}</button>`;
+    } else {
+      return `<button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')">${escapeHtml(label)}</button>`;
     }
+  }).join('');
+
+  return `
+    <div class="campaign-sample-card simplified-campaign-card tier-${tier}">
+      <div class="sample-card-top">
+        <h4 class="sample-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title.replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title)}</h4>
+        <div class="card-status-wrapper">
+          ${statusBadgeHtml}
+        </div>
+      </div>
+
+      <div class="simplified-card-bottom">
+        <div class="sample-launchers-group">
+          ${toolsHtml}
+        </div>
+        <div class="simplified-card-actions">
+          <button type="button" class="btn-tier-shift" onclick="moveCampaignAction('${camp.id}', '${tier}', '${oppositeTier}')" title="${isNow ? 'Move to Later' : 'Move to Now'}">
+            ${shiftBtnLabel}
+          </button>
+          <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', '${tier}')" title="Delete domain">
+            <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+window.renderUnifiedCampaignCard = renderUnifiedCampaignCard;
+
+function cycleCampaignStatus(campId, event) {
+  if (event) event.stopPropagation();
+  if (typeof storage === 'undefined') return;
+  const campaigns = storage.getCoverCampaigns();
+  let camp = campaigns.now.find(x => x.id === campId) || campaigns.later.find(x => x.id === campId);
+  if (!camp) return;
+
+  const cycleOrder = ['strike', 'waiting', 'review', 'ondeck'];
+  const currentIdx = cycleOrder.indexOf(camp.status || 'strike');
+  const nextStatus = cycleOrder[(currentIdx + 1) % cycleOrder.length];
+  storage.updateCoverCampaignStatus(campId, nextStatus);
+  renderCoverHubPage();
+  if (typeof showToast === 'function') {
+    const labels = {
+      strike: '⚡ Active Strike',
+      waiting: '⏳ Waiting On',
+      review: '🔍 Periodic Review',
+      ondeck: '⏳ On Deck'
+    };
+    showToast(`Status changed to ${labels[nextStatus]}`);
   }
 }
-window.submitAddTopMind = submitAddTopMind;
+window.cycleCampaignStatus = cycleCampaignStatus;
 
-function moveTopMindAction(id, fromList, toList) {
+function moveCampaignAction(campId, fromTier, toTier) {
   if (typeof storage !== 'undefined') {
-    storage.moveCoverTopMindItem(id, fromList, toList);
+    storage.moveCoverCampaign(campId, fromTier, toTier);
     renderCoverHubPage();
     if (typeof showToast === 'function') {
-      showToast(`Moved to ${toList === 'now' ? 'Now (Active Focus)' : 'Later (Parking Lot)'}`);
+      showToast(`Moved to ${toTier === 'now' ? 'Active Focus (Now)' : 'Parking Lot (Later)'}`);
     }
   }
 }
-window.moveTopMindAction = moveTopMindAction;
+window.moveCampaignAction = moveCampaignAction;
 
-function deleteTopMindAction(id, listName) {
+function deleteCampaignAction(campId, tier) {
   if (typeof storage !== 'undefined') {
-    storage.deleteCoverTopMindItem(id, listName);
+    storage.deleteCoverCampaign(campId, tier);
     renderCoverHubPage();
     if (typeof showToast === 'function') {
-      showToast('Item removed from scratchpad');
+      showToast('Removed domain from board');
     }
   }
 }
-window.deleteTopMindAction = deleteTopMindAction;
+window.deleteCampaignAction = deleteCampaignAction;
 
-function promptEditTopMind(id, listName, currentText) {
-  const newText = prompt('Edit scratchpad item:', currentText);
-  if (newText !== null && newText.trim().length > 0 && typeof storage !== 'undefined') {
-    storage.updateCoverTopMindItem(id, listName, newText.trim());
+function promptAddCampaignItem(tier) {
+  const title = prompt(`Add new ${tier === 'now' ? 'Active Focus (Now)' : 'Parking Lot (Later)'} domain:`);
+  if (title && title.trim().length > 0 && typeof storage !== 'undefined') {
+    storage.addCoverCampaign(tier, {
+      title: title.trim(),
+      status: tier === 'now' ? 'strike' : 'ondeck',
+      tools: [
+        { label: 'Apple Note', noteQuery: title.trim() }
+      ]
+    });
     renderCoverHubPage();
+    if (typeof showToast === 'function') {
+      showToast(`Added to ${tier === 'now' ? 'Active Focus' : 'Parking Lot'}`);
+    }
   }
 }
-window.promptEditTopMind = promptEditTopMind;
+window.promptAddCampaignItem = promptAddCampaignItem;
+
+function promptEditCampaignTitle(campId, currentTitle) {
+  const newTitle = prompt('Edit domain title:', currentTitle);
+  if (newTitle && newTitle.trim().length > 0 && typeof storage !== 'undefined') {
+    const campaigns = storage.getCoverCampaigns();
+    let camp = campaigns.now.find(x => x.id === campId) || campaigns.later.find(x => x.id === campId);
+    if (camp) {
+      camp.title = newTitle.trim();
+      storage.saveData();
+      renderCoverHubPage();
+    }
+  }
+}
+window.promptEditCampaignTitle = promptEditCampaignTitle;
 
 /* --------------------------------------------------------------------------
    Where Info Lives Event Handlers & Modal
