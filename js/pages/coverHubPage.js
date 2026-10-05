@@ -180,62 +180,119 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- 3. High-Level Architecture Map (Cover Page Blueprint) -->
+      <!-- 3. Precise Life OS Workflow (Cover Page Blueprint) -->
       <div class="cover-card blueprint-map-card" id="section-architecture-blueprint">
         <div class="blueprint-card-header">
           <div class="blueprint-title-row">
             <span class="blueprint-icon">🧭</span>
-            <h3 class="blueprint-title">High-Level Architecture Map (Cover Page Blueprint)</h3>
+            <div>
+              <h3 class="blueprint-title">Your Precise Life OS Workflow (Model: School Admissions &amp; OOD)</h3>
+              <span class="blueprint-sub" style="font-size: 0.74rem; color: #64748B;">How incoming info transforms into clean execution with zero duplicate tracking</span>
+            </div>
           </div>
-          <span class="blueprint-badge">Executive Map</span>
+          <span class="blueprint-badge">Executive Blueprint</span>
         </div>
 
-        <div class="blueprint-canvas">
-          <!-- Root Node: Margo Cover Page Radar -->
-          <div class="blueprint-node blueprint-root-box">
-            <div class="blueprint-root-tag">🌿 MARGO COVER PAGE RADAR</div>
-            <div class="blueprint-root-items">
-              <span class="blueprint-spec">[Visual Status]</span>
-              <span class="blueprint-dot">&bull;</span>
-              <span class="blueprint-spec">[Current Phase]</span>
-              <span class="blueprint-dot">&bull;</span>
-              <span class="blueprint-spec">[Waiting-On Ping Dates]</span>
-              <span class="blueprint-dot">&bull;</span>
-              <span class="blueprint-spec">[1-Tap Deep Link to Notes/Drive]</span>
+        <!-- 4-Step Pipeline Grid -->
+        <div class="workflow-pipeline-grid">
+          
+          <!-- STEP 1 -->
+          <div class="workflow-step-card">
+            <div class="step-card-num-row">
+              <span class="workflow-step-num">Step 1</span>
+              <span class="workflow-step-flow-arrow">&rarr;</span>
+            </div>
+            <h4 class="workflow-step-tool-title">
+              <span>📁</span> Drive &amp; Gmail
+            </h4>
+            <span class="workflow-step-role">Permanent Evidence &amp; Inbox Capture</span>
+            <div class="workflow-step-school-box">
+              <span class="school-box-label">School Model</span>
+              <span class="school-box-content">
+                &bull; Emails tagged <code>label:OOD-Placement</code><br>
+                &bull; Signed IEP PDFs, neuropsych evals &amp; PWNs saved to <code>📁 Z Records</code>
+              </span>
+            </div>
+            <div class="workflow-step-golden-rule">
+              Rule: Search once, find forever. Zero files cluttering task lists.
             </div>
           </div>
 
-          <!-- Branching Stem -->
-          <div class="blueprint-branch-tree">
-            <div class="branch-vertical-stem"></div>
-            <div class="branch-horizontal-bar"></div>
-            <div class="branch-down-arrows">
-              <span class="branch-arrow">▼</span>
-              <span class="branch-arrow">▼</span>
+          <!-- STEP 2 -->
+          <div class="workflow-step-card">
+            <div class="step-card-num-row">
+              <span class="workflow-step-num">Step 2</span>
+              <span class="workflow-step-flow-arrow">&rarr;</span>
+            </div>
+            <h4 class="workflow-step-tool-title">
+              <span>📝</span> Apple Notes
+            </h4>
+            <span class="workflow-step-role">Working Brain &amp; Strategy Synthesis</span>
+            <div class="workflow-step-school-box">
+              <span class="school-box-label">School Model</span>
+              <span class="school-box-content">
+                &bull; Master note <code># SCHOOL 01_BATTLE PLAN</code><br>
+                &bull; Windsor profiles, tour impressions, raw meeting thoughts &amp; timeline
+              </span>
+            </div>
+            <div class="workflow-step-golden-rule">
+              Rule: Messy thinking &amp; research stay here without task anxiety.
             </div>
           </div>
 
-          <!-- Child Leaf Cards -->
-          <div class="blueprint-leaves-grid">
-            <div class="blueprint-leaf-box leaf-campaigns">
-              <div class="leaf-header">
-                <span class="leaf-symbol">🏛️</span>
-                <span class="leaf-title">ACTIVE CAMPAIGNS (Multi-Step)</span>
-              </div>
-              <p class="leaf-text">
-                Heavy paper trails, third-party blockers, multi-week execution
-              </p>
+          <!-- STEP 3 -->
+          <div class="workflow-step-card">
+            <div class="step-card-num-row">
+              <span class="workflow-step-num">Step 3</span>
+              <span class="workflow-step-flow-arrow">&rarr;</span>
             </div>
+            <h4 class="workflow-step-tool-title">
+              <span>🌿</span> margo Cover
+            </h4>
+            <span class="workflow-step-role">Executive Radar &amp; Horizon Tracker</span>
+            <div class="workflow-step-school-box">
+              <span class="school-box-label">School Model</span>
+              <span class="school-box-content">
+                &bull; Radar card tracks state: <strong>Active Strike</strong> vs. <strong>Waiting On</strong><br>
+                &bull; Pings: Oct 8 Windsor tour &bull; 1-tap launchers
+              </span>
+            </div>
+            <div class="workflow-step-golden-rule">
+              Rule: 10,000-ft horizon. Know who has the ball in 3 seconds.
+            </div>
+          </div>
 
-            <div class="blueprint-leaf-box leaf-protocols">
-              <div class="leaf-header">
-                <span class="leaf-symbol">🌿</span>
-                <span class="leaf-title">PERSONAL PROTOCOLS (Habits)</span>
-              </div>
-              <p class="leaf-text">
-                Recurring identity &amp; aesthetic regimens, daily friction-free flow
-              </p>
+          <!-- STEP 4 -->
+          <div class="workflow-step-card">
+            <div class="step-card-num-row">
+              <span class="workflow-step-num">Step 4</span>
+              <span class="workflow-step-flow-arrow">✓</span>
             </div>
+            <h4 class="workflow-step-tool-title">
+              <span>⚡</span> Things 3
+            </h4>
+            <span class="workflow-step-role">Today's Strike Execution</span>
+            <div class="workflow-step-school-box">
+              <span class="school-box-label">School Model</span>
+              <span class="school-box-content">
+                &bull; Max 1 active strike: <code>📞 Call Windsor admissions re: tour</code><br>
+                &bull; When done &rarr; flips margo card to <em>Waiting On</em>
+              </span>
+            </div>
+            <div class="workflow-step-golden-rule">
+              Rule: No 20-subtask overwhelm. Only the immediate physical punch.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- The Closed-Loop Ping-Pong Rule Strip -->
+        <div class="workflow-loop-strip">
+          <div class="loop-strip-left">
+            <span class="loop-strip-tag">The Closed-Loop Rule</span>
+            <span class="loop-strip-formula">
+              <span class="formula-highlight">⚡ Active Strike</span> in Things 3 &rarr; Call made &rarr; Flips to <span class="formula-highlight">⏳ Waiting On</span> in margo &rarr; Ping date arrives &rarr; Push <span class="formula-highlight">⚡ Next Strike</span> to Things 3
+            </span>
           </div>
         </div>
       </div>
@@ -260,7 +317,7 @@ function renderCoverHubPage() {
             <div class="campaign-sample-card">
               <div class="sample-card-top">
                 <h4 class="sample-domain-title">Z: School Admissions &amp; OOD Placement</h4>
-                <span class="sample-phase-pill pill-phase-2" title="Phase 2: School Selection &amp; Tours">Phase 2: Selection</span>
+                <span class="sample-phase-pill pill-state-strike" title="Ball in your court — 1 active strike in Things 3">⚡ Active Strike</span>
               </div>
               <div class="sample-strike-line" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Click to copy strike to Things 3">
                 <span class="strike-prefix">next in Things 3:</span>
@@ -289,17 +346,17 @@ function renderCoverHubPage() {
             <div class="campaign-sample-card">
               <div class="sample-card-top">
                 <h4 class="sample-domain-title">Out-of-network claims</h4>
-                <span class="sample-phase-pill pill-phase-1">Phase 1</span>
+                <span class="sample-phase-pill pill-state-waiting" title="Ball in insurer's court — waiting on EOB reimbursement">⏳ Waiting On</span>
               </div>
               <div class="sample-strike-line" onclick="copyThingsStrike('📄 Upload superbills for Sept sessions')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next action in Things 3:</span>
+                <span class="strike-prefix">next in Things 3:</span>
                 <span class="strike-action">📄 Upload superbills for Sept sessions</span>
               </div>
               <div class="sample-card-bottom">
                 <div class="sample-radar-pill">
                   <span class="radar-dot"></span>
                   <span class="radar-label">waiting-on radar</span>
-                  <span class="radar-sub-date">Oct 12</span>
+                  <span class="radar-sub-date">Oct 12 &bull; EOB</span>
                 </div>
                 <div class="sample-launchers-group">
                   <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# CLAIMS 01_TRACKER')" title="Copy Apple Note title">Apple Note</button>
@@ -313,10 +370,10 @@ function renderCoverHubPage() {
             <div class="campaign-sample-card">
               <div class="sample-card-top">
                 <h4 class="sample-domain-title">Personal finance</h4>
-                <span class="sample-phase-pill pill-phase-rev">Review</span>
+                <span class="sample-phase-pill pill-state-review" title="Scheduled monthly/quarterly checkpoint">🔍 Periodic Review</span>
               </div>
               <div class="sample-strike-line" onclick="copyThingsStrike('📊 Categorize Sept business & personal expenses')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next action in Things 3:</span>
+                <span class="strike-prefix">next in Things 3:</span>
                 <span class="strike-action">📊 Categorize Sept expenses</span>
               </div>
               <div class="sample-card-bottom">
@@ -337,10 +394,10 @@ function renderCoverHubPage() {
             <div class="campaign-sample-card">
               <div class="sample-card-top">
                 <h4 class="sample-domain-title">Home decluttering</h4>
-                <span class="sample-phase-pill pill-phase-zone">Zone 2</span>
+                <span class="sample-phase-pill pill-state-strike" title="Ball in your court — 1 active strike in Things 3">⚡ Active Strike</span>
               </div>
               <div class="sample-strike-line" onclick="copyThingsStrike('📦 Bag 5 donation items from top shelf')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next action in Things 3:</span>
+                <span class="strike-prefix">next in Things 3:</span>
                 <span class="strike-action">📦 Bag 5 donation items</span>
               </div>
               <div class="sample-card-bottom">
