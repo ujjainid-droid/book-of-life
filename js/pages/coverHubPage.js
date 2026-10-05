@@ -192,7 +192,7 @@ function renderCoverHubPage() {
               <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('now')" title="Add item to Active Focus">+ Add Focus</button>
             </div>
 
-            <div class="campaigns-grid-2x2">
+            <div class="campaigns-grid-3">
               ${campaignsData.now.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
               ${campaignsData.now.length === 0 ? `
                 <div class="tier-empty-state">
@@ -216,7 +216,7 @@ function renderCoverHubPage() {
               <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('later')" title="Add item to Parking Lot">+ Add to Later</button>
             </div>
 
-            <div class="campaigns-grid-2x2">
+            <div class="campaigns-grid-3">
               ${campaignsData.later.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
               ${campaignsData.later.length === 0 ? `
                 <div class="tier-empty-state">
@@ -455,21 +455,31 @@ function renderUnifiedCampaignCard(camp, tier) {
     statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-ondeck" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⏳ On Deck</button>`;
   }
 
-  // Tools pills (strictly Apple Notes, Drive, Gmail, Roadmap, etc.)
+  // Tools pills with dedicated brand color classes
   const toolsHtml = (Array.isArray(camp.tools) ? camp.tools : []).map(tool => {
     const label = tool.label || tool;
+    const lower = String(label).toLowerCase();
+    let toolClass = 'tool-btn-default';
+    if (lower.includes('apple note') || lower.includes('note')) toolClass = 'tool-btn-notes';
+    else if (lower.includes('drive')) toolClass = 'tool-btn-drive';
+    else if (lower.includes('gmail') || lower.includes('email')) toolClass = 'tool-btn-gmail';
+    else if (lower.includes('roadmap')) toolClass = 'tool-btn-roadmap';
+    else if (lower.includes('checkpoint')) toolClass = 'tool-btn-checkpoint';
+    else if (lower.includes('photo')) toolClass = 'tool-btn-photos';
+    else if (lower.includes('spreadsheet')) toolClass = 'tool-btn-sheets';
+
     if (tool.isRoadmap) {
-      return `<button type="button" class="sample-roadmap-trigger" onclick="openSchoolBattlePlanModal()" title="View battle plan roadmap">🗺️ Roadmap</button>`;
+      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="openSchoolBattlePlanModal()" title="View battle plan roadmap">🗺️ Roadmap</button>`;
     } else if (tool.action === 'checkpoint') {
-      return `<button type="button" class="sample-launch-btn" onclick="jumpToHaircareCheckpoint()" title="Jump to daily checkpoint">Today's Checkpoint</button>`;
+      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="jumpToHaircareCheckpoint()" title="Jump to daily checkpoint">Today's Checkpoint</button>`;
     } else if (tool.folder) {
-      return `<button type="button" class="sample-launch-btn" onclick="openDriveFolder('${escapeHtml(tool.folder)}')" title="Open Google Drive folder">${escapeHtml(label)}</button>`;
+      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="openDriveFolder('${escapeHtml(tool.folder)}')" title="Open Google Drive folder">${escapeHtml(label)}</button>`;
     } else if (tool.emailQuery) {
-      return `<button type="button" class="sample-launch-btn" onclick="openGmailLabel('${escapeHtml(tool.emailQuery)}')" title="Open Gmail label">${escapeHtml(label)}</button>`;
+      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="openGmailLabel('${escapeHtml(tool.emailQuery)}')" title="Open Gmail label">${escapeHtml(label)}</button>`;
     } else if (tool.noteQuery) {
-      return `<button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('${escapeHtml(tool.noteQuery)}')" title="Launch Apple Note">${escapeHtml(label)}</button>`;
+      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="copyAppleNoteLauncher('${escapeHtml(tool.noteQuery)}')" title="Launch Apple Note">${escapeHtml(label)}</button>`;
     } else {
-      return `<button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')">${escapeHtml(label)}</button>`;
+      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')">${escapeHtml(label)}</button>`;
     }
   }).join('');
 
@@ -482,18 +492,19 @@ function renderUnifiedCampaignCard(camp, tier) {
         </div>
       </div>
 
-      <div class="simplified-card-bottom">
+      <div class="simplified-card-tools">
         <div class="sample-launchers-group">
           ${toolsHtml}
         </div>
-        <div class="simplified-card-actions">
-          <button type="button" class="btn-tier-shift" onclick="moveCampaignAction('${camp.id}', '${tier}', '${oppositeTier}')" title="${isNow ? 'Move to Later' : 'Move to Now'}">
-            ${shiftBtnLabel}
-          </button>
-          <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', '${tier}')" title="Delete domain">
-            <i data-lucide="x" style="width: 12px; height: 12px;"></i>
-          </button>
-        </div>
+      </div>
+
+      <div class="simplified-card-bottom">
+        <button type="button" class="btn-tier-shift shift-tier-${tier}" onclick="moveCampaignAction('${camp.id}', '${tier}', '${oppositeTier}')" title="${isNow ? 'Move to Later' : 'Move to Now'}">
+          ${shiftBtnLabel}
+        </button>
+        <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', '${tier}')" title="Delete domain">
+          <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+        </button>
       </div>
     </div>
   `;
