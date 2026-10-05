@@ -203,6 +203,18 @@ class StorageManager {
           topic: 'Home Logistics & Errands',
           tools: ['Things 3', 'iCloud'],
           status: 'streamlined'
+        },
+        {
+          id: 'top-school-iep',
+          topic: 'School Notes + IEP',
+          tools: ['Apple notes', 'Google Drive', 'emails', 'Things 3'],
+          status: 'streamlined',
+          breakdown: [
+            { category: 'Active Front-Line & Notes', tool: 'Apple Notes (pinned folder)', desc: 'Meeting notes, raw thoughts, candidate school notes, active checklist.' },
+            { category: 'Static Evidence & Paperwork', tool: 'Google Drive', desc: 'PDFs, official evaluations, incident reports, signed IEPs.' },
+            { category: 'Communications', tool: 'Gmail (1 label only)', desc: 'All incoming/outgoing emails tagged OOD-Placement.' },
+            { category: 'Execution (Strike Team)', tool: 'Things 3 (1 lean project)', desc: 'Max 3–5 active tasks. Only next 1–3 real-world triggers.' }
+          ]
         }
       ],
       // Weekly Reflections: { [sundayIso]: { wins: string, focus: string } }
@@ -1687,6 +1699,22 @@ class StorageManager {
     if (!Array.isArray(this.data.coverTopicAudits)) {
       this.data.coverTopicAudits = [];
     }
+    const hasSchool = this.data.coverTopicAudits.some(a => a && a.topic && (a.topic.toLowerCase().includes('school') || a.topic.toLowerCase().includes('iep')));
+    if (!hasSchool) {
+      this.data.coverTopicAudits.push({
+        id: 'top-school-iep',
+        topic: 'School Notes + IEP',
+        tools: ['Apple notes', 'Google Drive', 'emails', 'Things 3'],
+        status: 'streamlined',
+        breakdown: [
+          { category: 'Active Front-Line & Notes', tool: 'Apple Notes (pinned folder)', desc: 'Meeting notes, raw thoughts, candidate school notes, active checklist.' },
+          { category: 'Static Evidence & Paperwork', tool: 'Google Drive', desc: 'PDFs, official evaluations, incident reports, signed IEPs.' },
+          { category: 'Communications', tool: 'Gmail (1 label only)', desc: 'All incoming/outgoing emails tagged OOD-Placement.' },
+          { category: 'Execution (Strike Team)', tool: 'Things 3 (1 lean project)', desc: 'Max 3–5 active tasks. Only next 1–3 real-world triggers.' }
+        ]
+      });
+      this.saveData();
+    }
     return this.data.coverTopicAudits;
   }
 
@@ -1697,7 +1725,8 @@ class StorageManager {
       topic: (audit.topic || 'New Domain').trim(),
       tools: Array.isArray(audit.tools) ? audit.tools : (audit.tools ? String(audit.tools).split(',').map(s => s.trim()).filter(Boolean) : []),
       status: audit.status || 'in_progress',
-      goal: (audit.goal || '').trim()
+      goal: (audit.goal || '').trim(),
+      breakdown: audit.breakdown || []
     };
     audits.push(newAudit);
     this.saveData();
@@ -1712,6 +1741,7 @@ class StorageManager {
       if (updates.tools !== undefined) item.tools = Array.isArray(updates.tools) ? updates.tools : String(updates.tools).split(',').map(s => s.trim()).filter(Boolean);
       if (updates.status !== undefined) item.status = updates.status;
       if (updates.goal !== undefined) item.goal = updates.goal.trim();
+      if (updates.breakdown !== undefined) item.breakdown = updates.breakdown;
       this.saveData();
     }
     return item;

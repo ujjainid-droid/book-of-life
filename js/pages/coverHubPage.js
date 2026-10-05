@@ -250,6 +250,20 @@ function renderCoverHubPage() {
                   </div>
                 </div>
 
+                ${audit.breakdown && audit.breakdown.length > 0 ? `
+                  <div class="audit-breakdown-list">
+                    ${audit.breakdown.map(item => `
+                      <div class="audit-breakdown-item">
+                        <div class="audit-breakdown-header">
+                          <span class="audit-breakdown-cat">${escapeHtml(item.category)}</span>
+                          <span class="audit-breakdown-tool">${escapeHtml(item.tool)}</span>
+                        </div>
+                        <div class="audit-breakdown-desc">${escapeHtml(item.desc)}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+
                 <!-- Footer Actions -->
                 <div class="audit-card-footer">
                   <button type="button" class="audit-btn-edit" onclick="editTopicAuditAction('${audit.id}')">
