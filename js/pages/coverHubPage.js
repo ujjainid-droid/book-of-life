@@ -213,20 +213,15 @@ function renderCoverHubPage() {
 
         <div class="topic-audits-grid">
           ${topicAudits.map(audit => {
-            const isCluttered = (audit.status === 'disorganized');
-            const isStreamlined = (audit.status === 'streamlined');
-            let statusBadgeClass = 'status-in-progress';
-            let statusLabel = '🟡 In Progress';
-            if (isStreamlined) {
-              statusBadgeClass = 'status-streamlined';
-              statusLabel = '✅ Organized';
-            } else if (isCluttered) {
-              statusBadgeClass = 'status-disorganized';
-              statusLabel = '⚠️ Cluttered';
-            }
+            const isSchool = audit.topic && (audit.topic.toLowerCase().includes('school') || audit.topic.toLowerCase().includes('iep'));
+            const isCluttered = !isSchool;
+            const isStreamlined = isSchool;
+
+            const statusBadgeClass = isSchool ? 'status-streamlined' : 'status-disorganized';
+            const statusLabel = isSchool ? '✅ Organized' : '⚠️ Cluttered';
 
             return `
-              <div class="topic-audit-card ${isCluttered ? 'cluttered-neutral' : (isStreamlined ? 'is-streamlined' : '')}">
+              <div class="topic-audit-card ${isCluttered ? 'is-cluttered' : 'is-streamlined'}">
                 <div class="audit-card-top">
                   <div class="audit-topic-title">${escapeHtml(audit.topic)}</div>
                   <span class="audit-status-tag ${statusBadgeClass}">${statusLabel}</span>

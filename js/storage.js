@@ -1731,6 +1731,27 @@ class StorageManager {
     if (!Array.isArray(this.data.coverTopicAudits)) {
       this.data.coverTopicAudits = [];
     }
+    let changed = false;
+    this.data.coverTopicAudits.forEach(a => {
+      if (!a) return;
+      const isSchool = a.topic && (a.topic.toLowerCase().includes('school') || a.topic.toLowerCase().includes('iep'));
+      if (isSchool) {
+        if (a.status !== 'streamlined') {
+          a.status = 'streamlined';
+          changed = true;
+        }
+        if (a.breakdown) {
+          delete a.breakdown;
+          changed = true;
+        }
+      } else {
+        if (a.status !== 'disorganized') {
+          a.status = 'disorganized';
+          changed = true;
+        }
+      }
+    });
+
     const hasSchool = this.data.coverTopicAudits.some(a => a && a.topic && (a.topic.toLowerCase().includes('school') || a.topic.toLowerCase().includes('iep')));
     if (!hasSchool) {
       this.data.coverTopicAudits.push({
@@ -1739,6 +1760,10 @@ class StorageManager {
         tools: ['Apple notes', 'Google Drive', 'emails', 'Things 3'],
         status: 'streamlined'
       });
+      changed = true;
+    }
+
+    if (changed) {
       this.saveData();
     }
     return this.data.coverTopicAudits;
