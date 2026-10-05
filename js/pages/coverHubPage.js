@@ -256,26 +256,31 @@ function renderCoverHubPage() {
           <div class="campaigns-tier-title">High-Stakes Campaigns</div>
 
           <div class="campaigns-grid-2x2">
-            <!-- 1. School Admissions -->
+            <!-- 1. School Admissions & OOD Placement -->
             <div class="campaign-sample-card">
               <div class="sample-card-top">
-                <h4 class="sample-domain-title">School Admissions &amp; OOD Placement</h4>
-                <span class="sample-phase-pill pill-phase-2">Phase 2</span>
+                <h4 class="sample-domain-title">Z: School Admissions &amp; OOD Placement</h4>
+                <span class="sample-phase-pill pill-phase-2" title="Phase 2: School Selection &amp; Tours">Phase 2: Selection</span>
               </div>
               <div class="sample-strike-line" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Click to copy strike to Things 3">
-                <span class="strike-prefix">next action in Things 3:</span>
+                <span class="strike-prefix">next in Things 3:</span>
                 <span class="strike-action">📞 Call Windsor admissions re: tour</span>
               </div>
+              <div class="sample-strike-line" onclick="copyThingsStrike('📄 Request police incident report from precinct')" title="Click to copy strike to Things 3" style="margin-top: -3px;">
+                <span class="strike-prefix">parallel strike:</span>
+                <span class="strike-action">📄 Request police incident report</span>
+              </div>
               <div class="sample-card-bottom">
-                <div class="sample-radar-pill">
+                <div class="sample-radar-pill" title="Waiting on tour confirmation from Windsor admissions">
                   <span class="radar-dot"></span>
                   <span class="radar-label">waiting-on radar</span>
-                  <span class="radar-sub-date">Oct 8</span>
+                  <span class="radar-sub-date">Oct 8 &bull; Windsor Tour</span>
                 </div>
                 <div class="sample-launchers-group">
                   <button type="button" class="sample-launch-btn" onclick="copyAppleNoteLauncher('# SCHOOL 01_BATTLE PLAN')" title="Copy Apple Note title">Apple Note</button>
                   <button type="button" class="sample-launch-btn" onclick="openDriveFolder('Z Records')" title="Open Google Drive folder">Google Drive</button>
                   <button type="button" class="sample-launch-btn" onclick="openGmailLabel('OOD-Placement')" title="Open Gmail label">Gmail</button>
+                  <button type="button" class="sample-roadmap-trigger" onclick="openSchoolBattlePlanModal()" title="View complete step-by-step roadmap">🗺️ Roadmap</button>
                 </div>
               </div>
             </div>
@@ -415,23 +420,26 @@ function renderCoverHubPage() {
                       <span class="domain-status-tag status-active">Active Campaign</span>
                     </td>
                     <td class="col-content-cell cell-margo">
-                      <div class="cell-main-highlight">Radar Card: Phase 2 (Tours)</div>
-                      <div class="cell-desc-text">Waiting-On tracker, Direct links to Notes &amp; Drive</div>
+                      <div class="cell-main-highlight">Radar Card: Phase 2 (Selection &amp; Tours)</div>
+                      <div class="cell-desc-text">Waiting-On radar (Windsor Oct 8, Packet Oct 10)</div>
+                      <div class="cell-desc-sub muted" style="margin-top: 3px;">🌱 Z Hub: Behavior Log + Daily Report PDFs</div>
                     </td>
                     <td class="col-content-cell cell-notes">
                       <code class="note-code-badge"># SCHOOL 01_BATTLE PLAN</code>
-                      <div class="cell-desc-text">School profiles, intake notes, incident timeline</div>
+                      <div class="cell-desc-text">School profiles, visit checklists, raw meeting thoughts, non-compliance log</div>
                     </td>
                     <td class="col-content-cell cell-drive">
                       <div class="cell-main-highlight">📁 Z Records:</div>
-                      <div class="cell-desc-text">IEP PDFs, Neuropsych evals, PWNs</div>
+                      <div class="cell-desc-text">Official IEP PDFs, Neuropsych evals, PWNs, Police incident reports</div>
                     </td>
                     <td class="col-content-cell cell-things">
                       <div class="cell-main-highlight">📞 Call Windsor admissions re: tour</div>
-                      <div class="cell-desc-sub muted">(Max 1 active task)</div>
+                      <div class="cell-desc-text" style="color: #C26344; font-weight: 600;">📄 Request police incident report</div>
+                      <div class="cell-desc-sub muted">(Max 1–2 active strikes)</div>
                     </td>
                     <td class="col-content-cell cell-gmail">
                       <span class="gmail-label-pill">Label: OOD-Placement</span>
+                      <div class="cell-desc-sub muted" style="margin-top: 3px;">Auto-filed district &amp; school correspondence</div>
                     </td>
                   </tr>
 
@@ -871,4 +879,209 @@ function jumpToHaircareCheckpoint() {
   }, 120);
 }
 window.jumpToHaircareCheckpoint = jumpToHaircareCheckpoint;
+
+/* --------------------------------------------------------------------------
+   School Admissions & OOD Placement Battle Plan Modal & Setup Helpers
+   -------------------------------------------------------------------------- */
+function jumpToZHubDailyLogs() {
+  closeAllModals();
+  if (typeof switchDomain === 'function') {
+    switchDomain('zhub');
+  }
+  if (typeof showToast === 'function') {
+    showToast('🌱 Opened Z Hub: Behavior Logs & PDF Attachments');
+  }
+}
+window.jumpToZHubDailyLogs = jumpToZHubDailyLogs;
+
+function copySchoolBattlePlanTemplate() {
+  const template = `# 🏛️ Z: SCHOOL ADMISSIONS & OOD PLACEMENT
+*Battle Plan & Operating System*
+
+## 🎯 CURRENT STATUS
+- Phase: Phase 2 (School Selection & Admissions Tours)
+- Target: Secure admissions seat and finalize transfer
+- Parallel: Hold district accountable for IEP non-compliance & police incident
+
+## ⏳ WAITING ON RADAR
+- [ ] Windsor admissions tour date confirmation (Ping Oct 8)
+- [ ] District records transmittal packet (Ping Oct 10)
+
+## ⚡ NEXT STRIKES IN THINGS 3
+- [ ] 📞 Call Windsor admissions re: tour
+- [ ] 📄 Request copy of police incident report from precinct
+
+## 🗺️ PHASE ROADMAP
+### Phase 1: District OOD Agreement [COMPLETE ✅]
+- [x] Secured formal district consensus for out-of-district specialized placement
+
+### Phase 2: School Selection & Admissions [ACTIVE 🎯]
+- [x] Compile candidate school list (Windsor School, etc.)
+- [ ] Tour candidate schools & intake interviews
+- [ ] Submit application packet & neuropsych evaluations
+- [ ] Receive acceptance letter & seat confirmation
+
+### Phase 3: Transfer & IEP Transition [UP NEXT ⏳]
+- [ ] District-funded transportation coordination
+- [ ] Transfer IEP accommodations & therapist hours (OT/Speech)
+- [ ] First day orientation & student transition
+
+### Phase 4: District Accountability & Police Incident [PARALLEL ⚖️]
+- [ ] Obtain police incident report from precinct
+- [ ] Document non-compliance timeline vs PWN records
+- [ ] Formal district follow-through
+
+## 📁 EVIDENCE & RECORDS (Google Drive)
+- Folder: Z Records / IEP Docs
+- Files: Neuropsych eval, Signed IEPs, Prior Written Notices (PWNs), Incident records`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(template).then(() => {
+      if (typeof showToast === 'function') {
+        showToast('📋 Copied Battle Plan Template to clipboard!');
+      }
+    }).catch(() => {
+      if (typeof showToast === 'function') showToast('Template copied');
+    });
+  } else if (typeof showToast === 'function') {
+    showToast('Template copied');
+  }
+}
+window.copySchoolBattlePlanTemplate = copySchoolBattlePlanTemplate;
+
+function openSchoolBattlePlanModal() {
+  let modal = document.getElementById('modal-school-battleplan');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'modal-school-battleplan';
+    modal.onclick = function(e) {
+      if (e.target === this) closeAllModals();
+    };
+    modal.innerHTML = `
+      <div class="modal-card modal-school-card">
+        <div class="school-modal-header">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.25rem;">🏛️</span>
+              <h3 class="school-modal-title">Z: School Admissions &amp; OOD Placement</h3>
+            </div>
+            <span class="school-modal-sub">Multi-Phase Roadmap &bull; Tool-by-Tool Operating Blueprint</span>
+          </div>
+          <button class="icon-btn" onclick="closeAllModals()" title="Close"><i data-lucide="x"></i></button>
+        </div>
+
+        <div class="school-modal-body">
+          <!-- Current Phase Status Banner -->
+          <div class="school-phase-banner">
+            <div>
+              <span class="banner-phase-label">Current Phase: Phase 2 of 4</span>
+              <div class="banner-phase-focus">School Selection &amp; Admissions Tours</div>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+              <span style="font-size: 0.72rem; font-weight: 700; color: #2D5A3C; background: #E8F2EC; padding: 2px 8px; border-radius: 9999px;">Radar: Windsor Oct 8</span>
+              <span style="font-size: 0.68rem; color: #64748B;">Parallel: District PWN &amp; Police incident</span>
+            </div>
+          </div>
+
+          <!-- Step-by-Step Sequence -->
+          <div class="school-steps-block">
+            <div class="school-block-heading">
+              <span>📋 Ordered Milestones (Only 1–2 Active Strikes in Things 3)</span>
+            </div>
+
+            <!-- Phase 1 -->
+            <div class="school-step-card is-done">
+              <span class="step-card-status-badge status-badge-done">Phase 1 &bull; Done</span>
+              <div class="step-card-content">
+                <h5 class="step-card-title">Out-of-District (OOD) Placement Agreement</h5>
+                <p class="step-card-desc">Formal consensus secured with school district that an out-of-district specialized placement is necessary and funded.</p>
+              </div>
+            </div>
+
+            <!-- Phase 2 (Active) -->
+            <div class="school-step-card is-active">
+              <span class="step-card-status-badge status-badge-active">Phase 2 &bull; Active</span>
+              <div class="step-card-content">
+                <h5 class="step-card-title">School Selection &amp; Admissions Tours (Current Focus)</h5>
+                <p class="step-card-desc">Tour approved candidate schools (e.g. Windsor School), conduct intake interviews, and secure placement seat.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;">
+                  <span class="step-things-strike" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Copy to Things 3">
+                    ⚡ Things 3: 📞 Call Windsor admissions re: tour
+                  </span>
+                  <span class="step-things-strike" onclick="copyThingsStrike('📅 Confirm tour date with admissions team')" title="Copy to Things 3">
+                    ⚡ Things 3: 📅 Confirm tour date
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 3 -->
+            <div class="school-step-card">
+              <span class="step-card-status-badge status-badge-next">Phase 3 &bull; Up Next</span>
+              <div class="step-card-content">
+                <h5 class="step-card-title">Transfer Execution &amp; IEP Accommodation Transition</h5>
+                <p class="step-card-desc">Coordinate district transportation routes, transfer specialist service hours (OT/Speech), and schedule student transition day.</p>
+              </div>
+            </div>
+
+            <!-- Phase 4 (Parallel Track) -->
+            <div class="school-step-card is-active" style="border-left: 3px solid #C26344;">
+              <span class="step-card-status-badge status-badge-active" style="background: #2D5A3C;">Phase 4 &bull; Parallel</span>
+              <div class="step-card-content">
+                <h5 class="step-card-title">District Accountability &amp; Police Incident Documentation</h5>
+                <p class="step-card-desc">Hold district accountable for non-compliance timeline and document the police incident with precision.</p>
+                <div style="margin-top: 6px;">
+                  <span class="step-things-strike" onclick="copyThingsStrike('📄 Request copy of police incident report from precinct')" title="Copy to Things 3">
+                    ⚡ Things 3: 📄 Request police incident report from precinct
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Where Everything Lives (Tool-by-Tool Guide) -->
+          <div class="school-steps-block">
+            <div class="school-block-heading">
+              <span>🗂️ What Lives Where (Zero Duplicate Clutter)</span>
+            </div>
+            <div class="school-tools-map-grid">
+              <div class="tool-map-box">
+                <div class="tool-map-box-title">🌿 margo</div>
+                <div class="tool-map-box-desc">Cover Page Radar (10,000-ft phase horizon) + Z Hub Behavior Log (Daily PDF report attachments).</div>
+              </div>
+              <div class="tool-map-box">
+                <div class="tool-map-box-title">📝 Apple Notes</div>
+                <div class="tool-map-box-desc"><strong># SCHOOL 01_BATTLE PLAN</strong>: School profiles, live impressions, tour observations, incident notes.</div>
+              </div>
+              <div class="tool-map-box">
+                <div class="tool-map-box-title">📁 Google Drive</div>
+                <div class="tool-map-box-desc"><strong>📁 Z Records</strong>: Static evidence, signed IEP PDFs, neuropsych evaluations, police report PDFs, PWNs.</div>
+              </div>
+              <div class="tool-map-box">
+                <div class="tool-map-box-title">⚡ Things 3 &amp; ✉️ Gmail</div>
+                <div class="tool-map-box-desc"><strong>Things 3</strong>: Next 1–2 physical strikes only.<br><strong>Gmail</strong>: Label <code>OOD-Placement</code> for all school correspondence.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="school-modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="copySchoolBattlePlanTemplate()" title="Copy Markdown template for Apple Notes">
+            📋 Copy Apple Notes Battle Plan Template
+          </button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="jumpToZHubDailyLogs()">🌱 Z Hub Logs</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="closeAllModals()">Done</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  openModal('modal-school-battleplan');
+  if (window.lucide) lucide.createIcons();
+}
+window.openSchoolBattlePlanModal = openSchoolBattlePlanModal;
+
 

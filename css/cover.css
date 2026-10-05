@@ -4152,33 +4152,33 @@
   transform: translateY(-1px);
 }
 
-/* 1. Simple: Clean Slate Mist */
+/* 1. Simple: Clean Slate / Soft Sage */
 .mantra-simple {
   background: #FFFFFF;
-  color: #334155;
+  color: #2D5A3C;
   border: 1px solid #E2E8F0;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-/* 2. Visible: Ice Lavender */
+/* 2. Visible: Botanical Moss Mist */
 .mantra-visible {
-  background: #F5F3FF;
-  color: #6D28D9;
-  border: 1px solid #DDD6FE;
+  background: #F4F8F5;
+  color: #2D5A3C;
+  border: 1px solid rgba(45, 90, 60, 0.25);
 }
 
-/* 3. Next step: Royal Violet */
+/* 3. Next step: Terracotta / Warm Clay */
 .mantra-next {
-  background: #EDE9FE;
-  color: #5B21B6;
-  border: 1px solid #C4B5FD;
+  background: rgba(194, 99, 68, 0.09);
+  color: #C26344;
+  border: 1px solid rgba(194, 99, 68, 0.28);
 }
 
-/* 4. Done: Nordic Sea Glass Teal */
+/* 4. Done: Deep Forest Moss */
 .mantra-done {
-  background: #F0FDFA;
-  color: #0F766E;
-  border: 1px solid #99F6E4;
+  background: #E8F2EC;
+  color: #1C4427;
+  border: 1px solid rgba(45, 90, 60, 0.3);
 }
 
 [data-theme="dark"] .mantra-simple {
@@ -4188,31 +4188,31 @@
 }
 
 [data-theme="dark"] .mantra-visible {
-  background: rgba(109, 40, 217, 0.2);
-  color: #DDD6FE;
-  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(45, 90, 60, 0.2);
+  color: #C6D8CA;
+  border-color: rgba(61, 90, 69, 0.35);
 }
 
 [data-theme="dark"] .mantra-next {
-  background: rgba(91, 33, 182, 0.25);
-  color: #E0E7FF;
-  border-color: rgba(124, 58, 237, 0.35);
+  background: rgba(194, 99, 68, 0.2);
+  color: #FFB89E;
+  border-color: rgba(194, 99, 68, 0.38);
 }
 
 [data-theme="dark"] .mantra-done {
-  background: rgba(13, 148, 136, 0.2);
-  color: #99F6E4;
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(35, 78, 50, 0.25);
+  color: #C6D8CA;
+  border-color: rgba(61, 90, 69, 0.35);
 }
 
-/* Cover Welcome Banner — Clean White & Lavender Aura */
+/* Cover Welcome Banner — Clean White with Botanical Moss Accent */
 .cover-welcome-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   background: #FFFFFF;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid rgba(45, 90, 60, 0.18);
   border-radius: var(--radius-lg);
   padding: 18px 24px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
@@ -4220,7 +4220,7 @@
 
 [data-theme="dark"] .cover-welcome-banner {
   background: var(--bg-card);
-  border-color: rgba(139, 92, 246, 0.22);
+  border-color: rgba(61, 90, 69, 0.32);
 }
 
 .welcome-banner-left {
@@ -4260,25 +4260,25 @@
   align-items: center;
   gap: 8px;
   padding: 9px 18px;
-  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+  background: linear-gradient(135deg, #2D5A3C 0%, #1E3F2A 100%);
   color: #ffffff;
   border: none;
   border-radius: var(--radius-full);
   font-size: 0.86rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(109, 40, 217, 0.25);
+  box-shadow: 0 4px 14px rgba(45, 90, 60, 0.25);
   transition: all var(--transition-fast);
   white-space: nowrap;
 }
 
 .btn-jump-today:hover {
-  background: linear-gradient(135deg, #6D28D9 0%, #5B21B6 100%);
+  background: linear-gradient(135deg, #234E32 0%, #163221 100%);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(109, 40, 217, 0.35);
+  box-shadow: 0 6px 18px rgba(45, 90, 60, 0.35);
 }
 
-/* Top of Mind Scratchpad — Clean White & Lavender/Teal Accents */
+/* Top of Mind Scratchpad — Clean White & Moss Green / Terracotta */
 .top-mind-pads-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -4297,26 +4297,26 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
-/* NOW: Ethereal Royal Violet */
+/* NOW: Deep Moss Green */
 .pad-now {
-  border-top: 3px solid #7C3AED;
+  border-top: 3px solid #2D5A3C;
 }
 
 [data-theme="dark"] .pad-now {
-  background: rgba(109, 40, 217, 0.08);
-  border-color: rgba(139, 92, 246, 0.25);
-  border-top-color: #8B5CF6;
+  background: rgba(45, 90, 60, 0.12);
+  border-color: rgba(61, 90, 69, 0.32);
+  border-top-color: #4E8765;
 }
 
-/* LATER: Nordic Sea Glass Teal */
+/* LATER: Terracotta / Burnt Clay */
 .pad-later {
-  border-top: 3px solid #0D9488;
+  border-top: 3px solid #C26344;
 }
 
 [data-theme="dark"] .pad-later {
-  background: rgba(13, 148, 136, 0.08);
-  border-color: rgba(13, 148, 136, 0.25);
-  border-top-color: #14B8A6;
+  background: rgba(194, 99, 68, 0.14);
+  border-color: rgba(194, 99, 68, 0.38);
+  border-top-color: #C26344;
 }
 
 .pad-header {
@@ -4340,27 +4340,27 @@
 }
 
 .badge-now {
-  background: #EDE9FE;
-  color: #6D28D9;
-  border: 1px solid #DDD6FE;
+  background: #E8F2EC;
+  color: #2D5A3C;
+  border: 1px solid rgba(45, 90, 60, 0.25);
 }
 
 [data-theme="dark"] .badge-now {
-  background: rgba(124, 58, 237, 0.25);
-  color: #DDD6FE;
-  border-color: rgba(139, 92, 246, 0.4);
+  background: rgba(61, 90, 69, 0.28);
+  color: #C6D8CA;
+  border-color: rgba(61, 90, 69, 0.4);
 }
 
 .badge-later {
-  background: #CCFBF1;
-  color: #0F766E;
-  border: 1px solid #99F6E4;
+  background: rgba(194, 99, 68, 0.1);
+  color: #C26344;
+  border: 1px solid rgba(194, 99, 68, 0.3);
 }
 
 [data-theme="dark"] .badge-later {
-  background: rgba(13, 148, 136, 0.25);
-  color: #99F6E4;
-  border-color: rgba(13, 148, 136, 0.4);
+  background: rgba(194, 99, 68, 0.28);
+  color: #FFB89E;
+  border-color: #C26344;
 }
 
 .pad-subtitle {
@@ -4376,13 +4376,13 @@
 }
 
 .pad-now .pad-count-pill {
-  background: #EDE9FE;
-  color: #6D28D9;
+  background: #E8F2EC;
+  color: #2D5A3C;
 }
 
 .pad-later .pad-count-pill {
-  background: #CCFBF1;
-  color: #0F766E;
+  background: rgba(194, 99, 68, 0.1);
+  color: #C26344;
 }
 
 .pad-add-form {
@@ -4403,13 +4403,13 @@
 }
 
 .pad-now .pad-input:focus {
-  border-color: #7C3AED;
-  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.15);
+  border-color: #2D5A3C;
+  box-shadow: 0 0 0 2px rgba(45, 90, 60, 0.15);
 }
 
 .pad-later .pad-input:focus {
-  border-color: #0D9488;
-  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+  border-color: #C26344;
+  box-shadow: 0 0 0 2px rgba(194, 99, 68, 0.18);
 }
 
 .pad-add-btn {
@@ -4425,19 +4425,19 @@
 }
 
 .pad-now .pad-add-btn {
-  background: #7C3AED;
+  background: #2D5A3C;
 }
 
 .pad-now .pad-add-btn:hover {
-  background: #6D28D9;
+  background: #1C3D27;
 }
 
 .pad-later .pad-add-btn {
-  background: #0D9488;
+  background: #C26344;
 }
 
 .pad-later .pad-add-btn:hover {
-  background: #0F766E;
+  background: #A84E32;
 }
 
 .pad-items-list {
@@ -5003,8 +5003,8 @@
 .blueprint-badge {
   font-size: 0.70rem;
   font-weight: 700;
-  color: #6D28D9;
-  background: #EDE9FE;
+  color: #2D5A3C;
+  background: #E8F2EC;
   padding: 3px 9px;
   border-radius: var(--radius-full);
 }
@@ -5020,8 +5020,9 @@
 .blueprint-root-box {
   width: 100%;
   max-width: 720px;
-  background: #F8FAFC;
+  background: #FAFDFB;
   border: 1px solid #CBD5E1;
+  border-top: 3px solid #2D5A3C;
   border-radius: 10px;
   padding: 12px 18px;
   text-align: center;
@@ -5032,7 +5033,7 @@
   font-size: 0.82rem;
   font-weight: 800;
   letter-spacing: 0.04em;
-  color: #1E293B;
+  color: #2D5A3C;
   text-transform: uppercase;
 }
 
@@ -5063,13 +5064,13 @@
 .branch-vertical-stem {
   width: 2px;
   height: 14px;
-  background: #94A3B8;
+  background: #4A6B53;
 }
 
 .branch-horizontal-bar {
   width: 65%;
   height: 2px;
-  background: #94A3B8;
+  background: #4A6B53;
 }
 
 .branch-down-arrows {
@@ -5081,7 +5082,7 @@
 
 .branch-arrow {
   font-size: 9px;
-  color: #94A3B8;
+  color: #4A6B53;
   line-height: 1;
 }
 
@@ -5104,11 +5105,11 @@
 }
 
 .leaf-campaigns {
-  border-top: 3px solid #7C3AED;
+  border-top: 3px solid #C26344;
 }
 
 .leaf-protocols {
-  border-top: 3px solid #0D9488;
+  border-top: 3px solid #2D5A3C;
 }
 
 .leaf-header {
@@ -5137,7 +5138,7 @@
 
 /* ==========================================================================
    Active Campaigns & Life Architecture (White & Shadow Card from Sample)
-   Aesthetic: White & Shadow Look, Pure Crisp Aesthetics
+   Aesthetic: White & Shadow Look with Earthy Moss Green & Terracotta Accents
    ========================================================================== */
 .active-campaigns-section {
   width: 100%;
@@ -5176,9 +5177,9 @@
 
 .white-card-brand {
   font-family: var(--font-serif);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 800;
-  color: #6D28D9;
+  color: #2D5A3C;
   letter-spacing: -0.02em;
   margin-bottom: 4px;
 }
@@ -5212,8 +5213,8 @@
 }
 
 .campaign-sample-card:hover {
-  border-color: #CBD5E1;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  border-color: rgba(45, 90, 60, 0.35);
+  box-shadow: 0 4px 14px rgba(45, 90, 60, 0.08);
 }
 
 .sample-card-top {
@@ -5241,22 +5242,22 @@
 }
 
 .pill-phase-2 {
-  background: #6366F1;
+  background: #C26344;
   color: #FFFFFF;
 }
 
 .pill-phase-1 {
-  background: #7C3AED;
+  background: #D97757;
   color: #FFFFFF;
 }
 
 .pill-phase-rev {
-  background: #4F46E5;
+  background: #2D5A3C;
   color: #FFFFFF;
 }
 
 .pill-phase-zone {
-  background: #4338CA;
+  background: #3D5A45;
   color: #FFFFFF;
 }
 
@@ -5282,7 +5283,7 @@
 }
 
 .sample-strike-line:hover .strike-action {
-  color: #6D28D9;
+  color: #C26344;
 }
 
 /* Bottom Row: Radar Pill on Left, Launchers on Right */
@@ -5300,8 +5301,8 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #CCFBF1;
-  color: #0F766E;
+  background: #E8F2EC;
+  color: #2D5A3C;
   border-radius: 9999px;
   padding: 4px 10px;
   font-size: 0.72rem;
@@ -5313,7 +5314,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #0D9488;
+  background: #2D5A3C;
   display: inline-block;
 }
 
@@ -5327,8 +5328,8 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  background: #EDE9FE;
-  color: #5B21B6;
+  background: rgba(194, 99, 68, 0.1);
+  color: #C26344;
   border-radius: 9999px;
   padding: 4px 10px;
   font-size: 0.72rem;
@@ -5366,10 +5367,27 @@
 }
 
 .sample-launch-btn:hover {
-  background: #F8FAFC;
-  border-color: #94A3B8;
-  color: #0F172A;
+  background: #F4F8F5;
+  border-color: #2D5A3C;
+  color: #2D5A3C;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.sample-roadmap-trigger {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2D5A3C;
+  background: #E8F2EC;
+  border: 1px solid rgba(45, 90, 60, 0.25);
+  border-radius: 9999px;
+  padding: 3px 9px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.sample-roadmap-trigger:hover {
+  background: #2D5A3C;
+  color: #FFFFFF;
 }
 
 /* Personal Protocols 3-Col Shelf */
@@ -5419,9 +5437,9 @@
 }
 
 .protocol-sample-btn:hover {
-  background: #F1F5F9;
-  border-color: #94A3B8;
-  color: #0F172A;
+  background: #F4F8F5;
+  border-color: #2D5A3C;
+  color: #2D5A3C;
 }
 
 /* Collapsible Detailed Domain Matrix */
@@ -5449,7 +5467,7 @@
   padding: 14px 18px;
   cursor: pointer;
   user-select: none;
-  background: #F8FAFC;
+  background: #FAFDFB;
   list-style: none;
   transition: background var(--transition-fast);
 }
@@ -5459,7 +5477,7 @@
 }
 
 .domain-matrix-summary:hover {
-  background: #F1F5F9;
+  background: #F4F8F5;
 }
 
 .summary-left {
@@ -5479,8 +5497,8 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  color: #0F766E;
-  background: #CCFBF1;
+  color: #2D5A3C;
+  background: #E8F2EC;
   padding: 2px 7px;
   border-radius: var(--radius-full);
 }
@@ -5503,13 +5521,13 @@
   gap: 6px;
   font-size: 0.74rem;
   font-weight: 600;
-  color: #0F766E;
+  color: #2D5A3C;
 }
 
 .matrix-chevron {
   width: 15px;
   height: 15px;
-  color: #0F766E;
+  color: #2D5A3C;
   transition: transform 0.22s ease;
 }
 
@@ -5550,8 +5568,8 @@
 }
 
 .pill-margo {
-  background: #CCFBF1;
-  color: #0F766E;
+  background: #E8F2EC;
+  color: #2D5A3C;
 }
 
 .pill-notes {
@@ -5567,9 +5585,9 @@
 }
 
 .pill-things {
-  background: #EDE9FE;
-  color: #6D28D9;
-  border: 1px solid #DDD6FE;
+  background: rgba(194, 99, 68, 0.1);
+  color: #C26344;
+  border: 1px solid rgba(194, 99, 68, 0.28);
 }
 
 .pill-gmail {
@@ -5611,8 +5629,8 @@
 }
 
 .status-active {
-  background: #CCFBF1;
-  color: #0F766E;
+  background: #E8F2EC;
+  color: #2D5A3C;
 }
 
 .status-pending {
@@ -5621,7 +5639,7 @@
 }
 
 .row-populated {
-  background: #F0FDFA;
+  background: #F4F8F5;
 }
 
 .cell-main-highlight {
@@ -5646,8 +5664,8 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.73rem;
   font-weight: 600;
-  color: #6D28D9;
-  background: #EDE9FE;
+  color: #2D5A3C;
+  background: #E8F2EC;
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -5665,6 +5683,216 @@
   text-align: center;
   color: #94A3B8;
   font-size: 0.95rem;
+}
+
+/* School Battle Plan Modal Styles */
+.modal-school-card {
+  max-width: 660px !important;
+  background: #FFFFFF !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.school-modal-header {
+  padding: 20px 24px 16px;
+  background: linear-gradient(135deg, #FAFDFB 0%, #FFFFFF 100%);
+  border-bottom: 1px solid #E2E8F0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.school-modal-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.school-modal-sub {
+  font-size: 0.78rem;
+  color: #64748B;
+  display: block;
+  margin-top: 3px;
+}
+
+.school-modal-body {
+  padding: 20px 24px;
+  max-height: 72vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.school-phase-banner {
+  background: rgba(194, 99, 68, 0.08);
+  border: 1px solid rgba(194, 99, 68, 0.28);
+  border-left: 4px solid #C26344;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.banner-phase-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #C26344;
+}
+
+.banner-phase-focus {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #1E293B;
+  margin-top: 2px;
+}
+
+.school-steps-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.school-block-heading {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #2D5A3C;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.school-step-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.school-step-card.is-active {
+  border-color: #C26344;
+  background: rgba(194, 99, 68, 0.02);
+  box-shadow: 0 2px 8px rgba(194, 99, 68, 0.08);
+}
+
+.school-step-card.is-done {
+  border-color: #CBD5E1;
+  background: #F8FAFC;
+  opacity: 0.85;
+}
+
+.step-card-status-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.status-badge-active {
+  background: #C26344;
+  color: #FFFFFF;
+}
+
+.status-badge-done {
+  background: #E2E8F0;
+  color: #475569;
+}
+
+.status-badge-next {
+  background: #F1F5F9;
+  color: #64748B;
+}
+
+.step-card-content {
+  flex: 1;
+}
+
+.step-card-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.step-card-desc {
+  font-size: 0.76rem;
+  color: #475569;
+  margin: 3px 0 0;
+  line-height: 1.35;
+}
+
+.step-things-strike {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #C26344;
+  background: rgba(194, 99, 68, 0.1);
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.step-things-strike:hover {
+  background: #C26344;
+  color: #FFFFFF;
+}
+
+.school-tools-map-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.tool-map-box {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.tool-map-box-title {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.tool-map-box-desc {
+  font-size: 0.72rem;
+  color: #64748B;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+.school-modal-footer {
+  padding: 14px 24px;
+  background: #FAFDFB;
+  border-top: 1px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 /* Dark Mode Overrides */
