@@ -182,334 +182,245 @@ function renderCoverHubPage() {
 
       <!-- 3. Active Campaigns & Life Architecture Dashboard + Collapsed Domain Matrix -->
       <div class="cover-card active-campaigns-dashboard" id="section-active-campaigns">
-        <div class="card-title-row">
-          <div class="title-with-desc">
-            <div class="campaigns-badge-row">
-              <span class="campaigns-eyebrow"><i data-lucide="compass" style="width: 14px; height: 14px;"></i> EXECUTIVE COMMAND CENTER</span>
-              <span class="campaigns-count-badge">7 Domains Mapped</span>
+        <!-- Calm, Minimalist Header -->
+        <div class="campaigns-header-row">
+          <div class="campaigns-header-left">
+            <div class="campaigns-eyebrow-row">
+              <span class="campaigns-pill-tag">Compass</span>
+              <span class="campaigns-count-tag">7 Domains Mapped</span>
             </div>
-            <h3 class="campaigns-main-title">Active Campaigns &amp; Life Architecture</h3>
-            <span class="card-sub-muted">Executive 10,000-ft visibility &bull; One home for each stream &bull; Zero fragmented friction</span>
+            <h3 class="campaigns-title">Active Campaigns &amp; Life Architecture</h3>
+            <span class="campaigns-sub">Executive 10,000-ft visibility &bull; One calm home for every stream</span>
           </div>
         </div>
 
-        <!-- Tier 1: High-Stakes Campaigns -->
-        <div class="campaigns-tier-header">
-          <div class="tier-indicator tier-high-stakes">
-            <span class="tier-symbol">🏛️</span>
-            <div>
-              <h4 class="tier-title">High-Stakes Campaigns</h4>
-              <span class="tier-subtitle">Active execution, waiting-on radar, and single-strike momentum</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="campaigns-cards-grid">
+        <!-- 4 High-Stakes Campaigns (Airy 1-Column Cards) -->
+        <div class="campaigns-stack">
           <!-- Card 1: School Admissions -->
           <div class="campaign-card" id="card-campaign-school">
-            <div class="campaign-card-header">
-              <div class="campaign-card-domain">
-                <span class="campaign-icon">🏫</span>
+            <div class="campaign-top">
+              <div class="campaign-title-group">
+                <span class="campaign-emoji">🏫</span>
                 <div>
-                  <h5 class="campaign-name">Z: School Admissions &amp; OOD Placement</h5>
-                  <span class="campaign-target-meta">Out-of-District Search &amp; Placement</span>
+                  <h4 class="campaign-heading">Z: School Admissions &amp; OOD Placement</h4>
+                  <span class="campaign-sub-meta">Out-of-District Search &amp; Placement</span>
                 </div>
               </div>
               <span class="campaign-phase-pill phase-school">Phase 2: Tours &amp; Intake</span>
             </div>
 
-            <div class="campaign-card-body">
-              <div class="campaign-strike-box" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Click to copy strike to clipboard">
-                <div class="strike-box-label">
-                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
-                  <span class="strike-sub-hint">Max 1 physical move</span>
-                </div>
-                <div class="strike-box-content">
-                  <span class="strike-text">📞 Call Windsor admissions re: tour</span>
-                  <i data-lucide="copy" class="strike-copy-icon"></i>
-                </div>
+            <!-- Single Active Strike -->
+            <div class="campaign-strike-row" onclick="copyThingsStrike('📞 Call Windsor admissions re: tour')" title="Click to copy strike to clipboard">
+              <div class="strike-left">
+                <span class="strike-pill">⚡ Things 3</span>
+                <span class="strike-title">📞 Call Windsor admissions re: tour</span>
               </div>
+              <i data-lucide="copy" class="strike-icon"></i>
+            </div>
 
-              <div class="campaign-radar-box">
-                <div class="radar-box-header">
-                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> WAITING-ON RADAR</span>
-                  <span class="radar-tag-date">Follow-up: Oct 8</span>
-                </div>
-                <p class="radar-box-content">
-                  Waiting on Dr. K for updated neuropsych addendum &amp; PWN packet.
-                </p>
+            <!-- Waiting-On Radar -->
+            <div class="campaign-radar-row">
+              <div class="radar-left">
+                <span class="radar-pill">⏳ Waiting-On</span>
+                <span class="radar-desc">Waiting on Dr. K for updated neuropsych addendum &amp; PWN packet</span>
               </div>
+              <span class="radar-date-pill">Follow-up: Oct 8</span>
+            </div>
 
-              <div class="campaign-launchers-strip">
-                <span class="launchers-label">🔗 Quick Launchers:</span>
-                <div class="launchers-buttons">
-                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# SCHOOL 01_BATTLE PLAN')" title="Copy Apple Note title to search/open">
-                    <span class="btn-icon">📝</span>
-                    <span class="btn-text"># SCHOOL 01_BATTLE PLAN</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-drive" onclick="openDriveFolder('Z Records')" title="Open Google Drive folder">
-                    <span class="btn-icon">📁</span>
-                    <span class="btn-text">📁 Z Records (PWNs, IEPs)</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-gmail" onclick="openGmailLabel('OOD-Placement')" title="Open Gmail label">
-                    <span class="btn-icon">✉️</span>
-                    <span class="btn-text">Label: OOD-Placement</span>
-                  </button>
-                </div>
+            <!-- Quick Launchers -->
+            <div class="campaign-launchers-row">
+              <span class="launchers-label">Launchers:</span>
+              <div class="launchers-group">
+                <button type="button" class="launcher-pill launcher-notes" onclick="copyAppleNoteLauncher('# SCHOOL 01_BATTLE PLAN')" title="Copy Apple Note title">
+                  <span>📝 # SCHOOL 01_BATTLE PLAN</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-drive" onclick="openDriveFolder('Z Records')" title="Open Google Drive folder">
+                  <span>📁 Z Records (PWNs, IEPs)</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-gmail" onclick="openGmailLabel('OOD-Placement')" title="Open Gmail label">
+                  <span>✉️ Label: OOD-Placement</span>
+                </button>
               </div>
             </div>
           </div>
 
           <!-- Card 2: Out-of-Network Claims -->
           <div class="campaign-card" id="card-campaign-claims">
-            <div class="campaign-card-header">
-              <div class="campaign-card-domain">
-                <span class="campaign-icon">⚖️</span>
+            <div class="campaign-top">
+              <div class="campaign-title-group">
+                <span class="campaign-emoji">⚖️</span>
                 <div>
-                  <h5 class="campaign-name">Out-of-Network Insurance Claims</h5>
-                  <span class="campaign-target-meta">Superbills, Reimbursements &amp; Included Health</span>
+                  <h4 class="campaign-heading">Out-of-Network Insurance Claims</h4>
+                  <span class="campaign-sub-meta">Superbills, Reimbursements &amp; Included Health</span>
                 </div>
               </div>
               <span class="campaign-phase-pill phase-claims">Phase 1: Claim Filing</span>
             </div>
 
-            <div class="campaign-card-body">
-              <div class="campaign-strike-box" onclick="copyThingsStrike('📄 Upload superbills for Sept sessions')" title="Click to copy strike to clipboard">
-                <div class="strike-box-label">
-                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
-                  <span class="strike-sub-hint">Max 1 physical move</span>
-                </div>
-                <div class="strike-box-content">
-                  <span class="strike-text">📄 Upload superbills for Sept sessions</span>
-                  <i data-lucide="copy" class="strike-copy-icon"></i>
-                </div>
+            <div class="campaign-strike-row" onclick="copyThingsStrike('📄 Upload superbills for Sept sessions')" title="Click to copy strike to clipboard">
+              <div class="strike-left">
+                <span class="strike-pill">⚡ Things 3</span>
+                <span class="strike-title">📄 Upload superbills for Sept sessions</span>
               </div>
+              <i data-lucide="copy" class="strike-icon"></i>
+            </div>
 
-              <div class="campaign-radar-box">
-                <div class="radar-box-header">
-                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> WAITING-ON RADAR</span>
-                  <span class="radar-tag-date">Follow-up: Oct 12</span>
-                </div>
-                <p class="radar-box-content">
-                  Waiting on Aetna for claim #8921 adjudication &amp; check issuance.
-                </p>
+            <div class="campaign-radar-row">
+              <div class="radar-left">
+                <span class="radar-pill">⏳ Waiting-On</span>
+                <span class="radar-desc">Waiting on Aetna for claim #8921 adjudication &amp; check issuance</span>
               </div>
+              <span class="radar-date-pill">Follow-up: Oct 12</span>
+            </div>
 
-              <div class="campaign-launchers-strip">
-                <span class="launchers-label">🔗 Quick Launchers:</span>
-                <div class="launchers-buttons">
-                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# CLAIMS 01_TRACKER')" title="Copy Apple Note title">
-                    <span class="btn-icon">📝</span>
-                    <span class="btn-text"># CLAIMS 01_TRACKER</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-drive" onclick="openDriveFolder('Superbills & EOBs')" title="Open Google Drive folder">
-                    <span class="btn-icon">📁</span>
-                    <span class="btn-text">📁 Superbills &amp; EOBs</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-gmail" onclick="openGmailLabel('OON-Claims')" title="Open Gmail label">
-                    <span class="btn-icon">✉️</span>
-                    <span class="btn-text">Label: OON-Claims</span>
-                  </button>
-                </div>
+            <div class="campaign-launchers-row">
+              <span class="launchers-label">Launchers:</span>
+              <div class="launchers-group">
+                <button type="button" class="launcher-pill launcher-notes" onclick="copyAppleNoteLauncher('# CLAIMS 01_TRACKER')" title="Copy Apple Note title">
+                  <span>📝 # CLAIMS 01_TRACKER</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-drive" onclick="openDriveFolder('Superbills & EOBs')" title="Open Google Drive folder">
+                  <span>📁 Superbills &amp; EOBs</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-gmail" onclick="openGmailLabel('OON-Claims')" title="Open Gmail label">
+                  <span>✉️ Label: OON-Claims</span>
+                </button>
               </div>
             </div>
           </div>
 
           <!-- Card 3: Personal Finance -->
           <div class="campaign-card" id="card-campaign-finance">
-            <div class="campaign-card-header">
-              <div class="campaign-card-domain">
-                <span class="campaign-icon">💳</span>
+            <div class="campaign-top">
+              <div class="campaign-title-group">
+                <span class="campaign-emoji">💳</span>
                 <div>
-                  <h5 class="campaign-name">Personal Finance &amp; Tax Prep</h5>
-                  <span class="campaign-target-meta">Cashflow Burn, Invoicing &amp; Quarterly Taxes</span>
+                  <h4 class="campaign-heading">Personal Finance &amp; Tax Prep</h4>
+                  <span class="campaign-sub-meta">Cashflow Burn, Invoicing &amp; Quarterly Taxes</span>
                 </div>
               </div>
               <span class="campaign-phase-pill phase-finance">Quarterly Review</span>
             </div>
 
-            <div class="campaign-card-body">
-              <div class="campaign-strike-box" onclick="copyThingsStrike('📊 Categorize Sept business & personal expenses')" title="Click to copy strike to clipboard">
-                <div class="strike-box-label">
-                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
-                  <span class="strike-sub-hint">Max 1 physical move</span>
-                </div>
-                <div class="strike-box-content">
-                  <span class="strike-text">📊 Categorize Sept business &amp; personal expenses</span>
-                  <i data-lucide="copy" class="strike-copy-icon"></i>
-                </div>
+            <div class="campaign-strike-row" onclick="copyThingsStrike('📊 Categorize Sept business & personal expenses')" title="Click to copy strike to clipboard">
+              <div class="strike-left">
+                <span class="strike-pill">⚡ Things 3</span>
+                <span class="strike-title">📊 Categorize Sept business &amp; personal expenses</span>
               </div>
+              <i data-lucide="copy" class="strike-icon"></i>
+            </div>
 
-              <div class="campaign-radar-box">
-                <div class="radar-box-header">
-                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> WAITING-ON RADAR</span>
-                  <span class="radar-tag-date">Pending Response</span>
-                </div>
-                <p class="radar-box-content">
-                  Waiting on CPA for Q3 estimated tax voucher &amp; payroll reconciliation.
-                </p>
+            <div class="campaign-radar-row">
+              <div class="radar-left">
+                <span class="radar-pill">⏳ Waiting-On</span>
+                <span class="radar-desc">Waiting on CPA for Q3 estimated tax voucher &amp; payroll reconciliation</span>
               </div>
+              <span class="radar-date-pill">Pending Response</span>
+            </div>
 
-              <div class="campaign-launchers-strip">
-                <span class="launchers-label">🔗 Quick Launchers:</span>
-                <div class="launchers-buttons">
-                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# FINANCE 01_OVERVIEW')" title="Copy Apple Note title">
-                    <span class="btn-icon">📝</span>
-                    <span class="btn-text"># FINANCE 01_OVERVIEW</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-drive" onclick="openDriveFolder('Tax Docs 2026')" title="Open Google Drive folder">
-                    <span class="btn-icon">📁</span>
-                    <span class="btn-text">📁 Tax Docs 2026</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-sheet" onclick="openDriveFolder('Cashflow Master')" title="Open Spreadsheet">
-                    <span class="btn-icon">📊</span>
-                    <span class="btn-text">📊 Cashflow Master</span>
-                  </button>
-                </div>
+            <div class="campaign-launchers-row">
+              <span class="launchers-label">Launchers:</span>
+              <div class="launchers-group">
+                <button type="button" class="launcher-pill launcher-notes" onclick="copyAppleNoteLauncher('# FINANCE 01_OVERVIEW')" title="Copy Apple Note title">
+                  <span>📝 # FINANCE 01_OVERVIEW</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-drive" onclick="openDriveFolder('Tax Docs 2026')" title="Open Google Drive folder">
+                  <span>📁 Tax Docs 2026</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-sheet" onclick="openDriveFolder('Cashflow Master')" title="Open Spreadsheet">
+                  <span>📊 Cashflow Master</span>
+                </button>
               </div>
             </div>
           </div>
 
           <!-- Card 4: Home Decluttering -->
           <div class="campaign-card" id="card-campaign-home">
-            <div class="campaign-card-header">
-              <div class="campaign-card-domain">
-                <span class="campaign-icon">📦</span>
+            <div class="campaign-top">
+              <div class="campaign-title-group">
+                <span class="campaign-emoji">📦</span>
                 <div>
-                  <h5 class="campaign-name">Home Decluttering &amp; Zone Reset</h5>
-                  <span class="campaign-target-meta">Orderly Environment &bull; 1 Zone at a Time</span>
+                  <h4 class="campaign-heading">Home Decluttering &amp; Zone Reset</h4>
+                  <span class="campaign-sub-meta">Orderly Environment &bull; 1 Zone at a Time</span>
                 </div>
               </div>
               <span class="campaign-phase-pill phase-home">Zone 2: Primary Closet</span>
             </div>
 
-            <div class="campaign-card-body">
-              <div class="campaign-strike-box" onclick="copyThingsStrike('📦 Bag 5 donation items from top shelf')" title="Click to copy strike to clipboard">
-                <div class="strike-box-label">
-                  <span class="strike-tag-badge">⚡ ACTIVE STRIKE (THINGS 3)</span>
-                  <span class="strike-sub-hint">Max 1 physical move</span>
-                </div>
-                <div class="strike-box-content">
-                  <span class="strike-text">📦 Bag 5 donation items from top shelf</span>
-                  <i data-lucide="copy" class="strike-copy-icon"></i>
-                </div>
+            <div class="campaign-strike-row" onclick="copyThingsStrike('📦 Bag 5 donation items from top shelf')" title="Click to copy strike to clipboard">
+              <div class="strike-left">
+                <span class="strike-pill">⚡ Things 3</span>
+                <span class="strike-title">📦 Bag 5 donation items from top shelf</span>
               </div>
+              <i data-lucide="copy" class="strike-icon"></i>
+            </div>
 
-              <div class="campaign-radar-box">
-                <div class="radar-box-header">
-                  <span class="radar-tag-badge"><i data-lucide="radar" style="width: 12px; height: 12px;"></i> RADAR STATUS</span>
-                  <span class="radar-tag-date">Zero Blockers</span>
-                </div>
-                <p class="radar-box-content">
-                  All clear &bull; Self-paced momentum &bull; Next donation run scheduled Oct 15.
-                </p>
+            <div class="campaign-radar-row">
+              <div class="radar-left">
+                <span class="radar-pill">⏳ Radar</span>
+                <span class="radar-desc">All clear &bull; Self-paced &bull; Next donation pickup Oct 15</span>
               </div>
+              <span class="radar-date-pill">Zero Blockers</span>
+            </div>
 
-              <div class="campaign-launchers-strip">
-                <span class="launchers-label">🔗 Quick Launchers:</span>
-                <div class="launchers-buttons">
-                  <button type="button" class="launcher-btn launcher-notes" onclick="copyAppleNoteLauncher('# HOME 01_ZONES')" title="Copy Apple Note title">
-                    <span class="btn-icon">📝</span>
-                    <span class="btn-text"># HOME 01_ZONES</span>
-                  </button>
-                  <button type="button" class="launcher-btn launcher-photos" onclick="copyAppleNoteLauncher('# HOME 01_PHOTOS')" title="Photo Tracker">
-                    <span class="btn-icon">📷</span>
-                    <span class="btn-text">📷 Before &amp; After Album</span>
-                  </button>
-                </div>
+            <div class="campaign-launchers-row">
+              <span class="launchers-label">Launchers:</span>
+              <div class="launchers-group">
+                <button type="button" class="launcher-pill launcher-notes" onclick="copyAppleNoteLauncher('# HOME 01_ZONES')" title="Copy Apple Note title">
+                  <span>📝 # HOME 01_ZONES</span>
+                </button>
+                <button type="button" class="launcher-pill launcher-photos" onclick="copyAppleNoteLauncher('# HOME 01_PHOTOS')" title="Photo Tracker">
+                  <span>📷 Before &amp; After Album</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Tier 2: Personal Protocols -->
-        <div class="campaigns-tier-header" style="margin-top: 24px;">
-          <div class="tier-indicator tier-protocols">
-            <span class="tier-symbol">🌿</span>
-            <div>
-              <h4 class="tier-title">Personal Protocols (Maintenance &amp; Flow)</h4>
-              <span class="tier-subtitle">Daily rituals &amp; wardrobe rotations &bull; Kept separate to preserve focus</span>
-            </div>
-          </div>
+        <!-- Personal Protocols (Serene 3-Col Mini Row) -->
+        <div class="protocols-shelf-header">
+          <span class="shelf-pill-label">Personal Protocols</span>
+          <span class="shelf-sub-label">Maintenance rituals kept light &amp; separate</span>
         </div>
 
-        <div class="protocols-grid">
-          <!-- Protocol 1: Skincare -->
-          <div class="protocol-card">
-            <div class="protocol-card-header">
-              <span class="protocol-icon">🧴</span>
+        <div class="protocols-shelf-row">
+          <div class="protocol-mini-card">
+            <div class="protocol-mini-top">
+              <span class="protocol-mini-icon">🧴</span>
               <div>
-                <h5 class="protocol-name">Skincare Routine</h5>
-                <span class="protocol-current">Evening Barrier Repair Protocol</span>
+                <span class="protocol-mini-title">Skincare Routine</span>
+                <span class="protocol-mini-sub">Barrier Repair</span>
               </div>
             </div>
-            <div class="protocol-details">
-              <div class="protocol-meta-item">
-                <span class="meta-label">Anchor:</span>
-                <span class="meta-val">Daily Checkpoint #2 (Vitality)</span>
-              </div>
-              <div class="protocol-meta-item">
-                <span class="meta-label">Next Refill:</span>
-                <span class="meta-val">Ceramide Barrier Cream (~2 wks)</span>
-              </div>
-            </div>
-            <div class="protocol-action-row">
-              <button type="button" class="protocol-btn" onclick="copyAppleNoteLauncher('# BEAUTY 01_SKINCARE')">
-                <span>📝 Open Skincare Protocol</span>
-              </button>
-            </div>
+            <button type="button" class="protocol-mini-btn" onclick="copyAppleNoteLauncher('# BEAUTY 01_SKINCARE')">
+              <span>📝 Open Protocol</span>
+            </button>
           </div>
 
-          <!-- Protocol 2: Haircare -->
-          <div class="protocol-card">
-            <div class="protocol-card-header">
-              <span class="protocol-icon">🌿</span>
+          <div class="protocol-mini-card">
+            <div class="protocol-mini-top">
+              <span class="protocol-mini-icon">🌿</span>
               <div>
-                <h5 class="protocol-name">Haircare Rituals</h5>
-                <span class="protocol-current">Scalp oiling &amp; bonding treatment</span>
+                <span class="protocol-mini-title">Haircare Rituals</span>
+                <span class="protocol-mini-sub">Oiling &amp; Bonding</span>
               </div>
             </div>
-            <div class="protocol-details">
-              <div class="protocol-meta-item">
-                <span class="meta-label">Anchor:</span>
-                <span class="meta-val">Daily Checkpoint #4 (Haircare)</span>
-              </div>
-              <div class="protocol-meta-item">
-                <span class="meta-label">Deep Mask:</span>
-                <span class="meta-val">Sunday evening ritual</span>
-              </div>
-            </div>
-            <div class="protocol-action-row">
-              <button type="button" class="protocol-btn" onclick="jumpToHaircareCheckpoint()">
-                <span>☀️ Jump to Haircare Checkpoint</span>
-              </button>
-            </div>
+            <button type="button" class="protocol-mini-btn" onclick="jumpToHaircareCheckpoint()">
+              <span>☀️ Today's Checkpoint</span>
+            </button>
           </div>
 
-          <!-- Protocol 3: Wardrobe -->
-          <div class="protocol-card">
-            <div class="protocol-card-header">
-              <span class="protocol-icon">👗</span>
+          <div class="protocol-mini-card">
+            <div class="protocol-mini-top">
+              <span class="protocol-mini-icon">👗</span>
               <div>
-                <h5 class="protocol-name">Capsule Wardrobe</h5>
-                <span class="protocol-current">Fall Seasonal Rotation (24 pieces)</span>
+                <span class="protocol-mini-title">Capsule Wardrobe</span>
+                <span class="protocol-mini-sub">Fall Rotation (24 pcs)</span>
               </div>
             </div>
-            <div class="protocol-details">
-              <div class="protocol-meta-item">
-                <span class="meta-label">Strike:</span>
-                <span class="meta-val">Pull winter knits from storage bin</span>
-              </div>
-              <div class="protocol-meta-item">
-                <span class="meta-label">Lookbook:</span>
-                <span class="meta-val">12 core outfits documented</span>
-              </div>
-            </div>
-            <div class="protocol-action-row">
-              <button type="button" class="protocol-btn" onclick="copyAppleNoteLauncher('# STYLE 01_CAPSULE')">
-                <span>📝 View Lookbook Note</span>
-              </button>
-            </div>
+            <button type="button" class="protocol-mini-btn" onclick="copyAppleNoteLauncher('# STYLE 01_CAPSULE')">
+              <span>📝 View Lookbook</span>
+            </button>
           </div>
         </div>
 
