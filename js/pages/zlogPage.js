@@ -39,10 +39,20 @@ let zlogCalendarYear = (() => {
 })();
 let zlogCalendarMonth = (() => {
   try {
+    const now = new Date();
+    const currentM = now.getMonth() + 1;
+    const currentY = now.getFullYear();
+    const savedY = parseInt(localStorage.getItem('BOL_ZLOG_CAL_YEAR'), 10);
     const savedM = parseInt(localStorage.getItem('BOL_ZLOG_CAL_MONTH'), 10);
-    if (!isNaN(savedM) && savedM >= 1 && savedM <= 12) return savedM;
+    // If the saved month/year is in the past compared to current date, default to current month
+    if (!isNaN(savedM) && savedM >= 1 && savedM <= 12) {
+      if (!savedY || savedY < currentY || (savedY === currentY && savedM < currentM)) {
+        return currentM;
+      }
+      return savedM;
+    }
   } catch (e) {}
-  return (typeof new Date === 'function') ? (new Date().getMonth() + 1) : 9;
+  return (typeof new Date === 'function') ? (new Date().getMonth() + 1) : 10;
 })();
 let zlogCalendarRatingFilter = (() => {
   try {
@@ -62,32 +72,33 @@ function renderZLogPage(targetSubTab) {
     activeZLogSubTab = getInitialZLogSubTab();
   }
 
-  // Unconditional auto-repair check: if storage has old seed version, < 35 titrations, old defaulted >300 good days, or missing 2026-09-19 entry
+  // Unconditional auto-repair check: if storage has old seed version, < 35 titrations, old defaulted >300 good days, or missing October 2026 entries
   const currentStats = storage.getZLogStats();
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
-    storage.data.zlogSeedVersion < 6 ||
+    storage.data.zlogSeedVersion < 9 ||
     !storage.data.titrationSeedVersion ||
     storage.data.titrationSeedVersion < 7 ||
     currentTitration.length < 35 ||
     !hasTit35 ||
     currentStats.goodDays > 300 ||
     !storage.data.zlogEntries ||
-    !storage.data.zlogEntries['2026-09-12'];
+    !storage.data.zlogEntries['2026-09-12'] ||
+    !storage.data.zlogEntries['2026-10-01'];
 
   if (isStaleCorrupted) {
     if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
       const cleanDefaults = { ...DEFAULT_ZLOG_ENTRIES };
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
-          if (d >= '2026-09-12' && entry && (entry.notes || entry.rating || entry.updatedAt)) {
-            cleanDefaults[d] = entry;
+          if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
+            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
         }
       }
       storage.data.zlogEntries = cleanDefaults;
-      storage.data.zlogSeedVersion = 6;
+      storage.data.zlogSeedVersion = 9;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
       const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
@@ -3329,13 +3340,13 @@ function forceSyncZLogDefaults() {
     const cleanDefaults = { ...DEFAULT_ZLOG_ENTRIES };
     if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
       for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
-        if (d >= '2026-09-12' && entry && (entry.notes || entry.rating || entry.updatedAt)) {
-          cleanDefaults[d] = entry;
+        if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
+          cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
         }
       }
     }
     storage.data.zlogEntries = cleanDefaults;
-    storage.data.zlogSeedVersion = 6;
+    storage.data.zlogSeedVersion = 9;
   }
   if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
     storage.data.titrationHistory = JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY));

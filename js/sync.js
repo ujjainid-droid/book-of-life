@@ -278,27 +278,24 @@ class SyncManager {
     // 10. Z Log and Titration Seeds
     let mergedZLog = incoming.zlogEntries;
     let mergedZLogVersion = incoming.zlogSeedVersion;
-    if (!mergedZLogVersion || mergedZLogVersion < 8 || !mergedZLog || !mergedZLog['2026-09-12']) {
+    if (!mergedZLogVersion || mergedZLogVersion < 9 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-01']) {
       const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
       if (mergedZLog && typeof mergedZLog === 'object') {
         for (const [d, entry] of Object.entries(mergedZLog)) {
-          if (d > '2026-09-12' && entry && entry.updatedAt) {
-            cleanDefaults[d] = entry;
+          if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
+            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
         }
       }
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
-          if (d > '2026-09-12' && entry && entry.updatedAt) {
-            cleanDefaults[d] = entry;
+          if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
+            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
         }
       }
-      if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined' && DEFAULT_ZLOG_ENTRIES['2026-09-12']) {
-        cleanDefaults['2026-09-12'] = { ...DEFAULT_ZLOG_ENTRIES['2026-09-12'], updatedAt: new Date().toISOString() };
-      }
       mergedZLog = cleanDefaults;
-      mergedZLogVersion = 8;
+      mergedZLogVersion = 9;
       localWasRicher = true;
     }
 

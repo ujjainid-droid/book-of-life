@@ -650,29 +650,26 @@ class StorageManager {
       });
 
       // Initialize Z Log entries & Titration
-      const hasStaleFutureEntries = merged.zlogEntries && (merged.zlogEntries['2026-12-22'] || merged.zlogEntries['2026-10-01'] || merged.zlogEntries['2026-11-15']);
       const needsEnrichedSeed = !merged.zlogEntries || 
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
-        hasStaleFutureEntries ||
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 8 ||
-        !merged.zlogEntries['2026-09-12'];
+        merged.zlogSeedVersion < 9 ||
+        !merged.zlogEntries['2026-09-12'] ||
+        !merged.zlogEntries['2026-10-01'];
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
         if (merged.zlogEntries && typeof merged.zlogEntries === 'object') {
           for (const [d, entry] of Object.entries(merged.zlogEntries)) {
-            if (d > '2026-09-12' && entry && entry.updatedAt) {
-              cleanDefaults[d] = entry;
+            // Preserve all user logs, notes, ratings, attachments or updates
+            if (entry && (entry.updatedAt || (entry.notes && entry.notes.trim()) || entry.rating || (entry.attachments && entry.attachments.length))) {
+              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
             }
           }
         }
-        if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined' && DEFAULT_ZLOG_ENTRIES['2026-09-12']) {
-          cleanDefaults['2026-09-12'] = { ...DEFAULT_ZLOG_ENTRIES['2026-09-12'], updatedAt: new Date().toISOString() };
-        }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 8;
+        merged.zlogSeedVersion = 9;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);
