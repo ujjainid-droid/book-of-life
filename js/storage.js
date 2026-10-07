@@ -654,22 +654,30 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 9 ||
+        merged.zlogSeedVersion < 10 ||
         !merged.zlogEntries['2026-09-12'] ||
-        !merged.zlogEntries['2026-10-01'];
+        !merged.zlogEntries['2026-10-01'] ||
+        !merged.zlogEntries['2026-10-07'] ||
+        (merged.zlogEntries['2026-10-01'] && merged.zlogEntries['2026-10-01'].notes && merged.zlogEntries['2026-10-01'].notes.includes('Daily Overview'));
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
         if (merged.zlogEntries && typeof merged.zlogEntries === 'object') {
           for (const [d, entry] of Object.entries(merged.zlogEntries)) {
-            // Preserve all user logs, notes, ratings, attachments or updates
+            // Strip any erroneously injected teacher Daily Report text
+            if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
+              entry.notes = '';
+              entry.rating = null;
+              entry.ratingRaw = '';
+            }
+            // Preserve authentic user logs, ratings, attachments or updates
             if (entry && (entry.updatedAt || (entry.notes && entry.notes.trim()) || entry.rating || (entry.attachments && entry.attachments.length))) {
               cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
             }
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 9;
+        merged.zlogSeedVersion = 10;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);

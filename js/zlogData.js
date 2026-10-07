@@ -2682,10 +2682,10 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-09-30": {
     "date": "2026-09-30",
     "rawDate": "Wed,  9 -30- 26",
-    "rating": 3,
-    "ratingRaw": "Almost Good",
+    "rating": null,
+    "ratingRaw": "",
     "aggression": false,
-    "notes": "Daily Overview (21 Dojo Points)\nNeeded reminders to:\n- Keep a safe body at the standing desk\n- Engage in appropriate discussion w/ peers\n- Didn't stay in math class + missed small groups\n- Didn't do Social Studies activity\nNice job with:\n- Completing ELA work\n- Transitioning out of room\n- The Science activity\nTime out of instruction: 10:05-10:50 AM (Math), 12:20-12:28 PM (Reading), 1:23-1:35 PM (Special), 2:05-2:17 PM (Social Studies)",
+    "notes": "",
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2704,10 +2704,10 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-10-01": {
     "date": "2026-10-01",
     "rawDate": "Thu, 10 - 1- 26",
-    "rating": 4,
-    "ratingRaw": "Good Day",
+    "rating": null,
+    "ratingRaw": "",
     "aggression": false,
-    "notes": "Daily Overview (28 Dojo Points)\nNeeded reminders to:\n- Complete word study (refused to work, sat on carpet w/ book)\n- Use standing desk safely\nNice job with:\n- The creation of his own robot mimicry in Science\n- My think outside the box - it's not a pumpkin and my math check up :)\n- Drafting his intro in writing\nTime out of instruction: 12:30-12:35 PM (Classroom Meeting), 1:33-1:55 PM (Word Study/Special)",
+    "notes": "",
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2814,6 +2814,28 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-10-06": {
     "date": "2026-10-06",
     "rawDate": "Tue, 10 - 6- 26",
+    "rating": null,
+    "ratingRaw": "",
+    "aggression": false,
+    "notes": "",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "2mg"
+    }
+  },
+  "2026-10-07": {
+    "date": "2026-10-07",
+    "rawDate": "Wed, 10 - 7- 26",
     "rating": null,
     "ratingRaw": "",
     "aggression": false,

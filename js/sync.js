@@ -278,10 +278,15 @@ class SyncManager {
     // 10. Z Log and Titration Seeds
     let mergedZLog = incoming.zlogEntries;
     let mergedZLogVersion = incoming.zlogSeedVersion;
-    if (!mergedZLogVersion || mergedZLogVersion < 9 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-01']) {
+    if (!mergedZLogVersion || mergedZLogVersion < 10 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-01'] || !mergedZLog['2026-10-07'] || (mergedZLog['2026-10-01'] && mergedZLog['2026-10-01'].notes && mergedZLog['2026-10-01'].notes.includes('Daily Overview'))) {
       const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
       if (mergedZLog && typeof mergedZLog === 'object') {
         for (const [d, entry] of Object.entries(mergedZLog)) {
+          if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
+            entry.notes = '';
+            entry.rating = null;
+            entry.ratingRaw = '';
+          }
           if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
             cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
@@ -289,13 +294,18 @@ class SyncManager {
       }
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
+          if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
+            entry.notes = '';
+            entry.rating = null;
+            entry.ratingRaw = '';
+          }
           if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
             cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
         }
       }
       mergedZLog = cleanDefaults;
-      mergedZLogVersion = 9;
+      mergedZLogVersion = 10;
       localWasRicher = true;
     }
 

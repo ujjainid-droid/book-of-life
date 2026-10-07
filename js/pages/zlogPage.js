@@ -77,7 +77,7 @@ function renderZLogPage(targetSubTab) {
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
-    storage.data.zlogSeedVersion < 9 ||
+    storage.data.zlogSeedVersion < 10 ||
     !storage.data.titrationSeedVersion ||
     storage.data.titrationSeedVersion < 7 ||
     currentTitration.length < 35 ||
@@ -85,20 +85,28 @@ function renderZLogPage(targetSubTab) {
     currentStats.goodDays > 300 ||
     !storage.data.zlogEntries ||
     !storage.data.zlogEntries['2026-09-12'] ||
-    !storage.data.zlogEntries['2026-10-01'];
+    !storage.data.zlogEntries['2026-10-01'] ||
+    !storage.data.zlogEntries['2026-10-07'] ||
+    (storage.data.zlogEntries['2026-10-01'] && storage.data.zlogEntries['2026-10-01'].notes && storage.data.zlogEntries['2026-10-01'].notes.includes('Daily Overview'));
 
   if (isStaleCorrupted) {
     if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
       const cleanDefaults = { ...DEFAULT_ZLOG_ENTRIES };
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
+          // Strip any erroneously injected teacher Daily Report text
+          if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
+            entry.notes = '';
+            entry.rating = null;
+            entry.ratingRaw = '';
+          }
           if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
             cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
         }
       }
       storage.data.zlogEntries = cleanDefaults;
-      storage.data.zlogSeedVersion = 9;
+      storage.data.zlogSeedVersion = 10;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
       const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
