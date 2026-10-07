@@ -1729,25 +1729,28 @@
   font-weight: 700;
   padding: 2px 9px;
   border-radius: var(--radius-full);
-  background: rgba(13, 148, 136, 0.1);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.24);
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid rgba(6, 95, 70, 0.25);
 }
 
 .breadcrumbs-progress-pill.all-done {
-  background: rgba(13, 148, 136, 0.18);
-  color: #0F766E;
-  border-color: rgba(13, 148, 136, 0.38);
+  background: #065F46;
+  color: #FFFFFF;
+  border-color: #065F46;
 }
 
 [data-theme="dark"] .breadcrumbs-progress-pill {
-  background: rgba(20, 184, 166, 0.16);
-  color: #5EEAD4;
-  border-color: rgba(20, 184, 166, 0.32);
+  background: rgba(6, 95, 70, 0.2);
+  color: #A7F3D0;
+  border-color: rgba(6, 95, 70, 0.35);
 }
 
 [data-theme="dark"] .breadcrumbs-progress-pill.all-done {
-  background: rgba(20, 184, 166, 0.28);
+  background: #059669;
+  color: #FFFFFF;
+  border-color: #10B981;
+}
   color: #5EEAD4;
   border-color: rgba(20, 184, 166, 0.48);
 }
@@ -1914,35 +1917,37 @@
 
 .breadcrumb-chip:hover {
   transform: translateY(-1px);
-  border-color: #0D9488;
-  color: var(--text-primary);
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.15);
+  border-color: #065F46;
+  color: #065F46;
+  box-shadow: 0 2px 6px rgba(6, 95, 70, 0.15);
 }
 
-/* Complementary Nordic Pine / Sea Glass Teal (NO yellow, NO amber) */
+/* Complementary Alpine Spruce (100% Done) */
 .breadcrumb-chip.done {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border-color: rgba(13, 148, 136, 0.32);
+  background: #ECFDF5;
+  color: #065F46;
+  border-color: rgba(6, 95, 70, 0.35);
+  font-weight: 700;
 }
 
 [data-theme="dark"] .breadcrumb-chip.done {
-  background: rgba(20, 184, 166, 0.22);
-  color: #5EEAD4;
-  border-color: rgba(20, 184, 166, 0.42);
+  background: rgba(6, 95, 70, 0.25);
+  color: #A7F3D0;
+  border-color: rgba(6, 95, 70, 0.45);
 }
 
-/* Soft Arctic Cyan / Slate for Floor Defended (NO yellow, NO amber) */
+/* Spiced Cedar (50% Floor Defended) */
 .breadcrumb-chip.floor {
-  background: rgba(2, 132, 199, 0.1);
-  color: #0369A1;
-  border-color: rgba(2, 132, 199, 0.28);
+  background: #FFF7ED;
+  color: #C2410C;
+  border-color: rgba(194, 65, 12, 0.35);
+  font-weight: 700;
 }
 
 [data-theme="dark"] .breadcrumb-chip.floor {
-  background: rgba(56, 189, 248, 0.18);
-  color: #7DD3FC;
-  border-color: rgba(56, 189, 248, 0.38);
+  background: rgba(194, 65, 12, 0.22);
+  color: #FFD8CC;
+  border-color: rgba(194, 65, 12, 0.42);
 }
 
 .breadcrumb-chip.pending {
@@ -4099,14 +4104,15 @@
 }
 
 .header-nav-tab:hover {
-  color: var(--text-primary);
-  background: var(--bg-surface-hover);
+  color: #065F46;
+  background: rgba(6, 95, 70, 0.05);
 }
 
 .header-nav-tab.active {
   background: var(--bg-card);
-  color: #2D4736;
-  box-shadow: 0 1px 4px rgba(45, 71, 54, 0.16);
+  color: #065F46;
+  font-weight: 700;
+  box-shadow: 0 1px 6px rgba(6, 95, 70, 0.18);
 }
 
 .cover-hub-container {
@@ -4126,10 +4132,10 @@
   justify-content: space-between;
   gap: 12px;
   background: #FFFFFF;
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid rgba(6, 95, 70, 0.16);
   border-radius: var(--radius-lg);
   padding: 12px 18px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 18px rgba(6, 95, 70, 0.04);
 }
 
 .mantra-pill {
@@ -4174,11 +4180,12 @@
   border: 1px solid rgba(194, 65, 12, 0.28);
 }
 
-/* 4. Done: Deep Forest Moss */
+/* 4. Done: Alpine Spruce Emerald */
 .mantra-done {
-  background: #E8F2EC;
-  color: #1C4427;
-  border: 1px solid rgba(45, 90, 60, 0.3);
+  background: #065F46;
+  color: #FFFFFF;
+  border: 1px solid #065F46;
+  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.25);
 }
 
 [data-theme="dark"] .mantra-simple {
@@ -4188,39 +4195,41 @@
 }
 
 [data-theme="dark"] .mantra-visible {
-  background: rgba(45, 90, 60, 0.2);
-  color: #C6D8CA;
-  border-color: rgba(61, 90, 69, 0.35);
+  background: rgba(6, 95, 70, 0.2);
+  color: #A7F3D0;
+  border-color: rgba(6, 95, 70, 0.35);
 }
 
 [data-theme="dark"] .mantra-next {
-  background: rgba(194, 99, 68, 0.2);
-  color: #FFB89E;
-  border-color: rgba(194, 99, 68, 0.38);
+  background: rgba(194, 65, 12, 0.2);
+  color: #FFD8CC;
+  border-color: rgba(194, 65, 12, 0.38);
 }
 
 [data-theme="dark"] .mantra-done {
-  background: rgba(35, 78, 50, 0.25);
-  color: #C6D8CA;
-  border-color: rgba(61, 90, 69, 0.35);
+  background: #059669;
+  color: #FFFFFF;
+  border-color: #10B981;
 }
 
-/* Cover Welcome Banner — Clean White with Botanical Moss Accent */
+/* Cover Welcome Banner — Alpine Spruce Gradient & Accent Border */
 .cover-welcome-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  background: #FFFFFF;
-  border: 1px solid rgba(45, 90, 60, 0.18);
+  background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);
+  border: 1.5px solid rgba(6, 95, 70, 0.22);
+  border-left: 5px solid #065F46;
   border-radius: var(--radius-lg);
   padding: 18px 24px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 20px rgba(6, 95, 70, 0.05);
 }
 
 [data-theme="dark"] .cover-welcome-banner {
-  background: var(--bg-card);
-  border-color: rgba(61, 90, 69, 0.32);
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6, 95, 70, 0.15) 100%);
+  border-color: rgba(6, 95, 70, 0.35);
+  border-left-color: #059669;
 }
 
 .welcome-banner-left {
@@ -4236,8 +4245,20 @@
 }
 
 .greeting-symbol {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   line-height: 1;
+  background: #ECFDF5;
+  border: 1px solid rgba(6, 95, 70, 0.25);
+  border-radius: 14px;
+  padding: 8px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .greeting-symbol {
+  background: rgba(6, 95, 70, 0.3);
+  border-color: rgba(6, 95, 70, 0.45);
 }
 
 .welcome-title {
@@ -5002,9 +5023,32 @@
 
 .cover-hub-container .margo-framework-shelf,
 .cover-hub-container .habit-presets-shelf {
-  border: 1px solid rgba(61, 90, 69, 0.16);
+  border: 1px solid rgba(6, 95, 70, 0.16);
+  border-top: 3.5px solid #065F46;
   border-radius: var(--radius-lg);
-  box-shadow: 0 2px 10px rgba(45, 71, 54, 0.04);
+  box-shadow: 0 4px 18px rgba(6, 95, 70, 0.04);
+}
+
+.habit-presets-shelf .preset-pill-item:hover {
+  border-color: #065F46;
+  color: #065F46;
+  background: #F0FDF4;
+  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.12);
+}
+
+.habit-presets-shelf .preset-pill-item .preset-pill-symbol.plus {
+  color: #065F46;
+}
+
+.habit-presets-shelf .preset-pill-item.added {
+  background: #ECFDF5;
+  border: 1px solid rgba(6, 95, 70, 0.28);
+  color: #065F46;
+  font-weight: 700;
+}
+
+.habit-presets-shelf .preset-pill-item.added .preset-pill-symbol {
+  color: #065F46;
 }
 
 .presets-shelf-pills {
@@ -5042,6 +5086,7 @@
 .blueprint-map-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
+  border-top: 3.5px solid #065F46;
   border-radius: var(--radius-lg);
   padding: 20px 24px;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
@@ -5189,8 +5234,8 @@
 /* System Law Strip */
 .workflow-loop-strip {
   margin-top: 14px;
-  background: #FAFDFB;
-  border: 1px dashed rgba(6, 95, 70, 0.35);
+  background: linear-gradient(90deg, #F0FDF4 0%, #FFFFFF 50%, #FFF7ED 100%);
+  border: 1.5px dashed rgba(6, 95, 70, 0.35);
   border-radius: 12px;
   padding: 10px 16px;
   display: flex;
@@ -5211,11 +5256,12 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #065F46;
-  background: #ECFDF5;
-  padding: 3px 8px;
+  color: #FFFFFF;
+  background: #065F46;
+  padding: 3px 9px;
   border-radius: 9999px;
   white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(6, 95, 70, 0.25);
 }
 
 .loop-strip-formula {
@@ -5263,6 +5309,7 @@
 .campaigns-white-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
+  border-top: 4.5px solid #065F46;
   border-radius: 20px;
   padding: 26px 28px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.02);
@@ -5662,10 +5709,30 @@
   white-space: nowrap;
 }
 
-.btn-tier-add:hover {
+.tier-now-block .btn-tier-add {
+  background: #F0FDF4;
+  border: 1px solid rgba(6, 95, 70, 0.3);
+  color: #065F46;
+}
+
+.tier-now-block .btn-tier-add:hover {
   background: #065F46;
   color: #FFFFFF;
   border-color: #065F46;
+  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.25);
+}
+
+.tier-later-block .btn-tier-add {
+  background: #FFF7ED;
+  border: 1px solid rgba(194, 65, 12, 0.3);
+  color: #C2410C;
+}
+
+.tier-later-block .btn-tier-add:hover {
+  background: #C2410C;
+  color: #FFFFFF;
+  border-color: #C2410C;
+  box-shadow: 0 2px 8px rgba(194, 65, 12, 0.25);
 }
 
 .focus-tier-divider {
@@ -5702,12 +5769,6 @@
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.simplified-campaign-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(6, 95, 70, 0.4);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-}
-
 .simplified-campaign-card.tier-now {
   border-left: 3.5px solid #065F46;
 }
@@ -5716,15 +5777,42 @@
   border-left: 3.5px solid #C2410C;
 }
 
+/* Active Highlight for current focus (School card) */
+.simplified-campaign-card.tier-now:not(.is-standby) {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 65%);
+  border: 1.5px solid rgba(6, 95, 70, 0.35);
+  border-left: 4.5px solid #065F46;
+  box-shadow: 0 4px 16px rgba(6, 95, 70, 0.09);
+}
+
+.simplified-campaign-card.tier-now:not(.is-standby):hover {
+  transform: translateY(-2px);
+  border-color: #065F46;
+  box-shadow: 0 8px 24px rgba(6, 95, 70, 0.14);
+}
+
+.simplified-campaign-card.tier-later:not(.is-standby) {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF7ED 65%);
+  border: 1.5px solid rgba(194, 65, 12, 0.35);
+  border-left: 4.5px solid #C2410C;
+  box-shadow: 0 4px 16px rgba(194, 65, 12, 0.09);
+}
+
+.simplified-campaign-card.tier-later:not(.is-standby):hover {
+  transform: translateY(-2px);
+  border-color: #C2410C;
+  box-shadow: 0 8px 24px rgba(194, 65, 12, 0.14);
+}
+
 /* Greyed-out Standby State for widgets waiting to be tackled */
 .simplified-campaign-card.is-standby {
   background: #F8FAFC;
   border-color: #E2E8F0;
   border-left: 3.5px solid #CBD5E1;
-  opacity: 0.52;
-  filter: grayscale(40%);
+  opacity: 0.55;
+  filter: grayscale(35%);
   box-shadow: none;
-  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .simplified-campaign-card.is-standby .sample-domain-title {
@@ -5732,21 +5820,24 @@
 }
 
 .simplified-campaign-card.is-standby:hover {
-  opacity: 0.95;
+  opacity: 0.98;
   filter: grayscale(0%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  border-color: #CBD5E1;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.simplified-campaign-card.tier-now.is-standby:hover {
+  border-color: rgba(6, 95, 70, 0.35);
+  border-left: 3.5px solid #065F46;
+}
+
+.simplified-campaign-card.tier-later.is-standby:hover {
+  border-color: rgba(194, 65, 12, 0.35);
+  border-left: 3.5px solid #C2410C;
 }
 
 .simplified-campaign-card.is-standby:hover .sample-domain-title {
   color: #0F172A;
-}
-
-/* Active Highlight for current focus (School card) */
-.simplified-campaign-card:not(.is-standby) {
-  border-color: rgba(6, 95, 70, 0.4);
-  box-shadow: 0 4px 14px rgba(6, 95, 70, 0.08);
 }
 
 .sample-card-top {
@@ -5989,6 +6080,7 @@
 
 .domain-matrix-details {
   border: 1px solid #E2E8F0;
+  border-left: 4.5px solid #065F46;
   border-radius: 14px;
   background: #FFFFFF;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
@@ -5997,7 +6089,8 @@
 }
 
 .domain-matrix-details[open] {
-  border-color: #CBD5E1;
+  border-color: rgba(6, 95, 70, 0.35);
+  border-left-color: #065F46;
 }
 
 .domain-matrix-summary {
@@ -6007,7 +6100,7 @@
   padding: 14px 18px;
   cursor: pointer;
   user-select: none;
-  background: #FAFDFB;
+  background: linear-gradient(90deg, #F0FDF4 0%, #FFFFFF 65%);
   list-style: none;
   transition: background var(--transition-fast);
 }
@@ -6017,7 +6110,7 @@
 }
 
 .domain-matrix-summary:hover {
-  background: #F4F8F5;
+  background: #ECFDF5;
 }
 
 .summary-left {
