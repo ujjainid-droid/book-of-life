@@ -2839,7 +2839,7 @@ const DEFAULT_ZLOG_ENTRIES = {
     "rating": 3,
     "ratingRaw": "Almost Good",
     "aggression": false,
-    "notes": "- Good morning and drop off",
+    "notes": "- Good morning and drop off\n- called me at dismissal saying he didn't want to go to Melissa and wanted to be picked up at 6\n- dad ended up going instead\n- once home didn't do any homework yet again\n- sad over school change; apparently told some of his friends about it",
     "meds": {
       "z": true,
       "zDose": "75mg",

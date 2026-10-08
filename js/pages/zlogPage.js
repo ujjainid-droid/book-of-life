@@ -77,7 +77,7 @@ function renderZLogPage(targetSubTab) {
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
-    storage.data.zlogSeedVersion < 11 ||
+    storage.data.zlogSeedVersion < 12 ||
     !storage.data.titrationSeedVersion ||
     storage.data.titrationSeedVersion < 7 ||
     currentTitration.length < 35 ||
@@ -88,6 +88,7 @@ function renderZLogPage(targetSubTab) {
     !storage.data.zlogEntries['2026-10-01'] ||
     !storage.data.zlogEntries['2026-10-07'] ||
     (storage.data.zlogEntries['2026-10-07'] && !storage.data.zlogEntries['2026-10-07'].rating) ||
+    (storage.data.zlogEntries['2026-10-07'] && storage.data.zlogEntries['2026-10-07'].notes && !storage.data.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
     (storage.data.zlogEntries['2026-10-01'] && storage.data.zlogEntries['2026-10-01'].notes && storage.data.zlogEntries['2026-10-01'].notes.includes('Daily Overview'));
 
   if (isStaleCorrupted) {
@@ -105,14 +106,20 @@ function renderZLogPage(targetSubTab) {
             const hasNotes = !!(entry.notes && entry.notes.trim());
             const hasRating = !!(entry.rating && entry.rating > 0);
             const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (hasNotes || hasRating || hasAttachments) {
+            if (d === '2026-10-07') {
+              // Keep the authoritative updated note from cleanDefaults
+              cleanDefaults[d] = {
+                ...(cleanDefaults[d] || {}),
+                attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
+              };
+            } else if (hasNotes || hasRating || hasAttachments) {
               cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
             }
           }
         }
       }
       storage.data.zlogEntries = cleanDefaults;
-      storage.data.zlogSeedVersion = 11;
+      storage.data.zlogSeedVersion = 12;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
       const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
