@@ -2836,10 +2836,10 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-10-07": {
     "date": "2026-10-07",
     "rawDate": "Wed, 10 - 7- 26",
-    "rating": null,
-    "ratingRaw": "",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
     "aggression": false,
-    "notes": "",
+    "notes": "- Good morning and drop off",
     "meds": {
       "z": true,
       "zDose": "75mg",

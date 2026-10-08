@@ -278,7 +278,7 @@ class SyncManager {
     // 10. Z Log and Titration Seeds
     let mergedZLog = incoming.zlogEntries;
     let mergedZLogVersion = incoming.zlogSeedVersion;
-    if (!mergedZLogVersion || mergedZLogVersion < 10 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-01'] || !mergedZLog['2026-10-07'] || (mergedZLog['2026-10-01'] && mergedZLog['2026-10-01'].notes && mergedZLog['2026-10-01'].notes.includes('Daily Overview'))) {
+    if (!mergedZLogVersion || mergedZLogVersion < 11 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-01'] || !mergedZLog['2026-10-07'] || (mergedZLog['2026-10-07'] && !mergedZLog['2026-10-07'].rating) || (mergedZLog['2026-10-01'] && mergedZLog['2026-10-01'].notes && mergedZLog['2026-10-01'].notes.includes('Daily Overview'))) {
       const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
       if (mergedZLog && typeof mergedZLog === 'object') {
         for (const [d, entry] of Object.entries(mergedZLog)) {
@@ -287,8 +287,13 @@ class SyncManager {
             entry.rating = null;
             entry.ratingRaw = '';
           }
-          if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
-            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+          if (entry) {
+            const hasNotes = !!(entry.notes && entry.notes.trim());
+            const hasRating = !!(entry.rating && entry.rating > 0);
+            const hasAttachments = !!(entry.attachments && entry.attachments.length);
+            if (hasNotes || hasRating || hasAttachments) {
+              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            }
           }
         }
       }
@@ -299,13 +304,18 @@ class SyncManager {
             entry.rating = null;
             entry.ratingRaw = '';
           }
-          if (entry && ((entry.notes && entry.notes.trim()) || entry.rating || entry.updatedAt || (entry.attachments && entry.attachments.length))) {
-            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+          if (entry) {
+            const hasNotes = !!(entry.notes && entry.notes.trim());
+            const hasRating = !!(entry.rating && entry.rating > 0);
+            const hasAttachments = !!(entry.attachments && entry.attachments.length);
+            if (hasNotes || hasRating || hasAttachments) {
+              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            }
           }
         }
       }
       mergedZLog = cleanDefaults;
-      mergedZLogVersion = 10;
+      mergedZLogVersion = 11;
       localWasRicher = true;
     }
 

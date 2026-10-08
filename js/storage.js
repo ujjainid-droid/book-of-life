@@ -654,10 +654,11 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 10 ||
+        merged.zlogSeedVersion < 11 ||
         !merged.zlogEntries['2026-09-12'] ||
         !merged.zlogEntries['2026-10-01'] ||
         !merged.zlogEntries['2026-10-07'] ||
+        (merged.zlogEntries['2026-10-07'] && !merged.zlogEntries['2026-10-07'].rating) ||
         (merged.zlogEntries['2026-10-01'] && merged.zlogEntries['2026-10-01'].notes && merged.zlogEntries['2026-10-01'].notes.includes('Daily Overview'));
 
       if (needsEnrichedSeed) {
@@ -670,14 +671,19 @@ class StorageManager {
               entry.rating = null;
               entry.ratingRaw = '';
             }
-            // Preserve authentic user logs, ratings, attachments or updates
-            if (entry && (entry.updatedAt || (entry.notes && entry.notes.trim()) || entry.rating || (entry.attachments && entry.attachments.length))) {
-              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            // Preserve authentic user logs, ratings, attachments
+            if (entry) {
+              const hasNotes = !!(entry.notes && entry.notes.trim());
+              const hasRating = !!(entry.rating && entry.rating > 0);
+              const hasAttachments = !!(entry.attachments && entry.attachments.length);
+              if (hasNotes || hasRating || hasAttachments) {
+                cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+              }
             }
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 10;
+        merged.zlogSeedVersion = 11;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);
