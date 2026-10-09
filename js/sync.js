@@ -382,15 +382,29 @@ class SyncManager {
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
     let mergedCampaigns = incoming.coverCampaigns;
-    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 5);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 5 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 5)) {
+    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 6);
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 6 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 6)) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
-      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 5)
+      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 6)
         ? storage.data.coverCampaigns
         : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
-      mergedCampVersion = 5;
+      mergedCampVersion = 6;
       localWasRicher = true;
     }
+    ['now', 'later'].forEach(tierKey => {
+      if (mergedCampaigns && Array.isArray(mergedCampaigns[tierKey])) {
+        mergedCampaigns[tierKey].forEach(c => {
+          if (c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare')) {
+            c.status = 'Maintain';
+            c.tools = {
+              margo: { label: 'Haircare Checkpoint', action: 'haircare' },
+              apple: { noteQuery: '# BEAUTY 02_HAIR' }
+            };
+            c.visibleTools = ['margo', 'apple'];
+          }
+        });
+      }
+    });
 
     // Apply consolidated data
     storage.data = {

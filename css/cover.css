@@ -6385,6 +6385,76 @@ body.dark-mode .simplified-campaign-card.theme-food.tier-later .sample-domain-ti
   color: #BEF264;
 }
 
+/* Dark Mode: Status Pills */
+body.dark-mode .pill-status-ip {
+  background: rgba(79, 70, 229, 0.22);
+  color: #A5B4FC;
+  border-color: rgba(165, 180, 252, 0.35);
+}
+body.dark-mode .pill-status-ip:hover {
+  background: rgba(79, 70, 229, 0.35);
+}
+body.dark-mode .pill-status-ns {
+  background: rgba(100, 116, 139, 0.22);
+  color: #94A3B8;
+  border-color: rgba(148, 163, 184, 0.35);
+}
+body.dark-mode .pill-status-ns:hover {
+  background: rgba(100, 116, 139, 0.35);
+}
+body.dark-mode .pill-status-maintain {
+  background: rgba(15, 118, 110, 0.22);
+  color: #5EEAD4;
+  border-color: rgba(94, 234, 212, 0.35);
+}
+body.dark-mode .pill-status-maintain:hover {
+  background: rgba(15, 118, 110, 0.35);
+}
+body.dark-mode .pill-status-done {
+  background: rgba(4, 120, 87, 0.22);
+  color: #6EE7B7;
+  border-color: rgba(110, 231, 183, 0.35);
+}
+body.dark-mode .pill-status-done:hover {
+  background: rgba(4, 120, 87, 0.35);
+}
+
+/* Dark Mode: Tool Badges */
+body.dark-mode .tool-icon-btn.tool-badge-m {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: rgba(167, 139, 250, 0.35);
+  color: #C4B5FD;
+}
+body.dark-mode .tool-icon-btn.tool-badge-apple {
+  background: rgba(225, 29, 72, 0.2);
+  border-color: rgba(251, 113, 133, 0.35);
+  color: #FB7185;
+}
+body.dark-mode .tool-icon-btn.tool-badge-apple svg,
+body.dark-mode .tool-icon-btn.tool-badge-apple .tool-apple-svg {
+  stroke: #FB7185;
+}
+body.dark-mode .tool-icon-btn.tool-badge-google {
+  background: rgba(29, 78, 216, 0.2);
+  border-color: rgba(96, 165, 250, 0.35);
+  color: #93C5FD;
+}
+body.dark-mode .tool-icon-btn.tool-badge-things {
+  background: rgba(2, 132, 199, 0.2);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #7DD3FC;
+}
+body.dark-mode .tool-icon-btn.tool-badge-email {
+  background: rgba(225, 29, 72, 0.2);
+  border-color: rgba(251, 113, 133, 0.35);
+  color: #FB7185;
+}
+body.dark-mode .btn-tier-shift {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+}
+
 .card-bottom-actions {
   display: flex;
   align-items: center;

@@ -383,9 +383,12 @@ function renderUnifiedCampaignCard(camp, tier) {
   const oppositeTier = isNow ? 'later' : 'now';
   const shiftBtnLabel = isNow ? '&rarr; Later' : '&larr; Now';
 
+  const isHaircare = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
+
   // Normalize status: IP, NS, Maintain, Done
-  let statusKey = String(camp.status || (isNow ? 'IP' : 'NS')).trim();
-  if (statusKey === 'strike' || statusKey.toLowerCase() === 'ip' || statusKey === 'active') statusKey = 'IP';
+  let statusKey = String(camp.status || (isHaircare ? 'Maintain' : (isNow ? 'IP' : 'NS'))).trim();
+  if (isHaircare && (!camp.status || camp.status === 'IP')) statusKey = 'Maintain';
+  else if (statusKey === 'strike' || statusKey.toLowerCase() === 'ip' || statusKey === 'active') statusKey = 'IP';
   else if (statusKey === 'ondeck' || statusKey === 'waiting' || statusKey.toLowerCase() === 'ns') statusKey = 'NS';
   else if (statusKey === 'review' || statusKey.toLowerCase() === 'maintain') statusKey = 'Maintain';
   else if (statusKey.toLowerCase() === 'done') statusKey = 'Done';
@@ -402,27 +405,76 @@ function renderUnifiedCampaignCard(camp, tier) {
     statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-done" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: Done &bull; Tap to change">Done</button>`;
   }
 
-  // Resolve 5 tool launchers: m, 🍎, G, T3, email
+  // Resolve tool launchers: m, 🍎, G, T3, email
   const { margoAction, margoLabel, noteQuery, driveFolder, thingsQuery, emailQuery } = resolveCampaignTools(camp);
   const themeClass = getDomainThemeClass(camp);
 
-  const toolsHtml = `
-    <button type="button" class="tool-icon-btn tool-badge-m" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="margo: ${escapeHtml(margoLabel)}">
-      <span class="tool-symbol symbol-m">m</span>
-    </button>
-    <button type="button" class="tool-icon-btn tool-badge-apple" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')" title="Apple Notes: ${escapeHtml(noteQuery)}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
-    </button>
-    <button type="button" class="tool-icon-btn tool-badge-google" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')" title="Google Drive: ${escapeHtml(driveFolder)}">
-      <span class="tool-symbol symbol-google">G</span>
-    </button>
-    <button type="button" class="tool-icon-btn tool-badge-things" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')" title="Things 3: ${escapeHtml(thingsQuery)}">
-      <span class="tool-symbol symbol-things">T3</span>
-    </button>
-    <button type="button" class="tool-icon-btn tool-badge-email" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')" title="Gmail: ${escapeHtml(emailQuery)}">
-      <i data-lucide="mail"></i>
-    </button>
-  `;
+  let showMargo = true;
+  let showApple = true;
+  let showGoogle = true;
+  let showThings = true;
+  let showEmail = true;
+
+  if (Array.isArray(camp.visibleTools)) {
+    showMargo = camp.visibleTools.includes('margo') || camp.visibleTools.includes('m');
+    showApple = camp.visibleTools.includes('apple');
+    showGoogle = camp.visibleTools.includes('google') || camp.visibleTools.includes('g');
+    showThings = camp.visibleTools.includes('things') || camp.visibleTools.includes('t3');
+    showEmail = camp.visibleTools.includes('email') || camp.visibleTools.includes('gmail');
+  } else if (camp.tools && typeof camp.tools === 'object' && !Array.isArray(camp.tools)) {
+    showMargo = camp.tools.margo !== undefined ? Boolean(camp.tools.margo) : true;
+    showApple = camp.tools.apple !== undefined ? Boolean(camp.tools.apple) : true;
+    showGoogle = camp.tools.google !== undefined ? Boolean(camp.tools.google) : true;
+    showThings = camp.tools.things !== undefined ? Boolean(camp.tools.things) : true;
+    showEmail = camp.tools.email !== undefined ? Boolean(camp.tools.email) : true;
+  }
+
+  // Haircare is explicitly only m and apple icon
+  if (isHaircare) {
+    showMargo = true;
+    showApple = true;
+    showGoogle = false;
+    showThings = false;
+    showEmail = false;
+  }
+
+  const toolButtons = [];
+  if (showMargo) {
+    toolButtons.push(`
+      <button type="button" class="tool-icon-btn tool-badge-m" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="margo: ${escapeHtml(margoLabel)}">
+        <span class="tool-symbol symbol-m">m</span>
+      </button>
+    `);
+  }
+  if (showApple) {
+    toolButtons.push(`
+      <button type="button" class="tool-icon-btn tool-badge-apple" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')" title="Apple Notes: ${escapeHtml(noteQuery)}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
+      </button>
+    `);
+  }
+  if (showGoogle) {
+    toolButtons.push(`
+      <button type="button" class="tool-icon-btn tool-badge-google" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')" title="Google Drive: ${escapeHtml(driveFolder)}">
+        <span class="tool-symbol symbol-google">G</span>
+      </button>
+    `);
+  }
+  if (showThings) {
+    toolButtons.push(`
+      <button type="button" class="tool-icon-btn tool-badge-things" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')" title="Things 3: ${escapeHtml(thingsQuery)}">
+        <span class="tool-symbol symbol-things">T3</span>
+      </button>
+    `);
+  }
+  if (showEmail) {
+    toolButtons.push(`
+      <button type="button" class="tool-icon-btn tool-badge-email" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')" title="Gmail: ${escapeHtml(emailQuery)}">
+        <i data-lucide="mail"></i>
+      </button>
+    `);
+  }
+  const toolsHtml = toolButtons.join('');
 
   return `
     <div class="campaign-sample-card simplified-campaign-card tier-${tier} ${themeClass}">

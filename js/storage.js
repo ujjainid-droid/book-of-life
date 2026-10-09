@@ -216,15 +216,13 @@ class StorageManager {
           {
             id: 'camp-haircare',
             title: 'Haircare',
-            status: 'IP',
+            status: 'Maintain',
             theme: 'cat-care',
             tools: {
               margo: { label: 'Haircare Checkpoint', action: 'haircare' },
-              apple: { noteQuery: '# BEAUTY 02_HAIR' },
-              google: { folder: 'Hair Care Routine' },
-              things: { query: 'Haircare' },
-              email: { emailQuery: 'Haircare' }
-            }
+              apple: { noteQuery: '# BEAUTY 02_HAIR' }
+            },
+            visibleTools: ['margo', 'apple']
           },
           {
             id: 'camp-surgery',
@@ -818,10 +816,25 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 5 || !Array.isArray(merged.coverCampaigns.now)) {
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 6 || !Array.isArray(merged.coverCampaigns.now)) {
         merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
-        merged.coverCampaignsSeedVersion = 5;
+        merged.coverCampaignsSeedVersion = 6;
       }
+      // Ensure Haircare is always initialized to Maintain status and m, apple tools
+      ['now', 'later'].forEach(tierKey => {
+        if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns[tierKey])) {
+          merged.coverCampaigns[tierKey].forEach(c => {
+            if (c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare')) {
+              c.status = 'Maintain';
+              c.tools = {
+                margo: { label: 'Haircare Checkpoint', action: 'haircare' },
+                apple: { noteQuery: '# BEAUTY 02_HAIR' }
+              };
+              c.visibleTools = ['margo', 'apple'];
+            }
+          });
+        }
+      });
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
       }
