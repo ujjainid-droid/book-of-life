@@ -6030,191 +6030,220 @@
 .tool-icon-btn.tool-btn-photos { background: #FAF5FF; border-color: #DDD6FE; color: #7C3AED; }
 
 /* ==========================================================================
-   Domain Widget Color Themes (13 Unique, Harmonious Colors; No Yellow/Amber)
+   5 Domain Category Themes & Faded Later Presentation (No Yellow/Amber)
+   Color 1: Z school .... (Royal Violet)
+   Color 2: Haircare, surgery, skin, foot, makeup, outfits, jewelry, under eye (Rose Orchid)
+   Color 3: oon reimbursement, personal finance (Emerald Cashflow)
+   Color 4: home declutter (Sea Glass Teal)
+   Color 5: food (Celadon Sage)
    ========================================================================== */
-/* 1. School: Royal Violet */
-.simplified-campaign-card.theme-school {
+
+/* Later Bucket Muted / Faded Presentation */
+.simplified-campaign-card.tier-later {
+  opacity: 0.82;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.015);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.simplified-campaign-card.tier-later:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.simplified-campaign-card.tier-later .sample-domain-title {
+  font-weight: 500;
+}
+
+/* Category 1: School (Color 1) - Royal Violet */
+.simplified-campaign-card.theme-cat-school.tier-now,
+.simplified-campaign-card.theme-school.tier-now {
   background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
   border-color: #DDD6FE;
   border-left: 4px solid #7C3AED;
 }
-.simplified-campaign-card.theme-school .sample-domain-title {
+.simplified-campaign-card.theme-cat-school.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-school.tier-now .sample-domain-title {
   color: #5B21B6;
 }
-.simplified-campaign-card.theme-school:hover {
+.simplified-campaign-card.theme-cat-school.tier-now:hover,
+.simplified-campaign-card.theme-school.tier-now:hover {
   border-color: #7C3AED;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.14);
 }
 
-/* 2. Haircare: Orchid Pink */
-.simplified-campaign-card.theme-haircare {
-  background: linear-gradient(135deg, #FDF2F8 0%, #FFFFFF 100%);
-  border-color: #FBCFE8;
-  border-left: 4px solid #DB2777;
+.simplified-campaign-card.theme-cat-school.tier-later,
+.simplified-campaign-card.theme-school.tier-later {
+  background: linear-gradient(135deg, #FAF7FD 0%, #FAFAFC 100%);
+  border-color: #EDE9FE;
+  border-left: 3.5px solid rgba(124, 58, 237, 0.35);
 }
-.simplified-campaign-card.theme-haircare .sample-domain-title {
-  color: #9D174D;
+.simplified-campaign-card.theme-cat-school.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-school.tier-later .sample-domain-title {
+  color: #7C3AED;
 }
-.simplified-campaign-card.theme-haircare:hover {
-  border-color: #DB2777;
-  box-shadow: 0 4px 14px rgba(219, 39, 119, 0.12);
-}
-
-/* 3. Surgery: Sea Glass Teal */
-.simplified-campaign-card.theme-surgery {
-  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
-  border-color: #99F6E4;
-  border-left: 4px solid #0D9488;
-}
-.simplified-campaign-card.theme-surgery .sample-domain-title {
-  color: #115E59;
-}
-.simplified-campaign-card.theme-surgery:hover {
-  border-color: #0D9488;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.12);
+.simplified-campaign-card.theme-cat-school.tier-later:hover,
+.simplified-campaign-card.theme-school.tier-later:hover {
+  background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
+  border-color: #DDD6FE;
+  border-left-color: #7C3AED;
 }
 
-/* 4. oon reimbursement: Forest Emerald */
-.simplified-campaign-card.theme-claims {
+/* Category 2: Personal Care & Aesthetics (Color 2) - Rose Orchid */
+.simplified-campaign-card.theme-cat-care.tier-now,
+.simplified-campaign-card.theme-haircare.tier-now,
+.simplified-campaign-card.theme-surgery.tier-now {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 100%);
+  border-color: #FECDD3;
+  border-left: 4px solid #E11D48;
+}
+.simplified-campaign-card.theme-cat-care.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-haircare.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-surgery.tier-now .sample-domain-title {
+  color: #9F1239;
+}
+.simplified-campaign-card.theme-cat-care.tier-now:hover,
+.simplified-campaign-card.theme-haircare.tier-now:hover,
+.simplified-campaign-card.theme-surgery.tier-now:hover {
+  border-color: #E11D48;
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.14);
+}
+
+.simplified-campaign-card.theme-cat-care.tier-later,
+.simplified-campaign-card.theme-skincare.tier-later,
+.simplified-campaign-card.theme-footcare.tier-later,
+.simplified-campaign-card.theme-makeup.tier-later,
+.simplified-campaign-card.theme-outfits.tier-later,
+.simplified-campaign-card.theme-jewelry.tier-later,
+.simplified-campaign-card.theme-undereye.tier-later {
+  background: linear-gradient(135deg, #FFF8F9 0%, #FAFAFC 100%);
+  border-color: #FFE4E6;
+  border-left: 3.5px solid rgba(225, 29, 72, 0.35);
+}
+.simplified-campaign-card.theme-cat-care.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-skincare.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-footcare.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-makeup.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-outfits.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-jewelry.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-undereye.tier-later .sample-domain-title {
+  color: #BE123C;
+}
+.simplified-campaign-card.theme-cat-care.tier-later:hover,
+.simplified-campaign-card.theme-skincare.tier-later:hover,
+.simplified-campaign-card.theme-footcare.tier-later:hover,
+.simplified-campaign-card.theme-makeup.tier-later:hover,
+.simplified-campaign-card.theme-outfits.tier-later:hover,
+.simplified-campaign-card.theme-jewelry.tier-later:hover,
+.simplified-campaign-card.theme-undereye.tier-later:hover {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 100%);
+  border-color: #FECDD3;
+  border-left-color: #E11D48;
+}
+
+/* Category 3: Finance & Reimbursement (Color 3) - Forest Emerald */
+.simplified-campaign-card.theme-cat-finance.tier-now,
+.simplified-campaign-card.theme-claims.tier-now {
   background: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
   border-color: #A7F3D0;
   border-left: 4px solid #059669;
 }
-.simplified-campaign-card.theme-claims .sample-domain-title {
+.simplified-campaign-card.theme-cat-finance.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-claims.tier-now .sample-domain-title {
   color: #065F46;
 }
-.simplified-campaign-card.theme-claims:hover {
+.simplified-campaign-card.theme-cat-finance.tier-now:hover,
+.simplified-campaign-card.theme-claims.tier-now:hover {
   border-color: #059669;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.12);
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.14);
 }
 
-/* 5. Skincare: Watermelon Rose */
-.simplified-campaign-card.theme-skincare {
-  background: linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 100%);
-  border-color: #FECDD3;
-  border-left: 4px solid #F43F5E;
+.simplified-campaign-card.theme-cat-finance.tier-later,
+.simplified-campaign-card.theme-finance.tier-later {
+  background: linear-gradient(135deg, #F6FDF9 0%, #FAFAFC 100%);
+  border-color: #D1FAE5;
+  border-left: 3.5px solid rgba(5, 150, 105, 0.35);
 }
-.simplified-campaign-card.theme-skincare .sample-domain-title {
-  color: #BE123C;
+.simplified-campaign-card.theme-cat-finance.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-finance.tier-later .sample-domain-title {
+  color: #047857;
 }
-.simplified-campaign-card.theme-skincare:hover {
-  border-color: #F43F5E;
-  box-shadow: 0 4px 14px rgba(244, 63, 94, 0.12);
-}
-
-/* 6. Foot care: Spring Green */
-.simplified-campaign-card.theme-footcare {
-  background: linear-gradient(135deg, #F0FDF4 0%, #FFFFFF 100%);
-  border-color: #BBF7D0;
-  border-left: 4px solid #16A34A;
-}
-.simplified-campaign-card.theme-footcare .sample-domain-title {
-  color: #15803D;
-}
-.simplified-campaign-card.theme-footcare:hover {
-  border-color: #16A34A;
-  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.12);
+.simplified-campaign-card.theme-cat-finance.tier-later:hover,
+.simplified-campaign-card.theme-finance.tier-later:hover {
+  background: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
+  border-color: #A7F3D0;
+  border-left-color: #059669;
 }
 
-/* 7. Makeup: Regal Plum */
-.simplified-campaign-card.theme-makeup {
-  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
-  border-color: #E9D5FF;
-  border-left: 4px solid #9333EA;
+/* Category 4: Home Declutter (Color 4) - Sea Glass Teal */
+.simplified-campaign-card.theme-cat-home.tier-now,
+.simplified-campaign-card.theme-home.tier-now {
+  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
+  border-color: #99F6E4;
+  border-left: 4px solid #0D9488;
 }
-.simplified-campaign-card.theme-makeup .sample-domain-title {
-  color: #6B21A8;
+.simplified-campaign-card.theme-cat-home.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-home.tier-now .sample-domain-title {
+  color: #115E59;
 }
-.simplified-campaign-card.theme-makeup:hover {
-  border-color: #9333EA;
-  box-shadow: 0 4px 14px rgba(147, 51, 234, 0.12);
-}
-
-/* 8. Outfits: Cardinal Berry */
-.simplified-campaign-card.theme-outfits {
-  background: linear-gradient(135deg, #FFF1F2 0%, #FDF2F8 100%);
-  border-color: #FDA4AF;
-  border-left: 4px solid #BE123C;
-}
-.simplified-campaign-card.theme-outfits .sample-domain-title {
-  color: #881337;
-}
-.simplified-campaign-card.theme-outfits:hover {
-  border-color: #BE123C;
-  box-shadow: 0 4px 14px rgba(190, 18, 60, 0.12);
+.simplified-campaign-card.theme-cat-home.tier-now:hover,
+.simplified-campaign-card.theme-home.tier-now:hover {
+  border-color: #0D9488;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.14);
 }
 
-/* 9. Jewelry: Topaz Cyan */
-.simplified-campaign-card.theme-jewelry {
-  background: linear-gradient(135deg, #ECFEFF 0%, #FFFFFF 100%);
-  border-color: #A5F3FC;
-  border-left: 4px solid #0891B2;
+.simplified-campaign-card.theme-cat-home.tier-later,
+.simplified-campaign-card.theme-home.tier-later {
+  background: linear-gradient(135deg, #F6FEFC 0%, #FAFAFC 100%);
+  border-color: #CCFBF1;
+  border-left: 3.5px solid rgba(13, 148, 136, 0.35);
 }
-.simplified-campaign-card.theme-jewelry .sample-domain-title {
-  color: #155E75;
+.simplified-campaign-card.theme-cat-home.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-home.tier-later .sample-domain-title {
+  color: #0F766E;
 }
-.simplified-campaign-card.theme-jewelry:hover {
-  border-color: #0891B2;
-  box-shadow: 0 4px 14px rgba(8, 145, 178, 0.12);
-}
-
-/* 10. Personal Finance: Deep Indigo */
-.simplified-campaign-card.theme-finance {
-  background: linear-gradient(135deg, #EEF2FF 0%, #FFFFFF 100%);
-  border-color: #C7D2FE;
-  border-left: 4px solid #4338CA;
-}
-.simplified-campaign-card.theme-finance .sample-domain-title {
-  color: #312E81;
-}
-.simplified-campaign-card.theme-finance:hover {
-  border-color: #4338CA;
-  box-shadow: 0 4px 14px rgba(67, 56, 202, 0.12);
+.simplified-campaign-card.theme-cat-home.tier-later:hover,
+.simplified-campaign-card.theme-home.tier-later:hover {
+  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
+  border-color: #99F6E4;
+  border-left-color: #0D9488;
 }
 
-/* 11. Home declutter: Sky Cobalt */
-.simplified-campaign-card.theme-home {
-  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
-  border-color: #BAE6FD;
-  border-left: 4px solid #0284C7;
-}
-.simplified-campaign-card.theme-home .sample-domain-title {
-  color: #0369A1;
-}
-.simplified-campaign-card.theme-home:hover {
-  border-color: #0284C7;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12);
-}
-
-/* 12. Under eye bags: Periwinkle Lavender */
-.simplified-campaign-card.theme-undereye {
-  background: linear-gradient(135deg, #EEF2FF 0%, #F5F3FF 100%);
-  border-color: #C7D2FE;
-  border-left: 4px solid #6366F1;
-}
-.simplified-campaign-card.theme-undereye .sample-domain-title {
-  color: #4338CA;
-}
-.simplified-campaign-card.theme-undereye:hover {
-  border-color: #6366F1;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.12);
-}
-
-/* 13. Healthy food: Celadon Leaf */
-.simplified-campaign-card.theme-food {
-  background: linear-gradient(135deg, #F7FEE7 0%, #ECFDF5 100%);
+/* Category 5: Food & Nutrition (Color 5) - Celadon Sage */
+.simplified-campaign-card.theme-cat-food.tier-now,
+.simplified-campaign-card.theme-food.tier-now {
+  background: linear-gradient(135deg, #F7FEE7 0%, #FFFFFF 100%);
   border-color: #D9F99D;
   border-left: 4px solid #65A30D;
 }
-.simplified-campaign-card.theme-food .sample-domain-title {
+.simplified-campaign-card.theme-cat-food.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-food.tier-now .sample-domain-title {
   color: #3F6212;
 }
-.simplified-campaign-card.theme-food:hover {
+.simplified-campaign-card.theme-cat-food.tier-now:hover,
+.simplified-campaign-card.theme-food.tier-now:hover {
   border-color: #65A30D;
-  box-shadow: 0 4px 14px rgba(101, 163, 13, 0.12);
+  box-shadow: 0 4px 14px rgba(101, 163, 13, 0.14);
 }
 
-/* 14. Fallback Violet Theme */
+.simplified-campaign-card.theme-cat-food.tier-later,
+.simplified-campaign-card.theme-food.tier-later {
+  background: linear-gradient(135deg, #FCFEF7 0%, #FAFAFC 100%);
+  border-color: #ECFCCB;
+  border-left: 3.5px solid rgba(101, 163, 13, 0.35);
+}
+.simplified-campaign-card.theme-cat-food.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-food.tier-later .sample-domain-title {
+  color: #4D7C0F;
+}
+.simplified-campaign-card.theme-cat-food.tier-later:hover,
+.simplified-campaign-card.theme-food.tier-later:hover {
+  background: linear-gradient(135deg, #F7FEE7 0%, #FFFFFF 100%);
+  border-color: #D9F99D;
+  border-left-color: #65A30D;
+}
+
+/* Fallback Violet Theme */
 .simplified-campaign-card.theme-violet {
   background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
   border-color: #DDD6FE;
@@ -6224,140 +6253,136 @@
   color: #6D28D9;
 }
 
-/* Dark Mode Theme Overrides */
-body.dark-mode .tool-icon-btn.tool-badge-m {
-  background: rgba(124, 58, 237, 0.2);
-  border-color: rgba(124, 58, 237, 0.4);
+/* ==========================================================================
+   Dark Mode: 5 Category Themes (Now vs Faded Later)
+   ========================================================================== */
+body.dark-mode .simplified-campaign-card.tier-later {
+  opacity: 0.72;
+}
+body.dark-mode .simplified-campaign-card.tier-later:hover {
+  opacity: 1;
+}
+
+/* 1. School (Dark) */
+body.dark-mode .simplified-campaign-card.theme-cat-school.tier-now,
+body.dark-mode .simplified-campaign-card.theme-school.tier-now {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(124, 58, 237, 0.45);
+  border-left: 4px solid #A78BFA;
+}
+body.dark-mode .simplified-campaign-card.theme-cat-school.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-school.tier-now .sample-domain-title {
   color: #DDD6FE;
 }
-body.dark-mode .tool-icon-btn.tool-badge-apple {
-  background: rgba(225, 29, 72, 0.15);
-  border-color: rgba(225, 29, 72, 0.35);
-  color: #FB7185;
+body.dark-mode .simplified-campaign-card.theme-cat-school.tier-later,
+body.dark-mode .simplified-campaign-card.theme-school.tier-later {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
+  border-color: rgba(124, 58, 237, 0.22);
+  border-left: 3px solid rgba(167, 139, 250, 0.35);
 }
-body.dark-mode .tool-icon-btn.tool-badge-apple svg,
-body.dark-mode .tool-icon-btn.tool-badge-apple .tool-apple-svg {
-  stroke: #FB7185;
-  fill: none;
-}
-body.dark-mode .tool-icon-btn.tool-badge-google {
-  background: rgba(29, 78, 216, 0.2);
-  border-color: rgba(29, 78, 216, 0.4);
-  color: #93C5FD;
-}
-body.dark-mode .tool-icon-btn.tool-badge-things {
-  background: rgba(2, 132, 199, 0.2);
-  border-color: rgba(2, 132, 199, 0.4);
-  color: #7DD3FC;
-}
-body.dark-mode .tool-icon-btn.tool-badge-email {
-  background: rgba(225, 29, 72, 0.2);
-  border-color: rgba(225, 29, 72, 0.4);
-  color: #FDA4AF;
+body.dark-mode .simplified-campaign-card.theme-cat-school.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-school.tier-later .sample-domain-title {
+  color: #C4B5FD;
 }
 
-body.dark-mode .simplified-campaign-card.theme-school {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(124, 58, 237, 0.4);
+/* 2. Care & Aesthetics (Dark) */
+body.dark-mode .simplified-campaign-card.theme-cat-care.tier-now,
+body.dark-mode .simplified-campaign-card.theme-haircare.tier-now,
+body.dark-mode .simplified-campaign-card.theme-surgery.tier-now {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(225, 29, 72, 0.45);
+  border-left: 4px solid #FB7185;
 }
-body.dark-mode .simplified-campaign-card.theme-school .sample-domain-title {
-  color: #DDD6FE;
-}
-
-body.dark-mode .simplified-campaign-card.theme-haircare {
-  background: linear-gradient(135deg, rgba(219, 39, 119, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(219, 39, 119, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-haircare .sample-domain-title {
-  color: #FBCFE8;
-}
-
-body.dark-mode .simplified-campaign-card.theme-surgery {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(13, 148, 136, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-surgery .sample-domain-title {
-  color: #99F6E4;
-}
-
-body.dark-mode .simplified-campaign-card.theme-claims {
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(5, 150, 105, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-claims .sample-domain-title {
-  color: #A7F3D0;
-}
-
-body.dark-mode .simplified-campaign-card.theme-skincare {
-  background: linear-gradient(135deg, rgba(244, 63, 94, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(244, 63, 94, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-skincare .sample-domain-title {
+body.dark-mode .simplified-campaign-card.theme-cat-care.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-haircare.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-surgery.tier-now .sample-domain-title {
   color: #FECDD3;
 }
-
-body.dark-mode .simplified-campaign-card.theme-footcare {
-  background: linear-gradient(135deg, rgba(22, 163, 74, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(22, 163, 74, 0.4);
+body.dark-mode .simplified-campaign-card.theme-cat-care.tier-later,
+body.dark-mode .simplified-campaign-card.theme-skincare.tier-later,
+body.dark-mode .simplified-campaign-card.theme-footcare.tier-later,
+body.dark-mode .simplified-campaign-card.theme-makeup.tier-later,
+body.dark-mode .simplified-campaign-card.theme-outfits.tier-later,
+body.dark-mode .simplified-campaign-card.theme-jewelry.tier-later,
+body.dark-mode .simplified-campaign-card.theme-undereye.tier-later {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
+  border-color: rgba(225, 29, 72, 0.22);
+  border-left: 3px solid rgba(251, 113, 133, 0.35);
 }
-body.dark-mode .simplified-campaign-card.theme-footcare .sample-domain-title {
-  color: #BBF7D0;
-}
-
-body.dark-mode .simplified-campaign-card.theme-makeup {
-  background: linear-gradient(135deg, rgba(147, 51, 234, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(147, 51, 234, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-makeup .sample-domain-title {
-  color: #E9D5FF;
-}
-
-body.dark-mode .simplified-campaign-card.theme-outfits {
-  background: linear-gradient(135deg, rgba(190, 18, 60, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(190, 18, 60, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-outfits .sample-domain-title {
+body.dark-mode .simplified-campaign-card.theme-cat-care.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-skincare.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-footcare.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-makeup.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-outfits.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-jewelry.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-undereye.tier-later .sample-domain-title {
   color: #FDA4AF;
 }
 
-body.dark-mode .simplified-campaign-card.theme-jewelry {
-  background: linear-gradient(135deg, rgba(8, 145, 178, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(8, 145, 178, 0.4);
+/* 3. Finance & Reimbursement (Dark) */
+body.dark-mode .simplified-campaign-card.theme-cat-finance.tier-now,
+body.dark-mode .simplified-campaign-card.theme-claims.tier-now {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(5, 150, 105, 0.45);
+  border-left: 4px solid #34D399;
 }
-body.dark-mode .simplified-campaign-card.theme-jewelry .sample-domain-title {
-  color: #A5F3FC;
+body.dark-mode .simplified-campaign-card.theme-cat-finance.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-claims.tier-now .sample-domain-title {
+  color: #A7F3D0;
 }
-
-body.dark-mode .simplified-campaign-card.theme-finance {
-  background: linear-gradient(135deg, rgba(67, 56, 202, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(67, 56, 202, 0.4);
+body.dark-mode .simplified-campaign-card.theme-cat-finance.tier-later,
+body.dark-mode .simplified-campaign-card.theme-finance.tier-later {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
+  border-color: rgba(5, 150, 105, 0.22);
+  border-left: 3px solid rgba(52, 211, 153, 0.35);
 }
-body.dark-mode .simplified-campaign-card.theme-finance .sample-domain-title {
-  color: #C7D2FE;
-}
-
-body.dark-mode .simplified-campaign-card.theme-home {
-  background: linear-gradient(135deg, rgba(2, 132, 199, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(2, 132, 199, 0.4);
-}
-body.dark-mode .simplified-campaign-card.theme-home .sample-domain-title {
-  color: #BAE6FD;
+body.dark-mode .simplified-campaign-card.theme-cat-finance.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-finance.tier-later .sample-domain-title {
+  color: #6EE7B7;
 }
 
-body.dark-mode .simplified-campaign-card.theme-undereye {
-  background: linear-gradient(135deg, rgba(99, 102, 241, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(99, 102, 241, 0.4);
+/* 4. Home Declutter (Dark) */
+body.dark-mode .simplified-campaign-card.theme-cat-home.tier-now,
+body.dark-mode .simplified-campaign-card.theme-home.tier-now {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(13, 148, 136, 0.45);
+  border-left: 4px solid #2DD4BF;
 }
-body.dark-mode .simplified-campaign-card.theme-undereye .sample-domain-title {
-  color: #C7D2FE;
+body.dark-mode .simplified-campaign-card.theme-cat-home.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-home.tier-now .sample-domain-title {
+  color: #99F6E4;
+}
+body.dark-mode .simplified-campaign-card.theme-cat-home.tier-later,
+body.dark-mode .simplified-campaign-card.theme-home.tier-later {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
+  border-color: rgba(13, 148, 136, 0.22);
+  border-left: 3px solid rgba(45, 212, 191, 0.35);
+}
+body.dark-mode .simplified-campaign-card.theme-cat-home.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-home.tier-later .sample-domain-title {
+  color: #5EEAD4;
 }
 
-body.dark-mode .simplified-campaign-card.theme-food {
-  background: linear-gradient(135deg, rgba(101, 163, 13, 0.16) 0%, rgba(30, 41, 59, 0.8) 100%);
-  border-color: rgba(101, 163, 13, 0.4);
+/* 5. Food & Nutrition (Dark) */
+body.dark-mode .simplified-campaign-card.theme-cat-food.tier-now,
+body.dark-mode .simplified-campaign-card.theme-food.tier-now {
+  background: linear-gradient(135deg, rgba(101, 163, 13, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(101, 163, 13, 0.45);
+  border-left: 4px solid #A3E635;
 }
-body.dark-mode .simplified-campaign-card.theme-food .sample-domain-title {
+body.dark-mode .simplified-campaign-card.theme-cat-food.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-food.tier-now .sample-domain-title {
   color: #D9F99D;
+}
+body.dark-mode .simplified-campaign-card.theme-cat-food.tier-later,
+body.dark-mode .simplified-campaign-card.theme-food.tier-later {
+  background: linear-gradient(135deg, rgba(101, 163, 13, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
+  border-color: rgba(101, 163, 13, 0.22);
+  border-left: 3px solid rgba(163, 230, 53, 0.35);
+}
+body.dark-mode .simplified-campaign-card.theme-cat-food.tier-later .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-food.tier-later .sample-domain-title {
+  color: #BEF264;
 }
 
 .card-bottom-actions {

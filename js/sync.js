@@ -382,13 +382,13 @@ class SyncManager {
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
     let mergedCampaigns = incoming.coverCampaigns;
-    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 4);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 4 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 4)) {
+    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 5);
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 5 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 5)) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
-      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 4)
+      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 5)
         ? storage.data.coverCampaigns
         : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
-      mergedCampVersion = 4;
+      mergedCampVersion = 5;
       localWasRicher = true;
     }
 

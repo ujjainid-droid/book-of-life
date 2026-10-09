@@ -289,22 +289,25 @@ window.renderCoverHubPage = renderCoverHubPage;
    Unified Life Architecture Card Renderer & Handlers
    -------------------------------------------------------------------------- */
 function getDomainThemeClass(camp) {
-  if (camp.theme) return `theme-${camp.theme}`;
   const t = (camp.title || camp.id || '').toLowerCase();
-  if (t.includes('school') || t.includes('iep') || t.includes('ood')) return 'theme-school';
-  if (t.includes('hair')) return 'theme-haircare';
-  if (t.includes('surg')) return 'theme-surgery';
-  if (t.includes('oon') || t.includes('reimb') || t.includes('claim')) return 'theme-claims';
-  if (t.includes('skin')) return 'theme-skincare';
-  if (t.includes('foot')) return 'theme-footcare';
-  if (t.includes('make') || t.includes('makeup')) return 'theme-makeup';
-  if (t.includes('outfit') || t.includes('wardrobe') || t.includes('cloth')) return 'theme-outfits';
-  if (t.includes('jewel')) return 'theme-jewelry';
-  if (t.includes('finan') || t.includes('money') || t.includes('tax')) return 'theme-finance';
-  if (t.includes('home') || t.includes('declutter')) return 'theme-home';
-  if (t.includes('eye') || t.includes('under eye')) return 'theme-undereye';
-  if (t.includes('food') || t.includes('nutri') || t.includes('meal')) return 'theme-food';
-  return 'theme-violet';
+  // Color 1 - Z school ....
+  if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor')) {
+    return 'theme-cat-school';
+  }
+  // Color 3 - oon reimbursement, personal finance
+  if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget') || t.includes('superbill')) {
+    return 'theme-cat-finance';
+  }
+  // Color 4 - home declutter
+  if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
+    return 'theme-cat-home';
+  }
+  // Color 5 - food
+  if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook')) {
+    return 'theme-cat-food';
+  }
+  // Color 2 - Haircare, surgery, skin, foot, makeup, outfits, jewelry, under eye... (Personal Care & Aesthetics)
+  return 'theme-cat-care';
 }
 window.getDomainThemeClass = getDomainThemeClass;
 

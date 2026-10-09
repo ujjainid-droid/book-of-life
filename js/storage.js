@@ -204,7 +204,7 @@ class StorageManager {
             id: 'camp-school',
             title: 'Z school, ood, IEP',
             status: 'IP',
-            theme: 'school',
+            theme: 'cat-school',
             tools: {
               margo: { label: 'Z Admissions & Battle Plan', action: 'school-plan' },
               apple: { noteQuery: '# SCHOOL 01_BATTLE PLAN' },
@@ -217,7 +217,7 @@ class StorageManager {
             id: 'camp-haircare',
             title: 'Haircare',
             status: 'IP',
-            theme: 'haircare',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Haircare Checkpoint', action: 'haircare' },
               apple: { noteQuery: '# BEAUTY 02_HAIR' },
@@ -230,7 +230,7 @@ class StorageManager {
             id: 'camp-surgery',
             title: 'Surgery',
             status: 'IP',
-            theme: 'surgery',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Vitality & Recovery', action: 'vitality' },
               apple: { noteQuery: '# HEALTH 02_SURGERY' },
@@ -243,7 +243,7 @@ class StorageManager {
             id: 'camp-oon',
             title: 'oon reimbrsement',
             status: 'IP',
-            theme: 'claims',
+            theme: 'cat-finance',
             tools: {
               margo: { label: 'Medical Claims Tracker', action: 'claims' },
               apple: { noteQuery: '# CLAIMS 01_TRACKER' },
@@ -258,7 +258,7 @@ class StorageManager {
             id: 'camp-skincare',
             title: 'Skincare',
             status: 'NS',
-            theme: 'skincare',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Skincare Regimen' },
               apple: { noteQuery: '# BEAUTY 01_SKINCARE' },
@@ -271,7 +271,7 @@ class StorageManager {
             id: 'camp-footcare',
             title: 'Foot care',
             status: 'NS',
-            theme: 'footcare',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Foot Care' },
               apple: { noteQuery: '# BEAUTY 04_FOOTCARE' },
@@ -284,7 +284,7 @@ class StorageManager {
             id: 'camp-makeup',
             title: 'Makeup',
             status: 'NS',
-            theme: 'makeup',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Makeup & Beauty' },
               apple: { noteQuery: '# BEAUTY 05_MAKEUP' },
@@ -297,7 +297,7 @@ class StorageManager {
             id: 'camp-outfits',
             title: 'Outfits',
             status: 'NS',
-            theme: 'outfits',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Style & Outfits' },
               apple: { noteQuery: '# STYLE 01_OUTFITS' },
@@ -310,7 +310,7 @@ class StorageManager {
             id: 'camp-jewelry',
             title: 'Jewelry',
             status: 'NS',
-            theme: 'jewelry',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Jewelry & Accessories' },
               apple: { noteQuery: '# STYLE 02_JEWELRY' },
@@ -323,7 +323,7 @@ class StorageManager {
             id: 'camp-finance',
             title: 'Personal Finance',
             status: 'NS',
-            theme: 'finance',
+            theme: 'cat-finance',
             tools: {
               margo: { label: 'Financial Health', action: 'finance' },
               apple: { noteQuery: '# FINANCE 01_OVERVIEW' },
@@ -336,7 +336,7 @@ class StorageManager {
             id: 'camp-home',
             title: 'Home declutter',
             status: 'NS',
-            theme: 'home',
+            theme: 'cat-home',
             tools: {
               margo: { label: 'Home Harmony' },
               apple: { noteQuery: '# HOME 01_DECLUTTER' },
@@ -349,7 +349,7 @@ class StorageManager {
             id: 'camp-undereye',
             title: 'Under eye bags',
             status: 'NS',
-            theme: 'undereye',
+            theme: 'cat-care',
             tools: {
               margo: { label: 'Eye Care & Vitality' },
               apple: { noteQuery: '# BEAUTY 03_UNDEREYE' },
@@ -362,7 +362,7 @@ class StorageManager {
             id: 'camp-healthyfood',
             title: 'Healthy food',
             status: 'NS',
-            theme: 'food',
+            theme: 'cat-food',
             tools: {
               margo: { label: 'Nutrition & Daily Choices', action: 'choices' },
               apple: { noteQuery: '# HEALTH 01_FOOD' },
@@ -818,9 +818,9 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 4 || !Array.isArray(merged.coverCampaigns.now)) {
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 5 || !Array.isArray(merged.coverCampaigns.now)) {
         merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
-        merged.coverCampaignsSeedVersion = 4;
+        merged.coverCampaignsSeedVersion = 5;
       }
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
