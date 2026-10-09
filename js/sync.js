@@ -278,20 +278,15 @@ class SyncManager {
     // 10. Z Log and Titration Seeds
     let mergedZLog = incoming.zlogEntries;
     let mergedZLogVersion = incoming.zlogSeedVersion;
-    if (!mergedZLogVersion || mergedZLogVersion < 12 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-01'] || !mergedZLog['2026-10-07'] || (mergedZLog['2026-10-07'] && !mergedZLog['2026-10-07'].rating) || (mergedZLog['2026-10-07'] && mergedZLog['2026-10-07'].notes && !mergedZLog['2026-10-07'].notes.includes('dismissal')) || (mergedZLog['2026-10-01'] && mergedZLog['2026-10-01'].notes && mergedZLog['2026-10-01'].notes.includes('Daily Overview'))) {
+    if (!mergedZLogVersion || mergedZLogVersion < 13 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-09-30'] || !mergedZLog['2026-10-01'] || !mergedZLog['2026-10-02'] || !mergedZLog['2026-10-07'] || (mergedZLog['2026-09-30'] && !mergedZLog['2026-09-30'].rating) || (mergedZLog['2026-10-01'] && !mergedZLog['2026-10-01'].rating) || (mergedZLog['2026-10-02'] && !mergedZLog['2026-10-02'].rating) || (mergedZLog['2026-10-07'] && !mergedZLog['2026-10-07'].rating) || (mergedZLog['2026-10-07'] && mergedZLog['2026-10-07'].notes && !mergedZLog['2026-10-07'].notes.includes('dismissal'))) {
       const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
       if (mergedZLog && typeof mergedZLog === 'object') {
         for (const [d, entry] of Object.entries(mergedZLog)) {
-          if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
-            entry.notes = '';
-            entry.rating = null;
-            entry.ratingRaw = '';
-          }
           if (entry) {
             const hasNotes = !!(entry.notes && entry.notes.trim());
             const hasRating = !!(entry.rating && entry.rating > 0);
             const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (d === '2026-10-07') {
+            if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
               cleanDefaults[d] = {
                 ...(cleanDefaults[d] || {}),
                 attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
@@ -304,16 +299,11 @@ class SyncManager {
       }
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
-          if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
-            entry.notes = '';
-            entry.rating = null;
-            entry.ratingRaw = '';
-          }
           if (entry) {
             const hasNotes = !!(entry.notes && entry.notes.trim());
             const hasRating = !!(entry.rating && entry.rating > 0);
             const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (d === '2026-10-07') {
+            if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
               cleanDefaults[d] = {
                 ...(cleanDefaults[d] || {}),
                 attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
@@ -325,7 +315,7 @@ class SyncManager {
         }
       }
       mergedZLog = cleanDefaults;
-      mergedZLogVersion = 12;
+      mergedZLogVersion = 13;
       localWasRicher = true;
     }
 

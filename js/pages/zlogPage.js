@@ -77,7 +77,7 @@ function renderZLogPage(targetSubTab) {
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
-    storage.data.zlogSeedVersion < 12 ||
+    storage.data.zlogSeedVersion < 13 ||
     !storage.data.titrationSeedVersion ||
     storage.data.titrationSeedVersion < 7 ||
     currentTitration.length < 35 ||
@@ -85,29 +85,27 @@ function renderZLogPage(targetSubTab) {
     currentStats.goodDays > 300 ||
     !storage.data.zlogEntries ||
     !storage.data.zlogEntries['2026-09-12'] ||
+    !storage.data.zlogEntries['2026-09-30'] ||
     !storage.data.zlogEntries['2026-10-01'] ||
+    !storage.data.zlogEntries['2026-10-02'] ||
     !storage.data.zlogEntries['2026-10-07'] ||
+    (storage.data.zlogEntries['2026-09-30'] && !storage.data.zlogEntries['2026-09-30'].rating) ||
+    (storage.data.zlogEntries['2026-10-01'] && !storage.data.zlogEntries['2026-10-01'].rating) ||
+    (storage.data.zlogEntries['2026-10-02'] && !storage.data.zlogEntries['2026-10-02'].rating) ||
     (storage.data.zlogEntries['2026-10-07'] && !storage.data.zlogEntries['2026-10-07'].rating) ||
-    (storage.data.zlogEntries['2026-10-07'] && storage.data.zlogEntries['2026-10-07'].notes && !storage.data.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
-    (storage.data.zlogEntries['2026-10-01'] && storage.data.zlogEntries['2026-10-01'].notes && storage.data.zlogEntries['2026-10-01'].notes.includes('Daily Overview'));
+    (storage.data.zlogEntries['2026-10-07'] && storage.data.zlogEntries['2026-10-07'].notes && !storage.data.zlogEntries['2026-10-07'].notes.includes('dismissal'));
 
   if (isStaleCorrupted) {
     if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
       const cleanDefaults = { ...DEFAULT_ZLOG_ENTRIES };
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
-          // Strip any erroneously injected teacher Daily Report text
-          if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
-            entry.notes = '';
-            entry.rating = null;
-            entry.ratingRaw = '';
-          }
           if (entry) {
             const hasNotes = !!(entry.notes && entry.notes.trim());
             const hasRating = !!(entry.rating && entry.rating > 0);
             const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (d === '2026-10-07') {
-              // Keep the authoritative updated note from cleanDefaults
+            if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
+              // Keep the authoritative updated note and rating from cleanDefaults, but preserve user attachments
               cleanDefaults[d] = {
                 ...(cleanDefaults[d] || {}),
                 attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
@@ -119,7 +117,7 @@ function renderZLogPage(targetSubTab) {
         }
       }
       storage.data.zlogEntries = cleanDefaults;
-      storage.data.zlogSeedVersion = 12;
+      storage.data.zlogSeedVersion = 13;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
       const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
@@ -333,9 +331,16 @@ function formatStructuredNotes(rawNotes, entryDate) {
       if (!line) continue;
       if (line.includes('●') || line.includes('•') || line.includes('▪')) {
         const parts = line.split(/[●•▪]+/).map(p => p.trim()).filter(p => p.length > 0);
-        cleanSchoolItems.push(...parts);
+        for (const p of parts) {
+          if (!/^(?:(?:\d+\/\d+)?\s*Today\s*I\s*earned\s*(?:__)?\d+(?:__)?\s*Dojo\s*Points\.?)$/i.test(p)) {
+            cleanSchoolItems.push(p);
+          }
+        }
       } else {
-        cleanSchoolItems.push(line.replace(/^[-*]\s*/, '').trim());
+        const cleaned = line.replace(/^[-*]\s*/, '').trim();
+        if (!/^(?:(?:\d+\/\d+)?\s*Today\s*I\s*earned\s*(?:__)?\d+(?:__)?\s*Dojo\s*Points\.?)$/i.test(cleaned)) {
+          cleanSchoolItems.push(cleaned);
+        }
       }
     }
 
@@ -3367,7 +3372,7 @@ function forceSyncZLogDefaults() {
       }
     }
     storage.data.zlogEntries = cleanDefaults;
-    storage.data.zlogSeedVersion = 9;
+    storage.data.zlogSeedVersion = 13;
   }
   if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
     storage.data.titrationHistory = JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY));

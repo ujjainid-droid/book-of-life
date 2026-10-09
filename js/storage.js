@@ -654,31 +654,29 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 12 ||
+        merged.zlogSeedVersion < 13 ||
         !merged.zlogEntries['2026-09-12'] ||
+        !merged.zlogEntries['2026-09-30'] ||
         !merged.zlogEntries['2026-10-01'] ||
+        !merged.zlogEntries['2026-10-02'] ||
         !merged.zlogEntries['2026-10-07'] ||
+        (merged.zlogEntries['2026-09-30'] && !merged.zlogEntries['2026-09-30'].rating) ||
+        (merged.zlogEntries['2026-10-01'] && !merged.zlogEntries['2026-10-01'].rating) ||
+        (merged.zlogEntries['2026-10-02'] && !merged.zlogEntries['2026-10-02'].rating) ||
         (merged.zlogEntries['2026-10-07'] && !merged.zlogEntries['2026-10-07'].rating) ||
-        (merged.zlogEntries['2026-10-07'] && merged.zlogEntries['2026-10-07'].notes && !merged.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
-        (merged.zlogEntries['2026-10-01'] && merged.zlogEntries['2026-10-01'].notes && merged.zlogEntries['2026-10-01'].notes.includes('Daily Overview'));
+        (merged.zlogEntries['2026-10-07'] && merged.zlogEntries['2026-10-07'].notes && !merged.zlogEntries['2026-10-07'].notes.includes('dismissal'));
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
         if (merged.zlogEntries && typeof merged.zlogEntries === 'object') {
           for (const [d, entry] of Object.entries(merged.zlogEntries)) {
-            // Strip any erroneously injected teacher Daily Report text
-            if (entry && entry.notes && entry.notes.includes('Daily Overview')) {
-              entry.notes = '';
-              entry.rating = null;
-              entry.ratingRaw = '';
-            }
             // Preserve authentic user logs, ratings, attachments
             if (entry) {
               const hasNotes = !!(entry.notes && entry.notes.trim());
               const hasRating = !!(entry.rating && entry.rating > 0);
               const hasAttachments = !!(entry.attachments && entry.attachments.length);
-              if (d === '2026-10-07') {
-                // Keep the authoritative updated note from cleanDefaults
+              if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
+                // Keep the authoritative updated note and rating from cleanDefaults, but preserve user attachments
                 cleanDefaults[d] = {
                   ...(cleanDefaults[d] || {}),
                   attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
@@ -690,7 +688,7 @@ class StorageManager {
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 12;
+        merged.zlogSeedVersion = 13;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);
