@@ -77,7 +77,7 @@ function renderZLogPage(targetSubTab) {
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
-    storage.data.zlogSeedVersion < 13 ||
+    storage.data.zlogSeedVersion < 14 ||
     !storage.data.titrationSeedVersion ||
     storage.data.titrationSeedVersion < 7 ||
     currentTitration.length < 35 ||
@@ -85,15 +85,11 @@ function renderZLogPage(targetSubTab) {
     currentStats.goodDays > 300 ||
     !storage.data.zlogEntries ||
     !storage.data.zlogEntries['2026-09-12'] ||
-    !storage.data.zlogEntries['2026-09-30'] ||
-    !storage.data.zlogEntries['2026-10-01'] ||
-    !storage.data.zlogEntries['2026-10-02'] ||
     !storage.data.zlogEntries['2026-10-07'] ||
-    (storage.data.zlogEntries['2026-09-30'] && !storage.data.zlogEntries['2026-09-30'].rating) ||
-    (storage.data.zlogEntries['2026-10-01'] && !storage.data.zlogEntries['2026-10-01'].rating) ||
-    (storage.data.zlogEntries['2026-10-02'] && !storage.data.zlogEntries['2026-10-02'].rating) ||
+    !storage.data.zlogEntries['2026-10-08'] ||
     (storage.data.zlogEntries['2026-10-07'] && !storage.data.zlogEntries['2026-10-07'].rating) ||
-    (storage.data.zlogEntries['2026-10-07'] && storage.data.zlogEntries['2026-10-07'].notes && !storage.data.zlogEntries['2026-10-07'].notes.includes('dismissal'));
+    (storage.data.zlogEntries['2026-10-07'] && storage.data.zlogEntries['2026-10-07'].notes && !storage.data.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
+    (storage.data.zlogEntries['2026-09-30'] && storage.data.zlogEntries['2026-09-30'].notes && storage.data.zlogEntries['2026-09-30'].notes.includes('School / Teacher Notes'));
 
   if (isStaleCorrupted) {
     if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
@@ -101,23 +97,33 @@ function renderZLogPage(targetSubTab) {
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
           if (entry) {
-            const hasNotes = !!(entry.notes && entry.notes.trim());
-            const hasRating = !!(entry.rating && entry.rating > 0);
-            const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
-              // Keep the authoritative updated note and rating from cleanDefaults, but preserve user attachments
-              cleanDefaults[d] = {
-                ...(cleanDefaults[d] || {}),
-                attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
-              };
-            } else if (hasNotes || hasRating || hasAttachments) {
-              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+          }
+        }
+      }
+      for (const targetDate of ['2026-09-30', '2026-10-01', '2026-10-02']) {
+        if (cleanDefaults[targetDate]) {
+          const defaultAtts = (DEFAULT_ZLOG_ENTRIES[targetDate] && DEFAULT_ZLOG_ENTRIES[targetDate].attachments) || [];
+          const existingAtts = cleanDefaults[targetDate].attachments || [];
+          const mergedAtts = [...existingAtts];
+          for (const defAtt of defaultAtts) {
+            if (!mergedAtts.some(a => a && (a.id === defAtt.id || a.name === defAtt.name))) {
+              mergedAtts.push(defAtt);
+            }
+          }
+          cleanDefaults[targetDate].attachments = mergedAtts;
+          if (cleanDefaults[targetDate].notes && cleanDefaults[targetDate].notes.includes('🏫 School / Teacher Notes:')) {
+            const idx = cleanDefaults[targetDate].notes.indexOf('🏫 School / Teacher Notes:');
+            cleanDefaults[targetDate].notes = cleanDefaults[targetDate].notes.substring(0, idx).trim();
+            if (!cleanDefaults[targetDate].notes) {
+              cleanDefaults[targetDate].rating = null;
+              cleanDefaults[targetDate].ratingRaw = '';
             }
           }
         }
       }
       storage.data.zlogEntries = cleanDefaults;
-      storage.data.zlogSeedVersion = 13;
+      storage.data.zlogSeedVersion = 14;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
       const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
@@ -3372,7 +3378,7 @@ function forceSyncZLogDefaults() {
       }
     }
     storage.data.zlogEntries = cleanDefaults;
-    storage.data.zlogSeedVersion = 13;
+    storage.data.zlogSeedVersion = 14;
   }
   if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
     storage.data.titrationHistory = JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY));
@@ -3874,8 +3880,32 @@ function renderEntryAttachmentsStrip(attachments, entryDate) {
 
 async function viewZLogPdf(id, name) {
   try {
-    const record = await pdfStore.getPdf(id);
-    if (!record || !record.url) {
+    let pdfUrl = null;
+    let sizeStr = '';
+
+    // 1. Check if the attachment has a direct URL (e.g. bundled static reports/ file)
+    const allEntries = (typeof storage !== 'undefined' && storage.data && storage.data.zlogEntries) ? storage.data.zlogEntries : {};
+    for (const entry of Object.values(allEntries)) {
+      if (entry && Array.isArray(entry.attachments)) {
+        const found = entry.attachments.find(a => a && a.id === id);
+        if (found) {
+          if (found.url) pdfUrl = found.url;
+          if (found.size) sizeStr = found.size;
+          break;
+        }
+      }
+    }
+
+    // 2. Fall back to IndexedDB local store
+    if (!pdfUrl && typeof pdfStore !== 'undefined' && pdfStore) {
+      const record = await pdfStore.getPdf(id);
+      if (record && record.url) {
+        pdfUrl = record.url;
+        sizeStr = record.size || sizeStr;
+      }
+    }
+
+    if (!pdfUrl) {
       if (typeof showToast === 'function') showToast('PDF file not found in local store.', 'error');
       else alert('PDF file not found in local store.');
       return;
@@ -3896,10 +3926,10 @@ async function viewZLogPdf(id, name) {
           <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
             <span style="font-size: 1.2rem;">📄</span>
             <h3 style="margin: 0; font-size: 0.96rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(name)}</h3>
-            <span style="font-size: 0.74rem; color: var(--text-muted); background: var(--bg-surface-alt); padding: 2px 6px; border-radius: 4px;">${escapeHtml(record.size || '')}</span>
+            <span style="font-size: 0.74rem; color: var(--text-muted); background: var(--bg-surface-alt); padding: 2px 6px; border-radius: 4px;">${escapeHtml(sizeStr || '')}</span>
           </div>
           <div style="display: flex; align-items: center; gap: 8px;">
-            <a href="${record.url}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.76rem; padding: 4px 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+            <a href="${pdfUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="font-size: 0.76rem; padding: 4px 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
               <i data-lucide="external-link" style="width: 13px; height: 13px;"></i>
               <span>New Tab</span>
             </a>
@@ -3911,7 +3941,7 @@ async function viewZLogPdf(id, name) {
           </div>
         </div>
         <div style="flex: 1; width: 100%; height: 100%; min-height: 420px; border-radius: 8px; overflow: hidden; background: #374151;">
-          <iframe src="${record.url}" style="width: 100%; height: 100%; border: none;"></iframe>
+          <iframe src="${pdfUrl}" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
       </div>
     `;
@@ -3935,10 +3965,26 @@ function closePdfViewerModal() {
 
 async function downloadZLogPdf(id, name) {
   try {
-    const record = await pdfStore.getPdf(id);
-    if (!record || !record.url) return;
+    let pdfUrl = null;
+    const allEntries = (typeof storage !== 'undefined' && storage.data && storage.data.zlogEntries) ? storage.data.zlogEntries : {};
+    for (const entry of Object.values(allEntries)) {
+      if (entry && Array.isArray(entry.attachments)) {
+        const found = entry.attachments.find(a => a && a.id === id);
+        if (found && found.url) {
+          pdfUrl = found.url;
+          break;
+        }
+      }
+    }
+
+    if (!pdfUrl && typeof pdfStore !== 'undefined' && pdfStore) {
+      const record = await pdfStore.getPdf(id);
+      if (record && record.url) pdfUrl = record.url;
+    }
+
+    if (!pdfUrl) return;
     const a = document.createElement('a');
-    a.href = record.url;
+    a.href = pdfUrl;
     a.download = name || 'Daily_Report.pdf';
     document.body.appendChild(a);
     a.click();
@@ -3951,7 +3997,9 @@ async function downloadZLogPdf(id, name) {
 async function deleteZLogPdfEntryAttachment(id, dateStr) {
   if (!confirm('Are you sure you want to remove this daily report PDF?')) return;
   try {
-    await pdfStore.deletePdf(id);
+    if (typeof pdfStore !== 'undefined' && pdfStore) {
+      await pdfStore.deletePdf(id).catch(() => {});
+    }
     storage.removeZLogAttachment(dateStr, id);
     if (typeof showToast === 'function') showToast('Daily report PDF removed');
     renderZLogTimeline();

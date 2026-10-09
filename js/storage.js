@@ -654,41 +654,46 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 13 ||
+        merged.zlogSeedVersion < 14 ||
         !merged.zlogEntries['2026-09-12'] ||
-        !merged.zlogEntries['2026-09-30'] ||
-        !merged.zlogEntries['2026-10-01'] ||
-        !merged.zlogEntries['2026-10-02'] ||
         !merged.zlogEntries['2026-10-07'] ||
-        (merged.zlogEntries['2026-09-30'] && !merged.zlogEntries['2026-09-30'].rating) ||
-        (merged.zlogEntries['2026-10-01'] && !merged.zlogEntries['2026-10-01'].rating) ||
-        (merged.zlogEntries['2026-10-02'] && !merged.zlogEntries['2026-10-02'].rating) ||
+        !merged.zlogEntries['2026-10-08'] ||
         (merged.zlogEntries['2026-10-07'] && !merged.zlogEntries['2026-10-07'].rating) ||
-        (merged.zlogEntries['2026-10-07'] && merged.zlogEntries['2026-10-07'].notes && !merged.zlogEntries['2026-10-07'].notes.includes('dismissal'));
+        (merged.zlogEntries['2026-10-07'] && merged.zlogEntries['2026-10-07'].notes && !merged.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
+        (merged.zlogEntries['2026-09-30'] && merged.zlogEntries['2026-09-30'].notes && merged.zlogEntries['2026-09-30'].notes.includes('School / Teacher Notes'));
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
         if (merged.zlogEntries && typeof merged.zlogEntries === 'object') {
           for (const [d, entry] of Object.entries(merged.zlogEntries)) {
-            // Preserve authentic user logs, ratings, attachments
             if (entry) {
-              const hasNotes = !!(entry.notes && entry.notes.trim());
-              const hasRating = !!(entry.rating && entry.rating > 0);
-              const hasAttachments = !!(entry.attachments && entry.attachments.length);
-              if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
-                // Keep the authoritative updated note and rating from cleanDefaults, but preserve user attachments
-                cleanDefaults[d] = {
-                  ...(cleanDefaults[d] || {}),
-                  attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
-                };
-              } else if (hasNotes || hasRating || hasAttachments) {
-                cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            }
+          }
+        }
+        for (const targetDate of ['2026-09-30', '2026-10-01', '2026-10-02']) {
+          if (cleanDefaults[targetDate]) {
+            const defaultAtts = (DEFAULT_ZLOG_ENTRIES[targetDate] && DEFAULT_ZLOG_ENTRIES[targetDate].attachments) || [];
+            const existingAtts = cleanDefaults[targetDate].attachments || [];
+            const mergedAtts = [...existingAtts];
+            for (const defAtt of defaultAtts) {
+              if (!mergedAtts.some(a => a && (a.id === defAtt.id || a.name === defAtt.name))) {
+                mergedAtts.push(defAtt);
+              }
+            }
+            cleanDefaults[targetDate].attachments = mergedAtts;
+            if (cleanDefaults[targetDate].notes && cleanDefaults[targetDate].notes.includes('🏫 School / Teacher Notes:')) {
+              const idx = cleanDefaults[targetDate].notes.indexOf('🏫 School / Teacher Notes:');
+              cleanDefaults[targetDate].notes = cleanDefaults[targetDate].notes.substring(0, idx).trim();
+              if (!cleanDefaults[targetDate].notes) {
+                cleanDefaults[targetDate].rating = null;
+                cleanDefaults[targetDate].ratingRaw = '';
               }
             }
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 13;
+        merged.zlogSeedVersion = 14;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);

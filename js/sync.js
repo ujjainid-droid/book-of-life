@@ -278,44 +278,45 @@ class SyncManager {
     // 10. Z Log and Titration Seeds
     let mergedZLog = incoming.zlogEntries;
     let mergedZLogVersion = incoming.zlogSeedVersion;
-    if (!mergedZLogVersion || mergedZLogVersion < 13 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-09-30'] || !mergedZLog['2026-10-01'] || !mergedZLog['2026-10-02'] || !mergedZLog['2026-10-07'] || (mergedZLog['2026-09-30'] && !mergedZLog['2026-09-30'].rating) || (mergedZLog['2026-10-01'] && !mergedZLog['2026-10-01'].rating) || (mergedZLog['2026-10-02'] && !mergedZLog['2026-10-02'].rating) || (mergedZLog['2026-10-07'] && !mergedZLog['2026-10-07'].rating) || (mergedZLog['2026-10-07'] && mergedZLog['2026-10-07'].notes && !mergedZLog['2026-10-07'].notes.includes('dismissal'))) {
+    if (!mergedZLogVersion || mergedZLogVersion < 14 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-07'] || !mergedZLog['2026-10-08'] || (mergedZLog['2026-10-07'] && !mergedZLog['2026-10-07'].rating) || (mergedZLog['2026-10-07'] && mergedZLog['2026-10-07'].notes && !mergedZLog['2026-10-07'].notes.includes('dismissal')) || (mergedZLog['2026-09-30'] && mergedZLog['2026-09-30'].notes && mergedZLog['2026-09-30'].notes.includes('School / Teacher Notes'))) {
       const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
       if (mergedZLog && typeof mergedZLog === 'object') {
         for (const [d, entry] of Object.entries(mergedZLog)) {
           if (entry) {
-            const hasNotes = !!(entry.notes && entry.notes.trim());
-            const hasRating = !!(entry.rating && entry.rating > 0);
-            const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
-              cleanDefaults[d] = {
-                ...(cleanDefaults[d] || {}),
-                attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
-              };
-            } else if (hasNotes || hasRating || hasAttachments) {
-              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
-            }
+            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
           }
         }
       }
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
           if (entry) {
-            const hasNotes = !!(entry.notes && entry.notes.trim());
-            const hasRating = !!(entry.rating && entry.rating > 0);
-            const hasAttachments = !!(entry.attachments && entry.attachments.length);
-            if (['2026-09-30', '2026-10-01', '2026-10-02', '2026-10-07'].includes(d)) {
-              cleanDefaults[d] = {
-                ...(cleanDefaults[d] || {}),
-                attachments: entry.attachments || (cleanDefaults[d] && cleanDefaults[d].attachments) || []
-              };
-            } else if (hasNotes || hasRating || hasAttachments) {
-              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+          }
+        }
+      }
+      for (const targetDate of ['2026-09-30', '2026-10-01', '2026-10-02']) {
+        if (cleanDefaults[targetDate]) {
+          const defaultAtts = (DEFAULT_ZLOG_ENTRIES[targetDate] && DEFAULT_ZLOG_ENTRIES[targetDate].attachments) || [];
+          const existingAtts = cleanDefaults[targetDate].attachments || [];
+          const mergedAtts = [...existingAtts];
+          for (const defAtt of defaultAtts) {
+            if (!mergedAtts.some(a => a && (a.id === defAtt.id || a.name === defAtt.name))) {
+              mergedAtts.push(defAtt);
+            }
+          }
+          cleanDefaults[targetDate].attachments = mergedAtts;
+          if (cleanDefaults[targetDate].notes && cleanDefaults[targetDate].notes.includes('🏫 School / Teacher Notes:')) {
+            const idx = cleanDefaults[targetDate].notes.indexOf('🏫 School / Teacher Notes:');
+            cleanDefaults[targetDate].notes = cleanDefaults[targetDate].notes.substring(0, idx).trim();
+            if (!cleanDefaults[targetDate].notes) {
+              cleanDefaults[targetDate].rating = null;
+              cleanDefaults[targetDate].ratingRaw = '';
             }
           }
         }
       }
       mergedZLog = cleanDefaults;
-      mergedZLogVersion = 13;
+      mergedZLogVersion = 14;
       localWasRicher = true;
     }
 

@@ -2682,10 +2682,21 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-09-30": {
     "date": "2026-09-30",
     "rawDate": "Wed,  9 -30- 26",
-    "rating": 3,
-    "ratingRaw": "Almost Good",
+    "rating": null,
+    "ratingRaw": "",
     "aggression": false,
-    "notes": "🏫 School / Teacher Notes:\nToday I earned 21 Dojo Points.\n● Needed reminders to keep a safe body at the standing desk & engage in appropriate discussion w/ peers\n● Needed reminders: didn't stay in math class + missed small groups; didn't do Social Studies activity\n● Nice job with completing ELA work\n● Nice job with transitioning out of room\n● Nice job with the Science activity\n● Data Sheet (21/30 pts) · Time out of instruction: 10:05-10:50 AM (Math & Small Group Math), 12:20-12:28 PM (Reading), 1:23-1:35 PM (Special / Gym), 2:05-2:17 PM (Social Studies)",
+    "notes": "",
+    "attachments": [
+      {
+        "id": "pdf_2026-09-30_daily_report",
+        "date": "2026-09-30",
+        "name": "Daily_Report_2026-09-30.pdf",
+        "size": "113 KB",
+        "sizeBytes": 115423,
+        "url": "reports/Daily_Report_2026-09-30.pdf",
+        "type": "application/pdf"
+      }
+    ],
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2704,10 +2715,21 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-10-01": {
     "date": "2026-10-01",
     "rawDate": "Thu, 10 - 1- 26",
-    "rating": 4,
-    "ratingRaw": "Good Day",
+    "rating": null,
+    "ratingRaw": "",
     "aggression": false,
-    "notes": "🏫 School / Teacher Notes:\nToday I earned 28 Dojo Points.\n● Needed reminders to complete word study (refused to work, sat on carpet w/ book)\n● Needed reminders to use standing desk safely\n● Nice job with the creation of his own robot mimicry in Science\n● Nice job with think outside the box - it's not a pumpkin and math check up :)\n● Nice job with drafting his intro in writing\n● Data Sheet (28/30 pts) · Time out of instruction: 12:30-12:35 PM (Classroom Meeting), 1:33-1:55 PM (Word Study / Special)",
+    "notes": "",
+    "attachments": [
+      {
+        "id": "pdf_2026-10-01_daily_report",
+        "date": "2026-10-01",
+        "name": "Daily_Report_2026-10-01.pdf",
+        "size": "105 KB",
+        "sizeBytes": 107334,
+        "url": "reports/Daily_Report_2026-10-01.pdf",
+        "type": "application/pdf"
+      }
+    ],
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2726,10 +2748,21 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-10-02": {
     "date": "2026-10-02",
     "rawDate": "Fri, 10 - 2- 26",
-    "rating": 3,
-    "ratingRaw": "Almost Good",
+    "rating": null,
+    "ratingRaw": "",
     "aggression": false,
-    "notes": "🏫 School / Teacher Notes:\nToday I earned 21 Dojo Points.\n● Needed reminders to calmly use my fidget\n● Nice job with working w/ classmate / teacher\n● Nice job with completing my work\n● Nice job with staying on task 1st period\n● Data Sheet (21/30 pts) · Notes & Time out of instruction: Science (went to nurse / bug bite); Math (0/3 pts, 9:55-10:25 AM: left without permission to Room 27); Small Group Math (1/3 pts, came back 10:25 AM didn't work); Classroom Meeting (1/3 pts, 11:33-11:46 AM nurse visit)",
+    "notes": "",
+    "attachments": [
+      {
+        "id": "pdf_2026-10-02_daily_report",
+        "date": "2026-10-02",
+        "name": "Daily_Report_2026-10-02.pdf",
+        "size": "117 KB",
+        "sizeBytes": 119631,
+        "url": "reports/Daily_Report_2026-10-02.pdf",
+        "type": "application/pdf"
+      }
+    ],
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2840,6 +2873,28 @@ const DEFAULT_ZLOG_ENTRIES = {
     "ratingRaw": "Almost Good",
     "aggression": false,
     "notes": "- Good morning and drop off\n- called me at dismissal saying he didn't want to go to Melissa and wanted to be picked up at 6\n- dad ended up going instead\n- once home didn't do any homework yet again\n- sad over school change; apparently told some of his friends about it",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "2mg"
+    }
+  },
+  "2026-10-08": {
+    "date": "2026-10-08",
+    "rawDate": "Thu, 10 - 8- 26",
+    "rating": null,
+    "ratingRaw": "",
+    "aggression": false,
+    "notes": "",
     "meds": {
       "z": true,
       "zDose": "75mg",
