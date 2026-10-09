@@ -227,156 +227,6 @@ function renderCoverHubPage() {
           </div>
 
         </div>
-
-        <!-- Collapsible Detailed Domain Matrix -->
-        <div class="domain-matrix-accordion-wrap">
-          <details class="domain-matrix-details" id="domain-matrix-details">
-            <summary class="domain-matrix-summary">
-              <div class="summary-left">
-                <div class="summary-title-row">
-                  <span class="matrix-pill-badge">Expanded Tool Guide</span>
-                  <h4 class="summary-title">📋 Detailed Domain Matrix</h4>
-                </div>
-                <span class="summary-sub">Tap to view complete tool-by-tool breakdown across margo, Apple Notes, Google Drive, Things 3, and Gmail</span>
-              </div>
-              <div class="summary-toggle-indicator">
-                <span class="toggle-status-text">View Matrix</span>
-                <i data-lucide="chevron-down" class="matrix-chevron"></i>
-              </div>
-            </summary>
-
-            <div class="domain-matrix-table-container">
-              <table class="domain-matrix-table">
-                <thead>
-                  <tr>
-                    <th class="th-num">#</th>
-                    <th class="th-domain">Domain / Life Project</th>
-                    <th class="th-tool"><span class="tool-head-pill pill-margo">🌿 margo</span></th>
-                    <th class="th-tool"><span class="tool-head-pill pill-notes">📝 Apple Notes</span></th>
-                    <th class="th-tool"><span class="tool-head-pill pill-drive">📁 Google Drive / Docs</span></th>
-                    <th class="th-tool"><span class="tool-head-pill pill-things">⚡ Things 3</span></th>
-                    <th class="th-tool"><span class="tool-head-pill pill-gmail">✉️ Gmail</span></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- 1. School (Populated) -->
-                  <tr class="row-populated">
-                    <td class="col-num">01</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Z: School Admissions &amp; OOD Placement</div>
-                      <span class="domain-status-tag status-active">Active Campaign</span>
-                    </td>
-                    <td class="col-content-cell cell-margo">
-                      <div class="cell-main-highlight">Radar Card: Phase 2 (Selection &amp; Tours)</div>
-                      <div class="cell-desc-text">Waiting-On radar (Windsor Oct 8, Packet Oct 10)</div>
-                      <div class="cell-desc-sub muted" style="margin-top: 3px;">🌱 Z Hub: Behavior Log + Daily Report PDFs</div>
-                    </td>
-                    <td class="col-content-cell cell-notes">
-                      <code class="note-code-badge"># SCHOOL 01_BATTLE PLAN</code>
-                      <div class="cell-desc-text">School profiles, visit checklists, raw meeting thoughts, non-compliance log</div>
-                    </td>
-                    <td class="col-content-cell cell-drive">
-                      <div class="cell-main-highlight">📁 Z Records:</div>
-                      <div class="cell-desc-text">Official IEP PDFs, Neuropsych evals, PWNs, Police incident reports</div>
-                    </td>
-                    <td class="col-content-cell cell-things">
-                      <div class="cell-main-highlight">📞 Call Windsor admissions re: tour</div>
-                      <div class="cell-desc-text" style="color: #C26344; font-weight: 600;">📄 Request police incident report</div>
-                      <div class="cell-desc-sub muted">(Max 1–2 active strikes)</div>
-                    </td>
-                    <td class="col-content-cell cell-gmail">
-                      <span class="gmail-label-pill">Label: OOD-Placement</span>
-                      <div class="cell-desc-sub muted" style="margin-top: 3px;">Auto-filed district &amp; school correspondence</div>
-                    </td>
-                  </tr>
-
-                  <!-- 2. Out-of-Network Claims (Unpopulated) -->
-                  <tr class="row-pending">
-                    <td class="col-num">02</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Out-of-Network Claims</div>
-                      <span class="domain-status-tag status-pending">Pending Fill</span>
-                    </td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                  </tr>
-
-                  <!-- 3. Personal Finance (Unpopulated) -->
-                  <tr class="row-pending">
-                    <td class="col-num">03</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Personal Finance</div>
-                      <span class="domain-status-tag status-pending">Pending Fill</span>
-                    </td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                  </tr>
-
-                  <!-- 4. Home Decluttering (Unpopulated) -->
-                  <tr class="row-pending">
-                    <td class="col-num">04</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Home Decluttering</div>
-                      <span class="domain-status-tag status-pending">Pending Fill</span>
-                    </td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                  </tr>
-
-                  <!-- 5. Skincare (Unpopulated) -->
-                  <tr class="row-pending">
-                    <td class="col-num">05</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Skincare</div>
-                      <span class="domain-status-tag status-pending">Pending Fill</span>
-                    </td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                  </tr>
-
-                  <!-- 6. Haircare (Unpopulated) -->
-                  <tr class="row-pending">
-                    <td class="col-num">06</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Haircare</div>
-                      <span class="domain-status-tag status-pending">Pending Fill</span>
-                    </td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                  </tr>
-
-                  <!-- 7. Outfits & Wardrobe (Unpopulated) -->
-                  <tr class="row-pending">
-                    <td class="col-num">07</td>
-                    <td class="col-domain-cell">
-                      <div class="domain-title">Outfits &amp; Wardrobe</div>
-                      <span class="domain-status-tag status-pending">Pending Fill</span>
-                    </td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                    <td class="col-content-cell cell-empty">—</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
         </div>
       </div>
 
@@ -438,6 +288,93 @@ window.renderCoverHubPage = renderCoverHubPage;
 /* --------------------------------------------------------------------------
    Unified Life Architecture Card Renderer & Handlers
    -------------------------------------------------------------------------- */
+function getDomainThemeClass(camp) {
+  if (camp.theme) return `theme-${camp.theme}`;
+  const t = (camp.title || camp.id || '').toLowerCase();
+  if (t.includes('school') || t.includes('iep') || t.includes('ood')) return 'theme-school';
+  if (t.includes('hair')) return 'theme-haircare';
+  if (t.includes('surg')) return 'theme-surgery';
+  if (t.includes('oon') || t.includes('reimb') || t.includes('claim')) return 'theme-claims';
+  if (t.includes('skin')) return 'theme-skincare';
+  if (t.includes('foot')) return 'theme-footcare';
+  if (t.includes('make') || t.includes('makeup')) return 'theme-makeup';
+  if (t.includes('outfit') || t.includes('wardrobe') || t.includes('cloth')) return 'theme-outfits';
+  if (t.includes('jewel')) return 'theme-jewelry';
+  if (t.includes('finan') || t.includes('money') || t.includes('tax')) return 'theme-finance';
+  if (t.includes('home') || t.includes('declutter')) return 'theme-home';
+  if (t.includes('eye') || t.includes('under eye')) return 'theme-undereye';
+  if (t.includes('food') || t.includes('nutri') || t.includes('meal')) return 'theme-food';
+  return 'theme-violet';
+}
+window.getDomainThemeClass = getDomainThemeClass;
+
+function resolveCampaignTools(camp) {
+  const tools = camp.tools || {};
+  const isArr = Array.isArray(tools);
+  const findInArr = (fn) => isArr ? tools.find(fn) : null;
+  const campTitle = camp.title || '';
+
+  // 1. Margo tool
+  let margoAction = 'margo';
+  let margoLabel = campTitle;
+  if (!isArr && tools.margo) {
+    margoAction = tools.margo.action || 'margo';
+    margoLabel = tools.margo.label || campTitle;
+  } else if (isArr) {
+    const m = findInArr(t => t.action || t.isRoadmap || String(t.label || t).toLowerCase().includes('margo') || String(t.label || t).toLowerCase().includes('checkpoint'));
+    if (m) {
+      margoAction = m.action || (m.isRoadmap ? 'school-plan' : 'margo');
+      margoLabel = m.label || campTitle;
+    }
+  }
+
+  // 2. Apple Notes tool
+  let noteQuery = `# ${campTitle.toUpperCase().replace(/[^A-Z0-9_ ]/g, '')}`;
+  if (!isArr && tools.apple && tools.apple.noteQuery) {
+    noteQuery = tools.apple.noteQuery;
+  } else if (isArr) {
+    const a = findInArr(t => t.noteQuery || String(t.label || t).toLowerCase().includes('note'));
+    if (a && a.noteQuery) noteQuery = a.noteQuery;
+  }
+
+  // 3. Google Drive tool
+  let driveFolder = campTitle;
+  if (!isArr && tools.google && tools.google.folder) {
+    driveFolder = tools.google.folder;
+  } else if (isArr) {
+    const g = findInArr(t => t.folder || String(t.label || t).toLowerCase().includes('drive'));
+    if (g && g.folder) driveFolder = g.folder;
+  }
+
+  // 4. Things 3 tool
+  let thingsQuery = campTitle;
+  if (!isArr && tools.things && tools.things.query) {
+    thingsQuery = tools.things.query;
+  } else if (isArr) {
+    const t = findInArr(t => t.query || String(t.label || t).toLowerCase().includes('things'));
+    if (t && t.query) thingsQuery = t.query;
+  }
+
+  // 5. Gmail tool
+  let emailQuery = campTitle;
+  if (!isArr && tools.email && tools.email.emailQuery) {
+    emailQuery = tools.email.emailQuery;
+  } else if (isArr) {
+    const e = findInArr(t => t.emailQuery || String(t.label || t).toLowerCase().includes('gmail') || String(t.label || t).toLowerCase().includes('email'));
+    if (e && e.emailQuery) emailQuery = e.emailQuery;
+  }
+
+  return {
+    margoAction,
+    margoLabel,
+    noteQuery,
+    driveFolder,
+    thingsQuery,
+    emailQuery
+  };
+}
+window.resolveCampaignTools = resolveCampaignTools;
+
 function renderUnifiedCampaignCard(camp, tier) {
   const isNow = tier === 'now';
   const oppositeTier = isNow ? 'later' : 'now';
@@ -462,36 +399,32 @@ function renderUnifiedCampaignCard(camp, tier) {
     statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-done" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: Done &bull; Tap to change">Done</button>`;
   }
 
-  // Tools rendered as space-saving icons with rich tooltips
-  const toolsHtml = (Array.isArray(camp.tools) ? camp.tools : []).map(tool => {
-    const label = tool.label || tool;
-    const lower = String(label).toLowerCase();
+  // Resolve 5 tool launchers: m, 🍎, G, T3, email
+  const { margoAction, margoLabel, noteQuery, driveFolder, thingsQuery, emailQuery } = resolveCampaignTools(camp);
+  const themeClass = getDomainThemeClass(camp);
 
-    if (tool.isRoadmap || lower.includes('roadmap')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-roadmap" onclick="openSchoolBattlePlanModal()" title="Roadmap: View Battle Plan"><i data-lucide="map"></i></button>`;
-    } else if (tool.action === 'checkpoint' || lower.includes('checkpoint')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-checkpoint" onclick="jumpToHaircareCheckpoint()" title="Today's Haircare Checkpoint"><i data-lucide="sparkles"></i></button>`;
-    } else if (tool.action === 'claims' || lower.includes('claims') || lower.includes('reimburse')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-claims" onclick="switchDomain('finance')" title="Medical Claims &amp; Reimbursement"><i data-lucide="receipt"></i></button>`;
-    } else if (tool.folder || lower.includes('drive')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-drive" onclick="openDriveFolder('${escapeHtml(tool.folder || camp.title)}')" title="Google Drive: ${escapeHtml(tool.folder || label)}"><i data-lucide="folder"></i></button>`;
-    } else if (tool.emailQuery || lower.includes('gmail') || lower.includes('email')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-gmail" onclick="openGmailLabel('${escapeHtml(tool.emailQuery || camp.title)}')" title="Gmail: ${escapeHtml(tool.emailQuery || label)}"><i data-lucide="mail"></i></button>`;
-    } else if (lower.includes('spreadsheet') || lower.includes('sheet')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-sheets" onclick="copyAppleNoteLauncher('${escapeHtml(tool.folder || camp.title)}')" title="Spreadsheet: ${escapeHtml(tool.folder || label)}"><i data-lucide="table"></i></button>`;
-    } else if (lower.includes('photo')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-photos" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')" title="Photos: ${escapeHtml(label)}"><i data-lucide="image"></i></button>`;
-    } else if (tool.noteQuery || lower.includes('note')) {
-      return `<button type="button" class="tool-icon-btn tool-btn-notes" onclick="copyAppleNoteLauncher('${escapeHtml(tool.noteQuery || camp.title)}')" title="Apple Note: ${escapeHtml(tool.noteQuery || label)}"><i data-lucide="file-text"></i></button>`;
-    } else {
-      return `<button type="button" class="tool-icon-btn tool-btn-notes" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')" title="Launch Note: ${escapeHtml(label)}"><i data-lucide="file-text"></i></button>`;
-    }
-  }).join('');
+  const toolsHtml = `
+    <button type="button" class="tool-icon-btn tool-badge-m" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="margo: ${escapeHtml(margoLabel)}">
+      <span class="tool-symbol symbol-m">m</span>
+    </button>
+    <button type="button" class="tool-icon-btn tool-badge-apple" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')" title="Apple Notes: ${escapeHtml(noteQuery)}">
+      <span class="tool-symbol symbol-apple">🍎</span>
+    </button>
+    <button type="button" class="tool-icon-btn tool-badge-google" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')" title="Google Drive: ${escapeHtml(driveFolder)}">
+      <span class="tool-symbol symbol-google">G</span>
+    </button>
+    <button type="button" class="tool-icon-btn tool-badge-things" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')" title="Things 3: ${escapeHtml(thingsQuery)}">
+      <span class="tool-symbol symbol-things">T3</span>
+    </button>
+    <button type="button" class="tool-icon-btn tool-badge-email" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')" title="Gmail: ${escapeHtml(emailQuery)}">
+      <i data-lucide="mail"></i>
+    </button>
+  `;
 
   return `
-    <div class="campaign-sample-card simplified-campaign-card tier-${tier}">
+    <div class="campaign-sample-card simplified-campaign-card tier-${tier} ${themeClass}">
       <div class="sample-card-top">
-        <h4 class="sample-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title.replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title)}</h4>
+        <h4 class="sample-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title || '')}</h4>
         <div class="card-status-wrapper">
           ${statusBadgeHtml}
         </div>
@@ -839,6 +772,59 @@ function jumpToHaircareCheckpoint() {
   }, 120);
 }
 window.jumpToHaircareCheckpoint = jumpToHaircareCheckpoint;
+
+function jumpToSanctuaryCheckpoint(checkpointKey) {
+  if (typeof switchAppView === 'function') {
+    switchAppView('sanctuary');
+  }
+  setTimeout(() => {
+    const el = document.getElementById(`checkpoint-${checkpointKey}`) ||
+               document.querySelector(`[data-checkpoint="${checkpointKey}"]`) ||
+               document.getElementById(`section-${checkpointKey}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 120);
+}
+window.jumpToSanctuaryCheckpoint = jumpToSanctuaryCheckpoint;
+
+function handleMargoToolClick(campId, action, title) {
+  const lower = (title || '').toLowerCase();
+  if (action === 'school-plan' || lower.includes('school') || lower.includes('iep') || lower.includes('ood')) {
+    openSchoolBattlePlanModal();
+  } else if (action === 'haircare' || lower.includes('hair')) {
+    jumpToHaircareCheckpoint();
+  } else if (action === 'vitality' || lower.includes('surg')) {
+    jumpToSanctuaryCheckpoint('vitality');
+  } else if (action === 'claims' || lower.includes('reimb') || lower.includes('claim')) {
+    if (typeof switchDomain === 'function') switchDomain('finance');
+    if (typeof activeFinanceSubTab !== 'undefined') activeFinanceSubTab = 'claims';
+  } else if (action === 'finance' || lower.includes('finan') || lower.includes('money')) {
+    if (typeof switchDomain === 'function') switchDomain('finance');
+  } else if (action === 'choices' || lower.includes('food')) {
+    jumpToSanctuaryCheckpoint('choices');
+  } else {
+    if (typeof showToast === 'function') {
+      showToast(`🌿 margo: Focused on ${title}`);
+    }
+  }
+}
+window.handleMargoToolClick = handleMargoToolClick;
+
+function openThings3Query(query) {
+  const clean = encodeURIComponent(query || '');
+  const url = `things:///show?query=${clean}`;
+  try {
+    window.location.href = url;
+  } catch (e) {}
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(query);
+  }
+  if (typeof showToast === 'function') {
+    showToast(`⚡ Things 3: Opened & copied "${query}"`);
+  }
+}
+window.openThings3Query = openThings3Query;
 
 /* --------------------------------------------------------------------------
    School Admissions & OOD Placement Battle Plan Modal & Setup Helpers

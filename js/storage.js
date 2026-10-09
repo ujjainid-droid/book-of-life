@@ -204,40 +204,53 @@ class StorageManager {
             id: 'camp-school',
             title: 'Z school, ood, IEP',
             status: 'IP',
-            tools: [
-              { label: 'Roadmap', isRoadmap: true },
-              { label: 'Apple Note', noteQuery: '# SCHOOL 01_BATTLE PLAN' },
-              { label: 'Google Drive', folder: 'Z Records' },
-              { label: 'Gmail', emailQuery: 'OOD-Placement' }
-            ]
+            theme: 'school',
+            tools: {
+              margo: { label: 'Z Admissions & Battle Plan', action: 'school-plan' },
+              apple: { noteQuery: '# SCHOOL 01_BATTLE PLAN' },
+              google: { folder: 'Z Records' },
+              things: { query: 'Z School IEP' },
+              email: { emailQuery: 'OOD-Placement' }
+            }
           },
           {
             id: 'camp-haircare',
             title: 'Haircare',
             status: 'IP',
-            tools: [
-              { label: "Today's Checkpoint", action: 'checkpoint' },
-              { label: 'Apple Note', noteQuery: '# BEAUTY 02_HAIR' }
-            ]
+            theme: 'haircare',
+            tools: {
+              margo: { label: 'Haircare Checkpoint', action: 'haircare' },
+              apple: { noteQuery: '# BEAUTY 02_HAIR' },
+              google: { folder: 'Hair Care Routine' },
+              things: { query: 'Haircare' },
+              email: { emailQuery: 'Haircare' }
+            }
           },
           {
             id: 'camp-surgery',
             title: 'Surgery',
             status: 'IP',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# HEALTH 02_SURGERY' },
-              { label: 'Google Drive', folder: 'Medical & Surgery Docs' }
-            ]
+            theme: 'surgery',
+            tools: {
+              margo: { label: 'Vitality & Recovery', action: 'vitality' },
+              apple: { noteQuery: '# HEALTH 02_SURGERY' },
+              google: { folder: 'Medical & Surgery Docs' },
+              things: { query: 'Surgery Follow-up' },
+              email: { emailQuery: 'Surgery Appointments' }
+            }
           },
           {
             id: 'camp-oon',
             title: 'oon reimbrsement',
             status: 'IP',
-            tools: [
-              { label: 'Medical Claims', action: 'claims' },
-              { label: 'Apple Note', noteQuery: '# CLAIMS 01_TRACKER' },
-              { label: 'Google Drive', folder: 'Superbills & EOBs' }
-            ]
+            theme: 'claims',
+            tools: {
+              margo: { label: 'Medical Claims Tracker', action: 'claims' },
+              apple: { noteQuery: '# CLAIMS 01_TRACKER' },
+              google: { folder: 'Superbills & EOBs' },
+              things: { query: 'Medical Claims Reimbursement' },
+              email: { emailQuery: 'Insurance Superbills' }
+            }
           }
         ],
         later: [
@@ -245,76 +258,118 @@ class StorageManager {
             id: 'camp-skincare',
             title: 'Skincare',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# BEAUTY 01_SKINCARE' }
-            ]
+            theme: 'skincare',
+            tools: {
+              margo: { label: 'Skincare Regimen' },
+              apple: { noteQuery: '# BEAUTY 01_SKINCARE' },
+              google: { folder: 'Skincare Products' },
+              things: { query: 'Skincare Routine' },
+              email: { emailQuery: 'Skincare Orders' }
+            }
           },
           {
             id: 'camp-footcare',
             title: 'Foot care',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# BEAUTY 04_FOOTCARE' }
-            ]
+            theme: 'footcare',
+            tools: {
+              margo: { label: 'Foot Care' },
+              apple: { noteQuery: '# BEAUTY 04_FOOTCARE' },
+              google: { folder: 'Foot Care Protocol' },
+              things: { query: 'Foot Care' },
+              email: { emailQuery: 'Foot Care' }
+            }
           },
           {
             id: 'camp-makeup',
             title: 'Makeup',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# BEAUTY 05_MAKEUP' }
-            ]
+            theme: 'makeup',
+            tools: {
+              margo: { label: 'Makeup & Beauty' },
+              apple: { noteQuery: '# BEAUTY 05_MAKEUP' },
+              google: { folder: 'Makeup Swatches & Products' },
+              things: { query: 'Makeup Essentials' },
+              email: { emailQuery: 'Makeup Orders' }
+            }
           },
           {
             id: 'camp-outfits',
             title: 'Outfits',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# STYLE 01_OUTFITS' }
-            ]
+            theme: 'outfits',
+            tools: {
+              margo: { label: 'Style & Outfits' },
+              apple: { noteQuery: '# STYLE 01_OUTFITS' },
+              google: { folder: 'Wardrobe Capsule' },
+              things: { query: 'Wardrobe Organizing' },
+              email: { emailQuery: 'Clothing Orders' }
+            }
           },
           {
             id: 'camp-jewelry',
             title: 'Jewelry',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# STYLE 02_JEWELRY' }
-            ]
+            theme: 'jewelry',
+            tools: {
+              margo: { label: 'Jewelry & Accessories' },
+              apple: { noteQuery: '# STYLE 02_JEWELRY' },
+              google: { folder: 'Jewelry Inventory' },
+              things: { query: 'Jewelry Organization' },
+              email: { emailQuery: 'Jewelry Receipts' }
+            }
           },
           {
             id: 'camp-finance',
             title: 'Personal Finance',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# FINANCE 01_OVERVIEW' },
-              { label: 'Google Drive', folder: 'Tax Docs 2026' },
-              { label: 'Spreadsheet', folder: 'Cashflow Master' }
-            ]
+            theme: 'finance',
+            tools: {
+              margo: { label: 'Financial Health', action: 'finance' },
+              apple: { noteQuery: '# FINANCE 01_OVERVIEW' },
+              google: { folder: 'Tax Docs 2026' },
+              things: { query: 'Monthly Budget Review' },
+              email: { emailQuery: 'Financial Statements' }
+            }
           },
           {
             id: 'camp-home',
             title: 'Home declutter',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# HOME 01_DECLUTTER' },
-              { label: 'Photos', noteQuery: '# HOME 01_PHOTOS' }
-            ]
+            theme: 'home',
+            tools: {
+              margo: { label: 'Home Harmony' },
+              apple: { noteQuery: '# HOME 01_DECLUTTER' },
+              google: { folder: 'Home Inventory' },
+              things: { query: 'Room-by-Room Declutter' },
+              email: { emailQuery: 'Donations & Orders' }
+            }
           },
           {
             id: 'camp-undereye',
             title: 'Under eye bags',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# BEAUTY 03_UNDEREYE' }
-            ]
+            theme: 'undereye',
+            tools: {
+              margo: { label: 'Eye Care & Vitality' },
+              apple: { noteQuery: '# BEAUTY 03_UNDEREYE' },
+              google: { folder: 'Eye Treatments & Consults' },
+              things: { query: 'Under Eye Research' },
+              email: { emailQuery: 'Dermatology Consults' }
+            }
           },
           {
             id: 'camp-healthyfood',
             title: 'Healthy food',
             status: 'NS',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# HEALTH 01_FOOD' }
-            ]
+            theme: 'food',
+            tools: {
+              margo: { label: 'Nutrition & Daily Choices', action: 'choices' },
+              apple: { noteQuery: '# HEALTH 01_FOOD' },
+              google: { folder: 'Meal Prep Recipes' },
+              things: { query: 'Grocery & Meal Prep' },
+              email: { emailQuery: 'Grocery Subscriptions' }
+            }
           }
         ]
       },
@@ -763,9 +818,9 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 3 || !Array.isArray(merged.coverCampaigns.now)) {
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 4 || !Array.isArray(merged.coverCampaigns.now)) {
         merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
-        merged.coverCampaignsSeedVersion = 3;
+        merged.coverCampaignsSeedVersion = 4;
       }
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
