@@ -380,12 +380,26 @@ class SyncManager {
       }
     }
 
+    // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
+    let mergedCampaigns = incoming.coverCampaigns;
+    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 3);
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 3 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 3)) {
+      const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
+      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 3)
+        ? storage.data.coverCampaigns
+        : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
+      mergedCampVersion = 3;
+      localWasRicher = true;
+    }
+
     // Apply consolidated data
     storage.data = {
       ...storage.data,
       ...incoming,
       coverTopMind: mergedTopMind,
       coverTopicAudits: mergedTopicAudits,
+      coverCampaigns: mergedCampaigns,
+      coverCampaignsSeedVersion: mergedCampVersion,
       points: mergedPoints,
       habits: mergedHabits,
       habitsState: mergedHabitsState,

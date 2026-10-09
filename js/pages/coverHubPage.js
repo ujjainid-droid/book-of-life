@@ -441,53 +441,55 @@ window.renderCoverHubPage = renderCoverHubPage;
 function renderUnifiedCampaignCard(camp, tier) {
   const isNow = tier === 'now';
   const oppositeTier = isNow ? 'later' : 'now';
-  const shiftBtnLabel = isNow ? 'Park in Later &rarr;' : '&larr; Move to Now';
+  const shiftBtnLabel = isNow ? '&rarr; Later' : '&larr; Now';
 
-  // Status configuration
+  // Normalize status: IP, NS, Maintain, Done
+  let statusKey = String(camp.status || (isNow ? 'IP' : 'NS')).trim();
+  if (statusKey === 'strike' || statusKey.toLowerCase() === 'ip' || statusKey === 'active') statusKey = 'IP';
+  else if (statusKey === 'ondeck' || statusKey === 'waiting' || statusKey.toLowerCase() === 'ns') statusKey = 'NS';
+  else if (statusKey === 'review' || statusKey.toLowerCase() === 'maintain') statusKey = 'Maintain';
+  else if (statusKey.toLowerCase() === 'done') statusKey = 'Done';
+  else if (!['IP', 'NS', 'Maintain', 'Done'].includes(statusKey)) statusKey = isNow ? 'IP' : 'NS';
+
   let statusBadgeHtml = '';
-  if (camp.status === 'strike') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-strike" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⚡ Active Strike</button>`;
-  } else if (camp.status === 'waiting') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-waiting" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⏳ Waiting On</button>`;
-  } else if (camp.status === 'review') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-review" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">🔍 Periodic Review</button>`;
-  } else {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-state-ondeck" onclick="cycleCampaignStatus('${camp.id}', event)" title="Tap to cycle status">⏳ On Deck</button>`;
+  if (statusKey === 'IP') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-ip" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: IP (In Progress) &bull; Tap to change">IP</button>`;
+  } else if (statusKey === 'NS') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-ns" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: NS (Not Started) &bull; Tap to change">NS</button>`;
+  } else if (statusKey === 'Maintain') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-maintain" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: Maintain &bull; Tap to change">Maintain</button>`;
+  } else if (statusKey === 'Done') {
+    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-done" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: Done &bull; Tap to change">Done</button>`;
   }
 
-  // Tools pills with dedicated brand color classes
+  // Tools rendered as space-saving icons with rich tooltips
   const toolsHtml = (Array.isArray(camp.tools) ? camp.tools : []).map(tool => {
     const label = tool.label || tool;
     const lower = String(label).toLowerCase();
-    let toolClass = 'tool-btn-default';
-    if (lower.includes('apple note') || lower.includes('note')) toolClass = 'tool-btn-notes';
-    else if (lower.includes('drive')) toolClass = 'tool-btn-drive';
-    else if (lower.includes('gmail') || lower.includes('email')) toolClass = 'tool-btn-gmail';
-    else if (lower.includes('roadmap')) toolClass = 'tool-btn-roadmap';
-    else if (lower.includes('checkpoint')) toolClass = 'tool-btn-checkpoint';
-    else if (lower.includes('photo')) toolClass = 'tool-btn-photos';
-    else if (lower.includes('spreadsheet')) toolClass = 'tool-btn-sheets';
 
-    if (tool.isRoadmap) {
-      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="openSchoolBattlePlanModal()" title="View battle plan roadmap">🗺️ Roadmap</button>`;
-    } else if (tool.action === 'checkpoint') {
-      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="jumpToHaircareCheckpoint()" title="Jump to daily checkpoint">Today's Checkpoint</button>`;
-    } else if (tool.folder) {
-      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="openDriveFolder('${escapeHtml(tool.folder)}')" title="Open Google Drive folder">${escapeHtml(label)}</button>`;
-    } else if (tool.emailQuery) {
-      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="openGmailLabel('${escapeHtml(tool.emailQuery)}')" title="Open Gmail label">${escapeHtml(label)}</button>`;
-    } else if (tool.noteQuery) {
-      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="copyAppleNoteLauncher('${escapeHtml(tool.noteQuery)}')" title="Launch Apple Note">${escapeHtml(label)}</button>`;
+    if (tool.isRoadmap || lower.includes('roadmap')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-roadmap" onclick="openSchoolBattlePlanModal()" title="Roadmap: View Battle Plan"><i data-lucide="map"></i></button>`;
+    } else if (tool.action === 'checkpoint' || lower.includes('checkpoint')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-checkpoint" onclick="jumpToHaircareCheckpoint()" title="Today's Haircare Checkpoint"><i data-lucide="sparkles"></i></button>`;
+    } else if (tool.action === 'claims' || lower.includes('claims') || lower.includes('reimburse')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-claims" onclick="switchDomain('finance')" title="Medical Claims &amp; Reimbursement"><i data-lucide="receipt"></i></button>`;
+    } else if (tool.folder || lower.includes('drive')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-drive" onclick="openDriveFolder('${escapeHtml(tool.folder || camp.title)}')" title="Google Drive: ${escapeHtml(tool.folder || label)}"><i data-lucide="folder"></i></button>`;
+    } else if (tool.emailQuery || lower.includes('gmail') || lower.includes('email')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-gmail" onclick="openGmailLabel('${escapeHtml(tool.emailQuery || camp.title)}')" title="Gmail: ${escapeHtml(tool.emailQuery || label)}"><i data-lucide="mail"></i></button>`;
+    } else if (lower.includes('spreadsheet') || lower.includes('sheet')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-sheets" onclick="copyAppleNoteLauncher('${escapeHtml(tool.folder || camp.title)}')" title="Spreadsheet: ${escapeHtml(tool.folder || label)}"><i data-lucide="table"></i></button>`;
+    } else if (lower.includes('photo')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-photos" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')" title="Photos: ${escapeHtml(label)}"><i data-lucide="image"></i></button>`;
+    } else if (tool.noteQuery || lower.includes('note')) {
+      return `<button type="button" class="tool-icon-btn tool-btn-notes" onclick="copyAppleNoteLauncher('${escapeHtml(tool.noteQuery || camp.title)}')" title="Apple Note: ${escapeHtml(tool.noteQuery || label)}"><i data-lucide="file-text"></i></button>`;
     } else {
-      return `<button type="button" class="sample-launch-btn ${toolClass}" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')">${escapeHtml(label)}</button>`;
+      return `<button type="button" class="tool-icon-btn tool-btn-notes" onclick="copyAppleNoteLauncher('${escapeHtml(camp.title)}')" title="Launch Note: ${escapeHtml(label)}"><i data-lucide="file-text"></i></button>`;
     }
   }).join('');
 
-  const isSchoolCard = (camp.id === 'camp-school');
-  const standbyClass = isSchoolCard ? '' : 'is-standby';
-
   return `
-    <div class="campaign-sample-card simplified-campaign-card tier-${tier} ${standbyClass}">
+    <div class="campaign-sample-card simplified-campaign-card tier-${tier}">
       <div class="sample-card-top">
         <h4 class="sample-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title.replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title)}</h4>
         <div class="card-status-wrapper">
@@ -495,19 +497,18 @@ function renderUnifiedCampaignCard(camp, tier) {
         </div>
       </div>
 
-      <div class="simplified-card-tools">
+      <div class="simplified-card-bottom">
         <div class="sample-launchers-group">
           ${toolsHtml}
         </div>
-      </div>
-
-      <div class="simplified-card-bottom">
-        <button type="button" class="btn-tier-shift shift-tier-${tier}" onclick="moveCampaignAction('${camp.id}', '${tier}', '${oppositeTier}')" title="${isNow ? 'Move to Later' : 'Move to Now'}">
-          ${shiftBtnLabel}
-        </button>
-        <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', '${tier}')" title="Delete domain">
-          <i data-lucide="x" style="width: 12px; height: 12px;"></i>
-        </button>
+        <div class="card-bottom-actions">
+          <button type="button" class="btn-tier-shift shift-tier-${tier}" onclick="moveCampaignAction('${camp.id}', '${tier}', '${oppositeTier}')" title="${isNow ? 'Move to Later' : 'Move to Now'}">
+            ${shiftBtnLabel}
+          </button>
+          <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', '${tier}')" title="Delete domain">
+            <i data-lucide="x" style="width: 11px; height: 11px;"></i>
+          </button>
+        </div>
       </div>
     </div>
   `;
@@ -521,19 +522,24 @@ function cycleCampaignStatus(campId, event) {
   let camp = campaigns.now.find(x => x.id === campId) || campaigns.later.find(x => x.id === campId);
   if (!camp) return;
 
-  const cycleOrder = ['strike', 'waiting', 'review', 'ondeck'];
-  const currentIdx = cycleOrder.indexOf(camp.status || 'strike');
+  const cycleOrder = ['IP', 'NS', 'Maintain', 'Done'];
+  let currentKey = camp.status || 'IP';
+  if (currentKey === 'strike' || currentKey === 'active') currentKey = 'IP';
+  else if (currentKey === 'ondeck' || currentKey === 'waiting') currentKey = 'NS';
+  else if (currentKey === 'review') currentKey = 'Maintain';
+
+  const currentIdx = cycleOrder.indexOf(currentKey);
   const nextStatus = cycleOrder[(currentIdx + 1) % cycleOrder.length];
   storage.updateCoverCampaignStatus(campId, nextStatus);
   renderCoverHubPage();
   if (typeof showToast === 'function') {
     const labels = {
-      strike: '⚡ Active Strike',
-      waiting: '⏳ Waiting On',
-      review: '🔍 Periodic Review',
-      ondeck: '⏳ On Deck'
+      IP: '⚡ IP (In Progress)',
+      NS: '⏳ NS (Not Started)',
+      Maintain: '🌿 Maintain',
+      Done: '✅ Done'
     };
-    showToast(`Status changed to ${labels[nextStatus]}`);
+    showToast(`Status: ${labels[nextStatus] || nextStatus}`);
   }
 }
 window.cycleCampaignStatus = cycleCampaignStatus;
@@ -565,7 +571,7 @@ function promptAddCampaignItem(tier) {
   if (title && title.trim().length > 0 && typeof storage !== 'undefined') {
     storage.addCoverCampaign(tier, {
       title: title.trim(),
-      status: tier === 'now' ? 'strike' : 'ondeck',
+      status: tier === 'now' ? 'IP' : 'NS',
       tools: [
         { label: 'Apple Note', noteQuery: title.trim() }
       ]

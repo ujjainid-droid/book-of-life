@@ -203,28 +203,88 @@ class StorageManager {
           {
             id: 'camp-school',
             title: 'Z school, ood, IEP',
-            status: 'strike', // 'strike' | 'waiting' | 'review' | 'ondeck'
+            status: 'IP',
             tools: [
+              { label: 'Roadmap', isRoadmap: true },
               { label: 'Apple Note', noteQuery: '# SCHOOL 01_BATTLE PLAN' },
               { label: 'Google Drive', folder: 'Z Records' },
-              { label: 'Gmail', emailQuery: 'OOD-Placement' },
-              { label: 'Roadmap', isRoadmap: true }
+              { label: 'Gmail', emailQuery: 'OOD-Placement' }
             ]
           },
           {
-            id: 'camp-claims',
-            title: 'Out-of-network claims',
-            status: 'waiting',
+            id: 'camp-haircare',
+            title: 'Haircare',
+            status: 'IP',
             tools: [
+              { label: "Today's Checkpoint", action: 'checkpoint' },
+              { label: 'Apple Note', noteQuery: '# BEAUTY 02_HAIR' }
+            ]
+          },
+          {
+            id: 'camp-surgery',
+            title: 'Surgery',
+            status: 'IP',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# HEALTH 02_SURGERY' },
+              { label: 'Google Drive', folder: 'Medical & Surgery Docs' }
+            ]
+          },
+          {
+            id: 'camp-oon',
+            title: 'oon reimbrsement',
+            status: 'IP',
+            tools: [
+              { label: 'Medical Claims', action: 'claims' },
               { label: 'Apple Note', noteQuery: '# CLAIMS 01_TRACKER' },
-              { label: 'Google Drive', folder: 'Superbills & EOBs' },
-              { label: 'Gmail', emailQuery: 'OON-Claims' }
+              { label: 'Google Drive', folder: 'Superbills & EOBs' }
+            ]
+          }
+        ],
+        later: [
+          {
+            id: 'camp-skincare',
+            title: 'Skincare',
+            status: 'NS',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# BEAUTY 01_SKINCARE' }
+            ]
+          },
+          {
+            id: 'camp-footcare',
+            title: 'Foot care',
+            status: 'NS',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# BEAUTY 04_FOOTCARE' }
+            ]
+          },
+          {
+            id: 'camp-makeup',
+            title: 'Makeup',
+            status: 'NS',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# BEAUTY 05_MAKEUP' }
+            ]
+          },
+          {
+            id: 'camp-outfits',
+            title: 'Outfits',
+            status: 'NS',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# STYLE 01_OUTFITS' }
+            ]
+          },
+          {
+            id: 'camp-jewelry',
+            title: 'Jewelry',
+            status: 'NS',
+            tools: [
+              { label: 'Apple Note', noteQuery: '# STYLE 02_JEWELRY' }
             ]
           },
           {
             id: 'camp-finance',
-            title: 'Personal finance',
-            status: 'review',
+            title: 'Personal Finance',
+            status: 'NS',
             tools: [
               { label: 'Apple Note', noteQuery: '# FINANCE 01_OVERVIEW' },
               { label: 'Google Drive', folder: 'Tax Docs 2026' },
@@ -233,55 +293,27 @@ class StorageManager {
           },
           {
             id: 'camp-home',
-            title: 'Home decluttering',
-            status: 'strike',
+            title: 'Home declutter',
+            status: 'NS',
             tools: [
-              { label: 'Apple Note', noteQuery: '# HOME 01_ZONES' },
+              { label: 'Apple Note', noteQuery: '# HOME 01_DECLUTTER' },
               { label: 'Photos', noteQuery: '# HOME 01_PHOTOS' }
             ]
           },
           {
-            id: 'camp-haircare',
-            title: 'Haircare Protocol',
-            status: 'strike',
-            tools: [
-              { label: "Today's Checkpoint", action: 'checkpoint' },
-              { label: 'Apple Note', noteQuery: '# BEAUTY 02_HAIR' }
-            ]
-          }
-        ],
-        later: [
-          {
-            id: 'camp-skincare',
-            title: 'Skincare Routine & Audit',
-            status: 'ondeck',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# BEAUTY 01_SKINCARE' }
-            ]
-          },
-          {
-            id: 'camp-wardrobe',
-            title: 'Capsule Wardrobe (Fall/Winter)',
-            status: 'ondeck',
-            tools: [
-              { label: 'Apple Note', noteQuery: '# STYLE 01_CAPSULE' }
-            ]
-          },
-          {
             id: 'camp-undereye',
-            title: 'Under Eye Bags Research',
-            status: 'ondeck',
+            title: 'Under eye bags',
+            status: 'NS',
             tools: [
-              { label: 'Apple Note', noteQuery: '# BEAUTY 03_EYES' }
+              { label: 'Apple Note', noteQuery: '# BEAUTY 03_UNDEREYE' }
             ]
           },
           {
-            id: 'camp-vault',
-            title: 'Digital Vault Organization',
-            status: 'ondeck',
+            id: 'camp-healthyfood',
+            title: 'Healthy food',
+            status: 'NS',
             tools: [
-              { label: 'Google Drive', folder: 'Master Vault' },
-              { label: 'Apple Note', noteQuery: '# SYSTEM 01_VAULT' }
+              { label: 'Apple Note', noteQuery: '# HEALTH 01_FOOD' }
             ]
           }
         ]
@@ -731,8 +763,9 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !Array.isArray(merged.coverCampaigns.now)) {
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 3 || !Array.isArray(merged.coverCampaigns.now)) {
         merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
+        merged.coverCampaignsSeedVersion = 3;
       }
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
@@ -1814,21 +1847,27 @@ class StorageManager {
 
   // --- Cover Page: Unified Life Architecture & Focus Board (Now vs. Later) ---
   getCoverCampaigns() {
-    if (!this.data.coverCampaigns) {
-      const defaults = this.getDefaultState();
+    const defaults = this.getDefaultState();
+    if (!this.data.coverCampaigns || !this.data.coverCampaignsSeedVersion || this.data.coverCampaignsSeedVersion < 3) {
       this.data.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
+      this.data.coverCampaignsSeedVersion = 3;
+      this.saveData();
     }
     if (!Array.isArray(this.data.coverCampaigns.now)) this.data.coverCampaigns.now = [];
     if (!Array.isArray(this.data.coverCampaigns.later)) this.data.coverCampaigns.later = [];
-    // Auto-update legacy title to 'Z school, ood, IEP'
-    let migrated = false;
+
+    // Normalize any legacy statuses to IP, NS, Maintain, Done
+    let updated = false;
     [...this.data.coverCampaigns.now, ...this.data.coverCampaigns.later].forEach(item => {
-      if (item && item.id === 'camp-school' && item.title !== 'Z school, ood, IEP') {
-        item.title = 'Z school, ood, IEP';
-        migrated = true;
+      if (!item) return;
+      if (item.status === 'strike' || item.status === 'active') { item.status = 'IP'; updated = true; }
+      else if (item.status === 'ondeck' || item.status === 'waiting') { item.status = 'NS'; updated = true; }
+      else if (item.status === 'review') { item.status = 'Maintain'; updated = true; }
+      else if (!['IP', 'NS', 'Maintain', 'Done'].includes(item.status)) {
+        item.status = 'NS'; updated = true;
       }
     });
-    if (migrated) this.saveData();
+    if (updated) this.saveData();
     return this.data.coverCampaigns;
   }
 
@@ -1838,7 +1877,7 @@ class StorageManager {
     const newCamp = {
       id: 'camp-' + Date.now(),
       title: (itemData.title || 'Untitled Focus').trim(),
-      status: itemData.status || (listKey === 'now' ? 'strike' : 'ondeck'),
+      status: itemData.status || (listKey === 'now' ? 'IP' : 'NS'),
       tools: Array.isArray(itemData.tools) ? itemData.tools : [
         { label: 'Apple Note', noteQuery: itemData.title }
       ]
@@ -1855,10 +1894,10 @@ class StorageManager {
     if (idx !== -1) {
       const [item] = fromArr.splice(idx, 1);
       if (!campaigns[toList]) campaigns[toList] = [];
-      if (toList === 'now' && item.status === 'ondeck') {
-        item.status = 'strike';
-      } else if (toList === 'later' && item.status === 'strike') {
-        item.status = 'ondeck';
+      if (toList === 'now' && (item.status === 'NS' || !item.status)) {
+        item.status = 'IP';
+      } else if (toList === 'later' && item.status === 'IP') {
+        item.status = 'NS';
       }
       campaigns[toList].unshift(item);
       this.saveData();

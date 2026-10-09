@@ -5343,7 +5343,7 @@
 .campaigns-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 8px 10px;
 }
 
 @media (max-width: 900px) {
@@ -5753,108 +5753,66 @@
   border-radius: 12px;
 }
 
-/* Simplified Cards: Lean, Clean White with Tool Pills & State Badge */
+/* Simplified Cards: Shallow, Compact Executive Widgets with Tool Icons */
 .simplified-campaign-card {
   background: #FFFFFF;
   border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  padding: 12px 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  border-radius: 10px;
+  padding: 8px 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 10px;
-  min-height: 144px;
+  gap: 6px;
+  min-height: 62px;
   min-width: 0;
   transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .simplified-campaign-card.tier-now {
-  border-left: 3.5px solid #065F46;
+  border-left: 3.5px solid #2563EB;
 }
 
 .simplified-campaign-card.tier-later {
-  border-left: 3.5px solid #C2410C;
+  border-left: 3.5px solid #94A3B8;
 }
 
-/* Active Highlight for current focus (School card) */
-.simplified-campaign-card.tier-now:not(.is-standby) {
-  background: linear-gradient(180deg, #FFFFFF 0%, #F0FDF4 65%);
-  border: 1.5px solid rgba(6, 95, 70, 0.35);
-  border-left: 4.5px solid #065F46;
-  box-shadow: 0 4px 16px rgba(6, 95, 70, 0.09);
+.simplified-campaign-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.simplified-campaign-card.tier-now:not(.is-standby):hover {
-  transform: translateY(-2px);
-  border-color: #065F46;
-  box-shadow: 0 8px 24px rgba(6, 95, 70, 0.14);
+.simplified-campaign-card.tier-now:hover {
+  border-color: #2563EB;
 }
 
-.simplified-campaign-card.tier-later:not(.is-standby) {
-  background: linear-gradient(180deg, #FFFFFF 0%, #FFF7ED 65%);
-  border: 1.5px solid rgba(194, 65, 12, 0.35);
-  border-left: 4.5px solid #C2410C;
-  box-shadow: 0 4px 16px rgba(194, 65, 12, 0.09);
-}
-
-.simplified-campaign-card.tier-later:not(.is-standby):hover {
-  transform: translateY(-2px);
-  border-color: #C2410C;
-  box-shadow: 0 8px 24px rgba(194, 65, 12, 0.14);
-}
-
-/* Greyed-out Standby State for widgets waiting to be tackled */
-.simplified-campaign-card.is-standby {
-  background: #F8FAFC;
-  border-color: #E2E8F0;
-  border-left: 3.5px solid #CBD5E1;
-  opacity: 0.55;
-  filter: grayscale(35%);
-  box-shadow: none;
-  transition: opacity 0.2s ease, filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.simplified-campaign-card.is-standby .sample-domain-title {
-  color: #64748B;
-}
-
-.simplified-campaign-card.is-standby:hover {
-  opacity: 0.98;
-  filter: grayscale(0%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
-
-.simplified-campaign-card.tier-now.is-standby:hover {
-  border-color: rgba(6, 95, 70, 0.35);
-  border-left: 3.5px solid #065F46;
-}
-
-.simplified-campaign-card.tier-later.is-standby:hover {
-  border-color: rgba(194, 65, 12, 0.35);
-  border-left: 3.5px solid #C2410C;
-}
-
-.simplified-campaign-card.is-standby:hover .sample-domain-title {
-  color: #0F172A;
+.simplified-campaign-card.tier-later:hover {
+  border-color: #64748B;
 }
 
 .sample-card-top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
   min-width: 0;
 }
 
 .sample-domain-title {
-  font-size: 0.88rem;
-  font-weight: 700;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: #0F172A;
   margin: 0;
-  line-height: 1.35;
-  word-break: break-word;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.sample-domain-title:hover {
+  color: #2563EB;
 }
 
 .card-status-wrapper {
@@ -5864,193 +5822,245 @@
 }
 
 .sample-phase-pill {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 3px 8px;
+  padding: 2px 7px;
   border-radius: 9999px;
   white-space: nowrap;
   flex-shrink: 0;
   border: none;
   cursor: pointer;
+  line-height: 1.2;
   transition: opacity 0.15s ease, transform 0.15s ease;
 }
 
 .sample-phase-pill:hover {
-  opacity: 0.9;
-  transform: scale(1.02);
+  transform: scale(1.05);
+  opacity: 0.95;
 }
 
-.pill-state-ondeck {
-  background: #F1F5F9;
-  color: #475569;
-  border: 1px solid #CBD5E1;
-}
-
-.simplified-card-tools {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  min-height: 26px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.sample-launch-btn {
-  background: #FFFFFF;
-  border: 1px solid #CBD5E1;
-  color: #334155;
-  font-size: 0.69rem;
-  font-weight: 600;
-  padding: 2.5px 8px;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  white-space: nowrap;
-  line-height: 1.3;
-}
-
-/* Tool Brand Colors */
-.sample-launch-btn.tool-btn-notes {
-  background: #F8FAFC;
-  border: 1px solid #CBD5E1;
-  color: #334155;
-}
-.sample-launch-btn.tool-btn-notes:hover {
-  background: #F1F5F9;
-  border-color: #64748B;
-  color: #0F172A;
-}
-
-.sample-launch-btn.tool-btn-drive {
+/* 4 Distinct Status Options: IP, NS, Maintain, Done */
+.pill-status-ip {
   background: #EFF6FF;
-  border: 1px solid rgba(37, 99, 235, 0.3);
   color: #1D4ED8;
+  border: 1px solid rgba(29, 78, 216, 0.28);
 }
-.sample-launch-btn.tool-btn-drive:hover {
+.pill-status-ip:hover {
   background: #DBEAFE;
-  border-color: #2563EB;
-  color: #1E40AF;
 }
 
-.sample-launch-btn.tool-btn-gmail {
-  background: #FEF2F2;
-  border: 1px solid rgba(220, 38, 38, 0.28);
-  color: #B91C1C;
+.pill-status-ns {
+  background: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
 }
-.sample-launch-btn.tool-btn-gmail:hover {
-  background: #FEE2E2;
-  border-color: #DC2626;
-  color: #991B1B;
+.pill-status-ns:hover {
+  background: #E2E8F0;
 }
 
-.sample-launch-btn.tool-btn-roadmap {
-  background: #ECFDF5;
-  border: 1px solid rgba(6, 95, 70, 0.35);
-  color: #065F46;
-  font-weight: 700;
-}
-.sample-launch-btn.tool-btn-roadmap:hover {
-  background: #065F46;
-  color: #FFFFFF;
-}
-
-.sample-launch-btn.tool-btn-checkpoint {
+.pill-status-maintain {
   background: #F0FDFA;
-  border: 1px solid rgba(13, 148, 136, 0.3);
   color: #0F766E;
-  font-weight: 700;
+  border: 1px solid rgba(15, 118, 110, 0.28);
 }
-.sample-launch-btn.tool-btn-checkpoint:hover {
-  background: #0D9488;
-  color: #FFFFFF;
-}
-
-.sample-launch-btn.tool-btn-photos {
-  background: #FAF5FF;
-  border: 1px solid rgba(147, 51, 234, 0.25);
-  color: #7E22CE;
-}
-.sample-launch-btn.tool-btn-photos:hover {
-  background: #F3E8FF;
-  border-color: #9333EA;
+.pill-status-maintain:hover {
+  background: #CCFBF1;
 }
 
-.sample-launch-btn.tool-btn-sheets {
+.pill-status-done {
   background: #ECFDF5;
-  border: 1px solid rgba(16, 185, 129, 0.3);
   color: #047857;
+  border: 1px solid rgba(4, 120, 87, 0.28);
 }
-.sample-launch-btn.tool-btn-sheets:hover {
+.pill-status-done:hover {
   background: #D1FAE5;
-  border-color: #059669;
 }
 
-/* Standardized Bottom Action Bar in Same Spot for Every Widget */
+/* Bottom Action Row: Tool Icons on Left, Move & Delete on Right */
 .simplified-card-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding-top: 8px;
-  border-top: 1px solid #F1F5F9;
-  margin-top: auto;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid #F8FAFC;
   width: 100%;
+}
+
+.sample-launchers-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+/* Compact Tool Icon Buttons */
+.tool-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid #E2E8F0;
+  background: #F8FAFC;
+  color: #475569;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.tool-icon-btn svg,
+.tool-icon-btn i {
+  width: 12px;
+  height: 12px;
+}
+
+.tool-icon-btn:hover {
+  transform: scale(1.08);
+}
+
+.tool-icon-btn.tool-btn-notes {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+  color: #334155;
+}
+.tool-icon-btn.tool-btn-notes:hover {
+  background: #EDE9FE;
+  border-color: #8B5CF6;
+  color: #6D28D9;
+}
+
+.tool-icon-btn.tool-btn-drive {
+  background: #EFF6FF;
+  border-color: rgba(37, 99, 235, 0.28);
+  color: #1D4ED8;
+}
+.tool-icon-btn.tool-btn-drive:hover {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.tool-icon-btn.tool-btn-gmail {
+  background: #FEF2F2;
+  border-color: rgba(220, 38, 38, 0.25);
+  color: #B91C1C;
+}
+.tool-icon-btn.tool-btn-gmail:hover {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.tool-icon-btn.tool-btn-roadmap {
+  background: #ECFDF5;
+  border-color: rgba(6, 95, 70, 0.3);
+  color: #065F46;
+}
+.tool-icon-btn.tool-btn-roadmap:hover {
+  background: #065F46;
+  color: #FFFFFF;
+}
+
+.tool-icon-btn.tool-btn-checkpoint {
+  background: #F0FDFA;
+  border-color: rgba(13, 148, 136, 0.3);
+  color: #0D9488;
+}
+.tool-icon-btn.tool-btn-checkpoint:hover {
+  background: #0D9488;
+  color: #FFFFFF;
+}
+
+.tool-icon-btn.tool-btn-claims {
+  background: #F5F3FF;
+  border-color: rgba(139, 92, 246, 0.28);
+  color: #7C3AED;
+}
+.tool-icon-btn.tool-btn-claims:hover {
+  background: #EDE9FE;
+  color: #6D28D9;
+}
+
+.tool-icon-btn.tool-btn-sheets {
+  background: #ECFDF5;
+  border-color: rgba(16, 185, 129, 0.28);
+  color: #047857;
+}
+.tool-icon-btn.tool-btn-sheets:hover {
+  background: #D1FAE5;
+}
+
+.tool-icon-btn.tool-btn-photos {
+  background: #FAF5FF;
+  border-color: rgba(147, 51, 234, 0.25);
+  color: #7E22CE;
+}
+.tool-icon-btn.tool-btn-photos:hover {
+  background: #F3E8FF;
+}
+
+.card-bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
 
 .btn-tier-shift {
   background: #F8FAFC;
   border: 1px solid #E2E8F0;
-  font-size: 0.70rem;
-  font-weight: 700;
-  padding: 4px 10px;
+  font-size: 0.63rem;
+  font-weight: 600;
+  padding: 2px 7px;
   border-radius: 9999px;
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
+  color: #64748B;
+  line-height: 1.2;
 }
 
 .btn-tier-shift.shift-tier-now {
-  color: #C2410C;
-  border-color: rgba(194, 65, 12, 0.35);
-  background: rgba(194, 65, 12, 0.06);
+  color: #64748B;
+  background: #F8FAFC;
+  border-color: #E2E8F0;
 }
-
 .btn-tier-shift.shift-tier-now:hover {
-  background: #C2410C;
-  color: #FFFFFF;
-  border-color: #C2410C;
+  background: #EDE9FE;
+  color: #6D28D9;
+  border-color: #8B5CF6;
 }
 
 .btn-tier-shift.shift-tier-later {
-  color: #065F46;
-  border-color: rgba(6, 95, 70, 0.35);
-  background: rgba(6, 95, 70, 0.06);
+  color: #64748B;
+  background: #F8FAFC;
+  border-color: #E2E8F0;
 }
-
 .btn-tier-shift.shift-tier-later:hover {
-  background: #065F46;
-  color: #FFFFFF;
-  border-color: #065F46;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border-color: #2563EB;
 }
 
 .btn-camp-delete {
-  background: transparent;
-  border: none;
-  color: #94A3B8;
-  cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: none;
+  background: transparent;
+  color: #94A3B8;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
 }
 
 .btn-camp-delete:hover {
   color: #EF4444;
-  background-color: #FEE2E2;
+  background: #FEE2E2;
 }
 
 .protocol-sample-btn {
