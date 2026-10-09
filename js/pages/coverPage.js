@@ -159,7 +159,7 @@ function renderDailySheet() {
     (todayZLog.rating !== null && todayZLog.rating !== undefined) || 
     (todayZLog.notes && todayZLog.notes.trim().length > 0) || 
     (todayZLog.aggression) ||
-    (todayZLog.meds && (todayZLog.meds.z || todayZLog.meds.g || todayZLog.meds.rit || todayZLog.meds.mag || todayZLog.meds.mel || todayZLog.meds.ris))
+    (todayZLog.updatedAt && todayZLog.meds && (todayZLog.meds.z || todayZLog.meds.g || todayZLog.meds.rit || todayZLog.meds.mag || todayZLog.meds.mel || todayZLog.meds.ris))
   ));
   const zlogRatingObj = (todayZLog && todayZLog.rating && typeof ZLOG_RATINGS !== 'undefined')
     ? ZLOG_RATINGS[todayZLog.rating]

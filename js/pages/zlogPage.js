@@ -72,7 +72,7 @@ function renderZLogPage(targetSubTab) {
     activeZLogSubTab = getInitialZLogSubTab();
   }
 
-  // Unconditional auto-repair check: if storage has old seed version, < 35 titrations, old defaulted >300 good days, or missing October 2026 entries
+  // Structural auto-repair check: only if storage is missing seed versions, has < 35 titrations, or has old defaulted >300 good days
   const currentStats = storage.getZLogStats();
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
@@ -83,13 +83,7 @@ function renderZLogPage(targetSubTab) {
     currentTitration.length < 35 ||
     !hasTit35 ||
     currentStats.goodDays > 300 ||
-    !storage.data.zlogEntries ||
-    !storage.data.zlogEntries['2026-09-12'] ||
-    !storage.data.zlogEntries['2026-10-07'] ||
-    !storage.data.zlogEntries['2026-10-08'] ||
-    (storage.data.zlogEntries['2026-10-07'] && !storage.data.zlogEntries['2026-10-07'].rating) ||
-    (storage.data.zlogEntries['2026-10-07'] && storage.data.zlogEntries['2026-10-07'].notes && !storage.data.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
-    (storage.data.zlogEntries['2026-09-30'] && storage.data.zlogEntries['2026-09-30'].notes && storage.data.zlogEntries['2026-09-30'].notes.includes('School / Teacher Notes'));
+    !storage.data.zlogEntries;
 
   if (isStaleCorrupted) {
     if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
@@ -97,10 +91,31 @@ function renderZLogPage(targetSubTab) {
       if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
         for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
           if (entry) {
-            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+            const defEntry = cleanDefaults[d] || {};
+            cleanDefaults[d] = {
+              ...defEntry,
+              ...entry,
+              notes: (entry.notes !== undefined && entry.notes !== '') ? entry.notes : (defEntry.notes || ''),
+              rating: (entry.rating !== undefined && entry.rating !== null) ? entry.rating : (defEntry.rating || null),
+              attachments: (Array.isArray(entry.attachments) && entry.attachments.length > 0) ? entry.attachments : (defEntry.attachments || [])
+            };
           }
         }
       }
+      // Check dedicated backups from localStorage
+      try {
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('ZLOG_ENTRY_BACKUP_')) {
+            const dKey = key.replace('ZLOG_ENTRY_BACKUP_', '');
+            const bVal = JSON.parse(localStorage.getItem(key));
+            if (bVal && ((bVal.notes && bVal.notes.trim()) || bVal.rating !== null)) {
+              cleanDefaults[dKey] = { ...(cleanDefaults[dKey] || {}), ...bVal };
+            }
+          }
+        }
+      } catch (e) {}
+
       for (const targetDate of ['2026-09-30', '2026-10-01', '2026-10-02']) {
         if (cleanDefaults[targetDate]) {
           const defaultAtts = (DEFAULT_ZLOG_ENTRIES[targetDate] && DEFAULT_ZLOG_ENTRIES[targetDate].attachments) || [];
@@ -140,8 +155,8 @@ function renderZLogPage(targetSubTab) {
       storage.data.titrationSeedVersion = 7;
     }
     storage.saveData();
-    if (typeof sync !== 'undefined' && sync.isConfigured && sync.isConfigured()) {
-      sync.pushToCloud();
+    if (typeof syncManager !== 'undefined' && syncManager.isConfigured && syncManager.isConfigured()) {
+      syncManager.pushToCloud();
     }
   }
 
@@ -3385,8 +3400,8 @@ function forceSyncZLogDefaults() {
     storage.data.titrationSeedVersion = 7;
   }
   storage.saveData();
-  if (typeof sync !== 'undefined' && sync.isConfigured && sync.isConfigured()) {
-    sync.pushToCloud();
+  if (typeof syncManager !== 'undefined' && syncManager.isConfigured && syncManager.isConfigured()) {
+    syncManager.pushToCloud();
   }
   renderZLogPage();
   if (typeof showToast === 'function') {
@@ -3520,7 +3535,10 @@ function openZLogEntryModal(targetDate = null) {
 
         <!-- Narrative Log -->
         <div class="form-group">
-          <label class="form-label">Narrative Log &amp; Calming Notes</label>
+          <label class="form-label" style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Narrative Log &amp; Calming Notes</span>
+            <span id="zlog-modal-draft-notice" style="display: none; font-size: 0.72rem; color: #0D9488; font-weight: 600;">✓ Restored unsaved draft</span>
+          </label>
           <textarea class="form-input" id="zlog-modal-notes" rows="4" placeholder="How did the day go? Calm techniques used, meals, arcade/activities, triggers, bedtime...">${escapeHtml(entry.notes || '')}</textarea>
         </div>
 
@@ -3554,6 +3572,23 @@ function openZLogEntryModal(targetDate = null) {
   modal.classList.add('active');
   renderModalAttachmentsList();
   setupModalDropzoneEvents(dateStr);
+
+  // Auto-restore draft and live auto-save on input
+  const notesTextarea = document.getElementById('zlog-modal-notes');
+  if (notesTextarea) {
+    const savedDraft = localStorage.getItem('ZLOG_DRAFT_' + dateStr);
+    if (savedDraft && savedDraft.trim() && (!entry.notes || !entry.notes.trim())) {
+      notesTextarea.value = savedDraft;
+      const draftNotice = document.getElementById('zlog-modal-draft-notice');
+      if (draftNotice) draftNotice.style.display = 'inline-block';
+    }
+    notesTextarea.addEventListener('input', (e) => {
+      try {
+        localStorage.setItem('ZLOG_DRAFT_' + dateStr, e.target.value);
+      } catch (err) {}
+    });
+  }
+
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
@@ -3631,6 +3666,15 @@ function submitZLogEntryModal(event) {
   };
 
   storage.saveZLogEntry(dateStr, entryData);
+
+  try {
+    localStorage.removeItem('ZLOG_DRAFT_' + dateStr);
+  } catch (e) {}
+
+  if (typeof syncManager !== 'undefined' && syncManager.isConfigured && syncManager.isConfigured()) {
+    syncManager.pushToCloud();
+  }
+
   closeZLogModal();
 
   if (typeof showToast === 'function') {

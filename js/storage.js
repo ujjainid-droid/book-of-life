@@ -654,23 +654,38 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 14 ||
-        !merged.zlogEntries['2026-09-12'] ||
-        !merged.zlogEntries['2026-10-07'] ||
-        !merged.zlogEntries['2026-10-08'] ||
-        (merged.zlogEntries['2026-10-07'] && !merged.zlogEntries['2026-10-07'].rating) ||
-        (merged.zlogEntries['2026-10-07'] && merged.zlogEntries['2026-10-07'].notes && !merged.zlogEntries['2026-10-07'].notes.includes('dismissal')) ||
-        (merged.zlogEntries['2026-09-30'] && merged.zlogEntries['2026-09-30'].notes && merged.zlogEntries['2026-09-30'].notes.includes('School / Teacher Notes'));
+        merged.zlogSeedVersion < 14;
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
         if (merged.zlogEntries && typeof merged.zlogEntries === 'object') {
           for (const [d, entry] of Object.entries(merged.zlogEntries)) {
             if (entry) {
-              cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+              const defEntry = cleanDefaults[d] || {};
+              cleanDefaults[d] = {
+                ...defEntry,
+                ...entry,
+                notes: (entry.notes !== undefined && entry.notes !== '') ? entry.notes : (defEntry.notes || ''),
+                rating: (entry.rating !== undefined && entry.rating !== null) ? entry.rating : (defEntry.rating || null),
+                attachments: (Array.isArray(entry.attachments) && entry.attachments.length > 0) ? entry.attachments : (defEntry.attachments || [])
+              };
             }
           }
         }
+        // Safety recovery from any dedicated localStorage backups
+        try {
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('ZLOG_ENTRY_BACKUP_')) {
+              const dKey = key.replace('ZLOG_ENTRY_BACKUP_', '');
+              const bVal = JSON.parse(localStorage.getItem(key));
+              if (bVal && ((bVal.notes && bVal.notes.trim()) || bVal.rating !== null)) {
+                cleanDefaults[dKey] = { ...(cleanDefaults[dKey] || {}), ...bVal };
+              }
+            }
+          }
+        } catch (e) {}
+
         for (const targetDate of ['2026-09-30', '2026-10-01', '2026-10-02']) {
           if (cleanDefaults[targetDate]) {
             const defaultAtts = (DEFAULT_ZLOG_ENTRIES[targetDate] && DEFAULT_ZLOG_ENTRIES[targetDate].attachments) || [];
@@ -1545,14 +1560,32 @@ class StorageManager {
      -------------------------------------------------------------------------- */
   getZLogEntry(dateStr) {
     if (!this.data.zlogEntries) this.data.zlogEntries = {};
-    const entry = this.data.zlogEntries[dateStr] || {
-      date: dateStr,
-      rating: null,
-      aggression: false,
-      notes: '',
-      meds: { z: false, g: false, ris: false, rit: '', mag: false, mel: false, melDose: '' },
-      attachments: []
-    };
+    let entry = this.data.zlogEntries[dateStr];
+
+    // Safety recovery: check dedicated immutable backup if local state is missing or empty
+    if (!entry || ((!entry.notes || !entry.notes.trim()) && (entry.rating === null || entry.rating === undefined))) {
+      try {
+        const backupStr = localStorage.getItem('ZLOG_ENTRY_BACKUP_' + dateStr);
+        if (backupStr) {
+          const backupObj = JSON.parse(backupStr);
+          if (backupObj && ((backupObj.notes && backupObj.notes.trim()) || backupObj.rating !== null || (Array.isArray(backupObj.attachments) && backupObj.attachments.length > 0))) {
+            entry = { ...(entry || {}), ...backupObj };
+            this.data.zlogEntries[dateStr] = entry;
+          }
+        }
+      } catch (e) {}
+    }
+
+    if (!entry) {
+      entry = {
+        date: dateStr,
+        rating: null,
+        aggression: false,
+        notes: '',
+        meds: { z: false, g: false, ris: false, rit: '', mag: false, mel: false, melDose: '' },
+        attachments: []
+      };
+    }
     if (!entry.attachments) entry.attachments = [];
     return entry;
   }
@@ -1560,13 +1593,20 @@ class StorageManager {
   saveZLogEntry(dateStr, entryData) {
     if (!this.data.zlogEntries) this.data.zlogEntries = {};
     const current = this.getZLogEntry(dateStr);
-    this.data.zlogEntries[dateStr] = {
+    const updated = {
       ...current,
       ...entryData,
       date: dateStr,
       attachments: entryData.attachments || current.attachments || [],
       updatedAt: new Date().toISOString()
     };
+    this.data.zlogEntries[dateStr] = updated;
+
+    // Save dedicated immutable backup that survives any sync or cache clears
+    try {
+      localStorage.setItem('ZLOG_ENTRY_BACKUP_' + dateStr, JSON.stringify(updated));
+    } catch (e) {}
+
     this.saveData();
     return this.data.zlogEntries[dateStr];
   }

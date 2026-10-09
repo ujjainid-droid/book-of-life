@@ -275,56 +275,92 @@ class SyncManager {
       return claim;
     });
 
-    // 10. Z Log and Titration Seeds
-    let mergedZLog = incoming.zlogEntries;
-    let mergedZLogVersion = incoming.zlogSeedVersion;
-    if (!mergedZLogVersion || mergedZLogVersion < 14 || !mergedZLog || !mergedZLog['2026-09-12'] || !mergedZLog['2026-10-07'] || !mergedZLog['2026-10-08'] || (mergedZLog['2026-10-07'] && !mergedZLog['2026-10-07'].rating) || (mergedZLog['2026-10-07'] && mergedZLog['2026-10-07'].notes && !mergedZLog['2026-10-07'].notes.includes('dismissal')) || (mergedZLog['2026-09-30'] && mergedZLog['2026-09-30'].notes && mergedZLog['2026-09-30'].notes.includes('School / Teacher Notes'))) {
-      const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
-      if (mergedZLog && typeof mergedZLog === 'object') {
-        for (const [d, entry] of Object.entries(mergedZLog)) {
-          if (entry) {
-            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
+    // 10. Z Log and Titration Seeds: Two-way merge strictly preserving user notes, ratings, and attachments
+    const localZLog = (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') ? storage.data.zlogEntries : {};
+    const incomingZLog = (incoming.zlogEntries && typeof incoming.zlogEntries === 'object') ? incoming.zlogEntries : {};
+    const defaultsZLog = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? DEFAULT_ZLOG_ENTRIES : {};
+
+    const mergedZLog = {};
+    const allZLogDates = new Set([...Object.keys(defaultsZLog), ...Object.keys(incomingZLog), ...Object.keys(localZLog)]);
+
+    allZLogDates.forEach(dStr => {
+      const def = defaultsZLog[dStr] || null;
+      const inc = incomingZLog[dStr] || null;
+      const loc = localZLog[dStr] || null;
+
+      // Start with base defaults if available
+      let entry = def ? { ...def } : {};
+
+      if (!inc && loc) {
+        entry = { ...entry, ...loc };
+        localWasRicher = true;
+      } else if (inc && !loc) {
+        entry = { ...entry, ...inc };
+      } else if (inc && loc) {
+        const locTime = loc.updatedAt ? new Date(loc.updatedAt).getTime() : 0;
+        const incTime = inc.updatedAt ? new Date(inc.updatedAt).getTime() : 0;
+
+        const locHasNotes = !!(loc.notes && loc.notes.trim());
+        const incHasNotes = !!(inc.notes && inc.notes.trim());
+        const locHasRating = loc.rating !== null && loc.rating !== undefined;
+        const incHasRating = inc.rating !== null && inc.rating !== undefined;
+
+        // Merge attachments safely
+        const mergedAtts = [];
+        const seenAttIds = new Set();
+        [...(loc.attachments || []), ...(inc.attachments || []), ...(def && def.attachments ? def.attachments : [])].forEach(a => {
+          if (a && a.id && !seenAttIds.has(a.id)) {
+            seenAttIds.add(a.id);
+            mergedAtts.push(a);
           }
+        });
+
+        // Determine winner
+        if ((locHasNotes && !incHasNotes) || (locHasRating && !incHasRating)) {
+          // Local has user data that cloud is missing -> local wins!
+          entry = { ...entry, ...inc, ...loc, attachments: mergedAtts };
+          localWasRicher = true;
+        } else if ((incHasNotes && !locHasNotes) || (incHasRating && !locHasRating)) {
+          // Cloud has user data that local is missing -> cloud wins
+          entry = { ...entry, ...loc, ...inc, attachments: mergedAtts };
+        } else if (locTime >= incTime) {
+          // Local is newer or equal -> local wins
+          entry = { ...entry, ...inc, ...loc, attachments: mergedAtts };
+          if (JSON.stringify(inc) !== JSON.stringify(entry)) {
+            localWasRicher = true;
+          }
+        } else {
+          // Cloud is strictly newer
+          entry = { ...entry, ...loc, ...inc, attachments: mergedAtts };
         }
       }
-      if (storage.data.zlogEntries && typeof storage.data.zlogEntries === 'object') {
-        for (const [d, entry] of Object.entries(storage.data.zlogEntries)) {
-          if (entry) {
-            cleanDefaults[d] = { ...(cleanDefaults[d] || {}), ...entry };
-          }
-        }
-      }
-      for (const targetDate of ['2026-09-30', '2026-10-01', '2026-10-02']) {
-        if (cleanDefaults[targetDate]) {
-          const defaultAtts = (DEFAULT_ZLOG_ENTRIES[targetDate] && DEFAULT_ZLOG_ENTRIES[targetDate].attachments) || [];
-          const existingAtts = cleanDefaults[targetDate].attachments || [];
-          const mergedAtts = [...existingAtts];
-          for (const defAtt of defaultAtts) {
-            if (!mergedAtts.some(a => a && (a.id === defAtt.id || a.name === defAtt.name))) {
-              mergedAtts.push(defAtt);
+
+      // Check dedicated backup in localStorage for extra resilience
+      try {
+        const backupStr = localStorage.getItem('ZLOG_ENTRY_BACKUP_' + dStr);
+        if (backupStr) {
+          const bObj = JSON.parse(backupStr);
+          if (bObj) {
+            const bHasNotes = !!(bObj.notes && bObj.notes.trim());
+            const bHasRating = bObj.rating !== null && bObj.rating !== undefined;
+            if ((bHasNotes && (!entry.notes || !entry.notes.trim())) || (bHasRating && (entry.rating === null || entry.rating === undefined))) {
+              entry = { ...entry, ...bObj };
+              localWasRicher = true;
             }
           }
-          cleanDefaults[targetDate].attachments = mergedAtts;
-          if (cleanDefaults[targetDate].notes && cleanDefaults[targetDate].notes.includes('🏫 School / Teacher Notes:')) {
-            const idx = cleanDefaults[targetDate].notes.indexOf('🏫 School / Teacher Notes:');
-            cleanDefaults[targetDate].notes = cleanDefaults[targetDate].notes.substring(0, idx).trim();
-            if (!cleanDefaults[targetDate].notes) {
-              cleanDefaults[targetDate].rating = null;
-              cleanDefaults[targetDate].ratingRaw = '';
-            }
-          }
         }
-      }
-      mergedZLog = cleanDefaults;
-      mergedZLogVersion = 14;
-      localWasRicher = true;
-    }
+      } catch (e) {}
+
+      mergedZLog[dStr] = entry;
+    });
+
+    const mergedZLogVersion = Math.max(Number(incoming.zlogSeedVersion) || 0, Number(storage.data.zlogSeedVersion) || 0, 14);
 
     let mergedTitration = incoming.titrationHistory;
-    let mergedTitVersion = incoming.titrationSeedVersion;
-    if (!mergedTitVersion || mergedTitVersion < 6 || !Array.isArray(mergedTitration) || mergedTitration.length < 34) {
+    let mergedTitVersion = Math.max(Number(incoming.titrationSeedVersion) || 0, Number(storage.data.titrationSeedVersion) || 0, 7);
+    if (!Array.isArray(mergedTitration) || mergedTitration.length < 35) {
       mergedTitration = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_TITRATION_HISTORY)) : [];
-      mergedTitVersion = 6;
+      mergedTitVersion = 7;
       localWasRicher = true;
     }
 
