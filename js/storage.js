@@ -214,17 +214,6 @@ class StorageManager {
             }
           },
           {
-            id: 'camp-haircare',
-            title: 'Haircare',
-            status: 'Maintain',
-            theme: 'cat-care',
-            tools: {
-              margo: { label: 'Haircare Checkpoint', action: 'haircare' },
-              apple: { noteQuery: '# BEAUTY 02_HAIR' }
-            },
-            visibleTools: ['margo', 'apple']
-          },
-          {
             id: 'camp-surgery',
             title: 'Surgery',
             status: 'IP',
@@ -249,6 +238,17 @@ class StorageManager {
               things: { query: 'Medical Claims Reimbursement' },
               email: { emailQuery: 'Insurance Superbills' }
             }
+          },
+          {
+            id: 'camp-haircare',
+            title: 'Haircare',
+            status: 'Maintain',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Haircare Checkpoint', action: 'haircare' },
+              apple: { noteQuery: '# BEAUTY 02_HAIR' }
+            },
+            visibleTools: ['margo', 'apple']
           }
         ],
         later: [
@@ -816,11 +816,11 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 6 || !Array.isArray(merged.coverCampaigns.now)) {
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 7 || !Array.isArray(merged.coverCampaigns.now)) {
         merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
-        merged.coverCampaignsSeedVersion = 6;
+        merged.coverCampaignsSeedVersion = 7;
       }
-      // Ensure Haircare is always initialized to Maintain status and m, apple tools
+      // Ensure Haircare is always initialized to Maintain status, m & apple tools, and placed on the second row of now
       ['now', 'later'].forEach(tierKey => {
         if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns[tierKey])) {
           merged.coverCampaigns[tierKey].forEach(c => {
@@ -835,6 +835,13 @@ class StorageManager {
           });
         }
       });
+      if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns.now)) {
+        const hIdx = merged.coverCampaigns.now.findIndex(c => c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare'));
+        if (hIdx !== -1 && hIdx < 3 && merged.coverCampaigns.now.length >= 4) {
+          const [haircareCamp] = merged.coverCampaigns.now.splice(hIdx, 1);
+          merged.coverCampaigns.now.push(haircareCamp);
+        }
+      }
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
       }

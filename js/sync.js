@@ -382,13 +382,13 @@ class SyncManager {
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
     let mergedCampaigns = incoming.coverCampaigns;
-    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 6);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 6 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 6)) {
+    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 7);
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 7 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 7)) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
-      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 6)
+      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 7)
         ? storage.data.coverCampaigns
         : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
-      mergedCampVersion = 6;
+      mergedCampVersion = 7;
       localWasRicher = true;
     }
     ['now', 'later'].forEach(tierKey => {
@@ -405,6 +405,13 @@ class SyncManager {
         });
       }
     });
+    if (mergedCampaigns && Array.isArray(mergedCampaigns.now)) {
+      const hIdx = mergedCampaigns.now.findIndex(c => c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare'));
+      if (hIdx !== -1 && hIdx < 3 && mergedCampaigns.now.length >= 4) {
+        const [haircareCamp] = mergedCampaigns.now.splice(hIdx, 1);
+        mergedCampaigns.now.push(haircareCamp);
+      }
+    }
 
     // Apply consolidated data
     storage.data = {
