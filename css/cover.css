@@ -4225,17 +4225,17 @@
   box-sizing: border-box;
 }
 
-/* Mantra Strip — Nordic White & Elevated Shadow */
+/* Mantra Strip — Nordic Soft Lavender & Glass */
 .cover-mantra-strip {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  background: #FFFFFF;
-  border: 1px solid rgba(6, 95, 70, 0.16);
-  border-radius: var(--radius-lg);
-  padding: 12px 18px;
-  box-shadow: 0 4px 18px rgba(6, 95, 70, 0.04);
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg, 16px);
+  padding: 10px 14px;
+  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.04);
 }
 
 .mantra-pill {
@@ -4243,9 +4243,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 14px;
+  padding: 8px 12px;
   border-radius: var(--radius-full);
-  font-size: 0.84rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: lowercase;
@@ -4258,145 +4258,236 @@
   transform: translateY(-1px);
 }
 
-/* 1. Simple: Clean Slate / Soft Sage */
+/* 1. Simple: Clean Crisp Slate */
 .mantra-simple {
-  background: #FFFFFF;
-  color: #065F46;
-  border: 1px solid #E2E8F0;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
-/* 2. Visible: Botanical Alpine Mist */
+/* 2. Visible: Nordic Soft Lavender */
 .mantra-visible {
-  background: #F0FDF4;
-  color: #065F46;
-  border: 1px solid rgba(6, 95, 70, 0.25);
-}
-
-/* 3. Next step: Spiced Cedar / Warm Clay */
-.mantra-next {
-  background: rgba(194, 65, 12, 0.08);
-  color: #C2410C;
-  border: 1px solid rgba(194, 65, 12, 0.28);
-}
-
-/* 4. Done: Alpine Spruce Emerald */
-.mantra-done {
-  background: #065F46;
-  color: #FFFFFF;
-  border: 1px solid #065F46;
-  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.25);
-}
-
-[data-theme="dark"] .mantra-simple {
-  background: rgba(30, 41, 59, 0.4);
-  color: #CBD5E1;
-  border-color: rgba(100, 116, 139, 0.35);
+  background: #EDE9FE;
+  color: #7C3AED;
+  border: 1px solid #DDD6FE;
 }
 
 [data-theme="dark"] .mantra-visible {
-  background: rgba(6, 95, 70, 0.2);
-  color: #A7F3D0;
-  border-color: rgba(6, 95, 70, 0.35);
+  background: rgba(124, 58, 237, 0.2);
+  color: #DDD6FE;
+  border-color: rgba(124, 58, 237, 0.35);
+}
+
+/* 3. Next step: Nordic Sea Glass Teal */
+.mantra-next {
+  background: #F0FDFA;
+  color: #0D9488;
+  border: 1px solid #CCFBF1;
 }
 
 [data-theme="dark"] .mantra-next {
-  background: rgba(194, 65, 12, 0.2);
-  color: #FFD8CC;
-  border-color: rgba(194, 65, 12, 0.38);
+  background: rgba(13, 148, 136, 0.18);
+  color: #A7F3D0;
+  border-color: rgba(13, 148, 136, 0.35);
+}
+
+/* 4. Done: Royal Violet Gradient */
+.mantra-done {
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  color: #FFFFFF;
+  border: none;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.28);
 }
 
 [data-theme="dark"] .mantra-done {
-  background: #059669;
+  background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
   color: #FFFFFF;
-  border-color: #10B981;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
 }
 
-/* Cover Welcome Banner — Alpine Spruce Gradient & Accent Border */
-.cover-welcome-banner {
+/* Executive Season & System Compass Hero HUD */
+.cover-header-hero {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F5F3FF 50%, #F0FDFA 100%);
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  border-radius: var(--radius-lg, 16px);
+  padding: 22px 26px;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+[data-theme="dark"] .cover-header-hero {
+  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(124, 58, 237, 0.12) 60%, rgba(13, 148, 136, 0.12) 100%);
+  border-color: rgba(124, 58, 237, 0.28);
+}
+
+.cover-hero-left h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.cover-hero-left p {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.cover-season-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--primary, #7C3AED);
+  margin-top: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-fast);
+}
+
+.cover-season-pill:hover {
+  border-color: var(--primary, #7C3AED);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
+}
+
+[data-theme="dark"] .cover-season-pill {
+  background: rgba(124, 58, 237, 0.2);
+  border-color: rgba(124, 58, 237, 0.38);
+  color: #DDD6FE;
+}
+
+.cover-hero-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.cover-stat-badge {
+  background: #FFFFFF;
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 10px 16px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  min-width: 78px;
+}
+
+[data-theme="dark"] .cover-stat-badge {
+  background: rgba(21, 29, 42, 0.8);
+  border-color: var(--border-light);
+}
+
+.cover-stat-val {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.cover-stat-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Streamlined System Compass Strip (Ultra Compact 1-Line) */
+.cover-compass-strip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 12px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  background: linear-gradient(135deg, #FFFFFF 0%, #F0FDF4 100%);
-  border: 1.5px solid rgba(6, 95, 70, 0.22);
-  border-left: 5px solid #065F46;
-  border-radius: var(--radius-lg);
-  padding: 18px 24px;
-  box-shadow: 0 4px 20px rgba(6, 95, 70, 0.05);
+  gap: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  flex-wrap: wrap;
 }
 
-[data-theme="dark"] .cover-welcome-banner {
-  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(6, 95, 70, 0.15) 100%);
-  border-color: rgba(6, 95, 70, 0.35);
-  border-left-color: #059669;
-}
-
-.welcome-banner-left {
+.compass-strip-title {
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 6px;
 }
 
-.welcome-banner-greeting {
+.compass-strip-tools {
   display: flex;
-  align-items: center;
-  gap: 14px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.greeting-symbol {
-  font-size: 1.7rem;
-  line-height: 1;
-  background: #ECFDF5;
-  border: 1px solid rgba(6, 95, 70, 0.25);
-  border-radius: 14px;
-  padding: 8px 10px;
+.compass-tool-pill {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  background: var(--bg-surface, #F8FAFC);
+  border: 1px solid var(--border-light);
+  border-radius: 9999px;
+  padding: 4px 11px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+  cursor: default;
 }
 
-[data-theme="dark"] .greeting-symbol {
-  background: rgba(6, 95, 70, 0.3);
-  border-color: rgba(6, 95, 70, 0.45);
+.compass-tool-pill:hover {
+  background: var(--bg-card);
+  border-color: var(--primary-border, #DDD6FE);
+  color: var(--primary, #7C3AED);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.08);
 }
 
-.welcome-title {
-  font-size: 1.15rem;
+[data-theme="dark"] .compass-tool-pill {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme="dark"] .compass-tool-pill:hover {
+  background: rgba(124, 58, 237, 0.2);
+  color: #DDD6FE;
+}
+
+.compass-tool-pill .tool-icon {
+  font-size: 0.85rem;
+}
+
+.compass-tool-pill .tool-name {
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0;
-  letter-spacing: -0.01em;
 }
 
-.welcome-subtitle {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  display: block;
-  margin-top: 2px;
+.compass-tool-pill:hover .tool-name {
+  color: var(--primary, #7C3AED);
 }
 
-.btn-jump-today {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  background: linear-gradient(135deg, #065F46 0%, #033627 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: var(--radius-full);
-  font-size: 0.86rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(6, 95, 70, 0.25);
-  transition: all var(--transition-fast);
-  white-space: nowrap;
+[data-theme="dark"] .compass-tool-pill:hover .tool-name {
+  color: #DDD6FE;
 }
 
-.btn-jump-today:hover {
-  background: linear-gradient(135deg, #044E39 0%, #022C20 100%);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(6, 95, 70, 0.35);
+.compass-tool-pill .tool-role {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 /* Top of Mind Scratchpad — Alpine Spruce & Spiced Cedar */
@@ -5123,32 +5214,32 @@
 
 .cover-hub-container .margo-framework-shelf,
 .cover-hub-container .habit-presets-shelf {
-  border: 1px solid rgba(6, 95, 70, 0.16);
-  border-top: 3.5px solid #065F46;
+  border: 1px solid var(--border-light, #E2E8F0);
+  border-top: 3.5px solid var(--primary, #7C3AED);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 18px rgba(6, 95, 70, 0.04);
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.04);
 }
 
 .habit-presets-shelf .preset-pill-item:hover {
-  border-color: #065F46;
-  color: #065F46;
-  background: #F0FDF4;
-  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.12);
+  border-color: var(--primary, #7C3AED);
+  color: var(--primary, #7C3AED);
+  background: #EDE9FE;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
 }
 
 .habit-presets-shelf .preset-pill-item .preset-pill-symbol.plus {
-  color: #065F46;
+  color: var(--primary, #7C3AED);
 }
 
 .habit-presets-shelf .preset-pill-item.added {
-  background: #ECFDF5;
-  border: 1px solid rgba(6, 95, 70, 0.28);
-  color: #065F46;
+  background: #EDE9FE;
+  border: 1px solid #DDD6FE;
+  color: #6D28D9;
   font-weight: 700;
 }
 
 .habit-presets-shelf .preset-pill-item.added .preset-pill-symbol {
-  color: #065F46;
+  color: #7C3AED;
 }
 
 .presets-shelf-pills {
@@ -5407,21 +5498,30 @@
 
 /* Big Elevated White Container Card */
 .campaigns-white-card {
-  background: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  border-top: 4.5px solid #065F46;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-light, #E2E8F0);
+  border-top: 4px solid var(--primary, #7C3AED);
   border-radius: 20px;
   padding: 26px 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), 0 1px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .white-card-brand {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
   font-weight: 800;
-  color: #065F46;
+  color: var(--primary, #7C3AED);
   letter-spacing: -0.02em;
-  margin-bottom: 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.board-brand-sub {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0;
 }
 
 .campaigns-tier-title {
@@ -5766,15 +5866,27 @@
 }
 
 .board-count-pill.count-now {
-  background: #ECFDF5;
-  color: #065F46;
-  border: 1px solid rgba(6, 95, 70, 0.25);
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+}
+
+[data-theme="dark"] .board-count-pill.count-now {
+  background: rgba(124, 58, 237, 0.2);
+  color: #DDD6FE;
+  border-color: rgba(124, 58, 237, 0.35);
 }
 
 .board-count-pill.count-later {
-  background: rgba(194, 65, 12, 0.08);
-  color: #C2410C;
-  border: 1px solid rgba(194, 65, 12, 0.25);
+  background: #F0FDFA;
+  color: #0D9488;
+  border: 1px solid #CCFBF1;
+}
+
+[data-theme="dark"] .board-count-pill.count-later {
+  background: rgba(13, 148, 136, 0.18);
+  color: #A7F3D0;
+  border-color: rgba(13, 148, 136, 0.35);
 }
 
 .focus-tier-block {
@@ -5806,12 +5918,12 @@
 }
 
 .tier-badge-now {
-  background: #065F46;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
   color: #FFFFFF;
 }
 
 .tier-badge-later {
-  background: #C2410C;
+  background: #0D9488;
   color: #FFFFFF;
 }
 
@@ -5842,29 +5954,29 @@
 }
 
 .tier-now-block .btn-tier-add {
-  background: #F0FDF4;
-  border: 1px solid rgba(6, 95, 70, 0.3);
-  color: #065F46;
+  background: #EDE9FE;
+  border: 1px solid #DDD6FE;
+  color: #6D28D9;
 }
 
 .tier-now-block .btn-tier-add:hover {
-  background: #065F46;
+  background: #7C3AED;
   color: #FFFFFF;
-  border-color: #065F46;
-  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.25);
+  border-color: #7C3AED;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
 .tier-later-block .btn-tier-add {
-  background: #FFF7ED;
-  border: 1px solid rgba(194, 65, 12, 0.3);
-  color: #C2410C;
+  background: #F0FDFA;
+  border: 1px solid #CCFBF1;
+  color: #0D9488;
 }
 
 .tier-later-block .btn-tier-add:hover {
-  background: #C2410C;
+  background: #0D9488;
   color: #FFFFFF;
-  border-color: #C2410C;
-  box-shadow: 0 2px 8px rgba(194, 65, 12, 0.25);
+  border-color: #0D9488;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
 }
 
 .focus-tier-divider {

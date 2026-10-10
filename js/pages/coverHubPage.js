@@ -35,10 +35,12 @@ function renderCoverHubPage() {
     ? storage.getHabits()
     : [];
 
+  const seasonTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
+
   container.innerHTML = `
     <div class="cover-hub-container">
       
-      <!-- 1. Operating Mantra Strip (Direct from Screenshot) -->
+      <!-- 1. Operating Mantra Strip (Nordic Minimalist) -->
       <div class="cover-mantra-strip">
         <div class="mantra-pill mantra-simple" title="Simple: Zero duplicate tracking or cognitive bloat">
           <span>simple</span>
@@ -54,112 +56,79 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- Quick Action / Transition to Today Banner -->
-      <div class="cover-welcome-banner">
-        <div class="welcome-banner-left">
-          <div class="welcome-banner-greeting">
-            <span class="greeting-symbol">🌿</span>
-            <div>
-              <h2 class="welcome-title">The Sanctuary Index</h2>
-              <span class="welcome-subtitle">Quiet headspace, what's on deck, and where everything lives</span>
-            </div>
+      <!-- 2. Executive Season & System Compass Hero HUD -->
+      <div class="cover-header-hero">
+        <div class="cover-hero-left">
+          <h2>
+            <span>📖 The System Compass</span>
+          </h2>
+          <p>10,000-ft executive radar &bull; Actions live strictly in Apple Notes &amp; Things 3 &bull; Zero clutter</p>
+          <div class="cover-season-pill" onclick="promptEditSeasonFocus()" title="Click to customize seasonal focus theme" style="cursor: pointer;">
+            <span>🎯 Focus Theme:</span>
+            <strong id="cover-season-focus-text">${escapeHtml(seasonTheme)}</strong>
+            <span style="opacity: 0.6; font-size: 0.65rem; margin-left: 2px;">✏️</span>
           </div>
         </div>
-        <button type="button" class="btn-jump-today" onclick="switchAppView('sanctuary')" title="Jump into today's sanctuary">
-          <span>Today's Sanctuary</span>
-          <span class="jump-arrow">☀️ &rarr;</span>
-        </button>
+
+        <div class="cover-hero-stats">
+          <div class="cover-stat-badge">
+            <div class="cover-stat-val" style="color: var(--primary, #7C3AED);">${campaignsData.now.length}</div>
+            <div class="cover-stat-label">Active Focus</div>
+          </div>
+          <div class="cover-stat-badge">
+            <div class="cover-stat-val" style="color: #0D9488;">${campaignsData.later.length}</div>
+            <div class="cover-stat-label">On Deck</div>
+          </div>
+          <div class="cover-stat-badge">
+            <div class="cover-stat-val" style="color: #64748B;">5</div>
+            <div class="cover-stat-label">Pillars</div>
+          </div>
+        </div>
       </div>
 
-      <!-- 2. What Tools for What Work (Tool Architecture Blueprint) -->
-      <div class="cover-card blueprint-map-card" id="section-architecture-blueprint">
-        <div class="blueprint-card-header">
-          <div class="blueprint-title-row">
-            <span class="blueprint-icon">🧭</span>
-            <h3 class="blueprint-title">What Tools for What Work</h3>
-          </div>
-          <span class="blueprint-badge">Tool Architecture</span>
+      <!-- 3. Streamlined System Compass Strip (Ultra-Compact Tool Roles) -->
+      <div class="cover-compass-strip" id="section-architecture-blueprint">
+        <div class="compass-strip-title">
+          <span>🧭 Tool Roles</span>
         </div>
-
-        <!-- 5-Tool Architecture Grid -->
-        <div class="tools-work-grid-5">
-          
-          <!-- margo -->
-          <div class="tool-work-card tool-card-margo">
-            <div class="tool-work-header">
-              <span class="tool-work-symbol">🌿</span>
-              <h4 class="tool-work-name">margo</h4>
-            </div>
-            <span class="tool-work-badge badge-margo">Central command + analytics</span>
-            <p class="tool-work-desc">
-              10,000-ft executive radar, habit momentum, waiting-on horizon, and 1-tap launchers.
-            </p>
+        <div class="compass-strip-tools">
+          <div class="compass-tool-pill" title="margo: Central command radar &amp; habit momentum engine">
+            <span class="tool-icon">🌿</span>
+            <span class="tool-name">margo</span>
+            <span class="tool-role">&bull; Radar + Habits</span>
           </div>
-
-          <!-- Apple Notes -->
-          <div class="tool-work-card tool-card-notes">
-            <div class="tool-work-header">
-              <span class="tool-work-symbol">📝</span>
-              <h4 class="tool-work-name">Apple Notes</h4>
-            </div>
-            <span class="tool-work-badge badge-notes">Master notes + Master tasks</span>
-            <p class="tool-work-desc">
-              Deep working notes, strategy synthesis, project roadmaps, and complete master task lists.
-            </p>
+          <div class="compass-tool-pill" title="Apple Notes: Master task repositories &amp; project roadmaps">
+            <span class="tool-icon">📝</span>
+            <span class="tool-name">Apple Notes</span>
+            <span class="tool-role">&bull; Master Tasks</span>
           </div>
-
-          <!-- Google Drive -->
-          <div class="tool-work-card tool-card-drive">
-            <div class="tool-work-header">
-              <span class="tool-work-symbol">📁</span>
-              <h4 class="tool-work-name">Google Drive</h4>
-            </div>
-            <span class="tool-work-badge badge-drive">Digital files</span>
-            <p class="tool-work-desc">
-              Permanent digital file vault: signed PDFs, official records, evaluations, and spreadsheets.
-            </p>
+          <div class="compass-tool-pill" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
+            <span class="tool-icon">⚡</span>
+            <span class="tool-name">Things 3</span>
+            <span class="tool-role">&bull; Next Strike</span>
           </div>
-
-          <!-- Things 3 -->
-          <div class="tool-work-card tool-card-things">
-            <div class="tool-work-header">
-              <span class="tool-work-symbol">⚡</span>
-              <h4 class="tool-work-name">Things 3</h4>
-            </div>
-            <span class="tool-work-badge badge-things">Immediate to do</span>
-            <p class="tool-work-desc">
-              The execution trigger chamber &mdash; only the next 1–2 physical strikes sitting in Today. Zero task bloat.
-            </p>
+          <div class="compass-tool-pill" title="Google Drive: Digital vault for signed PDFs &amp; official records">
+            <span class="tool-icon">📁</span>
+            <span class="tool-name">Google Drive</span>
+            <span class="tool-role">&bull; Permanent Vault</span>
           </div>
-
-          <!-- Gmail -->
-          <div class="tool-work-card tool-card-gmail">
-            <div class="tool-work-header">
-              <span class="tool-work-symbol">✉️</span>
-              <h4 class="tool-work-name">Gmail</h4>
-            </div>
-            <span class="tool-work-badge badge-gmail">Email comms</span>
-            <p class="tool-work-desc">
-              Inbound and outbound communications, dedicated domain labels, zero inbox clutter.
-            </p>
+          <div class="compass-tool-pill" title="Gmail: Inbound &amp; outbound communications">
+            <span class="tool-icon">✉️</span>
+            <span class="tool-name">Gmail</span>
+            <span class="tool-role">&bull; Comms</span>
           </div>
-
         </div>
-
       </div>
 
-      <!-- 3. Unified Life Architecture & Focus Board: Now vs. Later (Clean White & Shadow Card) -->
+      <!-- 4. Unified Life Architecture & Focus Board: Now vs. Later -->
       <div class="active-campaigns-section" id="section-active-campaigns">
-        <!-- Hero Header -->
-        <div class="campaigns-hero-heading">
-          <h2 class="campaigns-hero-title">Life Architecture &amp; Focus Board</h2>
-          <span class="campaigns-hero-sub">Executive 10,000-ft visibility &bull; Actions live strictly in Apple Notes &amp; Things 3 &bull; Zero clutter</span>
-        </div>
-
         <!-- Single Elevated White Card Container -->
         <div class="campaigns-white-card unified-board-card">
           <div class="unified-board-header">
-            <div class="white-card-brand">margo</div>
+            <div class="white-card-brand">
+              <span>margo</span>
+              <span class="board-brand-sub">Life Architecture &amp; Focus Board</span>
+            </div>
             <div class="unified-board-counts">
               <span class="board-count-pill count-now">📌 ${campaignsData.now.length} Active (Now)</span>
               <span class="board-count-pill count-later">⏳ ${campaignsData.later.length} On Deck (Later)</span>
@@ -269,6 +238,19 @@ function renderCoverHubPage() {
   }
 }
 window.renderCoverHubPage = renderCoverHubPage;
+
+function promptEditSeasonFocus() {
+  const current = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
+  const updated = prompt('Edit Seasonal Focus Theme for Cover:', current);
+  if (updated && updated.trim()) {
+    try {
+      localStorage.setItem('BOL_COVER_SEASON_FOCUS', updated.trim());
+    } catch (e) {}
+    renderCoverHubPage();
+    if (typeof showToast === 'function') showToast('Updated Focus Theme');
+  }
+}
+window.promptEditSeasonFocus = promptEditSeasonFocus;
 
 /* --------------------------------------------------------------------------
    Unified Life Architecture Card Renderer & Handlers
