@@ -406,6 +406,7 @@ function renderUnifiedCampaignCard(camp, tier) {
   const shiftBtnLabel = isNow ? '&rarr; Later' : '&larr; Now';
 
   const isHaircare = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
+  const isSurgery = (camp.id === 'camp-surgery' || (camp.title || '').toLowerCase().trim() === 'surgery');
   const catMeta = getCampaignCategoryMeta(camp);
   const themeClass = catMeta.theme;
 
@@ -442,7 +443,7 @@ function renderUnifiedCampaignCard(camp, tier) {
     showMargo = camp.visibleTools.includes('margo') || camp.visibleTools.includes('m');
     showApple = camp.visibleTools.includes('apple');
     showGoogle = camp.visibleTools.includes('google') || camp.visibleTools.includes('g');
-    showThings = camp.visibleTools.includes('things') || camp.visibleTools.includes('t3');
+    showThings = camp.visibleTools.includes('things') || camp.visibleTools.includes('things3') || camp.visibleTools.includes('t3');
     showEmail = camp.visibleTools.includes('email') || camp.visibleTools.includes('gmail');
   } else if (camp.tools && typeof camp.tools === 'object' && !Array.isArray(camp.tools)) {
     showMargo = camp.tools.margo !== undefined ? Boolean(camp.tools.margo) : true;
@@ -458,6 +459,15 @@ function renderUnifiedCampaignCard(camp, tier) {
     showApple = true;
     showGoogle = false;
     showThings = false;
+    showEmail = false;
+  }
+
+  // Surgery is explicitly only apple and things3 icons
+  if (isSurgery) {
+    showMargo = false;
+    showApple = true;
+    showGoogle = false;
+    showThings = true;
     showEmail = false;
   }
 

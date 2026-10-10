@@ -219,12 +219,10 @@ class StorageManager {
             status: 'IP',
             theme: 'cat-health',
             tools: {
-              margo: { label: 'Vitality & Recovery', action: 'vitality' },
               apple: { noteQuery: '# HEALTH 02_SURGERY' },
-              google: { folder: 'Medical & Surgery Docs' },
-              things: { query: 'Surgery Follow-up' },
-              email: { emailQuery: 'Surgery Appointments' }
-            }
+              things: { query: 'Surgery Follow-up' }
+            },
+            visibleTools: ['apple', 'things']
           },
           {
             id: 'camp-oon',
@@ -820,7 +818,7 @@ class StorageManager {
         merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
         merged.coverCampaignsSeedVersion = 7;
       }
-      // Ensure Haircare is always initialized to Maintain status, m & apple tools, and placed on the second row of now
+      // Ensure Haircare and Surgery are always initialized with their dedicated tools
       ['now', 'later'].forEach(tierKey => {
         if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns[tierKey])) {
           merged.coverCampaigns[tierKey].forEach(c => {
@@ -831,6 +829,13 @@ class StorageManager {
                 apple: { noteQuery: '# BEAUTY 02_HAIR' }
               };
               c.visibleTools = ['margo', 'apple'];
+            }
+            if (c && (c.id === 'camp-surgery' || (c.title || '').toLowerCase().trim() === 'surgery')) {
+              c.tools = {
+                apple: { noteQuery: '# HEALTH 02_SURGERY' },
+                things: { query: 'Surgery Follow-up' }
+              };
+              c.visibleTools = ['apple', 'things'];
             }
           });
         }
@@ -1940,6 +1945,16 @@ class StorageManager {
       else if (item.status === 'review') { item.status = 'Maintain'; updated = true; }
       else if (!['IP', 'NS', 'Maintain', 'Done'].includes(item.status)) {
         item.status = 'NS'; updated = true;
+      }
+      if (item && (item.id === 'camp-surgery' || (item.title || '').toLowerCase().trim() === 'surgery')) {
+        if (!Array.isArray(item.visibleTools) || item.visibleTools.length !== 2 || !item.visibleTools.includes('apple') || !item.visibleTools.includes('things')) {
+          item.tools = {
+            apple: { noteQuery: '# HEALTH 02_SURGERY' },
+            things: { query: 'Surgery Follow-up' }
+          };
+          item.visibleTools = ['apple', 'things'];
+          updated = true;
+        }
       }
     });
     if (updated) this.saveData();

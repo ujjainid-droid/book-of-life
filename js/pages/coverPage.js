@@ -398,53 +398,237 @@ function renderDailySheet() {
       </div>
     ` : ''}
 
-    <!-- 3. Conscious Check-in: Good Choices & How Healthy Do I Feel? (MOVED UP ABOVE PROGRESS) -->
-    <div class="daily-widgets-grid">
-      
-      <!-- Good Choices (vs Not) Tracker Card -->
-      <div class="cover-card" id="section-good-choices">
+    <!-- ==================== PHASE 1: MORNING HORIZON ==================== -->
+    <div class="day-phase-block">
+      <div class="day-phase-header phase-morning">
+        <div class="day-phase-title-group">
+          <span class="phase-number-tag">Phase 1</span>
+          <span class="phase-name">🌅 Morning Horizon</span>
+          <span class="phase-sub">• Baseline momentum, hero anchors &amp; daily intention moves</span>
+        </div>
+        <span class="phase-time-pill">Wake &amp; Orient</span>
+      </div>
+
+      <!-- Tactile Segmented Pill Track & Momentum Anchors -->
+      <div class="momentum-deck-card" id="section-momentum-anchors">
+        <div class="momentum-deck-header">
+          <div class="momentum-header-left">
+            <span class="momentum-header-badge">Daily Anchors</span>
+            <h3 class="momentum-title">Momentum Anchors</h3>
+          </div>
+          <div class="momentum-streak-pill">
+            🔥 ${Math.max(moveStreak, standStreak, maxStreak)}d Momentum Streak
+          </div>
+        </div>
+
+        <div class="anchor-tracks-grid">
+          <!-- Move Pill Track -->
+          <div class="track-card">
+            <div class="track-top">
+              <div class="track-title-left">
+                <span class="track-name">🏃 Move</span>
+                <span class="track-streak-badge">🔥 ${moveStreak}d</span>
+              </div>
+              <span class="track-status-tag ${moveStage === 0.5 ? 'floor' : (moveStage === 1 ? 'closed' : '')}">
+                ${moveStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (moveStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
+              </span>
+            </div>
+            <div class="segmented-track">
+              <button type="button" class="seg-step ${moveStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">Off</button>
+              <button type="button" class="seg-step ${moveStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
+              <button type="button" class="seg-step ${moveStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">100% Closed</button>
+            </div>
+          </div>
+
+          <!-- Stand Pill Track -->
+          <div class="track-card">
+            <div class="track-top">
+              <div class="track-title-left">
+                <span class="track-name">🧍 Stand</span>
+                <span class="track-streak-badge">🔥 ${standStreak}d</span>
+              </div>
+              <span class="track-status-tag ${standStage === 0.5 ? 'floor' : (standStage === 1 ? 'closed' : '')}">
+                ${standStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (standStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
+              </span>
+            </div>
+            <div class="segmented-track">
+              <button type="button" class="seg-step ${standStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">Off</button>
+              <button type="button" class="seg-step ${standStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
+              <button type="button" class="seg-step ${standStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">100% Closed</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Staged Habits -->
+        ${additionalHabits.length > 0 ? `
+          <div class="additional-habits-tray">
+            <div class="tray-header">
+              <span class="tray-label">Additional Staged Habits</span>
+            </div>
+            <div class="active-stack-list">
+              ${additionalHabits.map(h => {
+                const isDone = !!dayHabitsState[h.id];
+                const streak = storage.data.habitStreaks[h.id] || 0;
+                const isWeekly = (h.cadence === 'weekly');
+                const weeklyCount = typeof dayHabitsState[h.id] === 'number' ? dayHabitsState[h.id] : (isDone ? 1 : 0);
+
+                return `
+                  <div class="habit-card ${isDone ? 'completed' : ''}">
+                    <div class="habit-main" onclick="${isWeekly ? '' : `toggleHabitInSheet('${h.id}')`}">
+                      <div class="custom-checkbox ${isDone ? 'checked' : ''}">
+                        ${isDone ? '✓' : ''}
+                      </div>
+                      <div class="habit-details">
+                        <span class="habit-title">${escapeHtml(h.name)}</span>
+                        <div class="habit-meta">
+                          <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
+                          <span>• ${isWeekly ? `${h.target}x / week` : 'Daily'}</span>
+                          ${h.description ? `<span style="color: var(--text-muted);">• ${escapeHtml(h.description)}</span>` : ''}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="habit-actions">
+                      ${isWeekly ? `
+                        <div class="weekly-counter-pill">
+                          <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', -1, event)">-</button>
+                          <span style="font-size: 0.8rem; font-weight: 700;">${weeklyCount}/${h.target}</span>
+                          <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', 1, event)">+</button>
+                        </div>
+                      ` : ''}
+                      <div class="streak-badge">🔥 ${streak}d</div>
+                      <button class="habit-more-btn" title="Edit Habit" onclick="showEditHabitModal('${h.id}', event)">
+                        <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Day-Specific Bonus Goals Card (One-off daily targets) -->
+      <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
         <div class="card-title-row">
           <div>
             <h3>
-              <i data-lucide="check-circle-2" style="color: var(--margo-m);"></i>
-              Good Choices (vs Not)
+              <i data-lucide="zap" style="color: var(--cyan-glacial);"></i>
+              Day-Specific Bonus Goals
             </h3>
             <span class="card-sub-muted">
-              Week: <strong style="color:var(--primary);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--primary);">+${runningChoices.totalGood}</strong>
+              One-off targets for today only (no ongoing habit pressure)
             </span>
           </div>
         </div>
 
-        <div class="good-choices-card">
-          <div class="choice-buttons-row">
-            <div class="choice-action-btn btn-good" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">
-              <span class="choice-btn-title">+ Good Choice</span>
-              <span class="choice-btn-count">${dateChoices.good || 0}</span>
-            </div>
-            <div class="choice-action-btn btn-not" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">
-              <span class="choice-btn-title">+ Not-so-good</span>
-              <span class="choice-btn-count">${dateChoices.not || 0}</span>
+        <div class="day-goals-card">
+          <div class="day-goals-list">
+            ${dateDayGoals.map(g => `
+              <div class="day-goal-item ${g.completed ? 'done' : ''}">
+                <div class="day-goal-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                  <div class="custom-checkbox ${g.completed ? 'checked' : ''}">
+                    ${g.completed ? '✓' : ''}
+                  </div>
+                  <span class="day-goal-text">${escapeHtml(g.text)}</span>
+                </div>
+                <button class="day-goal-delete-btn" title="Delete goal" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                  <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                </button>
+              </div>
+            `).join('')}
+
+            ${dateDayGoals.length === 0 ? `
+              <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
+                No bonus goals logged today. Add any one-off moves below!
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Inline Add Form -->
+          <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
+            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="+ e.g. 12k steps today, no iced matcha after 2 PM..." required>
+            <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PHASE 2: ACTIVE DAYTIME FLOW ==================== -->
+    <div class="day-phase-block">
+      <div class="day-phase-header phase-active">
+        <div class="day-phase-title-group">
+          <span class="phase-number-tag">Phase 2</span>
+          <span class="phase-name">⚡ Active Daytime Flow</span>
+          <span class="phase-sub">• Conscious decisions in real-time &amp; podcast audio sanctuary</span>
+        </div>
+        <span class="phase-time-pill">Throughout Day</span>
+      </div>
+
+      <div class="phase-flow-grid">
+        <!-- Good Choices (vs Not) Tracker Card -->
+        <div class="cover-card" id="section-good-choices" style="margin-bottom:0;">
+          <div class="card-title-row">
+            <div>
+              <h3>
+                <i data-lucide="check-circle-2" style="color: var(--cyan-glacial);"></i>
+                Good Choices (vs Not)
+              </h3>
+              <span class="card-sub-muted">
+                Week: <strong style="color:var(--cyan-dark);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--cyan-dark);">+${runningChoices.totalGood}</strong>
+              </span>
             </div>
           </div>
 
-          <div class="choice-controls-row">
-            <span>
-              ${totalChoices > 0 ? `<strong>${goodRatio}%</strong> today (${dateChoices.good} vs ${dateChoices.not})` : 'No choices logged today'}
-            </span>
-            <div class="choice-undo-group">
-              ${(dateChoices.good > 0 || dateChoices.not > 0) ? `
-                <button class="choice-undo-btn" style="color: var(--text-muted); font-weight: 500;" title="Reset choices to 0" onclick="resetChoicesAction('${activeTrackingDate}')">↺ 0</button>
-              ` : ''}
-              ${dateChoices.good > 0 ? `<button class="choice-undo-btn" title="Undo 1 good" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
-              ${dateChoices.not > 0 ? `<button class="choice-undo-btn" title="Undo 1 not" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">- Not</button>` : ''}
+          <div class="good-choices-card">
+            <div class="choice-buttons-row">
+              <div class="choice-action-btn btn-good" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">
+                <span class="choice-btn-title">+ Good Choice</span>
+                <span class="choice-btn-count">${dateChoices.good || 0}</span>
+              </div>
+              <div class="choice-action-btn btn-not" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">
+                <span class="choice-btn-title">+ Not-so-good</span>
+                <span class="choice-btn-count">${dateChoices.not || 0}</span>
+              </div>
             </div>
-          </div>
 
-          <div class="choice-ratio-bar">
-            <div class="choice-bar-good" style="width: ${goodBarWidth}%;"></div>
-            <div class="choice-bar-not" style="width: ${notBarWidth}%;"></div>
+            <div class="choice-controls-row">
+              <span>
+                ${totalChoices > 0 ? `<strong>${goodRatio}%</strong> today (${dateChoices.good} vs ${dateChoices.not})` : 'No choices logged today'}
+              </span>
+              <div class="choice-undo-group">
+                ${(dateChoices.good > 0 || dateChoices.not > 0) ? `
+                  <button class="choice-undo-btn" style="color: var(--text-muted); font-weight: 500;" title="Reset choices to 0" onclick="resetChoicesAction('${activeTrackingDate}')">↺ 0</button>
+                ` : ''}
+                ${dateChoices.good > 0 ? `<button class="choice-undo-btn" title="Undo 1 good" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
+                ${dateChoices.not > 0 ? `<button class="choice-undo-btn" title="Undo 1 not" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">- Not</button>` : ''}
+              </div>
+            </div>
+
+            <div class="choice-ratio-bar">
+              <div class="choice-bar-good" style="width: ${goodBarWidth}%;"></div>
+              <div class="choice-bar-not" style="width: ${notBarWidth}%;"></div>
+            </div>
           </div>
         </div>
+
+        <!-- Podcast Sanctuary Lounge & Media Player -->
+        <div style="display:flex;flex-direction:column;">
+          ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PHASE 3: EVENING SANCTUARY ==================== -->
+    <div class="day-phase-block">
+      <div class="day-phase-header phase-evening">
+        <div class="day-phase-title-group">
+          <span class="phase-number-tag">Phase 3</span>
+          <span class="phase-name">🌙 Evening Sanctuary</span>
+          <span class="phase-sub">• Vitality assessment, self-care routine &amp; raw reflections</span>
+        </div>
+        <span class="phase-time-pill">Wind-Down</span>
       </div>
 
       <!-- How Healthy Do I Feel? Widget -->
@@ -452,7 +636,7 @@ function renderDailySheet() {
         <div class="card-title-row">
           <div>
             <h3>
-              <i data-lucide="heart-pulse" style="color: var(--danger);"></i>
+              <i data-lucide="heart-pulse" style="color: var(--cyan-glacial);"></i>
               How Healthy Do I Feel?
             </h3>
             <span class="card-sub-muted">
@@ -512,251 +696,98 @@ function renderDailySheet() {
         </div>
       </div>
 
-    </div>
+      <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
+      ${renderHairCareCard(activeTrackingDate, isToday)}
 
-    <!-- 4. Tactile Segmented Pill Track & Confidante Momentum Deck -->
-    <div class="momentum-deck-card" id="section-momentum-anchors">
-      <div class="momentum-deck-header">
-        <div class="momentum-header-left">
-          <span class="momentum-header-badge">Daily Anchors</span>
-          <h3 class="momentum-title">Momentum Anchors</h3>
-        </div>
-        <div class="momentum-streak-pill">
-          🔥 ${Math.max(moveStreak, standStreak, maxStreak)}d Momentum Streak
-        </div>
-      </div>
-
-      <!-- Option C: Tactile Segmented Pill Track (Direction 2: Nordic Monochromatic Lavender) -->
-      <div class="anchor-tracks-grid">
-        
-        <!-- Move Pill Track -->
-        <div class="track-card">
-          <div class="track-top">
-            <div class="track-title-left">
-              <span class="track-name">🏃 Move</span>
-              <span class="track-streak-badge">🔥 ${moveStreak}d</span>
+      <!-- Unstructured Sanctuary Daily Journal & Brain Dump with Square Cards Archive -->
+      <div class="cover-card sanctuary-journal-card" id="section-sanctuary-journal">
+        <div class="journal-card-header">
+          <div class="journal-header-left">
+            <span class="journal-header-icon">✍️</span>
+            <div>
+              <h3>Daily Sanctuary Journal &amp; Brain Dump</h3>
+              <span class="card-sub-muted">Unstructured raw thoughts, evening reflections &amp; memories</span>
             </div>
-            <span class="track-status-tag ${moveStage === 0.5 ? 'floor' : (moveStage === 1 ? 'closed' : '')}">
-              ${moveStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (moveStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
-            </span>
           </div>
-          <div class="segmented-track">
-            <button type="button" class="seg-step ${moveStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">Off</button>
-            <button type="button" class="seg-step ${moveStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
-            <button type="button" class="seg-step ${moveStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">100% Closed</button>
-          </div>
-        </div>
 
-        <!-- Stand Pill Track -->
-        <div class="track-card">
-          <div class="track-top">
-            <div class="track-title-left">
-              <span class="track-name">🧍 Stand</span>
-              <span class="track-streak-badge">🔥 ${standStreak}d</span>
-            </div>
-            <span class="track-status-tag ${standStage === 0.5 ? 'floor' : (standStage === 1 ? 'closed' : '')}">
-              ${standStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (standStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
-            </span>
-          </div>
-          <div class="segmented-track">
-            <button type="button" class="seg-step ${standStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">Off</button>
-            <button type="button" class="seg-step ${standStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
-            <button type="button" class="seg-step ${standStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">100% Closed</button>
+          <div class="journal-view-toggle">
+            <button class="journal-toggle-btn ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
+              Today's Entry
+            </button>
+            <button class="journal-toggle-btn ${sanctuaryJournalTab === 'archive' ? 'active' : ''}" onclick="setSanctuaryJournalTab('archive')">
+              <span>📚 Past Archive</span>
+              <span class="journal-count-pill">${allJournals.length}</span>
+            </button>
           </div>
         </div>
 
-      </div>
-
-      <!-- Additional Staged Habits (If user adds Skincare, Me time, etc.) -->
-      ${additionalHabits.length > 0 ? `
-        <div class="additional-habits-tray">
-          <div class="tray-header">
-            <span class="tray-label">Additional Staged Habits</span>
-          </div>
-          <div class="active-stack-list">
-            ${additionalHabits.map(h => {
-              const isDone = !!dayHabitsState[h.id];
-              const streak = storage.data.habitStreaks[h.id] || 0;
-              const isWeekly = (h.cadence === 'weekly');
-              const weeklyCount = typeof dayHabitsState[h.id] === 'number' ? dayHabitsState[h.id] : (isDone ? 1 : 0);
-
-              return `
-                <div class="habit-card ${isDone ? 'completed' : ''}">
-                  <div class="habit-main" onclick="${isWeekly ? '' : `toggleHabitInSheet('${h.id}')`}">
-                    <div class="custom-checkbox ${isDone ? 'checked' : ''}">
-                      ${isDone ? '✓' : ''}
-                    </div>
-                    <div class="habit-details">
-                      <span class="habit-title">${escapeHtml(h.name)}</span>
-                      <div class="habit-meta">
-                        <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
-                        <span>• ${isWeekly ? `${h.target}x / week` : 'Daily'}</span>
-                        ${h.description ? `<span style="color: var(--text-muted);">• ${escapeHtml(h.description)}</span>` : ''}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="habit-actions">
-                    ${isWeekly ? `
-                      <div class="weekly-counter-pill">
-                        <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', -1, event)">-</button>
-                        <span style="font-size: 0.8rem; font-weight: 700;">${weeklyCount}/${h.target}</span>
-                        <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', 1, event)">+</button>
-                      </div>
-                    ` : ''}
-                    <div class="streak-badge">🔥 ${streak}d</div>
-                    <button class="habit-more-btn" title="Edit Habit" onclick="showEditHabitModal('${h.id}', event)">
-                      <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
-                    </button>
-                  </div>
+        <!-- VIEW A: TODAY'S ENTRY -->
+        ${sanctuaryJournalTab === 'today' ? `
+          <div class="journal-today-pane">
+            ${journalEntry && journalEntry.text && !sanctuaryJournalEditing ? `
+              <!-- COMPLETED JOURNAL CARD (Editorial & Serene) -->
+              <div class="journal-completed-card">
+                <div class="journal-completed-meta">
+                  <span>Logged for <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong></span>
+                  <span class="journal-meta-right">
+                    ${currentHealthMeta ? `${currentHealthMeta.emoji} ${currentHealthMeta.label} • ` : ''}
+                    <span class="journal-word-pill">${journalEntry.wordCount || 0} words</span>
+                  </span>
                 </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      ` : ''}
 
-    </div>
+                <div class="journal-completed-text">${escapeHtml((journalEntry.text || '').trim())}</div>
 
-    <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
-    ${renderHairCareCard(activeTrackingDate, isToday)}
-
-    <!-- 5. Day-Specific Bonus Goals Card (One-off daily targets) -->
-    <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
-      <div class="card-title-row">
-        <div>
-          <h3>
-            <i data-lucide="zap" style="color: var(--warning);"></i>
-            Day-Specific Bonus Goals
-          </h3>
-          <span class="card-sub-muted">
-            One-off targets for today only (no ongoing habit pressure)
-          </span>
-        </div>
-      </div>
-
-      <div class="day-goals-card">
-        <div class="day-goals-list">
-          ${dateDayGoals.map(g => `
-            <div class="day-goal-item ${g.completed ? 'done' : ''}">
-              <div class="day-goal-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                <div class="custom-checkbox ${g.completed ? 'checked' : ''}">
-                  ${g.completed ? '✓' : ''}
-                </div>
-                <span class="day-goal-text">${escapeHtml(g.text)}</span>
-              </div>
-              <button class="day-goal-delete-btn" title="Delete goal" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
-              </button>
-            </div>
-          `).join('')}
-
-          ${dateDayGoals.length === 0 ? `
-            <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
-              No bonus goals logged today. Add any one-off moves below!
-            </div>
-          ` : ''}
-        </div>
-
-        <!-- Inline Add Form -->
-        <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
-          <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="+ e.g. 12k steps today, no iced matcha after 2 PM..." required>
-          <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- 7. Unstructured Sanctuary Daily Journal & Brain Dump with Square Cards Archive -->
-    <div class="cover-card sanctuary-journal-card" id="section-sanctuary-journal">
-      <div class="journal-card-header">
-        <div class="journal-header-left">
-          <span class="journal-header-icon">✍️</span>
-          <div>
-            <h3>Daily Sanctuary Journal &amp; Brain Dump</h3>
-            <span class="card-sub-muted">Unstructured raw thoughts, evening reflections &amp; memories</span>
-          </div>
-        </div>
-
-        <div class="journal-view-toggle">
-          <button class="journal-toggle-btn ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
-            Today's Entry
-          </button>
-          <button class="journal-toggle-btn ${sanctuaryJournalTab === 'archive' ? 'active' : ''}" onclick="setSanctuaryJournalTab('archive')">
-            <span>📚 Past Archive</span>
-            <span class="journal-count-pill">${allJournals.length}</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- VIEW A: TODAY'S ENTRY -->
-      ${sanctuaryJournalTab === 'today' ? `
-        <div class="journal-today-pane">
-          ${journalEntry && journalEntry.text && !sanctuaryJournalEditing ? `
-            <!-- COMPLETED JOURNAL CARD (Editorial & Serene) -->
-            <div class="journal-completed-card">
-              <div class="journal-completed-meta">
-                <span>Logged for <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong></span>
-                <span class="journal-meta-right">
-                  ${currentHealthMeta ? `${currentHealthMeta.emoji} ${currentHealthMeta.label} • ` : ''}
-                  <span class="journal-word-pill">${journalEntry.wordCount || 0} words</span>
-                </span>
-              </div>
-
-              <div class="journal-completed-text">${escapeHtml((journalEntry.text || '').trim())}</div>
-
-              <div class="journal-completed-footer">
-                <span class="journal-saved-hint">✓ Saved to your personal sanctuary vault</span>
-                <button class="btn btn-secondary btn-xs" onclick="toggleSanctuaryJournalEdit()">
-                  ✎ Edit / Append Entry
-                </button>
-              </div>
-            </div>
-          ` : `
-            <!-- EDITING / ACTIVE TEXTAREA -->
-            <div class="journal-edit-pane">
-              <textarea 
-                class="journal-textarea" 
-                id="sanctuary-journal-input" 
-                rows="4" 
-                placeholder="What's taking up mental bandwidth today? Clear your head here with zero formatting pressure..."
-                oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
-              >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
-
-              <div class="journal-edit-controls">
-                <span class="journal-autosave-indicator" id="journal-autosave-status">
-                  ${journalEntry ? '✓ Auto-saved' : 'Auto-saves continuously as you type'}
-                </span>
-                ${journalEntry && journalEntry.text ? `
-                  <button class="btn btn-primary btn-xs" onclick="toggleSanctuaryJournalEdit()">
-                    Done Editing
+                <div class="journal-completed-footer">
+                  <span class="journal-saved-hint">✓ Saved to your personal sanctuary vault</span>
+                  <button class="btn btn-secondary btn-xs" onclick="toggleSanctuaryJournalEdit()">
+                    ✎ Edit / Append Entry
                   </button>
-                ` : ''}
+                </div>
               </div>
-            </div>
-          `}
-        </div>
-      ` : `
-        <!-- VIEW B: PAST ENTRIES ARCHIVE (SQUARE CARDS GRID) -->
-        <div class="journal-archive-pane">
-          <div class="archive-filter-row">
-            <div class="archive-filter-pills">
-              <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'all' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('all')">All Entries</button>
-              <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('last_week')">Last Week</button>
-              <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('this_month')">This Month</button>
-            </div>
-            <span class="archive-count-label">${allJournals.length} reflections recorded</span>
-          </div>
+            ` : `
+              <!-- EDITING / ACTIVE TEXTAREA -->
+              <div class="journal-edit-pane">
+                <textarea 
+                  class="journal-textarea" 
+                  id="sanctuary-journal-input" 
+                  rows="4" 
+                  placeholder="What's taking up mental bandwidth today? Clear your head here with zero formatting pressure..."
+                  oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
+                >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
 
-          <!-- SQUARE CARD GRID -->
-          <div class="journal-square-grid">
-            ${renderJournalSquareGrid(allJournals, sanctuaryArchiveFilter)}
+                <div class="journal-edit-controls">
+                  <span class="journal-autosave-indicator" id="journal-autosave-status">
+                    ${journalEntry ? '✓ Auto-saved' : 'Auto-saves continuously as you type'}
+                  </span>
+                  ${journalEntry && journalEntry.text ? `
+                    <button class="btn btn-primary btn-xs" onclick="toggleSanctuaryJournalEdit()">
+                      Done Editing
+                    </button>
+                  ` : ''}
+                </div>
+              </div>
+            `}
           </div>
-        </div>
-      `}
+        ` : `
+          <!-- VIEW B: PAST ENTRIES ARCHIVE (SQUARE CARDS GRID) -->
+          <div class="journal-archive-pane">
+            <div class="archive-filter-row">
+              <div class="archive-filter-pills">
+                <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'all' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('all')">All Entries</button>
+                <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('last_week')">Last Week</button>
+                <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('this_month')">This Month</button>
+              </div>
+              <span class="archive-count-label">${allJournals.length} reflections recorded</span>
+            </div>
+
+            <!-- SQUARE CARD GRID -->
+            <div class="journal-square-grid">
+              ${renderJournalSquareGrid(allJournals, sanctuaryArchiveFilter)}
+            </div>
+          </div>
+        `}
+      </div>
     </div>
-
-    <!-- 9. Podcast Sanctuary Lounge & Media Player (Single Serial + Queue) -->
-    ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
   `;
 
   if (window.lucide) {
