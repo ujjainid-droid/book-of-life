@@ -192,7 +192,7 @@ function renderCoverHubPage() {
               <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('now')" title="Add item to Active Focus">+ Add Focus</button>
             </div>
 
-            <div class="campaigns-grid-3">
+            <div class="focus-bento-grid">
               ${campaignsData.now.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
               ${campaignsData.now.length === 0 ? `
                 <div class="tier-empty-state">
@@ -216,7 +216,7 @@ function renderCoverHubPage() {
               <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('later')" title="Add item to Parking Lot">+ Add to Later</button>
             </div>
 
-            <div class="campaigns-grid-3">
+            <div class="directory-later-grid">
               ${campaignsData.later.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
               ${campaignsData.later.length === 0 ? `
                 <div class="tier-empty-state">
@@ -311,6 +311,33 @@ function getDomainThemeClass(camp) {
 }
 window.getDomainThemeClass = getDomainThemeClass;
 
+function getCampaignCategoryMeta(camp) {
+  const t = (camp.title || camp.id || '').toLowerCase();
+  if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor')) {
+    return { tag: 'ED', name: 'School & IEP', theme: 'theme-cat-school', dotColor: '#7C3AED' };
+  }
+  if (t.includes('surgery')) {
+    return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'theme-cat-care', dotColor: '#E11D48' };
+  }
+  if (t.includes('hair')) {
+    return { tag: 'CARE', name: 'Haircare', theme: 'theme-cat-care', dotColor: '#E11D48' };
+  }
+  if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('superbill')) {
+    return { tag: 'FIN', name: 'Reimbursements', theme: 'theme-cat-finance', dotColor: '#059669' };
+  }
+  if (t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget')) {
+    return { tag: 'FIN', name: 'Personal Finance', theme: 'theme-cat-finance', dotColor: '#059669' };
+  }
+  if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
+    return { tag: 'HOME', name: 'Home Declutter', theme: 'theme-cat-home', dotColor: '#0D9488' };
+  }
+  if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook')) {
+    return { tag: 'FOOD', name: 'Nutrition', theme: 'theme-cat-food', dotColor: '#65A30D' };
+  }
+  return { tag: 'CARE', name: 'Aesthetics', theme: 'theme-cat-care', dotColor: '#E11D48' };
+}
+window.getCampaignCategoryMeta = getCampaignCategoryMeta;
+
 function resolveCampaignTools(camp) {
   const tools = camp.tools || {};
   const isArr = Array.isArray(tools);
@@ -384,6 +411,8 @@ function renderUnifiedCampaignCard(camp, tier) {
   const shiftBtnLabel = isNow ? '&rarr; Later' : '&larr; Now';
 
   const isHaircare = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
+  const catMeta = getCampaignCategoryMeta(camp);
+  const themeClass = catMeta.theme;
 
   // Normalize status: IP, NS, Maintain, Done
   let statusKey = String(camp.status || (isHaircare ? 'Maintain' : (isNow ? 'IP' : 'NS'))).trim();
@@ -407,7 +436,6 @@ function renderUnifiedCampaignCard(camp, tier) {
 
   // Resolve tool launchers: m, 🍎, G, T3, email
   const { margoAction, margoLabel, noteQuery, driveFolder, thingsQuery, emailQuery } = resolveCampaignTools(camp);
-  const themeClass = getDomainThemeClass(camp);
 
   let showMargo = true;
   let showApple = true;
@@ -441,59 +469,87 @@ function renderUnifiedCampaignCard(camp, tier) {
   const toolButtons = [];
   if (showMargo) {
     toolButtons.push(`
-      <button type="button" class="tool-icon-btn tool-badge-m" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="margo: ${escapeHtml(margoLabel)}">
+      <button type="button" class="dock-tool-btn tool-badge-m" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="margo: ${escapeHtml(margoLabel)}">
         <span class="tool-symbol symbol-m">m</span>
       </button>
     `);
   }
   if (showApple) {
     toolButtons.push(`
-      <button type="button" class="tool-icon-btn tool-badge-apple" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')" title="Apple Notes: ${escapeHtml(noteQuery)}">
+      <button type="button" class="dock-tool-btn tool-badge-apple" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')" title="Apple Notes: ${escapeHtml(noteQuery)}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
       </button>
     `);
   }
   if (showGoogle) {
     toolButtons.push(`
-      <button type="button" class="tool-icon-btn tool-badge-google" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')" title="Google Drive: ${escapeHtml(driveFolder)}">
+      <button type="button" class="dock-tool-btn tool-badge-google" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')" title="Google Drive: ${escapeHtml(driveFolder)}">
         <span class="tool-symbol symbol-google">G</span>
       </button>
     `);
   }
   if (showThings) {
     toolButtons.push(`
-      <button type="button" class="tool-icon-btn tool-badge-things" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')" title="Things 3: ${escapeHtml(thingsQuery)}">
+      <button type="button" class="dock-tool-btn tool-badge-things" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')" title="Things 3: ${escapeHtml(thingsQuery)}">
         <span class="tool-symbol symbol-things">T3</span>
       </button>
     `);
   }
   if (showEmail) {
     toolButtons.push(`
-      <button type="button" class="tool-icon-btn tool-badge-email" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')" title="Gmail: ${escapeHtml(emailQuery)}">
+      <button type="button" class="dock-tool-btn tool-badge-email" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')" title="Gmail: ${escapeHtml(emailQuery)}">
         <i data-lucide="mail"></i>
       </button>
     `);
   }
-  const toolsHtml = toolButtons.join('');
+  const dockHtml = toolButtons.join('<span class="dock-divider"></span>');
 
-  return `
-    <div class="campaign-sample-card simplified-campaign-card tier-${tier} ${themeClass}">
-      <div class="sample-card-top">
-        <h4 class="sample-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title || '')}</h4>
-        <div class="card-status-wrapper">
-          ${statusBadgeHtml}
+  if (isNow) {
+    return `
+      <div class="bento-campaign-card tier-now ${themeClass}">
+        <div class="bento-card-top">
+          <div class="bento-title-group">
+            <span class="bento-cat-tag">${catMeta.tag}</span>
+            <h4 class="bento-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title || '')}</h4>
+          </div>
+          <div class="card-status-wrapper">
+            ${statusBadgeHtml}
+          </div>
+        </div>
+
+        <div class="bento-card-bottom">
+          <div class="bento-capsule-dock">
+            ${dockHtml}
+          </div>
+          <div class="bento-bottom-actions">
+            <button type="button" class="btn-tier-shift shift-tier-now" onclick="moveCampaignAction('${camp.id}', 'now', 'later')" title="Move to Later">
+              &rarr; Later
+            </button>
+            <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', 'now')" title="Delete domain">
+              <i data-lucide="x" style="width: 11px; height: 11px;"></i>
+            </button>
+          </div>
         </div>
       </div>
+    `;
+  }
 
-      <div class="simplified-card-bottom">
-        <div class="sample-launchers-group">
-          ${toolsHtml}
+  // Later: Option 1 High-Density Directory Item
+  return `
+    <div class="directory-campaign-item tier-later ${themeClass}">
+      <div class="dir-item-left">
+        <span class="dir-cat-dot" style="background-color: ${catMeta.dotColor};"></span>
+        <h4 class="dir-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title || '')}</h4>
+      </div>
+      <div class="dir-item-right">
+        <div class="dir-status-wrap">
+          ${statusBadgeHtml}
         </div>
-        <div class="card-bottom-actions">
-          <button type="button" class="btn-tier-shift shift-tier-${tier}" onclick="moveCampaignAction('${camp.id}', '${tier}', '${oppositeTier}')" title="${isNow ? 'Move to Later' : 'Move to Now'}">
-            ${shiftBtnLabel}
+        <div class="dir-actions">
+          <button type="button" class="btn-tier-shift shift-tier-later" onclick="moveCampaignAction('${camp.id}', 'later', 'now')" title="Move to Now">
+            &larr; Now
           </button>
-          <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', '${tier}')" title="Delete domain">
+          <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', 'later')" title="Delete domain">
             <i data-lucide="x" style="width: 11px; height: 11px;"></i>
           </button>
         </div>

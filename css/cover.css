@@ -5339,7 +5339,7 @@
   gap: 14px;
 }
 
-/* 3-Column Clean White Grid */
+/* 3-Column Clean White Grid (Legacy) */
 .campaigns-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -5354,6 +5354,38 @@
 
 @media (max-width: 600px) {
   .campaigns-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Bento 2-Column Grid for Active Focus (Now) - Balanced 2x2 */
+.focus-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 680px) {
+  .focus-bento-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Option 1 High-Density Directory Grid for Later */
+.directory-later-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px 10px;
+}
+
+@media (max-width: 900px) {
+  .directory-later-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 580px) {
+  .directory-later-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -5813,6 +5845,350 @@
 
 .sample-domain-title:hover {
   color: #2563EB;
+}
+
+/* ==========================================================================
+   Bento Focus Grid (Now) & Option 1 Directory (Later)
+   ========================================================================== */
+
+/* 1. Bento Campaign Card: Tactile Rounded Widget with Category Top Accent */
+.bento-campaign-card {
+  border-radius: 14px;
+  padding: 11px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 72px;
+  border: 1px solid #E2E8F0;
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.bento-campaign-card:hover {
+  transform: translateY(-1.5px);
+}
+
+.bento-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.bento-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.bento-cat-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2.5px 6.5px;
+  border-radius: 5px;
+  line-height: 1;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.bento-domain-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.bento-domain-title:hover {
+  opacity: 0.8;
+}
+
+.bento-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* 2. Recessed Capsule Dock */
+.bento-capsule-dock {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  border-radius: 9999px;
+  padding: 2.5px 6px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.dock-divider {
+  display: inline-block;
+  width: 1px;
+  height: 11px;
+  background: rgba(0, 0, 0, 0.12);
+  margin: 0 2px;
+}
+
+.dock-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.dock-tool-btn:hover {
+  transform: scale(1.18);
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.dock-tool-btn .tool-symbol.symbol-m {
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: #7C3AED;
+}
+
+.dock-tool-btn .tool-apple-svg {
+  width: 12px;
+  height: 12px;
+  stroke: #E11D48;
+  fill: none;
+  stroke-width: 2;
+}
+
+.dock-tool-btn .tool-symbol.symbol-google {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  font-size: 0.72rem;
+  color: #1D4ED8;
+}
+
+.dock-tool-btn .tool-symbol.symbol-things {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  font-size: 0.62rem;
+  color: #0284C7;
+  letter-spacing: -0.04em;
+}
+
+.dock-tool-btn i[data-lucide="mail"],
+.dock-tool-btn svg[data-lucide="mail"] {
+  width: 11px;
+  height: 11px;
+  color: #E11D48;
+}
+
+.bento-bottom-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.bento-campaign-card:hover .bento-bottom-actions {
+  opacity: 1;
+}
+
+/* Vibrant Category Themes for Bento Cards */
+/* 1. School (Royal Violet) */
+.bento-campaign-card.theme-cat-school {
+  background: linear-gradient(135deg, #F5EEFF 0%, #FAF5FF 45%, #FFFFFF 100%);
+  border: 1px solid #DDD6FE;
+  border-top: 3.5px solid #7C3AED;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.bento-campaign-card.theme-cat-school:hover {
+  border-color: #8B5CF6;
+  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.16);
+}
+.bento-campaign-card.theme-cat-school .bento-cat-tag {
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+}
+.bento-campaign-card.theme-cat-school .bento-domain-title {
+  color: #5B21B6;
+}
+
+/* 2. Care & Aesthetics (Rose Orchid) */
+.bento-campaign-card.theme-cat-care {
+  background: linear-gradient(135deg, #FFE4E8 0%, #FFF1F3 45%, #FFFFFF 100%);
+  border: 1px solid #FECDD3;
+  border-top: 3.5px solid #E11D48;
+  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.bento-campaign-card.theme-cat-care:hover {
+  border-color: #F43F5E;
+  box-shadow: 0 4px 18px rgba(225, 29, 72, 0.16);
+}
+.bento-campaign-card.theme-cat-care .bento-cat-tag {
+  background: #FFE4E6;
+  color: #BE123C;
+  border: 1px solid #FECDD3;
+}
+.bento-campaign-card.theme-cat-care .bento-domain-title {
+  color: #9F1239;
+}
+
+/* 3. Finance & Reimbursements (Emerald Cashflow) */
+.bento-campaign-card.theme-cat-finance {
+  background: linear-gradient(135deg, #DCFCE7 0%, #ECFDF5 45%, #FFFFFF 100%);
+  border: 1px solid #A7F3D0;
+  border-top: 3.5px solid #059669;
+  box-shadow: 0 2px 10px rgba(5, 150, 105, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.bento-campaign-card.theme-cat-finance:hover {
+  border-color: #10B981;
+  box-shadow: 0 4px 18px rgba(5, 150, 105, 0.16);
+}
+.bento-campaign-card.theme-cat-finance .bento-cat-tag {
+  background: #D1FAE5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+.bento-campaign-card.theme-cat-finance .bento-domain-title {
+  color: #065F46;
+}
+
+/* 4. Home Declutter (Sea Glass Teal) */
+.bento-campaign-card.theme-cat-home {
+  background: linear-gradient(135deg, #CCFBF1 0%, #F0FDFA 45%, #FFFFFF 100%);
+  border: 1px solid #99F6E4;
+  border-top: 3.5px solid #0D9488;
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.bento-campaign-card.theme-cat-home:hover {
+  border-color: #14B8A6;
+  box-shadow: 0 4px 18px rgba(13, 148, 136, 0.16);
+}
+.bento-campaign-card.theme-cat-home .bento-cat-tag {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid #99F6E4;
+}
+.bento-campaign-card.theme-cat-home .bento-domain-title {
+  color: #0F766E;
+}
+
+/* 5. Food & Nutrition (Celadon Sage) */
+.bento-campaign-card.theme-cat-food {
+  background: linear-gradient(135deg, #ECFCCB 0%, #F7FEE7 45%, #FFFFFF 100%);
+  border: 1px solid #D9F99D;
+  border-top: 3.5px solid #65A30D;
+  box-shadow: 0 2px 10px rgba(101, 163, 13, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.bento-campaign-card.theme-cat-food:hover {
+  border-color: #84CC16;
+  box-shadow: 0 4px 18px rgba(101, 163, 13, 0.16);
+}
+.bento-campaign-card.theme-cat-food .bento-cat-tag {
+  background: #ECFCCB;
+  color: #4D7C0F;
+  border: 1px solid #D9F99D;
+}
+.bento-campaign-card.theme-cat-food .bento-domain-title {
+  color: #3F6212;
+}
+
+/* Option 1: High-Density Directory Items for Later */
+.directory-campaign-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6.5px 12px;
+  background: #FAFAFD;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  transition: all 0.16s ease;
+  min-height: 38px;
+  box-sizing: border-box;
+}
+
+.directory-campaign-item:hover {
+  background: #FFFFFF;
+  border-color: #CBD5E1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+
+.dir-item-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  flex: 1;
+}
+
+.dir-cat-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dir-domain-title {
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.dir-domain-title:hover {
+  color: #0F172A;
+}
+
+.dir-item-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.dir-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+.directory-campaign-item:hover .dir-actions {
+  opacity: 1;
 }
 
 .card-status-wrapper {
@@ -6461,6 +6837,107 @@ body.dark-mode .btn-tier-shift {
   background: rgba(30, 41, 59, 0.8);
   border-color: rgba(255, 255, 255, 0.1);
   color: #94A3B8;
+}
+
+/* Dark Mode: Bento & Directory */
+body.dark-mode .bento-capsule-dock {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+body.dark-mode .dock-divider {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+body.dark-mode .dock-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .bento-campaign-card.theme-cat-school {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(124, 58, 237, 0.45);
+  border-top-color: #A78BFA;
+}
+body.dark-mode .bento-campaign-card.theme-cat-school .bento-domain-title {
+  color: #DDD6FE;
+}
+body.dark-mode .bento-campaign-card.theme-cat-school .bento-cat-tag {
+  background: rgba(124, 58, 237, 0.3);
+  color: #C4B5FD;
+  border: 1px solid rgba(167, 139, 250, 0.35);
+}
+
+body.dark-mode .bento-campaign-card.theme-cat-care {
+  background: linear-gradient(135deg, rgba(225, 29, 72, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(225, 29, 72, 0.45);
+  border-top-color: #FB7185;
+}
+body.dark-mode .bento-campaign-card.theme-cat-care .bento-domain-title {
+  color: #FECDD3;
+}
+body.dark-mode .bento-campaign-card.theme-cat-care .bento-cat-tag {
+  background: rgba(225, 29, 72, 0.3);
+  color: #FDA4AF;
+  border: 1px solid rgba(251, 113, 133, 0.35);
+}
+
+body.dark-mode .bento-campaign-card.theme-cat-finance {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(5, 150, 105, 0.45);
+  border-top-color: #34D399;
+}
+body.dark-mode .bento-campaign-card.theme-cat-finance .bento-domain-title {
+  color: #A7F3D0;
+}
+body.dark-mode .bento-campaign-card.theme-cat-finance .bento-cat-tag {
+  background: rgba(5, 150, 105, 0.3);
+  color: #6EE7B7;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+body.dark-mode .bento-campaign-card.theme-cat-home {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(13, 148, 136, 0.45);
+  border-top-color: #2DD4BF;
+}
+body.dark-mode .bento-campaign-card.theme-cat-home .bento-domain-title {
+  color: #99F6E4;
+}
+body.dark-mode .bento-campaign-card.theme-cat-home .bento-cat-tag {
+  background: rgba(13, 148, 136, 0.3);
+  color: #5EEAD4;
+  border: 1px solid rgba(45, 212, 191, 0.35);
+}
+
+body.dark-mode .bento-campaign-card.theme-cat-food {
+  background: linear-gradient(135deg, rgba(101, 163, 13, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(101, 163, 13, 0.45);
+  border-top-color: #A3E635;
+}
+body.dark-mode .bento-campaign-card.theme-cat-food .bento-domain-title {
+  color: #D9F99D;
+}
+body.dark-mode .bento-campaign-card.theme-cat-food .bento-cat-tag {
+  background: rgba(101, 163, 13, 0.3);
+  color: #BEF264;
+  border: 1px solid rgba(163, 230, 53, 0.35);
+}
+
+body.dark-mode .directory-campaign-item {
+  background: rgba(30, 41, 59, 0.55);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .directory-campaign-item:hover {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+body.dark-mode .dir-domain-title {
+  color: #CBD5E1;
+}
+body.dark-mode .dir-domain-title:hover {
+  color: #F8FAFC;
 }
 
 .card-bottom-actions {
