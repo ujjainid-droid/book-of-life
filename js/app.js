@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return { view: 'finance', subView: sub };
     }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
-    if (rawHash.startsWith('cover')) return { view: 'cover', subView: null };
+    if (rawHash.startsWith('cover') || rawHash.startsWith('compass')) return { view: 'cover', subView: null };
     if (rawHash.startsWith('sanctuary') || rawHash.startsWith('today')) return { view: 'sanctuary', subView: null };
     return { view: rawHash, subView: null };
   }
@@ -102,7 +102,7 @@ function switchAppView(viewName, subViewName) {
     currentView = 'zlog';
   } else if (viewName === 'podcasts') {
     currentView = 'podcasts';
-  } else if (viewName === 'cover') {
+  } else if (viewName === 'cover' || viewName === 'compass') {
     currentView = 'cover';
     localStorage.setItem('BOL_LAST_SANCTUARY_VIEW', 'cover');
   } else {
@@ -127,7 +127,7 @@ function switchAppView(viewName, subViewName) {
     localStorage.setItem('BOL_ACTIVE_VIEW', currentView);
     let targetHash = '';
     if (currentView === 'cover') {
-      targetHash = 'cover';
+      targetHash = 'compass';
     } else if (currentView === 'zlog') {
       const zTab = subViewName || (typeof activeZLogSubTab !== 'undefined' ? activeZLogSubTab : localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB')) || 'timeline';
       targetHash = (zTab && zTab !== 'timeline') ? `zhub/${zTab}` : 'zhub';

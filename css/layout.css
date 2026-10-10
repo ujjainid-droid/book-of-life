@@ -118,7 +118,8 @@ html, body {
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.32);
 }
 
-.nav-capsule-btn.active#nav-btn-cover {
+.nav-capsule-btn.active#nav-btn-cover,
+.nav-capsule-btn.active#nav-btn-compass {
   background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
   color: #ffffff;
   box-shadow: 0 2px 8px rgba(13, 148, 136, 0.32);

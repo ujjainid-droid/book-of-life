@@ -9,8 +9,8 @@ function renderCoverHubPage() {
   currentView = 'cover';
   try {
     localStorage.setItem('BOL_ACTIVE_VIEW', 'cover');
-    if (window.location.hash !== '#cover') {
-      window.location.hash = 'cover';
+    if (window.location.hash !== '#compass' && window.location.hash !== '#cover') {
+      window.location.hash = 'compass';
     }
   } catch (e) {}
 
@@ -235,7 +235,7 @@ window.renderCoverHubPage = renderCoverHubPage;
 
 function promptEditSeasonFocus() {
   const current = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
-  const updated = prompt('Edit Seasonal Focus Theme for Cover:', current);
+  const updated = prompt('Edit Seasonal Focus Theme for Compass:', current);
   if (updated && updated.trim()) {
     try {
       localStorage.setItem('BOL_COVER_SEASON_FOCUS', updated.trim());
