@@ -172,30 +172,22 @@ function renderDailySheet() {
     ? ZLOG_RATINGS[todayZLog.rating]
     : null;
 
-  // Default mockup intention goals from Option A sample
-  const MOCKUP_INTENTION_MOVES = [
-    'Morning Mobility',
-    'Stretch Session',
-    'Post-Dinner Walk',
-    'Take Breaks',
-    'Stand and Stretch',
-    'Desk Stand Offs'
-  ];
-
+  // Clean up any previously auto-populated dummy goals from storage
+  const dummyTexts = new Set([
+    'morning mobility',
+    'stretch session',
+    'post-dinner walk',
+    'take breaks',
+    'stand and stretch',
+    'desk stand offs'
+  ]);
   let storedGoals = storage.getDayGoals(activeTrackingDate) || [];
-  if (storedGoals.length === 0) {
-    MOCKUP_INTENTION_MOVES.forEach(t => storage.addDayGoal(t, activeTrackingDate));
-    storedGoals = storage.getDayGoals(activeTrackingDate);
-  } else if (storedGoals.length < 6) {
-    const existingTexts = new Set(storedGoals.map(g => (g.text || '').toLowerCase().trim()));
-    MOCKUP_INTENTION_MOVES.forEach(t => {
-      if (!existingTexts.has(t.toLowerCase().trim()) && storedGoals.length < 6) {
-        storage.addDayGoal(t, activeTrackingDate);
-        storedGoals = storage.getDayGoals(activeTrackingDate);
-      }
-    });
+  const cleanedGoals = storedGoals.filter(g => !dummyTexts.has((g.text || '').toLowerCase().trim()));
+  if (cleanedGoals.length !== storedGoals.length) {
+    storage.data.dayGoals[activeTrackingDate] = cleanedGoals;
+    storage.saveData();
   }
-  const displayGoals = storedGoals;
+  const displayGoals = cleanedGoals;
 
   const CHOICE_CHIPS = [
     { label: 'Hydrated', type: 'good' },
@@ -259,15 +251,13 @@ function renderDailySheet() {
               <div class="anchor-label">Move Anchor</div>
               <div class="mockup-track-container">
                 <button type="button" class="mockup-seg-btn seg-off ${moveStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">
-                  <span>Off</span>
+                  Off
                 </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${moveStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">
-                  <span class="seg-val">50%</span>
-                  <span class="seg-lbl">Floor Defended</span>
+                  50%
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${moveStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">
-                  <span class="seg-val">100%</span>
-                  <span class="seg-lbl">Closed</span>
+                  100%
                 </button>
               </div>
             </div>
@@ -277,15 +267,13 @@ function renderDailySheet() {
               <div class="anchor-label">Stand Ring</div>
               <div class="mockup-track-container">
                 <button type="button" class="mockup-seg-btn seg-off ${standStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">
-                  <span>Off</span>
+                  Off
                 </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${standStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">
-                  <span class="seg-val">50%</span>
-                  <span class="seg-lbl">Floor Defended</span>
+                  50%
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${standStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">
-                  <span class="seg-val">100%</span>
-                  <span class="seg-lbl">Closed</span>
+                  100%
                 </button>
               </div>
             </div>

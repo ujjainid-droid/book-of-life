@@ -8108,22 +8108,22 @@ body.dark-mode .protocol-sample-btn {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
   gap: 48px;
-  align-items: center;
-  padding: 28px 34px;
+  align-items: flex-start;
+  padding: 24px 30px;
 }
 
 @media (max-width: 860px) {
   .today-card-anchors-goals {
     grid-template-columns: 1fr;
-    gap: 28px;
-    padding: 20px 22px;
+    gap: 24px;
+    padding: 18px 20px;
   }
 }
 
 .anchors-col {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px;
 }
 
 .anchor-track-group {
@@ -8139,14 +8139,14 @@ body.dark-mode .protocol-sample-btn {
   letter-spacing: -0.01em;
 }
 
-/* Mockup Pill Track Container */
+/* Mockup Pill Track Container (Shallower & Sleeker) */
 .mockup-track-container {
   background: #EEF2F6;
   border-radius: 9999px;
-  padding: 5px;
+  padding: 3px;
   display: flex;
-  gap: 5px;
-  height: 56px;
+  gap: 4px;
+  height: 38px;
   align-items: stretch;
   border: 1px solid rgba(0, 0, 0, 0.03);
 }
@@ -8157,32 +8157,28 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .mockup-seg-btn {
+  flex: 1;
   border: none;
   background: transparent;
   cursor: pointer;
   border-radius: 9999px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: 0 16px;
+  transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 12px;
   color: #64748B;
   font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 600;
   user-select: none;
-}
-
-.mockup-seg-btn.seg-off {
-  flex: 1;
-  font-size: 0.95rem;
-  font-weight: 500;
 }
 
 .mockup-seg-btn.seg-off.is-active {
   background: #FFFFFF;
   color: #0F172A;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
 }
 
 [data-theme="dark"] .mockup-seg-btn.seg-off.is-active {
@@ -8190,26 +8186,11 @@ body.dark-mode .protocol-sample-btn {
   color: #F8FAFC;
 }
 
-.mockup-seg-btn.seg-floor {
-  flex: 1.5;
-  line-height: 1.25;
-}
-
-.mockup-seg-btn.seg-floor .seg-val {
-  font-size: 0.88rem;
-  font-weight: 800;
-}
-
-.mockup-seg-btn.seg-floor .seg-lbl {
-  font-size: 0.72rem;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
 .mockup-seg-btn.seg-floor.is-active {
   background: #DDD6FE !important;
   color: #5B21B6 !important;
-  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.16) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.16) !important;
 }
 
 [data-theme="dark"] .mockup-seg-btn.seg-floor.is-active {
@@ -8217,26 +8198,11 @@ body.dark-mode .protocol-sample-btn {
   color: #EDE9FE !important;
 }
 
-.mockup-seg-btn.seg-closed {
-  flex: 1.5;
-  line-height: 1.25;
-}
-
-.mockup-seg-btn.seg-closed .seg-val {
-  font-size: 0.88rem;
-  font-weight: 800;
-}
-
-.mockup-seg-btn.seg-closed .seg-lbl {
-  font-size: 0.72rem;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
 .mockup-seg-btn.seg-closed.is-active {
   background: #A7F3D0 !important;
   color: #065F46 !important;
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.16) !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.16) !important;
 }
 
 [data-theme="dark"] .mockup-seg-btn.seg-closed.is-active {
