@@ -7988,3 +7988,856 @@ body.dark-mode .protocol-sample-btn {
 [data-theme="dark"] .health-btn.active .health-btn-label {
   color: #7DD3FC !important;
 }
+
+/* ==========================================================================
+   Option A (The 3-Phase Day Arc — Exact Visual Mockup Match)
+   ========================================================================== */
+
+.today-mockup-wrapper {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 16px 20px 60px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* Floating Center HUD Pill */
+.today-floating-hud {
+  margin: 0 auto 10px auto;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--bg-card);
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  border-radius: var(--radius-full);
+  padding: 7px 20px;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.today-floating-hud:hover {
+  box-shadow: 0 6px 24px rgba(124, 58, 237, 0.14);
+}
+
+.hud-nav-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 50%;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.hud-nav-btn:hover {
+  color: var(--primary);
+  background: var(--bg-surface);
+}
+
+.hud-date-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: default;
+}
+
+.hud-cal-icon {
+  font-size: 1.05rem;
+}
+
+.hud-divider {
+  width: 1px;
+  height: 18px;
+  background: var(--border-light);
+}
+
+.hud-streak-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.hud-today-btn {
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--primary-border);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.hud-today-btn:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+
+/* Section titles matching mockup: "1.  Anchors & Goals", etc. */
+.today-section-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.015em;
+  margin: 0 0 12px 2px;
+}
+
+/* Mockup Clean White Card */
+.today-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
+  padding: 24px 28px;
+  transition: border-color var(--transition-fast);
+}
+
+/* Card 1: Anchors & Goals 2-column layout */
+.today-card-anchors-goals {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 36px;
+  align-items: flex-start;
+}
+
+@media (max-width: 860px) {
+  .today-card-anchors-goals {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.anchors-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.anchor-track-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.anchor-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anchor-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.anchor-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+}
+
+.anchor-badge.badge-floor {
+  background: #DDD6FE;
+  color: #5B21B6;
+}
+
+.anchor-badge.badge-closed {
+  background: #A5F3FC;
+  color: #0891B2;
+}
+
+[data-theme="dark"] .anchor-badge.badge-floor {
+  background: #4C1D95;
+  color: #EDE9FE;
+}
+
+[data-theme="dark"] .anchor-badge.badge-closed {
+  background: rgba(6, 182, 212, 0.25);
+  color: #67E8F9;
+}
+
+/* Mockup Pill Track Container */
+.mockup-track-container {
+  background: #F1F5F9;
+  border-radius: 9999px;
+  padding: 4px;
+  display: flex;
+  gap: 4px;
+  height: 54px;
+  align-items: stretch;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .mockup-track-container {
+  background: #1C2742;
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.mockup-seg-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0 12px;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+}
+
+.mockup-seg-btn.seg-off {
+  flex: 1;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.mockup-seg-btn.seg-off.is-active {
+  background: #FFFFFF;
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme="dark"] .mockup-seg-btn.seg-off.is-active {
+  background: #2A3756;
+  color: #F8FAFC;
+}
+
+.mockup-seg-btn.seg-floor {
+  flex: 1.4;
+  line-height: 1.15;
+}
+
+.mockup-seg-btn.seg-floor .seg-val {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.mockup-seg-btn.seg-floor .seg-lbl {
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.mockup-seg-btn.seg-floor.is-active {
+  background: #DDD6FE !important;
+  color: #5B21B6 !important;
+  box-shadow: 0 3px 12px rgba(124, 58, 237, 0.2) !important;
+}
+
+[data-theme="dark"] .mockup-seg-btn.seg-floor.is-active {
+  background: #5B21B6 !important;
+  color: #EDE9FE !important;
+}
+
+.mockup-seg-btn.seg-closed {
+  flex: 1.4;
+  line-height: 1.15;
+}
+
+.mockup-seg-btn.seg-closed .seg-val {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.mockup-seg-btn.seg-closed .seg-lbl {
+  font-size: 0.72rem;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.mockup-seg-btn.seg-closed.is-active {
+  background: #A5F3FC !important;
+  color: #0E7490 !important;
+  box-shadow: 0 3px 12px rgba(6, 182, 212, 0.25) !important;
+}
+
+[data-theme="dark"] .mockup-seg-btn.seg-closed.is-active {
+  background: #0891B2 !important;
+  color: #ECFEFF !important;
+}
+
+/* Goals Column */
+.goals-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mockup-goals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mockup-goal-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 6px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.mockup-goal-item:hover {
+  background: var(--bg-surface);
+}
+
+.mockup-goal-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 2px solid #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  background: #FFFFFF;
+  color: transparent;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .mockup-goal-checkbox {
+  background: #1C2742;
+  border-color: #475569;
+}
+
+.mockup-goal-item.is-completed .mockup-goal-checkbox {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #FFFFFF;
+}
+
+.mockup-goal-label {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  flex: 1;
+  transition: all var(--transition-fast);
+}
+
+.mockup-goal-item.is-completed .mockup-goal-label {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.goal-del-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  padding: 0 4px;
+  transition: opacity var(--transition-fast), color var(--transition-fast);
+}
+
+.mockup-goal-item:hover .goal-del-btn {
+  opacity: 1;
+}
+
+.goal-del-btn:hover {
+  color: var(--danger);
+}
+
+.mockup-goal-add-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-light);
+}
+
+.mockup-goal-add-input {
+  flex: 1;
+  font-size: 0.88rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 6px 12px;
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.mockup-goal-add-input:focus {
+  background: var(--bg-card);
+  border-color: var(--primary);
+}
+
+.mockup-goal-add-btn {
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  transition: opacity var(--transition-fast);
+}
+
+.mockup-goal-add-btn:hover {
+  opacity: 0.9;
+}
+
+/* Row 2: 2-column layout for Choices and Journal */
+.today-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+@media (max-width: 860px) {
+  .today-row-2 {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+.today-col-left, .today-col-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.today-card-choices, .today-card-journal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Choice Chips Cloud */
+.mockup-chips-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.mockup-chip {
+  border: none;
+  border-radius: 9999px;
+  padding: 8px 18px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s ease;
+  font-family: var(--font-sans);
+}
+
+.mockup-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+.mockup-chip:active {
+  transform: scale(0.96);
+}
+
+.mockup-chip.chip-cyan {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.15);
+}
+
+[data-theme="dark"] .mockup-chip.chip-cyan {
+  background: rgba(20, 184, 166, 0.18);
+  color: #5EEAD4;
+  border-color: rgba(20, 184, 166, 0.35);
+}
+
+.mockup-chip.chip-rose {
+  background: #FECDD3;
+  color: #9F1239;
+  border: 1px solid rgba(225, 29, 72, 0.15);
+}
+
+[data-theme="dark"] .mockup-chip.chip-rose {
+  background: rgba(244, 63, 94, 0.18);
+  color: #FDA4AF;
+  border-color: rgba(244, 63, 94, 0.35);
+}
+
+/* Choice Footer */
+.mockup-choice-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+}
+
+.mockup-choice-tally-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.mockup-choice-btn {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all var(--transition-fast);
+}
+
+.mockup-choice-btn.btn-choice-good {
+  background: var(--cyan-light);
+  border-color: var(--cyan-border);
+  color: var(--cyan-dark);
+}
+
+[data-theme="dark"] .mockup-choice-btn.btn-choice-good {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #38BDF8;
+}
+
+.mockup-choice-btn.btn-choice-not {
+  background: #FEF2F2;
+  border-color: #FECACA;
+  color: #DC2626;
+}
+
+[data-theme="dark"] .mockup-choice-btn.btn-choice-not {
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #F87171;
+}
+
+.choice-counter-pill {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+}
+
+[data-theme="dark"] .choice-counter-pill {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.mockup-choice-ratio-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.choice-undo-wrap {
+  display: flex;
+  gap: 6px;
+}
+
+.choice-mini-undo {
+  background: transparent;
+  border: none;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.choice-mini-undo:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+.mockup-ratio-bar {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: #E2E8F0;
+  overflow: hidden;
+  display: flex;
+}
+
+[data-theme="dark"] .mockup-ratio-bar {
+  background: #1E293B;
+}
+
+.ratio-bar-good {
+  height: 100%;
+  background: linear-gradient(90deg, #7C3AED 0%, #06B6D4 100%);
+  transition: width 0.3s ease;
+}
+
+.ratio-bar-not {
+  height: 100%;
+  background: #F43F5E;
+  transition: width 0.3s ease;
+}
+
+/* Card 3: Evening Check-in & Journal */
+.mockup-subhead {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.mockup-smileys-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.mockup-smiley-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  flex: 1;
+  transition: transform var(--transition-fast);
+}
+
+.mockup-smiley-btn:hover {
+  transform: translateY(-2px);
+}
+
+.smiley-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  background: var(--bg-surface);
+  transition: all var(--transition-fast);
+}
+
+[data-theme="dark"] .smiley-circle {
+  border-color: #334155;
+  background: #1C2742;
+}
+
+.smiley-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: color var(--transition-fast);
+}
+
+.mockup-smiley-btn.is-active .smiley-circle {
+  border-color: var(--cyan-glacial);
+  background: var(--cyan-light);
+  transform: scale(1.1);
+  box-shadow: 0 4px 14px var(--cyan-glow);
+}
+
+[data-theme="dark"] .mockup-smiley-btn.is-active .smiley-circle {
+  background: rgba(6, 182, 212, 0.25);
+  border-color: #38BDF8;
+}
+
+.mockup-smiley-btn.is-active .smiley-label {
+  color: var(--cyan-dark);
+  font-weight: 800;
+}
+
+[data-theme="dark"] .mockup-smiley-btn.is-active .smiley-label {
+  color: #38BDF8;
+}
+
+/* Journal Input Box */
+.mockup-journal-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.mockup-journal-box:focus-within {
+  background: var(--bg-card);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.mockup-journal-textarea {
+  width: 100%;
+  min-height: 72px;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.mockup-journal-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .mockup-journal-bottom {
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+.journal-autosave-note {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.mockup-journal-save-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  transition: all var(--transition-fast);
+}
+
+[data-theme="dark"] .mockup-journal-save-btn {
+  background: #1E293B;
+  border-color: #475569;
+  color: #F8FAFC;
+}
+
+.mockup-journal-save-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Quick utility pills */
+.mockup-quick-utilities {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--border-light);
+}
+
+.util-badge-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.util-badge-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Minimal Bottom Whisper Bar for Gamification & Truth Bomb */
+.mockup-bottom-whisper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 18px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.whisper-quote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-style: italic;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 65%;
+}
+
+.whisper-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.whisper-xp-badge {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.whisper-reward-btn {
+  background: var(--primary-light);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-full);
+  padding: 3px 10px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.whisper-reward-btn:hover {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+

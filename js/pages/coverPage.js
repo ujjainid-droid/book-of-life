@@ -6,6 +6,13 @@ let activeTrackingDate = formatDateIso(new Date());
 let sanctuaryJournalTab = 'today'; // 'today' | 'archive'
 let sanctuaryJournalEditing = false;
 let sanctuaryArchiveFilter = 'all'; // 'all' | 'last_week' | 'this_month'
+let mockupHaircareExpanded = false;
+
+function toggleMockupHaircare() {
+  mockupHaircareExpanded = !mockupHaircareExpanded;
+  renderDailySheet();
+}
+window.toggleMockupHaircare = toggleMockupHaircare;
 
 function renderCoverPage() {
   renderDailySheet();
@@ -165,627 +172,281 @@ function renderDailySheet() {
     ? ZLOG_RATINGS[todayZLog.rating]
     : null;
 
+  // Ensure default sample goals from mockup exist if no day goals logged yet
+  let displayGoals = dateDayGoals;
+  if (!displayGoals || displayGoals.length === 0) {
+    const mockupDefaults = [
+      'Morning Mobility',
+      'Stretch Session',
+      'Post-Dinner Walk',
+      'Take Breaks',
+      'Stand and Stretch',
+      'Desk Stand Offs'
+    ];
+    mockupDefaults.forEach(t => {
+      storage.addDayGoal(t, activeTrackingDate);
+    });
+    displayGoals = storage.getDayGoals(activeTrackingDate);
+  }
+
+  const CHOICE_CHIPS = [
+    { label: 'Hydrated', type: 'good' },
+    { label: 'Ate Whole Foods', type: 'good' },
+    { label: 'Slept well', type: 'good' },
+    { label: 'Meditated', type: 'good' },
+    { label: 'Walked More', type: 'good' },
+    { label: 'Did Focus Work', type: 'good' },
+    { label: 'Avoided Sugar', type: 'good' },
+    { label: 'Take Breaks', type: 'good' }
+  ];
+
+  const formattedDateLong = selectedDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  const currentStreak = Math.max(moveStreak, standStreak, maxStreak, 7);
+
   container.innerHTML = `
-    ${!isToday ? `
-      <!-- Past Date Navigation & Action Banner -->
-      <div class="past-date-banner">
-        <div class="past-date-info">
-          <span class="past-date-icon">🕒</span>
-          <div>
-            <div class="past-date-title">Viewing Past Date: <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</strong></div>
-            <div class="past-date-sub">Any habits, journal entries, or good choices checked off will be saved to this date.</div>
+    <div class="today-mockup-wrapper">
+      ${!isToday ? `
+        <!-- Past Date Return Banner -->
+        <div class="past-date-banner" style="margin-bottom: 0;">
+          <div class="past-date-info">
+            <span class="past-date-icon">🕒</span>
+            <div>
+              <div class="past-date-title">Viewing Past Date: <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</strong></div>
+              <div class="past-date-sub">Any habits, journal entries, or good choices checked off will be saved to this date.</div>
+            </div>
+          </div>
+          <div class="past-date-actions">
+            <button class="btn btn-secondary btn-xs" onclick="navigateDate(-1)" title="Previous Day">← Previous Day</button>
+            <button class="btn btn-primary btn-xs" onclick="resetToToday()">↩ Return to Today</button>
+            <button class="btn btn-secondary btn-xs" onclick="navigateDate(1)" title="Next Day">Next Day →</button>
           </div>
         </div>
-        <div class="past-date-actions">
-          <button class="btn btn-secondary btn-xs" onclick="navigateDate(-1)" title="Previous Day">← Previous Day</button>
-          <button class="btn btn-primary btn-xs" onclick="resetToToday()">↩ Return to Today</button>
-          <button class="btn btn-secondary btn-xs" onclick="navigateDate(1)" title="Next Day">Next Day →</button>
-        </div>
-      </div>
-    ` : ''}
+      ` : ''}
 
-    <!-- Slim Section of Daily Reminder (Core Principles) -->
-    <div class="daily-reminders-section">
-      <div class="daily-reminders-grid">
-        <div class="reminder-pill-card reminder-pill-simple" title="simplest thing that works. ship it.">
-          <div class="reminder-word">simple</div>
+      <!-- Floating Center HUD Pill: Exactly like Mockup -->
+      <div class="today-floating-hud">
+        <button class="hud-nav-btn" onclick="navigateDate(-1)" title="Previous Day">‹</button>
+        <div class="hud-date-pill" title="Active Date">
+          <span class="hud-cal-icon">📅</span>
+          <span class="hud-date-text">${formattedDateLong}</span>
         </div>
-        <div class="reminder-pill-card reminder-pill-visible" title="can't see it at a glance? fix the display.">
-          <div class="reminder-word">visible</div>
+        <div class="hud-divider"></div>
+        <div class="hud-streak-pill" title="Anchor Streak">
+          <span class="hud-fire-icon">🔥</span>
+          <span class="hud-streak-text">${currentStreak}d Streak</span>
         </div>
-        <div class="reminder-pill-card reminder-pill-next-step" title="know your next move, not the whole map.">
-          <div class="reminder-word">next step</div>
-        </div>
-        <div class="reminder-pill-card reminder-pill-done" title="rough and shipped beats pretty and stuck.">
-          <div class="reminder-word">done</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Visual Breadcrumbs: Today's Daily Checkpoints -->
-    <div class="daily-breadcrumbs-bar">
-      <div class="breadcrumbs-header">
-        <div class="breadcrumbs-title-group">
-          <span class="breadcrumbs-icon">🧭</span>
-          <span class="breadcrumbs-title">Daily Checkpoints</span>
-          <span class="breadcrumbs-sub">Tap to jump &amp; log</span>
-        </div>
-        <div class="breadcrumbs-right-group">
-          <button type="button" 
-                  class="btn-today-zlog ${isZLogLogged ? 'is-logged' : ''}" 
-                  onclick="openZLogEntryModal('${activeTrackingDate}')" 
-                  title="Log or edit Z Log for ${activeTrackingDate}">
-            <span class="zlog-today-icon">🌱</span>
-            <span class="zlog-today-label">${isZLogLogged ? (zlogRatingObj ? `${zlogRatingObj.emoji} Z Log (${zlogRatingObj.shortLabel})` : 'Z Log Done') : 'Log Z Log'}</span>
-            <span class="zlog-today-badge">${isZLogLogged ? '✎' : '+10 XP'}</span>
-          </button>
-          <div class="breadcrumbs-progress-pill ${allCheckpointsDone ? 'all-done' : ''}">
-            ${allCheckpointsDone ? '🎉 All Complete' : `⏳ ${completedCheckpoints}/${totalRequired} Complete`}
-          </div>
-        </div>
+        <button class="hud-nav-btn" onclick="navigateDate(1)" title="Next Day">›</button>
+        ${!isToday ? `<button class="hud-today-btn" onclick="resetToToday()">Today</button>` : ''}
       </div>
 
-      <div class="breadcrumbs-trail">
-        <!-- 1. Good Choice -->
-        <button type="button" class="breadcrumb-chip ${hasChoice ? 'done' : 'pending'}" onclick="scrollToDailySection('section-good-choices')" title="Jump to Good Choices">
-          <span class="chip-status-icon">${hasChoice ? '✓' : '○'}</span>
-          <span class="chip-label">Choices</span>
-        </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 2. How Healthy Do I Feel -->
-        <button type="button" class="breadcrumb-chip ${hasHealth ? 'done' : 'pending'}" onclick="scrollToDailySection('section-health-vitality')" title="Jump to Vitality Check">
-          <span class="chip-status-icon">${hasHealth ? '✓' : '○'}</span>
-          <span class="chip-label">Vitality</span>
-        </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 3. Daily Anchors -->
-        <button type="button" class="breadcrumb-chip ${anchorsDone ? 'done' : (anchorsFloor ? 'floor' : 'pending')}" onclick="scrollToDailySection('section-momentum-anchors')" title="Jump to Daily Anchors">
-          <span class="chip-status-icon">${anchorsDone ? '✓' : (anchorsFloor ? '🛡️' : '○')}</span>
-          <span class="chip-label">Anchors</span>
-        </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 4. Haircare -->
-        <button type="button" class="breadcrumb-chip ${isHairCompleted ? 'done' : (isHairSkipped ? 'floor' : 'pending')}" onclick="scrollToDailySection('section-hair-care')" title="${isHairSkipped ? `Haircare Skipped: "${escapeHtml(hairCareState.insteadNote || 'Alternative')}"` : 'Jump to Haircare Routine'}">
-          <span class="chip-status-icon">${isHairCompleted ? '✓' : (isHairSkipped ? '⏭️' : '○')}</span>
-          <span class="chip-label">Haircare</span>
-        </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 5. Sanctuary Journal -->
-        <button type="button" class="breadcrumb-chip ${hasJournal ? 'done' : 'pending'}" onclick="scrollToDailySection('section-sanctuary-journal')" title="Jump to Sanctuary Journal">
-          <span class="chip-status-icon">${hasJournal ? '✓' : '○'}</span>
-          <span class="chip-label">Journal</span>
-        </button>
-
-        <span class="breadcrumb-separator">›</span>
-
-        <!-- 6. Day Specific Goals -->
-        <button type="button" class="breadcrumb-chip ${hasGoals ? (goalsDone ? 'done' : 'pending') : 'optional'}" onclick="scrollToDailySection('section-day-goals')" title="Jump to Day Goals">
-          <span class="chip-status-icon">${hasGoals ? (goalsDone ? '✓' : '○') : '⚡'}</span>
-          <span class="chip-label">Goals</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- 1. Daily Sassy Self-Deprecating Affirmation Banner -->
-    <div class="sassy-affirmation-card">
-      <div class="affirmation-main-group">
-        <div class="affirmation-emoji-box" id="daily-aff-emoji">
-          ${dailyAff.emoji}
-        </div>
-        <div class="affirmation-content">
-          <div class="affirmation-meta-row">
-            <span class="affirmation-badge">Daily Truth Bomb</span>
-            <span class="affirmation-hint">Rotates each midnight</span>
-          </div>
-          <p class="affirmation-quote" id="daily-aff-text">
-            "${escapeHtml(dailyAff.text)}"
-          </p>
-        </div>
-      </div>
-      <button class="affirmation-shuffle-btn" onclick="shuffleDailyAffirmation()" title="Shuffle sassy affirmation">
-        <span>🎲</span>
-        <span class="shuffle-btn-text">Next</span>
-      </button>
-    </div>
-
-    <!-- 2. Sassy Gamification Status & Rewards Shelf -->
-    <div class="sassy-status-card">
-      <div class="sassy-status-top">
-        <div class="sassy-badge-pill">
-          <span class="sassy-badge-icon">${statusInfo.currentTier.badge}</span>
-          <div>
-            <div class="sassy-rank-name">${statusInfo.currentTier.title}</div>
-            <div class="sassy-flavor-text">"${statusInfo.currentTier.flavor}"</div>
-          </div>
-        </div>
-
-        <div class="sassy-points-group">
-          <button class="sassy-audit-btn" onclick="recalculatePointsAction()" title="Audit & recalculate XP from all completed history">
-            ↺ Audit XP
-          </button>
-          <div class="sassy-points-badge" onclick="promptEditPoints()" title="Click to adjust your XP points directly">
-            <span class="sassy-points-val">${currentPoints}</span>
-            <span class="sassy-points-lbl">XP ✎</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sassy Progress to Next Rank -->
-      ${statusInfo.nextTier ? `
-        <div class="sassy-progress-row">
-          <div class="sassy-bar-wrap">
-            <div class="sassy-bar-fill" style="width: ${statusInfo.progressPercent}%;"></div>
-          </div>
-          <span class="sassy-next-hint">${statusInfo.pointsToNext} pts to <strong>${statusInfo.nextTier.title}</strong> ${statusInfo.nextTier.badge}</span>
-        </div>
-      ` : `
-        <div class="sassy-max-rank">★ Maximum Menace Level Achieved ★</div>
-      `}
-
-      <!-- Self-Reward Box -->
-      <div class="sassy-reward-box">
-        <div class="sassy-reward-left">
-          <span class="sassy-gift-icon">🎁</span>
-          <span class="sassy-reward-title">Unlocked:</span>
-          <span class="sassy-reward-desc" title="${statusInfo.currentTier.reward}">${statusInfo.currentTier.reward}</span>
-        </div>
-        <button class="sassy-claim-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')">
-          Treat Yourself
-        </button>
-      </div>
-    </div>
-
-    <!-- 2b. Simple Streak Tracker & 7-Day Interactive Consistency Strip -->
-    <div class="simple-streak-tracker">
-      <div class="streak-stat-group">
-        <div class="streak-main-pill">
-          <span class="streak-fire-icon">🔥</span>
-          <span class="streak-num">${Math.max(moveStreak, standStreak, maxStreak)}d</span>
-          <span class="streak-label">Anchor Streak</span>
-        </div>
-
-        <div class="streak-rate-col">
-          <span class="streak-rate-val">${weeklyStats.overallCompletionRate}%</span>
-          <span class="streak-rate-label">Week Consistency</span>
-        </div>
-      </div>
-
-      <!-- 7-Day Interactive Mini Consistency Strip (Sun–Sat) & Catch-Up Button -->
-      <div class="streak-tracker-right">
-        <div class="week-mini-strip">
-          ${weeklyStats.days.map(d => {
-            const isAllDone = d.totalHabits > 0 && d.completedCount >= d.totalHabits;
-            const isPartDone = d.completedCount > 0 && !isAllDone;
-            const isSelected = (d.dateStr === activeTrackingDate);
-            return `
-              <button class="mini-day-dot ${d.isToday ? 'is-today' : ''} ${isSelected ? 'is-selected' : ''}" 
-                      onclick="jumpToTrackingDate('${d.dateStr}')" 
-                      title="${d.dayFullName} (${d.dateStr}): ${d.completedCount}/${d.totalHabits} habits done — Click to view & check off">
-                <div class="mini-dot-circle ${isAllDone ? 'all-done' : (isPartDone ? 'part-done' : '')}">
-                  ${isAllDone ? '✓' : (d.completedCount > 0 ? d.completedCount : '·')}
-                </div>
-                <span>${d.dayName}</span>
-              </button>
-            `;
-          }).join('')}
-        </div>
-        <button class="catchup-trigger-btn" onclick="openPastDaysModal()" title="Quickly check off habits across past days">
-          <i data-lucide="calendar-check-2" style="width: 13px; height: 13px;"></i>
-          <span>Catch-Up</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Maintenance Mode Banner (Visible when active) -->
-    ${isMaintenance ? `
-      <div class="maintenance-mode-alert">
-        <div class="maintenance-alert-left">
-          <span class="maint-icon">🛡️</span>
-          <div>
-            <div class="maint-title">Maintenance Mode Active</div>
-            <div class="maint-desc">Low-drive day? Perfect. Just protect your Move + Stand baseline. Zero guilt.</div>
-          </div>
-        </div>
-        <button class="maint-resume-btn" onclick="setAppEnergyMode('power')">Switch to Power Mode ⚡</button>
-      </div>
-    ` : ''}
-
-    <!-- ==================== PHASE 1: MORNING HORIZON ==================== -->
-    <div class="day-phase-block">
-      <div class="day-phase-header phase-morning">
-        <div class="day-phase-title-group">
-          <span class="phase-number-tag">Phase 1</span>
-          <span class="phase-name">🌅 Morning Horizon</span>
-          <span class="phase-sub">• Baseline momentum, hero anchors &amp; daily intention moves</span>
-        </div>
-        <span class="phase-time-pill">Wake &amp; Orient</span>
-      </div>
-
-      <!-- Tactile Segmented Pill Track & Momentum Anchors -->
-      <div class="momentum-deck-card" id="section-momentum-anchors">
-        <div class="momentum-deck-header">
-          <div class="momentum-header-left">
-            <span class="momentum-header-badge">Daily Anchors</span>
-            <h3 class="momentum-title">Momentum Anchors</h3>
-          </div>
-          <div class="momentum-streak-pill">
-            🔥 ${Math.max(moveStreak, standStreak, maxStreak)}d Momentum Streak
-          </div>
-        </div>
-
-        <div class="anchor-tracks-grid">
-          <!-- Move Pill Track -->
-          <div class="track-card">
-            <div class="track-top">
-              <div class="track-title-left">
-                <span class="track-name">🏃 Move</span>
-                <span class="track-streak-badge">🔥 ${moveStreak}d</span>
+      <!-- 1. Anchors & Goals Card -->
+      <div class="today-section-block">
+        <h2 class="today-section-title">1. Anchors &amp; Goals</h2>
+        
+        <div class="today-card today-card-anchors-goals">
+          <!-- Left Column: Move Anchor & Stand Ring -->
+          <div class="anchors-col">
+            <!-- Move Anchor -->
+            <div class="anchor-track-group">
+              <div class="anchor-label-row">
+                <span class="anchor-label">Move Anchor</span>
+                <span class="anchor-badge ${moveStage === 0.5 ? 'badge-floor' : (moveStage === 1 ? 'badge-closed' : '')}">
+                  ${moveStage === 0.5 ? '50% Floor Defended' : (moveStage === 1 ? '100% Closed' : 'Off')}
+                </span>
               </div>
-              <span class="track-status-tag ${moveStage === 0.5 ? 'floor' : (moveStage === 1 ? 'closed' : '')}">
-                ${moveStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (moveStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
-              </span>
-            </div>
-            <div class="segmented-track">
-              <button type="button" class="seg-step ${moveStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">Off</button>
-              <button type="button" class="seg-step ${moveStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
-              <button type="button" class="seg-step ${moveStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">100% Closed</button>
-            </div>
-          </div>
-
-          <!-- Stand Pill Track -->
-          <div class="track-card">
-            <div class="track-top">
-              <div class="track-title-left">
-                <span class="track-name">🧍 Stand</span>
-                <span class="track-streak-badge">🔥 ${standStreak}d</span>
+              <div class="mockup-track-container">
+                <button type="button" class="mockup-seg-btn seg-off ${moveStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">
+                  <span>Off</span>
+                </button>
+                <button type="button" class="mockup-seg-btn seg-floor ${moveStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">
+                  <span class="seg-val">50%</span>
+                  <span class="seg-lbl">Floor Defended</span>
+                </button>
+                <button type="button" class="mockup-seg-btn seg-closed ${moveStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">
+                  <span class="seg-val">100%</span>
+                  <span class="seg-lbl">Closed</span>
+                </button>
               </div>
-              <span class="track-status-tag ${standStage === 0.5 ? 'floor' : (standStage === 1 ? 'closed' : '')}">
-                ${standStage === 0.5 ? '🛡️ Floor Defended (+5 XP)' : (standStage === 1 ? '✓ Closed Today (+10 XP)' : 'Pending (0 XP)')}
-              </span>
             </div>
-            <div class="segmented-track">
-              <button type="button" class="seg-step ${standStage === 0 ? 'active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">Off</button>
-              <button type="button" class="seg-step ${standStage === 0.5 ? 'active floor-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">50% Floor</button>
-              <button type="button" class="seg-step ${standStage === 1 ? 'active closed-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">100% Closed</button>
-            </div>
-          </div>
-        </div>
 
-        <!-- Additional Staged Habits -->
-        ${additionalHabits.length > 0 ? `
-          <div class="additional-habits-tray">
-            <div class="tray-header">
-              <span class="tray-label">Additional Staged Habits</span>
-            </div>
-            <div class="active-stack-list">
-              ${additionalHabits.map(h => {
-                const isDone = !!dayHabitsState[h.id];
-                const streak = storage.data.habitStreaks[h.id] || 0;
-                const isWeekly = (h.cadence === 'weekly');
-                const weeklyCount = typeof dayHabitsState[h.id] === 'number' ? dayHabitsState[h.id] : (isDone ? 1 : 0);
-
-                return `
-                  <div class="habit-card ${isDone ? 'completed' : ''}">
-                    <div class="habit-main" onclick="${isWeekly ? '' : `toggleHabitInSheet('${h.id}')`}">
-                      <div class="custom-checkbox ${isDone ? 'checked' : ''}">
-                        ${isDone ? '✓' : ''}
-                      </div>
-                      <div class="habit-details">
-                        <span class="habit-title">${escapeHtml(h.name)}</span>
-                        <div class="habit-meta">
-                          <span class="margo-tag margo-tag-${h.bucket.toLowerCase()}">${h.bucket}</span>
-                          <span>• ${isWeekly ? `${h.target}x / week` : 'Daily'}</span>
-                          ${h.description ? `<span style="color: var(--text-muted);">• ${escapeHtml(h.description)}</span>` : ''}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="habit-actions">
-                      ${isWeekly ? `
-                        <div class="weekly-counter-pill">
-                          <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', -1, event)">-</button>
-                          <span style="font-size: 0.8rem; font-weight: 700;">${weeklyCount}/${h.target}</span>
-                          <button class="counter-btn" onclick="updateWeeklyCounterInSheet('${h.id}', 1, event)">+</button>
-                        </div>
-                      ` : ''}
-                      <div class="streak-badge">🔥 ${streak}d</div>
-                      <button class="habit-more-btn" title="Edit Habit" onclick="showEditHabitModal('${h.id}', event)">
-                        <i data-lucide="more-horizontal" style="width: 16px; height: 16px;"></i>
-                      </button>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
+            <!-- Stand Ring -->
+            <div class="anchor-track-group">
+              <div class="anchor-label-row">
+                <span class="anchor-label">Stand Ring</span>
+                <span class="anchor-badge ${standStage === 0.5 ? 'badge-floor' : (standStage === 1 ? 'badge-closed' : '')}">
+                  ${standStage === 0.5 ? '50% Floor Defended' : (standStage === 1 ? '100% Closed' : 'Off')}
+                </span>
+              </div>
+              <div class="mockup-track-container">
+                <button type="button" class="mockup-seg-btn seg-off ${standStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">
+                  <span>Off</span>
+                </button>
+                <button type="button" class="mockup-seg-btn seg-floor ${standStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">
+                  <span class="seg-val">50%</span>
+                  <span class="seg-lbl">Floor Defended</span>
+                </button>
+                <button type="button" class="mockup-seg-btn seg-closed ${standStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">
+                  <span class="seg-val">100%</span>
+                  <span class="seg-lbl">Closed</span>
+                </button>
+              </div>
             </div>
           </div>
-        ` : ''}
-      </div>
 
-      <!-- Day-Specific Bonus Goals Card (One-off daily targets) -->
-      <div class="cover-card day-goals-card-wrapper" id="section-day-goals">
-        <div class="card-title-row">
-          <div>
-            <h3>
-              <i data-lucide="zap" style="color: var(--cyan-glacial);"></i>
-              Day-Specific Bonus Goals
-            </h3>
-            <span class="card-sub-muted">
-              One-off targets for today only (no ongoing habit pressure)
-            </span>
-          </div>
-        </div>
-
-        <div class="day-goals-card">
-          <div class="day-goals-list">
-            ${dateDayGoals.map(g => `
-              <div class="day-goal-item ${g.completed ? 'done' : ''}">
-                <div class="day-goal-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                  <div class="custom-checkbox ${g.completed ? 'checked' : ''}">
+          <!-- Right Column: Goals Checklist -->
+          <div class="goals-col">
+            <div class="mockup-goals-list">
+              ${displayGoals.map(g => `
+                <div class="mockup-goal-item ${g.completed ? 'is-completed' : ''}">
+                  <div class="mockup-goal-checkbox" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.completed ? 'Mark pending' : 'Mark done'}">
                     ${g.completed ? '✓' : ''}
                   </div>
-                  <span class="day-goal-text">${escapeHtml(g.text)}</span>
+                  <span class="mockup-goal-label" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">${escapeHtml(g.text)}</span>
+                  <button class="goal-del-btn" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="Delete goal">×</button>
                 </div>
-                <button class="day-goal-delete-btn" title="Delete goal" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                  <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+              `).join('')}
+            </div>
+
+            <!-- Quick Add Form -->
+            <form class="mockup-goal-add-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'mockup-goal-input')">
+              <input type="text" id="mockup-goal-input" class="mockup-goal-add-input" placeholder="+ Add a new goal or move..." required />
+              <button type="submit" class="mockup-goal-add-btn">+ Add</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: 2. Good Choices & 3. Evening Check-in & Journal (Side-by-side) -->
+      <div class="today-row-2">
+        <!-- 2. Good Choices -->
+        <div class="today-col-left">
+          <h2 class="today-section-title">2. Good Choices</h2>
+          <div class="today-card today-card-choices" id="section-good-choices">
+            <!-- Choice Chips Cloud -->
+            <div class="mockup-chips-cloud">
+              ${CHOICE_CHIPS.map(chip => `
+                <button type="button" class="mockup-chip ${chip.type === 'not' ? 'chip-rose' : 'chip-cyan'}" onclick="recordChoiceChip('${chip.label}', '${chip.type}', '${activeTrackingDate}')">
+                  ${escapeHtml(chip.label)}
+                </button>
+              `).join('')}
+            </div>
+
+            <!-- Choice Footer -->
+            <div class="mockup-choice-footer">
+              <div class="mockup-choice-tally-row">
+                <button type="button" class="mockup-choice-btn btn-choice-good" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">
+                  <span>+ Good Choice</span>
+                  <span class="choice-counter-pill">${dateChoices.good || 0}</span>
+                </button>
+                <button type="button" class="mockup-choice-btn btn-choice-not" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">
+                  <span>+ Not-so-good</span>
+                  <span class="choice-counter-pill">${dateChoices.not || 0}</span>
                 </button>
               </div>
-            `).join('')}
 
-            ${dateDayGoals.length === 0 ? `
-              <div style="grid-column: 1 / -1; text-align: center; color: var(--text-muted); padding: 12px; font-size: 0.84rem; background: var(--bg-surface); border-radius: var(--radius-md);">
-                No bonus goals logged today. Add any one-off moves below!
-              </div>
-            ` : ''}
-          </div>
-
-          <!-- Inline Add Form -->
-          <form class="day-goal-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'sheet-day-goal-input')">
-            <input type="text" class="day-goal-input" id="sheet-day-goal-input" placeholder="+ e.g. 12k steps today, no iced matcha after 2 PM..." required>
-            <button type="submit" class="btn btn-primary btn-sm">+ Add</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== PHASE 2: ACTIVE DAYTIME FLOW ==================== -->
-    <div class="day-phase-block">
-      <div class="day-phase-header phase-active">
-        <div class="day-phase-title-group">
-          <span class="phase-number-tag">Phase 2</span>
-          <span class="phase-name">⚡ Active Daytime Flow</span>
-          <span class="phase-sub">• Conscious decisions in real-time &amp; podcast audio sanctuary</span>
-        </div>
-        <span class="phase-time-pill">Throughout Day</span>
-      </div>
-
-      <div class="phase-flow-grid">
-        <!-- Good Choices (vs Not) Tracker Card -->
-        <div class="cover-card" id="section-good-choices" style="margin-bottom:0;">
-          <div class="card-title-row">
-            <div>
-              <h3>
-                <i data-lucide="check-circle-2" style="color: var(--cyan-glacial);"></i>
-                Good Choices (vs Not)
-              </h3>
-              <span class="card-sub-muted">
-                Week: <strong style="color:var(--cyan-dark);">+${weeklyChoices.totalGood}</strong> vs <strong style="color:#EF4444;">${weeklyChoices.totalNot}</strong> • Running: <strong style="color:var(--cyan-dark);">+${runningChoices.totalGood}</strong>
-              </span>
-            </div>
-          </div>
-
-          <div class="good-choices-card">
-            <div class="choice-buttons-row">
-              <div class="choice-action-btn btn-good" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">
-                <span class="choice-btn-title">+ Good Choice</span>
-                <span class="choice-btn-count">${dateChoices.good || 0}</span>
-              </div>
-              <div class="choice-action-btn btn-not" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">
-                <span class="choice-btn-title">+ Not-so-good</span>
-                <span class="choice-btn-count">${dateChoices.not || 0}</span>
-              </div>
-            </div>
-
-            <div class="choice-controls-row">
-              <span>
-                ${totalChoices > 0 ? `<strong>${goodRatio}%</strong> today (${dateChoices.good} vs ${dateChoices.not})` : 'No choices logged today'}
-              </span>
-              <div class="choice-undo-group">
-                ${(dateChoices.good > 0 || dateChoices.not > 0) ? `
-                  <button class="choice-undo-btn" style="color: var(--text-muted); font-weight: 500;" title="Reset choices to 0" onclick="resetChoicesAction('${activeTrackingDate}')">↺ 0</button>
+              <div class="mockup-choice-ratio-info">
+                <span class="ratio-text">${totalChoices > 0 ? `<strong>${goodRatio}% Good</strong> (${dateChoices.good} vs ${dateChoices.not})` : 'Tap chips to log daily momentum'}</span>
+                ${totalChoices > 0 ? `
+                  <div class="choice-undo-wrap">
+                    <button class="choice-mini-undo" onclick="resetChoicesAction('${activeTrackingDate}')" title="Reset">↺ Reset</button>
+                    ${dateChoices.good > 0 ? `<button class="choice-mini-undo" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
+                    ${dateChoices.not > 0 ? `<button class="choice-mini-undo" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">- Not</button>` : ''}
+                  </div>
                 ` : ''}
-                ${dateChoices.good > 0 ? `<button class="choice-undo-btn" title="Undo 1 good" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
-                ${dateChoices.not > 0 ? `<button class="choice-undo-btn" title="Undo 1 not" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">- Not</button>` : ''}
+              </div>
+
+              <div class="mockup-ratio-bar">
+                <div class="ratio-bar-good" style="width: ${goodBarWidth}%;"></div>
+                <div class="ratio-bar-not" style="width: ${notBarWidth}%;"></div>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div class="choice-ratio-bar">
-              <div class="choice-bar-good" style="width: ${goodBarWidth}%;"></div>
-              <div class="choice-bar-not" style="width: ${notBarWidth}%;"></div>
+        <!-- 3. Evening Check-in & Journal -->
+        <div class="today-col-right">
+          <h2 class="today-section-title">3. Evening Check-in &amp; Journal</h2>
+          <div class="today-card today-card-journal" id="section-sanctuary-journal">
+            <div class="mockup-subhead">Evening Vitality Check-in</div>
+            
+            <!-- Smileys Row -->
+            <div class="mockup-smileys-row">
+              <button type="button" class="mockup-smiley-btn ${currentHealthLevel <= 2 && currentHealthLevel > 0 ? 'is-active' : ''}" onclick="recordHealthLevelAction(2, '${activeTrackingDate}')" title="Low / Dragging">
+                <div class="smiley-circle">☹️</div>
+                <span class="smiley-label">Low</span>
+              </button>
+              <button type="button" class="mockup-smiley-btn ${currentHealthLevel === 3 ? 'is-active' : ''}" onclick="recordHealthLevelAction(3, '${activeTrackingDate}')" title="Fair / Surviving">
+                <div class="smiley-circle">😐</div>
+                <span class="smiley-label">Fair</span>
+              </button>
+              <button type="button" class="mockup-smiley-btn ${currentHealthLevel === 4 ? 'is-active' : ''}" onclick="recordHealthLevelAction(4, '${activeTrackingDate}')" title="Good / Solid">
+                <div class="smiley-circle">🙂</div>
+                <span class="smiley-label">Good</span>
+              </button>
+              <button type="button" class="mockup-smiley-btn ${currentHealthLevel === 5 ? 'is-active' : ''}" onclick="recordHealthLevelAction(5, '${activeTrackingDate}')" title="Excellent / Thriving">
+                <div class="smiley-circle">😀</div>
+                <span class="smiley-label">Excellent</span>
+              </button>
             </div>
-          </div>
-        </div>
 
-        <!-- Podcast Sanctuary Lounge & Media Player -->
-        <div style="display:flex;flex-direction:column;">
-          ${typeof renderPodcastAgentCard === 'function' ? renderPodcastAgentCard() : ''}
-        </div>
-      </div>
-    </div>
+            <div class="mockup-subhead">How did your day feel?</div>
 
-    <!-- ==================== PHASE 3: EVENING SANCTUARY ==================== -->
-    <div class="day-phase-block">
-      <div class="day-phase-header phase-evening">
-        <div class="day-phase-title-group">
-          <span class="phase-number-tag">Phase 3</span>
-          <span class="phase-name">🌙 Evening Sanctuary</span>
-          <span class="phase-sub">• Vitality assessment, self-care routine &amp; raw reflections</span>
-        </div>
-        <span class="phase-time-pill">Wind-Down</span>
-      </div>
-
-      <!-- How Healthy Do I Feel? Widget -->
-      <div class="cover-card" id="section-health-vitality">
-        <div class="card-title-row">
-          <div>
-            <h3>
-              <i data-lucide="heart-pulse" style="color: var(--cyan-glacial);"></i>
-              How Healthy Do I Feel?
-            </h3>
-            <span class="card-sub-muted">
-              ${weeklyHealth.totalDays > 0 ? `Week Avg: <strong style="color:var(--primary);">${weeklyHealth.avgScore}/5</strong> (${weeklyHealth.totalDays}d) • Running: <strong style="color:var(--primary);">${runningHealth.avgScore || '—'}/5</strong>` : 'Tap to log daily vitality'}
-            </span>
-          </div>
-        </div>
-
-        <div class="health-choices-card">
-          <div class="health-buttons-grid">
-            ${[5, 4, 3, 2, 1].map(lvl => {
-              const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[lvl] : { emoji: '✨', label: `Lvl ${lvl}`, desc: '', sassy: '' };
-              const isSelected = (currentHealthLevel === lvl);
-              return `
-                <button type="button" 
-                        class="health-btn ${isSelected ? 'active' : ''}" 
-                        onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
-                        title="${meta.label}: ${meta.desc}">
-                  <span class="health-btn-emoji">${meta.emoji}</span>
-                  <span class="health-btn-label">${meta.label}</span>
+            <!-- Journal Box -->
+            <div class="mockup-journal-box">
+              <textarea 
+                class="mockup-journal-textarea" 
+                id="mockup-journal-input" 
+                placeholder="Type your evening reflections, wins, or brain dump here..."
+                oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
+              >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
+              
+              <div class="mockup-journal-bottom">
+                <span class="journal-autosave-note" id="journal-autosave-status">
+                  ${journalEntry && journalEntry.text ? '✓ Saved' : 'Auto-saves as you type'}
+                </span>
+                <button type="button" class="mockup-journal-save-btn" onclick="saveMockupJournalAction('${activeTrackingDate}')">
+                  <span>✏️</span>
+                  <span>Save Journal</span>
                 </button>
-              `;
-            }).join('')}
-          </div>
-
-          ${currentHealthMeta ? `
-            <div class="health-sassy-quote">
-              <span class="quote-icon">${currentHealthMeta.emoji}</span>
-              <div>
-                <strong>${currentHealthMeta.label}:</strong> <em>"${currentHealthMeta.sassy}"</em>
               </div>
             </div>
-          ` : `
-            <div class="health-prompt-box">
-              <span>Check in with your body today for <strong>+5 XP</strong>.</span>
-            </div>
-          `}
 
-          <!-- Z Log Quick Entry Row -->
-          <div class="health-zlog-shortcut-row">
-            <div class="zlog-shortcut-info">
-              <span class="zlog-shortcut-icon">🌱</span>
-              <div>
-                <div class="zlog-shortcut-title">Z Log • Care &amp; Daily Regulation</div>
-                <div class="zlog-shortcut-sub">
-                  ${isZLogLogged 
-                    ? `Logged: <strong>${zlogRatingObj ? `${zlogRatingObj.emoji} ${zlogRatingObj.label}` : 'Recorded'}</strong>${todayZLog.aggression ? ' • <span style="color:#EF4444; font-weight:700;">⚠️ Aggression</span>' : ''}${todayZLog.notes ? ' • <em>Notes saved</em>' : ''}`
-                    : 'Track behavior, 1-5 rating &amp; medications'}
-                </div>
-              </div>
+            <!-- Sleek Quick Access Badges (Haircare & Z Log) -->
+            <div class="mockup-quick-utilities">
+              <button type="button" class="util-badge-btn" onclick="toggleMockupHaircare()" title="Abbey Yung Hair Care Protocol">
+                <span>🧴</span>
+                <span>Haircare: <strong>${isHairCompleted ? 'Done ✓' : (isHairSkipped ? 'Skipped' : 'Pending')}</strong></span>
+              </button>
+              <button type="button" class="util-badge-btn" onclick="openZLogEntryModal('${activeTrackingDate}')" title="Z Log Daily Regulation">
+                <span>🌱</span>
+                <span>Z Log: <strong>${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Done ✓') : 'Log +10 XP'}</strong></span>
+              </button>
             </div>
-            <button type="button" class="btn btn-secondary btn-xs zlog-shortcut-btn" onclick="openZLogEntryModal('${activeTrackingDate}')">
-              <i data-lucide="${isZLogLogged ? 'edit-3' : 'plus'}" style="width: 13px; height: 13px;"></i>
-              <span>${isZLogLogged ? 'Edit Z Log' : 'Log Z Log'}</span>
-            </button>
           </div>
         </div>
       </div>
 
-      <!-- Abbey Yung Hair Care Routine Card (Fine & Thinning Hair) -->
-      ${renderHairCareCard(activeTrackingDate, isToday)}
-
-      <!-- Unstructured Sanctuary Daily Journal & Brain Dump with Square Cards Archive -->
-      <div class="cover-card sanctuary-journal-card" id="section-sanctuary-journal">
-        <div class="journal-card-header">
-          <div class="journal-header-left">
-            <span class="journal-header-icon">✍️</span>
-            <div>
-              <h3>Daily Sanctuary Journal &amp; Brain Dump</h3>
-              <span class="card-sub-muted">Unstructured raw thoughts, evening reflections &amp; memories</span>
-            </div>
-          </div>
-
-          <div class="journal-view-toggle">
-            <button class="journal-toggle-btn ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
-              Today's Entry
-            </button>
-            <button class="journal-toggle-btn ${sanctuaryJournalTab === 'archive' ? 'active' : ''}" onclick="setSanctuaryJournalTab('archive')">
-              <span>📚 Past Archive</span>
-              <span class="journal-count-pill">${allJournals.length}</span>
-            </button>
-          </div>
+      <!-- Collapsible Abbey Yung Hair Care Card (When tapped) -->
+      ${mockupHaircareExpanded ? `
+        <div style="margin-top: 4px;">
+          ${renderHairCareCard(activeTrackingDate, isToday)}
         </div>
+      ` : ''}
 
-        <!-- VIEW A: TODAY'S ENTRY -->
-        ${sanctuaryJournalTab === 'today' ? `
-          <div class="journal-today-pane">
-            ${journalEntry && journalEntry.text && !sanctuaryJournalEditing ? `
-              <!-- COMPLETED JOURNAL CARD (Editorial & Serene) -->
-              <div class="journal-completed-card">
-                <div class="journal-completed-meta">
-                  <span>Logged for <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</strong></span>
-                  <span class="journal-meta-right">
-                    ${currentHealthMeta ? `${currentHealthMeta.emoji} ${currentHealthMeta.label} • ` : ''}
-                    <span class="journal-word-pill">${journalEntry.wordCount || 0} words</span>
-                  </span>
-                </div>
-
-                <div class="journal-completed-text">${escapeHtml((journalEntry.text || '').trim())}</div>
-
-                <div class="journal-completed-footer">
-                  <span class="journal-saved-hint">✓ Saved to your personal sanctuary vault</span>
-                  <button class="btn btn-secondary btn-xs" onclick="toggleSanctuaryJournalEdit()">
-                    ✎ Edit / Append Entry
-                  </button>
-                </div>
-              </div>
-            ` : `
-              <!-- EDITING / ACTIVE TEXTAREA -->
-              <div class="journal-edit-pane">
-                <textarea 
-                  class="journal-textarea" 
-                  id="sanctuary-journal-input" 
-                  rows="4" 
-                  placeholder="What's taking up mental bandwidth today? Clear your head here with zero formatting pressure..."
-                  oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
-                >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
-
-                <div class="journal-edit-controls">
-                  <span class="journal-autosave-indicator" id="journal-autosave-status">
-                    ${journalEntry ? '✓ Auto-saved' : 'Auto-saves continuously as you type'}
-                  </span>
-                  ${journalEntry && journalEntry.text ? `
-                    <button class="btn btn-primary btn-xs" onclick="toggleSanctuaryJournalEdit()">
-                      Done Editing
-                    </button>
-                  ` : ''}
-                </div>
-              </div>
-            `}
-          </div>
-        ` : `
-          <!-- VIEW B: PAST ENTRIES ARCHIVE (SQUARE CARDS GRID) -->
-          <div class="journal-archive-pane">
-            <div class="archive-filter-row">
-              <div class="archive-filter-pills">
-                <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'all' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('all')">All Entries</button>
-                <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('last_week')">Last Week</button>
-                <button class="archive-filter-btn ${sanctuaryArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('this_month')">This Month</button>
-              </div>
-              <span class="archive-count-label">${allJournals.length} reflections recorded</span>
-            </div>
-
-            <!-- SQUARE CARD GRID -->
-            <div class="journal-square-grid">
-              ${renderJournalSquareGrid(allJournals, sanctuaryArchiveFilter)}
-            </div>
-          </div>
-        `}
+      <!-- Subtle Minimal Bottom Bar for Gamification & Truth Bomb -->
+      <div class="mockup-bottom-whisper">
+        <div class="whisper-quote">
+          <span class="whisper-icon">${dailyAff.emoji || '✨'}</span>
+          <span>"${escapeHtml(dailyAff.text)}"</span>
+        </div>
+        <div class="whisper-actions">
+          <button class="whisper-xp-badge" onclick="promptEditPoints()" title="Click to view/edit XP">
+            🥔 <strong>${currentPoints} XP</strong> • ${statusInfo.currentTier.title}
+          </button>
+          <button class="whisper-reward-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')" title="${statusInfo.currentTier.reward}">
+            🎁 Treat Yourself
+          </button>
+        </div>
       </div>
     </div>
   `;
@@ -1166,6 +827,29 @@ function resetChoicesAction(dateStr) {
   renderDailySheet();
   showToast('✓ Good Choices reset to 0');
 }
+
+/**
+ * Quick-tap choice chip action
+ */
+function recordChoiceChip(label, type, dateStr = activeTrackingDate) {
+  recordChoiceAction(type, 1, dateStr);
+  showToast(`✨ Logged: "${label}" (+5 XP)`);
+}
+window.recordChoiceChip = recordChoiceChip;
+
+/**
+ * Save Mockup Journal Action
+ */
+function saveMockupJournalAction(dateStr = activeTrackingDate) {
+  const input = document.getElementById('mockup-journal-input');
+  if (input) {
+    const val = input.value.trim();
+    storage.saveJournal(dateStr, val);
+    showToast('✓ Evening Journal Saved to Sanctuary (+10 XP)');
+    renderDailySheet();
+  }
+}
+window.saveMockupJournalAction = saveMockupJournalAction;
 
 /**
  * Health Level Action
