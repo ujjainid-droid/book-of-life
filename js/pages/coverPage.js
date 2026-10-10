@@ -388,27 +388,34 @@ function renderDailySheet() {
         <div class="today-col-right">
           <h2 class="today-section-title">3. Evening Check-in &amp; Journal</h2>
           <div class="today-card today-card-journal" id="section-sanctuary-journal">
-            <div class="mockup-subhead">Evening Vitality Check-in</div>
+            <div class="mockup-subhead">How Healthy Do I Feel?</div>
             
-            <!-- Smileys Row -->
-            <div class="mockup-smileys-row">
-              <button type="button" class="mockup-smiley-btn ${currentHealthLevel <= 2 && currentHealthLevel > 0 ? 'is-active' : ''}" onclick="recordHealthLevelAction(2, '${activeTrackingDate}')" title="Low / Dragging">
-                <div class="smiley-circle">☹️</div>
-                <span class="smiley-label">Low</span>
-              </button>
-              <button type="button" class="mockup-smiley-btn ${currentHealthLevel === 3 ? 'is-active' : ''}" onclick="recordHealthLevelAction(3, '${activeTrackingDate}')" title="Fair / Surviving">
-                <div class="smiley-circle">😐</div>
-                <span class="smiley-label">Fair</span>
-              </button>
-              <button type="button" class="mockup-smiley-btn ${currentHealthLevel === 4 ? 'is-active' : ''}" onclick="recordHealthLevelAction(4, '${activeTrackingDate}')" title="Good / Solid">
-                <div class="smiley-circle">🙂</div>
-                <span class="smiley-label">Good</span>
-              </button>
-              <button type="button" class="mockup-smiley-btn ${currentHealthLevel === 5 ? 'is-active' : ''}" onclick="recordHealthLevelAction(5, '${activeTrackingDate}')" title="Excellent / Thriving">
-                <div class="smiley-circle">😀</div>
-                <span class="smiley-label">Excellent</span>
-              </button>
+            <!-- Previous Vitality Level Options: 5 (Thriving) to 1 (Zombie) -->
+            <div class="health-buttons-grid" style="margin-bottom: 12px;">
+              ${[5, 4, 3, 2, 1].map(lvl => {
+                const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[lvl] : { emoji: '✨', label: `Lvl ${lvl}`, desc: '', sassy: '' };
+                const isSelected = (currentHealthLevel === lvl);
+                return `
+                  <button type="button" 
+                          class="health-btn ${isSelected ? 'active' : ''}" 
+                          onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
+                          title="${meta.label}: ${meta.desc}">
+                    <span class="health-btn-emoji">${meta.emoji}</span>
+                    <span class="health-btn-label">${meta.label}</span>
+                  </button>
+                `;
+              }).join('')}
             </div>
+
+            <!-- Sassy Saying / Insight -->
+            ${currentHealthMeta ? `
+              <div class="health-sassy-quote" style="margin-bottom: 16px;">
+                <span class="quote-icon">${currentHealthMeta.emoji}</span>
+                <div>
+                  <strong>${currentHealthMeta.label}:</strong> <em>"${currentHealthMeta.sassy}"</em>
+                </div>
+              </div>
+            ` : ''}
 
             <div class="mockup-subhead">How did your day feel?</div>
 
