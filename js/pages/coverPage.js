@@ -246,6 +246,24 @@ function renderDailySheet() {
         ${!isToday ? `<button class="hud-today-btn" onclick="resetToToday()">Today</button>` : ''}
       </div>
 
+      <!-- Vibrant Nordic Daily Roast Banner (No Points) -->
+      <div class="today-daily-roast-banner">
+        <div class="roast-badge-pill" onclick="rotateDailyRoast()" title="Tap to shuffle daily roast">
+          <span class="roast-badge-sparkle">✨</span>
+          <span class="roast-badge-label">Daily Roast</span>
+          <span class="roast-badge-shuffle">↻</span>
+        </div>
+        <div class="roast-quote-content">
+          <span class="roast-icon">${dailyAff.emoji || '☕'}</span>
+          <span class="roast-text">"${escapeHtml(dailyAff.text)}"</span>
+        </div>
+        <div class="roast-actions">
+          <button type="button" class="roast-reward-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')" title="${statusInfo.currentTier.reward}">
+            🎁 Treat Yourself
+          </button>
+        </div>
+      </div>
+
       <!-- 1. Anchors & Goals Card -->
       <div class="today-section-block">
         <h2 class="today-section-title">1. Anchors &amp; Goals</h2>
@@ -507,22 +525,6 @@ function renderDailySheet() {
           ${renderHairCareCard(activeTrackingDate, isToday)}
         </div>
       ` : ''}
-
-      <!-- Subtle Minimal Bottom Bar for Gamification & Truth Bomb -->
-      <div class="mockup-bottom-whisper">
-        <div class="whisper-quote">
-          <span class="whisper-icon">${dailyAff.emoji || '✨'}</span>
-          <span>"${escapeHtml(dailyAff.text)}"</span>
-        </div>
-        <div class="whisper-actions">
-          <button class="whisper-xp-badge" onclick="promptEditPoints()" title="Click to view/edit XP">
-            🥔 <strong>${currentPoints} XP</strong> • ${statusInfo.currentTier.title}
-          </button>
-          <button class="whisper-reward-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')" title="${statusInfo.currentTier.reward}">
-            🎁 Treat Yourself
-          </button>
-        </div>
-      </div>
     </div>
   `;
 
@@ -638,6 +640,18 @@ function claimSassyReward(tierTitle) {
   showToast(`🎁 Reward Unlocked: ${statusInfo.currentTier.reward}`);
   renderDailySheet();
 }
+
+/**
+ * Rotate Daily Roast / Sassy Affirmation
+ */
+function rotateDailyRoast() {
+  if (typeof SASSY_AFFIRMATIONS !== 'undefined' && SASSY_AFFIRMATIONS.length > 0) {
+    customAffirmationOffset = (customAffirmationOffset + 1) % SASSY_AFFIRMATIONS.length;
+    renderDailySheet();
+  }
+}
+window.claimSassyReward = claimSassyReward;
+window.rotateDailyRoast = rotateDailyRoast;
 
 /**
  * Habit Actions for Daily Sheet
