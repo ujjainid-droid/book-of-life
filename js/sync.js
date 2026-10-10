@@ -421,14 +421,28 @@ class SyncManager {
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
     let mergedCampaigns = incoming.coverCampaigns;
-    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 7);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 7 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 7)) {
+    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 8);
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 8 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 8)) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
-      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 7)
+      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 8)
         ? storage.data.coverCampaigns
         : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
-      mergedCampVersion = 7;
+      mergedCampVersion = 8;
       localWasRicher = true;
+    }
+    // Ensure Chin hair is present in later if not already in now or later
+    const hasChinHair = [...(mergedCampaigns.now || []), ...(mergedCampaigns.later || [])].some(c =>
+      c && (c.id === 'camp-chinhair' || (c.title || '').toLowerCase().trim() === 'chin hair')
+    );
+    if (!hasChinHair && Array.isArray(mergedCampaigns.later)) {
+      const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
+      const chinHairDefault = defaults && defaults.coverCampaigns && defaults.coverCampaigns.later
+        ? defaults.coverCampaigns.later.find(c => c && c.id === 'camp-chinhair')
+        : null;
+      if (chinHairDefault) {
+        mergedCampaigns.later.push(JSON.parse(JSON.stringify(chinHairDefault)));
+        localWasRicher = true;
+      }
     }
     ['now', 'later'].forEach(tierKey => {
       if (mergedCampaigns && Array.isArray(mergedCampaigns[tierKey])) {

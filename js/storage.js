@@ -355,6 +355,19 @@ class StorageManager {
             }
           },
           {
+            id: 'camp-chinhair',
+            title: 'Chin hair',
+            status: 'NS',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Chin Hair Protocol' },
+              apple: { noteQuery: '# BEAUTY 06_CHIN_HAIR' },
+              google: { folder: 'Chin Hair Treatments' },
+              things: { query: 'Chin Hair Protocol' },
+              email: { emailQuery: 'Chin Hair Consults' }
+            }
+          },
+          {
             id: 'camp-healthyfood',
             title: 'Healthy food',
             status: 'NS',
@@ -826,9 +839,23 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 7 || !Array.isArray(merged.coverCampaigns.now)) {
-        merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
-        merged.coverCampaignsSeedVersion = 7;
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 8 || !Array.isArray(merged.coverCampaigns.now)) {
+        if (!merged.coverCampaigns || !Array.isArray(merged.coverCampaigns.now)) {
+          merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
+        }
+        merged.coverCampaignsSeedVersion = 8;
+      }
+      // Ensure Chin hair is present in later if not already in now or later
+      if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns.later)) {
+        const hasChinHair = [...(merged.coverCampaigns.now || []), ...merged.coverCampaigns.later].some(c =>
+          c && (c.id === 'camp-chinhair' || (c.title || '').toLowerCase().trim() === 'chin hair')
+        );
+        if (!hasChinHair) {
+          const chinHairDefault = defaults.coverCampaigns.later.find(c => c && c.id === 'camp-chinhair');
+          if (chinHairDefault) {
+            merged.coverCampaigns.later.push(JSON.parse(JSON.stringify(chinHairDefault)));
+          }
+        }
       }
       // Ensure Haircare and Surgery are always initialized with their dedicated tools
       ['now', 'later'].forEach(tierKey => {
@@ -1966,13 +1993,27 @@ class StorageManager {
   // --- Cover Page: Unified Life Architecture & Focus Board (Now vs. Later) ---
   getCoverCampaigns() {
     const defaults = this.getDefaultState();
-    if (!this.data.coverCampaigns || !this.data.coverCampaignsSeedVersion || this.data.coverCampaignsSeedVersion < 3) {
-      this.data.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
-      this.data.coverCampaignsSeedVersion = 3;
+    if (!this.data.coverCampaigns || !this.data.coverCampaignsSeedVersion || this.data.coverCampaignsSeedVersion < 8) {
+      if (!this.data.coverCampaigns) {
+        this.data.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
+      }
+      this.data.coverCampaignsSeedVersion = 8;
       this.saveData();
     }
     if (!Array.isArray(this.data.coverCampaigns.now)) this.data.coverCampaigns.now = [];
     if (!Array.isArray(this.data.coverCampaigns.later)) this.data.coverCampaigns.later = [];
+
+    // Ensure Chin hair is present in later if not already in now or later
+    const hasChinHair = [...this.data.coverCampaigns.now, ...this.data.coverCampaigns.later].some(c =>
+      c && (c.id === 'camp-chinhair' || (c.title || '').toLowerCase().trim() === 'chin hair')
+    );
+    if (!hasChinHair) {
+      const chinHairDefault = defaults.coverCampaigns.later.find(c => c && c.id === 'camp-chinhair');
+      if (chinHairDefault) {
+        this.data.coverCampaigns.later.push(JSON.parse(JSON.stringify(chinHairDefault)));
+        this.saveData();
+      }
+    }
 
     // Normalize any legacy statuses to IP, NS, Maintain, Done
     let updated = false;

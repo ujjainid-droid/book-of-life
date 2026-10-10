@@ -286,6 +286,9 @@ function getCampaignCategoryMeta(camp) {
   if (t.includes('surgery') || t.includes('health') || t.includes('doctor') || t.includes('clinic')) {
     return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'theme-cat-health', dotColor: '#0284C7' };
   }
+  if (t.includes('chin')) {
+    return { tag: 'CARE', name: 'Aesthetics', theme: 'theme-cat-care', dotColor: '#E11D48' };
+  }
   if (t.includes('hair')) {
     return { tag: 'CARE', name: 'Haircare', theme: 'theme-cat-care', dotColor: '#E11D48' };
   }
