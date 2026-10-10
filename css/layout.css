@@ -40,7 +40,8 @@ html, body {
   padding: 0 8px;
   gap: 16px;
   flex-wrap: nowrap;
-  transition: all var(--transition-fast, 0.2s ease);
+  box-sizing: border-box;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .header-left {
@@ -452,22 +453,16 @@ html, body {
   border-color: var(--primary);
 }
 
-/* Single Daily Sheet Wrapper */
+/* Single Daily Sheet Wrapper (Unified 1060px Frame Across All Pages) */
 .daily-sheet-container {
   width: 100%;
-  max-width: 680px;
+  max-width: 1060px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding-bottom: 60px;
-  transition: max-width 0.2s ease;
-}
-
-/* Allow wider container for executive multi-column views */
-.daily-sheet-container:has(.cover-hub-container),
-.daily-sheet-container:has(.finance-page-container) {
-  max-width: 960px;
+  padding: 0 8px 60px 8px;
+  box-sizing: border-box;
 }
 
 .tab-category-title {

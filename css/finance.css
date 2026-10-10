@@ -34,6 +34,9 @@
   gap: 20px;
   animation: fadeIn 0.25s ease-out;
   padding-bottom: 40px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* --------------------------------------------------------------------------

@@ -4218,10 +4218,11 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  max-width: 960px;
+  max-width: 100%;
   margin: 0 auto;
   width: 100%;
   padding-bottom: 40px;
+  box-sizing: border-box;
 }
 
 /* Mantra Strip — Nordic White & Elevated Shadow */
@@ -8005,9 +8006,11 @@ body.dark-mode .protocol-sample-btn {
    ========================================================================== */
 
 .today-mockup-wrapper {
-  max-width: 1060px;
+  max-width: 100%;
+  width: 100%;
   margin: 0 auto;
-  padding: 16px 20px 60px 20px;
+  padding: 0 0 60px 0;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 22px;

@@ -87,13 +87,14 @@
 /* Claims Container */
 .claims-container {
   width: 100%;
-  max-width: 720px;
+  max-width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
   padding-bottom: 60px;
   animation: fadeIn 0.25s ease-out;
+  box-sizing: border-box;
 }
 
 @keyframes fadeIn {

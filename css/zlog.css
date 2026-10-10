@@ -334,14 +334,6 @@
 /* --------------------------------------------------------------------------
    2. Dedicated Z Log Page Container & Navigation
    -------------------------------------------------------------------------- */
-.daily-sheet-container:has(.zlog-page-container) {
-  max-width: 680px;
-}
-
-.book-header:has(~ #daily-sheet-container .zlog-page-container) {
-  max-width: 680px;
-}
-
 .zlog-page-container,
 .modal-zlog-card,
 #modal-zlog-entry,
@@ -364,9 +356,10 @@
 
 .zlog-page-container {
   width: 100%;
-  max-width: 680px;
+  max-width: 100%;
   margin: 0 auto;
   padding-bottom: 4rem;
+  box-sizing: border-box;
 }
 
 [data-theme="dark"] .zlog-page-container,
