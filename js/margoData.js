@@ -563,7 +563,7 @@ const HEALTH_LEVELS = {
   },
   4: {
     level: 4,
-    emoji: '🎯',
+    emoji: '🛡️',
     label: 'Solid',
     desc: 'Feeling good, body cooperating, clear head',
     sassy: "Functional and thriving. Let's not ruin this with questionable decisions."
