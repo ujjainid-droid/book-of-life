@@ -152,15 +152,6 @@ function renderCoverHubPage() {
 
         </div>
 
-        <!-- The Generic Closed-Loop Rule Banner -->
-        <div class="workflow-loop-strip">
-          <div class="loop-strip-left">
-            <span class="loop-strip-tag">The Closed-Loop Rule</span>
-            <span class="loop-strip-formula">
-              <span class="formula-highlight">⚡ Active Strike</span> in Things 3 &rarr; Action taken &rarr; Flips to <span class="formula-highlight">⏳ Waiting On</span> in margo &rarr; Ping date arrives &rarr; Push <span class="formula-highlight">⚡ Next Strike</span> to Things 3
-            </span>
-          </div>
-        </div>
       </div>
 
       <!-- 3. Unified Life Architecture & Focus Board: Now vs. Later (Clean White & Shadow Card) -->
