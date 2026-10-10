@@ -556,14 +556,14 @@ function getDefaultNextAction(stage, payoutMethod = 'direct_deposit', submission
 const HEALTH_LEVELS = {
   5: {
     level: 5,
-    emoji: '🌟',
+    emoji: '💎',
     label: 'Thriving',
     desc: 'Peak vitality, invincible, full energy',
     sassy: "Look at you glowing. Try not to intimidate the mere mortals today."
   },
   4: {
     level: 4,
-    emoji: '⚡',
+    emoji: '🎯',
     label: 'Solid',
     desc: 'Feeling good, body cooperating, clear head',
     sassy: "Functional and thriving. Let's not ruin this with questionable decisions."
