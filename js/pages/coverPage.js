@@ -189,15 +189,22 @@ function renderDailySheet() {
   }
   const displayGoals = cleanedGoals;
 
-  const CHOICE_CHIPS = [
+  const GOOD_CHIPS = [
     { label: 'Hydrated', type: 'good' },
     { label: 'Ate Whole Foods', type: 'good' },
     { label: 'Slept well', type: 'good' },
     { label: 'Meditated', type: 'good' },
     { label: 'Walked More', type: 'good' },
-    { label: 'Did Focus Work', type: 'good' },
+    { label: 'Focus Work', type: 'good' },
     { label: 'Avoided Sugar', type: 'good' },
-    { label: 'Take Breaks', type: 'good' }
+    { label: 'Took Breaks', type: 'good' }
+  ];
+
+  const NOT_GOOD_CHIPS = [
+    { label: 'Ate dessert', type: 'not' },
+    { label: 'Junk food', type: 'not' },
+    { label: 'Skipped meals', type: 'not' },
+    { label: 'Late Screen Time', type: 'not' }
   ];
 
   const formattedDateLong = selectedDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -308,42 +315,70 @@ function renderDailySheet() {
         <div class="today-col-left">
           <h2 class="today-section-title">2. Good Choices</h2>
           <div class="today-card today-card-choices" id="section-good-choices">
-            <!-- Choice Chips Cloud -->
-            <div class="mockup-chips-cloud">
-              ${CHOICE_CHIPS.map(chip => `
-                <button type="button" class="mockup-chip ${chip.type === 'not' ? 'chip-rose' : 'chip-cyan'}" onclick="recordChoiceChip('${chip.label}', '${chip.type}', '${activeTrackingDate}')">
-                  ${escapeHtml(chip.label)}
-                </button>
-              `).join('')}
-            </div>
+            <!-- 1. Top Tally Widgets & Steppers -->
+            <div class="choices-tally-header">
+              <div class="choices-tally-grid">
+                <!-- Good Choice Counter Card -->
+                <div class="choice-counter-box counter-good">
+                  <div class="counter-box-info">
+                    <span class="counter-box-label">Good Choices</span>
+                    <span class="counter-box-num">${dateChoices.good || 0}</span>
+                  </div>
+                  <div class="counter-box-steppers">
+                    <button type="button" class="stepper-btn stepper-minus" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')" title="Subtract 1 Good Choice" ${dateChoices.good <= 0 ? 'disabled' : ''}>−</button>
+                    <button type="button" class="stepper-btn stepper-plus" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')" title="Add 1 Good Choice">＋</button>
+                  </div>
+                </div>
 
-            <!-- Choice Footer -->
-            <div class="mockup-choice-footer">
-              <div class="mockup-choice-tally-row">
-                <button type="button" class="mockup-choice-btn btn-choice-good" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">
-                  <span>+ Good Choice</span>
-                  <span class="choice-counter-pill">${dateChoices.good || 0}</span>
-                </button>
-                <button type="button" class="mockup-choice-btn btn-choice-not" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">
-                  <span>+ Not-so-good</span>
-                  <span class="choice-counter-pill">${dateChoices.not || 0}</span>
-                </button>
+                <!-- Not-so-good Counter Card -->
+                <div class="choice-counter-box counter-not">
+                  <div class="counter-box-info">
+                    <span class="counter-box-label">Not-so-good</span>
+                    <span class="counter-box-num">${dateChoices.not || 0}</span>
+                  </div>
+                  <div class="counter-box-steppers">
+                    <button type="button" class="stepper-btn stepper-minus" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')" title="Subtract 1 Not-so-good" ${dateChoices.not <= 0 ? 'disabled' : ''}>−</button>
+                    <button type="button" class="stepper-btn stepper-plus" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')" title="Add 1 Not-so-good">＋</button>
+                  </div>
+                </div>
               </div>
 
+              <!-- Ratio & Reset Bar -->
               <div class="mockup-choice-ratio-info">
-                <span class="ratio-text">${totalChoices > 0 ? `<strong>${goodRatio}% Good</strong> (${dateChoices.good} vs ${dateChoices.not})` : 'Tap chips to log daily momentum'}</span>
+                <span class="ratio-text">${totalChoices > 0 ? `<strong>${goodRatio}% Good</strong> (${dateChoices.good} vs ${dateChoices.not})` : 'Tap chips or steppers to log daily momentum'}</span>
                 ${totalChoices > 0 ? `
-                  <div class="choice-undo-wrap">
-                    <button class="choice-mini-undo" onclick="resetChoicesAction('${activeTrackingDate}')" title="Reset">↺ Reset</button>
-                    ${dateChoices.good > 0 ? `<button class="choice-mini-undo" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">- Good</button>` : ''}
-                    ${dateChoices.not > 0 ? `<button class="choice-mini-undo" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">- Not</button>` : ''}
-                  </div>
+                  <button class="choice-mini-undo" onclick="resetChoicesAction('${activeTrackingDate}')" title="Reset both counts to 0">↺ Reset</button>
                 ` : ''}
               </div>
 
               <div class="mockup-ratio-bar">
                 <div class="ratio-bar-good" style="width: ${goodBarWidth}%;"></div>
                 <div class="ratio-bar-not" style="width: ${notBarWidth}%;"></div>
+              </div>
+            </div>
+
+            <!-- 2. Choice Options (Smaller Chips) -->
+            <div class="choices-options-section">
+              <div class="choices-options-group">
+                <div class="choices-group-label label-good">Good choices</div>
+                <div class="mockup-chips-cloud">
+                  ${GOOD_CHIPS.map(chip => `
+                    <button type="button" class="mockup-chip chip-cyan" onclick="recordChoiceChip('${chip.label}', 'good', '${activeTrackingDate}')">
+                      ${escapeHtml(chip.label)}
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <div class="choices-options-group" style="margin-top: 10px;">
+                <div class="choices-group-label label-not">Not-so-good</div>
+                <div class="mockup-chips-cloud" style="margin-bottom: 0;">
+                  ${NOT_GOOD_CHIPS.map(chip => `
+                    <button type="button" class="mockup-chip chip-rose" onclick="recordChoiceChip('${chip.label}', 'not', '${activeTrackingDate}')">
+                      ${escapeHtml(chip.label)}
+                    </button>
+                  `).join('')}
+                </div>
               </div>
             </div>
           </div>
@@ -794,14 +829,20 @@ function toggleHabitFromMatrix(habitId, dateStr) {
 function recordChoiceAction(type, delta, dateStr) {
   const updated = storage.recordChoice(type, delta, dateStr);
   renderDailySheet();
+  const total = (updated.good || 0) + (updated.not || 0);
   if (delta > 0) {
     if (type === 'good') {
-      showToast(`+1 Good Choice! Ratio: ${Math.round((updated.good / (updated.good + updated.not)) * 100)}% (+5 XP)`);
+      const pct = total > 0 ? Math.round((updated.good / total) * 100) : 100;
+      showToast(`+1 Good Choice! (${pct}% Good, +5 XP)`);
     } else {
-      showToast(`Logged choice. Focus on your next move!`);
+      showToast(`Logged choice: Not-so-good. Momentum continues!`);
     }
   } else if (delta < 0) {
-    showToast(`Undo choice (${updated.good} good / ${updated.not} not)`);
+    if (type === 'good') {
+      showToast(`-1 Good Choice (${updated.good} good / ${updated.not} not)`);
+    } else {
+      showToast(`-1 Not-so-good (${updated.good} good / ${updated.not} not)`);
+    }
   }
 }
 
@@ -819,7 +860,11 @@ function resetChoicesAction(dateStr) {
  */
 function recordChoiceChip(label, type, dateStr = activeTrackingDate) {
   recordChoiceAction(type, 1, dateStr);
-  showToast(`✨ Logged: "${label}" (+5 XP)`);
+  if (type === 'good') {
+    showToast(`✨ Logged: "${label}" (+5 XP)`);
+  } else {
+    showToast(`Logged: "${label}". Give yourself grace!`);
+  }
 }
 window.recordChoiceChip = recordChoiceChip;
 

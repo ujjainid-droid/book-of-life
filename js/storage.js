@@ -1033,8 +1033,13 @@ class StorageManager {
   recordChoice(type, delta = 1, dateStr = formatDateIso(new Date())) {
     const choices = this.getChoices(dateStr);
     if (type === 'good') {
-      choices.good = Math.max(0, (choices.good || 0) + delta);
-      if (delta > 0) this.addPoints(5);
+      const prev = choices.good || 0;
+      choices.good = Math.max(0, prev + delta);
+      if (delta > 0) {
+        this.addPoints(5);
+      } else if (delta < 0 && prev > 0) {
+        this.addPoints(-5);
+      }
     } else if (type === 'not') {
       choices.not = Math.max(0, (choices.not || 0) + delta);
     }
