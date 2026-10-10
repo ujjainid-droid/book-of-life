@@ -91,27 +91,37 @@ function renderCoverHubPage() {
         <div class="today-card cover-compass-card" id="section-architecture-blueprint">
           <div class="compass-strip-tools">
             <div class="compass-tool-pill tool-pill-margo" title="margo: Central command radar &amp; habit momentum engine">
-              <span class="tool-icon">🌿</span>
+              <span class="tool-icon">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="tool-svg-icon" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+              </span>
               <span class="tool-name">margo</span>
               <span class="tool-role">&bull; Radar + Habits</span>
             </div>
-            <div class="compass-tool-pill tool-pill-notes" title="Apple Notes: Master task repositories &amp; project roadmaps">
-              <span class="tool-icon">📝</span>
+            <div class="compass-tool-pill tool-pill-notes" title="Apple Notes: Master note repositories &amp; project roadmaps">
+              <span class="tool-icon">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" class="tool-svg-icon" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.92.04-2.02.62-2.66 1.37-.57.65-1.06 1.73-.93 2.76 1.03.08 2.06-.51 2.67-1.26z"/></svg>
+              </span>
               <span class="tool-name">Apple Notes</span>
-              <span class="tool-role">&bull; Master Tasks</span>
+              <span class="tool-role">&bull; Master Notes</span>
             </div>
             <div class="compass-tool-pill tool-pill-things" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
-              <span class="tool-icon">⚡</span>
+              <span class="tool-icon">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="tool-svg-icon" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="currentColor" fill-opacity="0.16"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>
+              </span>
               <span class="tool-name">Things 3</span>
               <span class="tool-role">&bull; Next Strike</span>
             </div>
             <div class="compass-tool-pill tool-pill-drive" title="Google Drive: Digital vault for signed PDFs &amp; official records">
-              <span class="tool-icon">📁</span>
+              <span class="tool-icon">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" class="tool-svg-icon" aria-hidden="true"><path d="M7.71 3.5 1.15 15l3.43 5.95 6.56-11.45L7.71 3.5zm1.72 0 6.56 11.45H22.7L16.14 3.5H9.43zm-4.7 17.5h13.13l3.43-5.95H8.16L4.73 21z"/></svg>
+              </span>
               <span class="tool-name">Google Drive</span>
               <span class="tool-role">&bull; Permanent Vault</span>
             </div>
             <div class="compass-tool-pill tool-pill-gmail" title="Gmail: Inbound &amp; outbound communications">
-              <span class="tool-icon">✉️</span>
+              <span class="tool-icon">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-svg-icon" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="3"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              </span>
               <span class="tool-name">Gmail</span>
               <span class="tool-role">&bull; Comms</span>
             </div>
@@ -1089,19 +1099,33 @@ function openSchoolBattlePlanModal() {
             </div>
             <div class="school-tools-map-grid">
               <div class="tool-map-box">
-                <div class="tool-map-box-title">🌿 margo</div>
+                <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#0D9488" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+                  <span>margo</span>
+                </div>
                 <div class="tool-map-box-desc">Cover Page Radar (10,000-ft phase horizon) + Z Hub Behavior Log (Daily PDF report attachments).</div>
               </div>
               <div class="tool-map-box">
-                <div class="tool-map-box-title">📝 Apple Notes</div>
+                <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="#E11D48"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 0.92-2.87-.92.04-2.02.62-2.66 1.37-.57.65-1.06 1.73-.93 2.76 1.03.08 2.06-.51 2.67-1.26z"/></svg>
+                  <span>Apple Notes</span>
+                </div>
                 <div class="tool-map-box-desc"><strong># SCHOOL 01_BATTLE PLAN</strong>: School profiles, live impressions, tour observations, incident notes.</div>
               </div>
               <div class="tool-map-box">
-                <div class="tool-map-box-title">📁 Google Drive</div>
+                <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="#0284C7"><path d="M7.71 3.5 1.15 15l3.43 5.95 6.56-11.45L7.71 3.5zm1.72 0 6.56 11.45H22.7L16.14 3.5H9.43zm-4.7 17.5h13.13l3.43-5.95H8.16L4.73 21z"/></svg>
+                  <span>Google Drive</span>
+                </div>
                 <div class="tool-map-box-desc"><strong>📁 Z Records</strong>: Static evidence, signed IEP PDFs, neuropsych evaluations, police report PDFs, PWNs.</div>
               </div>
               <div class="tool-map-box">
-                <div class="tool-map-box-title">⚡ Things 3 &amp; ✉️ Gmail</div>
+                <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5" fill="currentColor" fill-opacity="0.16"/><path d="m8.5 12.5 2.5 2.5 5-5.5"/></svg>
+                  <span>Things 3 &amp;</span>
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="3"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  <span>Gmail</span>
+                </div>
                 <div class="tool-map-box-desc"><strong>Things 3</strong>: Next 1–2 physical strikes only.<br><strong>Gmail</strong>: Label <code>OOD-Placement</code> for all school correspondence.</div>
               </div>
             </div>

@@ -4422,8 +4422,30 @@
 }
 
 .compass-tool-pill .tool-icon {
-  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
 }
+
+.compass-tool-pill .tool-icon .tool-svg-icon {
+  width: 13px;
+  height: 13px;
+  display: block;
+}
+
+.compass-tool-pill.tool-pill-margo .tool-icon { color: #0D9488; }
+.compass-tool-pill.tool-pill-notes .tool-icon { color: #E11D48; }
+.compass-tool-pill.tool-pill-things .tool-icon { color: #7C3AED; }
+.compass-tool-pill.tool-pill-drive .tool-icon { color: #0284C7; }
+.compass-tool-pill.tool-pill-gmail .tool-icon { color: #E11D48; }
+
+[data-theme="dark"] .compass-tool-pill.tool-pill-margo .tool-icon { color: #2DD4BF; }
+[data-theme="dark"] .compass-tool-pill.tool-pill-notes .tool-icon { color: #FB7185; }
+[data-theme="dark"] .compass-tool-pill.tool-pill-things .tool-icon { color: #C4B5FD; }
+[data-theme="dark"] .compass-tool-pill.tool-pill-drive .tool-icon { color: #38BDF8; }
+[data-theme="dark"] .compass-tool-pill.tool-pill-gmail .tool-icon { color: #FB7185; }
 
 .compass-tool-pill .tool-name {
   font-weight: 700;
