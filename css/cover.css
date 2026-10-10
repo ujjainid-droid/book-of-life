@@ -4427,25 +4427,65 @@
   justify-content: center;
   flex-shrink: 0;
   line-height: 1;
+  min-width: 14px;
 }
 
-.compass-tool-pill .tool-icon .tool-svg-icon {
-  width: 13px;
-  height: 13px;
+.compass-tool-pill .tool-icon .tool-symbol.symbol-m {
+  font-family: var(--font-serif, 'Newsreader', Georgia, serif);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1;
+  color: #7C3AED;
+  display: inline-block;
+}
+
+.compass-tool-pill .tool-icon .tool-apple-svg {
+  width: 12px;
+  height: 12px;
+  stroke: #E11D48;
+  fill: none;
+  stroke-width: 2;
   display: block;
 }
 
-.compass-tool-pill.tool-pill-margo .tool-icon { color: #0D9488; }
-.compass-tool-pill.tool-pill-notes .tool-icon { color: #E11D48; }
-.compass-tool-pill.tool-pill-things .tool-icon { color: #7C3AED; }
-.compass-tool-pill.tool-pill-drive .tool-icon { color: #0284C7; }
-.compass-tool-pill.tool-pill-gmail .tool-icon { color: #E11D48; }
+.compass-tool-pill .tool-icon .tool-symbol.symbol-things {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  font-size: 0.64rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #0284C7;
+  display: inline-block;
+}
 
-[data-theme="dark"] .compass-tool-pill.tool-pill-margo .tool-icon { color: #2DD4BF; }
-[data-theme="dark"] .compass-tool-pill.tool-pill-notes .tool-icon { color: #FB7185; }
-[data-theme="dark"] .compass-tool-pill.tool-pill-things .tool-icon { color: #C4B5FD; }
-[data-theme="dark"] .compass-tool-pill.tool-pill-drive .tool-icon { color: #38BDF8; }
-[data-theme="dark"] .compass-tool-pill.tool-pill-gmail .tool-icon { color: #FB7185; }
+.compass-tool-pill .tool-icon .tool-symbol.symbol-google {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 800;
+  font-size: 0.74rem;
+  line-height: 1;
+  color: #1D4ED8;
+  display: inline-block;
+}
+
+.compass-tool-pill .tool-icon i[data-lucide="mail"],
+.compass-tool-pill .tool-icon svg.lucide-mail,
+.compass-tool-pill .tool-icon svg[data-lucide="mail"] {
+  width: 12px;
+  height: 12px;
+  stroke: #E11D48;
+  color: #E11D48;
+  display: block;
+}
+
+/* Dark mode colors matching Section 2 */
+[data-theme="dark"] .compass-tool-pill .tool-icon .tool-symbol.symbol-m { color: #C4B5FD; }
+[data-theme="dark"] .compass-tool-pill .tool-icon .tool-apple-svg { stroke: #FB7185; }
+[data-theme="dark"] .compass-tool-pill .tool-icon .tool-symbol.symbol-things { color: #38BDF8; }
+[data-theme="dark"] .compass-tool-pill .tool-icon .tool-symbol.symbol-google { color: #60A5FA; }
+[data-theme="dark"] .compass-tool-pill .tool-icon i[data-lucide="mail"],
+[data-theme="dark"] .compass-tool-pill .tool-icon svg.lucide-mail,
+[data-theme="dark"] .compass-tool-pill .tool-icon svg[data-lucide="mail"] { stroke: #FB7185; color: #FB7185; }
 
 .compass-tool-pill .tool-name {
   font-weight: 700;
