@@ -1799,7 +1799,7 @@ window.toggleMargoFrameworkCollapse = toggleMargoFrameworkCollapse;
 
 function renderMargoFrameworkWidget() {
   const cardsHtml = MARGO_PILLARS_DATA.map(p => `
-    <div class="pillar-card">
+    <div class="pillar-card pillar-card-${p.letter.toLowerCase()}">
       <div class="pillar-badge ${p.badgeClass}">
         ${p.letter}
       </div>

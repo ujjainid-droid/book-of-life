@@ -28,11 +28,11 @@
   --primary-glow: rgba(139, 92, 246, 0.22);
 
   /* Cool-Leaning MARGO 5-Bucket Palette (Strictly Zero Yellow/Amber) */
-  /* M — Move: Electric Indigo */
-  --margo-m: #6366F1;
-  --margo-m-light: #EEF2FF;
-  --margo-m-border: #C7D2FE;
-  --margo-m-dark: #3730A3;
+  /* M — Move: Electric Royal Blue (Differentiated from R) */
+  --margo-m: #2563EB;
+  --margo-m-light: #EFF6FF;
+  --margo-m-border: #BFDBFE;
+  --margo-m-dark: #1D4ED8;
 
   /* A — Aesthetic: Rose Orchid / Berry Magenta */
   --margo-a: #E11D48;
@@ -40,11 +40,11 @@
   --margo-a-border: #FECDD3;
   --margo-a-dark: #9F1239;
 
-  /* R — Reflect: Soft Wisteria / Lavender */
-  --margo-r: #8B5CF6;
+  /* R — Reflect: Soft Wisteria / Light Lilac (Lighter Hue Square) */
+  --margo-r: #9A9BF2;
   --margo-r-light: #F5F3FF;
   --margo-r-border: #DDD6FE;
-  --margo-r-dark: #5B21B6;
+  --margo-r-dark: #1E1B4B;
 
   /* G — Grow: Nordic Sea Glass Teal */
   --margo-g: #0D9488;
