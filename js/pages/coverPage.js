@@ -375,50 +375,39 @@ function renderDailySheet() {
               </div>
             </div>
 
-            <!-- Running Total & Weekly Momentum Widget -->
-            <div class="choices-running-widget">
-              <div class="running-widget-header">
-                <div class="running-widget-title">
-                  <span class="running-icon">📈</span>
-                  <span>Running Count &amp; Momentum</span>
+            <!-- Option 1: Horizontal Streamlined Momentum Ribbon -->
+            <div class="choices-momentum-ribbon">
+              <!-- Left: Circular Net Pill & Label -->
+              <div class="ribbon-net-group">
+                <div class="ribbon-net-badge ${runningChoices.net >= 0 ? 'is-pos' : 'is-neg'}" title="Net Good Choices (All-Time)">
+                  <span class="ribbon-net-num">${runningChoices.net >= 0 ? `+${runningChoices.net}` : runningChoices.net}</span>
+                  <span class="ribbon-net-sub">Net</span>
                 </div>
-                <span class="running-net-badge ${runningChoices.net >= 0 ? 'is-pos' : 'is-neg'}">
-                  ${runningChoices.net >= 0 ? `+${runningChoices.net} Net Good` : `${runningChoices.net} Net`}
-                </span>
+                <div class="ribbon-title-col">
+                  <div class="ribbon-title-text">Running Momentum</div>
+                  <div class="ribbon-ratio-text"><strong>${runningChoices.total > 0 ? runningChoices.ratio : 100}%</strong> Positive Choices</div>
+                </div>
               </div>
 
-              <div class="running-widget-grid">
-                <!-- This Week Card -->
-                <div class="running-mini-card card-week">
-                  <div class="mini-card-top">
-                    <span class="mini-card-badge">📅 This Week</span>
-                    <span class="mini-card-ratio">${weeklyChoices.total > 0 ? `${weeklyChoices.ratio}% Good` : '—'}</span>
-                  </div>
-                  <div class="mini-card-metrics">
-                    <span class="metric-good"><strong>${weeklyChoices.totalGood}</strong> good</span>
-                    <span class="metric-sep">•</span>
-                    <span class="metric-not"><strong>${weeklyChoices.totalNot}</strong> not</span>
-                  </div>
-                  <div class="mini-card-bar">
-                    <div class="mini-bar-good" style="width: ${weeklyChoices.total > 0 ? weeklyChoices.ratio : 100}%;"></div>
-                    <div class="mini-bar-not" style="width: ${weeklyChoices.total > 0 ? (100 - weeklyChoices.ratio) : 0}%;"></div>
+              <!-- Right: Clean Inline Split Stats -->
+              <div class="ribbon-stats-group">
+                <div class="ribbon-stat-item">
+                  <span class="ribbon-stat-label">This Week</span>
+                  <div class="ribbon-stat-values">
+                    <span class="ribbon-val-good">${weeklyChoices.totalGood}</span>
+                    <span class="ribbon-val-sep">/</span>
+                    <span class="ribbon-val-not">${weeklyChoices.totalNot}</span>
                   </div>
                 </div>
 
-                <!-- All-Time Running Total Card -->
-                <div class="running-mini-card card-alltime">
-                  <div class="mini-card-top">
-                    <span class="mini-card-badge">🏆 All-Time Total</span>
-                    <span class="mini-card-ratio">${runningChoices.total > 0 ? `${runningChoices.ratio}% Good` : '—'}</span>
-                  </div>
-                  <div class="mini-card-metrics">
-                    <span class="metric-good"><strong>${runningChoices.totalGood}</strong> good</span>
-                    <span class="metric-sep">•</span>
-                    <span class="metric-not"><strong>${runningChoices.totalNot}</strong> not</span>
-                  </div>
-                  <div class="mini-card-bar">
-                    <div class="mini-bar-good" style="width: ${runningChoices.total > 0 ? runningChoices.ratio : 100}%;"></div>
-                    <div class="mini-bar-not" style="width: ${runningChoices.total > 0 ? (100 - runningChoices.ratio) : 0}%;"></div>
+                <div class="ribbon-stat-divider"></div>
+
+                <div class="ribbon-stat-item">
+                  <span class="ribbon-stat-label">All-Time</span>
+                  <div class="ribbon-stat-values">
+                    <span class="ribbon-val-good">${runningChoices.totalGood}</span>
+                    <span class="ribbon-val-sep">/</span>
+                    <span class="ribbon-val-not">${runningChoices.totalNot}</span>
                   </div>
                 </div>
               </div>
