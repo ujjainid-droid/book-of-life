@@ -407,6 +407,7 @@ function renderUnifiedCampaignCard(camp, tier) {
 
   const isHaircare = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
   const isSurgery = (camp.id === 'camp-surgery' || (camp.title || '').toLowerCase().trim() === 'surgery');
+  const isOon = (camp.id === 'camp-oon' || (camp.title || '').toLowerCase().includes('oon') || (camp.title || '').toLowerCase().includes('reimburse'));
   const catMeta = getCampaignCategoryMeta(camp);
   const themeClass = catMeta.theme;
 
@@ -469,6 +470,15 @@ function renderUnifiedCampaignCard(camp, tier) {
     showGoogle = false;
     showThings = true;
     showEmail = false;
+  }
+
+  // oon reimbursement is explicitly margo, Google Drive, T3, Gmail
+  if (isOon) {
+    showMargo = true;
+    showApple = false;
+    showGoogle = true;
+    showThings = true;
+    showEmail = true;
   }
 
   const toolButtons = [];

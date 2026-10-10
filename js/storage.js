@@ -231,11 +231,11 @@ class StorageManager {
             theme: 'cat-finance',
             tools: {
               margo: { label: 'Medical Claims Tracker', action: 'claims' },
-              apple: { noteQuery: '# CLAIMS 01_TRACKER' },
               google: { folder: 'Superbills & EOBs' },
               things: { query: 'Medical Claims Reimbursement' },
               email: { emailQuery: 'Insurance Superbills' }
-            }
+            },
+            visibleTools: ['margo', 'google', 'things', 'email']
           },
           {
             id: 'camp-haircare',
@@ -836,6 +836,15 @@ class StorageManager {
                 things: { query: 'Surgery Follow-up' }
               };
               c.visibleTools = ['apple', 'things'];
+            }
+            if (c && (c.id === 'camp-oon' || (c.title || '').toLowerCase().includes('oon') || (c.title || '').toLowerCase().includes('reimburse'))) {
+              c.tools = {
+                margo: { label: 'Medical Claims Tracker', action: 'claims' },
+                google: { folder: 'Superbills & EOBs' },
+                things: { query: 'Medical Claims Reimbursement' },
+                email: { emailQuery: 'Insurance Superbills' }
+              };
+              c.visibleTools = ['margo', 'google', 'things', 'email'];
             }
           });
         }
