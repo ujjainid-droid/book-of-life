@@ -23,16 +23,16 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=8.5.3">
-  <link rel="stylesheet" href="css/layout.css?v=8.5.3">
-  <link rel="stylesheet" href="css/cover.css?v=8.5.3">
-  <link rel="stylesheet" href="css/habits.css?v=8.5.3">
-  <link rel="stylesheet" href="css/tasks.css?v=8.5.3">
-  <link rel="stylesheet" href="css/settings.css?v=8.5.3">
-  <link rel="stylesheet" href="css/claims.css?v=8.5.3">
-  <link rel="stylesheet" href="css/zlog.css?v=8.5.3">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=8.5.3">
-  <link rel="stylesheet" href="css/finance.css?v=8.5.3">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=8.5.4">
+  <link rel="stylesheet" href="css/layout.css?v=8.5.4">
+  <link rel="stylesheet" href="css/cover.css?v=8.5.4">
+  <link rel="stylesheet" href="css/habits.css?v=8.5.4">
+  <link rel="stylesheet" href="css/tasks.css?v=8.5.4">
+  <link rel="stylesheet" href="css/settings.css?v=8.5.4">
+  <link rel="stylesheet" href="css/claims.css?v=8.5.4">
+  <link rel="stylesheet" href="css/zlog.css?v=8.5.4">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=8.5.4">
+  <link rel="stylesheet" href="css/finance.css?v=8.5.4">
 </head>
 <body>
 
@@ -40,57 +40,34 @@
     <!-- Header -->
     <header class="book-header">
       <div class="header-left">
-        <div class="book-title-area" onclick="switchDomain('sanctuary')" style="cursor: pointer;" title="margo — Sanctuary &amp; Reflections">
+        <div class="book-title-area" onclick="switchAppView('sanctuary')" style="cursor: pointer;" title="margo — Daily Sheet">
           <h1>margo</h1>
         </div>
 
-        <!-- 3-Domain Capsule Switcher (Option A) -->
-        <nav class="domain-capsule-switcher" id="domain-capsule-switcher" aria-label="Main Life Domains">
-          <button id="domain-btn-sanctuary" class="domain-capsule-btn active" onclick="switchDomain('sanctuary')" title="margo Sanctuary: Daily Identity, Momentum &amp; Reflection">
-            <span class="domain-btn-icon">☀️</span>
-            <span class="domain-btn-label">Sanctuary</span>
+        <!-- Unified Main Navigation Capsule (Cohesive, Non-Shifting) -->
+        <nav class="main-nav-capsule" id="main-nav-capsule" aria-label="Main Navigation">
+          <button id="nav-btn-today" class="nav-capsule-btn active" onclick="switchAppView('sanctuary')" title="Today: Daily Habits, Momentum &amp; Reflections">
+            <span class="nav-btn-icon">☀️</span>
+            <span class="nav-btn-label">Today</span>
           </button>
-          <button id="domain-btn-zhub" class="domain-capsule-btn" onclick="switchDomain('zhub')" title="Z Hub: Care, Meds, Behavior &amp; Insights">
-            <span class="domain-btn-icon">🌱</span>
-            <span class="domain-btn-label">Z Hub</span>
+          <button id="nav-btn-cover" class="nav-capsule-btn" onclick="switchAppView('cover')" title="Cover: System Compass &amp; Long-term Index">
+            <span class="nav-btn-icon">📖</span>
+            <span class="nav-btn-label">Cover</span>
           </button>
-          <button id="domain-btn-finance" class="domain-capsule-btn" onclick="switchDomain('finance')" title="Finance: Burn, Subscriptions &amp; Reimbursements">
-            <span class="domain-btn-icon">💳</span>
-            <span class="domain-btn-label">Finance</span>
-            <span class="domain-badge" id="domain-claims-badge" style="display: none;"></span>
+          <button id="nav-btn-zhub" class="nav-capsule-btn" onclick="switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior &amp; Insights">
+            <span class="nav-btn-icon">🌱</span>
+            <span class="nav-btn-label">Z Hub</span>
+          </button>
+          <button id="nav-btn-finance" class="nav-capsule-btn" onclick="switchAppView('finance')" title="Finance: Burn, Subscriptions &amp; Reimbursements">
+            <span class="nav-btn-icon">💳</span>
+            <span class="nav-btn-label">Finance</span>
+            <span class="nav-badge" id="domain-claims-badge" style="display: none;"></span>
           </button>
         </nav>
       </div>
 
       <div class="header-right">
-        <!-- Sub-Navigation for Sanctuary: Cover vs Today -->
-        <div class="header-nav-tabs" id="sanctuary-subnav">
-          <button id="nav-btn-cover" class="header-nav-tab" onclick="switchAppView('cover')" title="The Sanctuary Index &amp; Headspace">
-            <span>📖 Cover</span>
-          </button>
-          <button id="nav-btn-today" class="header-nav-tab active" onclick="switchAppView('sanctuary')" title="Today's Sanctuary">
-            <span>☀️ Today</span>
-          </button>
-        </div>
-
-        <!-- Header Compact Date Navigator -->
-        <div class="header-date-nav" id="header-date-nav-container">
-          <button class="date-nav-btn" onclick="navigateDate(-1)" title="Previous Day">
-            <i data-lucide="chevron-left" style="width: 15px; height: 15px;"></i>
-          </button>
-          <button class="date-current-btn" id="header-date-label" onclick="handleHeaderDateClick()" title="Jump to Today or Pick Date">
-            Today
-          </button>
-          <input type="date" id="header-date-picker-input" class="hidden-date-picker" onchange="onHeaderDatePicked(this.value)">
-          <button class="date-nav-btn" onclick="navigateDate(1)" title="Next Day">
-            <i data-lucide="chevron-right" style="width: 15px; height: 15px;"></i>
-          </button>
-          <button class="date-nav-btn" onclick="triggerHeaderDatePicker()" title="Pick Specific Date From Calendar">
-            <i data-lucide="calendar" style="width: 13px; height: 13px;"></i>
-          </button>
-        </div>
-
-        <!-- Energy Dial (Power vs Maintenance) -->
+        <!-- Energy Dial (Power vs Maintenance - Always Present & Stable) -->
         <div class="energy-dial-container" id="header-energy-dial">
           <button id="dial-btn-power" class="energy-dial-btn active" onclick="setAppEnergyMode('power')" title="Power Mode: Full Stack">
             <span class="dial-emoji">⚡</span>
@@ -102,11 +79,14 @@
           </button>
         </div>
 
+        <!-- Hidden input for Date Picker (triggered by floating HUD) -->
+        <input type="date" id="header-date-picker-input" class="hidden-date-picker" onchange="onHeaderDatePicked(this.value)">
+
         <div class="header-actions">
           <button class="icon-btn" title="Toggle Light / Dark Theme" onclick="toggleTheme()">
             <i data-lucide="moon" id="header-theme-icon" style="width: 16px; height: 16px;"></i>
           </button>
-          <button class="icon-btn" title="Settings & Preferences" onclick="openSettingsModal()">
+          <button class="icon-btn" title="Settings &amp; Preferences" onclick="openSettingsModal()">
             <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
           </button>
         </div>
@@ -376,19 +356,19 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=8.5.3"></script>
-  <script src="js/zlogData.js?v=8.5.3"></script>
-  <script src="js/financeData.js?v=8.5.3"></script>
-  <script src="js/podcastData.js?v=8.5.3"></script>
-  <script src="js/pdfStore.js?v=8.5.3"></script>
-  <script src="js/storage.js?v=8.5.3"></script>
-  <script src="js/sync.js?v=8.5.3"></script>
-  <script src="js/pages/coverPage.js?v=8.5.3"></script>
-  <script src="js/pages/coverHubPage.js?v=8.5.3"></script>
-  <script src="js/pages/claimsPage.js?v=8.5.3"></script>
-  <script src="js/pages/zlogPage.js?v=8.5.3"></script>
-  <script src="js/pages/financePage.js?v=8.5.3"></script>
-  <script src="js/podcastAgent.js?v=8.5.3"></script>
-  <script src="js/app.js?v=8.5.3"></script>
+  <script src="js/margoData.js?v=8.5.4"></script>
+  <script src="js/zlogData.js?v=8.5.4"></script>
+  <script src="js/financeData.js?v=8.5.4"></script>
+  <script src="js/podcastData.js?v=8.5.4"></script>
+  <script src="js/pdfStore.js?v=8.5.4"></script>
+  <script src="js/storage.js?v=8.5.4"></script>
+  <script src="js/sync.js?v=8.5.4"></script>
+  <script src="js/pages/coverPage.js?v=8.5.4"></script>
+  <script src="js/pages/coverHubPage.js?v=8.5.4"></script>
+  <script src="js/pages/claimsPage.js?v=8.5.4"></script>
+  <script src="js/pages/zlogPage.js?v=8.5.4"></script>
+  <script src="js/pages/financePage.js?v=8.5.4"></script>
+  <script src="js/podcastAgent.js?v=8.5.4"></script>
+  <script src="js/app.js?v=8.5.4"></script>
 </body>
 </html>

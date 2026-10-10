@@ -233,7 +233,7 @@ function renderDailySheet() {
       <!-- Floating Center HUD Pill: Exactly like Mockup -->
       <div class="today-floating-hud">
         <button class="hud-nav-btn" onclick="navigateDate(-1)" title="Previous Day">‹</button>
-        <div class="hud-date-pill" title="Active Date">
+        <div class="hud-date-pill" onclick="triggerHeaderDatePicker()" style="cursor: pointer;" title="Active Date — Tap to pick a specific date">
           <span class="hud-cal-icon">📅</span>
           <span class="hud-date-text">${formattedDateLong}</span>
         </div>

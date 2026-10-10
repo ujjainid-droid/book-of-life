@@ -150,32 +150,24 @@ function switchAppView(viewName, subViewName) {
     }
   } catch (e) {}
 
-  const dateNavContainer = document.getElementById('header-date-nav-container');
-  const energyDial = document.getElementById('header-energy-dial');
-  const sanctuarySubnav = document.getElementById('sanctuary-subnav');
+  const todayBtn = document.getElementById('nav-btn-today');
+  const coverBtn = document.getElementById('nav-btn-cover');
+  const zhubBtn = document.getElementById('nav-btn-zhub');
+  const financeBtn = document.getElementById('nav-btn-finance');
+
+  // Update unified nav active states (stable across all pages)
+  if (todayBtn) todayBtn.classList.toggle('active', currentView === 'sanctuary');
+  if (coverBtn) coverBtn.classList.toggle('active', currentView === 'cover');
+  if (zhubBtn) zhubBtn.classList.toggle('active', currentView === 'zlog');
+  if (financeBtn) financeBtn.classList.toggle('active', currentView === 'finance');
+
+  // Also support old element IDs if referenced
   const domainBtnSanctuary = document.getElementById('domain-btn-sanctuary');
   const domainBtnZHub = document.getElementById('domain-btn-zhub');
   const domainBtnFinance = document.getElementById('domain-btn-finance');
-  const coverTab = document.getElementById('nav-btn-cover');
-  const todayTab = document.getElementById('nav-btn-today');
-
-  const isSanctuaryDomain = (currentView === 'sanctuary' || currentView === 'cover');
-  const isZHubDomain = (currentView === 'zlog');
-  const isFinanceDomain = (currentView === 'finance');
-
-  // Update 3-Domain Capsule Switcher active states
-  if (domainBtnSanctuary) domainBtnSanctuary.classList.toggle('active', isSanctuaryDomain);
-  if (domainBtnZHub) domainBtnZHub.classList.toggle('active', isZHubDomain);
-  if (domainBtnFinance) domainBtnFinance.classList.toggle('active', isFinanceDomain);
-
-  // Update Sanctuary sub-nav active states
-  if (coverTab) coverTab.classList.toggle('active', currentView === 'cover');
-  if (todayTab) todayTab.classList.toggle('active', currentView === 'sanctuary');
-
-  // Contextual controls: Sanctuary subnav, date nav, and energy dial only display in Sanctuary
-  if (sanctuarySubnav) sanctuarySubnav.style.display = isSanctuaryDomain ? 'flex' : 'none';
-  if (dateNavContainer) dateNavContainer.style.display = isSanctuaryDomain ? 'inline-flex' : 'none';
-  if (energyDial) energyDial.style.display = isSanctuaryDomain ? 'inline-flex' : 'none';
+  if (domainBtnSanctuary) domainBtnSanctuary.classList.toggle('active', currentView === 'sanctuary' || currentView === 'cover');
+  if (domainBtnZHub) domainBtnZHub.classList.toggle('active', currentView === 'zlog');
+  if (domainBtnFinance) domainBtnFinance.classList.toggle('active', currentView === 'finance');
 
   updateEnergyDialUI();
 

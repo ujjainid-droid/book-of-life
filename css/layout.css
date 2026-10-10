@@ -32,27 +32,28 @@ html, body {
 /* Header / App Bar */
 .book-header {
   width: 100%;
-  max-width: 680px;
+  max-width: 1060px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding: 0 4px;
-  gap: 10px;
+  margin: 0 auto 20px auto;
+  padding: 0 8px;
+  gap: 16px;
   flex-wrap: nowrap;
+  transition: all var(--transition-fast, 0.2s ease);
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   flex-shrink: 0;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   flex-shrink: 0;
 }
 
@@ -70,7 +71,8 @@ html, body {
   margin: 0;
 }
 
-/* 3-Domain Capsule Switcher (Option A) */
+/* Unified Main Navigation Capsule (Cohesive, Non-Shifting) */
+.main-nav-capsule,
 .domain-capsule-switcher {
   display: inline-flex;
   align-items: center;
@@ -79,20 +81,21 @@ html, body {
   border-radius: var(--radius-full);
   padding: 3px;
   gap: 3px;
-  box-shadow: var(--shadow-subtle);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
 }
 
+.nav-capsule-btn,
 .domain-capsule-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: transparent;
   border: none;
   font-family: var(--font-sans);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-secondary);
-  padding: 4px 10px;
+  padding: 5px 13px;
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -101,29 +104,40 @@ html, body {
   white-space: nowrap;
 }
 
+.nav-capsule-btn:hover,
 .domain-capsule-btn:hover {
   color: var(--text-primary);
   background: var(--bg-surface-hover);
 }
 
+.nav-capsule-btn.active#nav-btn-today,
 .domain-capsule-btn.active#domain-btn-sanctuary {
-  background: #7C3AED;
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
   color: #ffffff;
-  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.32);
 }
 
+.nav-capsule-btn.active#nav-btn-cover {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.32);
+}
+
+.nav-capsule-btn.active#nav-btn-zhub,
 .domain-capsule-btn.active#domain-btn-zhub {
-  background: #2563EB;
+  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
   color: #ffffff;
-  box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.32);
 }
 
+.nav-capsule-btn.active#nav-btn-finance,
 .domain-capsule-btn.active#domain-btn-finance {
-  background: #059669;
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
   color: #ffffff;
-  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.32);
 }
 
+.nav-badge,
 .domain-badge {
   display: inline-flex;
   align-items: center;
@@ -137,6 +151,7 @@ html, body {
   font-size: 0.62rem;
   font-weight: 800;
   line-height: 1;
+  margin-left: 2px;
 }
 
 /* Header Compact Date Navigator */
@@ -258,9 +273,9 @@ html, body {
 }
 
 .energy-dial-btn.active#dial-btn-maint {
-  background: #D97706;
+  background: #0D9488;
   color: #ffffff;
-  box-shadow: 0 1px 4px rgba(217, 119, 6, 0.35);
+  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.35);
 }
 
 /* Header Adulting Bunker Portal Button */
