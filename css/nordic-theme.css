@@ -27,18 +27,18 @@
   --primary-border: rgba(139, 92, 246, 0.26);
   --primary-glow: rgba(139, 92, 246, 0.22);
 
-  /* Cool-Leaning MARGO 5-Bucket Palette */
-  /* M — Move: Signature Royal Violet */
-  --margo-m: #702BED;
-  --margo-m-light: #F3E8FF;
-  --margo-m-border: #DDD6FE;
-  --margo-m-dark: #4C1D95;
+  /* Cool-Leaning MARGO 5-Bucket Palette (Strictly Zero Yellow/Amber) */
+  /* M — Move: Electric Indigo */
+  --margo-m: #6366F1;
+  --margo-m-light: #EEF2FF;
+  --margo-m-border: #C7D2FE;
+  --margo-m-dark: #3730A3;
 
-  /* A — Aesthetic: Electric Orchid / Magenta */
-  --margo-a: #C026D3;
-  --margo-a-light: #FDF4FF;
-  --margo-a-border: #F5D0FE;
-  --margo-a-dark: #86198F;
+  /* A — Aesthetic: Rose Orchid / Berry Magenta */
+  --margo-a: #E11D48;
+  --margo-a-light: #FFF1F2;
+  --margo-a-border: #FECDD3;
+  --margo-a-dark: #9F1239;
 
   /* R — Reflect: Soft Wisteria / Lavender */
   --margo-r: #8B5CF6;
@@ -46,17 +46,17 @@
   --margo-r-border: #DDD6FE;
   --margo-r-dark: #5B21B6;
 
-  /* G — Grow: Arctic Cyan / Ice Blue */
-  --margo-g: #0284C7;
-  --margo-g-light: #F0F9FF;
-  --margo-g-border: #BAE6FD;
-  --margo-g-dark: #0369A1;
+  /* G — Grow: Nordic Sea Glass Teal */
+  --margo-g: #0D9488;
+  --margo-g-light: #F0FDFA;
+  --margo-g-border: #99F6E4;
+  --margo-g-dark: #0F766E;
 
-  /* O — Organize: Indigo Slate */
-  --margo-o: #4F46E5;
-  --margo-o-light: #EEF2FF;
-  --margo-o-border: #C7D2FE;
-  --margo-o-dark: #3730A3;
+  /* O — Organize: Midnight Obsidian Slate */
+  --margo-o: #1E1B4B;
+  --margo-o-light: #F1F5F9;
+  --margo-o-border: #CBD5E1;
+  --margo-o-dark: #0F172A;
 
   /* Neutrals & Functional */
   --accent-gold: #D97706;

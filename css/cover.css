@@ -868,32 +868,32 @@
 }
 
 .pillar-badge-m {
-  background: #6B5AED;
+  background: var(--margo-m, #6366F1);
 }
 
 .pillar-badge-a {
-  background: #E69128;
+  background: var(--margo-a, #E11D48);
 }
 
 .pillar-badge-r {
-  background: #9A9BF2;
-  color: #1E1B4B;
+  background: var(--margo-r, #8B5CF6);
+  color: #FFFFFF;
 }
 
 [data-theme="dark"] .pillar-badge-r {
-  color: #080A11;
+  color: #FFFFFF;
 }
 
 .pillar-badge-g {
-  background: #6E73F2;
+  background: var(--margo-g, #0D9488);
 }
 
 .pillar-badge-o {
-  background: #1C1B4D;
+  background: var(--margo-o, #1E1B4B);
 }
 
 [data-theme="dark"] .pillar-badge-o {
-  background: #2E2975;
+  background: #2E285C;
 }
 
 .pillar-title {
@@ -3996,23 +3996,23 @@
 }
 
 .pillar-badge-m {
-  background: #6366F1;
+  background: var(--margo-m, #6366F1);
 }
 
 .pillar-badge-a {
-  background: #E68A00;
+  background: var(--margo-a, #E11D48);
 }
 
 .pillar-badge-r {
-  background: #8B5CF6;
+  background: var(--margo-r, #8B5CF6);
 }
 
 .pillar-badge-g {
-  background: #4F46E5;
+  background: var(--margo-g, #0D9488);
 }
 
 .pillar-badge-o {
-  background: #1E1B4B;
+  background: var(--margo-o, #1E1B4B);
 }
 
 [data-theme="dark"] .pillar-badge-o {
