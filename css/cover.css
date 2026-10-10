@@ -4225,27 +4225,27 @@
   box-sizing: border-box;
 }
 
-/* Mantra Strip — Nordic Soft Lavender & Glass */
-.cover-mantra-strip {
+/* Mantra Floating HUD — Matching Today's Center HUD Pill */
+.cover-mantra-hud {
+  margin: 0 auto 10px auto;
+  width: fit-content;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
   background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg, 16px);
-  padding: 10px 14px;
-  box-shadow: 0 2px 12px rgba(124, 58, 237, 0.04);
+  border: 1px solid rgba(124, 58, 237, 0.16);
+  border-radius: var(--radius-full);
+  padding: 6px 18px;
+  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
-.mantra-pill {
-  flex: 1;
-  display: flex;
+.cover-mantra-hud .mantra-pill {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
+  padding: 5px 13px;
   border-radius: var(--radius-full);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: lowercase;
@@ -4254,7 +4254,7 @@
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.mantra-pill:hover {
+.cover-mantra-hud .mantra-pill:hover {
   transform: translateY(-1px);
 }
 
@@ -4306,101 +4306,47 @@
   box-shadow: 0 2px 8px rgba(124, 58, 237, 0.4);
 }
 
-/* Executive Season & System Compass Hero HUD */
-.cover-header-hero {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F5F3FF 50%, #F0FDFA 100%);
-  border: 1px solid rgba(124, 58, 237, 0.16);
-  border-radius: var(--radius-lg, 16px);
-  padding: 22px 26px;
-  box-shadow: 0 4px 20px rgba(124, 58, 237, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  flex-wrap: wrap;
+/* Executive Season Focus HUD (Matching Today's Daily Roast Banner) */
+.today-daily-roast-banner.cover-header-hero {
+  margin-bottom: 8px;
 }
 
-[data-theme="dark"] .cover-header-hero {
-  background: linear-gradient(135deg, var(--bg-card) 0%, rgba(124, 58, 237, 0.12) 60%, rgba(13, 148, 136, 0.12) 100%);
-  border-color: rgba(124, 58, 237, 0.28);
-}
-
-.cover-hero-left h2 {
-  font-size: 1.35rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 4px;
+.cover-header-hero .cover-hero-stats {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-primary);
+  flex-shrink: 0;
 }
 
-.cover-hero-left p {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-}
-
-.cover-season-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #FFFFFF;
-  border: 1px solid rgba(124, 58, 237, 0.22);
-  border-radius: 9999px;
-  padding: 4px 12px;
-  font-size: 0.74rem;
-  font-weight: 700;
-  color: var(--primary, #7C3AED);
-  margin-top: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-  transition: all var(--transition-fast);
-}
-
-.cover-season-pill:hover {
-  border-color: var(--primary, #7C3AED);
-  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.12);
-}
-
-[data-theme="dark"] .cover-season-pill {
-  background: rgba(124, 58, 237, 0.2);
-  border-color: rgba(124, 58, 237, 0.38);
-  color: #DDD6FE;
-}
-
-.cover-hero-stats {
-  display: flex;
-  gap: 12px;
-}
-
-.cover-stat-badge {
-  background: #FFFFFF;
-  border: 1px solid var(--border-light);
-  border-radius: 12px;
-  padding: 10px 16px;
+.cover-header-hero .cover-stat-badge {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(124, 58, 237, 0.14);
+  border-radius: 10px;
+  padding: 4px 10px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  min-width: 78px;
+  min-width: 60px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
-[data-theme="dark"] .cover-stat-badge {
-  background: rgba(21, 29, 42, 0.8);
-  border-color: var(--border-light);
+[data-theme="dark"] .cover-header-hero .cover-stat-badge {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-.cover-stat-val {
-  font-size: 1.3rem;
+.cover-header-hero .cover-stat-val {
+  font-size: 1.05rem;
   font-weight: 800;
-  line-height: 1;
-  margin-bottom: 3px;
+  line-height: 1.1;
+  margin-bottom: 1px;
 }
 
-.cover-stat-label {
-  font-size: 0.68rem;
+.cover-header-hero .cover-stat-label {
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
 }
 
 /* Streamlined System Compass Strip (Ultra Compact 1-Line) */
@@ -5214,10 +5160,9 @@
 
 .cover-hub-container .margo-framework-shelf,
 .cover-hub-container .habit-presets-shelf {
-  border: 1px solid var(--border-light, #E2E8F0);
-  border-top: 3.5px solid var(--primary, #7C3AED);
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.04);
+  border: 1px solid var(--border-light);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02);
 }
 
 .habit-presets-shelf .preset-pill-item:hover {
@@ -6229,17 +6174,16 @@
   opacity: 1;
 }
 
-/* Vibrant Category Themes for Bento Cards */
+/* Vibrant Nordic Category Themes for Bento Cards (Matching Today Widget Styling) */
 /* 1. School (Royal Violet) */
 .bento-campaign-card.theme-cat-school {
-  background: linear-gradient(135deg, #F5EEFF 0%, #FAF5FF 45%, #FFFFFF 100%);
-  border: 1px solid #DDD6FE;
-  border-top: 3.5px solid #7C3AED;
-  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  background: linear-gradient(135deg, #FAF5FF 0%, #FFFFFF 100%);
+  border: 1px solid #E9D5FF;
+  box-shadow: 0 2px 10px rgba(124, 58, 237, 0.05);
 }
 .bento-campaign-card.theme-cat-school:hover {
-  border-color: #8B5CF6;
-  box-shadow: 0 4px 18px rgba(124, 58, 237, 0.16);
+  border-color: #C084FC;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
 }
 .bento-campaign-card.theme-cat-school .bento-cat-tag {
   background: #EDE9FE;
@@ -6249,17 +6193,20 @@
 .bento-campaign-card.theme-cat-school .bento-domain-title {
   color: #5B21B6;
 }
+[data-theme="dark"] .bento-campaign-card.theme-cat-school {
+  background: rgba(124, 58, 237, 0.10);
+  border-color: rgba(167, 139, 250, 0.28);
+}
 
 /* 2. Care & Aesthetics (Rose Orchid) */
 .bento-campaign-card.theme-cat-care {
-  background: linear-gradient(135deg, #FFE4E8 0%, #FFF1F3 45%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #FFF1F2 0%, #FFFFFF 100%);
   border: 1px solid #FECDD3;
-  border-top: 3.5px solid #E11D48;
-  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(225, 29, 72, 0.05);
 }
 .bento-campaign-card.theme-cat-care:hover {
-  border-color: #F43F5E;
-  box-shadow: 0 4px 18px rgba(225, 29, 72, 0.16);
+  border-color: #FDA4AF;
+  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.12);
 }
 .bento-campaign-card.theme-cat-care .bento-cat-tag {
   background: #FFE4E6;
@@ -6269,17 +6216,20 @@
 .bento-campaign-card.theme-cat-care .bento-domain-title {
   color: #9F1239;
 }
+[data-theme="dark"] .bento-campaign-card.theme-cat-care {
+  background: rgba(225, 29, 72, 0.10);
+  border-color: rgba(251, 113, 133, 0.28);
+}
 
-/* 2b. Health & Surgery (Color 4: Ocean / Cerulean Blue) */
+/* 2b. Health & Surgery (Ocean / Cerulean Blue) */
 .bento-campaign-card.theme-cat-health {
-  background: linear-gradient(135deg, #E0F2FE 0%, #F0F9FF 45%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
   border: 1px solid #BAE6FD;
-  border-top: 3.5px solid #0284C7;
-  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.05);
 }
 .bento-campaign-card.theme-cat-health:hover {
-  border-color: #0284C7;
-  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.16);
+  border-color: #7DD3FC;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
 }
 .bento-campaign-card.theme-cat-health .bento-cat-tag {
   background: #E0F2FE;
@@ -6289,17 +6239,20 @@
 .bento-campaign-card.theme-cat-health .bento-domain-title {
   color: #0369A1;
 }
+[data-theme="dark"] .bento-campaign-card.theme-cat-health {
+  background: rgba(2, 132, 199, 0.10);
+  border-color: rgba(56, 189, 248, 0.28);
+}
 
 /* 3. Finance & Reimbursements (Emerald Cashflow) */
 .bento-campaign-card.theme-cat-finance {
-  background: linear-gradient(135deg, #DCFCE7 0%, #ECFDF5 45%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #ECFDF5 0%, #FFFFFF 100%);
   border: 1px solid #A7F3D0;
-  border-top: 3.5px solid #059669;
-  box-shadow: 0 2px 10px rgba(5, 150, 105, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(5, 150, 105, 0.05);
 }
 .bento-campaign-card.theme-cat-finance:hover {
-  border-color: #10B981;
-  box-shadow: 0 4px 18px rgba(5, 150, 105, 0.16);
+  border-color: #6EE7B7;
+  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.12);
 }
 .bento-campaign-card.theme-cat-finance .bento-cat-tag {
   background: #D1FAE5;
@@ -6309,17 +6262,20 @@
 .bento-campaign-card.theme-cat-finance .bento-domain-title {
   color: #065F46;
 }
+[data-theme="dark"] .bento-campaign-card.theme-cat-finance {
+  background: rgba(5, 150, 105, 0.10);
+  border-color: rgba(52, 211, 153, 0.28);
+}
 
 /* 4. Home Declutter (Sea Glass Teal) */
 .bento-campaign-card.theme-cat-home {
-  background: linear-gradient(135deg, #CCFBF1 0%, #F0FDFA 45%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
   border: 1px solid #99F6E4;
-  border-top: 3.5px solid #0D9488;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.05);
 }
 .bento-campaign-card.theme-cat-home:hover {
-  border-color: #14B8A6;
-  box-shadow: 0 4px 18px rgba(13, 148, 136, 0.16);
+  border-color: #5EEAD4;
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.12);
 }
 .bento-campaign-card.theme-cat-home .bento-cat-tag {
   background: #CCFBF1;
@@ -6329,17 +6285,20 @@
 .bento-campaign-card.theme-cat-home .bento-domain-title {
   color: #0F766E;
 }
+[data-theme="dark"] .bento-campaign-card.theme-cat-home {
+  background: rgba(13, 148, 136, 0.10);
+  border-color: rgba(45, 212, 191, 0.28);
+}
 
 /* 5. Food & Nutrition (Celadon Sage) */
 .bento-campaign-card.theme-cat-food {
-  background: linear-gradient(135deg, #ECFCCB 0%, #F7FEE7 45%, #FFFFFF 100%);
+  background: linear-gradient(135deg, #F7FEE7 0%, #FFFFFF 100%);
   border: 1px solid #D9F99D;
-  border-top: 3.5px solid #65A30D;
-  box-shadow: 0 2px 10px rgba(101, 163, 13, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 10px rgba(101, 163, 13, 0.05);
 }
 .bento-campaign-card.theme-cat-food:hover {
-  border-color: #84CC16;
-  box-shadow: 0 4px 18px rgba(101, 163, 13, 0.16);
+  border-color: #BEF264;
+  box-shadow: 0 4px 16px rgba(101, 163, 13, 0.12);
 }
 .bento-campaign-card.theme-cat-food .bento-cat-tag {
   background: #ECFCCB;
@@ -6348,6 +6307,10 @@
 }
 .bento-campaign-card.theme-cat-food .bento-domain-title {
   color: #3F6212;
+}
+[data-theme="dark"] .bento-campaign-card.theme-cat-food {
+  background: rgba(101, 163, 13, 0.10);
+  border-color: rgba(163, 230, 53, 0.28);
 }
 
 /* Option 1: High-Density Directory Items for Later */

@@ -40,36 +40,35 @@ function renderCoverHubPage() {
   container.innerHTML = `
     <div class="cover-hub-container">
       
-      <!-- 1. Operating Mantra Strip (Nordic Minimalist) -->
-      <div class="cover-mantra-strip">
+      <!-- Top Floating Mantras Pill (Matching Today's Floating HUD) -->
+      <div class="today-floating-hud cover-mantra-hud">
         <div class="mantra-pill mantra-simple" title="Simple: Zero duplicate tracking or cognitive bloat">
           <span>simple</span>
         </div>
+        <div class="hud-divider"></div>
         <div class="mantra-pill mantra-visible" title="Visible: If it isn't front-and-center, it doesn't happen">
           <span>visible</span>
         </div>
+        <div class="hud-divider"></div>
         <div class="mantra-pill mantra-next" title="Next step: Every area has exactly one obvious immediate move">
           <span>next step</span>
         </div>
+        <div class="hud-divider"></div>
         <div class="mantra-pill mantra-done" title="Done: Frictionless 1-tap completion without guilt">
           <span>done</span>
         </div>
       </div>
 
-      <!-- 2. Executive Season & System Compass Hero HUD -->
-      <div class="cover-header-hero">
-        <div class="cover-hero-left">
-          <h2>
-            <span>📖 The System Compass</span>
-          </h2>
-          <p>10,000-ft executive radar &bull; Actions live strictly in Apple Notes &amp; Things 3 &bull; Zero clutter</p>
-          <div class="cover-season-pill" onclick="promptEditSeasonFocus()" title="Click to customize seasonal focus theme" style="cursor: pointer;">
-            <span>🎯 Focus Theme:</span>
-            <strong id="cover-season-focus-text">${escapeHtml(seasonTheme)}</strong>
-            <span style="opacity: 0.6; font-size: 0.65rem; margin-left: 2px;">✏️</span>
-          </div>
+      <!-- Executive Season Focus HUD (Matching Today's Daily Roast Banner) -->
+      <div class="today-daily-roast-banner cover-header-hero">
+        <div class="roast-badge-pill cover-season-pill" onclick="promptEditSeasonFocus()" title="Click to customize seasonal focus theme">
+          <span class="roast-badge-sparkle">✨</span>
+          <span class="roast-badge-label">Focus Theme</span>
+          <span class="roast-badge-shuffle">✏️</span>
         </div>
-
+        <div class="roast-quote-content">
+          <span class="roast-text" id="cover-season-focus-text">"${escapeHtml(seasonTheme)}"</span>
+        </div>
         <div class="cover-hero-stats">
           <div class="cover-stat-badge">
             <div class="cover-stat-val" style="color: var(--primary, #7C3AED);">${campaignsData.now.length}</div>
@@ -86,55 +85,51 @@ function renderCoverHubPage() {
         </div>
       </div>
 
-      <!-- 3. Streamlined System Compass Strip (Ultra-Compact Tool Roles) -->
-      <div class="cover-compass-strip" id="section-architecture-blueprint">
-        <div class="compass-strip-title">
-          <span>🧭 Tool Roles</span>
-        </div>
-        <div class="compass-strip-tools">
-          <div class="compass-tool-pill" title="margo: Central command radar &amp; habit momentum engine">
-            <span class="tool-icon">🌿</span>
-            <span class="tool-name">margo</span>
-            <span class="tool-role">&bull; Radar + Habits</span>
-          </div>
-          <div class="compass-tool-pill" title="Apple Notes: Master task repositories &amp; project roadmaps">
-            <span class="tool-icon">📝</span>
-            <span class="tool-name">Apple Notes</span>
-            <span class="tool-role">&bull; Master Tasks</span>
-          </div>
-          <div class="compass-tool-pill" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
-            <span class="tool-icon">⚡</span>
-            <span class="tool-name">Things 3</span>
-            <span class="tool-role">&bull; Next Strike</span>
-          </div>
-          <div class="compass-tool-pill" title="Google Drive: Digital vault for signed PDFs &amp; official records">
-            <span class="tool-icon">📁</span>
-            <span class="tool-name">Google Drive</span>
-            <span class="tool-role">&bull; Permanent Vault</span>
-          </div>
-          <div class="compass-tool-pill" title="Gmail: Inbound &amp; outbound communications">
-            <span class="tool-icon">✉️</span>
-            <span class="tool-name">Gmail</span>
-            <span class="tool-role">&bull; Comms</span>
+      <!-- 1. System Compass & Tool Roles (Matching Today's Card Structure) -->
+      <div class="today-section-block">
+        <h2 class="today-section-title">1. System Compass &amp; Tool Architecture</h2>
+        <div class="today-card cover-compass-card" id="section-architecture-blueprint">
+          <div class="compass-strip-tools">
+            <div class="compass-tool-pill" title="margo: Central command radar &amp; habit momentum engine">
+              <span class="tool-icon">🌿</span>
+              <span class="tool-name">margo</span>
+              <span class="tool-role">&bull; Radar + Habits</span>
+            </div>
+            <div class="compass-tool-pill" title="Apple Notes: Master task repositories &amp; project roadmaps">
+              <span class="tool-icon">📝</span>
+              <span class="tool-name">Apple Notes</span>
+              <span class="tool-role">&bull; Master Tasks</span>
+            </div>
+            <div class="compass-tool-pill" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
+              <span class="tool-icon">⚡</span>
+              <span class="tool-name">Things 3</span>
+              <span class="tool-role">&bull; Next Strike</span>
+            </div>
+            <div class="compass-tool-pill" title="Google Drive: Digital vault for signed PDFs &amp; official records">
+              <span class="tool-icon">📁</span>
+              <span class="tool-name">Google Drive</span>
+              <span class="tool-role">&bull; Permanent Vault</span>
+            </div>
+            <div class="compass-tool-pill" title="Gmail: Inbound &amp; outbound communications">
+              <span class="tool-icon">✉️</span>
+              <span class="tool-name">Gmail</span>
+              <span class="tool-role">&bull; Comms</span>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- 4. Unified Life Architecture & Focus Board: Now vs. Later -->
-      <div class="active-campaigns-section" id="section-active-campaigns">
-        <!-- Single Elevated White Card Container -->
-        <div class="campaigns-white-card unified-board-card">
-          <div class="unified-board-header">
-            <div class="white-card-brand">
-              <span>margo</span>
-              <span class="board-brand-sub">Life Architecture &amp; Focus Board</span>
-            </div>
-            <div class="unified-board-counts">
-              <span class="board-count-pill count-now">📌 ${campaignsData.now.length} Active (Now)</span>
-              <span class="board-count-pill count-later">⏳ ${campaignsData.later.length} On Deck (Later)</span>
-            </div>
+      <!-- 2. Life Architecture & Focus Board: Now vs. Later (Matching Today's Card Structure) -->
+      <div class="today-section-block" id="section-active-campaigns">
+        <div class="today-section-header-row" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+          <h2 class="today-section-title" style="margin-bottom: 0;">2. Life Architecture &amp; Focus Board</h2>
+          <div class="unified-board-counts">
+            <span class="board-count-pill count-now">📌 ${campaignsData.now.length} Active (Now)</span>
+            <span class="board-count-pill count-later">⏳ ${campaignsData.later.length} On Deck (Later)</span>
           </div>
+        </div>
 
+        <div class="today-card unified-board-card cover-focus-card">
           <!-- ================= SECTION 1: NOW ================= -->
           <div class="focus-tier-block tier-now-block">
             <div class="focus-tier-header">
@@ -179,27 +174,26 @@ function renderCoverHubPage() {
               ` : ''}
             </div>
           </div>
-
-        </div>
         </div>
       </div>
 
-      <!-- 4. MARGO Framework (5 Pillars) - Relocated permanently to Cover Page -->
-      <div class="cover-card margo-framework-shelf" id="section-framework-shelf">
-        ${typeof renderMargoFrameworkWidget === 'function' ? renderMargoFrameworkWidget() : ''}
+      <!-- 3. MARGO Framework (5 Pillars) -->
+      <div class="today-section-block">
+        <h2 class="today-section-title">3. MARGO Framework (5 Pillars)</h2>
+        <div class="today-card margo-framework-shelf" id="section-framework-shelf">
+          ${typeof renderMargoFrameworkWidget === 'function' ? renderMargoFrameworkWidget() : ''}
+        </div>
       </div>
 
-      <!-- 5. Habit Presets Repository - Relocated permanently to Cover Page -->
-      <div class="cover-card habit-presets-shelf" id="section-presets-shelf">
-        <div class="card-title-row">
-          <div class="title-with-desc">
-            <h3>
-              <i data-lucide="sparkles" style="color: #3D5A45; width: 17px; height: 17px;"></i>
-              Habit Presets Repository
-            </h3>
-            <span class="card-sub-muted">Tap any preset to instantly add it to your daily tracking stack</span>
+      <!-- 4. Habit Presets Repository -->
+      <div class="today-section-block">
+        <h2 class="today-section-title">4. Habit Presets Repository</h2>
+        <div class="today-card habit-presets-shelf" id="section-presets-shelf">
+          <div class="card-title-row" style="margin-bottom: 8px;">
+            <div class="title-with-desc">
+              <span class="card-sub-muted">Tap any preset to instantly add it to your daily tracking stack</span>
+            </div>
           </div>
-        </div>
 
         <div class="presets-shelf-pills">
           ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
@@ -946,7 +940,7 @@ function copySchoolBattlePlanTemplate() {
   const template = `# 🏛️ Z: SCHOOL ADMISSIONS & OOD PLACEMENT
 *Battle Plan & Operating System*
 
-## 🎯 CURRENT STATUS
+## 📌 CURRENT STATUS
 - Phase: Phase 2 (School Selection & Admissions Tours)
 - Target: Secure admissions seat and finalize transfer
 - Parallel: Hold district accountable for IEP non-compliance & police incident
@@ -963,7 +957,7 @@ function copySchoolBattlePlanTemplate() {
 ### Phase 1: District OOD Agreement [COMPLETE ✅]
 - [x] Secured formal district consensus for out-of-district specialized placement
 
-### Phase 2: School Selection & Admissions [ACTIVE 🎯]
+### Phase 2: School Selection & Admissions [ACTIVE 📌]
 - [x] Compile candidate school list (Windsor School, etc.)
 - [ ] Tour candidate schools & intake interviews
 - [ ] Submit application packet & neuropsych evaluations
