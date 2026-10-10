@@ -90,27 +90,27 @@ function renderCoverHubPage() {
         <h2 class="today-section-title">1. System Compass &amp; Tool Architecture</h2>
         <div class="today-card cover-compass-card" id="section-architecture-blueprint">
           <div class="compass-strip-tools">
-            <div class="compass-tool-pill" title="margo: Central command radar &amp; habit momentum engine">
+            <div class="compass-tool-pill tool-pill-margo" title="margo: Central command radar &amp; habit momentum engine">
               <span class="tool-icon">🌿</span>
               <span class="tool-name">margo</span>
               <span class="tool-role">&bull; Radar + Habits</span>
             </div>
-            <div class="compass-tool-pill" title="Apple Notes: Master task repositories &amp; project roadmaps">
+            <div class="compass-tool-pill tool-pill-notes" title="Apple Notes: Master task repositories &amp; project roadmaps">
               <span class="tool-icon">📝</span>
               <span class="tool-name">Apple Notes</span>
               <span class="tool-role">&bull; Master Tasks</span>
             </div>
-            <div class="compass-tool-pill" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
+            <div class="compass-tool-pill tool-pill-things" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
               <span class="tool-icon">⚡</span>
               <span class="tool-name">Things 3</span>
               <span class="tool-role">&bull; Next Strike</span>
             </div>
-            <div class="compass-tool-pill" title="Google Drive: Digital vault for signed PDFs &amp; official records">
+            <div class="compass-tool-pill tool-pill-drive" title="Google Drive: Digital vault for signed PDFs &amp; official records">
               <span class="tool-icon">📁</span>
               <span class="tool-name">Google Drive</span>
               <span class="tool-role">&bull; Permanent Vault</span>
             </div>
-            <div class="compass-tool-pill" title="Gmail: Inbound &amp; outbound communications">
+            <div class="compass-tool-pill tool-pill-gmail" title="Gmail: Inbound &amp; outbound communications">
               <span class="tool-icon">✉️</span>
               <span class="tool-name">Gmail</span>
               <span class="tool-role">&bull; Comms</span>
