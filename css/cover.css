@@ -8381,7 +8381,15 @@ body.dark-mode .protocol-sample-btn {
   flex-direction: column;
 }
 
-.today-card-choices, .today-card-journal {
+.today-card-choices {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 14px;
+}
+
+.today-card-journal {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -8392,9 +8400,9 @@ body.dark-mode .protocol-sample-btn {
 .choices-tally-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 0;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -8592,6 +8600,188 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .ratio-bar-not {
+  height: 100%;
+  background: #F43F5E;
+  transition: width 0.3s ease;
+}
+
+/* Running Total & Weekly Momentum Widget */
+.choices-running-widget {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(13, 148, 136, 0.04) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.16);
+  border-radius: var(--radius-lg, 14px);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.02);
+}
+
+[data-theme="dark"] .choices-running-widget {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(13, 148, 136, 0.10) 100%);
+  border-color: rgba(167, 139, 250, 0.22);
+}
+
+.running-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.running-widget-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.running-icon {
+  font-size: 0.85rem;
+}
+
+.running-net-badge {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  line-height: 1.2;
+}
+
+.running-net-badge.is-pos {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.3);
+}
+
+[data-theme="dark"] .running-net-badge.is-pos {
+  background: rgba(13, 148, 136, 0.25);
+  color: #5EEAD4;
+  border-color: rgba(13, 148, 136, 0.4);
+}
+
+.running-net-badge.is-neg {
+  background: #FFE4E6;
+  color: #BE123C;
+  border: 1px solid rgba(225, 29, 72, 0.3);
+}
+
+[data-theme="dark"] .running-net-badge.is-neg {
+  background: rgba(225, 29, 72, 0.25);
+  color: #FDA4AF;
+  border-color: rgba(225, 29, 72, 0.4);
+}
+
+.running-widget-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.running-mini-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md, 10px);
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.running-mini-card:hover {
+  border-color: rgba(139, 92, 246, 0.28);
+}
+
+.mini-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mini-card-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.mini-card-ratio {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #0D9488;
+}
+
+[data-theme="dark"] .mini-card-ratio {
+  color: #5EEAD4;
+}
+
+.mini-card-metrics {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  font-family: var(--font-sans);
+  color: var(--text-primary);
+}
+
+.metric-good {
+  color: #0F766E;
+}
+
+[data-theme="dark"] .metric-good {
+  color: #5EEAD4;
+}
+
+.metric-good strong {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.metric-not {
+  color: #BE123C;
+}
+
+[data-theme="dark"] .metric-not {
+  color: #FDA4AF;
+}
+
+.metric-not strong {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.88rem;
+}
+
+.metric-sep {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.mini-card-bar {
+  height: 4px;
+  border-radius: 9999px;
+  background: #E2E8F0;
+  overflow: hidden;
+  display: flex;
+  margin-top: 2px;
+}
+
+[data-theme="dark"] .mini-card-bar {
+  background: #1E293B;
+}
+
+.mini-bar-good {
+  height: 100%;
+  background: linear-gradient(90deg, #0D9488 0%, #14B8A6 100%);
+  transition: width 0.3s ease;
+}
+
+.mini-bar-not {
   height: 100%;
   background: #F43F5E;
   transition: width 0.3s ease;

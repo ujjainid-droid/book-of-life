@@ -375,7 +375,56 @@ function renderDailySheet() {
               </div>
             </div>
 
-            <!-- 2. Choice Options (Smaller Chips) -->
+            <!-- Running Total & Weekly Momentum Widget -->
+            <div class="choices-running-widget">
+              <div class="running-widget-header">
+                <div class="running-widget-title">
+                  <span class="running-icon">📈</span>
+                  <span>Running Count &amp; Momentum</span>
+                </div>
+                <span class="running-net-badge ${runningChoices.net >= 0 ? 'is-pos' : 'is-neg'}">
+                  ${runningChoices.net >= 0 ? `+${runningChoices.net} Net Good` : `${runningChoices.net} Net`}
+                </span>
+              </div>
+
+              <div class="running-widget-grid">
+                <!-- This Week Card -->
+                <div class="running-mini-card card-week">
+                  <div class="mini-card-top">
+                    <span class="mini-card-badge">📅 This Week</span>
+                    <span class="mini-card-ratio">${weeklyChoices.total > 0 ? `${weeklyChoices.ratio}% Good` : '—'}</span>
+                  </div>
+                  <div class="mini-card-metrics">
+                    <span class="metric-good"><strong>${weeklyChoices.totalGood}</strong> good</span>
+                    <span class="metric-sep">•</span>
+                    <span class="metric-not"><strong>${weeklyChoices.totalNot}</strong> not</span>
+                  </div>
+                  <div class="mini-card-bar">
+                    <div class="mini-bar-good" style="width: ${weeklyChoices.total > 0 ? weeklyChoices.ratio : 100}%;"></div>
+                    <div class="mini-bar-not" style="width: ${weeklyChoices.total > 0 ? (100 - weeklyChoices.ratio) : 0}%;"></div>
+                  </div>
+                </div>
+
+                <!-- All-Time Running Total Card -->
+                <div class="running-mini-card card-alltime">
+                  <div class="mini-card-top">
+                    <span class="mini-card-badge">🏆 All-Time Total</span>
+                    <span class="mini-card-ratio">${runningChoices.total > 0 ? `${runningChoices.ratio}% Good` : '—'}</span>
+                  </div>
+                  <div class="mini-card-metrics">
+                    <span class="metric-good"><strong>${runningChoices.totalGood}</strong> good</span>
+                    <span class="metric-sep">•</span>
+                    <span class="metric-not"><strong>${runningChoices.totalNot}</strong> not</span>
+                  </div>
+                  <div class="mini-card-bar">
+                    <div class="mini-bar-good" style="width: ${runningChoices.total > 0 ? runningChoices.ratio : 100}%;"></div>
+                    <div class="mini-bar-not" style="width: ${runningChoices.total > 0 ? (100 - runningChoices.ratio) : 0}%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Choice Options (Smaller Chips) -->
             <div class="choices-options-section">
               <div class="choices-options-group">
                 <div class="choices-group-label label-good">Good choices</div>
