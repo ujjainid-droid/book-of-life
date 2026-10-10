@@ -669,8 +669,20 @@ class StorageManager {
             later: Array.isArray(s.coverTopMind.later) ? s.coverTopMind.later : (defaults.coverTopMind.later || [])
           };
         }
-        if (Array.isArray(s.coverTopicAudits) && s.coverTopicAudits.length > 0) {
+        if (s.coverTopicAudits && Array.isArray(s.coverTopicAudits) && s.coverTopicAudits.length > 0) {
           merged.coverTopicAudits = s.coverTopicAudits;
+        }
+
+        // 11. HairCareState: Two-way merge preserving local completions and skips
+        if (s.hairCareState && typeof s.hairCareState === 'object') {
+          if (!merged.hairCareState) merged.hairCareState = {};
+          Object.entries(s.hairCareState).forEach(([dStr, hObj]) => {
+            if (!merged.hairCareState[dStr]) {
+              merged.hairCareState[dStr] = { ...hObj };
+            } else {
+              merged.hairCareState[dStr] = { ...hObj, ...merged.hairCareState[dStr] };
+            }
+          });
         }
       }
 
@@ -1293,6 +1305,7 @@ class StorageManager {
     if (nextVal) {
       day.skipped = false;
     }
+    day.updatedAt = Date.now();
 
     if (typeof getHairCareRoutineForDate === 'function') {
       const routine = getHairCareRoutineForDate(dateStr);
@@ -1304,6 +1317,9 @@ class StorageManager {
     }
 
     this.addPoints(nextVal ? 10 : -10);
+    try {
+      localStorage.setItem('HAIR_CARE_STATE_BACKUP', JSON.stringify(this.data.hairCareState));
+    } catch (e) {}
     this.saveData();
     return nextVal;
   }
@@ -1317,10 +1333,14 @@ class StorageManager {
     day.completed = false;
     day.insteadNote = (note || '').trim();
     day.skippedAt = new Date().toISOString();
+    day.updatedAt = Date.now();
 
     if (!wasAlreadyHandled) {
       this.addPoints(5);
     }
+    try {
+      localStorage.setItem('HAIR_CARE_STATE_BACKUP', JSON.stringify(this.data.hairCareState));
+    } catch (e) {}
     this.saveData();
     return day;
   }
@@ -1333,7 +1353,11 @@ class StorageManager {
       day.skipped = false;
       day.insteadNote = '';
       delete day.skippedAt;
+      day.updatedAt = Date.now();
       this.addPoints(-5);
+      try {
+        localStorage.setItem('HAIR_CARE_STATE_BACKUP', JSON.stringify(this.data.hairCareState));
+      } catch (e) {}
       this.saveData();
     }
   }

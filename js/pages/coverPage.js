@@ -386,70 +386,117 @@ function renderDailySheet() {
 
         <!-- 3. Evening Check-in & Journal -->
         <div class="today-col-right">
-          <h2 class="today-section-title">3. Evening Check-in &amp; Journal</h2>
-          <div class="today-card today-card-journal" id="section-sanctuary-journal">
-            <div class="mockup-subhead">How Healthy Do I Feel?</div>
-            
-            <!-- Previous Vitality Level Options: 5 (Thriving) to 1 (Zombie) -->
-            <div class="health-buttons-grid" style="margin-bottom: 12px;">
-              ${[5, 4, 3, 2, 1].map(lvl => {
-                const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[lvl] : { emoji: '✨', label: `Lvl ${lvl}`, desc: '', sassy: '' };
-                const isSelected = (currentHealthLevel === lvl);
-                return `
-                  <button type="button" 
-                          class="health-btn ${isSelected ? 'active' : ''}" 
-                          onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
-                          title="${meta.label}: ${meta.desc}">
-                    <span class="health-btn-emoji">${meta.emoji}</span>
-                    <span class="health-btn-label">${meta.label}</span>
-                  </button>
-                `;
-              }).join('')}
+          <div class="today-section-header-row">
+            <h2 class="today-section-title" style="margin-bottom: 0;">3. Evening Check-in &amp; Journal</h2>
+            <div class="journal-tab-pill-switcher">
+              <button type="button" class="journal-tab-pill ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
+                ✍️ Today
+              </button>
+              <button type="button" class="journal-tab-pill ${sanctuaryJournalTab === 'archive' ? 'active' : ''}" onclick="setSanctuaryJournalTab('archive')">
+                📚 Archive (${allJournals.length})
+              </button>
             </div>
+          </div>
 
-            <!-- Sassy Saying / Insight -->
-            ${currentHealthMeta ? `
-              <div class="health-sassy-quote" style="margin-bottom: 16px;">
-                <span class="quote-icon">${currentHealthMeta.emoji}</span>
-                <div>
-                  <strong>${currentHealthMeta.label}:</strong> <em>"${currentHealthMeta.sassy}"</em>
+          <div class="today-card today-card-journal" id="section-sanctuary-journal">
+            ${sanctuaryJournalTab === 'archive' ? `
+              <!-- ARCHIVE VIEW: Where to see saved journal entries -->
+              <div class="journal-archive-pane">
+                <div class="archive-filter-row" style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
+                  <div class="archive-filter-pills">
+                    <button type="button" class="archive-filter-btn ${sanctuaryArchiveFilter === 'all' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('all')">All (${allJournals.length})</button>
+                    <button type="button" class="archive-filter-btn ${sanctuaryArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('last_week')">Last Week</button>
+                    <button type="button" class="archive-filter-btn ${sanctuaryArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('this_month')">This Month</button>
+                  </div>
+                  <button type="button" class="journal-back-today-btn" onclick="setSanctuaryJournalTab('today')">✍️ Back to Today</button>
+                </div>
+
+                <!-- SQUARE CARDS GRID -->
+                <div class="journal-square-grid">
+                  ${renderJournalSquareGrid(allJournals, sanctuaryArchiveFilter)}
                 </div>
               </div>
-            ` : ''}
-
-            <div class="mockup-subhead">How did your day feel?</div>
-
-            <!-- Journal Box -->
-            <div class="mockup-journal-box">
-              <textarea 
-                class="mockup-journal-textarea" 
-                id="mockup-journal-input" 
-                placeholder="Type your evening reflections, wins, or brain dump here..."
-                oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
-              >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
+            ` : `
+              <!-- TODAY VIEW: Vibrant Vitality & Evening Reflection -->
+              <div class="mockup-subhead" style="color: #7C3AED;">How Healthy Do I Feel?</div>
               
-              <div class="mockup-journal-bottom">
-                <span class="journal-autosave-note" id="journal-autosave-status">
-                  ${journalEntry && journalEntry.text ? '✓ Saved' : 'Auto-saves as you type'}
-                </span>
-                <button type="button" class="mockup-journal-save-btn" onclick="saveMockupJournalAction('${activeTrackingDate}')">
-                  <span>✏️</span>
-                  <span>Save Journal</span>
-                </button>
+              <!-- Previous Vitality Level Options: 5 (Thriving) to 1 (Zombie) with custom pastel colors -->
+              <div class="health-buttons-grid" style="margin-bottom: 12px;">
+                ${[5, 4, 3, 2, 1].map(lvl => {
+                  const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[lvl] : { emoji: '✨', label: `Lvl ${lvl}`, desc: '', sassy: '' };
+                  const isSelected = (currentHealthLevel === lvl);
+                  return `
+                    <button type="button" 
+                            class="health-btn ${isSelected ? 'active' : ''}" 
+                            data-lvl="${lvl}"
+                            onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
+                            title="${meta.label}: ${meta.desc}">
+                      <span class="health-btn-emoji">${meta.emoji}</span>
+                      <span class="health-btn-label">${meta.label}</span>
+                    </button>
+                  `;
+                }).join('')}
               </div>
-            </div>
 
-            <!-- Sleek Quick Access Badges (Haircare & Z Log) -->
-            <div class="mockup-quick-utilities">
-              <button type="button" class="util-badge-btn" onclick="toggleMockupHaircare()" title="Abbey Yung Hair Care Protocol">
-                <span>🧴</span>
-                <span>Haircare: <strong>${isHairCompleted ? 'Done ✓' : (isHairSkipped ? 'Skipped' : 'Pending')}</strong></span>
-              </button>
-              <button type="button" class="util-badge-btn" onclick="openZLogEntryModal('${activeTrackingDate}')" title="Z Log Daily Regulation">
-                <span>🌱</span>
-                <span>Z Log: <strong>${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Done ✓') : 'Log +10 XP'}</strong></span>
-              </button>
-            </div>
+              <!-- Sassy Saying / Insight -->
+              ${currentHealthMeta ? `
+                <div class="health-sassy-quote" style="margin-bottom: 16px;">
+                  <span class="quote-icon">${currentHealthMeta.emoji}</span>
+                  <div>
+                    <strong>${currentHealthMeta.label}:</strong> <em>"${currentHealthMeta.sassy}"</em>
+                  </div>
+                </div>
+              ` : ''}
+
+              <div class="journal-subhead-row">
+                <div class="mockup-subhead" style="color: #4F46E5; margin-bottom: 0;">How did your day feel?</div>
+                ${allJournals.length > 0 ? `
+                  <button type="button" class="journal-view-archive-link" onclick="setSanctuaryJournalTab('archive')">
+                    📚 View Archive (${allJournals.length}) →
+                  </button>
+                ` : ''}
+              </div>
+
+              <!-- Journal Box with Color & Polish -->
+              <div class="mockup-journal-box">
+                <textarea 
+                  class="mockup-journal-textarea" 
+                  id="mockup-journal-input" 
+                  placeholder="Type your evening reflections, wins, or brain dump here..."
+                  oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
+                >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
+                
+                <div class="mockup-journal-bottom">
+                  <span class="journal-autosave-note" id="journal-autosave-status">
+                    ${journalEntry && journalEntry.text ? `✓ Auto-saved (${journalEntry.wordCount || 0} words)` : 'Auto-saves as you type'}
+                  </span>
+                  <button type="button" class="mockup-journal-save-btn" onclick="saveMockupJournalAction('${activeTrackingDate}')">
+                    <span>✏️</span>
+                    <span>Save Journal</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sleek Quick Access Badges (Haircare & Z Log) with Rich Colors and Quick-Check -->
+              <div class="mockup-quick-utilities">
+                <div class="util-badge-item badge-haircare ${isHairCompleted ? 'is-done' : ''}">
+                  <button type="button" class="util-badge-btn-main" onclick="toggleMockupHaircare()" title="View Abbey Yung Hair Care Protocol">
+                    <span>🧴</span>
+                    <span>Haircare: <strong>${isHairCompleted ? 'Done ✓' : (isHairSkipped ? 'Skipped' : 'Pending')}</strong></span>
+                  </button>
+                  <button type="button" class="util-badge-quick-check ${isHairCompleted ? 'checked' : ''}" onclick="toggleHairCareDayAction('${activeTrackingDate}')" title="${isHairCompleted ? 'Mark Pending' : 'Check off routine (+10 XP)'}">
+                    ${isHairCompleted ? '✓' : '○'}
+                  </button>
+                </div>
+
+                <div class="util-badge-item badge-zlog">
+                  <button type="button" class="util-badge-btn-main" onclick="openZLogEntryModal('${activeTrackingDate}')" title="Z Log Daily Regulation">
+                    <span>🌱</span>
+                    <span>Z Log: <strong>${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Done ✓') : 'Log +10 XP'}</strong></span>
+                  </button>
+                </div>
+              </div>
+            `}
           </div>
         </div>
       </div>

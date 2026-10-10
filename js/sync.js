@@ -228,6 +228,45 @@ class SyncManager {
       });
     }
 
+    // 7b. HairCareState: Two-way merge strictly preserving local checkoffs & skips
+    const mergedHairCareState = { ...(storage.data.hairCareState || {}) };
+    // Check dedicated resilient backup
+    try {
+      const hairBackup = localStorage.getItem('HAIR_CARE_STATE_BACKUP');
+      if (hairBackup) {
+        const bObj = JSON.parse(hairBackup);
+        if (bObj && typeof bObj === 'object') {
+          Object.entries(bObj).forEach(([dStr, hObj]) => {
+            if (hObj && (hObj.completed || hObj.skipped)) {
+              mergedHairCareState[dStr] = { ...(mergedHairCareState[dStr] || {}), ...hObj };
+              localWasRicher = true;
+            }
+          });
+        }
+      }
+    } catch (e) {}
+
+    if (incoming.hairCareState && typeof incoming.hairCareState === 'object') {
+      Object.entries(incoming.hairCareState).forEach(([dStr, hObj]) => {
+        const localDay = mergedHairCareState[dStr];
+        if (!localDay) {
+          mergedHairCareState[dStr] = { ...hObj };
+        } else {
+          const localTime = (localDay && localDay.updatedAt) || 0;
+          const cloudTime = (hObj && hObj.updatedAt) || 0;
+          if (cloudTime > localTime && (hObj.completed || hObj.skipped)) {
+            mergedHairCareState[dStr] = { ...hObj };
+          } else {
+            // Local checkoff authoritatively preserved
+            mergedHairCareState[dStr] = { ...hObj, ...localDay };
+            if (JSON.stringify(hObj) !== JSON.stringify(mergedHairCareState[dStr])) {
+              localWasRicher = true;
+            }
+          }
+        }
+      });
+    }
+
     // 8. QuickThoughts: Union by id & text
     const thoughtMap = new Map();
     (Array.isArray(storage.data.quickThoughts) ? storage.data.quickThoughts : []).forEach(t => {
@@ -428,6 +467,7 @@ class SyncManager {
       healthState: mergedHealth,
       dayGoals: mergedDayGoals,
       sanctuaryJournals: mergedJournals,
+      hairCareState: mergedHairCareState,
       quickThoughts: mergedThoughts,
       claims: mergedClaims,
       zlogEntries: mergedZLog,
