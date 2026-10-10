@@ -6517,16 +6517,17 @@
   align-items: center;
   gap: 5px;
   font-size: 0.67rem;
-  font-weight: 750;
-  letter-spacing: 0.03em;
-  padding: 2.5px 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  padding: 2.5px 8px;
   border-radius: 9999px;
   white-space: nowrap;
   flex-shrink: 0;
   cursor: pointer;
-  line-height: 1.25;
+  line-height: 1.1;
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  border-width: 1px;
+  border-style: solid;
 }
 
 .sample-phase-pill::before {
@@ -6535,52 +6536,69 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
   flex-shrink: 0;
 }
 
 .sample-phase-pill:hover {
-  transform: translateY(-1px) scale(1.06);
-  filter: brightness(1.12);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transform: translateY(-0.5px);
+  filter: brightness(1.08);
 }
 
 .sample-phase-pill:active {
-  transform: translateY(0) scale(0.96);
+  transform: translateY(0) scale(0.97);
 }
 
-/* 4 Distinct High-Pop Status Options: IP, NS, Maintain, Done (NO Yellow/Amber) */
-/* 1. IP (In Progress) - Vivid Royal Indigo */
+/* 4 Distinct Frosted Tint Status Options: IP, NS, Maintain, Done (NO Yellow/Amber) */
+/* 1. IP (In Progress) - Frosted Royal Indigo */
+.sample-phase-pill.pill-status-ip,
 .pill-status-ip {
-  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: rgba(37, 99, 235, 0.10);
+  border-color: rgba(37, 99, 235, 0.28);
+  color: #1D4ED8;
+  box-shadow: none;
+}
+.sample-phase-pill.pill-status-ip::before {
+  background: #2563EB;
+  box-shadow: 0 0 4px rgba(37, 99, 235, 0.5);
 }
 
-/* 2. NS (Not Started) - Cool Focused Slate */
+/* 2. NS (Not Started) - Frosted Cool Slate */
+.sample-phase-pill.pill-status-ns,
 .pill-status-ns {
-  background: linear-gradient(135deg, #64748B 0%, #475569 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 5px rgba(71, 85, 105, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background: rgba(100, 116, 139, 0.10);
+  border-color: rgba(100, 116, 139, 0.24);
+  color: #475569;
+  box-shadow: none;
+}
+.sample-phase-pill.pill-status-ns::before {
+  background: #64748B;
+  box-shadow: none;
 }
 
-/* 3. Maintain - Nordic Sea Glass Teal */
+/* 3. Maintain - Frosted Nordic Sea Glass Teal */
+.sample-phase-pill.pill-status-maintain,
 .pill-status-maintain {
-  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 5px rgba(13, 148, 136, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: rgba(13, 148, 136, 0.10);
+  border-color: rgba(13, 148, 136, 0.28);
+  color: #0F766E;
+  box-shadow: none;
+}
+.sample-phase-pill.pill-status-maintain::before {
+  background: #0D9488;
+  box-shadow: 0 0 4px rgba(13, 148, 136, 0.5);
 }
 
-/* 4. Done - Resonant Emerald Green */
+/* 4. Done - Frosted Resonant Emerald */
+.sample-phase-pill.pill-status-done,
 .pill-status-done {
-  background: linear-gradient(135deg, #059669 0%, #047857 100%);
-  color: #FFFFFF;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 5px rgba(5, 150, 105, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  background: rgba(5, 150, 105, 0.10);
+  border-color: rgba(5, 150, 105, 0.28);
+  color: #047857;
+  box-shadow: none;
+}
+.sample-phase-pill.pill-status-done::before {
+  background: #059669;
+  box-shadow: 0 0 4px rgba(5, 150, 105, 0.5);
 }
 
 /* Bottom Action Row: Tool Icons on Left, Move & Delete on Right */
@@ -7150,30 +7168,57 @@ body.dark-mode .simplified-campaign-card.theme-food.tier-later .sample-domain-ti
   color: #BEF264;
 }
 
-/* Dark Mode: High-Pop Status Pills */
-body.dark-mode .pill-status-ip {
-  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.45);
+/* Dark Mode: Frosted Tint Status Pills (Linear / Raycast) */
+body.dark-mode .pill-status-ip,
+[data-theme="dark"] .pill-status-ip {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: rgba(96, 165, 250, 0.35);
+  color: #93C5FD;
+  box-shadow: none;
 }
-body.dark-mode .pill-status-ns {
-  background: linear-gradient(135deg, #64748B 0%, #475569 100%);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 6px rgba(100, 116, 139, 0.35);
+body.dark-mode .pill-status-ip::before,
+[data-theme="dark"] .pill-status-ip::before {
+  background: #60A5FA;
+  box-shadow: 0 0 5px rgba(96, 165, 250, 0.7);
 }
-body.dark-mode .pill-status-maintain {
-  background: linear-gradient(135deg, #14B8A6 0%, #0D9488 100%);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.45);
+
+body.dark-mode .pill-status-ns,
+[data-theme="dark"] .pill-status-ns {
+  background: rgba(148, 163, 184, 0.15);
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #CBD5E1;
+  box-shadow: none;
 }
-body.dark-mode .pill-status-done {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-  color: #FFFFFF;
-  border-color: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.45);
+body.dark-mode .pill-status-ns::before,
+[data-theme="dark"] .pill-status-ns::before {
+  background: #94A3B8;
+  box-shadow: none;
+}
+
+body.dark-mode .pill-status-maintain,
+[data-theme="dark"] .pill-status-maintain {
+  background: rgba(20, 184, 166, 0.18);
+  border-color: rgba(45, 212, 191, 0.35);
+  color: #5EEAD4;
+  box-shadow: none;
+}
+body.dark-mode .pill-status-maintain::before,
+[data-theme="dark"] .pill-status-maintain::before {
+  background: #2DD4BF;
+  box-shadow: 0 0 5px rgba(45, 212, 191, 0.7);
+}
+
+body.dark-mode .pill-status-done,
+[data-theme="dark"] .pill-status-done {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(52, 211, 153, 0.35);
+  color: #6EE7B7;
+  box-shadow: none;
+}
+body.dark-mode .pill-status-done::before,
+[data-theme="dark"] .pill-status-done::before {
+  background: #34D399;
+  box-shadow: 0 0 5px rgba(52, 211, 153, 0.7);
 }
 
 /* Dark Mode: Tool Badges */
