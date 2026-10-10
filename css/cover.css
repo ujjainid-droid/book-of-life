@@ -5615,14 +5615,20 @@
   }
 }
 
-/* Bento 2-Column Grid for Active Focus (Now) - Balanced 2x2 */
+/* Bento 3-Column Grid for Active Focus (Now) - Snug & Tactile */
 .focus-bento-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 900px) {
+  .focus-bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
   .focus-bento-grid {
     grid-template-columns: 1fr;
   }
