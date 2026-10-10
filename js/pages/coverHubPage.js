@@ -289,15 +289,19 @@ function getDomainThemeClass(camp) {
   if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget') || t.includes('superbill')) {
     return 'theme-cat-finance';
   }
-  // Color 4 - home declutter
+  // Color 4 - Surgery & Health (Cerulean / Azure Blue)
+  if (t.includes('surgery') || t.includes('health') || t.includes('doctor') || t.includes('clinic')) {
+    return 'theme-cat-health';
+  }
+  // Home declutter
   if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
     return 'theme-cat-home';
   }
-  // Color 5 - food
+  // Food
   if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook')) {
     return 'theme-cat-food';
   }
-  // Color 2 - Haircare, surgery, skin, foot, makeup, outfits, jewelry, under eye... (Personal Care & Aesthetics)
+  // Color 2 - Haircare, skin, foot, makeup, outfits, jewelry, under eye... (Personal Care & Aesthetics)
   return 'theme-cat-care';
 }
 window.getDomainThemeClass = getDomainThemeClass;
@@ -307,8 +311,8 @@ function getCampaignCategoryMeta(camp) {
   if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor')) {
     return { tag: 'ED', name: 'School & IEP', theme: 'theme-cat-school', dotColor: '#7C3AED' };
   }
-  if (t.includes('surgery')) {
-    return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'theme-cat-care', dotColor: '#E11D48' };
+  if (t.includes('surgery') || t.includes('health') || t.includes('doctor') || t.includes('clinic')) {
+    return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'theme-cat-health', dotColor: '#0284C7' };
   }
   if (t.includes('hair')) {
     return { tag: 'CARE', name: 'Haircare', theme: 'theme-cat-care', dotColor: '#E11D48' };

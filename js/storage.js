@@ -217,7 +217,7 @@ class StorageManager {
             id: 'camp-surgery',
             title: 'Surgery',
             status: 'IP',
-            theme: 'cat-care',
+            theme: 'cat-health',
             tools: {
               margo: { label: 'Vitality & Recovery', action: 'vitality' },
               apple: { noteQuery: '# HEALTH 02_SURGERY' },

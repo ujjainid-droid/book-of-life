@@ -6058,6 +6058,26 @@
   color: #9F1239;
 }
 
+/* 2b. Health & Surgery (Color 4: Ocean / Cerulean Blue) */
+.bento-campaign-card.theme-cat-health {
+  background: linear-gradient(135deg, #E0F2FE 0%, #F0F9FF 45%, #FFFFFF 100%);
+  border: 1px solid #BAE6FD;
+  border-top: 3.5px solid #0284C7;
+  box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+.bento-campaign-card.theme-cat-health:hover {
+  border-color: #0284C7;
+  box-shadow: 0 4px 18px rgba(2, 132, 199, 0.16);
+}
+.bento-campaign-card.theme-cat-health .bento-cat-tag {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
+.bento-campaign-card.theme-cat-health .bento-domain-title {
+  color: #0369A1;
+}
+
 /* 3. Finance & Reimbursements (Emerald Cashflow) */
 .bento-campaign-card.theme-cat-finance {
   background: linear-gradient(135deg, #DCFCE7 0%, #ECFDF5 45%, #FFFFFF 100%);
@@ -6533,6 +6553,46 @@
   border-left-color: #E11D48;
 }
 
+/* Category 2b: Health & Surgery (Color 4) - Ocean / Cerulean Blue */
+.simplified-campaign-card.theme-cat-health.tier-now,
+.simplified-campaign-card.theme-surgery.tier-now,
+.simplified-campaign-card.theme-health.tier-now {
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+  border-color: #BAE6FD;
+  border-left: 4px solid #0284C7;
+}
+.simplified-campaign-card.theme-cat-health.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-surgery.tier-now .sample-domain-title,
+.simplified-campaign-card.theme-health.tier-now .sample-domain-title {
+  color: #0369A1;
+}
+.simplified-campaign-card.theme-cat-health.tier-now:hover,
+.simplified-campaign-card.theme-surgery.tier-now:hover,
+.simplified-campaign-card.theme-health.tier-now:hover {
+  border-color: #0284C7;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.14);
+}
+
+.simplified-campaign-card.theme-cat-health.tier-later,
+.simplified-campaign-card.theme-surgery.tier-later,
+.simplified-campaign-card.theme-health.tier-later {
+  background: linear-gradient(135deg, #F0F9FF 0%, #FAFAFC 100%);
+  border-color: #E0F2FE;
+  border-left: 3.5px solid rgba(2, 132, 199, 0.35);
+}
+.simplified-campaign-card.theme-cat-health.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-surgery.tier-later .sample-domain-title,
+.simplified-campaign-card.theme-health.tier-later .sample-domain-title {
+  color: #0284C7;
+}
+.simplified-campaign-card.theme-cat-health.tier-later:hover,
+.simplified-campaign-card.theme-surgery.tier-later:hover,
+.simplified-campaign-card.theme-health.tier-later:hover {
+  background: linear-gradient(135deg, #E0F2FE 0%, #FFFFFF 100%);
+  border-color: #BAE6FD;
+  border-left-color: #0284C7;
+}
+
 /* Category 3: Finance & Reimbursement (Color 3) - Forest Emerald */
 .simplified-campaign-card.theme-cat-finance.tier-now,
 .simplified-campaign-card.theme-claims.tier-now {
@@ -6679,16 +6739,34 @@ body.dark-mode .simplified-campaign-card.theme-school.tier-later .sample-domain-
 
 /* 2. Care & Aesthetics (Dark) */
 body.dark-mode .simplified-campaign-card.theme-cat-care.tier-now,
-body.dark-mode .simplified-campaign-card.theme-haircare.tier-now,
-body.dark-mode .simplified-campaign-card.theme-surgery.tier-now {
+body.dark-mode .simplified-campaign-card.theme-haircare.tier-now {
   background: linear-gradient(135deg, rgba(225, 29, 72, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
   border-color: rgba(225, 29, 72, 0.45);
   border-left: 4px solid #FB7185;
 }
 body.dark-mode .simplified-campaign-card.theme-cat-care.tier-now .sample-domain-title,
-body.dark-mode .simplified-campaign-card.theme-haircare.tier-now .sample-domain-title,
-body.dark-mode .simplified-campaign-card.theme-surgery.tier-now .sample-domain-title {
+body.dark-mode .simplified-campaign-card.theme-haircare.tier-now .sample-domain-title {
   color: #FECDD3;
+}
+
+/* 2b. Health & Surgery (Dark) */
+body.dark-mode .simplified-campaign-card.theme-cat-health.tier-now,
+body.dark-mode .simplified-campaign-card.theme-surgery.tier-now,
+body.dark-mode .simplified-campaign-card.theme-health.tier-now,
+[data-theme="dark"] .bento-campaign-card.theme-cat-health {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(2, 132, 199, 0.45);
+  border-top: 3.5px solid #38BDF8;
+}
+body.dark-mode .simplified-campaign-card.theme-cat-health.tier-now .sample-domain-title,
+body.dark-mode .simplified-campaign-card.theme-surgery.tier-now .sample-domain-title,
+[data-theme="dark"] .bento-campaign-card.theme-cat-health .bento-domain-title {
+  color: #BAE6FD;
+}
+[data-theme="dark"] .bento-campaign-card.theme-cat-health .bento-cat-tag {
+  background: rgba(2, 132, 199, 0.2);
+  color: #7DD3FC;
+  border-color: rgba(2, 132, 199, 0.4);
 }
 body.dark-mode .simplified-campaign-card.theme-cat-care.tier-later,
 body.dark-mode .simplified-campaign-card.theme-skincare.tier-later,
