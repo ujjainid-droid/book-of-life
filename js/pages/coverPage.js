@@ -172,22 +172,30 @@ function renderDailySheet() {
     ? ZLOG_RATINGS[todayZLog.rating]
     : null;
 
-  // Ensure default sample goals from mockup exist if no day goals logged yet
-  let displayGoals = dateDayGoals;
-  if (!displayGoals || displayGoals.length === 0) {
-    const mockupDefaults = [
-      'Morning Mobility',
-      'Stretch Session',
-      'Post-Dinner Walk',
-      'Take Breaks',
-      'Stand and Stretch',
-      'Desk Stand Offs'
-    ];
-    mockupDefaults.forEach(t => {
-      storage.addDayGoal(t, activeTrackingDate);
+  // Default mockup intention goals from Option A sample
+  const MOCKUP_INTENTION_MOVES = [
+    'Morning Mobility',
+    'Stretch Session',
+    'Post-Dinner Walk',
+    'Take Breaks',
+    'Stand and Stretch',
+    'Desk Stand Offs'
+  ];
+
+  let storedGoals = storage.getDayGoals(activeTrackingDate) || [];
+  if (storedGoals.length === 0) {
+    MOCKUP_INTENTION_MOVES.forEach(t => storage.addDayGoal(t, activeTrackingDate));
+    storedGoals = storage.getDayGoals(activeTrackingDate);
+  } else if (storedGoals.length < 6) {
+    const existingTexts = new Set(storedGoals.map(g => (g.text || '').toLowerCase().trim()));
+    MOCKUP_INTENTION_MOVES.forEach(t => {
+      if (!existingTexts.has(t.toLowerCase().trim()) && storedGoals.length < 6) {
+        storage.addDayGoal(t, activeTrackingDate);
+        storedGoals = storage.getDayGoals(activeTrackingDate);
+      }
     });
-    displayGoals = storage.getDayGoals(activeTrackingDate);
   }
+  const displayGoals = storedGoals;
 
   const CHOICE_CHIPS = [
     { label: 'Hydrated', type: 'good' },
@@ -248,12 +256,7 @@ function renderDailySheet() {
           <div class="anchors-col">
             <!-- Move Anchor -->
             <div class="anchor-track-group">
-              <div class="anchor-label-row">
-                <span class="anchor-label">Move Anchor</span>
-                <span class="anchor-badge ${moveStage === 0.5 ? 'badge-floor' : (moveStage === 1 ? 'badge-closed' : '')}">
-                  ${moveStage === 0.5 ? '50% Floor Defended' : (moveStage === 1 ? '100% Closed' : 'Off')}
-                </span>
-              </div>
+              <div class="anchor-label">Move Anchor</div>
               <div class="mockup-track-container">
                 <button type="button" class="mockup-seg-btn seg-off ${moveStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">
                   <span>Off</span>
@@ -271,12 +274,7 @@ function renderDailySheet() {
 
             <!-- Stand Ring -->
             <div class="anchor-track-group">
-              <div class="anchor-label-row">
-                <span class="anchor-label">Stand Ring</span>
-                <span class="anchor-badge ${standStage === 0.5 ? 'badge-floor' : (standStage === 1 ? 'badge-closed' : '')}">
-                  ${standStage === 0.5 ? '50% Floor Defended' : (standStage === 1 ? '100% Closed' : 'Off')}
-                </span>
-              </div>
+              <div class="anchor-label">Stand Ring</div>
               <div class="mockup-track-container">
                 <button type="button" class="mockup-seg-btn seg-off ${standStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">
                   <span>Off</span>
@@ -307,10 +305,10 @@ function renderDailySheet() {
               `).join('')}
             </div>
 
-            <!-- Quick Add Form -->
+            <!-- Minimal Inline Add Row -->
             <form class="mockup-goal-add-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'mockup-goal-input')">
-              <input type="text" id="mockup-goal-input" class="mockup-goal-add-input" placeholder="+ Add a new goal or move..." required />
-              <button type="submit" class="mockup-goal-add-btn">+ Add</button>
+              <span class="goal-add-icon">＋</span>
+              <input type="text" id="mockup-goal-input" class="mockup-goal-add-input" placeholder="Add custom move..." required />
             </form>
           </div>
         </div>
