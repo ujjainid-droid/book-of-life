@@ -216,6 +216,9 @@ function renderFinanceWeeklyCadenceBar() {
     dateLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   } catch (e) {}
 
+  const fin = storage.getFinanceData() || {};
+  const lastSyncText = fin.lastSyncDate ? ` &bull; Last sync: ${fin.lastSyncDate}` : '';
+
   return `
     <div class="finance-weekly-cadence-bar ${isDone ? 'completed' : ''}">
       <div class="finance-cadence-left">
@@ -228,7 +231,7 @@ function renderFinanceWeeklyCadenceBar() {
             <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
           </div>
           <div class="finance-cadence-sub">
-            Update cadence: Every Sunday &bull; Non-destructive upsert keeps all historical months intact
+            Update cadence: Every Sunday &bull; Intelligent deduplication ingests only new records${lastSyncText}
           </div>
         </div>
       </div>
@@ -1345,8 +1348,12 @@ function parseAndLoadMonarchCSV(csvText) {
       txMap.set(key, tx);
     });
 
+    let newTxCount = 0;
     allValidTransactions.forEach(tx => {
       const key = tx.id || `${tx.date}_${tx.amount}_${tx.merchant}_${tx.account}`;
+      if (!txMap.has(key)) {
+        newTxCount++;
+      }
       txMap.set(key, tx);
     });
 
@@ -1414,13 +1421,18 @@ function parseAndLoadMonarchCSV(csvText) {
 
     const mergedCategories = Array.from(catMap.values());
 
+    const todayStr = (typeof formatDateIso === 'function')
+      ? formatDateIso(new Date())
+      : new Date().toISOString().split('T')[0];
+
     // 5. Save updated state and mark weekly cadence as complete
     const updatedFin = {
       ...currentFin,
       monthlySummaries: mergedSummaries,
       categoryBaselines: mergedBaselines,
       categories: mergedCategories,
-      transactions: mergedTransactions
+      transactions: mergedTransactions,
+      lastSyncDate: todayStr
     };
 
     storage.saveFinanceData(updatedFin);
@@ -1440,7 +1452,12 @@ function parseAndLoadMonarchCSV(csvText) {
       } catch (e) {}
     }
 
-    const toastMsg = `Merged ${allValidTransactions.length} transactions across ${mergedSummaries.length} months without overwriting past history! ✨`;
+    let toastMsg = '';
+    if (newTxCount > 0) {
+      toastMsg = `Added ${newTxCount} new transaction${newTxCount === 1 ? '' : 's'}! (${existingTxs.length} historical verified without duplicates) ✨`;
+    } else {
+      toastMsg = `All transactions up to date! (0 new transactions found across ${allValidTransactions.length} records) ✨`;
+    }
     if (typeof showToast === 'function') {
       showToast(toastMsg, 'success');
     } else {
