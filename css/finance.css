@@ -908,8 +908,104 @@
 }
 
 /* --------------------------------------------------------------------------
-   Outlier Anomaly Cards (vs. 3-Month Rolling Baseline)
+   Outlier Anomaly Cards (vs. 3-Month Rolling Baseline) & Filter Pills
    -------------------------------------------------------------------------- */
+.finance-outlier-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.finance-outlier-filter-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.finance-outlier-filter-btn.all {
+  border-color: var(--border-color, #E2E8F0);
+  color: var(--text-secondary);
+}
+
+.finance-outlier-filter-btn.all.active {
+  background: var(--fin-violet, #7C3AED);
+  color: #FFFFFF;
+  border-color: var(--fin-violet, #7C3AED);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+}
+
+.finance-outlier-filter-btn.spike {
+  background: rgba(225, 29, 72, 0.06);
+  color: #BE123C;
+  border-color: rgba(225, 29, 72, 0.25);
+}
+
+.finance-outlier-filter-btn.spike.active {
+  background: #E11D48;
+  color: #FFFFFF;
+  border-color: #E11D48;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.3);
+}
+
+.finance-outlier-filter-btn.baseline {
+  background: rgba(13, 148, 136, 0.06);
+  color: #0F766E;
+  border-color: rgba(13, 148, 136, 0.25);
+}
+
+.finance-outlier-filter-btn.baseline.active {
+  background: #0D9488;
+  color: #FFFFFF;
+  border-color: #0D9488;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+}
+
+.finance-outlier-filter-btn.reduced {
+  background: rgba(124, 58, 237, 0.06);
+  color: #6D28D9;
+  border-color: rgba(124, 58, 237, 0.25);
+}
+
+.finance-outlier-filter-btn.reduced.active {
+  background: #7C3AED;
+  color: #FFFFFF;
+  border-color: #7C3AED;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+}
+
+[data-theme="dark"] .finance-outlier-filter-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .finance-outlier-filter-btn.spike {
+  background: rgba(225, 29, 72, 0.15);
+  color: #FECACA;
+  border-color: rgba(225, 29, 72, 0.4);
+}
+
+[data-theme="dark"] .finance-outlier-filter-btn.baseline {
+  background: rgba(13, 148, 136, 0.15);
+  color: #A7F3D0;
+  border-color: rgba(13, 148, 136, 0.4);
+}
+
+[data-theme="dark"] .finance-outlier-filter-btn.reduced {
+  background: rgba(124, 58, 237, 0.15);
+  color: #DDD6FE;
+  border-color: rgba(124, 58, 237, 0.4);
+}
+
 .finance-outlier-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));

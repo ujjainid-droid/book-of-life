@@ -141,6 +141,7 @@ function switchFinanceSubTab(subTab) {
 
 let financeActivePeriod = 'this_month'; // 'this_month' | 'last_month' | 'last_qtr' | 'ytd'
 let financeDriversViewMode = 'pillars'; // 'pillars' | 'ribbon'
+let financeOutlierFilter = 'all'; // 'all' | 'spike' | 'baseline' | 'reduced'
 
 function changeFinancePeriod(period) {
   financeActivePeriod = period;
@@ -152,6 +153,12 @@ function changeFinancePeriod(period) {
 function setFinanceDriversView(mode) {
   financeDriversViewMode = mode;
   renderFinanceBurn();
+}
+
+function setFinanceOutlierFilter(filter) {
+  financeOutlierFilter = filter;
+  renderFinanceBurn();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function renderPeriodFilterPills() {
@@ -317,6 +324,10 @@ function renderFinanceBurn() {
   const outlierSpikes = outliers.filter(o => o.status === 'spike');
   const onBaseline = outliers.filter(o => o.status === 'baseline');
   const reducedSpends = outliers.filter(o => o.status === 'reduced');
+  const displayedOutliers = outliers.filter(cat => {
+    if (financeOutlierFilter === 'all') return true;
+    return cat.status === financeOutlierFilter;
+  });
 
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px;">
@@ -620,24 +631,38 @@ function renderFinanceBurn() {
         <div class="finance-section-header">
           <div>
             <h3 class="finance-section-title">
-              <i data-lucide="radar" style="width: 18px; height: 18px; color: #0D9488;"></i>
+              <i data-lucide="compass" style="width: 18px; height: 18px; color: #0D9488;"></i>
               <span>Category Outlier Radar (vs. Rolling Baseline)</span>
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
               Detecting spending anomalies, seasonal spikes, and category deviations for ${periodLabel}
             </span>
           </div>
-          <div style="display: flex; gap: 6px;">
-            <span class="finance-flag-pill danger" style="font-size: 0.7rem;">${outlierSpikes.length} Spikes</span>
-            <span class="finance-flag-pill safe" style="font-size: 0.7rem;">${onBaseline.length} On Baseline</span>
+
+          <!-- Interactive Outlier State Filters -->
+          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+            <button class="finance-outlier-filter-btn all ${financeOutlierFilter === 'all' ? 'active' : ''}" onclick="setFinanceOutlierFilter('all')" title="Show all categories">
+              <span>All (${outliers.length})</span>
+            </button>
+            <button class="finance-outlier-filter-btn spike ${financeOutlierFilter === 'spike' ? 'active' : ''}" onclick="setFinanceOutlierFilter('spike')" title="Filter to spending spikes only">
+              <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'spike' ? '#FFFFFF' : '#E11D48'};"></span>
+              <span>${outlierSpikes.length} Spikes</span>
+            </button>
+            <button class="finance-outlier-filter-btn baseline ${financeOutlierFilter === 'baseline' ? 'active' : ''}" onclick="setFinanceOutlierFilter('baseline')" title="Filter to categories on baseline">
+              <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'baseline' ? '#FFFFFF' : '#0D9488'};"></span>
+              <span>${onBaseline.length} On Baseline</span>
+            </button>
             ${reducedSpends.length > 0 ? `
-              <span class="finance-flag-pill violet" style="font-size: 0.7rem;">${reducedSpends.length} Reduced</span>
+              <button class="finance-outlier-filter-btn reduced ${financeOutlierFilter === 'reduced' ? 'active' : ''}" onclick="setFinanceOutlierFilter('reduced')" title="Filter to reduced spending categories">
+                <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'reduced' ? '#FFFFFF' : '#7C3AED'};"></span>
+                <span>${reducedSpends.length} Reduced</span>
+              </button>
             ` : ''}
           </div>
         </div>
 
         <div class="finance-outlier-grid">
-          ${categoryList.map(cat => {
+          ${displayedOutliers.length > 0 ? displayedOutliers.map(cat => {
             const isSpike = cat.status === 'spike';
             const isReduced = cat.status === 'reduced';
             const cardClass = isSpike ? 'spike' : (isReduced ? 'reduced' : 'baseline');
@@ -680,7 +705,12 @@ function renderFinanceBurn() {
                 </div>
               </div>
             `;
-          }).join('')}
+          }).join('') : `
+            <div style="grid-column: 1 / -1; padding: 32px 20px; text-align: center; color: var(--text-muted); background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: 12px;">
+              <p style="margin: 0 0 10px 0; font-size: 0.88rem; font-weight: 600;">No categories matching "${financeOutlierFilter === 'spike' ? 'Spikes' : (financeOutlierFilter === 'baseline' ? 'On Baseline' : 'Reduced')}" for this period.</p>
+              <button class="btn btn-secondary" onclick="setFinanceOutlierFilter('all')" style="font-size: 0.74rem; padding: 4px 12px;">Show All Categories</button>
+            </div>
+          `}
         </div>
       </div>
 
