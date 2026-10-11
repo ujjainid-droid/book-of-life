@@ -2353,9 +2353,6 @@ class StorageManager {
     this.saveData();
     return fin.transactions;
   }
-    this.saveData();
-    return fin.transactions;
-  }
 
   updateFinanceCategoryBudget(catId, newBudget) {
     const fin = this.getFinanceData();
