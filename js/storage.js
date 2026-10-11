@@ -2252,6 +2252,18 @@ class StorageManager {
     if (!this.data.finance) {
       this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
       this.saveData();
+    } else {
+      // Ensure modern models exist on legacy local data
+      let touched = false;
+      if (!this.data.finance.monthlySummaries && typeof DEFAULT_FINANCE_DATA !== 'undefined' && DEFAULT_FINANCE_DATA.monthlySummaries) {
+        this.data.finance.monthlySummaries = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.monthlySummaries));
+        touched = true;
+      }
+      if (!this.data.finance.categoryBaselines && typeof DEFAULT_FINANCE_DATA !== 'undefined' && DEFAULT_FINANCE_DATA.categoryBaselines) {
+        this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
+        touched = true;
+      }
+      if (touched) this.saveData();
     }
     return this.data.finance;
   }
@@ -2260,6 +2272,19 @@ class StorageManager {
     this.data.finance = data;
     this.saveData();
     return this.data.finance;
+  }
+
+  saveMonthlyCashFlowSummary(summary) {
+    const fin = this.getFinanceData();
+    if (!Array.isArray(fin.monthlySummaries)) fin.monthlySummaries = [];
+    const idx = fin.monthlySummaries.findIndex(m => m.month === summary.month);
+    if (idx !== -1) {
+      fin.monthlySummaries[idx] = Object.assign(fin.monthlySummaries[idx], summary);
+    } else {
+      fin.monthlySummaries.unshift(summary);
+    }
+    this.saveData();
+    return fin.monthlySummaries;
   }
 
   saveMonarchTransactions(transactions) {
@@ -2280,6 +2305,14 @@ class StorageManager {
       }
     }
     return null;
+  }
+
+  updateFinanceCategoryBaseline(catName, newBaseline) {
+    const fin = this.getFinanceData();
+    if (!fin.categoryBaselines) fin.categoryBaselines = {};
+    fin.categoryBaselines[catName] = parseFloat(newBaseline) || 0;
+    this.saveData();
+    return fin.categoryBaselines;
   }
 
   addFinanceSubscription(sub) {

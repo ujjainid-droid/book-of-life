@@ -3,19 +3,59 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  monthlyTarget: 9500, // Monthly burn target in dollars
-  alertSpendRatio: 0.85, // Flag category when >85% spent early in month
+  monthlyTarget: 9500, // Historical reference target
+  alertSpendRatio: 0.85,
+  // 3-Month Rolling Category Baselines (for anomaly & outlier detection)
+  categoryBaselines: {
+    'Housing & Rent / Mortgage': 3200,
+    'Dining Out & Takeout': 1250,
+    'Specialist Therapy & Meds': 1400,
+    'Groceries & Nutrition': 1200,
+    'Shopping & Discretionary': 550,
+    'Z Activities & Enrichment': 600,
+    'Personal Wellness & Care': 500,
+    'Auto, Gas & Commute': 450,
+    'Utilities & Telecom': 350,
+    'Software & Recurring Subs': 300
+  },
+  // Monthly Cash Flow Summaries (Income Inflow vs Spend Outflow & Net Savings)
+  monthlySummaries: [
+    {
+      month: '2026-10',
+      income: 14250.00,
+      outflow: 10410.00,
+      notes: 'Bonus split + regular salary. Dining and shopping ran higher than baseline.'
+    },
+    {
+      month: '2026-09',
+      income: 13500.00,
+      outflow: 9650.00,
+      notes: 'Disciplined cadence, healthy +$3,850 surplus swept to HYSA.'
+    },
+    {
+      month: '2026-08',
+      income: 13500.00,
+      outflow: 10180.00,
+      notes: 'Late summer family travel and back-to-school enrichment.'
+    },
+    {
+      month: '2026-07',
+      income: 13500.00,
+      outflow: 9790.00,
+      notes: 'Steady baseline burn, solid +$3,710 savings rate.'
+    }
+  ],
   categories: [
-    { id: 'cat-housing', name: 'Housing & Rent / Mortgage', budget: 3200, icon: 'home', alertThreshold: 100 },
-    { id: 'cat-groceries', name: 'Groceries & Nutrition', budget: 1200, icon: 'shopping-cart', alertThreshold: 100 },
-    { id: 'cat-dining', name: 'Dining Out & Takeout', budget: 800, icon: 'utensils', alertThreshold: 85 },
-    { id: 'cat-therapy-meds', name: 'Specialist Therapy & Meds', budget: 1400, icon: 'heart-pulse', alertThreshold: 100 },
-    { id: 'cat-school-activities', name: 'Z Activities & Enrichment', budget: 600, icon: 'book-open', alertThreshold: 100 },
-    { id: 'cat-shopping', name: 'Shopping & Discretionary', budget: 700, icon: 'shopping-bag', alertThreshold: 85 },
-    { id: 'cat-transport', name: 'Auto, Gas & Commute', budget: 450, icon: 'car', alertThreshold: 100 },
-    { id: 'cat-utilities', name: 'Utilities & Telecom', budget: 350, icon: 'zap', alertThreshold: 100 },
-    { id: 'cat-subscriptions', name: 'Software & Recurring Subs', budget: 300, icon: 'repeat', alertThreshold: 100 },
-    { id: 'cat-wellness', name: 'Personal Wellness & Care', budget: 500, icon: 'sparkles', alertThreshold: 100 }
+    { id: 'cat-housing', name: 'Housing & Rent / Mortgage', budget: 3200, baseline: 3200, classification: 'Fixed Baseline', icon: 'home' },
+    { id: 'cat-dining', name: 'Dining Out & Takeout', budget: 1250, baseline: 1250, classification: 'Discretionary', icon: 'utensils' },
+    { id: 'cat-therapy-meds', name: 'Specialist Therapy & Meds', budget: 1400, baseline: 1400, classification: 'Healthcare', icon: 'heart-pulse' },
+    { id: 'cat-groceries', name: 'Groceries & Nutrition', budget: 1200, baseline: 1200, classification: 'Essential', icon: 'shopping-cart' },
+    { id: 'cat-shopping', name: 'Shopping & Discretionary', budget: 550, baseline: 550, classification: 'Discretionary', icon: 'shopping-bag' },
+    { id: 'cat-school-activities', name: 'Z Activities & Enrichment', budget: 600, baseline: 600, classification: 'Enrichment', icon: 'book-open' },
+    { id: 'cat-wellness', name: 'Personal Wellness & Care', budget: 500, baseline: 500, classification: 'Self Care', icon: 'sparkles' },
+    { id: 'cat-transport', name: 'Auto, Gas & Commute', budget: 450, baseline: 450, classification: 'Essential', icon: 'car' },
+    { id: 'cat-utilities', name: 'Utilities & Telecom', budget: 350, baseline: 350, classification: 'Fixed Baseline', icon: 'zap' },
+    { id: 'cat-subscriptions', name: 'Software & Recurring Subs', budget: 300, baseline: 300, classification: 'Recurring', icon: 'repeat' }
   ],
   subscriptions: [
     { id: 'sub-1', name: 'Monarch Money', cost: 14.99, cadence: 'monthly', category: 'Finance', nextRenewal: '2026-10-15', status: 'active', autoRenew: true, notes: 'Primary budget & net worth engine' },
@@ -35,25 +75,31 @@ const DEFAULT_FINANCE_DATA = {
   ],
   transactions: [
     { id: 'tx-m-1', date: '2026-10-01', merchant: 'Mortgage / Rent Payment', category: 'Housing & Rent / Mortgage', amount: 3200.00, account: 'Chase Checking', tags: 'Fixed' },
-    { id: 'tx-m-2', date: '2026-10-01', merchant: 'Whole Foods Market', category: 'Groceries & Nutrition', amount: 248.65, account: 'Amex Gold', tags: 'Groceries' },
+    { id: 'tx-m-2', date: '2026-10-01', merchant: 'Whole Foods Market', category: 'Groceries & Nutrition', amount: 312.45, account: 'Amex Gold', tags: 'Groceries' },
     { id: 'tx-m-3', date: '2026-10-02', merchant: 'Equinox Sports Club', category: 'Personal Wellness & Care', amount: 280.00, account: 'Chase Sapphire', tags: 'Subscription' },
-    { id: 'tx-m-4', date: '2026-10-02', merchant: 'Dr. Barness Child Psych', category: 'Specialist Therapy & Meds', amount: 300.00, account: 'Chase Checking', tags: 'Superbill' },
-    { id: 'tx-m-5', date: '2026-10-02', merchant: 'Trader Joe\'s Store #412', category: 'Groceries & Nutrition', amount: 112.40, account: 'Amex Gold', tags: 'Groceries' },
-    { id: 'tx-m-6', date: '2026-10-02', merchant: 'Nobu Downtown Dinner', category: 'Dining Out & Takeout', amount: 365.50, account: 'Amex Gold', tags: 'High-Spend, Dining' },
+    { id: 'tx-m-4', date: '2026-10-02', merchant: 'Dr. Barness Child Psych', category: 'Specialist Therapy & Meds', amount: 450.00, account: 'Chase Checking', tags: 'Superbill' },
+    { id: 'tx-m-5', date: '2026-10-02', merchant: 'Trader Joe\'s Store #412', category: 'Groceries & Nutrition', amount: 168.20, account: 'Amex Gold', tags: 'Groceries' },
+    { id: 'tx-m-6', date: '2026-10-02', merchant: 'Nobu Downtown Dinner', category: 'Dining Out & Takeout', amount: 485.50, account: 'Amex Gold', tags: 'High-Spend, Dining' },
     { id: 'tx-m-7', date: '2026-10-03', merchant: 'Nordstrom - Fall Outerwear', category: 'Shopping & Discretionary', amount: 620.00, account: 'Chase Sapphire', tags: 'High-Spend, Discretionary' },
-    { id: 'tx-m-8', date: '2026-10-03', merchant: 'Sweetgreen Salad', category: 'Dining Out & Takeout', amount: 38.20, account: 'Apple Pay', tags: 'Lunch' },
-    { id: 'tx-m-9', date: '2026-10-03', merchant: 'Blue Bottle Coffee', category: 'Dining Out & Takeout', amount: 18.50, account: 'Apple Pay', tags: 'Coffee' },
-    { id: 'tx-m-10', date: '2026-10-03', merchant: 'Amazon - Sensory Compression Vest', category: 'Specialist Therapy & Meds', amount: 89.90, account: 'Chase Sapphire', tags: 'Z Care' }
+    { id: 'tx-m-8', date: '2026-10-03', merchant: 'Gramercy Tavern Dinner', category: 'Dining Out & Takeout', amount: 345.00, account: 'Amex Gold', tags: 'High-Spend, Dining' },
+    { id: 'tx-m-9', date: '2026-10-04', merchant: 'Sweetgreen & Lunches', category: 'Dining Out & Takeout', amount: 142.80, account: 'Apple Pay', tags: 'Lunch' },
+    { id: 'tx-m-10', date: '2026-10-05', merchant: 'Specialist Speech Therapy', category: 'Specialist Therapy & Meds', amount: 600.00, account: 'Chase Checking', tags: 'Superbill' },
+    { id: 'tx-m-11', date: '2026-10-05', merchant: 'Kumon & Chess Enrichment', category: 'Z Activities & Enrichment', amount: 420.00, account: 'Chase Checking', tags: 'Enrichment' },
+    { id: 'tx-m-12', date: '2026-10-06', merchant: 'ConEd Power & Gas', category: 'Utilities & Telecom', amount: 285.00, account: 'Chase Checking', tags: 'Utilities' },
+    { id: 'tx-m-13', date: '2026-10-07', merchant: 'Bespoke Facial & Grooming', category: 'Personal Wellness & Care', amount: 220.00, account: 'Chase Sapphire', tags: 'Wellness' },
+    { id: 'tx-m-14', date: '2026-10-08', merchant: 'Uber & MTA Transit', category: 'Auto, Gas & Commute', amount: 185.00, account: 'Amex Gold', tags: 'Transit' },
+    { id: 'tx-m-15', date: '2026-10-09', merchant: 'Osteria Morini Dinner', category: 'Dining Out & Takeout', amount: 280.00, account: 'Amex Gold', tags: 'Dining' }
   ],
   sampleMonarchCsv: `Date,Merchant,Category,Account,Original Statement,Notes,Amount,Tags
+2026-10-01,Paycheck / Salary Deposit,Income,Chase Checking,DIRECT DEP EMPLOYER,Monthly take-home,12250.00,Income
+2026-10-01,Quarterly Performance Bonus,Income,Chase Checking,BONUS WIRE,Q3 performance sweep,2000.00,Income
 2026-10-01,Mortgage / Rent Payment,Housing & Rent / Mortgage,Chase Checking,ACH WITHDRAWAL MORTGAGE,Automatic transfer,-3200.00,Fixed
-2026-10-01,Whole Foods Market,Groceries & Nutrition,Amex Gold,WHOLEFDS MKT 10291,Weekly organic stock,-248.65,Groceries
+2026-10-01,Whole Foods Market,Groceries & Nutrition,Amex Gold,WHOLEFDS MKT 10291,Weekly organic stock,-312.45,Groceries
 2026-10-02,Equinox Sports Club,Personal Wellness & Care,Chase Sapphire,EQUINOX FITNESS CLUB,Monthly dues,-280.00,Subscription
-2026-10-02,Dr. Barness Child Psych,Specialist Therapy & Meds,Chase Checking,CHECK #1042 BARNESS,Psychiatry consult,-300.00,Superbill
-2026-10-02,Trader Joe's #412,Groceries & Nutrition,Amex Gold,TRADER JOE'S #412,Pantry restocking,-112.40,Groceries
-2026-10-02,Nobu Downtown Dinner,Dining Out & Takeout,Amex Gold,NOBU RESTAURANT NYC,Celebratory dinner,-365.50,High-Spend
+2026-10-02,Dr. Barness Child Psych,Specialist Therapy & Meds,Chase Checking,CHECK #1042 BARNESS,Psychiatry consult,-450.00,Superbill
+2026-10-02,Nobu Downtown Dinner,Dining Out & Takeout,Amex Gold,NOBU RESTAURANT NYC,Celebratory dinner,-485.50,High-Spend
 2026-10-03,Nordstrom Outerwear,Shopping & Discretionary,Chase Sapphire,NORDSTROM 0382,Fall capsule,-620.00,Discretionary
-2026-10-03,Sweetgreen,Dining Out & Takeout,Apple Pay,SWEETGREEN #12,Lunch bowl,-38.20,Food
-2026-10-03,Blue Bottle Coffee,Dining Out & Takeout,Apple Pay,BLUE BOTTLE COFFEE,Morning drip,-18.50,Coffee
-2026-10-03,Amazon,Specialist Therapy & Meds,Chase Sapphire,AMZN Mktp US,Sensory compression vest,-89.90,Z Care`
+2026-10-03,Gramercy Tavern,Dining Out & Takeout,Amex Gold,GRAMERCY TAVERN,Weekend dinner,-345.00,High-Spend
+2026-10-05,Specialist Speech Therapy,Specialist Therapy & Meds,Chase Checking,CHECK #1043 SPEECH,Therapy,-600.00,Superbill
+2026-10-05,Kumon & Chess,Z Activities & Enrichment,Chase Checking,ACH KUMON,Enrichment,-420.00,Enrichment`
 };

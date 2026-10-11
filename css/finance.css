@@ -3,29 +3,37 @@
    ========================================================================== */
 
 :root {
-  --fin-primary: #059669;
-  --fin-primary-hover: #047857;
-  --fin-primary-light: #ECFDF5;
-  --fin-primary-border: #A7F3D0;
-  --fin-danger: #EF4444;
-  --fin-danger-bg: #FEF2F2;
-  --fin-danger-border: #FECACA;
-  --fin-warning: #D97706;
-  --fin-warning-bg: #FFFBEB;
-  --fin-warning-border: #FDE68A;
+  --fin-primary: #0D9488; /* Nordic Sea Glass Teal */
+  --fin-primary-hover: #0F766E;
+  --fin-primary-light: rgba(13, 148, 136, 0.08);
+  --fin-primary-border: rgba(13, 148, 136, 0.25);
+  --fin-violet: #7C3AED;
+  --fin-violet-hover: #6D28D9;
+  --fin-violet-light: #F5F3FF;
+  --fin-violet-border: rgba(124, 58, 237, 0.22);
+  --fin-danger: #E11D48; /* Cool Rose */
+  --fin-danger-bg: #FFF1F2;
+  --fin-danger-border: #FECDD3;
+  --fin-neutral: #475569;
+  --fin-neutral-bg: #F8FAFC;
+  --fin-neutral-border: #E2E8F0;
 }
 
 [data-theme="dark"] {
-  --fin-primary: #10B981;
-  --fin-primary-hover: #34D399;
-  --fin-primary-light: rgba(16, 185, 129, 0.15);
-  --fin-primary-border: rgba(16, 185, 129, 0.3);
-  --fin-danger: #F87171;
-  --fin-danger-bg: rgba(239, 68, 68, 0.15);
-  --fin-danger-border: rgba(239, 68, 68, 0.3);
-  --fin-warning: #FBBF24;
-  --fin-warning-bg: rgba(217, 119, 6, 0.15);
-  --fin-warning-border: rgba(217, 119, 6, 0.3);
+  --fin-primary: #14B8A6;
+  --fin-primary-hover: #2DD4BF;
+  --fin-primary-light: rgba(20, 184, 166, 0.15);
+  --fin-primary-border: rgba(20, 184, 166, 0.3);
+  --fin-violet: #8B5CF6;
+  --fin-violet-hover: #A78BFA;
+  --fin-violet-light: rgba(139, 92, 246, 0.15);
+  --fin-violet-border: rgba(139, 92, 246, 0.3);
+  --fin-danger: #F43F5E;
+  --fin-danger-bg: rgba(244, 63, 94, 0.15);
+  --fin-danger-border: rgba(244, 63, 94, 0.3);
+  --fin-neutral: #94A3B8;
+  --fin-neutral-bg: rgba(148, 163, 184, 0.1);
+  --fin-neutral-border: rgba(255, 255, 255, 0.1);
 }
 
 .finance-page-container {
@@ -239,20 +247,31 @@
   border-color: rgba(239, 68, 68, 0.4);
 }
 
-.finance-flag-pill.warning {
-  background: var(--fin-warning-bg);
-  color: #92400E;
-  border: 1px solid var(--fin-warning-border);
+.finance-flag-pill.violet {
+  background: var(--fin-violet-light);
+  color: #6D28D9;
+  border: 1px solid var(--fin-violet-border);
 }
 
-[data-theme="dark"] .finance-flag-pill.warning {
-  background: rgba(180, 83, 9, 0.3);
-  color: #FDE68A;
+[data-theme="dark"] .finance-flag-pill.violet {
+  background: rgba(124, 58, 237, 0.25);
+  color: #C4B5FD;
+}
+
+.finance-flag-pill.neutral {
+  background: var(--fin-neutral-bg);
+  color: var(--fin-neutral);
+  border: 1px solid var(--fin-neutral-border);
+}
+
+[data-theme="dark"] .finance-flag-pill.neutral {
+  background: rgba(148, 163, 184, 0.15);
+  color: #CBD5E1;
 }
 
 .finance-flag-pill.safe {
   background: var(--fin-primary-light);
-  color: #065F46;
+  color: #0F766E;
   border: 1px solid var(--fin-primary-border);
 }
 
@@ -530,15 +549,20 @@
 }
 
 .finance-sub-card.under-review {
-  border-color: var(--fin-warning);
-  background: var(--fin-warning-bg);
+  border-color: var(--fin-violet-border);
+  background: var(--fin-violet-light);
+}
+
+[data-theme="dark"] .finance-sub-card.under-review {
+  background: rgba(124, 58, 237, 0.12);
+  border-color: rgba(124, 58, 237, 0.3);
 }
 
 /* --------------------------------------------------------------------------
    Runway & Accounts Sub-view
    -------------------------------------------------------------------------- */
 .finance-runway-hero {
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.12) 0%, rgba(13, 148, 136, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.12) 0%, rgba(124, 58, 237, 0.05) 100%);
   border: 1px solid var(--fin-primary-border);
   border-radius: var(--radius-lg, 14px);
   padding: 22px 24px;
@@ -566,7 +590,7 @@
   font-size: 0.78rem;
   font-weight: 700;
   background: var(--fin-primary-light);
-  color: #065F46;
+  color: #0F766E;
 }
 
 .finance-accounts-grid {
@@ -588,4 +612,309 @@
 [data-theme="dark"] .finance-acc-card {
   background: var(--bg-surface, #1E293B);
   border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   Export All CSV Pill Button
+   -------------------------------------------------------------------------- */
+.finance-export-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--fin-primary-border);
+  color: var(--fin-primary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.finance-export-pill:hover {
+  background: var(--fin-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.15);
+}
+
+[data-theme="dark"] .finance-export-pill {
+  background: var(--bg-surface, #1E293B);
+  color: var(--fin-primary);
+  border-color: var(--fin-primary-border);
+}
+
+/* --------------------------------------------------------------------------
+   Page 1: Cash Flow Split Hero & Month Selector
+   -------------------------------------------------------------------------- */
+.finance-flow-hero {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.06) 0%, rgba(124, 58, 237, 0.04) 100%);
+  border: 1px solid var(--fin-primary-border);
+  border-radius: var(--radius-lg, 14px);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.finance-flow-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.finance-month-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .finance-month-selector {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.finance-month-select-input {
+  border: none;
+  background: transparent;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+  outline: none;
+}
+
+.finance-flow-split-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.finance-flow-col {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-md, 12px);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  transition: transform 0.15s ease;
+}
+
+[data-theme="dark"] .finance-flow-col {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.finance-flow-col.surplus-highlight {
+  border-color: var(--fin-primary-border);
+  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.08);
+}
+
+.finance-flow-col.deficit-highlight {
+  border-color: var(--fin-danger-border);
+  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.08);
+}
+
+.finance-flow-badge-pos {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--fin-primary-light);
+  color: #0F766E;
+  border: 1px solid var(--fin-primary-border);
+}
+
+.finance-flow-badge-neg {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--fin-danger-bg);
+  color: #9F1239;
+  border: 1px solid var(--fin-danger-border);
+}
+
+/* --------------------------------------------------------------------------
+   Pareto 80/20 Visual Proportion Bar
+   -------------------------------------------------------------------------- */
+.finance-pareto-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.finance-pareto-bar {
+  display: flex;
+  height: 14px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.04);
+  gap: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .finance-pareto-bar {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.finance-pareto-segment {
+  height: 100%;
+  transition: width 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.finance-pareto-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.finance-pareto-item {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-md, 10px);
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+[data-theme="dark"] .finance-pareto-item {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.finance-pareto-rank {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--bg-surface, #F1F5F9);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .finance-pareto-rank {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   Outlier Anomaly Cards (vs. 3-Month Rolling Baseline)
+   -------------------------------------------------------------------------- */
+.finance-outlier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 12px;
+}
+
+.finance-outlier-card {
+  border-radius: var(--radius-md, 12px);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .finance-outlier-card {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.finance-outlier-card.spike {
+  border-color: var(--fin-danger-border);
+  background: var(--fin-danger-bg);
+}
+
+[data-theme="dark"] .finance-outlier-card.spike {
+  background: rgba(225, 29, 72, 0.12);
+  border-color: rgba(225, 29, 72, 0.3);
+}
+
+.finance-outlier-card.baseline {
+  border-color: var(--fin-primary-border);
+  background: var(--fin-primary-light);
+}
+
+[data-theme="dark"] .finance-outlier-card.baseline {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.25);
+}
+
+.finance-outlier-card.reduced {
+  border-color: var(--fin-violet-border);
+  background: var(--fin-violet-light);
+}
+
+[data-theme="dark"] .finance-outlier-card.reduced {
+  background: rgba(124, 58, 237, 0.1);
+  border-color: rgba(124, 58, 237, 0.25);
+}
+
+/* --------------------------------------------------------------------------
+   Actionable Savings Levers Guide Box
+   -------------------------------------------------------------------------- */
+.finance-levers-box {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.04) 0%, rgba(13, 148, 136, 0.04) 100%);
+  border: 1px solid var(--fin-violet-border);
+  border-radius: var(--radius-lg, 14px);
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.finance-levers-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.finance-lever-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.finance-lever-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
