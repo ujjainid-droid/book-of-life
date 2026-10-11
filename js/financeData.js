@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  seedVersion: 3,
+  seedVersion: 4,
   monthlyTarget: 23500, // Historical reference target
   alertSpendRatio: 0.85,
   // 3-Month Rolling Category Baselines (derived from actual Jul–Sep 2026 Monarch spend)
@@ -168,7 +168,7 @@ const DEFAULT_FINANCE_DATA = {
         "name": "Mocha",
         "budget": 690,
         "baseline": 690.22,
-        "classification": "Family & Pet",
+        "classification": "Fixed Baseline",
         "icon": "paw-print"
     },
     {
@@ -232,7 +232,7 @@ const DEFAULT_FINANCE_DATA = {
         "name": "Subscriptions",
         "budget": 297,
         "baseline": 297.43,
-        "classification": "Recurring",
+        "classification": "Discretionary",
         "icon": "repeat"
     },
     {
@@ -248,7 +248,7 @@ const DEFAULT_FINANCE_DATA = {
         "name": "School stuff + Education",
         "budget": 209,
         "baseline": 209.27,
-        "classification": "Enrichment",
+        "classification": "Fixed Baseline",
         "icon": "graduation-cap"
     },
     {
@@ -256,7 +256,7 @@ const DEFAULT_FINANCE_DATA = {
         "name": "Home Improvement",
         "budget": 158,
         "baseline": 158.77,
-        "classification": "Fixed Baseline",
+        "classification": "Discretionary",
         "icon": "home"
     },
     {

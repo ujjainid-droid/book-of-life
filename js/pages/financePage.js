@@ -271,15 +271,27 @@ function renderFinanceBurn() {
 
   // 1b. Split Pillar Matrix Partition (Fixed Anchors vs. Discretionary Flex)
   const isFixedCategory = (c) => {
-    if (c.name === 'Home maintenance') return false;
-    const fixedClassifications = ['Fixed Baseline', 'Essential', 'Healthcare', 'Recurring'];
+    // Explicit Discretionary
+    if ([
+      'Home maintenance',
+      'Home Improvement',
+      'Subscriptions',
+      'Software & Recurring Subs'
+    ].includes(c.name)) return false;
+
+    // Explicit Fixed
+    if ([
+      'Mocha',
+      'School stuff + Education'
+    ].includes(c.name)) return true;
+
+    const fixedClassifications = ['Fixed Baseline', 'Essential', 'Healthcare'];
     const fixedNames = [
       'Housing & Rent / Mortgage',
       'Groceries & Nutrition',
       'Specialist Therapy & Meds',
       'Auto, Gas & Commute',
-      'Utilities & Telecom',
-      'Software & Recurring Subs'
+      'Utilities & Telecom'
     ];
     return fixedClassifications.includes(c.classification) || fixedNames.includes(c.name);
   };
@@ -1082,7 +1094,7 @@ function parseAndLoadMonarchCSV(csvText) {
       'Eating out': { classification: 'Discretionary', icon: 'utensils' },
       'Gas & Electric': { classification: 'Fixed Baseline', icon: 'zap' },
       'Child Activities': { classification: 'Enrichment', icon: 'book-open' },
-      'Mocha': { classification: 'Family & Pet', icon: 'paw-print' },
+      'Mocha': { classification: 'Fixed Baseline', icon: 'paw-print' },
       'Clothing, Shoes, Jewelry': { classification: 'Discretionary', icon: 'tag' },
       'Transportation': { classification: 'Essential', icon: 'car' },
       'Fitness': { classification: 'Self Care', icon: 'activity' },
@@ -1090,10 +1102,10 @@ function parseAndLoadMonarchCSV(csvText) {
       "C'mas, Bday, India gifts 🎄 🎂 🇮🇳": { classification: 'Discretionary', icon: 'gift' },
       'Camp': { classification: 'Enrichment', icon: 'sun' },
       'Child Care': { classification: 'Fixed Baseline', icon: 'baby' },
-      'Subscriptions': { classification: 'Recurring', icon: 'repeat' },
+      'Subscriptions': { classification: 'Discretionary', icon: 'repeat' },
       'Water': { classification: 'Fixed Baseline', icon: 'droplet' },
-      'School stuff + Education': { classification: 'Enrichment', icon: 'graduation-cap' },
-      'Home Improvement': { classification: 'Fixed Baseline', icon: 'home' },
+      'School stuff + Education': { classification: 'Fixed Baseline', icon: 'graduation-cap' },
+      'Home Improvement': { classification: 'Discretionary', icon: 'home' },
       'Internet & Cable': { classification: 'Fixed Baseline', icon: 'wifi' },
       'Charity': { classification: 'Discretionary', icon: 'heart' },
       'Home Security': { classification: 'Fixed Baseline', icon: 'shield' },
