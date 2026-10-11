@@ -336,10 +336,12 @@ function renderFinanceBurn() {
           
           <!-- Column 1: Income Earned -->
           <div class="finance-flow-col">
-            <span class="finance-kpi-label">
-              <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: #0D9488;"></i>
-              <span>Total Income Inflow</span>
-            </span>
+            <div class="finance-flow-col-header">
+              <span class="finance-kpi-label">
+                <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: #0D9488;"></i>
+                <span>Total Income Inflow</span>
+              </span>
+            </div>
             <span class="finance-kpi-value" style="color: #0F766E;">
               $${periodInflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
@@ -348,10 +350,12 @@ function renderFinanceBurn() {
 
           <!-- Column 2: Total Outflow -->
           <div class="finance-flow-col">
-            <span class="finance-kpi-label">
-              <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; color: #E11D48;"></i>
-              <span>Total Spend Outflow</span>
-            </span>
+            <div class="finance-flow-col-header">
+              <span class="finance-kpi-label">
+                <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; color: #E11D48;"></i>
+                <span>Total Spend Outflow</span>
+              </span>
+            </div>
             <span class="finance-kpi-value" style="color: var(--text-primary);">
               $${periodOutflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
@@ -360,19 +364,19 @@ function renderFinanceBurn() {
 
           <!-- Column 3: Net Cash Flow Surplus / Deficit -->
           <div class="finance-flow-col ${isPositive ? 'surplus-highlight' : 'deficit-highlight'}">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
                 <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? '#0D9488' : '#E11D48'};"></i>
                 <span>Net Cash Flow Delta</span>
               </span>
               ${isPositive ? `
                 <span class="finance-flow-badge-pos">
-                  <i data-lucide="check" style="width: 12px; height: 12px;"></i>
+                  <i data-lucide="check" style="width: 11px; height: 11px;"></i>
                   <span>${savingsRate}% Saved</span>
                 </span>
               ` : `
                 <span class="finance-flow-badge-neg">
-                  <i data-lucide="alert-triangle" style="width: 12px; height: 12px;"></i>
+                  <i data-lucide="alert-triangle" style="width: 11px; height: 11px;"></i>
                   <span>Deficit</span>
                 </span>
               `}
