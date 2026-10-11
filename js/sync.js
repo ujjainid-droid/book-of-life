@@ -421,13 +421,13 @@ class SyncManager {
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
     let mergedCampaigns = incoming.coverCampaigns;
-    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 8);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 8 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 8)) {
+    let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 9);
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 9 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 9)) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
-      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 8)
+      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 9)
         ? storage.data.coverCampaigns
         : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
-      mergedCampVersion = 8;
+      mergedCampVersion = 9;
       localWasRicher = true;
     }
     // Ensure Chin hair is present in later if not already in now or later
@@ -441,6 +441,20 @@ class SyncManager {
         : null;
       if (chinHairDefault) {
         mergedCampaigns.later.push(JSON.parse(JSON.stringify(chinHairDefault)));
+        localWasRicher = true;
+      }
+    }
+    // Ensure Shoes is present in later if not already in now or later
+    const hasShoes = [...(mergedCampaigns.now || []), ...(mergedCampaigns.later || [])].some(c =>
+      c && (c.id === 'camp-shoes' || (c.title || '').toLowerCase().trim() === 'shoes')
+    );
+    if (!hasShoes && Array.isArray(mergedCampaigns.later)) {
+      const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
+      const shoesDefault = defaults && defaults.coverCampaigns && defaults.coverCampaigns.later
+        ? defaults.coverCampaigns.later.find(c => c && c.id === 'camp-shoes')
+        : null;
+      if (shoesDefault) {
+        mergedCampaigns.later.push(JSON.parse(JSON.stringify(shoesDefault)));
         localWasRicher = true;
       }
     }

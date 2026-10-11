@@ -303,6 +303,19 @@ class StorageManager {
             }
           },
           {
+            id: 'camp-shoes',
+            title: 'Shoes',
+            status: 'NS',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Shoes & Footwear' },
+              apple: { noteQuery: '# STYLE 03_SHOES' },
+              google: { folder: 'Shoes & Footwear' },
+              things: { query: 'Shoes Organization' },
+              email: { emailQuery: 'Shoe Orders' }
+            }
+          },
+          {
             id: 'camp-jewelry',
             title: 'Jewelry',
             status: 'NS',
@@ -880,11 +893,11 @@ class StorageManager {
         merged.zlogActiveMeds = (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [];
       }
 
-      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 8 || !Array.isArray(merged.coverCampaigns.now)) {
+      if (!merged.coverCampaigns || !merged.coverCampaignsSeedVersion || merged.coverCampaignsSeedVersion < 9 || !Array.isArray(merged.coverCampaigns.now)) {
         if (!merged.coverCampaigns || !Array.isArray(merged.coverCampaigns.now)) {
           merged.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
         }
-        merged.coverCampaignsSeedVersion = 8;
+        merged.coverCampaignsSeedVersion = 9;
       }
       // Ensure Chin hair is present in later if not already in now or later
       if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns.later)) {
@@ -895,6 +908,18 @@ class StorageManager {
           const chinHairDefault = defaults.coverCampaigns.later.find(c => c && c.id === 'camp-chinhair');
           if (chinHairDefault) {
             merged.coverCampaigns.later.push(JSON.parse(JSON.stringify(chinHairDefault)));
+          }
+        }
+      }
+      // Ensure Shoes is present in later if not already in now or later
+      if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns.later)) {
+        const hasShoes = [...(merged.coverCampaigns.now || []), ...merged.coverCampaigns.later].some(c =>
+          c && (c.id === 'camp-shoes' || (c.title || '').toLowerCase().trim() === 'shoes')
+        );
+        if (!hasShoes) {
+          const shoesDefault = defaults.coverCampaigns.later.find(c => c && c.id === 'camp-shoes');
+          if (shoesDefault) {
+            merged.coverCampaigns.later.push(JSON.parse(JSON.stringify(shoesDefault)));
           }
         }
       }
@@ -2034,11 +2059,11 @@ class StorageManager {
   // --- Cover Page: Unified Life Architecture & Focus Board (Now vs. Later) ---
   getCoverCampaigns() {
     const defaults = this.getDefaultState();
-    if (!this.data.coverCampaigns || !this.data.coverCampaignsSeedVersion || this.data.coverCampaignsSeedVersion < 8) {
+    if (!this.data.coverCampaigns || !this.data.coverCampaignsSeedVersion || this.data.coverCampaignsSeedVersion < 9) {
       if (!this.data.coverCampaigns) {
         this.data.coverCampaigns = JSON.parse(JSON.stringify(defaults.coverCampaigns));
       }
-      this.data.coverCampaignsSeedVersion = 8;
+      this.data.coverCampaignsSeedVersion = 9;
       this.saveData();
     }
     if (!Array.isArray(this.data.coverCampaigns.now)) this.data.coverCampaigns.now = [];
@@ -2052,6 +2077,18 @@ class StorageManager {
       const chinHairDefault = defaults.coverCampaigns.later.find(c => c && c.id === 'camp-chinhair');
       if (chinHairDefault) {
         this.data.coverCampaigns.later.push(JSON.parse(JSON.stringify(chinHairDefault)));
+        this.saveData();
+      }
+    }
+
+    // Ensure Shoes is present in later if not already in now or later
+    const hasShoes = [...this.data.coverCampaigns.now, ...this.data.coverCampaigns.later].some(c =>
+      c && (c.id === 'camp-shoes' || (c.title || '').toLowerCase().trim() === 'shoes')
+    );
+    if (!hasShoes) {
+      const shoesDefault = defaults.coverCampaigns.later.find(c => c && c.id === 'camp-shoes');
+      if (shoesDefault) {
+        this.data.coverCampaigns.later.push(JSON.parse(JSON.stringify(shoesDefault)));
         this.saveData();
       }
     }

@@ -296,6 +296,9 @@ function getCampaignCategoryMeta(camp) {
   if (t.includes('chin')) {
     return { tag: 'CARE', name: 'Aesthetics', theme: 'theme-cat-care', dotColor: '#E11D48' };
   }
+  if (t.includes('shoe')) {
+    return { tag: 'CARE', name: 'Shoes & Style', theme: 'theme-cat-care', dotColor: '#E11D48' };
+  }
   if (t.includes('hair')) {
     return { tag: 'CARE', name: 'Haircare', theme: 'theme-cat-care', dotColor: '#E11D48' };
   }
