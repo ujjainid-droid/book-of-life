@@ -295,7 +295,7 @@ function renderDailySheet() {
 
       <!-- 1. Anchors & Goals Card -->
       <div class="today-section-block">
-        <h2 class="today-section-title">1. Anchors &amp; Goals 🎯</h2>
+        <h2 class="today-section-title">1. Anchors &amp; Goals 🚀</h2>
         
         <div class="today-card today-card-anchors-goals">
           <!-- Left Column: Move Anchor & Stand Ring -->

@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  seedVersion: 2,
+  seedVersion: 3,
   monthlyTarget: 23500, // Historical reference target
   alertSpendRatio: 0.85,
   // 3-Month Rolling Category Baselines (derived from actual Jul–Sep 2026 Monarch spend)
@@ -112,7 +112,7 @@ const DEFAULT_FINANCE_DATA = {
         "name": "Home maintenance",
         "budget": 2195,
         "baseline": 2195.94,
-        "classification": "Fixed Baseline",
+        "classification": "Discretionary",
         "icon": "wrench"
     },
     {

@@ -8,7 +8,7 @@ const ZLOG_RATINGS = {
     label: "Great Day",
     shortLabel: "Great",
     badgeClass: "zlog-rating-5",
-    emoji: "🌟",
+    emoji: "💎",
     colorHex: "#10B981",
     description: "Peak calm, regulated, collaborative & high momentum"
   },

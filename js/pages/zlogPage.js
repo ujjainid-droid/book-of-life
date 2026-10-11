@@ -198,7 +198,7 @@ function renderZLogPage(targetSubTab) {
           <div class="zlog-stat-sub">Historical Days</div>
         </div>
         <div class="zlog-stat-card">
-          <div class="zlog-stat-label">🌟 Good Days</div>
+          <div class="zlog-stat-label">💎 Good Days</div>
           <div class="zlog-stat-val" style="color: #4E8765;">${stats.percentGood}%</div>
           <div class="zlog-stat-sub">${stats.goodDays} rated ≥ 4</div>
         </div>
@@ -208,7 +208,7 @@ function renderZLogPage(targetSubTab) {
           <div class="zlog-stat-sub">Reported events</div>
         </div>
         <div class="zlog-stat-card">
-          <div class="zlog-stat-label">⭐ Average Rating</div>
+          <div class="zlog-stat-label">📈 Average Rating</div>
           <div class="zlog-stat-val" style="color: #2563EB;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
         </div>
@@ -341,7 +341,7 @@ function formatStructuredNotes(rawNotes, entryDate) {
     let dojoBadge = '';
     const dojoMatch = schoolPart.match(/(?:Today\s*I\s*earned\s*|earned\s*)(?:__)?(\d+)(?:__)?\s*Dojo\s*Points/i);
     if (dojoMatch) {
-      dojoBadge = `<span class="zlog-dojo-badge">🏅 ${escapeHtml(dojoMatch[1])} Dojo Points</span>`;
+      dojoBadge = `<span class="zlog-dojo-badge">💎 ${escapeHtml(dojoMatch[1])} Dojo Points</span>`;
     }
 
     // Split school lines by newline or bullet characters
@@ -1150,7 +1150,7 @@ function renderZLogCalendar() {
 
             <select class="zlog-cal-select zlog-cal-filter-select ${zlogCalendarRatingFilter !== 'all' ? 'is-filtered' : ''}" onchange="setZLogCalendarFilter(this.value)" title="Filter by Day Rating">
               <option value="all" ${zlogCalendarRatingFilter === 'all' ? 'selected' : ''}>Filter: All Days (${daysInMonth})</option>
-              <option value="5" ${(zlogCalendarRatingFilter === 5 || zlogCalendarRatingFilter === '5') ? 'selected' : ''}>🌟 Great (5) (${count5})</option>
+              <option value="5" ${(zlogCalendarRatingFilter === 5 || zlogCalendarRatingFilter === '5') ? 'selected' : ''}>💎 Great (5) (${count5})</option>
               <option value="4" ${(zlogCalendarRatingFilter === 4 || zlogCalendarRatingFilter === '4') ? 'selected' : ''}>🟢 Good (4) (${count4})</option>
               <option value="3" ${(zlogCalendarRatingFilter === 3 || zlogCalendarRatingFilter === '3') ? 'selected' : ''}>🌊 Almost Good (3) (${count3})</option>
               <option value="2" ${(zlogCalendarRatingFilter === 2 || zlogCalendarRatingFilter === '2') ? 'selected' : ''}>🟠 Difficult (2) (${count2})</option>
@@ -1202,7 +1202,7 @@ function renderZLogCalendar() {
         <div class="zlog-cal-spectrum-header">
           <span>Day Rating Distribution (${monthLabel})</span>
           <span style="font-family: var(--font-mono); font-size: 0.70rem;">
-            🌟 ${count5} &middot; 🟢 ${count4} &middot; 🟡 ${count3} &middot; 🟠 ${count2} &middot; 🔴 ${count1}
+            💎 ${count5} &middot; 🟢 ${count4} &middot; 🌊 ${count3} &middot; 🟠 ${count2} &middot; 🔴 ${count1}
           </span>
         </div>
         <div class="zlog-cal-spectrum-bar" title="5★: ${count5}d (${pct5}%) | 4★: ${count4}d (${pct4}%) | 3★: ${count3}d (${pct3}%) | 2★: ${count2}d (${pct2}%) | 1★: ${count1}d (${pct1}%) | Unrated: ${countUnrated}d">
@@ -1239,7 +1239,7 @@ function renderZLogCalendar() {
         <div class="zlog-cal-legend-title">Day Rating Levels &amp; Behavioral Key</div>
         <div class="zlog-cal-legend-grid">
           <div class="zlog-cal-legend-item">
-            <span class="zlog-rating-pill level-5">🌟 Level 5</span>
+            <span class="zlog-rating-pill level-5">💎 Level 5</span>
             <div class="zlog-cal-legend-text">
               <strong>Great Day:</strong> <span>Peak calm, collaborative &amp; high momentum</span>
             </div>
@@ -2028,7 +2028,7 @@ const CLINICAL_COCKTAILS = [
       { name: 'Ritalin IR', dose: '25mg (15+10)', type: 'rit' },
       { name: 'Risperdal', dose: '0.125mg', type: 'ris' }
     ],
-    statusTag: '🌟 #1 Peak Behavioral Regulation',
+    statusTag: '💎 #1 Peak Behavioral Regulation',
     border: '#10B981',
     summary: 'Full executive & emotional coverage. Daytime focus boosted with 11 AM school booster; low-dose Risperdal safety floor prevented explosive reactivity.',
     clinicalNote: 'Produced the lowest aggression rate (15%) and highest good days (72%) of the 2-year history.'
@@ -2756,7 +2756,7 @@ function renderZLogInsights() {
                         </div>
                       </div>
                       <div class="zlog-drawer-stat-pill">
-                        <div class="zlog-drawer-stat-pill-label">☀️ Good Days (≥4★)</div>
+                        <div class="zlog-drawer-stat-pill-label">💎 Good Days (≥4★)</div>
                         <div class="zlog-drawer-stat-pill-val" style="color: #059669;">
                           ${c.pctGood}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.goodDays}/${c.total}d)</span>
                         </div>
@@ -2772,7 +2772,7 @@ function renderZLogInsights() {
                       <strong>Clinical Context:</strong> ${c.summary}
                     </div>
                     <div style="font-size: 0.73rem; line-height: 1.4; color: var(--primary); font-weight: 600; margin-top: 4px;">
-                      💡 ${c.clinicalNote}
+                      📋 ${c.clinicalNote}
                     </div>
                   </div>
                 ` : ''}
@@ -3104,7 +3104,7 @@ function buildMonthlyTrendlineSection(entries) {
     '2026-03': { label: "Consistent Floor", note: "Stable 26% aggression rate", tag: "Stable" },
     '2026-04': { label: "Consistent Floor", note: "Stable 27% aggression rate", tag: "Stable" },
     '2026-05': { label: "Consistent Floor", note: "Stable 26% aggression rate; high school momentum", tag: "Stable" },
-    '2026-06': { label: "13% Annual Low", note: "Lowest aggression of the year (only 4 incidents)", tag: "🌟 Annual Low", isBest: true },
+    '2026-06': { label: "13% Annual Low", note: "Lowest aggression of the year (only 4 incidents)", tag: "💎 Annual Low", isBest: true },
     '2026-07': { label: "Travel Transitions", note: "Summer camp & travel schedule friction (35% agg)", tag: "Travel Friction" },
     '2026-08': { label: "Risperdal Weaned", note: "Halved and then stopped Aug 15", tag: "Weaned" },
     '2026-09': { label: "Re-entry Crisis", note: "After-care crisis without med buffer -> restarted 0.25mg", tag: "🔄 Restart 0.25mg", isKey: true }
@@ -3350,7 +3350,7 @@ function buildMonthlyTrendlineSection(entries) {
       <!-- Toggle Button for Full Table -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
         <span style="font-size: 0.70rem; color: var(--text-muted);">
-          💡 <em>Tip: Hover over any bar or node to see exact incident count, good days %, and clinical events.</em>
+          📌 <em>Tip: Hover over any bar or node to see exact incident count, good days %, and clinical events.</em>
         </span>
         <button type="button" class="btn btn-secondary" onclick="toggleMonthlyBreakdownTable()" style="font-size: 0.72rem; padding: 4px 10px;">
           <i data-lucide="chevron-down" id="zlog-toggle-table-icon" style="width: 12px; height: 12px; transition: transform 0.2s;"></i>

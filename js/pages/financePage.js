@@ -271,6 +271,7 @@ function renderFinanceBurn() {
 
   // 1b. Split Pillar Matrix Partition (Fixed Anchors vs. Discretionary Flex)
   const isFixedCategory = (c) => {
+    if (c.name === 'Home maintenance') return false;
     const fixedClassifications = ['Fixed Baseline', 'Essential', 'Healthcare', 'Recurring'];
     const fixedNames = [
       'Housing & Rent / Mortgage',
@@ -1074,7 +1075,7 @@ function parseAndLoadMonarchCSV(csvText) {
     const CATEGORY_MAP = {
       'Mortgage': { classification: 'Fixed Baseline', icon: 'home' },
       'Medical + Dentist': { classification: 'Healthcare', icon: 'heart-pulse' },
-      'Home maintenance': { classification: 'Fixed Baseline', icon: 'wrench' },
+      'Home maintenance': { classification: 'Discretionary', icon: 'wrench' },
       'Shopping': { classification: 'Discretionary', icon: 'shopping-bag' },
       'Groceries': { classification: 'Essential', icon: 'shopping-cart' },
       'Travel & Vacation': { classification: 'Discretionary', icon: 'plane' },

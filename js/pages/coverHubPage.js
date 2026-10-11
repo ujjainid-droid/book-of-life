@@ -43,7 +43,7 @@ function renderCoverHubPage() {
       <!-- Top Floating Mantras Pill (Matching Today's Floating HUD) -->
       <div class="today-floating-hud cover-mantra-hud">
         <div class="mantra-pill mantra-simple" title="Simple: Zero duplicate tracking or cognitive bloat">
-          <span>🎯 simple</span>
+          <span>💫 simple</span>
         </div>
         <div class="hud-divider"></div>
         <div class="mantra-pill mantra-visible" title="Visible: If it isn't front-and-center, it doesn't happen">
@@ -79,7 +79,7 @@ function renderCoverHubPage() {
         <div class="cover-hero-stats">
           <div class="cover-stat-badge">
             <div class="cover-stat-val" style="color: var(--primary, #7C3AED);">${campaignsData.now.length}</div>
-            <div class="cover-stat-label">🎯 Active Focus</div>
+            <div class="cover-stat-label">🔮 Active Focus</div>
           </div>
           <div class="cover-stat-badge">
             <div class="cover-stat-val" style="color: #0D9488;">${campaignsData.later.length}</div>
@@ -110,7 +110,7 @@ function renderCoverHubPage() {
               <span class="tool-role">&bull; Master Notes</span>
             </div>
             <div class="compass-tool-pill tool-pill-things" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
-              <span class="tool-icon"><span class="tool-symbol symbol-things" style="font-size: 0.95rem;">🎯</span></span>
+              <span class="tool-icon"><span class="tool-symbol symbol-things" style="font-size: 0.95rem;">🚀</span></span>
               <span class="tool-name">Things 3</span>
               <span class="tool-role">&bull; Next Strike</span>
             </div>
@@ -712,7 +712,7 @@ function openTopicAuditModal(editId = null) {
         <div class="form-group">
           <label class="form-label">Status</label>
           <select class="form-select" id="audit-form-status">
-            <option value="in_progress" ${statusVal === 'in_progress' ? 'selected' : ''}>🟡 In Progress (Untangling &amp; organizing)</option>
+            <option value="in_progress" ${statusVal === 'in_progress' ? 'selected' : ''}>🔄 In Progress (Untangling &amp; organizing)</option>
             <option value="streamlined" ${statusVal === 'streamlined' ? 'selected' : ''}>✅ Organized (Clear &amp; simplified)</option>
             <option value="disorganized" ${statusVal === 'disorganized' ? 'selected' : ''}>⚠️ Cluttered (Needs cleanup)</option>
           </select>
@@ -875,7 +875,7 @@ function jumpToHaircareCheckpoint() {
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (typeof showToast === 'function') {
-      showToast('☀️ Jumped to Sanctuary for Haircare Checkpoint');
+      showToast('🗓️ Jumped to Sanctuary for Haircare Checkpoint');
     }
   }, 120);
 }

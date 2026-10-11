@@ -437,7 +437,7 @@ function openSettingsModal() {
         </div>
 
         <div class="sync-setup-help">
-          <span class="help-title">💡 1-Minute Firebase Setup (100% Free):</span>
+          <span class="help-title">⚙️ 1-Minute Firebase Setup (100% Free):</span>
           <ol style="margin:6px 0 0 16px;padding:0;font-size:0.76rem;color:var(--text-muted);line-height:1.45;">
             <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color:var(--primary);text-decoration:underline;">console.firebase.google.com</a> (log in with your Google account).</li>
             <li>Click <strong>Create a project</strong> → name it <code>book-of-life</code> → Create.</li>
@@ -684,7 +684,7 @@ function toggleDayGoalAction(goalId, dateStr = formatDateIso(new Date())) {
   const isDone = storage.toggleDayGoal(goalId, dateStr);
   if (isDone) {
     triggerConfetti();
-    showToast('🎯 Goal crushed!');
+    showToast('🚀 Goal crushed!');
   }
   renderDailySheet();
 }

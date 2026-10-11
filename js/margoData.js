@@ -389,7 +389,7 @@ function calculateWeeklyStats(sundayDate, habits = [], habitsState = {}) {
  */
 function generateWeeklySummaryText(stats, reflection = {}) {
   let text = `📅 **Weekly Habit Summary: ${stats.weekRangeLabel}** (Sunday–Saturday)\n\n`;
-  text += `🎯 **Overall Consistency Rate**: ${stats.overallCompletionRate}%\n`;
+  text += `📈 **Overall Consistency Rate**: ${stats.overallCompletionRate}%\n`;
   text += `✨ **Perfect Days (100%)**: ${stats.perfectDaysCount} of 7 days\n`;
   text += `⚡ **Total Check-ins**: ${stats.totalCompletions} / ${stats.totalPossibleSlots}\n\n`;
   
@@ -403,10 +403,10 @@ function generateWeeklySummaryText(stats, reflection = {}) {
   });
 
   if (reflection.wins) {
-    text += `\n🌟 **Weekly Wins**: ${reflection.wins}\n`;
+    text += `\n💎 **Weekly Wins**: ${reflection.wins}\n`;
   }
   if (reflection.focus) {
-    text += `🎯 **Next Week Focus**: ${reflection.focus}\n`;
+    text += `🔮 **Next Week Focus**: ${reflection.focus}\n`;
   }
 
   return text;
@@ -600,7 +600,7 @@ const SASSY_AFFIRMATIONS = [
   { emoji: '👑', text: "The bar was in hell, but look at you walking over it like royalty." },
   { emoji: '☕', text: "One good choice before 10 AM prevents an existential crisis at 3 PM." },
   { emoji: '🦁', text: "Discipline is just remembering what you promised yourself when you had energy." },
-  { emoji: '🎯', text: "You don't need to conquer the next 6 months today. Just conquer today's Move and Stand." },
+  { emoji: '💫', text: "You don't need to conquer the next 6 months today. Just conquer today's Move and Stand." },
   { emoji: '👟', text: "Overthinking burned 0 calories. Put your shoes on and take the first step." },
   { emoji: '🤫', text: "Rumor has it you have your life together today. Let's act like it's totally normal." },
   { emoji: '☕', text: "Your to-do list is trembling in fear. Or maybe that's just your caffeine intake." },
