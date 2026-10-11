@@ -210,7 +210,7 @@ function renderClaimsPage(targetContainer) {
       <!-- 3. Clean Filter Navigation Pills -->
       <div class="claims-filter-bar">
         <button class="claims-filter-pill ${activeClaimsFilter === 'all' ? 'active' : ''}" onclick="setClaimsFilter('all')">
-          All Claims (${counts.all})
+          <span>📋</span> All Claims (${counts.all})
         </button>
         <button class="claims-filter-pill ${activeClaimsFilter === 'self' ? 'active' : ''}" onclick="setClaimsFilter('self')">
           <span>📤</span> I Submit (${counts.self})
@@ -219,10 +219,10 @@ function renderClaimsPage(targetContainer) {
           <span>🏥</span> Provider Submits (${counts.provider})
         </button>
         <button class="claims-filter-pill ${activeClaimsFilter === 'action' ? 'active' : ''}" onclick="setClaimsFilter('action')">
-          <span>⚠️</span> Action Needed (${counts.actionNeeded})
+          <span>🚨</span> Action Needed (${counts.actionNeeded})
         </button>
         <button class="claims-filter-pill ${activeClaimsFilter === 'settled' ? 'active' : ''}" onclick="setClaimsFilter('settled')">
-          <span>✓</span> Reconciled &amp; Paid (${counts.settled})
+          <span>🎉</span> Reconciled &amp; Paid (${counts.settled})
         </button>
       </div>
 

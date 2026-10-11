@@ -198,17 +198,17 @@ function renderZLogPage(targetSubTab) {
           <div class="zlog-stat-sub">Historical Days</div>
         </div>
         <div class="zlog-stat-card">
-          <div class="zlog-stat-label">Good Days</div>
+          <div class="zlog-stat-label">🌟 Good Days</div>
           <div class="zlog-stat-val" style="color: #4E8765;">${stats.percentGood}%</div>
           <div class="zlog-stat-sub">${stats.goodDays} rated ≥ 4</div>
         </div>
         <div class="zlog-stat-card">
-          <div class="zlog-stat-label">Aggression Alert</div>
+          <div class="zlog-stat-label">🚨 Alert Events</div>
           <div class="zlog-stat-val" style="color: ${stats.aggressionDays > 0 ? '#E06D53' : 'var(--text-primary)'};">${stats.aggressionDays}</div>
           <div class="zlog-stat-sub">Reported events</div>
         </div>
         <div class="zlog-stat-card">
-          <div class="zlog-stat-label">Average Rating</div>
+          <div class="zlog-stat-label">⭐ Average Rating</div>
           <div class="zlog-stat-val" style="color: #2563EB;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
         </div>
@@ -218,16 +218,16 @@ function renderZLogPage(targetSubTab) {
       <div class="zlog-subnav-bar">
         <div class="zlog-subnav-pills">
           <button class="zlog-subnav-btn ${activeZLogSubTab === 'timeline' ? 'active' : ''}" onclick="switchZLogSubTab('timeline')">
-            📖 Behavior Timeline
+            🐾 Behavior Timeline
           </button>
           <button class="zlog-subnav-btn ${activeZLogSubTab === 'calendar' ? 'active' : ''}" onclick="switchZLogSubTab('calendar')">
             🗓️ Monthly Calendar
           </button>
           <button class="zlog-subnav-btn ${activeZLogSubTab === 'titration' ? 'active' : ''}" onclick="switchZLogSubTab('titration')">
-            💊 Meds &amp; Protocol
+            🧪 Meds &amp; Protocol
           </button>
           <button class="zlog-subnav-btn ${activeZLogSubTab === 'insights' ? 'active' : ''}" onclick="switchZLogSubTab('insights')">
-            📊 Patterns &amp; Insights
+            🔮 Patterns &amp; Insights
           </button>
         </div>
 

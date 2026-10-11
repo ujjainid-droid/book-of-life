@@ -55,19 +55,19 @@ function renderFinancePage(targetSubTab) {
       <div class="finance-subnav-bar">
         <div class="finance-subnav-pills">
           <button class="finance-subnav-btn ${activeFinanceSubTab === 'burn' ? 'active' : ''}" onclick="switchFinanceSubTab('burn')" title="Cash Flow, Pareto Drivers &amp; Outliers">
-            <span>🔥</span>
+            <span>💸</span>
             <span>Cash Flow &amp; Radar</span>
           </button>
           <button class="finance-subnav-btn ${activeFinanceSubTab === 'subscriptions' ? 'active' : ''}" onclick="switchFinanceSubTab('subscriptions')" title="Recurring Subscriptions &amp; Annual Fee ROI">
-            <span>🔁</span>
+            <span>🎟️</span>
             <span>Subscriptions &amp; Card ROI</span>
           </button>
           <button class="finance-subnav-btn ${activeFinanceSubTab === 'runway' ? 'active' : ''}" onclick="switchFinanceSubTab('runway')" title="Net Worth Horizon &amp; Quarterly Ledger">
-            <span>🏦</span>
+            <span>📈</span>
             <span>Net Worth &amp; Quarterly</span>
           </button>
           <button class="finance-subnav-btn ${activeFinanceSubTab === 'claims' ? 'active' : ''}" onclick="switchFinanceSubTab('claims')" title="Medical Claims &amp; Superbills">
-            <span>🧾</span>
+            <span>🏥</span>
             <span>Medical Claims</span>
             ${claimsStats.actionNeededCount > 0 ? `
               <span class="zlog-ood-badge" style="background: #FEE2E2; color: #991B1B; font-size: 0.68rem; padding: 2px 6px;">

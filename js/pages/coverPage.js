@@ -190,21 +190,21 @@ function renderDailySheet() {
   const displayGoals = cleanedGoals;
 
   const GOOD_CHIPS = [
-    { label: 'Hydrated', type: 'good' },
-    { label: 'Ate Whole Foods', type: 'good' },
-    { label: 'Slept well', type: 'good' },
-    { label: 'Meditated', type: 'good' },
-    { label: 'Walked More', type: 'good' },
-    { label: 'Focus Work', type: 'good' },
-    { label: 'Avoided Sugar', type: 'good' },
-    { label: 'Took Breaks', type: 'good' }
+    { label: '💧 Hydrated', type: 'good' },
+    { label: '🥗 Whole Foods', type: 'good' },
+    { label: '😴 Slept Well', type: 'good' },
+    { label: '🧘‍♀️ Meditated', type: 'good' },
+    { label: '👟 Walked More', type: 'good' },
+    { label: '🧠 Deep Focus', type: 'good' },
+    { label: '🚫 Avoided Sugar', type: 'good' },
+    { label: '☕ Took Breaks', type: 'good' }
   ];
 
   const NOT_GOOD_CHIPS = [
-    { label: 'Ate dessert', type: 'not' },
-    { label: 'Junk food', type: 'not' },
-    { label: 'Skipped meals', type: 'not' },
-    { label: 'Late Screen Time', type: 'not' }
+    { label: '🍰 Ate Dessert', type: 'not' },
+    { label: '🍟 Junk Food', type: 'not' },
+    { label: '🫥 Skipped Meals', type: 'not' },
+    { label: '📱 Doomscrolled', type: 'not' }
   ];
 
   const formattedDateLong = selectedDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -251,7 +251,7 @@ function renderDailySheet() {
       <div class="today-floating-hud">
         <button class="hud-nav-btn" onclick="navigateDate(-1)" title="Previous Day">‹</button>
         <div class="hud-date-pill" onclick="triggerHeaderDatePicker()" style="cursor: pointer;" title="Active Date — Tap to pick a specific date">
-          <span class="hud-cal-icon">📅</span>
+          <span class="hud-cal-icon">🗓️</span>
           <span class="hud-date-text">${formattedDateLong}</span>
         </div>
         <div class="hud-divider"></div>
@@ -288,46 +288,46 @@ function renderDailySheet() {
 
         <div class="roast-actions">
           <button type="button" class="roast-reward-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')" title="${statusInfo.currentTier.reward}">
-            🎁 Treat Yourself
+            🍰 Treat Yourself
           </button>
         </div>
       </div>
 
       <!-- 1. Anchors & Goals Card -->
       <div class="today-section-block">
-        <h2 class="today-section-title">1. Anchors &amp; Goals</h2>
+        <h2 class="today-section-title">1. Anchors &amp; Goals 🎯</h2>
         
         <div class="today-card today-card-anchors-goals">
           <!-- Left Column: Move Anchor & Stand Ring -->
           <div class="anchors-col">
             <!-- Move Anchor -->
             <div class="anchor-track-group">
-              <div class="anchor-label">Move Anchor</div>
+              <div class="anchor-label">🏃‍♀️ Move Anchor</div>
               <div class="mockup-track-container">
                 <button type="button" class="mockup-seg-btn seg-off ${moveStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">
-                  Off
+                  😴 Off
                 </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${moveStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">
-                  50%
+                  🛡️ 50%
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${moveStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">
-                  100%
+                  ⚡ 100%
                 </button>
               </div>
             </div>
 
             <!-- Stand Ring -->
             <div class="anchor-track-group">
-              <div class="anchor-label">Stand Ring</div>
+              <div class="anchor-label">🦩 Stand Ring</div>
               <div class="mockup-track-container">
                 <button type="button" class="mockup-seg-btn seg-off ${standStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">
-                  Off
+                  😴 Off
                 </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${standStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">
-                  50%
+                  🛡️ 50%
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${standStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">
-                  100%
+                  ⚡ 100%
                 </button>
               </div>
             </div>
@@ -339,7 +339,7 @@ function renderDailySheet() {
               ${displayGoals.map(g => `
                 <div class="mockup-goal-item ${g.completed ? 'is-completed' : ''}">
                   <div class="mockup-goal-checkbox" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.completed ? 'Mark pending' : 'Mark done'}">
-                    ${g.completed ? '✓' : ''}
+                    ${g.completed ? '✨' : ''}
                   </div>
                   <span class="mockup-goal-label" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">${escapeHtml(g.text)}</span>
                   <button class="goal-del-btn" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="Delete goal">×</button>
@@ -349,7 +349,7 @@ function renderDailySheet() {
 
             <!-- Minimal Inline Add Row -->
             <form class="mockup-goal-add-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'mockup-goal-input')">
-              <span class="goal-add-icon">＋</span>
+              <span class="goal-add-icon">🪄</span>
               <input type="text" id="mockup-goal-input" class="mockup-goal-add-input" placeholder="Add custom move..." required />
             </form>
           </div>
@@ -360,7 +360,7 @@ function renderDailySheet() {
       <div class="today-row-2">
         <!-- 2. Good Choices -->
         <div class="today-col-left">
-          <h2 class="today-section-title">2. Good Choices</h2>
+          <h2 class="today-section-title">2. Good Choices 🥑</h2>
           <div class="today-card today-card-choices" id="section-good-choices">
             <!-- 1. Top Tally Widgets & Steppers -->
             <div class="choices-tally-header">
@@ -368,7 +368,7 @@ function renderDailySheet() {
                 <!-- Good Choice Counter Card -->
                 <div class="choice-counter-box counter-good">
                   <div class="counter-box-info">
-                    <span class="counter-box-label">Good Choices</span>
+                    <span class="counter-box-label">🥑 Good Choices</span>
                     <span class="counter-box-num">${dateChoices.good || 0}</span>
                   </div>
                   <div class="counter-box-steppers">
@@ -380,7 +380,7 @@ function renderDailySheet() {
                 <!-- Not-so-good Counter Card -->
                 <div class="choice-counter-box counter-not">
                   <div class="counter-box-info">
-                    <span class="counter-box-label">Not-so-good</span>
+                    <span class="counter-box-label">🍩 Not-so-good</span>
                     <span class="counter-box-num">${dateChoices.not || 0}</span>
                   </div>
                   <div class="counter-box-steppers">
@@ -394,7 +394,7 @@ function renderDailySheet() {
               <div class="mockup-choice-ratio-info">
                 <span class="ratio-text">${totalChoices > 0 ? `<strong>${goodRatio}% Good</strong> (${dateChoices.good} vs ${dateChoices.not})` : 'Tap chips or steppers to log daily momentum'}</span>
                 ${totalChoices > 0 ? `
-                  <button class="choice-mini-undo" onclick="resetChoicesAction('${activeTrackingDate}')" title="Reset both counts to 0">↺ Reset</button>
+                  <button class="choice-mini-undo" onclick="resetChoicesAction('${activeTrackingDate}')" title="Reset both counts to 0">🧹 Reset</button>
                 ` : ''}
               </div>
 
@@ -413,7 +413,7 @@ function renderDailySheet() {
                   <span class="ribbon-net-sub">Net</span>
                 </div>
                 <div class="ribbon-title-col">
-                  <div class="ribbon-title-text">Running Momentum</div>
+                  <div class="ribbon-title-text">🚀 Running Momentum</div>
                   <div class="ribbon-ratio-text"><strong>${runningChoices.total > 0 ? runningChoices.ratio : 100}%</strong> Positive Choices</div>
                 </div>
               </div>
@@ -472,7 +472,7 @@ function renderDailySheet() {
         <!-- 3. Evening Check-in & Journal -->
         <div class="today-col-right">
           <div class="today-section-header-row">
-            <h2 class="today-section-title" style="margin-bottom: 0;">3. Evening Check-in &amp; Journal</h2>
+            <h2 class="today-section-title" style="margin-bottom: 0;">3. Evening Check-in &amp; Journal 🌙</h2>
             <div class="journal-tab-pill-switcher">
               <button type="button" class="journal-tab-pill ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
                 ✍️ Today
@@ -503,7 +503,7 @@ function renderDailySheet() {
               </div>
             ` : `
               <!-- TODAY VIEW: Vibrant Vitality & Evening Reflection -->
-              <div class="mockup-subhead" style="color: #7C3AED;">How Healthy Do I Feel?</div>
+              <div class="mockup-subhead" style="color: #7C3AED;">🔋 How Healthy Do I Feel?</div>
               
               <!-- Previous Vitality Level Options: 5 (Thriving) to 1 (Zombie) with custom pastel colors -->
               <div class="health-buttons-grid" style="margin-bottom: 12px;">
@@ -516,7 +516,7 @@ function renderDailySheet() {
                             data-lvl="${lvl}"
                             onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
                             title="${meta.label}: ${meta.desc}">
-                      <span class="health-btn-emoji">${meta.emoji}</span>
+                       <span class="health-btn-emoji">${meta.emoji}</span>
                       <span class="health-btn-label">${meta.label}</span>
                     </button>
                   `;
@@ -534,7 +534,7 @@ function renderDailySheet() {
               ` : ''}
 
               <div class="journal-subhead-row">
-                <div class="mockup-subhead" style="color: #4F46E5; margin-bottom: 0;">How did your day feel?</div>
+                <div class="mockup-subhead" style="color: #4F46E5; margin-bottom: 0;">🔮 How did your day feel?</div>
                 ${allJournals.length > 0 ? `
                   <button type="button" class="journal-view-archive-link" onclick="setSanctuaryJournalTab('archive')">
                     📚 View Archive (${allJournals.length}) →
@@ -556,7 +556,7 @@ function renderDailySheet() {
                     ${journalEntry && journalEntry.text ? `✓ Auto-saved (${journalEntry.wordCount || 0} words)` : 'Auto-saves as you type'}
                   </span>
                   <button type="button" class="mockup-journal-save-btn" onclick="saveMockupJournalAction('${activeTrackingDate}')">
-                    <span>✏️</span>
+                    <span>🪄</span>
                     <span>Save Journal</span>
                   </button>
                 </div>
@@ -566,7 +566,7 @@ function renderDailySheet() {
               <div class="mockup-quick-utilities">
                 <div class="util-badge-item badge-haircare ${isHairCompleted ? 'is-done' : ''}">
                   <button type="button" class="util-badge-btn-main" onclick="toggleMockupHaircare()" title="View Abbey Yung Hair Care Protocol">
-                    <span>🧴</span>
+                    <span>✨💇‍♀️</span>
                     <span>Haircare: <strong>${isHairCompleted ? 'Done ✓' : (isHairSkipped ? 'Skipped' : 'Pending')}</strong></span>
                   </button>
                   <button type="button" class="util-badge-quick-check ${isHairCompleted ? 'checked' : ''}" onclick="toggleHairCareDayAction('${activeTrackingDate}')" title="${isHairCompleted ? 'Mark Pending' : 'Check off routine (+10 XP)'}">
@@ -576,8 +576,8 @@ function renderDailySheet() {
 
                 <div class="util-badge-item badge-zlog">
                   <button type="button" class="util-badge-btn-main" onclick="openZLogEntryModal('${activeTrackingDate}')" title="Z Log Daily Regulation">
-                    <span>🌱</span>
-                    <span>Z Log: <strong>${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Done ✓') : 'Log +10 XP'}</strong></span>
+                    <span>🐾</span>
+                    <span>Z Hub: <strong>${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Done ✓') : 'Log +10 XP'}</strong></span>
                   </button>
                 </div>
               </div>
@@ -1245,7 +1245,7 @@ let hairCalendarCollapsed = true;
 const HAIR_CARE_SCHEDULE_MAP = {
   1: { // Monday
     type: 'regular',
-    badge: '💧 Regular Wash',
+    badge: '🚿 Regular Wash',
     badgeClass: 'badge-regular',
     title: 'Regular Wash Day',
     subtitle: 'Gentle cleansing, strand protection & weightless root lift',
@@ -1260,7 +1260,7 @@ const HAIR_CARE_SCHEDULE_MAP = {
   },
   2: { // Tuesday
     type: 'rest',
-    badge: '🛌 Scalp Rest Day',
+    badge: '💆‍♀️ Scalp Rest Day',
     badgeClass: 'badge-rest',
     title: 'Scalp Rest Day (Off Day)',
     subtitle: 'Zero wash friction — protect fragile strands & camouflage scalp',
@@ -1286,7 +1286,7 @@ const HAIR_CARE_SCHEDULE_MAP = {
   },
   4: { // Thursday
     type: 'rest',
-    badge: '🛌 Scalp Rest Day',
+    badge: '💆‍♀️ Scalp Rest Day',
     badgeClass: 'badge-rest',
     title: 'Scalp Rest Day (Off Day)',
     subtitle: 'Zero wash friction — allow natural scalp sebum balance',
@@ -1298,7 +1298,7 @@ const HAIR_CARE_SCHEDULE_MAP = {
   },
   5: { // Friday
     type: 'clarify',
-    badge: '🌿 Scalp Clarifying Reset',
+    badge: '🫧 Clarifying Reset',
     badgeClass: 'badge-clarify',
     title: 'Scalp Clarifying Reset Wash Day',
     subtitle: 'Dissolving stubborn product buildup, hard water minerals & oils',
@@ -1313,7 +1313,7 @@ const HAIR_CARE_SCHEDULE_MAP = {
   },
   6: { // Saturday
     type: 'rest',
-    badge: '🛌 Scalp Rest Day',
+    badge: '💆‍♀️ Scalp Rest Day',
     badgeClass: 'badge-rest',
     title: 'Scalp Rest Day (Off Day)',
     subtitle: 'Enjoy the lightweight volume from yesterday’s clarifying reset',
@@ -1325,7 +1325,7 @@ const HAIR_CARE_SCHEDULE_MAP = {
   },
   0: { // Sunday
     type: 'regular',
-    badge: '💧 Regular Wash',
+    badge: '🚿 Regular Wash',
     badgeClass: 'badge-regular',
     title: 'Regular Wash Day',
     subtitle: 'Gentle cleansing, strand protection & weightless root lift',

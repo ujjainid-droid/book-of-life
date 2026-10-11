@@ -43,19 +43,19 @@ function renderCoverHubPage() {
       <!-- Top Floating Mantras Pill (Matching Today's Floating HUD) -->
       <div class="today-floating-hud cover-mantra-hud">
         <div class="mantra-pill mantra-simple" title="Simple: Zero duplicate tracking or cognitive bloat">
-          <span>simple</span>
+          <span>🎯 simple</span>
         </div>
         <div class="hud-divider"></div>
         <div class="mantra-pill mantra-visible" title="Visible: If it isn't front-and-center, it doesn't happen">
-          <span>visible</span>
+          <span>👁️ visible</span>
         </div>
         <div class="hud-divider"></div>
         <div class="mantra-pill mantra-next" title="Next step: Every area has exactly one obvious immediate move">
-          <span>next step</span>
+          <span>🐾 next step</span>
         </div>
         <div class="hud-divider"></div>
         <div class="mantra-pill mantra-done" title="Done: Frictionless 1-tap completion without guilt">
-          <span>done</span>
+          <span>🏁 done</span>
         </div>
       </div>
 
@@ -69,7 +69,7 @@ function renderCoverHubPage() {
         </div>
 
         <div class="roast-badge-pill cover-season-pill" onclick="promptEditSeasonFocus()" title="Click to customize seasonal focus theme">
-          <span class="roast-badge-sparkle">✨</span>
+          <span class="roast-badge-sparkle">🧭</span>
           <span class="roast-badge-label">Focus Theme</span>
           <span class="roast-badge-shuffle">✏️</span>
         </div>
@@ -79,43 +79,43 @@ function renderCoverHubPage() {
         <div class="cover-hero-stats">
           <div class="cover-stat-badge">
             <div class="cover-stat-val" style="color: var(--primary, #7C3AED);">${campaignsData.now.length}</div>
-            <div class="cover-stat-label">Active Focus</div>
+            <div class="cover-stat-label">🎯 Active Focus</div>
           </div>
           <div class="cover-stat-badge">
             <div class="cover-stat-val" style="color: #0D9488;">${campaignsData.later.length}</div>
-            <div class="cover-stat-label">On Deck</div>
+            <div class="cover-stat-label">🚀 On Deck</div>
           </div>
           <div class="cover-stat-badge">
             <div class="cover-stat-val" style="color: #64748B;">5</div>
-            <div class="cover-stat-label">Pillars</div>
+            <div class="cover-stat-label">🏛️ Pillars</div>
           </div>
         </div>
       </div>
 
       <!-- 1. System Compass & Tool Roles (Matching Today's Card Structure) -->
       <div class="today-section-block">
-        <h2 class="today-section-title">1. System Compass &amp; Tool Architecture</h2>
+        <h2 class="today-section-title">1. System Compass &amp; Tool Architecture 🧭</h2>
         <div class="today-card cover-compass-card" id="section-architecture-blueprint">
           <div class="compass-strip-tools">
             <div class="compass-tool-pill tool-pill-margo" title="margo: Central command radar &amp; habit momentum engine">
-              <span class="tool-icon"><span class="tool-symbol symbol-m">m</span></span>
+              <span class="tool-icon"><span class="tool-symbol symbol-m">⚡</span></span>
               <span class="tool-name">margo</span>
               <span class="tool-role">&bull; Radar + Habits</span>
             </div>
             <div class="compass-tool-pill tool-pill-notes" title="Apple Notes: Master note repositories &amp; project roadmaps">
               <span class="tool-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
+                <span class="tool-symbol" style="font-size: 1rem;">🍎</span>
               </span>
               <span class="tool-name">Apple Notes</span>
               <span class="tool-role">&bull; Master Notes</span>
             </div>
             <div class="compass-tool-pill tool-pill-things" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
-              <span class="tool-icon"><span class="tool-symbol symbol-things">T3</span></span>
+              <span class="tool-icon"><span class="tool-symbol symbol-things" style="font-size: 0.95rem;">🎯</span></span>
               <span class="tool-name">Things 3</span>
               <span class="tool-role">&bull; Next Strike</span>
             </div>
             <div class="compass-tool-pill tool-pill-drive" title="Google Drive: Digital vault for signed PDFs &amp; official records">
-              <span class="tool-icon"><span class="tool-symbol symbol-google">G</span></span>
+              <span class="tool-icon"><span class="tool-symbol symbol-google" style="font-size: 0.95rem;">🛸</span></span>
               <span class="tool-name">Google Drive</span>
               <span class="tool-role">&bull; Permanent Vault</span>
             </div>

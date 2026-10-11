@@ -502,35 +502,35 @@ const CLAIM_STAGES = {
   need_superbill: {
     id: 'need_superbill',
     label: 'Need Superbill',
-    emoji: '🔴',
+    emoji: '🧾',
     defaultAction: 'Request itemized superbill from provider',
     actor: 'You'
   },
   ready_to_send: {
     id: 'ready_to_send',
     label: 'Send to Included Health',
-    emoji: '🟡',
+    emoji: '📤',
     defaultAction: 'Upload superbill to Included Health app',
     actor: 'You'
   },
   with_included_health: {
     id: 'with_included_health',
     label: 'Pending Insurance',
-    emoji: '🔵',
+    emoji: '⏳',
     defaultAction: 'Waiting on Insurance / EOB review',
     actor: 'Insurance'
   },
   check_due: {
     id: 'check_due',
     label: 'Check / Deposit Due',
-    emoji: '🟢',
+    emoji: '💰',
     defaultAction: 'Watch Monarch for incoming ACH deposit',
     actor: 'Monarch'
   },
   settled: {
     id: 'settled',
     label: 'Settled & Reconciled',
-    emoji: '⚪',
+    emoji: '🎉',
     defaultAction: 'Reconciled in Monarch — All set!',
     actor: 'Done'
   }
@@ -556,35 +556,35 @@ function getDefaultNextAction(stage, payoutMethod = 'direct_deposit', submission
 const HEALTH_LEVELS = {
   5: {
     level: 5,
-    emoji: '💎',
+    emoji: '🦄',
     label: 'Thriving',
     desc: 'Peak vitality, invincible, full energy',
     sassy: "Look at you glowing. Try not to intimidate the mere mortals today."
   },
   4: {
     level: 4,
-    emoji: '🛡️',
+    emoji: '⚡',
     label: 'Solid',
     desc: 'Feeling good, body cooperating, clear head',
     sassy: "Functional and thriving. Let's not ruin this with questionable decisions."
   },
   3: {
     level: 3,
-    emoji: '☕',
+    emoji: '🧋',
     label: 'Surviving',
     desc: 'Baseline okay, fueled by coffee & momentum',
     sassy: "Held together by coffee and sheer willpower, but hey—you're upright."
   },
   2: {
     level: 2,
-    emoji: '🔋',
+    emoji: '🪫',
     label: 'Dragging',
     desc: 'Low battery, sluggish, low-power mode',
     sassy: "Battery at 12%. Postpone unnecessary drama and conserve power."
   },
   1: {
     level: 1,
-    emoji: '🧟',
+    emoji: '🦥',
     label: 'Zombie',
     desc: 'Under the weather, drained, need recovery',
     sassy: "Official goblin mode. Drink water, crawl under blankets, apologize to nobody."
