@@ -1109,7 +1109,6 @@ function parseAndLoadMonarchCSV(csvText) {
       'Internet & Cable': { classification: 'Fixed Baseline', icon: 'wifi' },
       'Charity': { classification: 'Discretionary', icon: 'heart' },
       'Home Security': { classification: 'Fixed Baseline', icon: 'shield' },
-      'Auto Payment': { classification: 'Fixed Baseline', icon: 'car' },
       'Entertainment & Recreation': { classification: 'Discretionary', icon: 'film' }
     };
 
@@ -1125,7 +1124,10 @@ function parseAndLoadMonarchCSV(csvText) {
       rawAmount = rawAmount.replace(/[\$,]/g, '').trim();
       let originalVal = parseFloat(rawAmount) || 0;
       
-      const categoryName = (categoryIdx !== -1 && row[categoryIdx]) ? row[categoryIdx].trim() : 'Discretionary';
+      let categoryName = (categoryIdx !== -1 && row[categoryIdx]) ? row[categoryIdx].trim() : 'Discretionary';
+      if (categoryName.toLowerCase() === 'auto payment') {
+        categoryName = 'Transportation';
+      }
       const catLower = categoryName.toLowerCase();
       const merchantName = (merchantIdx !== -1 && row[merchantIdx]) ? row[merchantIdx].trim() : 'Transaction';
       const accountName = (accountIdx !== -1 && row[accountIdx]) ? row[accountIdx].trim() : 'Account';

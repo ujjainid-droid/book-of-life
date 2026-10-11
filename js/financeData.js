@@ -3,12 +3,11 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  seedVersion: 4,
+  seedVersion: 5,
   monthlyTarget: 23500, // Historical reference target
   alertSpendRatio: 0.85,
   // 3-Month Rolling Category Baselines (derived from actual Jul–Sep 2026 Monarch spend)
   categoryBaselines: {
-    "Auto Payment": 42.0,
     "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3": 404.75,
     "Camp": 379.38,
     "Cash & ATM": 266.94,
@@ -33,7 +32,7 @@ const DEFAULT_FINANCE_DATA = {
     "Self care + Grooming": 480.21,
     "Shopping": 2114.2,
     "Subscriptions": 297.43,
-    "Transportation": 582.27,
+    "Transportation": 624.27,
     "Travel & Vacation": 1870.79,
     "Water": 296.34
 },
@@ -182,8 +181,8 @@ const DEFAULT_FINANCE_DATA = {
     {
         "id": "cat-transportation",
         "name": "Transportation",
-        "budget": 582,
-        "baseline": 582.27,
+        "budget": 624,
+        "baseline": 624.27,
         "classification": "Essential",
         "icon": "car"
     },
@@ -282,14 +281,6 @@ const DEFAULT_FINANCE_DATA = {
         "baseline": 65.36,
         "classification": "Fixed Baseline",
         "icon": "shield"
-    },
-    {
-        "id": "cat-auto-payment",
-        "name": "Auto Payment",
-        "budget": 42,
-        "baseline": 42.0,
-        "classification": "Fixed Baseline",
-        "icon": "car"
     },
     {
         "id": "cat-entertainment",
@@ -491,7 +482,7 @@ const DEFAULT_FINANCE_DATA = {
         "id": "tx-257363950156927032",
         "date": "2026-10-08",
         "merchant": "Harrison Nj Garage Flash",
-        "category": "Auto Payment",
+        "category": "Transportation",
         "account": "U CSP (...8373) due 15th",
         "amount": 18.0,
         "isIncome": false,
@@ -801,7 +792,7 @@ const DEFAULT_FINANCE_DATA = {
         "id": "tx-257363950156927031",
         "date": "2026-10-06",
         "merchant": "Harrison Nj Garage Flash",
-        "category": "Auto Payment",
+        "category": "Transportation",
         "account": "U CSP (...8373) due 15th",
         "amount": 18.0,
         "isIncome": false,
@@ -1311,7 +1302,7 @@ const DEFAULT_FINANCE_DATA = {
         "id": "tx-257363950156927054",
         "date": "2026-09-30",
         "merchant": "Harrison Nj Garage Flash",
-        "category": "Auto Payment",
+        "category": "Transportation",
         "account": "U CSP (...8373) due 15th",
         "amount": 18.0,
         "isIncome": false,
@@ -7271,7 +7262,7 @@ const DEFAULT_FINANCE_DATA = {
         "id": "tx-251139449793564672",
         "date": "2026-08-03",
         "merchant": "AAA",
-        "category": "Auto Payment",
+        "category": "Transportation",
         "account": "Costco Visa 3744 due 17th",
         "amount": 108.0,
         "isIncome": false,
