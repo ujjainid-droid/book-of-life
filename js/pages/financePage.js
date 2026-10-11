@@ -1062,6 +1062,7 @@ function parseAndLoadMonarchCSV(csvText) {
     const categoryIdx = headers.findIndex(h => h.includes('category'));
     const accountIdx = headers.findIndex(h => h.includes('account'));
     const amountIdx = headers.findIndex(h => h.includes('amount'));
+    const memoIdx = headers.findIndex(h => h.includes('statement') || h.includes('memo') || h.includes('notes'));
     const tagsIdx = headers.findIndex(h => h.includes('tag'));
     const idIdx = headers.findIndex(h => h === 'id');
 
@@ -1115,6 +1116,7 @@ function parseAndLoadMonarchCSV(csvText) {
     const monthTotals = {}; // { [YYYY-MM]: { income: 0, outflow: 0, categories: {} } }
     const allValidTransactions = [];
     const categoryFrequency = {};
+    const seenTxSigs = new Set();
 
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
@@ -1134,11 +1136,19 @@ function parseAndLoadMonarchCSV(csvText) {
       const tagsVal = (tagsIdx !== -1 && row[tagsIdx]) ? row[tagsIdx].trim() : '';
       const dateVal = row[dateIdx].trim();
       const txId = (idIdx !== -1 && row[idIdx]) ? row[idIdx].trim() : ('tx-m-' + i);
+      const memoVal = (memoIdx !== -1 && row[memoIdx]) ? row[memoIdx].trim().toLowerCase() : '';
 
       // Skip internal transfers and credit card paydowns
       if (TRANSFER_CATS.includes(catLower) || catLower.includes('transfer') || catLower.includes('credit card payment')) {
         continue;
       }
+
+      // Deduplicate twin linked accounts (e.g. Chase Sapphire 8373 and 9369)
+      const dupSig = `${dateVal}_${Math.round(originalVal * 100)}_${memoVal || merchantName.toLowerCase()}`;
+      if (seenTxSigs.has(dupSig)) {
+        continue;
+      }
+      seenTxSigs.add(dupSig);
 
       const isIncome = INCOME_CATS.includes(catLower) || catLower.includes('paycheck') || catLower.includes('income') || (originalVal > 0 && catLower.includes('dividend'));
 
