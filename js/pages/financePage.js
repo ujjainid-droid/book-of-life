@@ -1011,6 +1011,7 @@ function handleMonarchFileSelected(event) {
   const file = event.target.files && event.target.files[0];
   if (file) {
     processMonarchCSVFile(file);
+    try { event.target.value = ''; } catch(e) {}
   }
 }
 

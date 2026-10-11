@@ -2287,34 +2287,35 @@ class StorageManager {
      Personal Finance Hub Methods
      -------------------------------------------------------------------------- */
   getFinanceData() {
-    if (!this.data.finance) {
-      // Check dedicated resilient backup first
-      try {
-        const backup = localStorage.getItem('BOL_FINANCE_DATA_V2');
-        if (backup) {
-          const parsed = JSON.parse(backup);
-          if (parsed && typeof parsed === 'object') {
-            this.data.finance = parsed;
+    const isLegacy = this.data.finance && (
+      !this.data.finance.seedVersion ||
+      this.data.finance.seedVersion < 2 ||
+      (Array.isArray(this.data.finance.categories) && this.data.finance.categories.some(c => c && c.name === 'Housing & Rent / Mortgage'))
+    );
+
+    if (!this.data.finance || isLegacy) {
+      // Check dedicated resilient backup first if not legacy
+      if (!isLegacy) {
+        try {
+          const backup = localStorage.getItem('BOL_FINANCE_DATA_V2');
+          if (backup) {
+            const parsed = JSON.parse(backup);
+            if (parsed && typeof parsed === 'object' && parsed.seedVersion >= 2) {
+              this.data.finance = parsed;
+              return this.data.finance;
+            }
           }
-        }
-      } catch (e) {}
-    }
-    if (!this.data.finance) {
+        } catch (e) {}
+      }
+
       this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
+      try {
+        localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+      } catch (e) {}
       this.saveData();
-    } else {
-      // Ensure modern models exist on legacy local data
-      let touched = false;
-      if (!this.data.finance.monthlySummaries && typeof DEFAULT_FINANCE_DATA !== 'undefined' && DEFAULT_FINANCE_DATA.monthlySummaries) {
-        this.data.finance.monthlySummaries = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.monthlySummaries));
-        touched = true;
-      }
-      if (!this.data.finance.categoryBaselines && typeof DEFAULT_FINANCE_DATA !== 'undefined' && DEFAULT_FINANCE_DATA.categoryBaselines) {
-        this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
-        touched = true;
-      }
-      if (touched) this.saveData();
+      return this.data.finance;
     }
+
     return this.data.finance;
   }
 
