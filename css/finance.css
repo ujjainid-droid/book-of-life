@@ -665,6 +665,67 @@
   gap: 12px;
 }
 
+.finance-period-capsules {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--bg-surface, #F1F5F9);
+  padding: 3px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #E2E8F0);
+}
+
+[data-theme="dark"] .finance-period-capsules {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.finance-period-btn {
+  border: none;
+  background: transparent;
+  color: var(--text-secondary, #475569);
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.finance-period-btn:hover {
+  color: var(--text-primary);
+}
+
+.finance-period-btn.active {
+  background: var(--bg-card, #FFFFFF);
+  color: var(--fin-primary);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .finance-period-btn.active {
+  background: var(--bg-surface, #1E293B);
+  color: var(--fin-primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.monarch-dropzone-compact {
+  border: 1px dashed var(--fin-primary-border);
+  background: var(--fin-primary-light);
+  border-radius: var(--radius-md, 12px);
+  padding: 12px 18px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.monarch-dropzone-compact:hover {
+  border-color: var(--fin-primary);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.1);
+}
+
 .finance-month-selector {
   display: inline-flex;
   align-items: center;

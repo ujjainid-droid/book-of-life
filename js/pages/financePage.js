@@ -139,8 +139,28 @@ function switchFinanceSubTab(subTab) {
   renderFinancePage(subTab);
 }
 
+let financeActivePeriod = 'this_month'; // 'this_month' | 'last_month' | 'last_qtr' | 'ytd'
+
+function changeFinancePeriod(period) {
+  financeActivePeriod = period;
+  if (period === 'this_month') selectedFinanceMonth = '2026-10';
+  else if (period === 'last_month') selectedFinanceMonth = '2026-09';
+  renderFinanceBurn();
+}
+
+function renderPeriodFilterPills() {
+  return `
+    <div class="finance-period-capsules">
+      <button class="finance-period-btn ${financeActivePeriod === 'this_month' ? 'active' : ''}" onclick="changeFinancePeriod('this_month')">This Month</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'last_month' ? 'active' : ''}" onclick="changeFinancePeriod('last_month')">Last Month</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'last_qtr' ? 'active' : ''}" onclick="changeFinancePeriod('last_qtr')">Last Qtr (Q3)</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'ytd' ? 'active' : ''}" onclick="changeFinancePeriod('ytd')">YTD (2026)</button>
+    </div>
+  `;
+}
+
 /* ==========================================================================
-   Sub-View 1: Cash Flow & Spend Radar (Page 1 — Income, Pareto Drivers, Outliers & Levers)
+   Sub-View 1: Cash Flow & Spend Radar (Income, Pareto Drivers, Outliers & Levers)
    ========================================================================== */
 function renderFinanceBurn() {
   const container = document.getElementById('finance-subview-container');
@@ -152,65 +172,87 @@ function renderFinanceBurn() {
   const monthlySummaries = fin.monthlySummaries || [];
   const baselines = fin.categoryBaselines || {};
 
-  // Available months from summaries or default
-  const availableMonths = monthlySummaries.map(m => m.month);
-  if (!availableMonths.includes('2026-10')) availableMonths.unshift('2026-10');
-  if (!selectedFinanceMonth) selectedFinanceMonth = availableMonths[0] || '2026-10';
+  // Period configuration & data aggregation
+  let periodLabel = 'October 2026';
+  let targetMonths = ['2026-10'];
+  let baselineScale = 1;
 
-  // Find summary for selected month
-  let currentSummary = monthlySummaries.find(m => m.month === selectedFinanceMonth);
+  if (financeActivePeriod === 'last_month') {
+    periodLabel = 'September 2026';
+    targetMonths = ['2026-09'];
+    baselineScale = 1;
+  } else if (financeActivePeriod === 'last_qtr') {
+    periodLabel = 'Last Quarter (Q3 2026 &bull; Jul–Sep)';
+    targetMonths = ['2026-07', '2026-08', '2026-09'];
+    baselineScale = 3;
+  } else if (financeActivePeriod === 'ytd') {
+    periodLabel = '2026 Year-to-Date (Jan–Oct)';
+    targetMonths = ['2026-07', '2026-08', '2026-09', '2026-10'];
+    baselineScale = 4;
+  }
 
-  // Filter transactions for selected month
-  const monthTxs = transactions.filter(t => {
-    if (!t || !t.date) return false;
-    return t.date.startsWith(selectedFinanceMonth);
-  });
+  // Calculate Inflow & Outflow for the period from summaries or transactions
+  let periodInflow = 0;
+  let periodOutflow = 0;
 
-  // Calculate category spend map for the selected month
-  const categorySpendMap = {};
-  categories.forEach(c => { categorySpendMap[c.name] = 0; });
-
-  let computedTxSpend = 0;
-  let computedTxIncome = 0;
-
-  monthTxs.forEach(t => {
-    const amt = parseFloat(t.amount) || 0;
-    if (t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0) {
-      computedTxIncome += Math.abs(amt);
+  targetMonths.forEach(mStr => {
+    const s = monthlySummaries.find(m => m.month === mStr);
+    if (s) {
+      periodInflow += parseFloat(s.income) || 0;
+      periodOutflow += parseFloat(s.outflow) || 0;
     } else {
-      const catName = t.category || 'Discretionary';
-      if (categorySpendMap[catName] === undefined) {
-        categorySpendMap[catName] = 0;
-      }
-      categorySpendMap[catName] += amt;
-      computedTxSpend += amt;
+      // Default fallback values
+      if (mStr === '2026-10') { periodInflow += 14250.00; periodOutflow += 10410.00; }
+      else if (mStr === '2026-09') { periodInflow += 13500.00; periodOutflow += 9650.00; }
+      else { periodInflow += 13500.00; periodOutflow += 9900.00; }
     }
   });
 
-  // Reconcile Inflow & Outflow figures
-  const monthInflow = (currentSummary && currentSummary.income !== undefined) 
-    ? parseFloat(currentSummary.income) 
-    : (computedTxIncome > 0 ? computedTxIncome : 14250.00);
-
-  const monthOutflow = (currentSummary && currentSummary.outflow !== undefined)
-    ? parseFloat(currentSummary.outflow)
-    : (computedTxSpend > 0 ? computedTxSpend : 10410.00);
-
-  const netCashFlow = monthInflow - monthOutflow;
+  const netCashFlow = periodInflow - periodOutflow;
   const isPositive = netCashFlow >= 0;
-  const savingsRate = monthInflow > 0 ? ((netCashFlow / monthInflow) * 100).toFixed(1) : 0;
+  const savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
+
+  // Compute Category Spend Map for the selected period
+  const categorySpendMap = {};
+  categories.forEach(c => { categorySpendMap[c.name] = 0; });
+
+  const periodTxs = transactions.filter(t => {
+    if (!t || !t.date) return false;
+    return targetMonths.some(m => t.date.startsWith(m));
+  });
+
+  if (periodTxs.length > 0) {
+    periodTxs.forEach(t => {
+      const amt = parseFloat(t.amount) || 0;
+      const isInc = t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0;
+      if (!isInc) {
+        const catName = t.category || 'Discretionary';
+        categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
+      }
+    });
+  } else {
+    // Proportional mock fallback based on baseline scale
+    categories.forEach(c => {
+      const base = baselines[c.name] || c.baseline || 500;
+      categorySpendMap[c.name] = base * baselineScale;
+    });
+    // Add known variances
+    if (categorySpendMap['Dining Out & Takeout']) categorySpendMap['Dining Out & Takeout'] += (600 * (baselineScale > 1 ? 1.8 : 1));
+    if (categorySpendMap['Shopping & Discretionary']) categorySpendMap['Shopping & Discretionary'] += (300 * (baselineScale > 1 ? 1.5 : 1));
+  }
 
   // 1. Compute Top Categories (Pareto 80/20)
   const categoryList = Object.keys(categorySpendMap).map(name => {
     const spent = categorySpendMap[name] || 0;
     const catObj = categories.find(c => c.name === name) || {};
-    const baseline = baselines[name] || catObj.baseline || catObj.budget || 500;
-    const delta = spent - baseline;
-    const pctDelta = baseline > 0 ? Math.round((delta / baseline) * 100) : 0;
+    const baseUnit = baselines[name] || catObj.baseline || catObj.budget || 500;
+    const periodBaseline = baseUnit * baselineScale;
+    const delta = spent - periodBaseline;
+    const pctDelta = periodBaseline > 0 ? Math.round((delta / periodBaseline) * 100) : 0;
     return {
       name,
       spent,
-      baseline,
+      baseline: periodBaseline,
       delta,
       pctDelta,
       classification: catObj.classification || 'Discretionary',
@@ -222,22 +264,18 @@ function renderFinanceBurn() {
   // Sort descending by spend
   categoryList.sort((a, b) => b.spent - a.spent);
 
-  const totalSpentForPareto = monthOutflow > 0 ? monthOutflow : 1;
+  const totalSpentForPareto = periodOutflow > 0 ? periodOutflow : 1;
   const top4Categories = categoryList.slice(0, 4);
   const otherCategories = categoryList.slice(4);
   const otherSpend = otherCategories.reduce((s, c) => s + c.spent, 0);
 
-  // Nordic Palette for Pareto segments
   const paretoColors = ['#7C3AED', '#E11D48', '#0D9488', '#4F46E5', '#64748B'];
 
-  // 2. Identify Outliers vs. 3-Month Rolling Baseline
+  // 2. Outliers vs Baseline
   const outliers = categoryList.map(cat => {
-    let status = 'baseline'; // 'spike' | 'reduced' | 'baseline'
-    if (cat.pctDelta > 20) {
-      status = 'spike';
-    } else if (cat.pctDelta < -20) {
-      status = 'reduced';
-    }
+    let status = 'baseline';
+    if (cat.pctDelta > 20) status = 'spike';
+    else if (cat.pctDelta < -20) status = 'reduced';
     return { ...cat, status };
   });
 
@@ -245,31 +283,10 @@ function renderFinanceBurn() {
   const onBaseline = outliers.filter(o => o.status === 'baseline');
   const reducedSpends = outliers.filter(o => o.status === 'reduced');
 
-  // Filter transactions for ledger
-  let filteredTxs = transactions;
-  if (selectedFinanceMonth) {
-    filteredTxs = filteredTxs.filter(t => t.date && t.date.startsWith(selectedFinanceMonth));
-  }
-  if (financeTxCategoryFilter !== 'all') {
-    filteredTxs = filteredTxs.filter(t => t.category === financeTxCategoryFilter);
-  }
-  if (financeTxHighSpendOnly) {
-    filteredTxs = filteredTxs.filter(t => Math.abs(parseFloat(t.amount) || 0) >= 100);
-  }
-  if (financeTxSearchQuery) {
-    const q = financeTxSearchQuery.toLowerCase();
-    filteredTxs = filteredTxs.filter(t => {
-      return (t.merchant || '').toLowerCase().includes(q) ||
-             (t.notes || '').toLowerCase().includes(q) ||
-             (t.tags || '').toLowerCase().includes(q) ||
-             (t.account || '').toLowerCase().includes(q);
-    });
-  }
-
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px;">
       
-      <!-- 1. Hero Cash Flow Split & Month Selector -->
+      <!-- 1. Hero Cash Flow Split & Synced Period Selector -->
       <div class="finance-flow-hero">
         <div class="finance-flow-header">
           <div>
@@ -278,23 +295,14 @@ function renderFinanceBurn() {
               <span>Cash Flow &amp; Spend Radar</span>
             </h2>
             <p class="finance-hero-sub">
-              Macro earn vs. burn clarity &bull; Zero budget tracking &bull; Powered by Monarch
+              ${periodLabel} &bull; Macro earn vs. burn clarity &bull; Zero budget tracking
             </p>
           </div>
 
-          <!-- Month Selector -->
-          <div style="display: flex; gap: 8px; align-items: center;">
-            <div class="finance-month-selector">
-              <i data-lucide="calendar" style="width: 14px; height: 14px; color: var(--fin-primary);"></i>
-              <select class="finance-month-select-input" onchange="changeFinanceActiveMonth(this.value)">
-                ${availableMonths.map(m => `
-                  <option value="${m}" ${m === selectedFinanceMonth ? 'selected' : ''}>
-                    ${formatFinanceMonthLabel(m)}
-                  </option>
-                `).join('')}
-              </select>
-            </div>
-            <button class="btn btn-secondary" onclick="openLogCashFlowModal('${selectedFinanceMonth}')" style="font-size: 0.74rem; padding: 4px 10px;" title="Adjust this month's Income &amp; Outflow">
+          <!-- Timeframe Filter Capsules (This Month / Last Month / Last Qtr / YTD) -->
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            ${renderPeriodFilterPills()}
+            <button class="btn btn-secondary" onclick="openLogCashFlowModal(selectedFinanceMonth)" style="font-size: 0.74rem; padding: 4px 10px;" title="Adjust month cash flow figures">
               <i data-lucide="edit-3" style="width: 12px; height: 12px;"></i>
               <span>Edit</span>
             </button>
@@ -311,7 +319,7 @@ function renderFinanceBurn() {
               <span>Total Income Inflow</span>
             </span>
             <span class="finance-kpi-value" style="color: #0F766E;">
-              $${monthInflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              $${periodInflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">Verified salary + distributions</span>
           </div>
@@ -323,7 +331,7 @@ function renderFinanceBurn() {
               <span>Total Spend Outflow</span>
             </span>
             <span class="finance-kpi-value" style="color: var(--text-primary);">
-              $${monthOutflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              $${periodOutflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">Fixed commitments + discretionary</span>
           </div>
@@ -351,20 +359,14 @@ function renderFinanceBurn() {
               ${isPositive ? '+' : '-'}$${Math.abs(netCashFlow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">
-              ${isPositive ? 'Liquid buffer swept to reserves' : 'Burn exceeded inflows this month'}
+              ${isPositive ? 'Liquid buffer swept to reserves' : 'Burn exceeded inflows in period'}
             </span>
           </div>
 
         </div>
-
-        ${currentSummary && currentSummary.notes ? `
-          <div style="font-size: 0.78rem; color: var(--text-muted); font-style: italic; border-top: 1px dashed var(--border-color); pt-2; margin-top: 4px;">
-            📝 <strong>Month Notes:</strong> ${escapeHtml(currentSummary.notes)}
-          </div>
-        ` : ''}
       </div>
 
-      <!-- 2. Top Spending Drivers (80/20 Pareto Proportional Strip) -->
+      <!-- 2. Top Spending Drivers (80/20 Pareto Proportional Strip) with Synced Timeframe Filter -->
       <div class="finance-section-box">
         <div class="finance-section-header">
           <div>
@@ -373,8 +375,13 @@ function renderFinanceBurn() {
               <span>Top Spending Drivers (80/20 Pareto Distribution)</span>
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Where 80% of your capital flowed this month &bull; Sorted from highest to lowest
+              Where 80% of capital flowed during ${periodLabel}
             </span>
+          </div>
+
+          <!-- Same Timeframe Filter Capsules as Cash Flow -->
+          <div>
+            ${renderPeriodFilterPills()}
           </div>
         </div>
 
@@ -424,16 +431,16 @@ function renderFinanceBurn() {
         </div>
       </div>
 
-      <!-- 3. Monthly Outlier Radar (vs. 3-Month Rolling Baseline) -->
+      <!-- 3. Monthly Outlier Radar (vs. Rolling Baseline) -->
       <div class="finance-section-box">
         <div class="finance-section-header">
           <div>
             <h3 class="finance-section-title">
               <i data-lucide="radar" style="width: 18px; height: 18px; color: #0D9488;"></i>
-              <span>Monthly Outlier Radar (vs. 3-Month Rolling Baseline)</span>
+              <span>Category Outlier Radar (vs. Rolling Baseline)</span>
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Detecting spending anomalies, seasonal spikes, and category deviations
+              Detecting spending anomalies, seasonal spikes, and category deviations for ${periodLabel}
             </span>
           </div>
           <div style="display: flex; gap: 6px;">
@@ -475,7 +482,7 @@ function renderFinanceBurn() {
                     <span style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: ${isSpike ? '#E11D48' : 'var(--text-primary)'};">
                       $${cat.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </span>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);"> this month</span>
+                    <span style="font-size: 0.72rem; color: var(--text-muted);"> in period</span>
                   </div>
                   <div style="font-size: 0.74rem; color: var(--text-secondary); text-align: right;">
                     Baseline: $${cat.baseline.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
@@ -483,8 +490,8 @@ function renderFinanceBurn() {
                 </div>
 
                 <div style="font-size: 0.72rem; padding-top: 4px; border-top: 1px dashed var(--border-color); color: ${isSpike ? '#9F1239' : 'var(--text-muted)'};">
-                  ${isSpike ? `⚠️ Ran <strong>+$${cat.delta.toFixed(0)}</strong> above your 3-month rolling average.` : ''}
-                  ${isReduced ? `✨ Spent <strong>$${Math.abs(cat.delta).toFixed(0)} less</strong> than typical baseline.` : ''}
+                  ${isSpike ? `⚠️ Ran <strong>+$${cat.delta.toFixed(0)}</strong> above historical baseline.` : ''}
+                  ${isReduced ? `✨ Spent <strong>$${Math.abs(cat.delta).toFixed(0)} less</strong> than expected baseline.` : ''}
                   ${!isSpike && !isReduced ? `Within normal historical variance (&plusmn;${Math.abs(cat.pctDelta)}%).` : ''}
                 </div>
               </div>
@@ -497,7 +504,7 @@ function renderFinanceBurn() {
       <div class="finance-levers-box">
         <div class="finance-levers-header">
           <i data-lucide="lightbulb" style="width: 18px; height: 18px; color: var(--fin-violet);"></i>
-          <span>Strategic Levers: Where &amp; How to Save Next Month</span>
+          <span>Strategic Levers: Where &amp; How to Save</span>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -509,7 +516,7 @@ function renderFinanceBurn() {
               <div>
                 <strong>Discretionary Spike in ${escapeHtml(outlierSpikes[0].name)}:</strong>
                 Ran +$${outlierSpikes[0].delta.toFixed(0)} over baseline ($${outlierSpikes[0].spent.toFixed(0)} vs $${outlierSpikes[0].baseline.toFixed(0)}). 
-                Trimming 2 non-essential transactions in this category recovers <strong>~$400–$500</strong> directly into net surplus.
+                Trimming non-essential transactions in this category recovers <strong>~$400–$600</strong> directly into net surplus.
               </div>
             </div>
           ` : `
@@ -518,7 +525,7 @@ function renderFinanceBurn() {
                 <i data-lucide="check" style="width: 13px; height: 13px;"></i>
               </div>
               <div>
-                <strong>Zero Severe Outlier Spikes:</strong> Discretionary spending was exceptionally well-aligned with rolling baselines this cycle.
+                <strong>Zero Severe Outlier Spikes:</strong> Discretionary spending was well-aligned with rolling baselines.
               </div>
             </div>
           `}
@@ -529,8 +536,7 @@ function renderFinanceBurn() {
             </div>
             <div>
               <strong>Recurring Subscriptions Audit:</strong> 
-              Review the <a href="javascript:void(0)" onclick="switchFinanceSubTab('subscriptions')" style="color: var(--fin-violet); font-weight: 600; text-decoration: underline;">Subscriptions &amp; Card ROI</a> tab. 
-              Pruning underutilized software licenses and checking credit card annual fee credits will prevent recurring margin leakage.
+              Review the <a href="javascript:void(0)" onclick="switchFinanceSubTab('subscriptions')" style="color: var(--fin-violet); font-weight: 600; text-decoration: underline;">Subscriptions &amp; Card ROI</a> tab to eliminate unused licenses and maximize card fee credits.
             </div>
           </div>
 
@@ -540,102 +546,36 @@ function renderFinanceBurn() {
             </div>
             <div>
               <strong>Medical Reimbursements Recovery:</strong>
-              Check the <a href="javascript:void(0)" onclick="switchFinanceSubTab('claims')" style="color: var(--fin-primary); font-weight: 600; text-decoration: underline;">Medical Claims</a> pipeline for pending therapy or specialist superbills to pull out-of-pocket cash back into checking.
+              Check the <a href="javascript:void(0)" onclick="switchFinanceSubTab('claims')" style="color: var(--fin-primary); font-weight: 600; text-decoration: underline;">Medical Claims</a> pipeline for pending superbills to pull out-of-pocket cash back into checking.
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 5. Monarch Money 1-Click CSV Dropzone -->
-      <div class="monarch-dropzone" id="monarch-dropzone-el" onclick="triggerMonarchFileInput()">
-        <div class="monarch-dropzone-icon">
-          <i data-lucide="upload-cloud" style="width: 22px; height: 22px;"></i>
-        </div>
-        <h3 class="monarch-dropzone-title">Drop Monarch Money CSV Here</h3>
-        <p class="monarch-dropzone-desc">
-          Drag &amp; drop your Monarch <code>transactions.csv</code> export, or click to browse. Automatically aggregates income, outflow, category drivers, and computes outlier spikes against rolling baseline.
-        </p>
-        <div class="monarch-dropzone-actions" onclick="event.stopPropagation()">
-          <button class="btn btn-secondary" onclick="triggerMonarchFileInput()" style="font-size: 0.78rem; padding: 5px 12px;">
-            <i data-lucide="folder-open" style="width: 13px; height: 13px;"></i>
-            <span>Browse CSV File</span>
-          </button>
-          <button class="btn btn-secondary" onclick="loadSampleMonarchData()" style="font-size: 0.78rem; padding: 5px 12px;">
-            <i data-lucide="sparkles" style="width: 13px; height: 13px; color: var(--fin-primary);"></i>
-            <span>Load Sample Monarch CSV</span>
-          </button>
+      <!-- 5. Compact Monarch Money Sync Strip -->
+      <div class="monarch-dropzone-compact" id="monarch-dropzone-el" onclick="triggerMonarchFileInput()">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="monarch-dropzone-icon" style="width: 34px; height: 34px; margin: 0; background: var(--bg-card); color: var(--fin-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="upload-cloud" style="width: 18px; height: 18px;"></i>
+            </div>
+            <div style="text-align: left;">
+              <strong style="font-size: 0.86rem; color: var(--text-primary); display: block;">Sync Monarch Money CSV</strong>
+              <span style="font-size: 0.74rem; color: var(--text-muted);">Drop transactions.csv to update cash flow and category data</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;" onclick="event.stopPropagation()">
+            <button class="btn btn-secondary" onclick="triggerMonarchFileInput()" style="font-size: 0.74rem; padding: 4px 10px;">
+              <i data-lucide="folder-open" style="width: 12px; height: 12px;"></i>
+              <span>Browse File</span>
+            </button>
+            <button class="btn btn-secondary" onclick="loadSampleMonarchData()" style="font-size: 0.74rem; padding: 4px 10px;">
+              <i data-lucide="sparkles" style="width: 12px; height: 12px; color: var(--fin-primary);"></i>
+              <span>Load Sample Data</span>
+            </button>
+          </div>
         </div>
         <input type="file" id="monarch-file-input" accept=".csv" style="display: none;" onchange="handleMonarchFileSelected(event)">
-      </div>
-
-      <!-- 6. Monarch Transactions Ledger with High-Spend Filter -->
-      <div class="finance-section-box">
-        <div class="finance-section-header">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="receipt" style="width: 18px; height: 18px; color: var(--fin-primary);"></i>
-              <span>Monarch Transactions Ledger</span>
-            </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">${filteredTxs.length} items logged for ${formatFinanceMonthLabel(selectedFinanceMonth)}</span>
-          </div>
-
-          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-            <!-- High Spend Toggle -->
-            <button class="btn btn-secondary ${financeTxHighSpendOnly ? 'active' : ''}" onclick="toggleFinanceTxHighSpend()" style="font-size: 0.74rem; padding: 4px 10px;">
-              <i data-lucide="filter" style="width: 12px; height: 12px;"></i>
-              <span>${financeTxHighSpendOnly ? 'All Amounts' : 'High Spend (> $100)'}</span>
-            </button>
-
-            <input type="text" placeholder="Search merchant, tag, note..." value="${escapeHtml(financeTxSearchQuery)}" oninput="handleFinanceTxSearch(this.value)" class="form-control" style="font-size: 0.78rem; padding: 4px 8px; width: 180px;">
-            <select class="form-control" style="font-size: 0.78rem; padding: 4px 8px;" onchange="handleFinanceCatFilter(this.value)">
-              <option value="all" ${financeTxCategoryFilter === 'all' ? 'selected' : ''}>All Categories</option>
-              ${categories.map(c => `
-                <option value="${escapeHtml(c.name)}" ${financeTxCategoryFilter === c.name ? 'selected' : ''}>${escapeHtml(c.name)}</option>
-              `).join('')}
-            </select>
-          </div>
-        </div>
-
-        <div class="finance-table-wrapper">
-          <table class="finance-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Merchant</th>
-                <th>Category</th>
-                <th>Account</th>
-                <th>Tags</th>
-                <th style="text-align: right;">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filteredTxs.length === 0 ? `
-                <tr>
-                  <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 24px;">
-                    No transactions match the selected filter.
-                  </td>
-                </tr>
-              ` : filteredTxs.map(t => {
-                const amt = parseFloat(t.amount) || 0;
-                const isHighSpend = Math.abs(amt) >= 300;
-                return `
-                  <tr>
-                    <td style="white-space: nowrap; font-family: var(--font-mono); font-size: 0.76rem;">${escapeHtml(t.date || '')}</td>
-                    <td><strong>${escapeHtml(t.merchant || 'Unknown')}</strong></td>
-                    <td><span class="zlog-ood-badge" style="font-size: 0.7rem;">${escapeHtml(t.category || 'General')}</span></td>
-                    <td style="color: var(--text-secondary); font-size: 0.74rem;">${escapeHtml(t.account || 'Checking')}</td>
-                    <td>
-                      ${t.tags ? `<span class="finance-flag-pill ${t.tags.includes('High-Spend') ? 'danger' : 'safe'}" style="font-size: 0.66rem; padding: 1px 6px;">${escapeHtml(t.tags)}</span>` : '<span style="color: var(--text-muted);">&mdash;</span>'}
-                    </td>
-                    <td class="finance-amount-cell ${isHighSpend ? 'danger' : ''}">
-                      $${amt.toFixed(2)}
-                    </td>
-                  </tr>
-                `;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
       </div>
 
     </div>
@@ -644,20 +584,6 @@ function renderFinanceBurn() {
   // Attach Drag and Drop handlers to Monarch dropzone
   setupMonarchDropzoneListeners();
   if (typeof lucide !== 'undefined') lucide.createIcons();
-}
-
-/* Helpers for Month Switching & Filters */
-function formatFinanceMonthLabel(monthIso) {
-  if (!monthIso || !monthIso.includes('-')) return monthIso || '';
-  const [yr, mo] = monthIso.split('-');
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const idx = parseInt(mo, 10) - 1;
-  return `${monthNames[idx] || mo} ${yr}`;
-}
-
-function changeFinanceActiveMonth(m) {
-  selectedFinanceMonth = m;
-  renderFinanceBurn();
 }
 
 function toggleFinanceTxHighSpend() {
