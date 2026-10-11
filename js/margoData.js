@@ -649,4 +649,326 @@ const POTENTIAL_INFO_SOURCES = [
   { id: 'notes', label: 'Apple notes', tagClass: 'tool-notes' }
 ];
 
+/* ==========================================================================
+   Sprout the Potato — Interactive Mood Companion Engine
+   ========================================================================== */
+
+const SPROUT_DIALOGUE = {
+  potato: [
+    "The bar was in hell, but look at you contemplating it.",
+    "Contemplating breathing. Society thanks you for thinking about it.",
+    "Bed is cozy. The world is loud. But your Move ring awaits.",
+    "Five more minutes? Don't make me roll off the mattress.",
+    "You haven't moved yet, but your heart is in the right place. Probably.",
+    "Status: Horizontal potato. Next move: Get vertical."
+  ],
+  vertical: [
+    "You actually got vertical today. Society thanks you for the bare minimum.",
+    "Held together by coffee and sheer audacity, but hey—you're upright.",
+    "First step taken! Now let's protect that 50% floor.",
+    "Upright and operational. Let's not ruin this with questionable decisions.",
+    "One foot in front of the other. The couch has officially been vacated.",
+    "50% floor defended! The streak lives to fight another day."
+  ],
+  momentum: [
+    "Operating at dangerously high momentum. Someone check on your enemies.",
+    "Look at you moving with purpose. God complex loading...",
+    "Your to-do list is trembling in fear. Or maybe that's caffeine.",
+    "Sneakers laced, rings trembling. Finish what you started!",
+    "Rumor has it you have your life together today. Act natural.",
+    "High-energy discipline mode. We are so back."
+  ],
+  supreme: [
+    "Supreme Living Legend status achieved. Build the bronze monument.",
+    "You're terrorizing your goals so hard they're calling customer support.",
+    "Both anchors closed! You run this entire empire today.",
+    "Look at that glow. Try not to intimidate the mere mortals.",
+    "100% closed. Absolute powerhouse behavior. Take your victory lap.",
+    "Unbothered, moisturized, in your lane, and fully closed rings."
+  ],
+  maintenance: [
+    "Maintenance mode engaged: 50% floor defended with zero guilt.",
+    "Conserving battery like a pro. Sip tea, protect the baseline.",
+    "No drama, no guilt. Just steady rhythm and restorative peace.",
+    "The baseline is secure. Tomorrow-you is already thankful.",
+    "Resting is an executive decision. Recharge the machine."
+  ]
+};
+
+let sproutPokeIndex = 0;
+
+function getMascotStateInfo(moveStage, standStage, totalChoices = 0, hasHealth = false, isMaintenance = false) {
+  if (isMaintenance) {
+    const isProtected = (moveStage > 0 || standStage > 0);
+    return {
+      state: 'maintenance',
+      tierTitle: isProtected ? 'Shield Defended' : 'Cozy Maintenance',
+      badge: isProtected ? '🛡️' : '🍵',
+      subtitle: isProtected ? '50% Floor Protected · Zero Guilt' : 'Conserving Power · Baseline Priority',
+      quips: SPROUT_DIALOGUE.maintenance
+    };
+  }
+  if (moveStage === 1 && standStage === 1) {
+    return {
+      state: 'supreme',
+      tierTitle: 'Supreme Legend',
+      badge: '👑',
+      subtitle: 'Both Anchors 100% Closed · Peak Form',
+      quips: SPROUT_DIALOGUE.supreme
+    };
+  }
+  if ((moveStage > 0 && standStage > 0) || moveStage === 1 || standStage === 1) {
+    return {
+      state: 'momentum',
+      tierTitle: 'Functional Momentum',
+      badge: '⚡',
+      subtitle: 'Hero Anchors Active · Building Speed',
+      quips: SPROUT_DIALOGUE.momentum
+    };
+  }
+  if (moveStage > 0 || standStage > 0 || totalChoices > 0 || hasHealth) {
+    return {
+      state: 'vertical',
+      tierTitle: 'Getting Vertical',
+      badge: '🌱',
+      subtitle: 'First Move Logged · 50% Floor Unlocked',
+      quips: SPROUT_DIALOGUE.vertical
+    };
+  }
+  return {
+    state: 'potato',
+    tierTitle: 'Bed Potato',
+    badge: '🥔',
+    subtitle: 'Morning Baseline · Awaiting Move Anchor',
+    quips: SPROUT_DIALOGUE.potato
+  };
+}
+
+/**
+ * Render crisp vector SVG of Sprout the Potato based on active state
+ */
+function renderSproutSvg(state = 'potato') {
+  if (state === 'supreme') {
+    return `
+      <svg viewBox="0 0 120 120" class="mascot-svg mascot-supreme" xmlns="http://www.w3.org/2000/svg">
+        <!-- Floating Shimmer Sparkles -->
+        <path class="mascot-sparkle sparkle-1" d="M22 28 Q24 24 28 22 Q24 20 22 16 Q20 20 16 22 Q20 24 22 28 Z" fill="#8B5CF6"/>
+        <path class="mascot-sparkle sparkle-2" d="M98 32 Q100 28 104 26 Q100 24 98 20 Q96 24 92 26 Q96 28 98 32 Z" fill="#0D9488"/>
+        <path class="mascot-sparkle sparkle-3" d="M88 88 Q90 85 93 84 Q90 83 88 80 Q86 83 83 84 Q86 85 88 88 Z" fill="#C084FC"/>
+
+        <!-- Little Legs -->
+        <path d="M48 98 L48 110" fill="none" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+        <path d="M72 98 L72 110" fill="none" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+        <!-- Golden Shoes -->
+        <rect x="42" y="108" width="14" height="6" rx="2" fill="#E6BE8A" stroke="#4A3B32" stroke-width="1.5"/>
+        <rect x="66" y="108" width="14" height="6" rx="2" fill="#E6BE8A" stroke="#4A3B32" stroke-width="1.5"/>
+
+        <!-- Hands on Hips -->
+        <path d="M30 68 Q18 72 24 82" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M90 68 Q102 72 96 82" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round"/>
+
+        <!-- Potato Body -->
+        <ellipse cx="60" cy="62" rx="34" ry="42" fill="#E8C394" stroke="#4A3B32" stroke-width="3"/>
+        <!-- Potato Freckles -->
+        <circle cx="48" cy="48" r="1.5" fill="#C49B6A"/>
+        <circle cx="74" cy="46" r="1.5" fill="#C49B6A"/>
+        <circle cx="50" cy="82" r="1.5" fill="#C49B6A"/>
+
+        <!-- Rosy Cheeks -->
+        <ellipse cx="44" cy="68" rx="5" ry="3" fill="#F472B6" opacity="0.65"/>
+        <ellipse cx="76" cy="68" rx="5" ry="3" fill="#F472B6" opacity="0.65"/>
+
+        <!-- Chic Dark Sunglasses -->
+        <path d="M40 48 L56 50 L56 58 C56 63 44 63 40 58 Z" fill="#1E1B4B" stroke="#0F172A" stroke-width="2"/>
+        <path d="M64 50 L80 48 L80 58 C80 63 64 63 64 58 Z" fill="#1E1B4B" stroke="#0F172A" stroke-width="2"/>
+        <line x1="56" y1="52" x2="64" y2="52" stroke="#0F172A" stroke-width="2.5"/>
+        <!-- Sunglasses Glare -->
+        <line x1="43" y1="51" x2="49" y2="59" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+        <line x1="67" y1="53" x2="73" y2="61" stroke="#A78BFA" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+
+        <!-- Confident Smirk -->
+        <path d="M54 68 Q62 74 68 67" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Miniature Gold Crown -->
+        <path d="M47 25 L51 14 L60 21 L69 14 L73 25 Z" fill="#F59E0B" stroke="#B45309" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="51" cy="14" r="1.5" fill="#EC4899"/>
+        <circle cx="60" cy="21" r="1.5" fill="#8B5CF6"/>
+        <circle cx="69" cy="14" r="1.5" fill="#0D9488"/>
+      </svg>
+    `;
+  }
+
+  if (state === 'momentum') {
+    return `
+      <svg viewBox="0 0 120 120" class="mascot-svg mascot-momentum" xmlns="http://www.w3.org/2000/svg">
+        <!-- Speed Lines -->
+        <path d="M10 62 L22 62" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M6 72 L18 72" fill="none" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+
+        <!-- Running Legs with Teal Sneakers -->
+        <path d="M48 94 Q40 102 34 105" fill="none" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
+        <rect x="22" y="103" width="16" height="8" rx="3" fill="#0D9488" stroke="#0F766E" stroke-width="1.5"/>
+        <rect x="22" y="108" width="16" height="3" rx="1" fill="#FFFFFF"/>
+
+        <path d="M72 94 Q80 102 88 100" fill="none" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
+        <rect x="84" y="96" width="16" height="8" rx="3" fill="#0D9488" stroke="#0F766E" stroke-width="1.5"/>
+        <rect x="84" y="101" width="16" height="3" rx="1" fill="#FFFFFF"/>
+
+        <!-- Running Arms -->
+        <path d="M30 62 Q20 54 22 46" fill="none" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="22" cy="46" r="3.5" fill="#E8C394" stroke="#4A3B32" stroke-width="2"/>
+        <path d="M86 64 Q96 72 102 66" fill="none" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
+        <circle cx="102" cy="66" r="3.5" fill="#E8C394" stroke="#4A3B32" stroke-width="2"/>
+
+        <!-- Potato Body -->
+        <ellipse cx="60" cy="58" rx="34" ry="42" fill="#E8C394" stroke="#4A3B32" stroke-width="3"/>
+        <circle cx="48" cy="52" r="1.5" fill="#C49B6A"/>
+        <circle cx="74" cy="50" r="1.5" fill="#C49B6A"/>
+
+        <!-- Teal Headband -->
+        <rect x="27" y="32" width="66" height="12" rx="4" fill="#0D9488" stroke="#0F766E" stroke-width="2"/>
+        <path d="M28 38 Q18 32 14 36" fill="none" stroke="#0D9488" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M28 42 Q16 42 12 48" fill="none" stroke="#0D9488" stroke-width="3.5" stroke-linecap="round"/>
+
+        <!-- Focused Eyes -->
+        <circle cx="50" cy="54" r="3.5" fill="#332720"/>
+        <circle cx="52" cy="52" r="1.2" fill="#FFFFFF"/>
+        <circle cx="70" cy="54" r="3.5" fill="#332720"/>
+        <circle cx="72" cy="52" r="1.2" fill="#FFFFFF"/>
+        <!-- Eyebrows -->
+        <path d="M45 47 L54 50" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M75 47 L66 50" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Cheeks -->
+        <ellipse cx="44" cy="60" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+        <ellipse cx="76" cy="60" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+
+        <!-- Grin -->
+        <path d="M55 64 Q60 70 65 64" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  if (state === 'vertical') {
+    return `
+      <svg viewBox="0 0 120 120" class="mascot-svg mascot-vertical" xmlns="http://www.w3.org/2000/svg">
+        <!-- Bed Edge / Shadow -->
+        <rect x="24" y="98" width="72" height="6" rx="3" fill="#DDD6FE" opacity="0.5"/>
+        <!-- Dangling Legs -->
+        <path d="M48 94 L48 106" fill="none" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+        <path d="M68 94 L68 106" fill="none" stroke="#4A3B32" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="48" cy="107" r="2.5" fill="#4A3B32"/>
+        <circle cx="68" cy="107" r="2.5" fill="#4A3B32"/>
+
+        <!-- Stretching Left Arm -->
+        <path d="M30 65 Q18 45 22 38" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round"/>
+        <circle cx="22" cy="38" r="3.5" fill="#E8C394" stroke="#4A3B32" stroke-width="2"/>
+
+        <!-- Right Arm Holding Coffee -->
+        <path d="M85 68 Q95 68 96 62" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round"/>
+        <!-- Coffee Mug with Steam -->
+        <rect x="90" y="56" width="16" height="18" rx="3" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
+        <path d="M106 60 Q112 65 106 70" fill="none" stroke="#0D9488" stroke-width="2"/>
+        <path class="mascot-steam" d="M94 52 Q97 46 95 40" fill="none" stroke="#0D9488" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <path class="mascot-steam" d="M100 50 Q103 44 101 38" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+
+        <!-- Potato Body -->
+        <ellipse cx="58" cy="62" rx="34" ry="42" fill="#E8C394" stroke="#4A3B32" stroke-width="3"/>
+        <circle cx="46" cy="50" r="1.5" fill="#C49B6A"/>
+        <circle cx="70" cy="52" r="1.5" fill="#C49B6A"/>
+
+        <!-- Sleepy Happy Eyes -->
+        <path d="M46 54 Q50 50 54 54" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M64 54 Q68 50 72 54" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Rosy Cheeks -->
+        <ellipse cx="42" cy="62" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+        <ellipse cx="74" cy="62" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+
+        <!-- Morning Smile -->
+        <path d="M54 64 Q59 69 64 64" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    `;
+  }
+
+  if (state === 'maintenance') {
+    return `
+      <svg viewBox="0 0 120 120" class="mascot-svg mascot-maintenance" xmlns="http://www.w3.org/2000/svg">
+        <!-- Shield Badge -->
+        <path d="M84 28 L94 24 L104 28 C104 38 94 44 94 44 C94 44 84 38 84 28 Z" fill="#0D9488" stroke="#0F766E" stroke-width="1.8"/>
+        <path d="M89 34 L93 38 L99 30" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Potato Head -->
+        <ellipse cx="60" cy="60" rx="34" ry="42" fill="#E8C394" stroke="#4A3B32" stroke-width="3"/>
+        <!-- Peaceful Closed Eyes -->
+        <path d="M46 46 Q50 42 54 46" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M66 46 Q70 42 74 46" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M56 54 Q60 57 64 54" fill="none" stroke="#332720" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Cheeks -->
+        <ellipse cx="44" cy="52" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+        <ellipse cx="76" cy="52" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+
+        <!-- Cozy Lavender Knit Sweater -->
+        <path d="M26 62 Q60 54 94 62 L97 98 Q60 104 23 98 Z" fill="#8B5CF6" stroke="#6D28D9" stroke-width="2.5"/>
+        <rect x="36" y="56" width="48" height="12" rx="6" fill="#A78BFA" stroke="#6D28D9" stroke-width="2"/>
+        <line x1="44" y1="58" x2="44" y2="66" stroke="#DDD6FE" stroke-width="1.5"/>
+        <line x1="52" y1="58" x2="52" y2="66" stroke="#DDD6FE" stroke-width="1.5"/>
+        <line x1="60" y1="58" x2="60" y2="66" stroke="#DDD6FE" stroke-width="1.5"/>
+        <line x1="68" y1="58" x2="68" y2="66" stroke="#DDD6FE" stroke-width="1.5"/>
+        <line x1="76" y1="58" x2="76" y2="66" stroke="#DDD6FE" stroke-width="1.5"/>
+
+        <!-- Teacup -->
+        <rect x="52" y="74" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#0D9488" stroke-width="1.8"/>
+        <path d="M68 77 Q74 81 68 85" fill="none" stroke="#0D9488" stroke-width="1.8"/>
+        <!-- Teabag tag -->
+        <line x1="62" y1="74" x2="60" y2="82" stroke="#0D9488" stroke-width="1"/>
+        <rect x="58" y="82" width="5" height="5" fill="#0D9488" rx="1"/>
+        <!-- Warm Steam -->
+        <path class="mascot-steam" d="M57 70 Q60 64 58 58" fill="none" stroke="#0D9488" stroke-width="1.5" opacity="0.6"/>
+      </svg>
+    `;
+  }
+
+  // Default: Bed Potato
+  return `
+    <svg viewBox="0 0 120 120" class="mascot-svg mascot-potato" xmlns="http://www.w3.org/2000/svg">
+      <!-- Animated Floating Zzz -->
+      <g class="mascot-zzz">
+        <text x="76" y="40" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="#8B5CF6">z</text>
+        <text x="86" y="30" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="#8B5CF6">Z</text>
+        <text x="96" y="18" font-family="'Inter', sans-serif" font-size="17" font-weight="800" fill="#7C3AED">Z</text>
+      </g>
+
+      <!-- Soft Pillow -->
+      <rect x="22" y="36" width="38" height="26" rx="8" fill="#EDE9FE" stroke="#8B5CF6" stroke-width="2"/>
+
+      <!-- Potato Body nestled in bed -->
+      <g transform="rotate(-12 58 66)">
+        <ellipse cx="58" cy="64" rx="34" ry="40" fill="#E8C394" stroke="#4A3B32" stroke-width="3"/>
+        <circle cx="48" cy="54" r="1.5" fill="#C49B6A"/>
+        <circle cx="68" cy="52" r="1.5" fill="#C49B6A"/>
+
+        <!-- Sleepy Closed Eyes -->
+        <path d="M46 56 Q50 61 54 56" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M64 56 Q68 61 72 56" fill="none" stroke="#332720" stroke-width="2.5" stroke-linecap="round"/>
+
+        <!-- Cheeks -->
+        <ellipse cx="42" cy="62" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+        <ellipse cx="74" cy="62" rx="4.5" ry="3" fill="#F472B6" opacity="0.6"/>
+
+        <!-- Calm sleeping mouth -->
+        <path d="M57 64 Q59 66 61 64" fill="none" stroke="#332720" stroke-width="2" stroke-linecap="round"/>
+      </g>
+
+      <!-- Lavender Folded Knitted Blanket -->
+      <path d="M22 68 Q58 62 98 68 L98 100 Q58 106 22 100 Z" fill="#8B5CF6" stroke="#6D28D9" stroke-width="2.5"/>
+      <!-- Knitted Texture Stitches -->
+      <path d="M28 76 Q45 74 60 76 Q75 74 92 76" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-dasharray="3,3"/>
+      <path d="M28 86 Q45 84 60 86 Q75 84 92 86" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-dasharray="3,3"/>
+    </svg>
+  `;
+}
+
+
 

@@ -9801,4 +9801,170 @@ body.dark-mode .protocol-sample-btn {
   }
 }
 
+/* ==========================================================================
+   Interactive Mascot & Mood Companion ("Sprout the Potato")
+   ========================================================================== */
+.today-mascot-banner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+}
+
+.mascot-avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mascot-avatar-wrapper:hover {
+  transform: translateY(-2px) scale(1.06);
+}
+
+.mascot-avatar-wrapper:active {
+  transform: scale(0.93);
+}
+
+.mascot-svg-box {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 10px rgba(139, 92, 246, 0.22));
+}
+
+.mascot-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.mascot-poke-hint {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--primary, #8B5CF6);
+  background: rgba(139, 92, 246, 0.12);
+  padding: 1px 7px;
+  border-radius: 9999px;
+  margin-top: 3px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .mascot-poke-hint {
+  background: rgba(139, 92, 246, 0.25);
+  color: #DDD6FE;
+}
+
+.mascot-avatar-wrapper:hover .mascot-poke-hint {
+  background: linear-gradient(135deg, #8B5CF6 0%, #0D9488 100%);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+}
+
+/* Poke Hop Animation */
+@keyframes mascotHopAnim {
+  0% { transform: scale(1) translateY(0); }
+  25% { transform: scale(1.15, 0.85) translateY(0); }
+  50% { transform: scale(0.9, 1.2) translateY(-14px) rotate(4deg); }
+  75% { transform: scale(1.05, 0.95) translateY(2px) rotate(-2deg); }
+  100% { transform: scale(1) translateY(0) rotate(0); }
+}
+
+.mascot-hop {
+  animation: mascotHopAnim 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Floating Zzz */
+@keyframes zzzFloatAnim {
+  0% { opacity: 0; transform: translateY(4px) scale(0.8); }
+  40% { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(-12px) translateX(4px) scale(1.15); }
+}
+
+.mascot-zzz text:nth-child(1) {
+  animation: zzzFloatAnim 2s infinite ease-out;
+}
+.mascot-zzz text:nth-child(2) {
+  animation: zzzFloatAnim 2s infinite ease-out 0.45s;
+}
+.mascot-zzz text:nth-child(3) {
+  animation: zzzFloatAnim 2s infinite ease-out 0.9s;
+}
+
+/* Rising Steam */
+@keyframes steamFloatAnim {
+  0% { opacity: 0.2; transform: translateY(2px); }
+  50% { opacity: 0.85; transform: translateY(-4px) scaleX(1.1); }
+  100% { opacity: 0.2; transform: translateY(-8px); }
+}
+
+.mascot-steam {
+  animation: steamFloatAnim 2.2s infinite ease-in-out;
+}
+
+/* Shimmering Sparkles */
+@keyframes sparklePulseAnim {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2) rotate(15deg); }
+}
+
+.mascot-sparkle {
+  transform-origin: center;
+  animation: sparklePulseAnim 1.8s infinite ease-in-out;
+}
+.sparkle-1 { animation-delay: 0s; }
+.sparkle-2 { animation-delay: 0.6s; }
+.sparkle-3 { animation-delay: 1.2s; }
+
+/* Mascot Speech Bubble Layout */
+.mascot-speech-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mascot-tier-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mascot-state-sub {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+}
+
+.roast-text-row {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .today-mascot-banner {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  .mascot-speech-bubble {
+    flex: 1;
+    min-width: 200px;
+  }
+}
+
+
 

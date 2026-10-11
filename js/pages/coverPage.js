@@ -210,6 +210,23 @@ function renderDailySheet() {
   const formattedDateLong = selectedDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
   const currentStreak = Math.max(moveStreak, standStreak, maxStreak, 7);
 
+  // Mascot Companion State & Dialogue
+  const mascotInfo = (typeof getMascotStateInfo === 'function')
+    ? getMascotStateInfo(moveStage, standStage, totalChoices, hasHealth, isMaintenance)
+    : {
+        state: 'potato',
+        tierTitle: 'Bed Potato',
+        badge: '🥔',
+        subtitle: 'Morning Baseline · Awaiting Move Anchor',
+        quips: [dailyAff.text]
+      };
+
+  let currentMascotQuip = dailyAff.text;
+  if (mascotInfo.quips && mascotInfo.quips.length > 0) {
+    const quipIdx = (sproutPokeIndex + customAffirmationOffset) % mascotInfo.quips.length;
+    currentMascotQuip = mascotInfo.quips[quipIdx];
+  }
+
   container.innerHTML = `
     <div class="today-mockup-wrapper">
       ${!isToday ? `
@@ -246,17 +263,29 @@ function renderDailySheet() {
         ${!isToday ? `<button class="hud-today-btn" onclick="resetToToday()">Today</button>` : ''}
       </div>
 
-      <!-- Vibrant Nordic Daily Roast Banner (No Points) -->
-      <div class="today-daily-roast-banner">
-        <div class="roast-badge-pill" onclick="rotateDailyRoast()" title="Tap to shuffle daily roast">
-          <span class="roast-badge-sparkle">✨</span>
-          <span class="roast-badge-label">Daily Roast</span>
-          <span class="roast-badge-shuffle">↻</span>
+      <!-- Interactive Mascot Companion & Daily Roast Hub -->
+      <div class="today-daily-roast-banner today-mascot-banner">
+        <div class="mascot-avatar-wrapper" id="sprout-mascot-avatar" onclick="pokeSproutAction()" title="Poke Sprout for cheeky motivation &amp; tips!">
+          <div class="mascot-svg-box">
+            ${typeof renderSproutSvg === 'function' ? renderSproutSvg(mascotInfo.state) : `<span style="font-size: 2.2rem;">${mascotInfo.badge}</span>`}
+          </div>
+          <div class="mascot-poke-hint">Poke me!</div>
         </div>
-        <div class="roast-quote-content">
-          <span class="roast-icon">${dailyAff.emoji || '☕'}</span>
-          <span class="roast-text">"${escapeHtml(dailyAff.text)}"</span>
+
+        <div class="roast-quote-content mascot-speech-bubble">
+          <div class="mascot-tier-header">
+            <span class="roast-badge-pill" onclick="rotateDailyRoast()" title="Tap to shuffle daily quip">
+              <span class="roast-badge-sparkle">${mascotInfo.badge}</span>
+              <span class="roast-badge-label">${escapeHtml(mascotInfo.tierTitle)}</span>
+              <span class="roast-badge-shuffle">↻</span>
+            </span>
+            <span class="mascot-state-sub">${escapeHtml(mascotInfo.subtitle)}</span>
+          </div>
+          <div class="roast-text-row">
+            <span class="roast-text">"${escapeHtml(currentMascotQuip)}"</span>
+          </div>
         </div>
+
         <div class="roast-actions">
           <button type="button" class="roast-reward-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')" title="${statusInfo.currentTier.reward}">
             🎁 Treat Yourself
@@ -688,8 +717,48 @@ function rotateDailyRoast() {
     renderDailySheet();
   }
 }
+
+/**
+ * Interactive Mascot Poke Action
+ */
+function pokeSproutAction() {
+  if (typeof sproutPokeIndex === 'number') {
+    sproutPokeIndex++;
+  } else {
+    sproutPokeIndex = 1;
+  }
+
+  const avatarEl = document.getElementById('sprout-mascot-avatar');
+  if (avatarEl) {
+    avatarEl.classList.remove('mascot-hop');
+    void avatarEl.offsetWidth; // force animation restart
+    avatarEl.classList.add('mascot-hop');
+  }
+
+  // If anchors are complete, fire extra celebration sparkles
+  const dayHabitsState = (typeof storage !== 'undefined' && storage.data && storage.data.habitsState)
+    ? (storage.data.habitsState[activeTrackingDate] || {})
+    : {};
+  const moveVal = dayHabitsState['h-move'];
+  const standVal = dayHabitsState['h-stand'];
+  const energyMode = (typeof storage !== 'undefined' && typeof storage.getEnergyMode === 'function')
+    ? storage.getEnergyMode()
+    : 'power';
+  const isMaintenance = (energyMode === 'maint');
+
+  if (!isMaintenance && (moveVal === 1 || moveVal === true) && (standVal === 1 || standVal === true)) {
+    if (typeof triggerConfetti === 'function') triggerConfetti();
+  }
+
+  renderDailySheet();
+  if (typeof showToast === 'function') {
+    showToast('🥔 Poked Sprout! Sassy wisdom refreshed.');
+  }
+}
+
 window.claimSassyReward = claimSassyReward;
 window.rotateDailyRoast = rotateDailyRoast;
+window.pokeSproutAction = pokeSproutAction;
 
 /**
  * Habit Actions for Daily Sheet
@@ -1133,7 +1202,18 @@ function setAnchorStageAction(habitId, stage, dateStr = activeTrackingDate) {
   const isToday = (dateStr === todayIso);
 
   if (nextStage === 1) {
-    showToast(`✓ "${hName}" 100% Closed (+10 XP)`);
+    const isMove = (habitId === 'h-move' || (habit && habit.name.toLowerCase() === 'move'));
+    const otherId = isMove ? 'h-stand' : 'h-move';
+    const dayState = (storage.data && storage.data.habitsState) ? (storage.data.habitsState[dateStr] || {}) : {};
+    const otherVal = dayState[otherId];
+    const isOtherClosed = (otherVal === 1 || otherVal === true);
+
+    if (isOtherClosed && typeof triggerConfetti === 'function') {
+      triggerConfetti();
+      showToast(`👑 Anchors 100% Closed! Sprout unlocked Supreme Legend! (+10 XP)`);
+    } else {
+      showToast(`✓ "${hName}" 100% Closed (+10 XP)`);
+    }
   } else if (nextStage === 0.5) {
     showToast(`🛡️ "${hName}" 50% Floor Defended (+5 XP, streak protected)`);
   } else {
