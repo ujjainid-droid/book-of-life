@@ -455,45 +455,10 @@ class StorageManager {
       budgetCategories: [...DEFAULT_BUDGET_CATEGORIES],
       transactions: [...DEFAULT_TRANSACTIONS],
       // Medical Claims & Recovery Tracker (Out-of-Network)
-      claims: [
-        ...((typeof DEFAULT_BARNESS_CLAIMS !== 'undefined') ? DEFAULT_BARNESS_CLAIMS : []),
-        {
-          id: 'claim-demo-1',
-          date: '2026-08-28',
-          provider: 'Dr. Adams (Specialist)',
-          amountPaid: 250.00,
-          superbillStatus: 'need',
-          stage: 'need_superbill',
-          nextAction: 'Call/email clinic to request itemized superbill',
-          reimbursedAmount: 0,
-          notes: 'Specialist consult. Paid with card.',
-          createdAt: '2026-08-28T10:00:00.000Z'
-        },
-        {
-          id: 'claim-demo-2',
-          date: '2026-08-14',
-          provider: 'City Physical Therapy',
-          amountPaid: 180.00,
-          superbillStatus: 'have',
-          stage: 'ready_to_send',
-          nextAction: 'Batch upload superbill to Included Health app',
-          reimbursedAmount: 0,
-          notes: 'Superbill received with CPT 97110/97140.',
-          createdAt: '2026-08-14T14:30:00.000Z'
-        },
-        {
-          id: 'claim-demo-3',
-          date: '2026-07-20',
-          provider: 'Dr. Miller (Therapy)',
-          amountPaid: 320.00,
-          superbillStatus: 'have',
-          stage: 'with_included_health',
-          nextAction: 'Waiting on Included Health & Insurance EOB review',
-          reimbursedAmount: 0,
-          notes: 'Forwarded to Included Health advocate.',
-          createdAt: '2026-07-20T16:00:00.000Z'
-        }
-      ],
+      claims: (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS))
+        ? JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS))
+        : (typeof DEFAULT_BARNESS_CLAIMS !== 'undefined' ? [...DEFAULT_BARNESS_CLAIMS] : []),
+      claimsSeedVersion: 2,
       // Z Log Data, Titration & Protocols
       zlogEntries: (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {},
       titrationHistory: (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? [...DEFAULT_TITRATION_HISTORY] : [],
@@ -776,40 +741,37 @@ class StorageManager {
         });
       }
 
-      // Merge and normalize Dr. Barness and other claims
-      const claimsMap = new Map();
-      if (typeof DEFAULT_BARNESS_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_BARNESS_CLAIMS)) {
-        DEFAULT_BARNESS_CLAIMS.forEach(c => claimsMap.set(c.id, { ...c }));
-      }
-      (merged.claims || []).forEach(c => {
-        if (c && c.id) {
-          const ex = claimsMap.get(c.id);
-          claimsMap.set(c.id, { ...(ex || {}), ...c });
-        }
-      });
+      // Merge and normalize Medical Claims (3-Way Reconciliation dataset)
+      const claimsNeedMigration = !merged.claimsSeedVersion || merged.claimsSeedVersion < 2 || 
+        (Array.isArray(merged.claims) && merged.claims.some(c => c && (c.id === 'claim-demo-1' || c.id === 'claim-demo-2' || c.id === 'claim-ms-01')));
 
-      merged.claims = Array.from(claimsMap.values()).map(c => {
-        const claim = { ...c };
-        claim.date = claim.date || claim.dateOfService || formatDateIso(new Date());
-        claim.amountPaid = Number(claim.amountPaid !== undefined ? claim.amountPaid : (claim.amountBilled || 300.0));
-        if (claim.amountPaid > 10000 || isNaN(claim.amountPaid)) claim.amountPaid = 300.0;
-        if (claim.amountBilled > 10000 || isNaN(claim.amountBilled)) claim.amountBilled = 300.0;
-        if (claim.insurancePaid > 10000 || isNaN(claim.insurancePaid)) claim.insurancePaid = 180.0;
-        if (claim.outOfPocket > 10000 || claim.outOfPocket < 0 || isNaN(claim.outOfPocket)) {
-          claim.outOfPocket = (claim.status === 'reimbursed' || claim.stage === 'settled') ? 120.0 : (claim.amountPaid - (claim.insurancePaid || 0));
+      if (claimsNeedMigration && typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
+        const claimsMap = new Map();
+        DEFAULT_REAL_CLAIMS.forEach(c => {
+          if (c && c.id) claimsMap.set(c.id, { ...c });
+        });
+        // Preserve any custom user-added claims that are not demo placeholders
+        if (Array.isArray(merged.claims)) {
+          merged.claims.forEach(c => {
+            if (c && c.id && !c.id.startsWith('claim-demo-') && !claimsMap.has(c.id)) {
+              claimsMap.set(c.id, { ...c });
+            }
+          });
         }
-        if (!claim.stage) {
-          claim.stage = (claim.status === 'reimbursed') ? 'settled' : 'with_included_health';
-        }
-        if (claim.reimbursedAmount === undefined) {
-          claim.reimbursedAmount = (claim.stage === 'settled') ? (claim.insurancePaid || 180.0) : 0;
-        }
-        claim.superbillStatus = claim.superbillStatus || 'have';
-        claim.submissionType = claim.submissionType || 'provider';
-        claim.payoutMethod = claim.payoutMethod || 'direct_deposit';
-        claim.nextAction = claim.nextAction || (claim.stage === 'settled' ? 'Claim settled & reimbursed' : 'Waiting on Included Health & Insurance review');
-        return claim;
-      });
+        merged.claims = Array.from(claimsMap.values());
+        merged.claimsSeedVersion = 2;
+      } else if (Array.isArray(merged.claims)) {
+        merged.claims = merged.claims.map(c => {
+          const claim = { ...c };
+          claim.date = claim.date || claim.dateOfService || formatDateIso(new Date());
+          claim.amountPaid = Number(claim.amountPaid !== undefined ? claim.amountPaid : (claim.amountBilled || 0));
+          claim.patient = claim.patient || 'Xavier Healy';
+          claim.superbillStatus = claim.superbillStatus || 'have';
+          claim.submissionType = claim.submissionType || 'provider';
+          claim.payoutMethod = claim.payoutMethod || 'direct_deposit';
+          return claim;
+        });
+      }
 
       // Initialize Z Log entries & Titration
       const needsEnrichedSeed = !merged.zlogEntries || 
@@ -1667,15 +1629,24 @@ class StorageManager {
 
   addClaim(claimData) {
     if (!Array.isArray(this.data.claims)) this.data.claims = [];
+    const amt = parseFloat(claimData.amountPaid) || 0;
+    const expRecovery = claimData.expectedRecovery !== undefined 
+      ? parseFloat(claimData.expectedRecovery) 
+      : (parseFloat(claimData.reimbursedAmount) || (amt * 0.7));
     const newClaim = {
       id: 'claim-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
       date: claimData.date || formatDateIso(new Date()),
       provider: (claimData.provider || '').trim() || 'Provider',
-      amountPaid: parseFloat(claimData.amountPaid) || 0,
+      patient: (claimData.patient || 'Xavier Healy').trim(),
+      amountPaid: amt,
+      expectedRecovery: expRecovery,
       submissionType: claimData.submissionType || 'provider', // 'provider' | 'self'
       payoutMethod: claimData.payoutMethod || 'direct_deposit', // 'direct_deposit' | 'check'
       superbillStatus: claimData.superbillStatus || 'have',
       stage: claimData.stage || (claimData.submissionType === 'provider' ? 'with_included_health' : 'ready_to_send'),
+      inPortal: !!claimData.inPortal,
+      inBank: !!claimData.inBank,
+      claimNumber: claimData.claimNumber || '',
       nextAction: (claimData.nextAction || '').trim() || (typeof getDefaultNextAction === 'function' ? getDefaultNextAction(claimData.stage, claimData.payoutMethod, claimData.submissionType) : 'Review claim'),
       reimbursedAmount: parseFloat(claimData.reimbursedAmount) || 0,
       notes: (claimData.notes || '').trim(),
@@ -1706,7 +1677,9 @@ class StorageManager {
   getClaimsStats() {
     const claims = this.getClaims();
     let totalPendingRecovery = 0;
+    let totalFloatingSpend = 0;
     let actionNeededCount = 0;
+    let readyToSendCount = 0;
     let withIncludedHealthCount = 0;
     let checkDueCount = 0;
     let settledCount = 0;
@@ -1714,13 +1687,16 @@ class StorageManager {
 
     claims.forEach(c => {
       const amt = parseFloat(c.amountPaid) || 0;
+      const rec = parseFloat(c.expectedRecovery !== undefined ? c.expectedRecovery : (c.eobPlanPaid !== undefined ? c.eobPlanPaid : amt * 0.7));
       if (c.stage === 'settled') {
         settledCount++;
         totalSettled += (parseFloat(c.reimbursedAmount) || amt);
       } else {
-        totalPendingRecovery += amt;
+        totalFloatingSpend += amt;
+        totalPendingRecovery += rec;
         if (c.stage === 'need_superbill' || c.stage === 'ready_to_send') {
           actionNeededCount++;
+          if (c.stage === 'ready_to_send') readyToSendCount++;
         } else if (c.stage === 'with_included_health') {
           withIncludedHealthCount++;
         } else if (c.stage === 'check_due') {
@@ -1732,7 +1708,9 @@ class StorageManager {
     return {
       totalCount: claims.length,
       totalPendingRecovery,
+      totalFloatingSpend,
       actionNeededCount,
+      readyToSendCount,
       withIncludedHealthCount,
       checkDueCount,
       settledCount,
@@ -1784,11 +1762,11 @@ class StorageManager {
   }
 
   exportClaimsCSV() {
-    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Bill / Charge Amount,Submission By,Payout Method,Superbill Status,Stage,Next Action,Notes\n";
+    let csvContent = "data:text/csv;charset=utf-8,Date,Provider,Patient,Bill Amount,Expected Recovery,Reimbursed Amount,Submission By,Payout Method,Claim Number,Stage,Superbill Status,Next Action,Notes\n";
     this.getClaims().forEach(c => {
       const sub = (c.submissionType === 'provider') ? 'Provider (Courtesy)' : 'Self / Included Health';
       const payout = (c.payoutMethod === 'check') ? 'Mailed Check' : 'Direct Deposit';
-      csvContent += `"${c.date}","${(c.provider || '').replace(/"/g, '""')}",${c.amountPaid || 0},"${sub}","${payout}","${c.superbillStatus || 'have'}","${c.stage}","${(c.nextAction || '').replace(/"/g, '""')}","${(c.notes || '').replace(/"/g, '""')}"\n`;
+      csvContent += `"${c.date}","${(c.provider || '').replace(/"/g, '""')}","${(c.patient || 'Xavier Healy').replace(/"/g, '""')}",${c.amountPaid || 0},${c.expectedRecovery !== undefined ? c.expectedRecovery : (c.amountPaid * 0.7)},${c.reimbursedAmount || 0},"${sub}","${payout}","${(c.claimNumber || '').replace(/"/g, '""')}","${c.stage}","${c.superbillStatus || 'have'}","${(c.nextAction || '').replace(/"/g, '""')}","${(c.notes || '').replace(/"/g, '""')}"\n`;
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
