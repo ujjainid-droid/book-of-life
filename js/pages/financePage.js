@@ -54,21 +54,21 @@ function renderFinancePage(targetSubTab) {
       <!-- Sub-Navigation Bar -->
       <div class="finance-subnav-bar">
         <div class="finance-subnav-pills">
-          <button class="finance-subnav-btn ${activeFinanceSubTab === 'burn' ? 'active' : ''}" onclick="switchFinanceSubTab('burn')" title="Page 1: Earn vs. Spend, Pareto Drivers &amp; Outliers">
+          <button class="finance-subnav-btn ${activeFinanceSubTab === 'burn' ? 'active' : ''}" onclick="switchFinanceSubTab('burn')" title="Cash Flow, Pareto Drivers &amp; Outliers">
             <span>🔥</span>
-            <span>Page 1: Cash Flow &amp; Radar</span>
+            <span>Cash Flow &amp; Radar</span>
           </button>
-          <button class="finance-subnav-btn ${activeFinanceSubTab === 'subscriptions' ? 'active' : ''}" onclick="switchFinanceSubTab('subscriptions')" title="Page 2: Recurring Subscriptions &amp; Annual Fee ROI">
+          <button class="finance-subnav-btn ${activeFinanceSubTab === 'subscriptions' ? 'active' : ''}" onclick="switchFinanceSubTab('subscriptions')" title="Recurring Subscriptions &amp; Annual Fee ROI">
             <span>🔁</span>
-            <span>Page 2: Subscriptions &amp; Card ROI</span>
+            <span>Subscriptions &amp; Card ROI</span>
           </button>
-          <button class="finance-subnav-btn ${activeFinanceSubTab === 'runway' ? 'active' : ''}" onclick="switchFinanceSubTab('runway')" title="Page 3: Net Worth Horizon &amp; Quarterly Ledger">
+          <button class="finance-subnav-btn ${activeFinanceSubTab === 'runway' ? 'active' : ''}" onclick="switchFinanceSubTab('runway')" title="Net Worth Horizon &amp; Quarterly Ledger">
             <span>🏦</span>
-            <span>Page 3: Net Worth &amp; Quarterly</span>
+            <span>Net Worth &amp; Quarterly</span>
           </button>
-          <button class="finance-subnav-btn ${activeFinanceSubTab === 'claims' ? 'active' : ''}" onclick="switchFinanceSubTab('claims')" title="Page 4: Medical Claims &amp; Superbills">
+          <button class="finance-subnav-btn ${activeFinanceSubTab === 'claims' ? 'active' : ''}" onclick="switchFinanceSubTab('claims')" title="Medical Claims &amp; Superbills">
             <span>🧾</span>
-            <span>Page 4: Medical Claims</span>
+            <span>Medical Claims</span>
             ${claimsStats.actionNeededCount > 0 ? `
               <span class="zlog-ood-badge" style="background: #FEE2E2; color: #991B1B; font-size: 0.68rem; padding: 2px 6px;">
                 ${claimsStats.actionNeededCount}
