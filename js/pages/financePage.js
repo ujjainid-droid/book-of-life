@@ -1143,14 +1143,13 @@ function parseAndLoadMonarchCSV(csvText) {
         continue;
       }
 
-      // Deduplicate twin linked accounts (e.g. Chase Sapphire 8373 and 9369)
-      const dupSig = `${dateVal}_${Math.round(originalVal * 100)}_${memoVal || merchantName.toLowerCase()}`;
-      if (seenTxSigs.has(dupSig)) {
+      // Deduplicate identical transaction IDs if repeated
+      if (seenTxSigs.has(txId)) {
         continue;
       }
-      seenTxSigs.add(dupSig);
+      seenTxSigs.add(txId);
 
-      const isIncome = INCOME_CATS.includes(catLower) || catLower.includes('paycheck') || catLower.includes('income') || (originalVal > 0 && catLower.includes('dividend'));
+      const isIncome = INCOME_CATS.includes(catLower) || catLower.includes('paycheck') || catLower.includes('income');
 
       if (dateVal.length >= 7) {
         const mStr = dateVal.substring(0, 7);
@@ -1159,7 +1158,8 @@ function parseAndLoadMonarchCSV(csvText) {
         }
 
         if (isIncome) {
-          monthTotals[mStr].income += Math.abs(originalVal);
+          // Use signed value so dividend reinvestments net to 0, exactly matching Monarch
+          monthTotals[mStr].income += originalVal;
         } else {
           if (originalVal < 0) {
             const spend = Math.abs(originalVal);
