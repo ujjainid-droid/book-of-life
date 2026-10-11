@@ -140,11 +140,17 @@ function switchFinanceSubTab(subTab) {
 }
 
 let financeActivePeriod = 'this_month'; // 'this_month' | 'last_month' | 'last_qtr' | 'ytd'
+let financeDriversViewMode = 'pillars'; // 'pillars' | 'ribbon'
 
 function changeFinancePeriod(period) {
   financeActivePeriod = period;
   if (period === 'this_month') selectedFinanceMonth = '2026-10';
   else if (period === 'last_month') selectedFinanceMonth = '2026-09';
+  renderFinanceBurn();
+}
+
+function setFinanceDriversView(mode) {
+  financeDriversViewMode = mode;
   renderFinanceBurn();
 }
 
@@ -271,6 +277,30 @@ function renderFinanceBurn() {
 
   const paretoColors = ['#7C3AED', '#E11D48', '#0D9488', '#4F46E5', '#64748B'];
 
+  // 1b. Split Pillar Matrix Partition (Fixed Anchors vs. Discretionary Flex)
+  const isFixedCategory = (c) => {
+    const fixedClassifications = ['Fixed Baseline', 'Essential', 'Healthcare', 'Recurring'];
+    const fixedNames = [
+      'Housing & Rent / Mortgage',
+      'Groceries & Nutrition',
+      'Specialist Therapy & Meds',
+      'Auto, Gas & Commute',
+      'Utilities & Telecom',
+      'Software & Recurring Subs'
+    ];
+    return fixedClassifications.includes(c.classification) || fixedNames.includes(c.name);
+  };
+
+  const fixedCategories = categoryList.filter(c => isFixedCategory(c));
+  const flexCategories = categoryList.filter(c => !isFixedCategory(c));
+
+  const totalFixedSpend = fixedCategories.reduce((sum, c) => sum + c.spent, 0);
+  const totalFlexSpend = flexCategories.reduce((sum, c) => sum + c.spent, 0);
+  const macroTotal = (totalFixedSpend + totalFlexSpend) || 1;
+
+  const fixedRatioPct = Math.round((totalFixedSpend / macroTotal) * 100);
+  const flexRatioPct = 100 - fixedRatioPct;
+
   // 2. Outliers vs Baseline
   const outliers = categoryList.map(cat => {
     let status = 'baseline';
@@ -366,69 +396,214 @@ function renderFinanceBurn() {
         </div>
       </div>
 
-      <!-- 2. Top Spending Drivers (80/20 Pareto Proportional Strip) with Synced Timeframe Filter -->
+      <!-- 2. Capital Allocation Matrix / Top Spending Drivers (with Dual View Option) -->
       <div class="finance-section-box">
         <div class="finance-section-header">
           <div>
             <h3 class="finance-section-title">
-              <i data-lucide="bar-chart-3" style="width: 18px; height: 18px; color: var(--fin-violet);"></i>
-              <span>Top Spending Drivers (80/20 Pareto Distribution)</span>
+              <i data-lucide="${financeDriversViewMode === 'pillars' ? 'columns-2' : 'bar-chart-3'}" style="width: 18px; height: 18px; color: var(--fin-violet);"></i>
+              <span>${financeDriversViewMode === 'pillars' ? 'Capital Allocation Matrix (Fixed vs. Flex)' : 'Top Spending Drivers (80/20 Pareto Distribution)'}</span>
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Where 80% of capital flowed during ${periodLabel}
+              ${financeDriversViewMode === 'pillars' 
+                ? `Macro capital split for ${periodLabel} &bull; Non-negotiable floor vs. flexible lifestyle levers` 
+                : `Where 80% of capital flowed during ${periodLabel}`}
             </span>
           </div>
 
-          <!-- Same Timeframe Filter Capsules as Cash Flow -->
-          <div>
-            ${renderPeriodFilterPills()}
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <!-- View Mode Switcher: Split Pillars vs Ribbon -->
+            <div class="finance-view-toggle-capsules">
+              <button class="finance-view-toggle-btn ${financeDriversViewMode === 'pillars' ? 'active' : ''}" onclick="setFinanceDriversView('pillars')" title="View side-by-side fixed vs. discretionary pillars">
+                <i data-lucide="columns-2" style="width: 12px; height: 12px;"></i>
+                <span>Split Pillars</span>
+              </button>
+              <button class="finance-view-toggle-btn ${financeDriversViewMode === 'ribbon' ? 'active' : ''}" onclick="setFinanceDriversView('ribbon')" title="View proportional ribbon distribution">
+                <i data-lucide="bar-chart-3" style="width: 12px; height: 12px;"></i>
+                <span>Ribbon</span>
+              </button>
+            </div>
+
+            <!-- Synced Timeframe Filter Capsules -->
+            <div>
+              ${renderPeriodFilterPills()}
+            </div>
           </div>
         </div>
 
-        <div class="finance-pareto-bar-wrapper">
-          <!-- Stacked Proportional Bar -->
-          <div class="finance-pareto-bar" title="Visual category spend distribution">
-            ${top4Categories.map((c, i) => {
-              const pct = Math.max(2, Math.round((c.spent / totalSpentForPareto) * 100));
-              const color = paretoColors[i % paretoColors.length];
-              return `
-                <div class="finance-pareto-segment" style="width: ${pct}%; background: ${color};" title="${escapeHtml(c.name)}: $${c.spent.toFixed(0)} (${pct}%)"></div>
-              `;
-            }).join('')}
-            ${otherSpend > 0 ? `
-              <div class="finance-pareto-segment" style="width: ${Math.max(2, Math.round((otherSpend / totalSpentForPareto) * 100))}%; background: #94A3B8;" title="Other Categories: $${otherSpend.toFixed(0)}"></div>
-            ` : ''}
-          </div>
-
-          <!-- Top Drivers Ranked Grid -->
-          <div class="finance-pareto-grid">
-            ${categoryList.slice(0, 6).map((c, i) => {
-              const pct = Math.round((c.spent / totalSpentForPareto) * 100);
-              const color = i < paretoColors.length ? paretoColors[i] : '#64748B';
-              return `
-                <div class="finance-pareto-item">
-                  <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-                    <div class="finance-pareto-rank" style="color: ${color};">${i + 1}</div>
-                    <div style="min-width: 0;">
-                      <strong style="font-size: 0.85rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        ${escapeHtml(c.name)}
-                      </strong>
-                      <span class="zlog-ood-badge" style="font-size: 0.66rem; padding: 1px 6px;">
-                        ${escapeHtml(c.classification)}
-                      </span>
-                    </div>
-                  </div>
-                  <div style="text-align: right; flex-shrink: 0;">
-                    <div style="font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: var(--text-primary);">
-                      $${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                    </div>
-                    <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">${pct}% of spend</span>
-                  </div>
+        ${financeDriversViewMode === 'pillars' ? `
+          <!-- Option 5: Split Pillar Matrix Layout -->
+          <div class="finance-pillars-wrapper">
+            
+            <!-- Macro Split Ratio Card -->
+            <div class="finance-macro-split-card">
+              <div class="finance-macro-split-header">
+                <span style="color: var(--text-secondary);">
+                  Macro Outflow Split &bull; <strong>$${(totalFixedSpend + totalFlexSpend).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</strong> Total Capital
+                </span>
+                <div style="display: flex; gap: 14px; font-size: 0.76rem; flex-wrap: wrap;">
+                  <span style="color: #0F766E; font-weight: 700;">
+                    🛡️ Fixed Anchors: ${fixedRatioPct}% ($${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
+                  </span>
+                  <span style="color: #7C3AED; font-weight: 700;">
+                    ⚡ Discretionary Flex: ${flexRatioPct}% ($${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
+                  </span>
                 </div>
-              `;
-            }).join('')}
+              </div>
+
+              <!-- High-Contrast Two-Tone Split Bar -->
+              <div class="finance-macro-bar-container" title="Fixed: ${fixedRatioPct}% | Discretionary: ${flexRatioPct}%">
+                <div class="finance-macro-bar-fixed" style="width: ${fixedRatioPct}%;">
+                  🛡️ Fixed Anchors ${fixedRatioPct}%
+                </div>
+                <div class="finance-macro-bar-flex" style="width: ${flexRatioPct}%;">
+                  ⚡ Discretionary Flex ${flexRatioPct}%
+                </div>
+              </div>
+            </div>
+
+            <!-- Two-Column Side-by-Side Pillars Grid -->
+            <div class="finance-pillars-grid">
+              
+              <!-- Pillar 1: Fixed Commitments (Non-Negotiable Baseline) -->
+              <div class="finance-pillar-card fixed-pillar">
+                <div class="finance-pillar-card-header">
+                  <div>
+                    <div class="finance-pillar-title">
+                      <i data-lucide="shield-check" style="width: 17px; height: 17px; color: #0D9488;"></i>
+                      <span>Pillar 1: Fixed Commitments</span>
+                    </div>
+                    <div class="finance-pillar-amount" style="color: #0F766E;">
+                      $${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                    </div>
+                  </div>
+                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(13, 148, 136, 0.12); color: #0F766E; border: 1px solid rgba(13, 148, 136, 0.25);">
+                    ${fixedRatioPct}% of spend
+                  </span>
+                </div>
+
+                <div class="finance-pillar-list">
+                  ${fixedCategories.map(c => {
+                    const pct = Math.round((c.spent / macroTotal) * 100);
+                    return `
+                      <div class="finance-pillar-row">
+                        <div class="finance-pillar-row-left">
+                          <i data-lucide="${c.icon || 'shield'}" style="width: 15px; height: 15px; color: #0D9488; flex-shrink: 0;"></i>
+                          <span class="finance-pillar-row-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
+                        </div>
+                        <div class="finance-pillar-row-right">
+                          <span class="finance-pillar-row-amount">$${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+                          <span class="finance-pillar-row-pct">${pct}% of total</span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+
+                <div class="finance-pillar-footer">
+                  <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: #0D9488; flex-shrink: 0;"></i>
+                  <span>Shielded baseline floor required to sustain home, health &amp; family.</span>
+                </div>
+              </div>
+
+              <!-- Pillar 2: Discretionary Levers (Active Lifestyle) -->
+              <div class="finance-pillar-card flex-pillar">
+                <div class="finance-pillar-card-header">
+                  <div>
+                    <div class="finance-pillar-title">
+                      <i data-lucide="sliders" style="width: 17px; height: 17px; color: #7C3AED;"></i>
+                      <span>Pillar 2: Discretionary Levers</span>
+                    </div>
+                    <div class="finance-pillar-amount" style="color: #6D28D9;">
+                      $${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                    </div>
+                  </div>
+                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(124, 58, 237, 0.12); color: #6D28D9; border: 1px solid rgba(124, 58, 237, 0.25);">
+                    ${flexRatioPct}% of spend
+                  </span>
+                </div>
+
+                <div class="finance-pillar-list">
+                  ${flexCategories.map(c => {
+                    const pct = Math.round((c.spent / macroTotal) * 100);
+                    const isSpike = c.pctDelta > 20;
+                    return `
+                      <div class="finance-pillar-row">
+                        <div class="finance-pillar-row-left">
+                          <i data-lucide="${c.icon || 'sparkles'}" style="width: 15px; height: 15px; color: ${isSpike ? '#E11D48' : '#7C3AED'}; flex-shrink: 0;"></i>
+                          <div>
+                            <span class="finance-pillar-row-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
+                            ${isSpike ? `
+                              <span class="finance-flag-pill danger" style="font-size: 0.62rem; padding: 1px 6px; margin-left: 6px;">
+                                +$${Math.round(c.delta)} spike
+                              </span>
+                            ` : ''}
+                          </div>
+                        </div>
+                        <div class="finance-pillar-row-right">
+                          <span class="finance-pillar-row-amount" style="color: ${isSpike ? '#E11D48' : 'var(--text-primary)'};">$${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+                          <span class="finance-pillar-row-pct">${pct}% of total</span>
+                        </div>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+
+                <div class="finance-pillar-footer">
+                  <i data-lucide="zap" style="width: 14px; height: 14px; color: #7C3AED; flex-shrink: 0;"></i>
+                  <span>Actionable dials. Trimming here directly increases monthly savings rate.</span>
+                </div>
+              </div>
+
+            </div>
           </div>
-        </div>
+        ` : `
+          <!-- Option 1: Ribbon Proportional Layout -->
+          <div class="finance-pareto-bar-wrapper">
+            <!-- Stacked Proportional Bar -->
+            <div class="finance-pareto-bar" title="Visual category spend distribution">
+              ${top4Categories.map((c, i) => {
+                const pct = Math.max(2, Math.round((c.spent / totalSpentForPareto) * 100));
+                const color = paretoColors[i % paretoColors.length];
+                return `
+                  <div class="finance-pareto-segment" style="width: ${pct}%; background: ${color};" title="${escapeHtml(c.name)}: $${c.spent.toFixed(0)} (${pct}%)"></div>
+                `;
+              }).join('')}
+              ${otherSpend > 0 ? `
+                <div class="finance-pareto-segment" style="width: ${Math.max(2, Math.round((otherSpend / totalSpentForPareto) * 100))}%; background: #94A3B8;" title="Other Categories: $${otherSpend.toFixed(0)}"></div>
+              ` : ''}
+            </div>
+
+            <!-- Top Drivers Ranked Grid -->
+            <div class="finance-pareto-grid">
+              ${categoryList.slice(0, 6).map((c, i) => {
+                const pct = Math.round((c.spent / totalSpentForPareto) * 100);
+                const color = i < paretoColors.length ? paretoColors[i] : '#64748B';
+                return `
+                  <div class="finance-pareto-item">
+                    <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                      <div class="finance-pareto-rank" style="color: ${color};">${i + 1}</div>
+                      <div style="min-width: 0;">
+                        <strong style="font-size: 0.85rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                          ${escapeHtml(c.name)}
+                        </strong>
+                        <span class="zlog-ood-badge" style="font-size: 0.66rem; padding: 1px 6px;">
+                          ${escapeHtml(c.classification)}
+                        </span>
+                      </div>
+                    </div>
+                    <div style="text-align: right; flex-shrink: 0;">
+                      <div style="font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: var(--text-primary);">
+                        $${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </div>
+                      <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">${pct}% of spend</span>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `}
       </div>
 
       <!-- 3. Monthly Outlier Radar (vs. Rolling Baseline) -->
