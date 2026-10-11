@@ -1369,3 +1369,168 @@
   border-top-color: rgba(255, 255, 255, 0.08);
 }
 
+/* --------------------------------------------------------------------------
+   Weekly Sunday Cadence Bar
+   -------------------------------------------------------------------------- */
+.finance-weekly-cadence-bar {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(13, 148, 136, 0.05) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.18);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: all 0.2s ease-in-out;
+}
+
+.finance-weekly-cadence-bar.completed {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+  border-color: rgba(13, 148, 136, 0.3);
+}
+
+[data-theme="dark"] .finance-weekly-cadence-bar {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(13, 148, 136, 0.08) 100%);
+  border-color: rgba(139, 92, 246, 0.28);
+}
+
+[data-theme="dark"] .finance-weekly-cadence-bar.completed {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.14) 0%, rgba(139, 92, 246, 0.08) 100%);
+  border-color: rgba(13, 148, 136, 0.35);
+}
+
+.finance-cadence-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 260px;
+}
+
+.finance-cadence-check-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  background: var(--bg-card, #FFFFFF);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.finance-cadence-check-btn:hover {
+  transform: scale(1.05);
+  border-color: var(--fin-primary);
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.2);
+}
+
+.finance-cadence-check-btn.checked {
+  background: var(--fin-primary);
+  border-color: var(--fin-primary);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
+}
+
+[data-theme="dark"] .finance-cadence-check-btn {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+[data-theme="dark"] .finance-cadence-check-btn.checked {
+  background: var(--fin-primary);
+  border-color: var(--fin-primary);
+  color: #FFFFFF;
+}
+
+.finance-cadence-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finance-cadence-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.finance-cadence-sub {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.finance-cadence-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.finance-cadence-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+
+.finance-cadence-status-badge.done {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+[data-theme="dark"] .finance-cadence-status-badge.done {
+  background: rgba(20, 184, 166, 0.2);
+  color: #2DD4BF;
+  border-color: rgba(20, 184, 166, 0.35);
+}
+
+.finance-cadence-status-badge.pending {
+  background: rgba(124, 58, 237, 0.1);
+  color: #6D28D9;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+}
+
+[data-theme="dark"] .finance-cadence-status-badge.pending {
+  background: rgba(139, 92, 246, 0.2);
+  color: #C4B5FD;
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.finance-cadence-sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--fin-violet-border);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--fin-violet);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+[data-theme="dark"] .finance-cadence-sync-btn {
+  background: var(--bg-surface, #1E293B);
+}
+
+.finance-cadence-sync-btn:hover {
+  background: var(--fin-violet);
+  color: #FFFFFF;
+  border-color: var(--fin-violet);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+}
+

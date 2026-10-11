@@ -173,6 +173,81 @@ function renderPeriodFilterPills() {
 }
 
 /* ==========================================================================
+   Weekly Sunday Cadence Engine
+   ========================================================================== */
+function getCurrentWeekSundayIso() {
+  if (typeof getSundayOfWeek === 'function' && typeof formatDateIso === 'function') {
+    return formatDateIso(getSundayOfWeek(new Date()));
+  }
+  const d = new Date();
+  d.setDate(d.getDate() - d.getDay());
+  return d.toISOString().split('T')[0];
+}
+
+function toggleFinanceSundayCadence(checked) {
+  const sundayIso = getCurrentWeekSundayIso();
+  const isDone = (checked !== undefined) ? checked : !storage.isFinanceSundayUpdated(sundayIso);
+  storage.setFinanceSundayUpdated(sundayIso, isDone);
+  if (isDone) {
+    if (typeof confetti === 'function') {
+      try {
+        confetti({ particleCount: 30, spread: 60, origin: { y: 0.15 } });
+      } catch (e) {}
+    }
+    if (typeof showToast === 'function') {
+      showToast(`Sunday finance pulse marked complete for week of ${sundayIso} ✨`, 'success');
+    }
+  } else {
+    if (typeof showToast === 'function') {
+      showToast(`Sunday finance pulse marked pending for week of ${sundayIso}`);
+    }
+  }
+  renderFinanceBurn();
+}
+
+function renderFinanceWeeklyCadenceBar() {
+  const sundayIso = getCurrentWeekSundayIso();
+  const isDone = storage.isFinanceSundayUpdated(sundayIso);
+
+  let dateLabel = sundayIso;
+  try {
+    const parts = sundayIso.split('-').map(Number);
+    const d = new Date(parts[0], parts[1] - 1, parts[2]);
+    dateLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  } catch (e) {}
+
+  return `
+    <div class="finance-weekly-cadence-bar ${isDone ? 'completed' : ''}">
+      <div class="finance-cadence-left">
+        <button type="button" class="finance-cadence-check-btn ${isDone ? 'checked' : ''}" onclick="toggleFinanceSundayCadence(!${isDone})" title="${isDone ? 'Mark as pending' : 'Mark as updated for this Sunday'}">
+          <i data-lucide="check" style="width: 18px; height: 18px; stroke-width: 2.5;"></i>
+        </button>
+        <div class="finance-cadence-text">
+          <div class="finance-cadence-title">
+            <span>Weekly Cadence: Sync Monarch &amp; Review Cash Flow</span>
+            <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
+          </div>
+          <div class="finance-cadence-sub">
+            Update cadence: Every Sunday &bull; Non-destructive upsert keeps all historical months intact
+          </div>
+        </div>
+      </div>
+
+      <div class="finance-cadence-right">
+        <span class="finance-cadence-status-badge ${isDone ? 'done' : 'pending'}">
+          <i data-lucide="${isDone ? 'check-circle-2' : 'clock'}" style="width: 12px; height: 12px;"></i>
+          <span>${isDone ? 'Updated for this week' : 'Due this Sunday'}</span>
+        </span>
+        <button type="button" class="finance-cadence-sync-btn" onclick="triggerMonarchFileInput()" title="Upload latest Monarch CSV export">
+          <i data-lucide="upload-cloud" style="width: 13px; height: 13px;"></i>
+          <span>Sync Monarch CSV</span>
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* ==========================================================================
    Sub-View 1: Cash Flow & Spend Radar (Income, Pareto Drivers, Outliers & Levers)
    ========================================================================== */
 function renderFinanceBurn() {
@@ -332,6 +407,9 @@ function renderFinanceBurn() {
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px;">
       
+      <!-- Top Weekly Sunday Cadence Task Checkbox -->
+      ${renderFinanceWeeklyCadenceBar()}
+
       <!-- 1. Hero Cash Flow Split & Synced Period Selector -->
       <div class="finance-flow-hero">
         <div class="finance-flow-header">
@@ -1050,8 +1128,17 @@ function setupMonarchDropzoneListeners() {
 }
 
 function triggerMonarchFileInput() {
-  const input = document.getElementById('monarch-file-input');
-  if (input) input.click();
+  let input = document.getElementById('monarch-file-input');
+  if (!input) {
+    input = document.createElement('input');
+    input.type = 'file';
+    input.id = 'monarch-file-input';
+    input.accept = '.csv';
+    input.style.display = 'none';
+    input.addEventListener('change', handleMonarchFileSelected);
+    document.body.appendChild(input);
+  }
+  input.click();
 }
 
 function handleMonarchFileSelected(event) {
@@ -1219,70 +1306,145 @@ function parseAndLoadMonarchCSV(csvText) {
     // Sort transactions descending by date
     allValidTransactions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
-    // Construct monthly summaries array
-    const sortedMonths = Object.keys(monthTotals).sort().reverse();
-    const monthlySummaries = sortedMonths.map(mStr => ({
-      month: mStr,
-      income: Math.round(monthTotals[mStr].income * 100) / 100,
-      outflow: Math.max(0, Math.round(monthTotals[mStr].outflow * 100) / 100),
-      notes: `Synced from Monarch (${monthTotals[mStr].income > 0 ? 'Salary + ' : ''}Spend tracked)`
-    }));
+    // 1. Non-destructive merge of monthly summaries
+    const currentFin = storage.getFinanceData() || {};
+    const existingSummaries = Array.isArray(currentFin.monthlySummaries) ? currentFin.monthlySummaries : [];
+    const summaryMap = new Map();
 
-    // Calculate 3-month rolling category baselines from the 3 most recent completed months
-    const baselineSourceMonths = sortedMonths.slice(1, 4); // skip current partial month, take prior 3
-    const categoryBaselines = {};
-    const allSeenCats = Object.keys(categoryFrequency);
-
-    allSeenCats.forEach(catName => {
-      let sum = 0;
-      let count = 0;
-      baselineSourceMonths.forEach(mStr => {
-        if (monthTotals[mStr] && monthTotals[mStr].categories[catName]) {
-          sum += monthTotals[mStr].categories[catName];
-        }
-        count++;
-      });
-      const avg = count > 0 ? (sum / count) : 0;
-      if (avg > 0 || (categoryFrequency[catName] || 0) >= 2) {
-        categoryBaselines[catName] = Math.round(avg * 100) / 100;
+    // Pre-populate with all existing historical months so older data is never wiped
+    existingSummaries.forEach(s => {
+      if (s && s.month) {
+        summaryMap.set(s.month, { ...s });
       }
     });
 
-    // Build categories list with smart classifications and icons
-    const updatedCategories = allSeenCats.map(catName => {
-      const meta = CATEGORY_MAP[catName] || { classification: 'Discretionary', icon: 'tag' };
-      const base = categoryBaselines[catName] || 500;
-      return {
-        id: 'cat-' + catName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
-        name: catName,
-        budget: Math.round(base),
-        baseline: Math.round(base),
-        classification: meta.classification,
-        icon: meta.icon
-      };
+    // Upsert newly parsed months from CSV
+    const sortedMonths = Object.keys(monthTotals).sort().reverse();
+    sortedMonths.forEach(mStr => {
+      const existing = summaryMap.get(mStr);
+      summaryMap.set(mStr, {
+        month: mStr,
+        income: Math.round(monthTotals[mStr].income * 100) / 100,
+        outflow: Math.max(0, Math.round(monthTotals[mStr].outflow * 100) / 100),
+        notes: (existing && existing.notes && !existing.notes.startsWith('Synced from Monarch'))
+          ? existing.notes
+          : `Synced from Monarch (${monthTotals[mStr].income > 0 ? 'Salary + ' : ''}Spend tracked)`
+      });
     });
 
-    // Save into storage manager
-    const currentFin = storage.getFinanceData();
+    const mergedSummaries = Array.from(summaryMap.values())
+      .sort((a, b) => (b.month || '').localeCompare(a.month || ''));
+
+    // 2. Non-destructive merge of transactions (deduplicated by ID or composite signature)
+    const existingTxs = Array.isArray(currentFin.transactions) ? currentFin.transactions : [];
+    const txMap = new Map();
+
+    existingTxs.forEach(tx => {
+      if (!tx) return;
+      const key = tx.id || `${tx.date}_${tx.amount}_${tx.merchant}_${tx.account}`;
+      txMap.set(key, tx);
+    });
+
+    allValidTransactions.forEach(tx => {
+      const key = tx.id || `${tx.date}_${tx.amount}_${tx.merchant}_${tx.account}`;
+      txMap.set(key, tx);
+    });
+
+    const mergedTransactions = Array.from(txMap.values())
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      .slice(0, 600); // 600 recent transactions provides rich history while remaining ~150KB
+
+    // 3. Merged rolling category baselines
+    // Only recalculate baselines if CSV provides at least 2 completed prior months; otherwise keep established baselines
+    const baselineSourceMonths = sortedMonths.slice(1, 4);
+    const mergedBaselines = { ...(currentFin.categoryBaselines || {}) };
+    const allSeenCats = Object.keys(categoryFrequency);
+
+    if (baselineSourceMonths.length >= 2) {
+      allSeenCats.forEach(catName => {
+        let sum = 0;
+        let count = 0;
+        baselineSourceMonths.forEach(mStr => {
+          if (monthTotals[mStr] && monthTotals[mStr].categories[catName]) {
+            sum += monthTotals[mStr].categories[catName];
+          }
+          count++;
+        });
+        const avg = count > 0 ? (sum / count) : 0;
+        if (avg > 0 || (categoryFrequency[catName] || 0) >= 2) {
+          mergedBaselines[catName] = Math.round(avg * 100) / 100;
+        }
+      });
+    } else {
+      // For weekly or single-month uploads, add baselines only for any newly discovered categories
+      allSeenCats.forEach(catName => {
+        if (mergedBaselines[catName] === undefined) {
+          const firstMonthSpend = (sortedMonths.length > 0 && monthTotals[sortedMonths[0]]?.categories[catName]) || 500;
+          mergedBaselines[catName] = Math.round(firstMonthSpend * 100) / 100;
+        }
+      });
+    }
+
+    // 4. Merged categories list (Preserve existing classifications and customizations)
+    const existingCats = Array.isArray(currentFin.categories) ? currentFin.categories : [];
+    const catMap = new Map();
+    existingCats.forEach(c => {
+      if (c && c.name) catMap.set(c.name, { ...c });
+    });
+
+    allSeenCats.forEach(catName => {
+      const meta = CATEGORY_MAP[catName] || { classification: 'Discretionary', icon: 'tag' };
+      const base = mergedBaselines[catName] || 500;
+      if (catMap.has(catName)) {
+        const existing = catMap.get(catName);
+        existing.baseline = Math.round(base);
+        if (!existing.budget) existing.budget = Math.round(base);
+        // Existing user classification is safely preserved!
+      } else {
+        catMap.set(catName, {
+          id: 'cat-' + catName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+          name: catName,
+          budget: Math.round(base),
+          baseline: Math.round(base),
+          classification: meta.classification,
+          icon: meta.icon
+        });
+      }
+    });
+
+    const mergedCategories = Array.from(catMap.values());
+
+    // 5. Save updated state and mark weekly cadence as complete
     const updatedFin = {
       ...currentFin,
-      monthlySummaries: monthlySummaries,
-      categoryBaselines: categoryBaselines,
-      categories: updatedCategories.length > 0 ? updatedCategories : currentFin.categories,
-      transactions: allValidTransactions.slice(0, 500) // Keep 500 recent transactions to stay well within localStorage quota
+      monthlySummaries: mergedSummaries,
+      categoryBaselines: mergedBaselines,
+      categories: mergedCategories,
+      transactions: mergedTransactions
     };
 
     storage.saveFinanceData(updatedFin);
-    storage.saveMonarchTransactions(allValidTransactions.slice(0, 500));
+    storage.saveMonarchTransactions(mergedTransactions);
+
+    // Automatically check off weekly Sunday cadence
+    const sundayIso = getCurrentWeekSundayIso();
+    storage.setFinanceSundayUpdated(sundayIso, true);
 
     if (sortedMonths.length > 0) {
       selectedFinanceMonth = sortedMonths[0]; // Active month (e.g. 2026-10)
     }
 
+    if (typeof confetti === 'function') {
+      try {
+        confetti({ particleCount: 35, spread: 60, origin: { y: 0.18 } });
+      } catch (e) {}
+    }
+
+    const toastMsg = `Merged ${allValidTransactions.length} transactions across ${mergedSummaries.length} months without overwriting past history! ✨`;
     if (typeof showToast === 'function') {
-      showToast(`Synced ${allValidTransactions.length} Monarch transactions across ${monthlySummaries.length} months! 📊`, 'success');
+      showToast(toastMsg, 'success');
     } else {
-      alert(`Successfully synced ${allValidTransactions.length} Monarch transactions!`);
+      alert(toastMsg);
     }
     renderFinancePage('burn');
   } catch (err) {

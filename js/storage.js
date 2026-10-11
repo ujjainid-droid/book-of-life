@@ -721,7 +721,10 @@ class StorageManager {
               : (merged.finance.subscriptions || []),
             accounts: (Array.isArray(s.finance.accounts) && s.finance.accounts.length > 0)
               ? s.finance.accounts
-              : (merged.finance.accounts || [])
+              : (merged.finance.accounts || []),
+            weeklySundayUpdates: (s.finance.weeklySundayUpdates && typeof s.finance.weeklySundayUpdates === 'object')
+              ? { ...(merged.finance.weeklySundayUpdates || {}), ...s.finance.weeklySundayUpdates }
+              : (merged.finance.weeklySundayUpdates || {})
           };
         }
       }
@@ -2326,6 +2329,29 @@ class StorageManager {
     } catch (e) {}
     this.saveData();
     return this.data.finance;
+  }
+
+  isFinanceSundayUpdated(sundayIso) {
+    const fin = this.getFinanceData();
+    if (!fin.weeklySundayUpdates || typeof fin.weeklySundayUpdates !== 'object') {
+      return false;
+    }
+    const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
+    return !!fin.weeklySundayUpdates[iso];
+  }
+
+  setFinanceSundayUpdated(sundayIso, isDone = true) {
+    const fin = this.getFinanceData();
+    if (!fin.weeklySundayUpdates || typeof fin.weeklySundayUpdates !== 'object') {
+      fin.weeklySundayUpdates = {};
+    }
+    const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
+    fin.weeklySundayUpdates[iso] = !!isDone;
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return fin.weeklySundayUpdates[iso];
   }
 
   saveMonthlyCashFlowSummary(summary) {
