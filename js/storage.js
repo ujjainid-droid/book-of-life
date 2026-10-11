@@ -697,7 +697,45 @@ class StorageManager {
             }
           });
         }
+
+        // 12. Finance Hub State (Monarch summaries, categories, baselines, and transactions)
+        if (s.finance && typeof s.finance === 'object') {
+          if (!merged.finance) merged.finance = {};
+          merged.finance = {
+            ...merged.finance,
+            ...s.finance,
+            monthlySummaries: (Array.isArray(s.finance.monthlySummaries) && s.finance.monthlySummaries.length > 0)
+              ? s.finance.monthlySummaries
+              : (merged.finance.monthlySummaries || []),
+            categoryBaselines: (s.finance.categoryBaselines && typeof s.finance.categoryBaselines === 'object')
+              ? { ...(merged.finance.categoryBaselines || {}), ...s.finance.categoryBaselines }
+              : (merged.finance.categoryBaselines || {}),
+            categories: (Array.isArray(s.finance.categories) && s.finance.categories.length > 0)
+              ? s.finance.categories
+              : (merged.finance.categories || []),
+            transactions: (Array.isArray(s.finance.transactions) && s.finance.transactions.length > 0)
+              ? s.finance.transactions
+              : (merged.finance.transactions || []),
+            subscriptions: (Array.isArray(s.finance.subscriptions) && s.finance.subscriptions.length > 0)
+              ? s.finance.subscriptions
+              : (merged.finance.subscriptions || []),
+            accounts: (Array.isArray(s.finance.accounts) && s.finance.accounts.length > 0)
+              ? s.finance.accounts
+              : (merged.finance.accounts || [])
+          };
+        }
       }
+
+      // Check dedicated resilient Finance backup
+      try {
+        const dedicatedFinance = localStorage.getItem('BOL_FINANCE_DATA_V2');
+        if (dedicatedFinance) {
+          const parsedFin = JSON.parse(dedicatedFinance);
+          if (parsedFin && typeof parsedFin === 'object') {
+            merged.finance = { ...(merged.finance || {}), ...parsedFin };
+          }
+        }
+      } catch (e) {}
 
       // Ensure 'Move' and 'Stand' exist in habits
       if (!Array.isArray(merged.habits) || merged.habits.length === 0) {
@@ -2250,6 +2288,18 @@ class StorageManager {
      -------------------------------------------------------------------------- */
   getFinanceData() {
     if (!this.data.finance) {
+      // Check dedicated resilient backup first
+      try {
+        const backup = localStorage.getItem('BOL_FINANCE_DATA_V2');
+        if (backup) {
+          const parsed = JSON.parse(backup);
+          if (parsed && typeof parsed === 'object') {
+            this.data.finance = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+    if (!this.data.finance) {
       this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
       this.saveData();
     } else {
@@ -2270,6 +2320,9 @@ class StorageManager {
 
   saveFinanceData(data) {
     this.data.finance = data;
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(data));
+    } catch (e) {}
     this.saveData();
     return this.data.finance;
   }
@@ -2283,13 +2336,23 @@ class StorageManager {
     } else {
       fin.monthlySummaries.unshift(summary);
     }
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
     this.saveData();
     return fin.monthlySummaries;
   }
 
   saveMonarchTransactions(transactions) {
     const fin = this.getFinanceData();
-    fin.transactions = transactions;
+    // Keep up to 500 recent transactions to protect localStorage limits
+    fin.transactions = Array.isArray(transactions) ? transactions.slice(0, 500) : [];
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return fin.transactions;
+  }
     this.saveData();
     return fin.transactions;
   }

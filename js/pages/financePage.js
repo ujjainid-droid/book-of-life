@@ -193,11 +193,11 @@ function renderFinanceBurn() {
     baselineScale = 3;
   } else if (financeActivePeriod === 'ytd') {
     periodLabel = '2026 Year-to-Date (Jan–Oct)';
-    targetMonths = ['2026-07', '2026-08', '2026-09', '2026-10'];
-    baselineScale = 4;
+    targetMonths = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10'];
+    baselineScale = 10;
   }
 
-  // Calculate Inflow & Outflow for the period from summaries or transactions
+  // Calculate Inflow & Outflow for the period from summaries
   let periodInflow = 0;
   let periodOutflow = 0;
 
@@ -206,11 +206,6 @@ function renderFinanceBurn() {
     if (s) {
       periodInflow += parseFloat(s.income) || 0;
       periodOutflow += parseFloat(s.outflow) || 0;
-    } else {
-      // Default fallback values
-      if (mStr === '2026-10') { periodInflow += 14250.00; periodOutflow += 10410.00; }
-      else if (mStr === '2026-09') { periodInflow += 13500.00; periodOutflow += 9650.00; }
-      else { periodInflow += 13500.00; periodOutflow += 9900.00; }
     }
   });
 
@@ -230,21 +225,18 @@ function renderFinanceBurn() {
   if (periodTxs.length > 0) {
     periodTxs.forEach(t => {
       const amt = parseFloat(t.amount) || 0;
-      const isInc = t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0;
+      const isInc = t.isIncome || t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0;
       if (!isInc) {
         const catName = t.category || 'Discretionary';
         categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
       }
     });
   } else {
-    // Proportional mock fallback based on baseline scale
+    // Proportional fallback based on rolling baseline scale
     categories.forEach(c => {
       const base = baselines[c.name] || c.baseline || 500;
       categorySpendMap[c.name] = base * baselineScale;
     });
-    // Add known variances
-    if (categorySpendMap['Dining Out & Takeout']) categorySpendMap['Dining Out & Takeout'] += (600 * (baselineScale > 1 ? 1.8 : 1));
-    if (categorySpendMap['Shopping & Discretionary']) categorySpendMap['Shopping & Discretionary'] += (300 * (baselineScale > 1 ? 1.5 : 1));
   }
 
   // 1. Compute Top Categories (Pareto 80/20)
@@ -1053,13 +1045,60 @@ function parseAndLoadMonarchCSV(csvText) {
     const accountIdx = headers.findIndex(h => h.includes('account'));
     const amountIdx = headers.findIndex(h => h.includes('amount'));
     const tagsIdx = headers.findIndex(h => h.includes('tag'));
+    const idIdx = headers.findIndex(h => h === 'id');
 
     if (amountIdx === -1) {
       alert('Could not locate an "Amount" column in this CSV file.');
       return;
     }
 
-    const newTransactions = [];
+    // Categories to skip from earn vs spend (Transfers, credit card payments, buys/sells)
+    const TRANSFER_CATS = [
+      'credit card payment', 'transfer', 'buy', 'sell', 'balance adjustment',
+      'balance adjustments', 'source to source/fund to fund transfer in',
+      'source to source/fund to fund transfer out', 'plan contribution'
+    ];
+
+    // Income categories
+    const INCOME_CATS = [
+      'paychecks', 'paycheck', 'interest', 'dividends & capital gains',
+      'other income (incl cc reward credits)', 'income', 'bonus'
+    ];
+
+    // Category classifications and icons mapping
+    const CATEGORY_MAP = {
+      'Mortgage': { classification: 'Fixed Baseline', icon: 'home' },
+      'Medical + Dentist': { classification: 'Healthcare', icon: 'heart-pulse' },
+      'Home maintenance': { classification: 'Fixed Baseline', icon: 'wrench' },
+      'Shopping': { classification: 'Discretionary', icon: 'shopping-bag' },
+      'Groceries': { classification: 'Essential', icon: 'shopping-cart' },
+      'Travel & Vacation': { classification: 'Discretionary', icon: 'plane' },
+      'Eating out': { classification: 'Discretionary', icon: 'utensils' },
+      'Gas & Electric': { classification: 'Fixed Baseline', icon: 'zap' },
+      'Child Activities': { classification: 'Enrichment', icon: 'book-open' },
+      'Mocha': { classification: 'Family & Pet', icon: 'paw-print' },
+      'Clothing, Shoes, Jewelry': { classification: 'Discretionary', icon: 'tag' },
+      'Transportation': { classification: 'Essential', icon: 'car' },
+      'Fitness': { classification: 'Self Care', icon: 'activity' },
+      'Self care + Grooming': { classification: 'Self Care', icon: 'sparkles' },
+      "C'mas, Bday, India gifts 🎄 🎂 🇮🇳": { classification: 'Discretionary', icon: 'gift' },
+      'Camp': { classification: 'Enrichment', icon: 'sun' },
+      'Child Care': { classification: 'Fixed Baseline', icon: 'baby' },
+      'Subscriptions': { classification: 'Recurring', icon: 'repeat' },
+      'Water': { classification: 'Fixed Baseline', icon: 'droplet' },
+      'School stuff + Education': { classification: 'Enrichment', icon: 'graduation-cap' },
+      'Home Improvement': { classification: 'Fixed Baseline', icon: 'home' },
+      'Internet & Cable': { classification: 'Fixed Baseline', icon: 'wifi' },
+      'Charity': { classification: 'Discretionary', icon: 'heart' },
+      'Home Security': { classification: 'Fixed Baseline', icon: 'shield' },
+      'Auto Payment': { classification: 'Fixed Baseline', icon: 'car' },
+      'Entertainment & Recreation': { classification: 'Discretionary', icon: 'film' }
+    };
+
+    const monthTotals = {}; // { [YYYY-MM]: { income: 0, outflow: 0, categories: {} } }
+    const allValidTransactions = [];
+    const categoryFrequency = {};
+
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
       if (!row || row.length === 0 || !row[dateIdx]) continue;
@@ -1069,61 +1108,126 @@ function parseAndLoadMonarchCSV(csvText) {
       let originalVal = parseFloat(rawAmount) || 0;
       
       const categoryName = (categoryIdx !== -1 && row[categoryIdx]) ? row[categoryIdx].trim() : 'Discretionary';
+      const catLower = categoryName.toLowerCase();
       const merchantName = (merchantIdx !== -1 && row[merchantIdx]) ? row[merchantIdx].trim() : 'Transaction';
       const accountName = (accountIdx !== -1 && row[accountIdx]) ? row[accountIdx].trim() : 'Account';
       const tagsVal = (tagsIdx !== -1 && row[tagsIdx]) ? row[tagsIdx].trim() : '';
       const dateVal = row[dateIdx].trim();
+      const txId = (idIdx !== -1 && row[idIdx]) ? row[idIdx].trim() : ('tx-m-' + i);
 
-      const isIncome = originalVal > 0 || categoryName.toLowerCase().includes('income') || tagsVal.toLowerCase().includes('income');
-      const amountNum = Math.abs(originalVal);
+      // Skip internal transfers and credit card paydowns
+      if (TRANSFER_CATS.includes(catLower) || catLower.includes('transfer') || catLower.includes('credit card payment')) {
+        continue;
+      }
 
-      newTransactions.push({
-        id: 'tx-m-' + Date.now() + '-' + i,
+      const isIncome = INCOME_CATS.includes(catLower) || catLower.includes('paycheck') || catLower.includes('income') || (originalVal > 0 && catLower.includes('dividend'));
+
+      if (dateVal.length >= 7) {
+        const mStr = dateVal.substring(0, 7);
+        if (!monthTotals[mStr]) {
+          monthTotals[mStr] = { income: 0, outflow: 0, categories: {} };
+        }
+
+        if (isIncome) {
+          monthTotals[mStr].income += Math.abs(originalVal);
+        } else {
+          if (originalVal < 0) {
+            const spend = Math.abs(originalVal);
+            monthTotals[mStr].outflow += spend;
+            monthTotals[mStr].categories[categoryName] = (monthTotals[mStr].categories[categoryName] || 0) + spend;
+            categoryFrequency[categoryName] = (categoryFrequency[categoryName] || 0) + 1;
+          } else if (originalVal > 0) {
+            // Refund/reimbursement
+            monthTotals[mStr].outflow -= originalVal;
+            monthTotals[mStr].categories[categoryName] = (monthTotals[mStr].categories[categoryName] || 0) - originalVal;
+          }
+        }
+      }
+
+      allValidTransactions.push({
+        id: txId,
         date: dateVal,
         merchant: merchantName,
         category: categoryName,
         account: accountName,
-        amount: amountNum,
+        amount: Math.abs(originalVal),
+        isIncome: isIncome,
         tags: tagsVal
       });
     }
 
-    storage.saveMonarchTransactions(newTransactions);
+    // Sort transactions descending by date
+    allValidTransactions.sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
-    // Auto-compute monthly cash flow totals for the imported transactions
-    const monthTotals = {};
-    newTransactions.forEach(t => {
-      if (!t.date || t.date.length < 7) return;
-      const mStr = t.date.substring(0, 7);
-      if (!monthTotals[mStr]) monthTotals[mStr] = { income: 0, outflow: 0 };
-      const isInc = t.category.toLowerCase().includes('income') || (t.tags && t.tags.toLowerCase().includes('income'));
-      if (isInc) {
-        monthTotals[mStr].income += t.amount;
-      } else {
-        monthTotals[mStr].outflow += t.amount;
+    // Construct monthly summaries array
+    const sortedMonths = Object.keys(monthTotals).sort().reverse();
+    const monthlySummaries = sortedMonths.map(mStr => ({
+      month: mStr,
+      income: Math.round(monthTotals[mStr].income * 100) / 100,
+      outflow: Math.max(0, Math.round(monthTotals[mStr].outflow * 100) / 100),
+      notes: `Synced from Monarch (${monthTotals[mStr].income > 0 ? 'Salary + ' : ''}Spend tracked)`
+    }));
+
+    // Calculate 3-month rolling category baselines from the 3 most recent completed months
+    const baselineSourceMonths = sortedMonths.slice(1, 4); // skip current partial month, take prior 3
+    const categoryBaselines = {};
+    const allSeenCats = Object.keys(categoryFrequency);
+
+    allSeenCats.forEach(catName => {
+      let sum = 0;
+      let count = 0;
+      baselineSourceMonths.forEach(mStr => {
+        if (monthTotals[mStr] && monthTotals[mStr].categories[catName]) {
+          sum += monthTotals[mStr].categories[catName];
+        }
+        count++;
+      });
+      const avg = count > 0 ? (sum / count) : 0;
+      if (avg > 0 || (categoryFrequency[catName] || 0) >= 2) {
+        categoryBaselines[catName] = Math.round(avg * 100) / 100;
       }
     });
 
-    Object.keys(monthTotals).forEach(mStr => {
-      const summary = {
-        month: mStr,
-        income: monthTotals[mStr].income > 0 ? monthTotals[mStr].income : 14250.00,
-        outflow: monthTotals[mStr].outflow,
-        notes: `Auto-synced from Monarch CSV (${newTransactions.length} transactions)`
+    // Build categories list with smart classifications and icons
+    const updatedCategories = allSeenCats.map(catName => {
+      const meta = CATEGORY_MAP[catName] || { classification: 'Discretionary', icon: 'tag' };
+      const base = categoryBaselines[catName] || 500;
+      return {
+        id: 'cat-' + catName.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+        name: catName,
+        budget: Math.round(base),
+        baseline: Math.round(base),
+        classification: meta.classification,
+        icon: meta.icon
       };
-      storage.saveMonthlyCashFlowSummary(summary);
-      selectedFinanceMonth = mStr;
     });
 
+    // Save into storage manager
+    const currentFin = storage.getFinanceData();
+    const updatedFin = {
+      ...currentFin,
+      monthlySummaries: monthlySummaries,
+      categoryBaselines: categoryBaselines,
+      categories: updatedCategories.length > 0 ? updatedCategories : currentFin.categories,
+      transactions: allValidTransactions.slice(0, 500) // Keep 500 recent transactions to stay well within localStorage quota
+    };
+
+    storage.saveFinanceData(updatedFin);
+    storage.saveMonarchTransactions(allValidTransactions.slice(0, 500));
+
+    if (sortedMonths.length > 0) {
+      selectedFinanceMonth = sortedMonths[0]; // Active month (e.g. 2026-10)
+    }
+
     if (typeof showToast === 'function') {
-      showToast(`Imported ${newTransactions.length} Monarch transactions & updated Cash Flow! 📊`, 'success');
+      showToast(`Synced ${allValidTransactions.length} Monarch transactions across ${monthlySummaries.length} months! 📊`, 'success');
     } else {
-      alert(`Successfully imported ${newTransactions.length} Monarch transactions!`);
+      alert(`Successfully synced ${allValidTransactions.length} Monarch transactions!`);
     }
     renderFinancePage('burn');
   } catch (err) {
     console.error('Error parsing Monarch CSV:', err);
-    alert('Failed to parse Monarch CSV file. Please ensure it is a standard CSV.');
+    alert('Failed to parse Monarch CSV file: ' + err.message);
   }
 }
 
