@@ -60,7 +60,14 @@ function renderCoverHubPage() {
       </div>
 
       <!-- Executive Season Focus HUD (Matching Today's Daily Roast Banner) -->
-      <div class="today-daily-roast-banner cover-header-hero">
+      <div class="today-daily-roast-banner cover-header-hero today-mascot-banner">
+        <div class="mascot-avatar-wrapper" onclick="switchAppView('sanctuary')" title="Sprout: Tap to view Today's Daily Sheet &amp; Habits" style="cursor: pointer;">
+          <div class="mascot-svg-box" style="width: 58px; height: 58px;">
+            ${typeof renderSproutSvg === 'function' ? renderSproutSvg('momentum') : '<span style="font-size: 1.8rem;">🥔</span>'}
+          </div>
+          <div class="mascot-poke-hint">Today →</div>
+        </div>
+
         <div class="roast-badge-pill cover-season-pill" onclick="promptEditSeasonFocus()" title="Click to customize seasonal focus theme">
           <span class="roast-badge-sparkle">✨</span>
           <span class="roast-badge-label">Focus Theme</span>
