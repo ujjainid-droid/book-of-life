@@ -1681,12 +1681,31 @@ class StorageManager {
       return false;
     });
 
-    // Sync seed updates for requested reissued checks
+    // Sync seed updates for requested reissued checks and submitted Included Health claims
+    const barnessSubmittedIds = new Set([
+      'claim-barness-2026-09-15', 'claim-barness-2026-08-21', 'claim-barness-2026-07-08',
+      'claim-barness-2026-06-01', 'claim-barness-2026-05-04', 'claim-barness-2026-03-13',
+      'claim-barness-2026-03-02'
+    ]);
+
     this.data.claims.forEach(c => {
+      if (barnessSubmittedIds.has(c.id)) {
+        if (c.stage === 'ready_to_send') {
+          c.stage = 'with_included_health';
+          c.inPortal = true;
+          c.nextAction = 'Submitted to Included Health — in review';
+        }
+      }
       if (c.id === 'claim-eval-2025-11' || c.id === 'claim-ms-2026-01-28') {
         if (!c.reissueRequested) {
           c.reissueRequested = true;
           c.nextAction = `Reissue requested from Anthem ($${(c.eobPlanPaid || c.expectedRecovery || 0).toFixed(2)}) — awaiting check arrival in mail`;
+        }
+      }
+      if (c.id === 'claim-barness-2026-02-02') {
+        if (!c.reissueRequested) {
+          c.reissueRequested = true;
+          c.nextAction = 'Message sent to Anthem ($210.00) — awaiting trace/reissue response';
         }
       }
     });

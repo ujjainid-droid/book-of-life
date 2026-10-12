@@ -8321,12 +8321,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Receipt #005834 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-barness-2026-08-21",
@@ -8339,12 +8339,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Statement #000068 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-barness-2026-07-08",
@@ -8357,12 +8357,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Statement #000068 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-barness-2026-06-01",
@@ -8375,12 +8375,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Statement #000068 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-barness-2026-05-04",
@@ -8393,12 +8393,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Statement #000068 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-barness-2026-03-13",
@@ -8411,12 +8411,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Statement #000068 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-barness-2026-03-02",
@@ -8429,12 +8429,12 @@ const DEFAULT_REAL_CLAIMS = [
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "ready_to_send",
-    "inPortal": false,
+    "stage": "with_included_health",
+    "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Upload to Included Health (Statement #000068 on hand)",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid CC. Expected 70% recovery: $210.00."
+    "nextAction": "Submitted to Included Health — in review",
+    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
   },
   {
     "id": "claim-neuro-2025-10-15",
@@ -8468,12 +8468,13 @@ const DEFAULT_REAL_CLAIMS = [
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
     "stage": "check_due",
+    "reissueRequested": true,
     "inPortal": true,
     "inBank": false,
     "claimNumber": "20260462A0745",
     "eobPlanPaid": 210.0,
-    "nextAction": "Contact Anthem: $210 reimbursement approved on Claim #20260462A0745 missing from checking",
-    "notes": "Approved by Anthem for $210.00 on Feb 2 session, but no $210 deposit appeared in checking."
+    "nextAction": "Message sent to Anthem ($210.00) — awaiting trace/reissue response",
+    "notes": "Approved by Anthem for $210.00 on Feb 2 session. Message sent to Anthem to trace and reissue missing payment."
   },
   {
     "id": "claim-ms-2026-01-28",
