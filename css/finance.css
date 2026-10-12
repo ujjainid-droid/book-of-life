@@ -561,43 +561,53 @@
 /* --------------------------------------------------------------------------
    Net Worth, Runway & Accounts Sub-view
    -------------------------------------------------------------------------- */
-.finance-runway-hero {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.10) 0%, rgba(124, 58, 237, 0.05) 100%);
-  border: 1px solid var(--fin-primary-border);
-  border-radius: var(--radius-lg, 14px);
-  padding: 22px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
-
-.finance-nw-hero-stats {
+/* --------------------------------------------------------------------------
+   Net Worth Deconstructed Nordic Cards (Option B with Donut Chart)
+   -------------------------------------------------------------------------- */
+.finance-nw-deconstructed-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr;
-  gap: 16px;
-  align-items: center;
+  grid-template-columns: 1.15fr 0.95fr 1.25fr;
+  gap: 14px;
 }
 
-@media (max-width: 960px) {
-  .finance-nw-hero-stats {
+@media (max-width: 1024px) {
+  .finance-nw-deconstructed-grid {
     grid-template-columns: 1fr 1fr;
   }
 }
 
-@media (max-width: 580px) {
-  .finance-nw-hero-stats {
+@media (max-width: 720px) {
+  .finance-nw-deconstructed-grid {
     grid-template-columns: 1fr;
   }
 }
 
-.finance-nw-stat-col {
+.finance-nw-tile-card {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-lg, 14px);
+  padding: 16px 18px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.15s ease;
 }
 
-.finance-nw-stat-label {
-  font-size: 0.72rem;
+[data-theme="dark"] .finance-nw-tile-card {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.finance-nw-tile-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.finance-nw-tile-lbl {
+  font-size: 0.70rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -607,70 +617,138 @@
   gap: 5px;
 }
 
-.finance-nw-stat-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
-  font-size: 1.45rem;
-  font-weight: 800;
-  color: var(--text-primary);
-  line-height: 1.1;
-}
-
-.finance-nw-stat-val.hero-val {
-  font-size: 2.1rem;
+.finance-nw-tile-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(13, 148, 136, 0.08);
   color: #0D9488;
+  border: 1px solid rgba(13, 148, 136, 0.22);
 }
 
-[data-theme="dark"] .finance-nw-stat-val.hero-val {
+[data-theme="dark"] .finance-nw-tile-badge {
+  background: rgba(13, 148, 136, 0.18);
+  color: #2DD4BF;
+  border-color: rgba(13, 148, 136, 0.35);
+}
+
+.finance-nw-tile-hero {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0D9488;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+[data-theme="dark"] .finance-nw-tile-hero {
   color: #2DD4BF;
 }
 
-.finance-nw-stat-sub {
+.finance-nw-tile-sub {
   font-size: 0.72rem;
   color: var(--text-secondary);
 }
 
-/* Macro Asset Allocation Stacked Bar */
-.finance-alloc-bar-container {
+.finance-nw-tile-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.70rem;
+  color: var(--text-muted);
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light, #F1F5F9);
+}
+
+[data-theme="dark"] .finance-nw-tile-footer {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Donut Chart Layout */
+.finance-donut-layout {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.finance-donut-svg-wrap {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  flex-shrink: 0;
+}
+
+.finance-donut-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.finance-donut-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.finance-alloc-bar {
-  display: flex;
-  height: 12px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: var(--bg-surface, #E2E8F0);
-  gap: 2px;
-}
-
-.finance-alloc-segment {
-  height: 100%;
-  transition: width 0.3s ease;
-  position: relative;
-}
-
-.finance-alloc-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
   align-items: center;
+  line-height: 1.1;
 }
 
-.finance-alloc-legend-item {
-  display: inline-flex;
+.finance-donut-center-val {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.76rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.finance-donut-center-lbl {
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.finance-donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.finance-donut-legend-row {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--text-secondary);
 }
 
-.finance-alloc-dot {
-  width: 8px;
-  height: 8px;
+.finance-donut-legend-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finance-donut-dot {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
+}
+
+.finance-donut-legend-pct {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 /* 6-Card Asset Classes Matrix */
