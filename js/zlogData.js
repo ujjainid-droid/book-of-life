@@ -2894,10 +2894,7 @@ const DEFAULT_ZLOG_ENTRIES = {
     "rating": 3,
     "ratingRaw": "Almost Good",
     "aggression": false,
-    "notes": "- mostly good but periods of complaining about being bored and hyper
-- continues to say he does not want to go to the new school
-- got angry at one point when asked to stop playing YT on the Google Home in our room 
-- did a good job eating his dinner of pumpkin soup",
+    "notes": "- mostly good but periods of complaining about being bored and hyper\n- continues to say he does not want to go to the new school\n- got angry at one point when asked to stop playing YT on the Google Home in our room\n- did a good job eating his dinner of pumpkin soup",
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2919,11 +2916,7 @@ const DEFAULT_ZLOG_ENTRIES = {
     "rating": 5,
     "ratingRaw": "Great Day",
     "aggression": false,
-    "notes": "- good day overall
-- called dojo and asked them to give him a pep talk about ood school
-- little snippy here and there but overall ok
-- didn't do any school work 
-- drove by Newmark; not happy about changing school still",
+    "notes": "- good day overall\n- called dojo and asked them to give him a pep talk about ood school\n- little snippy here and there but overall ok\n- didn't do any school work\n- drove by Newmark; not happy about changing school still",
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2945,11 +2938,7 @@ const DEFAULT_ZLOG_ENTRIES = {
     "rating": 5,
     "ratingRaw": "Great Day",
     "aggression": false,
-    "notes": "- good morning
-- good at pickup
-- wanted to play as soon as he got home
-- got snippy when we asked him to put his backpack away forst
-- otherwise good rest of the evening",
+    "notes": "- good morning\n- good at pickup\n- wanted to play as soon as he got home\n- got snippy when we asked him to put his backpack away forst\n- otherwise good rest of the evening",
     "meds": {
       "z": true,
       "zDose": "75mg",
@@ -2971,12 +2960,7 @@ const DEFAULT_ZLOG_ENTRIES = {
     "rating": 5,
     "ratingRaw": "Great Day",
     "aggression": false,
-    "notes": "- good morning
-- did not call from school or aftercare
-- good at pickup and went to MA
-- wasn't 100% focussed but did reasonably well
-- in very good mood in the evening
-- did some math practice but nothing else",
+    "notes": "- good morning\n- did not call from school or aftercare\n- good at pickup and went to MA\n- wasn't 100% focussed but did reasonably well\n- in very good mood in the evening\n- did some math practice but nothing else",
     "meds": {
       "z": true,
       "zDose": "75mg",
