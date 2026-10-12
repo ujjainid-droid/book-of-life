@@ -9,8 +9,36 @@ class StorageManager {
     this.data = this.loadData();
     this.applyZeroResetFix();
     this.applyWhereInfoLivesAuditUpdate();
+    this.applyCleanClaimsMigration();
     this.recalculateAllStreaks();
     this.recalculatePointsFromHistory();
+  }
+
+  applyCleanClaimsMigration() {
+    const marker = 'BOL_CLAIMS_CLEAN_RECONCILED_V5';
+    try {
+      if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
+        if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
+          const claimsMap = new Map();
+          DEFAULT_REAL_CLAIMS.forEach(c => {
+            if (c && c.id) claimsMap.set(c.id, { ...c });
+          });
+          if (Array.isArray(this.data.claims)) {
+            this.data.claims.forEach(c => {
+              if (c && c.id && /^claim-\d{10,}-/.test(c.id) && !claimsMap.has(c.id)) {
+                claimsMap.set(c.id, { ...c });
+              }
+            });
+          }
+          this.data.claims = Array.from(claimsMap.values());
+          this.data.claimsSeedVersion = 5;
+          this.saveData();
+        }
+        try { localStorage.setItem(marker, 'true'); } catch (e) {}
+      }
+    } catch (e) {
+      console.warn('Claims clean migration failed', e);
+    }
   }
 
   applyWhereInfoLivesAuditUpdate() {
@@ -458,7 +486,7 @@ class StorageManager {
       claims: (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS))
         ? JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS))
         : (typeof DEFAULT_BARNESS_CLAIMS !== 'undefined' ? [...DEFAULT_BARNESS_CLAIMS] : []),
-      claimsSeedVersion: 2,
+      claimsSeedVersion: 5,
       // Z Log Data, Titration & Protocols
       zlogEntries: (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {},
       titrationHistory: (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? [...DEFAULT_TITRATION_HISTORY] : [],
@@ -742,24 +770,35 @@ class StorageManager {
       }
 
       // Merge and normalize Medical Claims (3-Way Reconciliation dataset)
-      const claimsNeedMigration = !merged.claimsSeedVersion || merged.claimsSeedVersion < 2 || 
-        (Array.isArray(merged.claims) && merged.claims.some(c => c && (c.id === 'claim-demo-1' || c.id === 'claim-demo-2' || c.id === 'claim-ms-01')));
+      const claimsNeedMigration = !merged.claimsSeedVersion || merged.claimsSeedVersion < 5 || 
+        (Array.isArray(merged.claims) && merged.claims.some(c => c && (
+          c.id === 'claim-demo-1' || 
+          c.id === 'claim-demo-2' || 
+          c.id === 'claim-ms-01' || 
+          /^claim-barness-\d+$/.test(c.id)
+        )));
 
       if (claimsNeedMigration && typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
         const claimsMap = new Map();
         DEFAULT_REAL_CLAIMS.forEach(c => {
           if (c && c.id) claimsMap.set(c.id, { ...c });
         });
-        // Preserve any custom user-added claims that are not demo placeholders
+        // Only preserve genuine user-added claims logged in the app (id starts with claim-[timestamp])
         if (Array.isArray(merged.claims)) {
           merged.claims.forEach(c => {
-            if (c && c.id && !c.id.startsWith('claim-demo-') && !claimsMap.has(c.id)) {
-              claimsMap.set(c.id, { ...c });
+            if (c && c.id) {
+              const isOldPlaceholder = c.id.startsWith('claim-demo-') || 
+                                       c.id === 'claim-ms-01' || 
+                                       /^claim-barness-\d+$/.test(c.id);
+              const isUserAdded = /^claim-\d{10,}-/.test(c.id);
+              if (!isOldPlaceholder && isUserAdded && !claimsMap.has(c.id)) {
+                claimsMap.set(c.id, { ...c });
+              }
             }
           });
         }
         merged.claims = Array.from(claimsMap.values());
-        merged.claimsSeedVersion = 2;
+        merged.claimsSeedVersion = 5;
       } else if (Array.isArray(merged.claims)) {
         merged.claims = merged.claims.map(c => {
           const claim = { ...c };
@@ -1690,7 +1729,10 @@ class StorageManager {
       const rec = parseFloat(c.expectedRecovery !== undefined ? c.expectedRecovery : (c.eobPlanPaid !== undefined ? c.eobPlanPaid : amt * 0.7));
       if (c.stage === 'settled') {
         settledCount++;
-        totalSettled += (parseFloat(c.reimbursedAmount) || amt);
+        const recAmt = (c.reimbursedAmount !== undefined && c.reimbursedAmount !== null) 
+          ? parseFloat(c.reimbursedAmount) 
+          : amt;
+        totalSettled += (isNaN(recAmt) ? 0 : recAmt);
       } else {
         totalFloatingSpend += amt;
         totalPendingRecovery += rec;
