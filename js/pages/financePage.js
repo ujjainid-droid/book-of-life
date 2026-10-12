@@ -154,7 +154,7 @@ function switchFinanceSubTab(subTab) {
 
 let financeActivePeriod = 'this_month'; // 'this_month' | 'last_month' | 'last_qtr' | 'ytd'
 let financeDriversViewMode = 'pillars'; // 'pillars' | 'ribbon'
-let financeOutlierFilter = 'all'; // 'all' | 'spike' | 'baseline' | 'reduced'
+let financeOutlierFilter = 'spike'; // 'all' | 'spike' | 'baseline' | 'reduced'
 
 function changeFinancePeriod(period) {
   financeActivePeriod = period;
