@@ -125,7 +125,7 @@ function renderClaimsPage(targetContainer) {
               <span class="chip-count" style="font-weight:700; color:var(--primary);">${counts.readyToSend}</span>
             </button>
             <button type="button" class="claims-breakdown-chip ${activeClaimsFilter === 'check_due' ? 'active' : ''}" onclick="setClaimsFilter('check_due')">
-              <span style="color:#E11D48;">⚠️ Missing Deposits</span>
+              <span style="color:#E11D48;"><i data-lucide="alert-circle" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px;"></i> Missing Deposits</span>
               <span class="chip-count" style="font-weight:700; color:#E11D48;">${counts.missingDeposit}</span>
             </button>
             <button type="button" class="claims-breakdown-chip ${activeClaimsFilter === 'with_included_health' ? 'active' : ''}" onclick="setClaimsFilter('with_included_health')">
@@ -171,7 +171,7 @@ function renderClaimsPage(targetContainer) {
             📤 To File (${counts.readyToSend})
           </button>
           <button class="claims-filter-tab ${activeClaimsFilter === 'check_due' ? 'active' : ''}" onclick="setClaimsFilter('check_due')">
-            ⚠️ Missing Deposit (${counts.missingDeposit})
+            <i data-lucide="alert-circle" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px;color:#E11D48;"></i> Missing Deposit (${counts.missingDeposit})
           </button>
           <button class="claims-filter-tab ${activeClaimsFilter === 'with_included_health' ? 'active' : ''}" onclick="setClaimsFilter('with_included_health')">
             ⏳ In-Flight (${counts.inFlight})
@@ -179,13 +179,31 @@ function renderClaimsPage(targetContainer) {
         </div>
       </div>
 
-      <!-- Active Cards List -->
-      <div class="claims-card-list">
-        ${displayedActive.length === 0 ? `
-          <div style="text-align:center; padding:32px 16px; background:var(--bg-card); border-radius:var(--radius-md); border:1px solid var(--border-light); color:var(--text-muted); font-size:0.82rem;">
-            ✓ All clear in this view! No action items pending.
-          </div>
-        ` : displayedActive.map(claim => renderSimplifiedActiveCard(claim)).join('')}
+      <!-- Active Claims Structured Cell Table -->
+      <div class="claims-table-card">
+        <div class="claims-table-wrapper">
+          <table class="claims-cell-table">
+            <thead>
+              <tr>
+                <th style="width:105px;">Date</th>
+                <th>Provider</th>
+                <th>Status / Next Move</th>
+                <th class="text-right" style="width:90px;">Billed</th>
+                <th class="text-right" style="width:110px;">Est. Recovery</th>
+                <th class="text-right" style="width:130px;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${displayedActive.length === 0 ? `
+                <tr>
+                  <td colspan="6" style="text-align:center; padding:32px 16px; color:var(--text-muted); font-size:0.82rem;">
+                    ✓ All clear in this view! No action items pending.
+                  </td>
+                </tr>
+              ` : displayedActive.map(claim => renderClaimRowCellHtml(claim)).join('')}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- 5. Quiet Resolved Accordion (Collapsed by Default) -->
@@ -200,23 +218,22 @@ function renderClaimsPage(targetContainer) {
         </div>
 
         ${isClaimsSettledOpen ? `
-          <div class="claims-resolved-list">
-            ${settledClaimsList.map(c => `
-              <div class="resolved-item-row">
-                <div class="resolved-item-info">
-                  <span class="resolved-item-provider">${escapeHtml(c.provider)}</span>
-                  <span class="resolved-item-date">${formatDateShort(c.date)}</span>
-                  ${c.claimNumber ? `<span style="font-size:0.68rem; color:var(--text-muted); font-family:var(--font-mono);">#${escapeHtml(c.claimNumber)}</span>` : ''}
-                </div>
-                <div class="resolved-item-money">
-                  <span class="resolved-amt-paid">$${(c.amountPaid || 0).toFixed(2)}</span>
-                  <span class="resolved-amt-rec">+$${(parseFloat(c.reimbursedAmount) || c.amountPaid).toFixed(2)} deposited</span>
-                  <button class="claims-icon-btn" onclick="openEditClaimModal('${c.id}')" title="Edit Claim" style="margin-left:4px;">
-                    <i data-lucide="edit-3" style="width:11px;height:11px;"></i>
-                  </button>
-                </div>
-              </div>
-            `).join('')}
+          <div class="claims-table-wrapper" style="border:none; border-top:1px solid var(--border-subtle); border-radius:0; max-height:420px; overflow-y:auto;">
+            <table class="claims-cell-table" style="border:none; border-radius:0; box-shadow:none;">
+              <thead>
+                <tr>
+                  <th style="width:105px;">Date</th>
+                  <th>Provider</th>
+                  <th>Status</th>
+                  <th class="text-right" style="width:90px;">Billed</th>
+                  <th class="text-right" style="width:110px;">Deposited</th>
+                  <th class="text-right" style="width:70px;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${settledClaimsList.map(c => renderSettledClaimRowCellHtml(c)).join('')}
+              </tbody>
+            </table>
           </div>
         ` : ''}
       </div>
@@ -229,48 +246,78 @@ function renderClaimsPage(targetContainer) {
   }
 }
 
-function renderSimplifiedActiveCard(claim) {
+function renderClaimRowCellHtml(claim) {
   const dStr = formatDateShort(claim.date);
   const expRec = (claim.expectedRecovery !== undefined ? claim.expectedRecovery : (claim.amountPaid * 0.7)).toFixed(2);
   const isReady = (claim.stage === 'ready_to_send');
   const isMissingDeposit = (claim.stage === 'check_due');
 
-  let statusHtml = '';
+  let statusBadgeHtml = '';
   let actionBtnHtml = '';
 
   if (isReady) {
-    statusHtml = `<span class="claims-item-status status-action">📤 Receipt ready &bull; Submit to Included Health</span>`;
+    statusBadgeHtml = `<span class="status-pill status-ready">📤 To File &bull; Receipt ready</span>`;
     actionBtnHtml = `<button class="claims-pill-btn" onclick="quickAdvanceClaim('${claim.id}')">Mark Filed</button>`;
   } else if (isMissingDeposit) {
-    statusHtml = `<span class="claims-item-status status-alert">⚠️ Anthem approved ${claim.eobPlanPaid ? '$' + claim.eobPlanPaid.toFixed(2) : ''} &bull; Check/deposit missing</span>`;
+    const eobText = claim.eobPlanPaid ? ` ($${claim.eobPlanPaid.toFixed(2)})` : '';
+    statusBadgeHtml = `<span class="status-pill status-check"><i data-lucide="alert-circle" style="width:11px;height:11px;"></i> Check Missing${eobText}</span>`;
     actionBtnHtml = `<button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>`;
   } else {
-    statusHtml = `<span class="claims-item-status status-inflight">⏳ In insurance review &bull; Awaiting payment</span>`;
+    statusBadgeHtml = `<span class="status-pill status-inflight">⏳ In Review &bull; Awaiting payment</span>`;
     actionBtnHtml = `<button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>`;
   }
 
+  const patientNote = claim.patient || (claim.notes && !claim.notes.includes('Demo') ? claim.notes : '');
+
   return `
-    <div class="claims-item-card" id="claim-card-${claim.id}">
-      <div class="claims-item-left">
-        <div class="claims-item-main">
-          <span class="claims-item-provider">${escapeHtml(claim.provider)}</span>
-          <span class="claims-item-date">${dStr}</span>
-        </div>
-        ${statusHtml}
-      </div>
-      <div class="claims-item-right">
-        <div class="claims-item-money">
-          <span class="claims-item-amt">$${(claim.amountPaid || 0).toFixed(2)}</span>
-          <span class="claims-item-est">est. +$${expRec}</span>
-        </div>
-        <div class="claims-item-actions">
+    <tr id="claim-row-${claim.id}">
+      <td class="cell-date">${dStr}</td>
+      <td>
+        <div class="cell-provider-name">${escapeHtml(claim.provider)}</div>
+        ${patientNote ? `<div class="cell-patient-sub">${escapeHtml(patientNote)}</div>` : ''}
+      </td>
+      <td>${statusBadgeHtml}</td>
+      <td class="text-right cell-amount-mono">$${(claim.amountPaid || 0).toFixed(2)}</td>
+      <td class="text-right cell-recovery-mono">+$${expRec}</td>
+      <td class="text-right">
+        <div class="cell-actions-flex">
           ${actionBtnHtml}
           <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
             <i data-lucide="edit-3" style="width:12px;height:12px;"></i>
           </button>
         </div>
-      </div>
-    </div>
+      </td>
+    </tr>
+  `;
+}
+
+function renderSettledClaimRowCellHtml(c) {
+  const dStr = formatDateShort(c.date);
+  const depositedAmt = (parseFloat(c.reimbursedAmount) || c.amountPaid).toFixed(2);
+  const billedAmt = (c.amountPaid || 0).toFixed(2);
+
+  return `
+    <tr id="claim-row-${c.id}">
+      <td class="cell-date">${dStr}</td>
+      <td>
+        <div class="cell-provider-name">${escapeHtml(c.provider)}</div>
+        ${c.claimNumber ? `<div class="cell-patient-sub" style="font-family:var(--font-mono);">#${escapeHtml(c.claimNumber)}</div>` : ''}
+      </td>
+      <td>
+        <span class="status-pill status-settled">
+          <i data-lucide="check" style="width:11px;height:11px;"></i> Reconciled &amp; Deposited
+        </span>
+      </td>
+      <td class="text-right cell-amount-mono" style="color:var(--text-muted); font-size:0.8rem;">$${billedAmt}</td>
+      <td class="text-right cell-recovery-mono">+$${depositedAmt}</td>
+      <td class="text-right">
+        <div class="cell-actions-flex">
+          <button class="claims-icon-btn" onclick="openEditClaimModal('${c.id}')" title="Edit Claim">
+            <i data-lucide="edit-3" style="width:12px;height:12px;"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
   `;
 }
 

@@ -1060,8 +1060,15 @@ class StorageManager {
     }
 
     const prevRaw = this.data.habitsState[dateStr][habitId];
-    const prevPoints = (prevRaw === 1 || prevRaw === true) ? 10 : (prevRaw === 0.5 ? 5 : 0);
-    const newPoints = stage === 1 ? 10 : (stage === 0.5 ? 5 : 0);
+    const getStagePoints = (s) => {
+      if (s === 1 || s === true) return 10;
+      if (s === 0.75) return 8;
+      if (s === 0.5) return 5;
+      if (s === 0.25) return 2;
+      return 0;
+    };
+    const prevPoints = getStagePoints(prevRaw);
+    const newPoints = getStagePoints(stage);
     const delta = newPoints - prevPoints;
 
     this.data.habitsState[dateStr][habitId] = stage === 0 ? false : stage;

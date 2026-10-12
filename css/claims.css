@@ -1884,4 +1884,151 @@
   font-size: 0.82rem;
 }
 
+/* --------------------------------------------------------------------------
+   Structured Cell-Based Table Layout (Each Piece of Info in Its Own Cell)
+   -------------------------------------------------------------------------- */
+.claims-table-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  margin-top: 4px;
+}
+
+.claims-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.claims-cell-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  background: transparent;
+}
+
+.claims-cell-table thead tr {
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.claims-cell-table th {
+  padding: 10px 14px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  text-align: left;
+}
+
+.claims-cell-table th.text-right,
+.claims-cell-table td.text-right {
+  text-align: right;
+}
+
+.claims-cell-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: middle;
+  background: transparent;
+}
+
+.claims-cell-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.claims-cell-table tbody tr {
+  transition: background var(--transition-fast);
+}
+
+.claims-cell-table tbody tr:hover {
+  background: rgba(13, 148, 136, 0.035);
+}
+
+.cell-date {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cell-provider-name {
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.cell-patient-sub {
+  font-size: 0.69rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pill.status-ready {
+  background: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+}
+
+.status-pill.status-check {
+  background: rgba(225, 29, 72, 0.08);
+  color: #E11D48;
+  border: 1px solid rgba(225, 29, 72, 0.25);
+}
+
+.status-pill.status-inflight {
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-light);
+}
+
+.status-pill.status-settled {
+  background: rgba(13, 148, 136, 0.1);
+  color: #0D9488;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+.cell-amount-mono {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.cell-recovery-mono {
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+.cell-actions-flex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+
 
