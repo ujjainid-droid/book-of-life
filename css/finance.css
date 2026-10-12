@@ -3,10 +3,10 @@
    ========================================================================== */
 
 :root {
-  --fin-primary: #0D9488; /* Nordic Sea Glass Teal */
-  --fin-primary-hover: #0F766E;
-  --fin-primary-light: rgba(13, 148, 136, 0.08);
-  --fin-primary-border: rgba(13, 148, 136, 0.25);
+  --fin-primary: #0F766E; /* Sovereign Marine Teal */
+  --fin-primary-hover: #115E59;
+  --fin-primary-light: rgba(15, 118, 110, 0.08);
+  --fin-primary-border: rgba(15, 118, 110, 0.28);
   --fin-violet: #7C3AED;
   --fin-violet-hover: #6D28D9;
   --fin-violet-light: #F5F3FF;
@@ -14,16 +14,16 @@
   --fin-danger: #E11D48; /* Cool Rose */
   --fin-danger-bg: #FFF1F2;
   --fin-danger-border: #FECDD3;
-  --fin-neutral: #475569;
+  --fin-neutral: #334155;
   --fin-neutral-bg: #F8FAFC;
   --fin-neutral-border: #E2E8F0;
 }
 
 [data-theme="dark"] {
-  --fin-primary: #14B8A6;
-  --fin-primary-hover: #2DD4BF;
-  --fin-primary-light: rgba(20, 184, 166, 0.15);
-  --fin-primary-border: rgba(20, 184, 166, 0.3);
+  --fin-primary: #2DD4BF;
+  --fin-primary-hover: #14B8A6;
+  --fin-primary-light: rgba(45, 212, 191, 0.15);
+  --fin-primary-border: rgba(45, 212, 191, 0.35);
   --fin-violet: #8B5CF6;
   --fin-violet-hover: #A78BFA;
   --fin-violet-light: rgba(139, 92, 246, 0.15);
@@ -94,18 +94,18 @@
 }
 
 .finance-subnav-btn.active {
-  background: var(--fin-primary);
+  background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
   color: #FFFFFF;
-  border-color: var(--fin-primary);
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+  border-color: #0F766E;
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.35);
 }
 
 /* --------------------------------------------------------------------------
    Hero Card & KPI Cards
    -------------------------------------------------------------------------- */
 .finance-hero-card {
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%);
-  border: 1px solid var(--fin-primary-border);
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.08) 0%, rgba(17, 94, 89, 0.02) 100%);
+  border: 1.5px solid var(--fin-primary-border);
   border-radius: var(--radius-lg, 14px);
   padding: 22px 24px;
 }
@@ -123,7 +123,7 @@
   font-family: var(--font-serif, "Newsreader", Georgia, serif);
   font-size: 1.55rem;
   font-weight: 700;
-  color: #065F46;
+  color: #0F766E;
   margin: 0 0 4px 0;
   display: flex;
   align-items: center;
@@ -131,7 +131,7 @@
 }
 
 [data-theme="dark"] .finance-hero-title {
-  color: #6EE7B7;
+  color: #2DD4BF;
 }
 
 .finance-hero-sub {
@@ -147,42 +147,77 @@
 }
 
 .finance-kpi-card {
-  background: var(--bg-card, #FFFFFF);
-  border: 1px solid rgba(5, 150, 105, 0.15);
+  background: linear-gradient(135deg, #115E59 0%, #042F2E 100%);
+  border: 1.5px solid rgba(45, 212, 191, 0.35);
   border-radius: var(--radius-md, 10px);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  box-shadow: 0 4px 14px rgba(4, 47, 46, 0.2);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.finance-kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: linear-gradient(90deg, #14B8A6 0%, #2DD4BF 100%);
+}
+
+.finance-kpi-card:hover {
+  transform: translateY(-2px);
+  border-color: #2DD4BF;
+  box-shadow: 0 8px 22px rgba(4, 47, 46, 0.3);
 }
 
 [data-theme="dark"] .finance-kpi-card {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(16, 185, 129, 0.2);
+  background: linear-gradient(135deg, #042F2E 0%, #021E1D 100%);
+  border: 1.5px solid rgba(45, 212, 191, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
 }
 
 .finance-kpi-label {
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  color: #CCFBF1;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
+[data-theme="dark"] .finance-kpi-label {
+  color: #99F6E4;
+}
+
 .finance-kpi-value {
   font-family: var(--font-mono, "JetBrains Mono", monospace);
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: var(--text-primary);
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: #FFFFFF;
   line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .finance-kpi-value {
+  color: #FFFFFF;
 }
 
 .finance-kpi-sub {
   font-size: 0.74rem;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: #5EEAD4;
+}
+
+[data-theme="dark"] .finance-kpi-sub {
+  color: #2DD4BF;
 }
 
 /* --------------------------------------------------------------------------
@@ -1308,8 +1343,8 @@
    Page 1: Cash Flow Split Hero & Month Selector
    -------------------------------------------------------------------------- */
 .finance-flow-hero {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.06) 0%, rgba(124, 58, 237, 0.04) 100%);
-  border: 1px solid var(--fin-primary-border);
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.09) 0%, rgba(17, 94, 89, 0.03) 100%);
+  border: 1.5px solid var(--fin-primary-border);
   border-radius: var(--radius-lg, 14px);
   padding: 22px 24px;
   display: flex;
@@ -1347,23 +1382,23 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: var(--bg-surface, #F1F5F9);
+  background: #E6F4F2;
   padding: 3px;
   border-radius: 999px;
-  border: 1px solid var(--border-color, #E2E8F0);
+  border: 1.5px solid rgba(15, 118, 110, 0.25);
 }
 
 [data-theme="dark"] .finance-period-capsules {
   background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(45, 212, 191, 0.3);
 }
 
 .finance-period-btn {
   border: none;
   background: transparent;
-  color: var(--text-secondary, #475569);
+  color: #0F766E;
   font-size: 0.76rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 5px 12px;
   border-radius: 999px;
   cursor: pointer;
@@ -1372,24 +1407,24 @@
 }
 
 .finance-period-btn:hover {
-  color: var(--text-primary);
+  color: #115E59;
 }
 
 .finance-period-btn.active {
-  background: var(--bg-card, #FFFFFF);
-  color: var(--fin-primary);
-  font-weight: 700;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  background: #0F766E;
+  color: #FFFFFF;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
 }
 
 [data-theme="dark"] .finance-period-btn.active {
-  background: var(--bg-surface, #1E293B);
-  color: var(--fin-primary);
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  background: #14B8A6;
+  color: #042F2E;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .monarch-dropzone-compact {
-  border: 1px dashed var(--fin-primary-border);
+  border: 1.5px dashed var(--fin-primary-border);
   background: var(--fin-primary-light);
   border-radius: var(--radius-md, 12px);
   padding: 12px 18px;
@@ -1401,25 +1436,26 @@
 
 .monarch-dropzone-compact:hover {
   border-color: var(--fin-primary);
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.1);
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.15);
 }
 
 .finance-month-selector {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--bg-card, #FFFFFF);
-  border: 1px solid var(--border-color, #E2E8F0);
+  background: #FFFFFF;
+  border: 1.5px solid rgba(15, 118, 110, 0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-weight: 700;
+  color: #0F766E;
 }
 
 [data-theme="dark"] .finance-month-selector {
   background: var(--bg-surface, #1E293B);
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(45, 212, 191, 0.3);
+  color: #2DD4BF;
 }
 
 .finance-month-select-input {
@@ -1427,9 +1463,13 @@
   background: transparent;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #0F766E;
   cursor: pointer;
   outline: none;
+}
+
+[data-theme="dark"] .finance-month-select-input {
+  color: #2DD4BF;
 }
 
 .finance-flow-split-grid {
@@ -1446,21 +1486,28 @@
 }
 
 .finance-flow-col {
-  background: var(--bg-card, #FFFFFF);
-  border: 1px solid var(--border-color, #E2E8F0);
+  background: #FFFFFF;
+  border: 1.5px solid rgba(15, 118, 110, 0.25);
   border-radius: var(--radius-md, 12px);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   position: relative;
-  transition: transform 0.15s ease;
+  transition: all var(--transition-fast);
   min-width: 0;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.04);
+}
+
+.finance-flow-col:hover {
+  transform: translateY(-1px);
+  border-color: #0F766E;
+  box-shadow: 0 6px 18px rgba(15, 118, 110, 0.1);
 }
 
 [data-theme="dark"] .finance-flow-col {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(45, 212, 191, 0.25);
 }
 
 .finance-flow-col-header {
@@ -1474,8 +1521,9 @@
 }
 
 .finance-flow-col.surplus-highlight {
-  border-color: var(--fin-primary-border);
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.08);
+  border-color: #0F766E;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.05) 0%, rgba(45, 212, 191, 0.02) 100%);
+  box-shadow: 0 4px 16px rgba(15, 118, 110, 0.12);
 }
 
 .finance-flow-col.deficit-highlight {
@@ -2841,13 +2889,13 @@
 }
 
 .card-benefit-row.realized {
-  border-color: rgba(13, 148, 136, 0.25);
-  background: rgba(13, 148, 136, 0.03);
+  border-color: rgba(15, 118, 110, 0.35);
+  background: rgba(15, 118, 110, 0.06);
 }
 
 [data-theme="dark"] .card-benefit-row.realized {
-  border-color: rgba(45, 212, 191, 0.22);
-  background: rgba(45, 212, 191, 0.05);
+  border-color: rgba(45, 212, 191, 0.35);
+  background: rgba(45, 212, 191, 0.08);
 }
 
 .card-benefit-check-box {
@@ -2865,8 +2913,8 @@
 }
 
 .card-benefit-row.realized .card-benefit-check-box {
-  background: #0D9488;
-  border-color: #0D9488;
+  background: #0F766E;
+  border-color: #0F766E;
   color: #FFFFFF;
 }
 
