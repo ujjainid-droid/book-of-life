@@ -2485,6 +2485,40 @@ class StorageManager {
     return fin.weeklySundayUpdates[iso];
   }
 
+  getFinanceWeeklyChecklist(sundayIso) {
+    const fin = this.getFinanceData();
+    if (!fin.weeklyChecklists || typeof fin.weeklyChecklists !== 'object') {
+      fin.weeklyChecklists = {};
+    }
+    const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
+    if (!fin.weeklyChecklists[iso] || typeof fin.weeklyChecklists[iso] !== 'object') {
+      const wasDone = !!(fin.weeklySundayUpdates && fin.weeklySundayUpdates[iso]);
+      fin.weeklyChecklists[iso] = { 1: wasDone, 2: wasDone, 3: wasDone, 4: wasDone, 5: wasDone };
+    }
+    return fin.weeklyChecklists[iso];
+  }
+
+  setFinanceWeeklyChecklistItem(sundayIso, itemNum, isDone) {
+    const fin = this.getFinanceData();
+    if (!fin.weeklyChecklists || typeof fin.weeklyChecklists !== 'object') {
+      fin.weeklyChecklists = {};
+    }
+    const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
+    if (!fin.weeklyChecklists[iso]) {
+      fin.weeklyChecklists[iso] = { 1: false, 2: false, 3: false, 4: false, 5: false };
+    }
+    fin.weeklyChecklists[iso][itemNum] = !!isDone;
+
+    const allDone = [1, 2, 3, 4, 5].every(num => !!fin.weeklyChecklists[iso][num]);
+    this.setFinanceSundayUpdated(iso, allDone);
+
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return { checklist: fin.weeklyChecklists[iso], allDone };
+  }
+
   saveMonthlyCashFlowSummary(summary) {
     const fin = this.getFinanceData();
     if (!Array.isArray(fin.monthlySummaries)) fin.monthlySummaries = [];

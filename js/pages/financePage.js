@@ -184,30 +184,43 @@ function getCurrentWeekSundayIso() {
   return d.toISOString().split('T')[0];
 }
 
-function toggleFinanceSundayCadence(checked) {
+function toggleFinanceChecklistItem(itemNum, event) {
+  if (event) event.stopPropagation();
   const sundayIso = getCurrentWeekSundayIso();
-  const isDone = (checked !== undefined) ? checked : !storage.isFinanceSundayUpdated(sundayIso);
-  storage.setFinanceSundayUpdated(sundayIso, isDone);
-  if (isDone) {
+  const checklist = storage.getFinanceWeeklyChecklist(sundayIso);
+  const currentVal = !!checklist[itemNum];
+  const { allDone } = storage.setFinanceWeeklyChecklistItem(sundayIso, itemNum, !currentVal);
+
+  if (allDone) {
     if (typeof confetti === 'function') {
-      try {
-        confetti({ particleCount: 30, spread: 60, origin: { y: 0.15 } });
-      } catch (e) {}
+      try { confetti({ particleCount: 35, spread: 65, origin: { y: 0.18 } }); } catch (e) {}
     }
     if (typeof showToast === 'function') {
-      showToast(`Sunday finance pulse marked complete for week of ${sundayIso} ✨`, 'success');
+      showToast(`🎉 All 5 weekly finance checklist items complete for week of ${sundayIso}!`, 'success');
     }
-  } else {
+  } else if (!currentVal) {
     if (typeof showToast === 'function') {
-      showToast(`Sunday finance pulse marked pending for week of ${sundayIso}`);
+      showToast(`✓ Step ${itemNum} marked complete`);
     }
   }
   renderFinanceBurn();
 }
 
+function scrollToFinanceOutliers() {
+  const el = document.getElementById('finance-outliers-radar');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.style.transition = 'box-shadow 0.3s ease';
+    el.style.boxShadow = '0 0 0 2px var(--primary)';
+    setTimeout(() => { el.style.boxShadow = ''; }, 1200);
+  }
+}
+
 function renderFinanceWeeklyCadenceBar() {
   const sundayIso = getCurrentWeekSundayIso();
-  const isDone = storage.isFinanceSundayUpdated(sundayIso);
+  const checklist = storage.getFinanceWeeklyChecklist(sundayIso);
+  const doneCount = [1, 2, 3, 4, 5].filter(num => !!checklist[num]).length;
+  const allDone = doneCount === 5;
 
   let dateLabel = sundayIso;
   try {
@@ -216,35 +229,99 @@ function renderFinanceWeeklyCadenceBar() {
     dateLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
   } catch (e) {}
 
-  const fin = storage.getFinanceData() || {};
-  const lastSyncText = fin.lastSyncDate ? ` &bull; Last sync: ${fin.lastSyncDate}` : '';
+  const items = [
+    {
+      num: 1,
+      title: 'Pay bills',
+      desc: 'Clear any pending utilities, credit cards, or invoices due this week',
+      action: null
+    },
+    {
+      num: 2,
+      title: 'Review and reconcile transactions in Monarch',
+      desc: 'Categorize new expenses, verify tags, and review recent activity in Monarch',
+      action: `
+        <a href="https://app.monarchmoney.com" target="_blank" rel="noopener" class="finance-checklist-mini-btn" onclick="event.stopPropagation();" title="Open Monarch Money web app">
+          <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
+          <span>Open Monarch</span>
+        </a>
+      `
+    },
+    {
+      num: 3,
+      title: 'Check Schwab balance (keep $20k)',
+      desc: 'Ensure primary liquid operating reserve is maintained at target $20,000 threshold',
+      action: null
+    },
+    {
+      num: 4,
+      title: 'Export CSV to margo',
+      desc: 'Download latest transactions CSV from Monarch and ingest new records into margo',
+      action: `
+        <button type="button" class="finance-checklist-mini-btn primary" onclick="event.stopPropagation(); triggerMonarchFileInput();" title="Upload latest Monarch CSV export">
+          <i data-lucide="upload-cloud" style="width: 11px; height: 11px;"></i>
+          <span>Sync Monarch CSV</span>
+        </button>
+      `
+    },
+    {
+      num: 5,
+      title: 'Check cashflow and Outlier radar',
+      desc: 'Review monthly burn rate, Pareto pillars, and spending deviations below',
+      action: `
+        <button type="button" class="finance-checklist-mini-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Category Outlier Radar">
+          <i data-lucide="compass" style="width: 11px; height: 11px;"></i>
+          <span>View Radar</span>
+        </button>
+      `
+    }
+  ];
 
   return `
-    <div class="finance-weekly-cadence-bar ${isDone ? 'completed' : ''}">
-      <div class="finance-cadence-left">
-        <button type="button" class="finance-cadence-check-btn ${isDone ? 'checked' : ''}" onclick="toggleFinanceSundayCadence(!${isDone})" title="${isDone ? 'Mark as pending' : 'Mark as updated for this Sunday'}">
-          <i data-lucide="check" style="width: 18px; height: 18px; stroke-width: 2.5;"></i>
-        </button>
-        <div class="finance-cadence-text">
-          <div class="finance-cadence-title">
-            <span>Weekly Cadence: Sync Monarch &amp; Review Cash Flow</span>
-            <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
+    <div class="finance-weekly-checklist-card ${allDone ? 'all-done' : ''}">
+      <div class="checklist-card-header">
+        <div class="checklist-header-left">
+          <div class="checklist-icon-wrap">
+            <i data-lucide="${allDone ? 'check-check' : 'list-checks'}" style="width: 18px; height: 18px;"></i>
           </div>
-          <div class="finance-cadence-sub">
-            Update cadence: Every Sunday &bull; Intelligent deduplication ingests only new records${lastSyncText}
+          <div>
+            <div class="checklist-title">
+              <span>Weekly Cadence Checklist</span>
+              <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
+            </div>
+            <div class="checklist-sub">
+              Every Sunday &bull; 5-step financial maintenance and cashflow review routine
+            </div>
           </div>
+        </div>
+
+        <div class="checklist-header-right">
+          <span class="checklist-progress-pill ${allDone ? 'done' : ''}">
+            <i data-lucide="${allDone ? 'check-circle-2' : 'clock'}" style="width: 12px; height: 12px;"></i>
+            <span>${allDone ? '✓ All 5 Done' : `${doneCount} of 5 Completed`}</span>
+          </span>
         </div>
       </div>
 
-      <div class="finance-cadence-right">
-        <span class="finance-cadence-status-badge ${isDone ? 'done' : 'pending'}">
-          <i data-lucide="${isDone ? 'check-circle-2' : 'clock'}" style="width: 12px; height: 12px;"></i>
-          <span>${isDone ? 'Updated for this week' : 'Due this Sunday'}</span>
-        </span>
-        <button type="button" class="finance-cadence-sync-btn" onclick="triggerMonarchFileInput()" title="Upload latest Monarch CSV export">
-          <i data-lucide="upload-cloud" style="width: 13px; height: 13px;"></i>
-          <span>Sync Monarch CSV</span>
-        </button>
+      <div class="checklist-items-list">
+        ${items.map(item => {
+          const isItemDone = !!checklist[item.num];
+          return `
+            <div class="finance-checklist-item ${isItemDone ? 'checked' : ''}" onclick="toggleFinanceChecklistItem(${item.num}, event)" title="${isItemDone ? 'Click to uncheck' : 'Click to mark complete'}">
+              <div class="checklist-item-left">
+                <button type="button" class="finance-checklist-checkbox" aria-label="Toggle ${item.title}">
+                  <i data-lucide="check" style="width: 14px; height: 14px; stroke-width: 3;"></i>
+                </button>
+                <span class="finance-checklist-num">${item.num}.</span>
+                <div class="checklist-item-text-wrap">
+                  <div class="checklist-item-label">${escapeHtml(item.title)}</div>
+                  <div class="checklist-item-desc">${escapeHtml(item.desc)}</div>
+                </div>
+              </div>
+              ${item.action ? `<div class="checklist-item-actions">${item.action}</div>` : ''}
+            </div>
+          `;
+        }).join('')}
       </div>
     </div>
   `;
@@ -708,7 +785,7 @@ function renderFinanceBurn() {
       </div>
 
       <!-- 3. Monthly Outlier Radar (vs. Rolling Baseline) -->
-      <div class="finance-section-box">
+      <div class="finance-section-box" id="finance-outliers-radar">
         <div class="finance-section-header">
           <div>
             <h3 class="finance-section-title">
