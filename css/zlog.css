@@ -423,11 +423,25 @@ body.dark-mode .zlog-pulse-card {
 }
 
 .zlog-stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  background: linear-gradient(180deg, #F0FDF4 0%, #ECFDF5 100%);
+  border: 1px solid rgba(16, 185, 129, 0.22);
   border-radius: var(--radius-md);
-  padding: 12px;
-  box-shadow: var(--shadow-sm);
+  padding: 12px 14px;
+  box-shadow: 0 1px 3px rgba(6, 95, 70, 0.04);
+  transition: all var(--transition-fast);
+}
+
+.zlog-stat-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(16, 185, 129, 0.38);
+  box-shadow: 0 4px 12px rgba(6, 95, 70, 0.08);
+}
+
+[data-theme="dark"] .zlog-stat-card,
+body.dark-mode .zlog-stat-card {
+  background: linear-gradient(180deg, rgba(6, 95, 70, 0.22) 0%, rgba(5, 150, 105, 0.12) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .zlog-stat-label {
@@ -435,8 +449,13 @@ body.dark-mode .zlog-pulse-card {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--text-muted);
+  color: #065F46;
   margin-bottom: 4px;
+}
+
+[data-theme="dark"] .zlog-stat-label,
+body.dark-mode .zlog-stat-label {
+  color: #6EE7B7;
 }
 
 .zlog-stat-val {
@@ -513,15 +532,21 @@ body.dark-mode .zlog-pulse-card {
 .zlog-subnav-pills {
   display: flex;
   align-items: center;
-  background: var(--zlog-blue-light, #EFF6FF);
-  border: 1px solid var(--zlog-blue-border, #DBEAFE);
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
   border-radius: var(--radius-full);
   padding: 3px;
   gap: 4px;
   overflow-x: auto;
   max-width: 100%;
   scrollbar-width: none;
-  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.05);
+  box-shadow: 0 1px 3px rgba(6, 95, 70, 0.05);
+}
+
+[data-theme="dark"] .zlog-subnav-pills,
+body.dark-mode .zlog-subnav-pills {
+  background: rgba(6, 95, 70, 0.25);
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .zlog-subnav-pills::-webkit-scrollbar {
@@ -537,7 +562,7 @@ body.dark-mode .zlog-pulse-card {
   font-family: var(--font-sans);
   font-size: 0.76rem;
   font-weight: 600;
-  color: var(--zlog-blue-text, #1E40AF);
+  color: #065F46;
   padding: 6px 12px;
   border-radius: var(--radius-full);
   cursor: pointer;
@@ -549,28 +574,33 @@ body.dark-mode .zlog-pulse-card {
 }
 
 .zlog-subnav-btn:hover {
-  background: rgba(37, 99, 235, 0.08);
-  color: var(--zlog-blue-dark, #1D4ED8);
+  background: rgba(16, 185, 129, 0.12);
+  color: #047857;
+}
+
+[data-theme="dark"] .zlog-subnav-btn,
+body.dark-mode .zlog-subnav-btn {
+  color: #A7F3D0;
 }
 
 [data-theme="dark"] .zlog-subnav-btn:hover,
 body.dark-mode .zlog-subnav-btn:hover {
-  background: rgba(59, 130, 246, 0.18);
-  color: #BFDBFE;
+  background: rgba(16, 185, 129, 0.22);
+  color: #FFFFFF;
 }
 
 .zlog-subnav-btn.active {
-  background: var(--zlog-blue, #2563EB);
+  background: #065F46;
   color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 2px 8px var(--zlog-blue-shadow, rgba(37, 99, 235, 0.25));
+  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.28);
 }
 
 [data-theme="dark"] .zlog-subnav-btn.active,
 body.dark-mode .zlog-subnav-btn.active {
-  background: var(--zlog-blue, #3B82F6);
+  background: #059669;
   color: #FFFFFF;
-  box-shadow: 0 2px 8px var(--zlog-blue-shadow, rgba(59, 130, 246, 0.35));
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
 }
 
 /* Search & Filter Toolbar */
@@ -1617,8 +1647,14 @@ body.dark-mode .zlog-subnav-btn.active {
 .zlog-month-header.expanded {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border-color: var(--primary-border);
-  background: var(--bg-card);
+  border-color: rgba(16, 185, 129, 0.35);
+  background: #F0FDF4;
+}
+
+[data-theme="dark"] .zlog-month-header.expanded,
+body.dark-mode .zlog-month-header.expanded {
+  background: rgba(6, 95, 70, 0.18);
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
 .zlog-month-title-area {
