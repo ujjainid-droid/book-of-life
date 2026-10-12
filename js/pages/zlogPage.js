@@ -175,11 +175,11 @@ function renderZLogPage(targetSubTab) {
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px;">
-          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #0284C7; border-color: rgba(2, 132, 199, 0.35); background: #E5EDF2;">
+          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #0284C7; border-color: rgba(2, 132, 199, 0.35); background: #f2f6f9;">
             <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
             <span>Sync Data</span>
           </button>
-          <button class="btn btn-secondary" onclick="exportZLogData()" title="Export all Z log entries as CSV" style="font-size: 0.8rem; padding: 6px 12px; color: #1E293B; border-color: #CBD5E1; background: #E5EDF2;">
+          <button class="btn btn-secondary" onclick="exportZLogData()" title="Export all Z log entries as CSV" style="font-size: 0.8rem; padding: 6px 12px; color: #1E293B; border-color: #CBD5E1; background: #f2f6f9;">
             <i data-lucide="download" style="width: 14px; height: 14px;"></i>
             <span>Export CSV</span>
           </button>

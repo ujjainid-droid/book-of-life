@@ -347,7 +347,7 @@
   --accent: #0284C7;
 
   --zlog-bg: #F4F7F9;
-  --zlog-surface: #E5EDF2;
+  --zlog-surface: #f2f6f9;
   --zlog-heading: #1E293B;
   --zlog-muted: #64748B;
   --zlog-accent: #0284C7;
@@ -355,8 +355,8 @@
   --bg-app: #F4F7F9;
   --bg-book: #F4F7F9;
   --bg-page: #F4F7F9;
-  --bg-card: #E5EDF2;
-  --bg-surface: #E5EDF2;
+  --bg-card: #f2f6f9;
+  --bg-surface: #f2f6f9;
   --bg-surface-hover: #DCE5EB;
   --border-light: rgba(2, 132, 199, 0.18);
   --border-subtle: rgba(2, 132, 199, 0.1);
@@ -471,7 +471,7 @@ body.dark-mode .zlog-page-container {
 }
 
 .zlog-stat-card {
-  background: #E5EDF2;
+  background: #f2f6f9;
   border: 1.5px solid rgba(2, 132, 199, 0.25);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
@@ -614,7 +614,7 @@ body.dark-mode .zlog-stat-sub {
 .zlog-subnav-pills {
   display: flex;
   align-items: center;
-  background: #E5EDF2;
+  background: #f2f6f9;
   border: 1.5px solid rgba(2, 132, 199, 0.25);
   border-radius: var(--radius-full);
   padding: 4px;
@@ -687,7 +687,7 @@ body.dark-mode .zlog-subnav-btn.active {
 
 /* Search & Filter Toolbar */
 .zlog-toolbar {
-  background: #E5EDF2;
+  background: #f2f6f9;
   border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-lg);
   padding: 10px 14px;
@@ -1608,7 +1608,7 @@ body.dark-mode .zlog-search-input {
    5. Month Jump Navigation Bar (Option 1: Clean Dual Dropdowns)
    ========================================================================== */
 .zlog-month-nav-card.zlog-dual-dropdown-card {
-  background: #E5EDF2;
+  background: #f2f6f9;
   border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-lg);
   padding: 8px 14px;
@@ -1746,7 +1746,7 @@ body.dark-mode .zlog-nav-action-btn {
 }
 
 .zlog-month-header {
-  background: #E5EDF2;
+  background: #f2f6f9;
   border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-md);
   padding: 12px 16px;
@@ -1769,7 +1769,7 @@ body.dark-mode .zlog-nav-action-btn {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   border-color: #0284C7;
-  background: linear-gradient(135deg, #E5EDF2 0%, #DCE5EB 100%);
+  background: linear-gradient(135deg, #f2f6f9 0%, #DCE5EB 100%);
   box-shadow: 0 2px 6px rgba(2, 132, 199, 0.08);
 }
 
