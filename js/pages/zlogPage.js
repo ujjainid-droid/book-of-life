@@ -175,15 +175,15 @@ function renderZLogPage(targetSubTab) {
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px;">
-          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #065F46; border-color: rgba(6, 95, 70, 0.3);">
+          <button class="btn btn-secondary" onclick="forceSyncZLogDefaults()" title="Force synchronize verified 424 days and 35 titration events" style="font-size: 0.8rem; padding: 6px 12px; color: #0284C7; border-color: rgba(2, 132, 199, 0.35); background: #E5EDF2;">
             <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
             <span>Sync Data</span>
           </button>
-          <button class="btn btn-secondary" onclick="exportZLogData()" title="Export all Z log entries as CSV" style="font-size: 0.8rem; padding: 6px 12px;">
+          <button class="btn btn-secondary" onclick="exportZLogData()" title="Export all Z log entries as CSV" style="font-size: 0.8rem; padding: 6px 12px; color: #1E293B; border-color: #CBD5E1; background: #E5EDF2;">
             <i data-lucide="download" style="width: 14px; height: 14px;"></i>
             <span>Export CSV</span>
           </button>
-          <button class="btn btn-primary" onclick="openZLogEntryModal()" style="font-size: 0.8rem; padding: 6px 14px; background: #065F46; border-color: #047857;">
+          <button class="btn btn-primary" onclick="openZLogEntryModal()" style="font-size: 0.8rem; padding: 6px 14px; background: #0284C7; border-color: #0284C7; color: #FFFFFF;">
             <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
             <span>Log Entry</span>
           </button>
@@ -194,22 +194,22 @@ function renderZLogPage(targetSubTab) {
       <div class="zlog-stats-strip">
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">Total Logged</div>
-          <div class="zlog-stat-val">${stats.totalLogged}</div>
+          <div class="zlog-stat-val" style="color: #1E293B;">${stats.totalLogged}</div>
           <div class="zlog-stat-sub">Historical Days</div>
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">💎 Good Days</div>
-          <div class="zlog-stat-val" style="color: #34D399;">${stats.percentGood}%</div>
+          <div class="zlog-stat-val" style="color: #0284C7;">${stats.percentGood}%</div>
           <div class="zlog-stat-sub">${stats.goodDays} rated ≥ 4</div>
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">🚨 Alert Events</div>
-          <div class="zlog-stat-val" style="color: ${stats.aggressionDays > 0 ? '#FCA5A5' : '#FFFFFF'};">${stats.aggressionDays}</div>
+          <div class="zlog-stat-val" style="color: ${stats.aggressionDays > 0 ? '#DC2626' : '#1E293B'};">${stats.aggressionDays}</div>
           <div class="zlog-stat-sub">${stats.aggressionDays > 0 ? 'Reported events' : 'Zero reported'}</div>
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">📈 Average Rating</div>
-          <div class="zlog-stat-val" style="color: #6EE7B7;">${stats.avgRating} <span style="font-size: 0.85rem; color: #A7F3D0;">/ 5</span></div>
+          <div class="zlog-stat-val" style="color: #0284C7;">${stats.avgRating} <span style="font-size: 0.85rem; color: #64748B;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
         </div>
       </div>
@@ -1174,9 +1174,9 @@ function renderZLogCalendar() {
           <div class="zlog-cal-kpi-sub">${totalRatedDays} rated of ${daysInMonth} days</div>
         </div>
 
-        <div class="zlog-cal-kpi-card" style="border-left: 3px solid #10B981;">
+        <div class="zlog-cal-kpi-card" style="border-left: 3px solid #0284C7;">
           <div class="zlog-cal-kpi-label">Good Days (≥ 4)</div>
-          <div class="zlog-cal-kpi-val" style="color: #10B981;">${percentGood}%</div>
+          <div class="zlog-cal-kpi-val" style="color: #0284C7;">${percentGood}%</div>
           <div class="zlog-cal-kpi-sub">${goodDaysCount} good or great days</div>
         </div>
 
@@ -2029,7 +2029,7 @@ const CLINICAL_COCKTAILS = [
       { name: 'Risperdal', dose: '0.125mg', type: 'ris' }
     ],
     statusTag: '💎 #1 Peak Behavioral Regulation',
-    border: '#10B981',
+    border: '#0284C7',
     summary: 'Full executive & emotional coverage. Daytime focus boosted with 11 AM school booster; low-dose Risperdal safety floor prevented explosive reactivity.',
     clinicalNote: 'Produced the lowest aggression rate (15%) and highest good days (72%) of the 2-year history.'
   },
@@ -2618,8 +2618,8 @@ function renderZLogInsights() {
           </div>
 
           <div style="background: var(--bg-card); border: 1px solid var(--border-light); padding: 8px 10px; border-radius: var(--radius-sm);">
-            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: #10B981;">Good / Great Days</div>
-            <div style="font-size: 1.15rem; font-weight: 800; color: #10B981; display: flex; align-items: center; gap: 6px;">
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; color: #0284C7;">Good / Great Days</div>
+            <div style="font-size: 1.15rem; font-weight: 800; color: #0284C7; display: flex; align-items: center; gap: 6px;">
               <span>${curStats.pctGood}%</span>
               ${cmpStats ? formatDeltaBadge(curStats.pctGood, cmpStats.pctGood, true) : ''}
             </div>
@@ -2694,7 +2694,7 @@ function renderZLogInsights() {
             // Clean status tag
             let statusTagHtml = '';
             if (idx === 0) {
-              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">★ Best Regulation</span>`;
+              statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #0284C7; background: rgba(2, 132, 199, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">★ Best Regulation</span>`;
             } else if (c.id === 'cocktail_spring_focus') {
               statusTagHtml = `<span style="font-size: 0.68rem; font-weight: 700; color: #0D9488; background: rgba(13, 148, 136, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">Solid Focus</span>`;
             } else if (c.id === 'cocktail_baseline_floor') {
@@ -2745,19 +2745,19 @@ function renderZLogInsights() {
                     <div class="zlog-drawer-grid">
                       <div class="zlog-drawer-stat-pill">
                         <div class="zlog-drawer-stat-pill-label">🏫 School Aggression</div>
-                        <div class="zlog-drawer-stat-pill-val" style="color: ${schoolVal <= 15 ? '#059669' : (schoolVal <= 30 ? '#2563EB' : '#DC2626')};">
+                        <div class="zlog-drawer-stat-pill-val" style="color: ${schoolVal <= 15 ? '#0284C7' : (schoolVal <= 30 ? '#2563EB' : '#DC2626')};">
                           ${c.pctSchoolAgg}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.schoolAgg}/${c.schoolTotal}d)</span>
                         </div>
                       </div>
                       <div class="zlog-drawer-stat-pill">
                         <div class="zlog-drawer-stat-pill-label">🏡 Home &amp; Breaks</div>
-                        <div class="zlog-drawer-stat-pill-val" style="color: ${c.pctHomeAgg <= 15 ? '#059669' : (c.pctHomeAgg <= 30 ? '#2563EB' : '#DC2626')};">
+                        <div class="zlog-drawer-stat-pill-val" style="color: ${c.pctHomeAgg <= 15 ? '#0284C7' : (c.pctHomeAgg <= 30 ? '#2563EB' : '#DC2626')};">
                           ${c.pctHomeAgg}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.homeAgg}/${c.homeTotal}d)</span>
                         </div>
                       </div>
                       <div class="zlog-drawer-stat-pill">
                         <div class="zlog-drawer-stat-pill-label">💎 Good Days (≥4★)</div>
-                        <div class="zlog-drawer-stat-pill-val" style="color: #059669;">
+                        <div class="zlog-drawer-stat-pill-val" style="color: #0284C7;">
                           ${c.pctGood}% <span style="font-size: 0.68rem; font-weight: 500; color: var(--text-muted);">(${c.goodDays}/${c.total}d)</span>
                         </div>
                       </div>
@@ -2838,7 +2838,7 @@ function renderZLogInsights() {
                 <div class="zlog-dow-hero-stat ${heroCls}">${d.pctAgg}%</div>
                 <div class="zlog-dow-hero-label">Meltdowns</div>
                 <div class="zlog-dow-sub-stat">
-                  <strong style="color: #059669;">${d.pctGood}%</strong> Good
+                  <strong style="color: #0284C7;">${d.pctGood}%</strong> Good
                   <div style="font-size: 0.62rem; color: var(--text-muted); margin-top: 1px;">${d.agg} of ${d.total}d</div>
                 </div>
                 ${cmpD ? `
@@ -2853,10 +2853,10 @@ function renderZLogInsights() {
       </div>
 
       <!-- SECTION 4: Evidence-Based Playbook ("What the Data Shows Works") -->
-      <div class="zlog-insights-card" style="border-left: 4px solid #10B981;">
+      <div class="zlog-insights-card" style="border-left: 4px solid #0284C7;">
         <div class="zlog-insights-header">
           <div>
-            <div class="zlog-insights-title" style="color: #059669;">
+            <div class="zlog-insights-title" style="color: #0284C7;">
               <i data-lucide="check-check" style="width: 18px; height: 18px;"></i>
               <span>Evidence-Based Playbook: What the Data Shows Works</span>
             </div>
@@ -2864,7 +2864,7 @@ function renderZLogInsights() {
               Actionable interventions and proactive habits proven by recent behavioral patterns and longitudinal logs to prevent meltdowns and support regulation.
             </div>
           </div>
-          <span style="font-size: 0.70rem; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.1); padding: 2px 8px; border-radius: var(--radius-full);">
+          <span style="font-size: 0.70rem; font-weight: 700; color: #0284C7; background: rgba(2, 132, 199, 0.12); padding: 2px 8px; border-radius: var(--radius-full);">
             8 Core Strategies
           </span>
         </div>
@@ -3148,8 +3148,8 @@ function buildMonthlyTrendlineSection(entries) {
     const barY = padYTop + plotH - barH;
 
     const ms = milestones[mKey];
-    const barFill = ms && ms.isPeak ? 'rgba(239, 68, 68, 0.42)' : (ms && ms.isBest ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.16)');
-    const barStroke = ms && ms.isPeak ? '#DC2626' : (ms && ms.isBest ? '#059669' : 'rgba(239, 68, 68, 0.38)');
+    const barFill = ms && ms.isPeak ? 'rgba(239, 68, 68, 0.42)' : (ms && ms.isBest ? 'rgba(2, 132, 199, 0.35)' : 'rgba(239, 68, 68, 0.16)');
+    const barStroke = ms && ms.isPeak ? '#DC2626' : (ms && ms.isBest ? '#0284C7' : 'rgba(239, 68, 68, 0.38)');
 
     barsSvg.push(`
       <rect class="zlog-trendline-bar" x="${barX.toFixed(1)}" y="${barY.toFixed(1)}" width="${barW}" height="${barH.toFixed(1)}" rx="3"
@@ -3162,8 +3162,8 @@ function buildMonthlyTrendlineSection(entries) {
     `);
 
     // Trendline Node circle
-    const nodeStroke = ms && ms.isPeak ? '#991B1B' : (ms && ms.isBest ? '#065F46' : '#DC2626');
-    const nodeFill = ms && ms.isPeak ? '#EF4444' : (ms && ms.isBest ? '#10B981' : '#FFFFFF');
+    const nodeStroke = ms && ms.isPeak ? '#991B1B' : (ms && ms.isBest ? '#0369A1' : '#DC2626');
+    const nodeFill = ms && ms.isPeak ? '#EF4444' : (ms && ms.isBest ? '#0284C7' : '#FFFFFF');
     nodesSvg.push(`
       <circle class="zlog-trendline-node" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(ms && (ms.isPeak || ms.isBest)) ? 6.5 : 4.5}"
               fill="${nodeFill}" stroke="${nodeStroke}" stroke-width="2.5">
@@ -3175,7 +3175,7 @@ function buildMonthlyTrendlineSection(entries) {
     const labelY = y < padYTop + 14 ? y + 14 : y - 8;
     labelsSvg.push(`
       <text x="${x.toFixed(1)}" y="${labelY.toFixed(1)}" font-size="9.5" font-weight="800" font-family="var(--font-mono, monospace)"
-            fill="${ms && ms.isPeak ? '#DC2626' : (ms && ms.isBest ? '#059669' : 'var(--text-primary)')}" text-anchor="middle">
+            fill="${ms && ms.isPeak ? '#DC2626' : (ms && ms.isBest ? '#0284C7' : 'var(--text-primary)')}" text-anchor="middle">
         ${aggPct}%
       </text>
     `);
@@ -3190,8 +3190,8 @@ function buildMonthlyTrendlineSection(entries) {
 
     // Milestone flag badge
     if (ms && (ms.isPeak || ms.isBest || ms.isKey)) {
-      const flagColor = ms.isPeak ? '#DC2626' : (ms.isBest ? '#059669' : '#2563EB');
-      const flagBg = ms.isPeak ? '#FEE2E2' : (ms.isBest ? '#D1FAE5' : '#EFF6FF');
+      const flagColor = ms.isPeak ? '#DC2626' : (ms.isBest ? '#0284C7' : '#2563EB');
+      const flagBg = ms.isPeak ? '#FEE2E2' : (ms.isBest ? '#E0F2FE' : '#EFF6FF');
       const flagText = ms.tag;
       const tagW = flagText.length * 5.8 + 12;
       flagsSvg.push(`
@@ -3222,14 +3222,14 @@ function buildMonthlyTrendlineSection(entries) {
       <tr>
         <td style="font-weight: 700; white-space: nowrap;">
           ${mo} ${yr}
-          ${ms ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 4px; ${ms.isPeak ? 'background: #FEE2E2; color: #DC2626;' : (ms.isBest ? 'background: #D1FAE5; color: #059669;' : 'background: #EFF6FF; color: #2563EB;')} font-weight: 600;">${ms.tag}</span>` : ''}
+          ${ms ? `<span style="font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 4px; ${ms.isPeak ? 'background: #FEE2E2; color: #DC2626;' : (ms.isBest ? 'background: #E0F2FE; color: #0284C7;' : 'background: #EFF6FF; color: #2563EB;')} font-weight: 600;">${ms.tag}</span>` : ''}
         </td>
         <td style="font-family: monospace;">${m.total}d</td>
         <td>
           <div class="zlog-monthly-bar-track">
             <div class="zlog-monthly-bar-fill-agg" style="width: ${aggPct}%;"></div>
           </div>
-          <span style="font-weight: 700; color: ${aggPct >= 40 ? '#DC2626' : (aggPct <= 20 ? '#059669' : 'var(--text-primary)')}; font-family: monospace;">
+          <span style="font-weight: 700; color: ${aggPct >= 40 ? '#DC2626' : (aggPct <= 20 ? '#0284C7' : 'var(--text-primary)')}; font-family: monospace;">
             ${m.agg}d (${aggPct}%)
           </span>
         </td>
@@ -3237,7 +3237,7 @@ function buildMonthlyTrendlineSection(entries) {
           <div class="zlog-monthly-bar-track">
             <div class="zlog-monthly-bar-fill-good" style="width: ${goodPct}%;"></div>
           </div>
-          <span style="font-family: monospace; color: #059669; font-weight: 600;">${goodPct}%</span>
+          <span style="font-family: monospace; color: #0284C7; font-weight: 600;">${goodPct}%</span>
         </td>
         <td style="font-family: monospace; font-weight: 600;">${avgRating}</td>
         <td style="color: var(--text-secondary); font-size: 0.72rem;">${ms ? ms.note : 'Standard school/home routine'}</td>
@@ -3281,9 +3281,9 @@ function buildMonthlyTrendlineSection(entries) {
           <div class="zlog-trendline-kpi-val" style="color: #2563EB;">26%</div>
           <div class="zlog-trendline-kpi-sub">Feb – Jun 2026 (Risperdal Active)</div>
         </div>
-        <div class="zlog-trendline-kpi" style="border-left: 3px solid #059669;">
+        <div class="zlog-trendline-kpi" style="border-left: 3px solid #0284C7;">
           <div class="zlog-trendline-kpi-label">Annual Low Month</div>
-          <div class="zlog-trendline-kpi-val" style="color: #059669;">13%</div>
+          <div class="zlog-trendline-kpi-val" style="color: #0284C7;">13%</div>
           <div class="zlog-trendline-kpi-sub">Jun 2026 (4 incident days)</div>
         </div>
         <div class="zlog-trendline-kpi" style="border-left: 3px solid #D97768;">

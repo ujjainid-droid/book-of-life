@@ -338,28 +338,60 @@
 .modal-zlog-card,
 #modal-zlog-entry,
 .zlog-pulse-card {
-  --primary: #065F46;
-  --primary-hover: #047857;
-  --primary-light: #ECFDF5;
-  --primary-border: #A7F3D0;
-  --primary-subtle: #F0FDF4;
-  --primary-glow: rgba(5, 150, 105, 0.25);
-  --accent: #059669;
+  --primary: #0284C7;
+  --primary-hover: #0369A1;
+  --primary-light: #E0F2FE;
+  --primary-border: rgba(2, 132, 199, 0.3);
+  --primary-subtle: #F0F9FF;
+  --primary-glow: rgba(2, 132, 199, 0.25);
+  --accent: #0284C7;
 
-  --zlog-blue: #059669;
-  --zlog-blue-dark: #065F46;
-  --zlog-blue-light: #ECFDF5;
-  --zlog-blue-border: #A7F3D0;
-  --zlog-blue-text: #065F46;
-  --zlog-blue-shadow: rgba(5, 150, 105, 0.25);
+  --zlog-bg: #F4F7F9;
+  --zlog-surface: #E5EDF2;
+  --zlog-heading: #1E293B;
+  --zlog-muted: #64748B;
+  --zlog-accent: #0284C7;
+
+  --bg-app: #F4F7F9;
+  --bg-book: #F4F7F9;
+  --bg-page: #F4F7F9;
+  --bg-card: #E5EDF2;
+  --bg-surface: #E5EDF2;
+  --bg-surface-hover: #DCE5EB;
+  --border-light: rgba(2, 132, 199, 0.18);
+  --border-subtle: rgba(2, 132, 199, 0.1);
+  --border-strong: rgba(2, 132, 199, 0.35);
+  --border-color: rgba(2, 132, 199, 0.2);
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+
+  --zlog-blue: #0284C7;
+  --zlog-blue-dark: #0369A1;
+  --zlog-blue-light: #E0F2FE;
+  --zlog-blue-border: rgba(2, 132, 199, 0.3);
+  --zlog-blue-text: #0284C7;
+  --zlog-blue-shadow: rgba(2, 132, 199, 0.25);
 }
 
 .zlog-page-container {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding-bottom: 4rem;
+  padding: 1.25rem 1.25rem 4rem 1.25rem;
   box-sizing: border-box;
+  background: #F4F7F9;
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid rgba(2, 132, 199, 0.15);
+}
+
+body:has(.zlog-page-container) {
+  background-color: #F4F7F9;
+}
+
+[data-theme="dark"] body:has(.zlog-page-container),
+body.dark-mode:has(.zlog-page-container) {
+  background-color: #0B0F19;
 }
 
 [data-theme="dark"] .zlog-page-container,
@@ -370,20 +402,36 @@ body.dark-mode .zlog-page-container,
 body.dark-mode .modal-zlog-card,
 body.dark-mode #modal-zlog-entry,
 body.dark-mode .zlog-pulse-card {
-  --primary: #10B981;
-  --primary-hover: #34D399;
-  --primary-light: rgba(5, 150, 105, 0.18);
-  --primary-border: rgba(16, 185, 129, 0.35);
-  --primary-subtle: rgba(5, 150, 105, 0.08);
-  --primary-glow: rgba(16, 185, 129, 0.35);
-  --accent: #10B981;
+  --primary: #38BDF8;
+  --primary-hover: #7DD3FC;
+  --primary-light: rgba(56, 189, 248, 0.18);
+  --primary-border: rgba(56, 189, 248, 0.35);
+  --primary-subtle: rgba(56, 189, 248, 0.08);
+  --primary-glow: rgba(56, 189, 248, 0.35);
+  --accent: #38BDF8;
 
-  --zlog-blue: #10B981;
-  --zlog-blue-dark: #34D399;
-  --zlog-blue-light: rgba(5, 150, 105, 0.18);
-  --zlog-blue-border: rgba(16, 185, 129, 0.35);
-  --zlog-blue-text: #6EE7B7;
-  --zlog-blue-shadow: rgba(16, 185, 129, 0.35);
+  --bg-card: #1E293B;
+  --bg-surface: #1E293B;
+  --bg-surface-hover: #334155;
+  --border-light: rgba(56, 189, 248, 0.2);
+  --border-subtle: rgba(56, 189, 248, 0.1);
+  --border-strong: rgba(56, 189, 248, 0.4);
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+
+  --zlog-blue: #38BDF8;
+  --zlog-blue-dark: #7DD3FC;
+  --zlog-blue-light: rgba(56, 189, 248, 0.18);
+  --zlog-blue-border: rgba(56, 189, 248, 0.35);
+  --zlog-blue-text: #BAE6FD;
+  --zlog-blue-shadow: rgba(56, 189, 248, 0.35);
+}
+
+[data-theme="dark"] .zlog-page-container,
+body.dark-mode .zlog-page-container {
+  background: #0F172A;
+  border-color: rgba(56, 189, 248, 0.2);
 }
 
 /* Header Banner */
@@ -423,11 +471,11 @@ body.dark-mode .zlog-pulse-card {
 }
 
 .zlog-stat-card {
-  background: linear-gradient(135deg, #064E3B 0%, #022C22 100%);
-  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  background: #E5EDF2;
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
-  box-shadow: 0 4px 16px rgba(2, 44, 34, 0.22);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
@@ -440,26 +488,26 @@ body.dark-mode .zlog-pulse-card {
   left: 0;
   right: 0;
   height: 3.5px;
-  background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+  background: linear-gradient(90deg, #0284C7 0%, #38BDF8 100%);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .zlog-stat-card:hover {
   transform: translateY(-2px);
-  border-color: #34D399;
-  box-shadow: 0 8px 24px rgba(2, 44, 34, 0.35);
+  border-color: #0284C7;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.15);
 }
 
 [data-theme="dark"] .zlog-stat-card,
 body.dark-mode .zlog-stat-card {
-  background: linear-gradient(135deg, #022C22 0%, #011C15 100%);
-  border: 1.5px solid rgba(52, 211, 153, 0.45);
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="dark"] .zlog-stat-card::after,
 body.dark-mode .zlog-stat-card::after {
-  background: #34D399;
+  background: #38BDF8;
 }
 
 .zlog-stat-label {
@@ -467,7 +515,7 @@ body.dark-mode .zlog-stat-card::after {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #A7F3D0;
+  color: #0284C7;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -476,17 +524,17 @@ body.dark-mode .zlog-stat-card::after {
 
 [data-theme="dark"] .zlog-stat-label,
 body.dark-mode .zlog-stat-label {
-  color: #6EE7B7;
+  color: #7DD3FC;
 }
 
 .zlog-stat-val {
   font-size: 1.65rem;
   font-weight: 900;
   font-family: var(--font-mono);
-  color: #FFFFFF;
+  color: #1E293B;
   line-height: 1.1;
   letter-spacing: -0.02em;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  text-shadow: none;
 }
 
 [data-theme="dark"] .zlog-stat-val,
@@ -497,13 +545,13 @@ body.dark-mode .zlog-stat-val {
 .zlog-stat-sub {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #6EE7B7;
+  color: #64748B;
   margin-top: 4px;
 }
 
 [data-theme="dark"] .zlog-stat-sub,
 body.dark-mode .zlog-stat-sub {
-  color: #A7F3D0;
+  color: #94A3B8;
 }
 
 /* Active Regimen 4-Column Row */
@@ -566,21 +614,21 @@ body.dark-mode .zlog-stat-sub {
 .zlog-subnav-pills {
   display: flex;
   align-items: center;
-  background: #E6FBF0;
-  border: 1.5px solid #6EE7B7;
+  background: #E5EDF2;
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
   border-radius: var(--radius-full);
   padding: 4px;
   gap: 5px;
   overflow-x: auto;
   max-width: 100%;
   scrollbar-width: none;
-  box-shadow: 0 2px 8px rgba(6, 95, 70, 0.08);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
 }
 
 [data-theme="dark"] .zlog-subnav-pills,
 body.dark-mode .zlog-subnav-pills {
-  background: rgba(6, 78, 59, 0.45);
-  border: 1.5px solid #10B981;
+  background: rgba(30, 41, 59, 0.75);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
 }
 
 .zlog-subnav-pills::-webkit-scrollbar {
@@ -596,7 +644,7 @@ body.dark-mode .zlog-subnav-pills {
   font-family: var(--font-sans);
   font-size: 0.78rem;
   font-weight: 700;
-  color: #064E3B;
+  color: #64748B;
   padding: 7px 14px;
   border-radius: var(--radius-full);
   cursor: pointer;
@@ -608,52 +656,52 @@ body.dark-mode .zlog-subnav-pills {
 }
 
 .zlog-subnav-btn:hover {
-  background: rgba(16, 185, 129, 0.18);
-  color: #065F46;
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
 }
 
 [data-theme="dark"] .zlog-subnav-btn,
 body.dark-mode .zlog-subnav-btn {
-  color: #A7F3D0;
+  color: #94A3B8;
 }
 
 [data-theme="dark"] .zlog-subnav-btn:hover,
 body.dark-mode .zlog-subnav-btn:hover {
-  background: rgba(16, 185, 129, 0.25);
+  background: rgba(56, 189, 248, 0.18);
   color: #FFFFFF;
 }
 
 .zlog-subnav-btn.active {
-  background: linear-gradient(135deg, #059669 0%, #064E3B 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
   color: #FFFFFF;
   font-weight: 800;
-  box-shadow: 0 3px 10px rgba(6, 78, 59, 0.35);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35);
 }
 
 [data-theme="dark"] .zlog-subnav-btn.active,
 body.dark-mode .zlog-subnav-btn.active {
-  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
   color: #FFFFFF;
-  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.4);
 }
 
 /* Search & Filter Toolbar */
 .zlog-toolbar {
-  background: #F8FAF9;
-  border: 1.5px solid rgba(16, 185, 129, 0.28);
+  background: #E5EDF2;
+  border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-lg);
   padding: 10px 14px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  box-shadow: 0 2px 6px rgba(6, 95, 70, 0.04);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
 }
 
 [data-theme="dark"] .zlog-toolbar,
 body.dark-mode .zlog-toolbar {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .zlog-search-row {
@@ -664,27 +712,27 @@ body.dark-mode .zlog-toolbar {
 
 .zlog-search-input {
   flex: 1;
-  background: #FFFFFF;
+  background: #F4F7F9;
   border: 1.5px solid #CBD5E1;
   border-radius: var(--radius-md);
   padding: 8px 14px;
   font-size: 0.84rem;
   font-weight: 500;
-  color: var(--text-primary);
+  color: #1E293B;
   outline: none;
   transition: all var(--transition-fast);
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 }
 
 .zlog-search-input:focus {
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  border-color: #0284C7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
 
 [data-theme="dark"] .zlog-search-input,
 body.dark-mode .zlog-search-input {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(56, 189, 248, 0.35);
   color: #F8FAFC;
 }
 
@@ -696,26 +744,27 @@ body.dark-mode .zlog-search-input {
 }
 
 .zlog-filter-chip {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-light);
+  background: #F4F7F9;
+  border: 1px solid #CBD5E1;
   border-radius: var(--radius-full);
   padding: 3px 10px;
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #64748B;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .zlog-filter-chip:hover {
-  background: var(--bg-surface-hover);
-  border-color: var(--border-strong);
+  background: #DCE5EB;
+  border-color: #0284C7;
+  color: #1E293B;
 }
 
 .zlog-filter-chip.active {
-  background: var(--primary);
+  background: #0284C7;
   color: #fff;
-  border-color: var(--primary);
+  border-color: #0284C7;
 }
 
 .zlog-filter-chip.chip-aggression.active {
@@ -1559,12 +1608,12 @@ body.dark-mode .zlog-search-input {
    5. Month Jump Navigation Bar (Option 1: Clean Dual Dropdowns)
    ========================================================================== */
 .zlog-month-nav-card.zlog-dual-dropdown-card {
-  background: #F8FAF9;
-  border: 1.5px solid rgba(16, 185, 129, 0.28);
+  background: #E5EDF2;
+  border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-lg);
   padding: 8px 14px;
   margin-bottom: 1.25rem;
-  box-shadow: 0 2px 6px rgba(6, 95, 70, 0.04);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1574,8 +1623,8 @@ body.dark-mode .zlog-search-input {
 
 [data-theme="dark"] .zlog-month-nav-card.zlog-dual-dropdown-card,
 body.dark-mode .zlog-month-nav-card.zlog-dual-dropdown-card {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(16, 185, 129, 0.35);
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .zlog-dropdown-controls {
@@ -1597,7 +1646,7 @@ body.dark-mode .zlog-month-nav-card.zlog-dual-dropdown-card {
 .zlog-dropdown-label {
   font-size: 0.72rem;
   font-weight: 800;
-  color: #065F46;
+  color: #0284C7;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -1606,18 +1655,18 @@ body.dark-mode .zlog-month-nav-card.zlog-dual-dropdown-card {
 
 [data-theme="dark"] .zlog-dropdown-label,
 body.dark-mode .zlog-dropdown-label {
-  color: #6EE7B7;
+  color: #7DD3FC;
 }
 
 .zlog-picker-select {
-  background: #FFFFFF;
+  background: #F4F7F9;
   border: 1.5px solid #CBD5E1;
   border-radius: var(--radius-md);
   padding: 6px 12px;
   font-family: var(--font-sans);
   font-size: 0.8rem;
   font-weight: 700;
-  color: #064E3B;
+  color: #1E293B;
   outline: none;
   cursor: pointer;
   transition: all var(--transition-fast);
@@ -1628,20 +1677,20 @@ body.dark-mode .zlog-dropdown-label {
 }
 
 .zlog-picker-select:hover {
-  border-color: #059669;
-  background: #F0FDF4;
+  border-color: #0284C7;
+  background: #E0F2FE;
 }
 
 .zlog-picker-select:focus {
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  border-color: #0284C7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
 
 [data-theme="dark"] .zlog-picker-select,
 body.dark-mode .zlog-picker-select {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: rgba(16, 185, 129, 0.35);
-  color: #A7F3D0;
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #F8FAFC;
 }
 
 .zlog-nav-actions {
@@ -1652,28 +1701,28 @@ body.dark-mode .zlog-picker-select {
 }
 
 .zlog-nav-action-btn {
-  background: #FFFFFF;
+  background: #F4F7F9;
   border: 1.5px solid #CBD5E1;
   border-radius: var(--radius-md);
   padding: 5px 12px;
   font-size: 0.76rem;
   font-weight: 700;
-  color: #065F46;
+  color: #0284C7;
   cursor: pointer;
   transition: all var(--transition-fast);
 }
 
 .zlog-nav-action-btn:hover {
-  background: #ECFDF5;
-  border-color: #059669;
-  color: #047857;
+  background: #0284C7;
+  border-color: #0284C7;
+  color: #FFFFFF;
 }
 
 [data-theme="dark"] .zlog-nav-action-btn,
 body.dark-mode .zlog-nav-action-btn {
-  background: rgba(30, 41, 59, 0.8);
-  border-color: rgba(16, 185, 129, 0.35);
-  color: #A7F3D0;
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #7DD3FC;
 }
 
 @media (max-width: 520px) {
@@ -1697,8 +1746,8 @@ body.dark-mode .zlog-nav-action-btn {
 }
 
 .zlog-month-header {
-  background: #FFFFFF;
-  border: 1.5px solid rgba(16, 185, 129, 0.28);
+  background: #E5EDF2;
+  border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-md);
   padding: 12px 16px;
   display: flex;
@@ -1707,32 +1756,32 @@ body.dark-mode .zlog-nav-action-btn {
   cursor: pointer;
   user-select: none;
   transition: all var(--transition-fast);
-  box-shadow: 0 1px 3px rgba(6, 95, 70, 0.04);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 .zlog-month-header:hover {
-  background: #F0FDF4;
-  border-color: #059669;
-  box-shadow: 0 4px 10px rgba(6, 95, 70, 0.08);
+  background: #DCE5EB;
+  border-color: #0284C7;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.1);
 }
 
 .zlog-month-header.expanded {
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
-  border-color: #059669;
-  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
-  box-shadow: 0 2px 6px rgba(6, 95, 70, 0.06);
+  border-color: #0284C7;
+  background: linear-gradient(135deg, #E5EDF2 0%, #DCE5EB 100%);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.08);
 }
 
 [data-theme="dark"] .zlog-month-header {
   background: rgba(30, 41, 59, 0.7);
-  border-color: rgba(16, 185, 129, 0.3);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 [data-theme="dark"] .zlog-month-header.expanded,
 body.dark-mode .zlog-month-header.expanded {
-  background: linear-gradient(135deg, rgba(6, 95, 70, 0.45) 0%, rgba(6, 78, 59, 0.6) 100%);
-  border-color: #10B981;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  border-color: #0284C7;
 }
 
 .zlog-month-title-area {
@@ -1744,13 +1793,13 @@ body.dark-mode .zlog-month-header.expanded {
 .zlog-month-title {
   font-size: 0.98rem;
   font-weight: 800;
-  color: #064E3B;
+  color: #1E293B;
   letter-spacing: -0.01em;
 }
 
 [data-theme="dark"] .zlog-month-title,
 body.dark-mode .zlog-month-title {
-  color: #F0FDF4;
+  color: #F8FAFC;
 }
 
 .zlog-month-badge {
@@ -1758,16 +1807,16 @@ body.dark-mode .zlog-month-title {
   font-weight: 700;
   padding: 2px 8px;
   border-radius: var(--radius-full);
-  background: #FFFFFF;
-  color: #065F46;
-  border: 1px solid #A7F3D0;
+  background: #F4F7F9;
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.28);
 }
 
 [data-theme="dark"] .zlog-month-badge,
 body.dark-mode .zlog-month-badge {
-  background: rgba(6, 78, 59, 0.6);
-  color: #6EE7B7;
-  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(15, 23, 42, 0.6);
+  color: #7DD3FC;
+  border-color: rgba(56, 189, 248, 0.35);
 }
 
 .zlog-month-meta {
@@ -2190,8 +2239,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-dow-card.is-calmest {
-  border-color: rgba(16, 185, 129, 0.4);
-  background: linear-gradient(180deg, rgba(16, 185, 129, 0.06) 0%, var(--bg-card) 100%);
+  border-color: rgba(2, 132, 199, 0.4);
+  background: linear-gradient(180deg, rgba(2, 132, 199, 0.08) 0%, var(--bg-card) 100%);
 }
 
 .zlog-dow-card.is-spike {
@@ -2209,7 +2258,7 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-dow-card.is-calmest .zlog-dow-day-title {
-  color: #059669;
+  color: #0284C7;
 }
 
 .zlog-dow-card.is-spike .zlog-dow-day-title {
@@ -2230,8 +2279,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-dow-pill-tag.good {
-  background: rgba(16, 185, 129, 0.12);
-  color: #059669;
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
 }
 
 .zlog-dow-pill-tag.risk {
@@ -2253,7 +2302,7 @@ body.dark-mode .zlog-month-badge {
   margin-top: 1px;
 }
 
-.zlog-dow-hero-stat.low { color: #059669; }
+.zlog-dow-hero-stat.low { color: #0284C7; }
 .zlog-dow-hero-stat.med { color: #2563EB; }
 .zlog-dow-hero-stat.high { color: #DC2626; }
 
@@ -2455,8 +2504,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-regimen-card.is-best {
-  border-left: 4px solid #059669;
-  background: linear-gradient(90deg, rgba(16, 185, 129, 0.03) 0%, var(--bg-card) 100%);
+  border-left: 4px solid #0284C7;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.06) 0%, var(--bg-card) 100%);
 }
 
 .zlog-regimen-card-main {
@@ -2490,10 +2539,10 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-rank-circle.best {
-  background: #059669;
+  background: #0284C7;
   color: #FFFFFF;
   border: none;
-  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
 }
 
 .zlog-regimen-info-col {
@@ -2541,7 +2590,7 @@ body.dark-mode .zlog-month-badge {
   line-height: 1.1;
 }
 
-.zlog-regimen-stat-val.low { color: #059669; }
+.zlog-regimen-stat-val.low { color: #0284C7; }
 .zlog-regimen-stat-val.med { color: #2563EB; }
 .zlog-regimen-stat-val.high { color: #DC2626; }
 
@@ -2662,9 +2711,9 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-rank-badge.rank-1 {
-  background: rgba(16, 185, 129, 0.15);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(2, 132, 199, 0.15);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.3);
 }
 
 .zlog-rank-badge.rank-2 {
@@ -2703,9 +2752,9 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-med-pill.pill-zoloft {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.25);
 }
 
 .zlog-med-pill.pill-guan {
@@ -2876,7 +2925,7 @@ body.dark-mode .zlog-month-badge {
 
 .zlog-monthly-bar-fill-good {
   height: 100%;
-  background: #10B981;
+  background: #0284C7;
   border-radius: var(--radius-full);
 }
 
@@ -3356,8 +3405,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-cal-rating-pill.level-3 {
-  background: rgba(212, 155, 53, 0.15);
-  color: #B45309;
+  background: rgba(13, 148, 136, 0.15);
+  color: #0D9488;
 }
 
 .zlog-cal-rating-pill.level-2 {
