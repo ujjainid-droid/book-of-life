@@ -162,9 +162,9 @@ html, body {
 
 .nav-capsule-btn.active#nav-btn-zhub,
 .domain-capsule-btn.active#domain-btn-zhub {
-  background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+  background: linear-gradient(135deg, #059669 0%, #065F46 100%);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.32);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.32);
 }
 
 .nav-capsule-btn.active#nav-btn-finance,
