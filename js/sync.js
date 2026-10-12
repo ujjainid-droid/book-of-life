@@ -280,37 +280,44 @@ class SyncManager {
     });
     const mergedThoughts = Array.from(thoughtMap.values());
 
-    // 9. Claims: Union by id, sanitized & normalized
+    // 9. Claims: Merge & sanitize against synthetic legacy placeholders
     const claimsMap = new Map();
+    if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
+      DEFAULT_REAL_CLAIMS.forEach(c => {
+        if (c && c.id) claimsMap.set(c.id, { ...c });
+      });
+    }
+
+    const isSyntheticClaim = (id) => {
+      if (!id) return true;
+      if (id.startsWith('claim-demo-')) return true;
+      if (id === 'claim-ms-01') return true;
+      if (/^claim-barness-\d+$/.test(id)) return true;
+      return false;
+    };
+
     (Array.isArray(storage.data.claims) ? storage.data.claims : []).forEach(c => {
-      if (c && c.id) claimsMap.set(c.id, { ...c });
-    });
-    (Array.isArray(incoming.claims) ? incoming.claims : []).forEach(c => {
-      if (c && c.id) {
+      if (c && c.id && !isSyntheticClaim(c.id)) {
         const ex = claimsMap.get(c.id);
         claimsMap.set(c.id, { ...(ex || {}), ...c });
       }
     });
+
+    (Array.isArray(incoming.claims) ? incoming.claims : []).forEach(c => {
+      if (c && c.id && !isSyntheticClaim(c.id)) {
+        const ex = claimsMap.get(c.id);
+        claimsMap.set(c.id, { ...(ex || {}), ...c });
+      }
+    });
+
     const mergedClaims = Array.from(claimsMap.values()).map(c => {
       const claim = { ...c };
       claim.date = claim.date || claim.dateOfService || formatDateIso(new Date());
-      claim.amountPaid = Number(claim.amountPaid !== undefined ? claim.amountPaid : (claim.amountBilled || 300.0));
-      if (claim.amountPaid > 10000 || isNaN(claim.amountPaid)) claim.amountPaid = 300.0;
-      if (claim.amountBilled > 10000 || isNaN(claim.amountBilled)) claim.amountBilled = 300.0;
-      if (claim.insurancePaid > 10000 || isNaN(claim.insurancePaid)) claim.insurancePaid = 180.0;
-      if (claim.outOfPocket > 10000 || claim.outOfPocket < 0 || isNaN(claim.outOfPocket)) {
-        claim.outOfPocket = (claim.status === 'reimbursed' || claim.stage === 'settled') ? 120.0 : (claim.amountPaid - (claim.insurancePaid || 0));
-      }
-      if (!claim.stage) {
-        claim.stage = (claim.status === 'reimbursed') ? 'settled' : 'with_included_health';
-      }
-      if (claim.reimbursedAmount === undefined) {
-        claim.reimbursedAmount = (claim.stage === 'settled') ? (claim.insurancePaid || 180.0) : 0;
-      }
+      claim.amountPaid = Number(claim.amountPaid !== undefined ? claim.amountPaid : (claim.amountBilled || 0));
+      claim.patient = claim.patient || 'Xavier Healy';
       claim.superbillStatus = claim.superbillStatus || 'have';
       claim.submissionType = claim.submissionType || 'provider';
       claim.payoutMethod = claim.payoutMethod || 'direct_deposit';
-      claim.nextAction = claim.nextAction || (claim.stage === 'settled' ? 'Claim settled & reimbursed' : 'Waiting on Included Health & Insurance review');
       return claim;
     });
 

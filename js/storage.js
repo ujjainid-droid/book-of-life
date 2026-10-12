@@ -1664,6 +1664,13 @@ class StorageManager {
 
   getClaims() {
     if (!Array.isArray(this.data.claims)) this.data.claims = [];
+    this.data.claims = this.data.claims.filter(c => {
+      if (!c || !c.id) return false;
+      if (c.id.startsWith('claim-demo-')) return false;
+      if (c.id === 'claim-ms-01') return false;
+      if (/^claim-barness-\d+$/.test(c.id)) return false;
+      return true;
+    });
     return this.data.claims;
   }
 
