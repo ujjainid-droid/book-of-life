@@ -1320,24 +1320,32 @@ function renderFinanceQuarterlyCadenceBar() {
     {
       num: 1,
       label: '401(k) Review',
+      theme: 'violet',
+      color: '#7C3AED',
       hint: 'Elective deferral pacing toward $23.5k/$30k max',
       action: null
     },
     {
       num: 2,
       label: 'Tax Withholdings',
+      theme: 'teal',
+      color: '#0D9488',
       hint: 'Audit W-4 federal/state withholdings & quarterly estimates',
       action: null
     },
     {
       num: 3,
       label: 'Charity Donations',
+      theme: 'rose',
+      color: '#E11D48',
       hint: 'Plan & disburse quarterly charitable donations',
       action: null
     },
     {
       num: 4,
       label: 'Freedom Flex 5%',
+      theme: 'emerald',
+      color: '#059669',
       hint: 'Activate 5% rotating quarterly cash back categories on Chase',
       action: `
         <a href="https://www.chase.com/mybonus" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Activate Freedom Flex 5% Categories">
@@ -1348,6 +1356,8 @@ function renderFinanceQuarterlyCadenceBar() {
     {
       num: 5,
       label: 'Savings Radar',
+      theme: 'indigo',
+      color: '#4F46E5',
       hint: 'Spot check category trends for savings leaks & outliers',
       action: `
         <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); switchFinanceSubTab('burn'); setTimeout(() => scrollToFinanceOutliers(), 50);" title="Jump to Cash Flow &amp; Outliers Radar">
@@ -1358,7 +1368,7 @@ function renderFinanceQuarterlyCadenceBar() {
   ];
 
   return `
-    <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
+    <div class="finance-cadence-strip-card cadence-strip-quarterly ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
           <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
@@ -1380,12 +1390,12 @@ function renderFinanceQuarterlyCadenceBar() {
         ${items.map(item => {
           const isDone = !!checklist[item.num];
           return `
-            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
+            <div class="finance-cadence-pill-btn pill-theme-${item.theme} ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
               <div class="cadence-pill-left">
-                <span class="cadence-check-icon">
+                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D9488' : item.color};">
                   <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
                 </span>
-                <span class="cadence-pill-num">${item.num}.</span>
+                <span class="cadence-pill-num" style="color: ${item.color};">${item.num}.</span>
                 <span class="cadence-pill-title">${item.label}</span>
               </div>
               ${item.action ? item.action : ''}
@@ -1407,6 +1417,8 @@ function renderFinanceAnnualCadenceBar() {
     {
       num: 1,
       label: 'Credit Report',
+      theme: 'sky',
+      color: '#0284C7',
       hint: 'annualcreditreport.com credit check',
       action: `
         <a href="https://www.annualcreditreport.com" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Open AnnualCreditReport.com">
@@ -1417,12 +1429,16 @@ function renderFinanceAnnualCadenceBar() {
     {
       num: 2,
       label: 'Retirement Planning',
+      theme: 'violet',
+      color: '#7C3AED',
       hint: 'Annual Monte Carlo models & safe withdrawal rate review',
       action: null
     },
     {
       num: 3,
       label: 'Unclaimed Property',
+      theme: 'teal',
+      color: '#0D9488',
       hint: 'Search NYS / state registries for unclaimed funds',
       action: `
         <a href="https://www.osc.ny.gov/unclaimed-funds" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Search NYS Unclaimed Funds">
@@ -1433,16 +1449,18 @@ function renderFinanceAnnualCadenceBar() {
     {
       num: 4,
       label: 'UR + MR Points Plan',
+      theme: 'indigo',
+      color: '#4F46E5',
       hint: 'Annual redemption strategy for Chase UR & Amex MR rewards',
       action: null
     }
   ];
 
   return `
-    <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
+    <div class="finance-cadence-strip-card cadence-strip-annual ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'shield-check'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'shield-check'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#0D9488'};"></i>
           <span>Annual Governance</span>
           <span class="finance-cadence-sub">&bull; ${yKey} Horizon</span>
         </div>
@@ -1454,12 +1472,12 @@ function renderFinanceAnnualCadenceBar() {
         ${items.map(item => {
           const isDone = !!checklist[item.num];
           return `
-            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
+            <div class="finance-cadence-pill-btn pill-theme-${item.theme} ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
               <div class="cadence-pill-left">
-                <span class="cadence-check-icon">
+                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D9488' : item.color};">
                   <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
                 </span>
-                <span class="cadence-pill-num">${item.num}.</span>
+                <span class="cadence-pill-num" style="color: ${item.color};">${item.num}.</span>
                 <span class="cadence-pill-title">${item.label}</span>
               </div>
               ${item.action ? item.action : ''}

@@ -2077,6 +2077,32 @@
   background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(124, 58, 237, 0.04) 100%);
 }
 
+/* Quarterly Cadence: Royal Violet Horizon Theme */
+.finance-cadence-strip-card.cadence-strip-quarterly {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.04) 0%, rgba(99, 102, 241, 0.035) 100%);
+  border: 1px solid rgba(124, 58, 237, 0.22);
+  border-top: 3.5px solid #7C3AED;
+}
+
+[data-theme="dark"] .finance-cadence-strip-card.cadence-strip-quarterly {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.1) 0%, rgba(99, 102, 241, 0.06) 100%);
+  border-color: rgba(124, 58, 237, 0.35);
+  border-top: 3.5px solid #8B5CF6;
+}
+
+/* Annual Governance: Nordic Sea Glass Teal Theme */
+.finance-cadence-strip-card.cadence-strip-annual {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.04) 0%, rgba(56, 189, 248, 0.035) 100%);
+  border: 1px solid rgba(13, 148, 136, 0.22);
+  border-top: 3.5px solid #0D9488;
+}
+
+[data-theme="dark"] .finance-cadence-strip-card.cadence-strip-annual {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(56, 189, 248, 0.06) 100%);
+  border-color: rgba(13, 148, 136, 0.35);
+  border-top: 3.5px solid #14B8A6;
+}
+
 .finance-cadence-header {
   display: flex;
   align-items: center;
@@ -2208,15 +2234,16 @@
 }
 
 .finance-cadence-q-btn.active {
-  background: var(--bg-card, #FFFFFF);
-  color: var(--text-primary);
+  background: #7C3AED;
+  color: #FFFFFF;
   font-weight: 700;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(124, 58, 237, 0.25);
 }
 
 [data-theme="dark"] .finance-cadence-q-btn.active {
-  background: #334155;
-  color: #F8FAFC;
+  background: #8B5CF6;
+  color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .finance-cadence-pill-btn {
@@ -2224,26 +2251,41 @@
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  padding: 7px 10px;
-  border-radius: 8px;
-  background: var(--bg-surface, #F8FAFC);
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--bg-card, #FFFFFF);
   border: 1px solid var(--border-color, #E2E8F0);
   cursor: pointer;
   user-select: none;
   transition: all 0.15s ease;
   min-width: 0;
   text-align: left;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
 }
 
 [data-theme="dark"] .finance-cadence-pill-btn {
-  background: rgba(15, 23, 42, 0.5);
+  background: var(--bg-surface, #1E293B);
   border-color: rgba(255, 255, 255, 0.08);
 }
 
+/* Individual Pill Accent Themes */
+.finance-cadence-pill-btn.pill-theme-violet { border-left: 3.5px solid #7C3AED; }
+.finance-cadence-pill-btn.pill-theme-teal { border-left: 3.5px solid #0D9488; }
+.finance-cadence-pill-btn.pill-theme-rose { border-left: 3.5px solid #E11D48; }
+.finance-cadence-pill-btn.pill-theme-emerald { border-left: 3.5px solid #059669; }
+.finance-cadence-pill-btn.pill-theme-indigo { border-left: 3.5px solid #4F46E5; }
+.finance-cadence-pill-btn.pill-theme-sky { border-left: 3.5px solid #0284C7; }
+
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-violet { border-left-color: #8B5CF6; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-teal { border-left-color: #14B8A6; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-rose { border-left-color: #F43F5E; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-emerald { border-left-color: #10B981; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-indigo { border-left-color: #6366F1; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-sky { border-left-color: #38BDF8; }
+
 .finance-cadence-pill-btn:hover {
-  border-color: rgba(139, 92, 246, 0.35);
-  background: rgba(139, 92, 246, 0.03);
   transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
 }
 
 .finance-cadence-pill-btn.done {
