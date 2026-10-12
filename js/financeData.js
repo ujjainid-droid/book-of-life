@@ -8448,12 +8448,13 @@ const DEFAULT_REAL_CLAIMS = [
     "payoutMethod": "check",
     "superbillStatus": "have",
     "stage": "check_due",
+    "reissueRequested": true,
     "inPortal": true,
     "inBank": false,
     "claimNumber": "20253272A0969",
     "eobPlanPaid": 1457.76,
-    "nextAction": "Contact Anthem: Check #20253272A0969 for $1,457.76 never deposited in checking",
-    "notes": "Evaluation. Billed $5,000, Plan Paid $1,457.76, Paid Zelle $2,375. Check missing from checking."
+    "nextAction": "Reissue requested from Anthem ($1,457.76) — awaiting check arrival in mail",
+    "notes": "Evaluation. Billed $5,000, Plan Paid $1,457.76. Check reissue requested from Anthem on Oct 11; awaiting delivery."
   },
   {
     "id": "claim-barness-2026-02-02",
@@ -8486,12 +8487,13 @@ const DEFAULT_REAL_CLAIMS = [
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
     "stage": "check_due",
+    "reissueRequested": true,
     "inPortal": true,
     "inBank": false,
     "claimNumber": "2026036ML5580",
     "eobPlanPaid": 70.0,
-    "nextAction": "Contact Anthem: $70 coinsurance payout for Claim #2026036ML5580 missing from checking",
-    "notes": "Partial adjustment of $70 approved by Anthem; not found in checking deposits."
+    "nextAction": "Reissue requested from Anthem ($70.00) — awaiting check arrival in mail",
+    "notes": "Partial adjustment of $70 approved to meet $800 deductible cap. Check reissue requested from Anthem on Oct 11; awaiting delivery."
   },
   {
     "id": "claim-ms-2026-10-07",

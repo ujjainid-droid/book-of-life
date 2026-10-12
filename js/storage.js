@@ -1681,6 +1681,16 @@ class StorageManager {
       return false;
     });
 
+    // Sync seed updates for requested reissued checks
+    this.data.claims.forEach(c => {
+      if (c.id === 'claim-eval-2025-11' || c.id === 'claim-ms-2026-01-28') {
+        if (!c.reissueRequested) {
+          c.reissueRequested = true;
+          c.nextAction = `Reissue requested from Anthem ($${(c.eobPlanPaid || c.expectedRecovery || 0).toFixed(2)}) — awaiting check arrival in mail`;
+        }
+      }
+    });
+
     return this.data.claims;
   }
 

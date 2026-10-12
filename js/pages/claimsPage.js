@@ -259,7 +259,11 @@ function renderClaimRowCellHtml(claim) {
     actionBtnHtml = `<button class="claims-pill-btn" onclick="quickAdvanceClaim('${claim.id}')">Mark Filed</button>`;
   } else if (isMissingDeposit) {
     const eobText = claim.eobPlanPaid ? ` ($${claim.eobPlanPaid.toFixed(2)})` : '';
-    statusBadgeHtml = `<span class="status-pill status-check"><i data-lucide="alert-circle" style="width:11px;height:11px;"></i> Check Missing${eobText}</span>`;
+    if (claim.reissueRequested) {
+      statusBadgeHtml = `<span class="status-pill status-ready" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="mail" style="width:11px;height:11px;"></i> Reissue Requested${eobText}</span>`;
+    } else {
+      statusBadgeHtml = `<span class="status-pill status-check" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="alert-circle" style="width:11px;height:11px;"></i> Check Missing${eobText}</span>`;
+    }
     actionBtnHtml = `<button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>`;
   } else {
     statusBadgeHtml = `<span class="status-pill status-inflight">⏳ In Review &bull; Awaiting payment</span>`;
