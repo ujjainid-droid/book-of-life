@@ -1388,50 +1388,44 @@
 }
 
 /* --------------------------------------------------------------------------
-   Weekly Sunday Cadence Checklist Card (Compact)
+   Weekly Sunday Cadence Checkpoint Strip (Option 1: Horizontal Breadcrumbs)
    -------------------------------------------------------------------------- */
-.finance-weekly-checklist-card {
+.finance-cadence-strip-card {
   background: var(--bg-card, #FFFFFF);
-  border: 1px solid rgba(139, 92, 246, 0.18);
-  border-radius: var(--radius-md, 10px);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-md, 12px);
   padding: 10px 14px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   transition: all 0.2s ease-in-out;
 }
 
-[data-theme="dark"] .finance-weekly-checklist-card {
+[data-theme="dark"] .finance-cadence-strip-card {
   background: var(--bg-surface, #1E293B);
-  border-color: rgba(139, 92, 246, 0.25);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.finance-weekly-checklist-card.all-done {
-  border-color: rgba(13, 148, 136, 0.3);
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.04) 0%, rgba(139, 92, 246, 0.02) 100%);
-}
-
-[data-theme="dark"] .finance-weekly-checklist-card.all-done {
+.finance-cadence-strip-card.all-done {
   border-color: rgba(13, 148, 136, 0.35);
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(139, 92, 246, 0.04) 100%);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(124, 58, 237, 0.02) 100%);
 }
 
-.checklist-card-header {
+[data-theme="dark"] .finance-cadence-strip-card.all-done {
+  border-color: rgba(13, 148, 136, 0.4);
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.1) 0%, rgba(124, 58, 237, 0.04) 100%);
+}
+
+.finance-cadence-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-color, #E2E8F0);
-  margin-bottom: 2px;
+  padding: 0 2px;
 }
 
-[data-theme="dark"] .checklist-card-header {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
-.checklist-title {
-  font-size: 0.84rem;
+.finance-cadence-title {
+  font-size: 0.80rem;
   font-weight: 700;
   color: var(--text-primary);
   display: flex;
@@ -1439,148 +1433,185 @@
   gap: 6px;
 }
 
-.checklist-progress-pill {
+.finance-cadence-sub {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.finance-cadence-progress-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
   border-radius: 999px;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(139, 92, 246, 0.08);
   color: #6D28D9;
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.18);
 }
 
-[data-theme="dark"] .checklist-progress-pill {
-  background: rgba(139, 92, 246, 0.2);
+[data-theme="dark"] .finance-cadence-progress-pill {
+  background: rgba(139, 92, 246, 0.18);
   color: #C4B5FD;
+  border-color: rgba(139, 92, 246, 0.3);
 }
 
-.checklist-progress-pill.done {
+.finance-cadence-progress-pill.done {
   background: rgba(13, 148, 136, 0.12);
   color: #0D9488;
-  border-color: rgba(13, 148, 136, 0.25);
+  border-color: rgba(13, 148, 136, 0.28);
 }
 
-[data-theme="dark"] .checklist-progress-pill.done {
+[data-theme="dark"] .finance-cadence-progress-pill.done {
+  background: rgba(13, 148, 136, 0.22);
   color: #2DD4BF;
-  background: rgba(20, 184, 166, 0.2);
+  border-color: rgba(13, 148, 136, 0.4);
 }
 
-/* Checklist Items List */
-.checklist-items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.finance-cadence-pills-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
 }
 
-.finance-checklist-item {
+@media (max-width: 900px) {
+  .finance-cadence-pills-row {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}
+
+.finance-cadence-pill-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  background: transparent;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background: var(--bg-surface, #F8FAFC);
+  border: 1px solid var(--border-color, #E2E8F0);
   cursor: pointer;
   user-select: none;
-  transition: background 0.12s ease;
+  transition: all 0.15s ease;
+  min-width: 0;
+  text-align: left;
 }
 
-.finance-checklist-item:hover {
-  background: rgba(139, 92, 246, 0.04);
+[data-theme="dark"] .finance-cadence-pill-btn {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
-.finance-checklist-item.checked {
-  background: rgba(13, 148, 136, 0.025);
+.finance-cadence-pill-btn:hover {
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.03);
+  transform: translateY(-1px);
 }
 
-.checklist-item-left {
+.finance-cadence-pill-btn.done {
+  background: rgba(13, 148, 136, 0.08);
+  border-color: rgba(13, 148, 136, 0.32);
+}
+
+[data-theme="dark"] .finance-cadence-pill-btn.done {
+  background: rgba(13, 148, 136, 0.15);
+  border-color: rgba(13, 148, 136, 0.38);
+}
+
+.cadence-pill-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
   flex: 1;
 }
 
-.finance-checklist-checkbox {
-  width: 17px;
-  height: 17px;
+.cadence-check-icon {
+  width: 16px;
+  height: 16px;
   border-radius: 4px;
-  border: 1.5px solid rgba(139, 92, 246, 0.45);
+  border: 1.5px solid var(--border-strong, #CBD5E1);
   background: var(--bg-card, #FFFFFF);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: transparent;
   flex-shrink: 0;
-  transition: all 0.14s ease;
-  padding: 0;
-  cursor: pointer;
+  color: transparent;
+  transition: all 0.12s ease;
 }
 
-.finance-checklist-item.checked .finance-checklist-checkbox {
+[data-theme="dark"] .cadence-check-icon {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.finance-cadence-pill-btn.done .cadence-check-icon {
   background: #0D9488;
   border-color: #0D9488;
   color: #FFFFFF;
 }
 
-.finance-checklist-num {
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
+.cadence-pill-num {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-muted);
-  width: 13px;
-  text-align: right;
   flex-shrink: 0;
 }
 
-.finance-checklist-item.checked .finance-checklist-num {
+.finance-cadence-pill-btn.done .cadence-pill-num {
   color: #0D9488;
 }
 
-.checklist-item-label {
-  font-size: 0.81rem;
+[data-theme="dark"] .finance-cadence-pill-btn.done .cadence-pill-num {
+  color: #2DD4BF;
+}
+
+.cadence-pill-title {
+  font-size: 0.76rem;
   font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
-.finance-checklist-item.checked .checklist-item-label {
-  color: var(--text-muted);
-  text-decoration: line-through;
-  opacity: 0.8;
+.finance-cadence-pill-btn.done .cadence-pill-title {
+  color: #0F766E;
+  font-weight: 700;
 }
 
-.checklist-item-actions {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+[data-theme="dark"] .finance-cadence-pill-btn.done .cadence-pill-title {
+  color: #2DD4BF;
 }
 
-.finance-checklist-mini-btn {
+.cadence-pill-action-btn {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 2px 7px;
-  border-radius: 999px;
-  border: 1px solid var(--border-color, #E2E8F0);
-  background: var(--bg-card, #FFFFFF);
-  color: var(--text-secondary);
-  font-size: 0.68rem;
-  font-weight: 600;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.12s ease;
+  padding: 0;
   text-decoration: none;
-  transition: all 0.14s ease;
-  white-space: nowrap;
 }
 
-[data-theme="dark"] .finance-checklist-mini-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+.cadence-pill-action-btn:hover {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6D28D9;
+}
+
+[data-theme="dark"] .cadence-pill-action-btn:hover {
+  background: rgba(139, 92, 246, 0.25);
+  color: #C4B5FD;
 }
 
 .finance-checklist-mini-btn:hover {

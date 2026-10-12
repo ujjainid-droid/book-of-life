@@ -226,70 +226,67 @@ function renderFinanceWeeklyCadenceBar() {
   try {
     const parts = sundayIso.split('-').map(Number);
     const d = new Date(parts[0], parts[1] - 1, parts[2]);
-    dateLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    dateLabel = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
   } catch (e) {}
 
   const items = [
-    { num: 1, title: 'Pay bills', action: null },
+    { num: 1, label: 'Pay bills', action: null },
     {
       num: 2,
-      title: 'Review and reconcile transactions in Monarch',
+      label: 'Monarch',
       action: `
-        <a href="https://app.monarchmoney.com" target="_blank" rel="noopener" class="finance-checklist-mini-btn" onclick="event.stopPropagation();" title="Open Monarch">
-          <i data-lucide="external-link" style="width: 10px; height: 10px;"></i>
-          <span>Monarch</span>
+        <a href="https://app.monarchmoney.com" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Open Monarch App">
+          <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
         </a>
       `
     },
-    { num: 3, title: 'Check Schwab balance (keep $20k)', action: null },
+    { num: 3, label: 'Schwab ($20k)', action: null },
     {
       num: 4,
-      title: 'Export CSV to margo',
+      label: 'Sync CSV',
       action: `
-        <button type="button" class="finance-checklist-mini-btn primary" onclick="event.stopPropagation(); triggerMonarchFileInput();" title="Sync Monarch CSV">
-          <i data-lucide="upload-cloud" style="width: 10px; height: 10px;"></i>
-          <span>Sync CSV</span>
+        <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); triggerMonarchFileInput();" title="Sync Monarch CSV">
+          <i data-lucide="upload-cloud" style="width: 12px; height: 12px;"></i>
         </button>
       `
     },
     {
       num: 5,
-      title: 'Check cashflow and Outlier radar',
+      label: 'Outlier Radar',
       action: `
-        <button type="button" class="finance-checklist-mini-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Radar">
-          <i data-lucide="compass" style="width: 10px; height: 10px;"></i>
-          <span>Radar</span>
+        <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Radar">
+          <i data-lucide="compass" style="width: 12px; height: 12px;"></i>
         </button>
       `
     }
   ];
 
   return `
-    <div class="finance-weekly-checklist-card ${allDone ? 'all-done' : ''}">
-      <div class="checklist-card-header">
-        <div class="checklist-title">
-          <i data-lucide="${allDone ? 'check-check' : 'list-checks'}" style="width: 15px; height: 15px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
-          <span>Weekly Checklist</span>
-          <span style="font-size: 0.74rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
+    <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
+      <div class="finance-cadence-header">
+        <div class="finance-cadence-title">
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <span>Weekly Cadence</span>
+          <span class="finance-cadence-sub">&bull; ${escapeHtml(dateLabel)}</span>
         </div>
-        <span class="checklist-progress-pill ${allDone ? 'done' : ''}">
-          ${allDone ? '✓ 5/5 Done' : `${doneCount}/5 Done`}
+        <span class="finance-cadence-progress-pill ${allDone ? 'done' : ''}">
+          ${allDone ? '✓ 5 of 5 Done' : `${doneCount} of 5 Done`}
         </span>
       </div>
 
-      <div class="checklist-items-list">
+      <div class="finance-cadence-pills-row">
         ${items.map(item => {
-          const isItemDone = !!checklist[item.num];
+          const isDone = !!checklist[item.num];
           return `
-            <div class="finance-checklist-item ${isItemDone ? 'checked' : ''}" onclick="toggleFinanceChecklistItem(${item.num}, event)" title="${isItemDone ? 'Click to uncheck' : 'Click to complete'}">
-              <div class="checklist-item-left">
-                <button type="button" class="finance-checklist-checkbox" aria-label="Toggle ${item.title}">
-                  <i data-lucide="check" style="width: 12px; height: 12px; stroke-width: 3;"></i>
-                </button>
-                <span class="finance-checklist-num">${item.num}.</span>
-                <span class="checklist-item-label">${escapeHtml(item.title)}</span>
+            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceChecklistItem(${item.num}, event)" title="${isDone ? `Step ${item.num} complete (click to undo)` : `Click to mark step ${item.num} complete`}">
+              <div class="cadence-pill-left">
+                <span class="cadence-check-icon">
+                  <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
+                </span>
+                <span class="cadence-pill-num">${item.num}.</span>
+                <span class="cadence-pill-title">${escapeHtml(item.label)}</span>
               </div>
-              ${item.action ? `<div class="checklist-item-actions">${item.action}</div>` : ''}
+              ${item.action ? item.action : ''}
             </div>
           `;
         }).join('')}
