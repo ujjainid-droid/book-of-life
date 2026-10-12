@@ -2538,29 +2538,29 @@ class StorageManager {
     return { checklist: fin.weeklyChecklists[iso], allDone };
   }
 
-  getFinanceQuarterlyChecklist(quarterKey = 'Q4 2026') {
+  getFinanceQuarterlyChecklist(quarterKey = '2026-Q3') {
     const fin = this.getFinanceData();
     if (!fin.quarterlyChecklists || typeof fin.quarterlyChecklists !== 'object') {
       fin.quarterlyChecklists = {};
     }
-    const qKey = quarterKey || 'Q4 2026';
+    const qKey = quarterKey || '2026-Q3';
     if (!fin.quarterlyChecklists[qKey]) {
-      fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+      fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false };
     }
     return fin.quarterlyChecklists[qKey];
   }
 
-  setFinanceQuarterlyChecklistItem(quarterKey = 'Q4 2026', itemNum, isDone) {
+  setFinanceQuarterlyChecklistItem(quarterKey = '2026-Q3', itemNum, isDone) {
     const fin = this.getFinanceData();
     if (!fin.quarterlyChecklists || typeof fin.quarterlyChecklists !== 'object') {
       fin.quarterlyChecklists = {};
     }
-    const qKey = quarterKey || 'Q4 2026';
+    const qKey = quarterKey || '2026-Q3';
     if (!fin.quarterlyChecklists[qKey]) {
-      fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+      fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false };
     }
     fin.quarterlyChecklists[qKey][itemNum] = !!isDone;
-    const allDone = [1, 2, 3, 4, 5, 6].every(num => !!fin.quarterlyChecklists[qKey][num]);
+    const allDone = [1, 2, 3, 4, 5].every(num => !!fin.quarterlyChecklists[qKey][num]);
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
@@ -2575,7 +2575,7 @@ class StorageManager {
     }
     const yKey = yearKey || '2026';
     if (!fin.annualChecklists[yKey]) {
-      fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false };
+      fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false, 4: false };
     }
     return fin.annualChecklists[yKey];
   }
@@ -2587,10 +2587,10 @@ class StorageManager {
     }
     const yKey = yearKey || '2026';
     if (!fin.annualChecklists[yKey]) {
-      fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false };
+      fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false, 4: false };
     }
     fin.annualChecklists[yKey][itemNum] = !!isDone;
-    const allDone = [1, 2, 3].every(num => !!fin.annualChecklists[yKey][num]);
+    const allDone = [1, 2, 3, 4].every(num => !!fin.annualChecklists[yKey][num]);
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}

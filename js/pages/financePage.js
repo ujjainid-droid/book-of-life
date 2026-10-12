@@ -31,6 +31,7 @@ let financeTxCategoryFilter = 'all';
 let financeTxHighSpendOnly = false;
 let financeNwClassFilter = 'all';
 let financeNwSearchQuery = '';
+let selectedFinanceQuarter = '2026-Q3';
 
 function renderFinancePage(targetSubTab) {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('bunker-subview-frame');
@@ -1219,13 +1220,16 @@ function renderFinanceClaims() {
    Quarterly & Annual Review Cadence Engines
    ========================================================================== */
 function getCurrentQuarterKey() {
-  const d = new Date();
-  const q = Math.floor(d.getMonth() / 3) + 1;
-  return `${d.getFullYear()}-Q${q}`;
+  return selectedFinanceQuarter || '2026-Q3';
 }
 
 function getCurrentYearKey() {
   return String(new Date().getFullYear());
+}
+
+function selectFinanceQuarter(qKey) {
+  selectedFinanceQuarter = qKey;
+  renderFinanceRunway();
 }
 
 function toggleFinanceQuarterlyChecklistItem(itemNum, event) {
@@ -1240,7 +1244,7 @@ function toggleFinanceQuarterlyChecklistItem(itemNum, event) {
       try { confetti({ particleCount: 45, spread: 70, origin: { y: 0.18 } }); } catch (e) {}
     }
     if (typeof showToast === 'function') {
-      showToast(`🎉 All 6 quarterly checklist items complete for ${qKey}!`, 'success');
+      showToast(`🎉 All 5 quarterly checklist items complete for ${qKey}!`, 'success');
     }
   } else if (!currentVal) {
     if (typeof showToast === 'function') {
@@ -1262,7 +1266,7 @@ function toggleFinanceAnnualChecklistItem(itemNum, event) {
       try { confetti({ particleCount: 45, spread: 70, origin: { y: 0.18 } }); } catch (e) {}
     }
     if (typeof showToast === 'function') {
-      showToast(`🎉 All 3 annual governance items complete for ${yKey}!`, 'success');
+      showToast(`🎉 All 4 annual governance items complete for ${yKey}!`, 'success');
     }
   } else if (!currentVal) {
     if (typeof showToast === 'function') {
@@ -1285,32 +1289,32 @@ function handleFinanceNwSearch(e) {
 function renderFinanceQuarterlyCadenceBar() {
   const qKey = getCurrentQuarterKey();
   const checklist = storage.getFinanceQuarterlyChecklist(qKey);
-  const doneCount = [1, 2, 3, 4, 5, 6].filter(num => !!checklist[num]).length;
-  const allDone = doneCount === 6;
+  const doneCount = [1, 2, 3, 4, 5].filter(num => !!checklist[num]).length;
+  const allDone = doneCount === 5;
 
   const items = [
     {
       num: 1,
-      label: '401k contribution review',
+      label: '401(k) Review',
       hint: 'Elective deferral pacing toward $23.5k/$30k max',
       action: null
     },
     {
       num: 2,
-      label: 'Tax withholding review',
-      hint: 'Audit W-4 federal/state withholdings & estimates',
+      label: 'Tax Withholdings',
+      hint: 'Audit W-4 federal/state withholdings & quarterly estimates',
       action: null
     },
     {
       num: 3,
-      label: 'Charity donations',
-      hint: 'Plan & disburse quarterly charitable gifts & DAF',
+      label: 'Charity & DAF',
+      hint: 'Plan & disburse quarterly charitable gifts & DAF grants',
       action: null
     },
     {
       num: 4,
-      label: 'Freedom Flex QTR categories',
-      hint: 'Activate 5% rotating quarterly cash back categories',
+      label: 'Freedom Flex 5%',
+      hint: 'Activate 5% rotating quarterly cash back categories on Chase',
       action: `
         <a href="https://www.chase.com/mybonus" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Activate Freedom Flex 5% Categories">
           <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
@@ -1319,37 +1323,36 @@ function renderFinanceQuarterlyCadenceBar() {
     },
     {
       num: 5,
-      label: 'Category trends & savings',
-      hint: 'Spot check category trends for savings opportunity',
+      label: 'Savings Radar',
+      hint: 'Spot check category trends for savings leaks & outliers',
       action: `
         <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); switchFinanceSubTab('burn'); setTimeout(() => scrollToFinanceOutliers(), 50);" title="Jump to Cash Flow &amp; Outliers Radar">
           <i data-lucide="compass" style="width: 11px; height: 11px;"></i>
         </button>
       `
-    },
-    {
-      num: 6,
-      label: 'UR + MR spend plan',
-      hint: 'Plan redemption strategy for Chase UR & Amex MR',
-      action: null
     }
   ];
 
   return `
-    <div class="finance-checklist-hero-card">
-      <div class="finance-checklist-header">
-        <div class="finance-checklist-header-left">
-          <span class="finance-checklist-badge">Quarterly Cadence</span>
-          <h3 class="finance-checklist-title">Quarterly Review &amp; Optimization</h3>
-          <span class="finance-checklist-week">${qKey} Focus (October &ndash; December)</span>
+    <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
+      <div class="finance-cadence-header">
+        <div class="finance-cadence-title">
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <span>Quarterly Review</span>
+          <div class="finance-cadence-quarter-capsules">
+            <button class="finance-cadence-q-btn ${qKey === '2026-Q3' ? 'active' : ''}" onclick="selectFinanceQuarter('2026-Q3')" title="Review closed Q3 2026 (July – September)">
+              Q3 2026 Review
+            </button>
+            <button class="finance-cadence-q-btn ${qKey === '2026-Q4' ? 'active' : ''}" onclick="selectFinanceQuarter('2026-Q4')" title="Plan Q4 2026 (October – December)">
+              Q4 2026
+            </button>
+          </div>
         </div>
-        <div class="finance-checklist-header-right">
-          <span class="finance-checklist-status-badge ${allDone ? 'all-done' : ''}">
-            ${allDone ? '✓ All Done' : `${doneCount} of 6 Complete`}
-          </span>
-        </div>
+        <span class="finance-cadence-progress-pill ${allDone ? 'done' : ''}">
+          ${allDone ? '✓ 5 of 5 Done' : `${doneCount} of 5 Done`}
+        </span>
       </div>
-      <div class="finance-cadence-pills-row six-cols">
+      <div class="finance-cadence-pills-row">
         ${items.map(item => {
           const isDone = !!checklist[item.num];
           return `
@@ -1373,13 +1376,13 @@ function renderFinanceQuarterlyCadenceBar() {
 function renderFinanceAnnualCadenceBar() {
   const yKey = getCurrentYearKey();
   const checklist = storage.getFinanceAnnualChecklist(yKey);
-  const doneCount = [1, 2, 3].filter(num => !!checklist[num]).length;
-  const allDone = doneCount === 3;
+  const doneCount = [1, 2, 3, 4].filter(num => !!checklist[num]).length;
+  const allDone = doneCount === 4;
 
   const items = [
     {
       num: 1,
-      label: 'Check credit report',
+      label: 'Credit Report',
       hint: 'annualcreditreport.com credit check',
       action: `
         <a href="https://www.annualcreditreport.com" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Open AnnualCreditReport.com">
@@ -1389,37 +1392,41 @@ function renderFinanceAnnualCadenceBar() {
     },
     {
       num: 2,
-      label: 'ANNUAL Retirement scenario planning',
-      hint: 'Monte Carlo models & safe withdrawal review',
+      label: 'Retirement Planning',
+      hint: 'Annual Monte Carlo models & safe withdrawal rate review',
       action: null
     },
     {
       num: 3,
-      label: 'ANNUAL Unclaimed property search',
+      label: 'Unclaimed Property',
       hint: 'Search NYS / state registries for unclaimed funds',
       action: `
         <a href="https://www.osc.ny.gov/unclaimed-funds" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Search NYS Unclaimed Funds">
           <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
         </a>
       `
+    },
+    {
+      num: 4,
+      label: 'UR + MR Points Plan',
+      hint: 'Annual redemption strategy for Chase UR & Amex MR rewards',
+      action: null
     }
   ];
 
   return `
-    <div class="finance-checklist-hero-card">
-      <div class="finance-checklist-header">
-        <div class="finance-checklist-header-left">
-          <span class="finance-checklist-badge">Annual Cadence</span>
-          <h3 class="finance-checklist-title">Annual Financial Governance</h3>
-          <span class="finance-checklist-week">${yKey} Comprehensive Review</span>
+    <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
+      <div class="finance-cadence-header">
+        <div class="finance-cadence-title">
+          <i data-lucide="${allDone ? 'check-check' : 'shield-check'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <span>Annual Governance</span>
+          <span class="finance-cadence-sub">&bull; ${yKey} Horizon</span>
         </div>
-        <div class="finance-checklist-header-right">
-          <span class="finance-checklist-status-badge ${allDone ? 'all-done' : ''}">
-            ${allDone ? '✓ All Done' : `${doneCount} of 3 Complete`}
-          </span>
-        </div>
+        <span class="finance-cadence-progress-pill ${allDone ? 'done' : ''}">
+          ${allDone ? '✓ 4 of 4 Done' : `${doneCount} of 4 Done`}
+        </span>
       </div>
-      <div class="finance-cadence-pills-row three-cols">
+      <div class="finance-cadence-pills-row four-cols">
         ${items.map(item => {
           const isDone = !!checklist[item.num];
           return `
