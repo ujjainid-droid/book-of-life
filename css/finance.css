@@ -45,6 +45,14 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.finance-page-container * {
+  text-shadow: none !important;
 }
 
 /* --------------------------------------------------------------------------
@@ -120,9 +128,10 @@
 }
 
 .finance-hero-title {
-  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-family: var(--font-sans);
   font-size: 1.55rem;
   font-weight: 700;
+  letter-spacing: -0.025em;
   color: #0369A1;
   margin: 0 0 4px 0;
   display: flex;
@@ -198,12 +207,15 @@
 }
 
 .finance-kpi-value {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
   font-size: 1.55rem;
   font-weight: 800;
+  letter-spacing: -0.02em;
   color: #FFFFFF;
   line-height: 1.2;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  text-shadow: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 [data-theme="dark"] .finance-kpi-value {
@@ -400,9 +412,10 @@
 }
 
 .finance-section-title {
-  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-family: var(--font-sans);
   font-size: 1.15rem;
   font-weight: 700;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
   margin: 0;
   display: flex;
@@ -462,7 +475,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.82rem;
 }
 
@@ -554,7 +567,7 @@
 }
 
 .finance-amount-cell {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-weight: 700;
   text-align: right;
 }
@@ -785,7 +798,7 @@
 }
 
 .finance-nw-tile-hero {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.85rem;
   font-weight: 800;
   color: #0284C7;
@@ -850,7 +863,7 @@
 }
 
 .finance-donut-center-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.76rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -897,7 +910,7 @@
 }
 
 .finance-donut-legend-pct {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -946,7 +959,7 @@
 }
 
 .finance-nw-class-amount {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.25rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -1014,7 +1027,7 @@
 }
 
 .finance-sparkline-hero-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.45rem;
   font-weight: 800;
   color: #7C3AED;
@@ -1140,7 +1153,7 @@
 }
 
 .finance-sparkline-col-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.88rem;
   font-weight: 800;
   color: var(--text-primary);
@@ -1156,7 +1169,7 @@
 }
 
 .finance-sparkline-col-delta {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.66rem;
   font-weight: 700;
   padding: 1px 6px;
@@ -1269,7 +1282,7 @@
 }
 
 .finance-runway-stat {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 2.2rem;
   font-weight: 800;
   color: var(--fin-primary);
@@ -2006,7 +2019,7 @@
 }
 
 .finance-pillar-amount {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.35rem;
   font-weight: 700;
   margin-top: 2px;
@@ -2068,7 +2081,7 @@
 }
 
 .finance-pillar-row-amount {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -2380,7 +2393,7 @@
 }
 
 .cadence-pill-num {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.72rem;
   font-weight: 700;
   color: var(--text-muted);
@@ -2569,7 +2582,7 @@
 }
 
 .finance-target-pct-hero {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.35rem;
   font-weight: 800;
   line-height: 1.1;
@@ -2577,7 +2590,7 @@
 }
 
 .finance-target-amount {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -2742,16 +2755,17 @@
 }
 
 .card-roi-title {
-  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-family: var(--font-sans);
   font-size: 1.12rem;
   font-weight: 700;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
   margin: 0;
   line-height: 1.3;
 }
 
 .card-roi-account {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.72rem;
   color: var(--text-muted);
 }
@@ -2765,7 +2779,7 @@
 }
 
 .card-roi-fee-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -2966,7 +2980,7 @@
 }
 
 .card-benefit-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -3114,9 +3128,10 @@
 }
 
 .card-roi-sheet-card-title {
-  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-family: var(--font-sans);
   font-size: 1.35rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   margin: 0;
   line-height: 1.25;
@@ -3154,7 +3169,7 @@
 }
 
 .card-roi-sheet-kpi-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-primary);
@@ -3287,7 +3302,7 @@
 }
 
 .card-roi-face-val {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.84rem;
   font-weight: 600;
   color: var(--text-secondary);
@@ -3464,7 +3479,7 @@
   align-items: center;
   padding: 3px 8px;
   border-radius: 6px;
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.85rem;
   font-weight: 700;
   color: var(--text-muted);
@@ -3584,9 +3599,10 @@
 }
 
 .card-roi-modal-title {
-  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-family: var(--font-sans);
   font-size: 1.22rem;
   font-weight: 700;
+  letter-spacing: -0.015em;
   color: var(--text-primary);
   margin: 0;
 }
@@ -3681,7 +3697,7 @@
 }
 
 .card-roi-tx-amount {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);

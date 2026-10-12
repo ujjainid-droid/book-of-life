@@ -552,7 +552,7 @@ function renderFinanceRecurringCommitmentsSection() {
 
               <!-- Middle Row: Amount & Cadence -->
               <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <span style="font-family: var(--font-mono, monospace); font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">
+                <span style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">
                   $${cost.toFixed(2)}
                 </span>
                 <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">
@@ -1045,7 +1045,7 @@ function renderFinanceBurn() {
                       </div>
                     </div>
                     <div style="text-align: right; flex-shrink: 0;">
-                      <div style="font-family: var(--font-mono); font-size: 0.88rem; font-weight: 700; color: var(--text-primary);">
+                      <div style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 0.88rem; font-weight: 700; color: var(--text-primary);">
                         $${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </div>
                       <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">${pct}% of spend</span>
@@ -1123,7 +1123,7 @@ function renderFinanceBurn() {
 
                 <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px;">
                   <div>
-                    <span style="font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; color: ${isSpike ? '#E11D48' : 'var(--text-primary)'};">
+                    <span style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; color: ${isSpike ? '#E11D48' : 'var(--text-primary)'};">
                       $${cat.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </span>
                     <span style="font-size: 0.72rem; color: var(--text-muted);"> in period</span>
@@ -1467,7 +1467,7 @@ function renderCardRoiModal() {
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div>
                   <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Realized Amount ($)</label>
-                  <input type="number" step="0.01" name="amount" required placeholder="e.g. 25.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); font-family: var(--font-mono); font-size: 0.95rem;" />
+                  <input type="number" step="0.01" name="amount" required placeholder="e.g. 25.00" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 0.95rem;" />
                 </div>
                 <div>
                   <label style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Date</label>
@@ -1933,7 +1933,7 @@ function renderFinanceSubscriptions() {
                             <span>Net Value: <strong style="color: ${c.netValue >= 0 ? '#0D9488' : '#64748B'};">${surplusSign}$${Math.round(c.netValue)}</strong></span>
                           </div>
                         </td>
-                        <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #0D9488; font-size: 0.95rem;">
+                        <td style="text-align: right; font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-weight: 700; color: #0D9488; font-size: 0.95rem;">
                           $${Math.round(c.cardRealized)}
                         </td>
                         <td></td>
@@ -2498,7 +2498,7 @@ function renderFinanceRunway() {
               <div class="finance-nw-tile-hero">
                 ${runwayMonths} Mo
               </div>
-              <div style="font-family: var(--font-mono, monospace); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">
+              <div style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">
                 $${Math.round(liquidCash).toLocaleString()} Cash Reserves
               </div>
             </div>
@@ -3611,7 +3611,7 @@ function openAdjustBudgetsModal() {
           ${cats.map(c => `
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
               <span style="font-size: 0.82rem; color: var(--text-primary); flex: 1;">${escapeHtml(c.name)}</span>
-              <input type="number" id="cat-budget-${c.id}" class="form-control" value="${c.budget}" style="width: 110px; font-family: var(--font-mono); font-size: 0.82rem;">
+              <input type="number" id="cat-budget-${c.id}" class="form-control" value="${c.budget}" style="width: 110px; font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 0.82rem;">
             </div>
           `).join('')}
         </div>
