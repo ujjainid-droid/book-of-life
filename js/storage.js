@@ -2469,6 +2469,35 @@ class StorageManager {
       }
     }
 
+    if (this.data.finance && (!Array.isArray(this.data.finance.cardsROI) || this.data.finance.cardsROI.length === 0)) {
+      if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
+        this.data.finance.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        } catch (e) {}
+      }
+    }
+
+    // Ensure Amex Plat fee is $895
+    if (this.data.finance && Array.isArray(this.data.finance.cardsROI)) {
+      const amex = this.data.finance.cardsROI.find(c => c.id === 'amex-plat');
+      if (amex && amex.annualFee !== 895) {
+        amex.annualFee = 895;
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        } catch (e) {}
+      }
+    }
+
+    if (this.data.finance && (!Array.isArray(this.data.finance.subscriptions) || this.data.finance.subscriptions.length === 0)) {
+      if (typeof DEFAULT_FINANCE_SUBSCRIPTIONS !== 'undefined') {
+        this.data.finance.subscriptions = JSON.parse(JSON.stringify(DEFAULT_FINANCE_SUBSCRIPTIONS));
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        } catch (e) {}
+      }
+    }
+
     return this.data.finance;
   }
 
@@ -2696,6 +2725,79 @@ class StorageManager {
       this.saveData();
     }
   }
+
+  getFinanceCardsROI() {
+    const fin = this.getFinanceData();
+    if (!Array.isArray(fin.cardsROI) || fin.cardsROI.length === 0) {
+      if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
+        fin.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
+        try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+        this.saveData();
+      } else {
+        return [];
+      }
+    }
+    return fin.cardsROI;
+  }
+
+  toggleFinanceCardBenefit(cardId, benefitId) {
+    const fin = this.getFinanceData();
+    const cards = this.getFinanceCardsROI();
+    const card = cards.find(c => c.id === cardId);
+    if (!card || !Array.isArray(card.benefits)) return null;
+    const b = card.benefits.find(ben => ben.id === benefitId);
+    if (!b) return null;
+    b.realized = !b.realized;
+    if (b.realized && (b.realizedValue === undefined || b.realizedValue === 0)) {
+      b.realizedValue = b.maxVal;
+    } else if (!b.realized) {
+      b.realizedValue = 0;
+    }
+    try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+    this.saveData();
+    return b;
+  }
+
+  updateFinanceCardBenefitValue(cardId, benefitId, value) {
+    const fin = this.getFinanceData();
+    const cards = this.getFinanceCardsROI();
+    const card = cards.find(c => c.id === cardId);
+    if (!card || !Array.isArray(card.benefits)) return null;
+    const b = card.benefits.find(ben => ben.id === benefitId);
+    if (!b) return null;
+    const val = Math.max(0, parseFloat(value) || 0);
+    b.realizedValue = val;
+    b.realized = val > 0;
+    try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+    this.saveData();
+    return b;
+  }
+
+  resetFinanceCardsROI() {
+    const fin = this.getFinanceData();
+    if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
+      fin.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
+      try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+      this.saveData();
+      return fin.cardsROI;
+    }
+    return [];
+  }
+
+  getFinanceSubscriptions() {
+    const fin = this.getFinanceData();
+    if (!Array.isArray(fin.subscriptions) || fin.subscriptions.length === 0) {
+      if (typeof DEFAULT_FINANCE_SUBSCRIPTIONS !== 'undefined') {
+        fin.subscriptions = JSON.parse(JSON.stringify(DEFAULT_FINANCE_SUBSCRIPTIONS));
+        try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+        this.saveData();
+      } else {
+        return [];
+      }
+    }
+    return fin.subscriptions;
+  }
+
 
   updateFinanceAccount(accId, updates) {
     const fin = this.getFinanceData();

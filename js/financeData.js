@@ -9627,8 +9627,171 @@ const DEFAULT_NET_WORTH_DATA = {
   ]
 };
 
+const DEFAULT_FINANCE_CARDS_ROI = [
+  {
+    id: 'amex-plat',
+    name: 'The Platinum Card® from American Express',
+    shortName: 'Amex Platinum',
+    accountName: 'U AMEX Plat 1003',
+    annualFee: 895,
+    network: 'American Express',
+    theme: 'violet',
+    color: '#7C3AED',
+    renewalMonth: 'October',
+    benefits: [
+      { id: 'amex-ent', name: 'Digital Entertainment Credit', maxVal: 240, cadence: '$20/mo', realized: true, realizedValue: 240, details: 'Covers Disney+, Hulu, The New York Times, Peacock' },
+      { id: 'amex-hotel', name: 'FHR & Hotel Collection Credit', maxVal: 200, cadence: 'Annual', realized: true, realizedValue: 200, details: 'Prepaid Fine Hotels & Resorts or The Hotel Collection bookings' },
+      { id: 'amex-airline', name: 'Airline Incidental Fee Credit', maxVal: 200, cadence: 'Annual', realized: false, realizedValue: 0, details: 'Selected qualifying airline checked baggage & seat selection' },
+      { id: 'amex-uber', name: 'Uber Cash / Uber Eats', maxVal: 200, cadence: '$15/mo ($35 Dec)', realized: true, realizedValue: 200, details: 'Automatic monthly Uber wallet deposit + Uber VIP status' },
+      { id: 'amex-saks', name: 'Saks Fifth Avenue Credit', maxVal: 100, cadence: '$50 x 2 (H1/H2)', realized: true, realizedValue: 50, details: '$50 Jan–Jun, $50 Jul–Dec statement credits' },
+      { id: 'amex-clear', name: 'Clear Plus Membership', maxVal: 199, cadence: 'Annual', realized: true, realizedValue: 199, details: 'Fast airport biometric security line reimbursement' },
+      { id: 'amex-walmart', name: 'Walmart+ Monthly Credit', maxVal: 155, cadence: '$12.95/mo', realized: true, realizedValue: 155, details: 'Free grocery delivery, Paramount+ Essential, fuel discounts' },
+      { id: 'amex-lounge', name: 'Centurion & Sky Club Lounges', maxVal: 350, cadence: 'Perk', realized: true, realizedValue: 350, details: 'Centurion Lounge, Delta Sky Club (with ticket), Priority Pass' }
+    ]
+  },
+  {
+    id: 'csp-u',
+    name: 'Chase Sapphire Preferred® (U)',
+    shortName: 'Sapphire Preferred (U)',
+    accountName: 'U CSP (...8373)',
+    annualFee: 95,
+    network: 'Chase',
+    theme: 'indigo',
+    color: '#4F46E5',
+    renewalMonth: 'Annual',
+    benefits: [
+      { id: 'csp-u-hotel', name: 'Chase Travel Hotel Credit', maxVal: 50, cadence: 'Annual', realized: true, realizedValue: 50, details: '$50 statement credit on hotel bookings through Chase Travel' },
+      { id: 'csp-u-bonus', name: '10% Anniversary Points Bonus', maxVal: 45, cadence: 'Annual', realized: true, realizedValue: 45, details: '10% points bonus based on total dollars spent over the year' },
+      { id: 'csp-u-cdw', name: 'Primary Auto Rental CDW', maxVal: 120, cadence: 'Perk', realized: true, realizedValue: 120, details: 'Primary collision damage waiver saves ~$20/day on car rentals' },
+      { id: 'csp-u-transfer', name: '1:1 Point Transfer to Partners', maxVal: 250, cadence: 'Perk', realized: true, realizedValue: 250, details: '1:1 transfers to World of Hyatt, United, Southwest (1.8¢+ value)' }
+    ]
+  },
+  {
+    id: 'csp-t',
+    name: 'Chase Sapphire Preferred® (T)',
+    shortName: 'Sapphire Preferred (T)',
+    accountName: 'T CSP 5914',
+    annualFee: 95,
+    network: 'Chase',
+    theme: 'sky',
+    color: '#0284C7',
+    renewalMonth: 'Annual',
+    benefits: [
+      { id: 'csp-t-hotel', name: 'Chase Travel Hotel Credit', maxVal: 50, cadence: 'Annual', realized: true, realizedValue: 50, details: '$50 statement credit on hotel bookings through Chase Travel' },
+      { id: 'csp-t-bonus', name: '10% Anniversary Points Bonus', maxVal: 45, cadence: 'Annual', realized: true, realizedValue: 45, details: '10% points bonus based on total dollars spent over the year' },
+      { id: 'csp-t-cdw', name: 'Primary Auto Rental CDW', maxVal: 120, cadence: 'Perk', realized: true, realizedValue: 120, details: 'Primary collision damage waiver saves ~$20/day on car rentals' },
+      { id: 'csp-t-transfer', name: '1:1 Point Transfer to Partners', maxVal: 250, cadence: 'Perk', realized: true, realizedValue: 250, details: '1:1 transfers to World of Hyatt, British Airways, Southwest' }
+    ]
+  },
+  {
+    id: 'hyatt-card',
+    name: 'The World of Hyatt Credit Card',
+    shortName: 'World of Hyatt',
+    accountName: 'U WOH.6581',
+    annualFee: 95,
+    network: 'Chase / Hyatt',
+    theme: 'teal',
+    color: '#0D9488',
+    renewalMonth: 'Annual',
+    benefits: [
+      { id: 'hyatt-fnc', name: 'Category 1–4 Free Night Certificate', maxVal: 320, cadence: 'Annual', realized: true, realizedValue: 320, details: '1 Annual Free Night at any Category 1–4 Hyatt (worth $250–$400/night!)' },
+      { id: 'hyatt-status', name: 'Automatic Discoverist Elite Status', maxVal: 75, cadence: 'Perk', realized: true, realizedValue: 75, details: 'Preferred rooms, 2:00 PM late checkout, 10% Hyatt bonus points' },
+      { id: 'hyatt-nights', name: '5 Tier Qualifying Night Credits', maxVal: 50, cadence: 'Annual', realized: true, realizedValue: 50, details: 'Annual status boost toward Explorist & Globalist tier' }
+    ]
+  }
+];
+
+const DEFAULT_FINANCE_SUBSCRIPTIONS = [
+  {
+    id: 'sub-disney',
+    name: 'Disney+ & Hulu Bundle',
+    cost: 21.31,
+    cadence: 'monthly',
+    category: 'Entertainment',
+    card: 'Amex Platinum',
+    cardPerk: 'Covered by $20/mo Amex Ent Credit',
+    nextRenewal: '2026-10-24',
+    status: 'active',
+    notes: 'Net out-of-pocket: $1.31/mo after $20 monthly statement credit'
+  },
+  {
+    id: 'sub-nyt',
+    name: 'The New York Times',
+    cost: 4.00,
+    cadence: 'monthly',
+    category: 'News & Editorial',
+    card: 'Amex Platinum',
+    cardPerk: '100% Covered by Amex Ent Credit',
+    nextRenewal: '2026-10-28',
+    status: 'active',
+    notes: 'Billed to Amex Plat and fully reimbursed via Ent Credit'
+  },
+  {
+    id: 'sub-google',
+    name: 'Google One (AI Premium & 2TB)',
+    cost: 19.99,
+    cadence: 'monthly',
+    category: 'Productivity & AI',
+    card: 'Chase Sapphire (U)',
+    cardPerk: 'Earns 3x Points',
+    nextRenewal: '2026-10-21',
+    status: 'active',
+    notes: 'Gemini Advanced, 2TB cloud storage & family sharing'
+  },
+  {
+    id: 'sub-apple',
+    name: 'Apple Services & iCloud+',
+    cost: 9.99,
+    cadence: 'monthly',
+    category: 'Cloud & Storage',
+    card: 'Apple Card',
+    cardPerk: '3% Daily Cash',
+    nextRenewal: '2026-10-18',
+    status: 'active',
+    notes: 'iCloud 2TB family backup storage'
+  },
+  {
+    id: 'sub-nest',
+    name: 'Nest Aware (Home Cam Security)',
+    cost: 12.00,
+    cadence: 'monthly',
+    category: 'Home Security',
+    card: 'Chase Sapphire (T)',
+    cardPerk: 'Billed monthly',
+    nextRenewal: '2026-10-15',
+    status: 'active',
+    notes: 'Whole-home video event history & smart alerts'
+  },
+  {
+    id: 'sub-amazon',
+    name: 'Amazon Kids+',
+    cost: 4.99,
+    cadence: 'monthly',
+    category: 'Family & Kids',
+    card: 'Chase Amazon',
+    cardPerk: '5% Cash Back',
+    nextRenewal: '2026-11-02',
+    status: 'active',
+    notes: 'Books, educational apps & parent controls'
+  },
+  {
+    id: 'sub-walmart',
+    name: 'Walmart+ Membership',
+    cost: 12.95,
+    cadence: 'monthly',
+    category: 'Groceries & Delivery',
+    card: 'Amex Platinum',
+    cardPerk: '100% Covered by Amex Platinum',
+    nextRenewal: '2026-11-10',
+    status: 'active',
+    notes: '$12.95/mo statement credit automatically offsets cost'
+  }
+];
+
 DEFAULT_FINANCE_DATA.netWorth = DEFAULT_NET_WORTH_DATA;
+DEFAULT_FINANCE_DATA.cardsROI = DEFAULT_FINANCE_CARDS_ROI;
+DEFAULT_FINANCE_DATA.subscriptions = DEFAULT_FINANCE_SUBSCRIPTIONS;
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { DEFAULT_FINANCE_DATA, DEFAULT_REAL_CLAIMS };
+  module.exports = { DEFAULT_FINANCE_DATA, DEFAULT_REAL_CLAIMS, DEFAULT_FINANCE_CARDS_ROI, DEFAULT_FINANCE_SUBSCRIPTIONS };
 }

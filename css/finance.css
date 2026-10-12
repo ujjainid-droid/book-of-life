@@ -2570,3 +2570,456 @@
     flex-wrap: wrap;
   }
 }
+
+/* ==========================================================================
+   Subscriptions & Card ROI Engine (Nordic Architecture)
+   ========================================================================== */
+
+/* 4-Card ROI Grid */
+.card-roi-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.card-roi-filter-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.card-roi-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-secondary, #475569);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .card-roi-filter-btn {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #94A3B8;
+}
+
+.card-roi-filter-btn:hover {
+  border-color: #8B5CF6;
+  color: #7C3AED;
+}
+
+.card-roi-filter-btn.active {
+  background: #7C3AED;
+  border-color: #7C3AED;
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+}
+
+.card-roi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .card-roi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-roi-card {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-lg, 14px);
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+[data-theme="dark"] .card-roi-card {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-card.theme-violet {
+  border-top: 4px solid #7C3AED;
+}
+
+.card-roi-card.theme-indigo {
+  border-top: 4px solid #4F46E5;
+}
+
+.card-roi-card.theme-sky {
+  border-top: 4px solid #0284C7;
+}
+
+.card-roi-card.theme-teal {
+  border-top: 4px solid #0D9488;
+}
+
+.card-roi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.card-roi-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.card-roi-network-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.card-roi-title {
+  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.card-roi-account {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.card-roi-fee-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.card-roi-fee-val {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.card-roi-fee-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* Gauge / Breakeven Meter */
+.card-roi-meter-box {
+  background: var(--bg-subtle, #F8FAFC);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-md, 10px);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+[data-theme="dark"] .card-roi-meter-box {
+  background: rgba(15, 23, 42, 0.45);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.card-roi-meter-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.75rem;
+}
+
+.card-roi-meter-track {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  overflow: hidden;
+  position: relative;
+}
+
+[data-theme="dark"] .card-roi-meter-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-meter-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-roi-meter-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.card-roi-surplus-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.card-roi-surplus-pill.surplus {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0D9488;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+[data-theme="dark"] .card-roi-surplus-pill.surplus {
+  color: #2DD4BF;
+  background: rgba(45, 212, 191, 0.15);
+  border-color: rgba(45, 212, 191, 0.3);
+}
+
+/* Benefits Checklist */
+.card-roi-benefits-header {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-roi-benefits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-benefit-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-card, #FFFFFF);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+[data-theme="dark"] .card-benefit-row {
+  background: rgba(30, 41, 59, 0.4);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.card-benefit-row:hover {
+  background: var(--bg-subtle, #F8FAFC);
+  border-color: #CBD5E1;
+}
+
+[data-theme="dark"] .card-benefit-row:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.card-benefit-row.realized {
+  border-color: rgba(13, 148, 136, 0.25);
+  background: rgba(13, 148, 136, 0.03);
+}
+
+[data-theme="dark"] .card-benefit-row.realized {
+  border-color: rgba(45, 212, 191, 0.22);
+  background: rgba(45, 212, 191, 0.05);
+}
+
+.card-benefit-check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid var(--border-color, #CBD5E1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  transition: all 0.15s ease;
+  background: var(--bg-card, #FFFFFF);
+}
+
+.card-benefit-row.realized .card-benefit-check-box {
+  background: #0D9488;
+  border-color: #0D9488;
+  color: #FFFFFF;
+}
+
+.card-benefit-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-benefit-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.card-benefit-cadence-pill {
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--bg-subtle, #F1F5F9);
+  color: var(--text-secondary, #475569);
+  font-family: var(--font-sans);
+}
+
+[data-theme="dark"] .card-benefit-cadence-pill {
+  background: rgba(255, 255, 255, 0.08);
+  color: #94A3B8;
+}
+
+.card-benefit-details {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.card-benefit-val-box {
+  text-align: right;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.card-benefit-val {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.card-benefit-row.realized .card-benefit-val {
+  color: #0D9488;
+}
+
+[data-theme="dark"] .card-benefit-row.realized .card-benefit-val {
+  color: #2DD4BF;
+}
+
+.card-benefit-max {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+/* Subscriptions Synergy Banner */
+.subs-synergy-banner {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(13, 148, 136, 0.06) 100%);
+  border: 1px solid rgba(13, 148, 136, 0.22);
+  border-radius: var(--radius-md, 12px);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+[data-theme="dark"] .subs-synergy-banner {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(13, 148, 136, 0.12) 100%);
+  border-color: rgba(45, 212, 191, 0.25);
+}
+
+.subs-synergy-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.subs-synergy-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(13, 148, 136, 0.12);
+  color: #0D9488;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .subs-synergy-icon {
+  background: rgba(45, 212, 191, 0.18);
+  color: #2DD4BF;
+}
+
+.subs-synergy-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.subs-synergy-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.subs-synergy-sub {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.sub-card-synergy-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(13, 148, 136, 0.1);
+  color: #0D9488;
+  border: 1px solid rgba(13, 148, 136, 0.22);
+}
+
+[data-theme="dark"] .sub-card-synergy-pill {
+  background: rgba(45, 212, 191, 0.14);
+  color: #2DD4BF;
+  border-color: rgba(45, 212, 191, 0.25);
+}
+
