@@ -230,48 +230,35 @@ function renderFinanceWeeklyCadenceBar() {
   } catch (e) {}
 
   const items = [
-    {
-      num: 1,
-      title: 'Pay bills',
-      desc: 'Clear any pending utilities, credit cards, or invoices due this week',
-      action: null
-    },
+    { num: 1, title: 'Pay bills', action: null },
     {
       num: 2,
       title: 'Review and reconcile transactions in Monarch',
-      desc: 'Categorize new expenses, verify tags, and review recent activity in Monarch',
       action: `
-        <a href="https://app.monarchmoney.com" target="_blank" rel="noopener" class="finance-checklist-mini-btn" onclick="event.stopPropagation();" title="Open Monarch Money web app">
-          <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
-          <span>Open Monarch</span>
+        <a href="https://app.monarchmoney.com" target="_blank" rel="noopener" class="finance-checklist-mini-btn" onclick="event.stopPropagation();" title="Open Monarch">
+          <i data-lucide="external-link" style="width: 10px; height: 10px;"></i>
+          <span>Monarch</span>
         </a>
       `
     },
-    {
-      num: 3,
-      title: 'Check Schwab balance (keep $20k)',
-      desc: 'Ensure primary liquid operating reserve is maintained at target $20,000 threshold',
-      action: null
-    },
+    { num: 3, title: 'Check Schwab balance (keep $20k)', action: null },
     {
       num: 4,
       title: 'Export CSV to margo',
-      desc: 'Download latest transactions CSV from Monarch and ingest new records into margo',
       action: `
-        <button type="button" class="finance-checklist-mini-btn primary" onclick="event.stopPropagation(); triggerMonarchFileInput();" title="Upload latest Monarch CSV export">
-          <i data-lucide="upload-cloud" style="width: 11px; height: 11px;"></i>
-          <span>Sync Monarch CSV</span>
+        <button type="button" class="finance-checklist-mini-btn primary" onclick="event.stopPropagation(); triggerMonarchFileInput();" title="Sync Monarch CSV">
+          <i data-lucide="upload-cloud" style="width: 10px; height: 10px;"></i>
+          <span>Sync CSV</span>
         </button>
       `
     },
     {
       num: 5,
       title: 'Check cashflow and Outlier radar',
-      desc: 'Review monthly burn rate, Pareto pillars, and spending deviations below',
       action: `
-        <button type="button" class="finance-checklist-mini-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Category Outlier Radar">
-          <i data-lucide="compass" style="width: 11px; height: 11px;"></i>
-          <span>View Radar</span>
+        <button type="button" class="finance-checklist-mini-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Radar">
+          <i data-lucide="compass" style="width: 10px; height: 10px;"></i>
+          <span>Radar</span>
         </button>
       `
     }
@@ -280,43 +267,27 @@ function renderFinanceWeeklyCadenceBar() {
   return `
     <div class="finance-weekly-checklist-card ${allDone ? 'all-done' : ''}">
       <div class="checklist-card-header">
-        <div class="checklist-header-left">
-          <div class="checklist-icon-wrap">
-            <i data-lucide="${allDone ? 'check-check' : 'list-checks'}" style="width: 18px; height: 18px;"></i>
-          </div>
-          <div>
-            <div class="checklist-title">
-              <span>Weekly Cadence Checklist</span>
-              <span style="font-size: 0.76rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
-            </div>
-            <div class="checklist-sub">
-              Every Sunday &bull; 5-step financial maintenance and cashflow review routine
-            </div>
-          </div>
+        <div class="checklist-title">
+          <i data-lucide="${allDone ? 'check-check' : 'list-checks'}" style="width: 15px; height: 15px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <span>Weekly Checklist</span>
+          <span style="font-size: 0.74rem; font-weight: normal; color: var(--text-muted);">&bull; ${dateLabel}</span>
         </div>
-
-        <div class="checklist-header-right">
-          <span class="checklist-progress-pill ${allDone ? 'done' : ''}">
-            <i data-lucide="${allDone ? 'check-circle-2' : 'clock'}" style="width: 12px; height: 12px;"></i>
-            <span>${allDone ? '✓ All 5 Done' : `${doneCount} of 5 Completed`}</span>
-          </span>
-        </div>
+        <span class="checklist-progress-pill ${allDone ? 'done' : ''}">
+          ${allDone ? '✓ 5/5 Done' : `${doneCount}/5 Done`}
+        </span>
       </div>
 
       <div class="checklist-items-list">
         ${items.map(item => {
           const isItemDone = !!checklist[item.num];
           return `
-            <div class="finance-checklist-item ${isItemDone ? 'checked' : ''}" onclick="toggleFinanceChecklistItem(${item.num}, event)" title="${isItemDone ? 'Click to uncheck' : 'Click to mark complete'}">
+            <div class="finance-checklist-item ${isItemDone ? 'checked' : ''}" onclick="toggleFinanceChecklistItem(${item.num}, event)" title="${isItemDone ? 'Click to uncheck' : 'Click to complete'}">
               <div class="checklist-item-left">
                 <button type="button" class="finance-checklist-checkbox" aria-label="Toggle ${item.title}">
-                  <i data-lucide="check" style="width: 14px; height: 14px; stroke-width: 3;"></i>
+                  <i data-lucide="check" style="width: 12px; height: 12px; stroke-width: 3;"></i>
                 </button>
                 <span class="finance-checklist-num">${item.num}.</span>
-                <div class="checklist-item-text-wrap">
-                  <div class="checklist-item-label">${escapeHtml(item.title)}</div>
-                  <div class="checklist-item-desc">${escapeHtml(item.desc)}</div>
-                </div>
+                <span class="checklist-item-label">${escapeHtml(item.title)}</span>
               </div>
               ${item.action ? `<div class="checklist-item-actions">${item.action}</div>` : ''}
             </div>
