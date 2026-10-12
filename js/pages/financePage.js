@@ -317,30 +317,39 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
   // Actual values
   const actualFixedAmt = totalFixedSpend;
   const actualFlexAmt = totalFlexSpend;
-  const actualSavingsAmt = netCashFlow;
+  // In 50/25/25, Savings is whatever part of verified income remains unspent
+  const actualSavingsAmt = incomeBase - (actualFixedAmt + actualFlexAmt);
 
-  const actualFixedPct = incomeBase > 0 ? (actualFixedAmt / incomeBase) * 100 : 0;
-  const actualFlexPct = incomeBase > 0 ? (actualFlexAmt / incomeBase) * 100 : 0;
-  const actualSavingsPct = incomeBase > 0 ? (actualSavingsAmt / incomeBase) * 100 : 0;
+  const rawFixedPct = incomeBase > 0 ? (actualFixedAmt / incomeBase) * 100 : 0;
+  const rawFlexPct = incomeBase > 0 ? (actualFlexAmt / incomeBase) * 100 : 0;
+  const rawSavingsPct = incomeBase > 0 ? (actualSavingsAmt / incomeBase) * 100 : 0;
+
+  // Percentage rounding: ensure integer percentages sum cleanly to exactly 100%
+  let fixedPct = Math.round(rawFixedPct);
+  let flexPct = Math.round(rawFlexPct);
+  let savingsPct = 100 - fixedPct - flexPct;
+  if (actualSavingsAmt < 0) {
+    savingsPct = Math.round(rawSavingsPct);
+  }
 
   // Variances
   const fixedDiffAmt = actualFixedAmt - targetFixedAmt;
   const flexDiffAmt = actualFlexAmt - targetFlexAmt;
   const savingsDiffAmt = actualSavingsAmt - targetSavingsAmt;
 
-  const fixedIsUnderOrEqual = actualFixedPct <= 50.5;
-  const flexIsUnderOrEqual = actualFlexPct <= 25.5;
-  const savingsIsMetOrExceeded = actualSavingsPct >= 24.5;
+  const fixedIsUnderOrEqual = rawFixedPct <= 50.5;
+  const flexIsUnderOrEqual = rawFlexPct <= 25.5;
+  const savingsIsMetOrExceeded = rawSavingsPct >= 24.5;
 
   // Header status
   let headerStatusText = '';
   if (savingsIsMetOrExceeded && fixedIsUnderOrEqual && flexIsUnderOrEqual) {
     headerStatusText = '✓ 3 of 3 Targets Met';
-  } else if (actualSavingsPct >= 25) {
-    headerStatusText = `🌱 +${(actualSavingsPct - 25).toFixed(0)}% Extra Savings Surplus`;
-  } else if (actualFlexPct > 25.5) {
+  } else if (rawSavingsPct >= 25) {
+    headerStatusText = `🌱 +${(rawSavingsPct - 25).toFixed(0)}% Extra Savings Surplus`;
+  } else if (rawFlexPct > 25.5) {
     headerStatusText = '⚡ Discretionary Over 25%';
-  } else if (actualFixedPct > 50.5) {
+  } else if (rawFixedPct > 50.5) {
     headerStatusText = '🛡️ Fixed Commitments Over 50%';
   } else {
     headerStatusText = '⚖️ Pacing Toward Target';
@@ -381,7 +390,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🛡️ Fixed (50% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: #0F766E;">${Math.round(actualFixedPct)}%</span>
+              <span class="finance-target-pct-hero" style="color: #0F766E;">${fixedPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFixedAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -393,7 +402,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">⚡ Flex (25% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: #6D28D9;">${Math.round(actualFlexPct)}%</span>
+              <span class="finance-target-pct-hero" style="color: #6D28D9;">${flexPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFlexAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -406,7 +415,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
             <div class="finance-target-pill-label">🌱 Savings (25% min)</div>
             <div class="finance-target-value-wrap">
               <span class="finance-target-pct-hero" style="color: ${actualSavingsAmt >= 0 ? '#047857' : '#BE123C'};">
-                ${actualSavingsPct >= 0 ? '' : '-'}${Math.round(Math.abs(actualSavingsPct))}%
+                ${savingsPct >= 0 ? '' : '-'}${Math.abs(savingsPct)}%
               </span>
               <span class="finance-target-amount">
                 ${actualSavingsAmt >= 0 ? '+' : '-'}$${Math.round(Math.abs(actualSavingsAmt)).toLocaleString()}
@@ -461,9 +470,9 @@ function renderFinanceBurn() {
     }
   });
 
-  const netCashFlow = periodInflow - periodOutflow;
-  const isPositive = netCashFlow >= 0;
-  const savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
+  let netCashFlow = periodInflow - periodOutflow;
+  let isPositive = netCashFlow >= 0;
+  let savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
 
   // Compute Category Spend Map for the selected period
   const categorySpendMap = {};
@@ -554,6 +563,13 @@ function renderFinanceBurn() {
   const totalFixedSpend = fixedCategories.reduce((sum, c) => sum + c.spent, 0);
   const totalFlexSpend = flexCategories.reduce((sum, c) => sum + c.spent, 0);
   const macroTotal = (totalFixedSpend + totalFlexSpend) || 1;
+
+  if (periodTxs.length > 0 && (totalFixedSpend + totalFlexSpend) > 0) {
+    periodOutflow = totalFixedSpend + totalFlexSpend;
+    netCashFlow = periodInflow - periodOutflow;
+    isPositive = netCashFlow >= 0;
+    savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
+  }
 
   const fixedRatioPct = Math.round((totalFixedSpend / macroTotal) * 100);
   const flexRatioPct = 100 - fixedRatioPct;

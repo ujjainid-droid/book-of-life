@@ -39,7 +39,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "month": "2026-10",
       "income": 7365.91,
-      "outflow": 2638.11
+      "outflow": 3303.11
     },
     {
       "month": "2026-09",

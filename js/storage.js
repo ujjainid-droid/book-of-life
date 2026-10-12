@@ -2450,6 +2450,16 @@ class StorageManager {
       return this.data.finance;
     }
 
+    if (this.data.finance && Array.isArray(this.data.finance.monthlySummaries)) {
+      const oct = this.data.finance.monthlySummaries.find(m => m.month === '2026-10');
+      if (oct && oct.outflow === 2638.11) {
+        oct.outflow = 3303.11;
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        } catch (e) {}
+      }
+    }
+
     return this.data.finance;
   }
 
