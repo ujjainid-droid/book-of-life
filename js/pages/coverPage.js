@@ -258,7 +258,7 @@ window.getMoveAnchorPacer = getMoveAnchorPacer;
 function getStandRingPacer(standStage, pacerData) {
   const { dayPhase, elapsedPct, remainingHours, q25TimeStr, q50TimeStr, q75TimeStr, q100TimeStr, isToday, isPastDay, endHourStr, startHourStr, targetPct } = pacerData;
 
-  // Stand goal = 12h (25% = 3h, 50% = 6h, 75% = 9h, 100% = 12h)
+  // Stand goal = 12 (25% = 3, 50% = 6, 75% = 9, 100% = 12)
   const progressVal = Math.round((standStage || 0) * 100);
   const delta = Math.round(progressVal - targetPct);
 
@@ -266,7 +266,7 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass: 'pacer-ahead',
       badgeText: '12/12 Closed ✨',
-      sublineLeft: '100% closed (12/12 stand hours) · Stand ring fully closed ⚡',
+      sublineLeft: '100% closed (12/12) · Stand ring fully closed ⚡',
       sublineRight: '<strong>Complete</strong>',
       progressVal: 100,
       delta: 0
@@ -279,7 +279,7 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass,
       badgeText,
-      sublineLeft: `75% (9 stands) logged (+8 XP) · 3 more to close 12/12 before ${q100TimeStr}`,
+      sublineLeft: `75% (9) logged (+8 XP) · 3 more to close 12/12 before ${q100TimeStr}`,
       sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
       progressVal: 75,
       delta
@@ -292,7 +292,7 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass,
       badgeText,
-      sublineLeft: `50% floor (6 stands) locked 🛡️ (+5 XP) · Next: 9 stands by ${q75TimeStr}`,
+      sublineLeft: `50% floor (6) locked 🛡️ (+5 XP) · Next: 9 by ${q75TimeStr}`,
       sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
       progressVal: 50,
       delta
@@ -305,7 +305,7 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass,
       badgeText,
-      sublineLeft: `25% (3 stands) logged (+2 XP) · Reach 6-stand floor before ${q50TimeStr}`,
+      sublineLeft: `25% (3) logged (+2 XP) · Reach 6 floor before ${q50TimeStr}`,
       sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
       progressVal: 25,
       delta
@@ -328,7 +328,7 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass: 'pacer-neutral',
       badgeText: 'Pre-Day',
-      sublineLeft: `Day begins at ${startHourStr} · 25% target (3 stands) by ${q25TimeStr}`,
+      sublineLeft: `Day begins at ${startHourStr} · 25% target (3) by ${q25TimeStr}`,
       sublineRight: `Starts ${startHourStr}`,
       progressVal: 0,
       delta: 0
@@ -351,11 +351,11 @@ function getStandRingPacer(standStage, pacerData) {
   const badgeText = delta >= -5 ? 'On Pace' : `${delta}% Behind`;
   let sublineLeft = '';
   if (elapsedPct < 25) {
-    sublineLeft = `On pace · 25% milestone (3 stands) by ${q25TimeStr} (Floor: 6 stands by ${q50TimeStr})`;
+    sublineLeft = `On pace · 25% milestone (3) by ${q25TimeStr} (Floor: 6 by ${q50TimeStr})`;
   } else if (elapsedPct < 50) {
-    sublineLeft = `Past ${q25TimeStr} · Stand each hour to reach 6-stand floor by ${q50TimeStr}`;
+    sublineLeft = `Past ${q25TimeStr} · Reach 6 floor by ${q50TimeStr}`;
   } else if (elapsedPct < 75) {
-    sublineLeft = `Past ${q50TimeStr} floor · Lock 6 stands now to protect streak!`;
+    sublineLeft = `Past ${q50TimeStr} floor · Lock 6 now to protect streak!`;
   } else {
     sublineLeft = `Low buffer · Only ${formatHoursMinutes(remainingHours)} left · Stand now to save streak!`;
   }
@@ -740,7 +740,7 @@ function renderDailySheet() {
               <div class="anchor-header-row">
                 <div class="anchor-label">
                   🦩 Stand Ring
-                  <span class="anchor-goal-tag">12h</span>
+                  <span class="anchor-goal-tag">12</span>
                 </div>
                 <span class="anchor-pacer-badge ${standPacer.statusClass}">${standPacer.badgeText}</span>
               </div>
@@ -749,25 +749,25 @@ function renderDailySheet() {
                   😴 Off
                 </button>
                 <button type="button" class="mockup-seg-btn seg-25 ${standStage === 0.25 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.25, '${activeTrackingDate}')">
-                  🌱 25% (3h)
+                  🌱 25% (3)
                 </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${standStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">
-                  🛡️ 50% (6h)
+                  🛡️ 50% (6)
                 </button>
                 <button type="button" class="mockup-seg-btn seg-75 ${standStage === 0.75 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.75, '${activeTrackingDate}')">
-                  🌿 75% (9h)
+                  🌿 75% (9)
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${standStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">
-                  ⚡ 100% (12h)
+                  ⚡ 100% (12)
                 </button>
               </div>
               <div class="anchor-dual-track-wrap">
                 <div class="anchor-dual-bar-container">
                   <div class="anchor-ghost-target-fill" style="width: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>
                   <div class="anchor-actual-progress-fill" style="width: ${standPacer.progressVal}%;"></div>
-                  <div class="anchor-notch-marker notch-25" style="left: 25%;" title="25% Milestone: 3h (${pacerData.q25TimeStr})"></div>
-                  <div class="anchor-notch-marker notch-50" style="left: 50%;" title="50% Floor Benchmark: 6h (${pacerData.q50TimeStr})"></div>
-                  <div class="anchor-notch-marker notch-75" style="left: 75%;" title="75% Milestone: 9h (${pacerData.q75TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-25" style="left: 25%;" title="25% Milestone: 3 (${pacerData.q25TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-50" style="left: 50%;" title="50% Floor Benchmark: 6 (${pacerData.q50TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-75" style="left: 75%;" title="75% Milestone: 9 (${pacerData.q75TimeStr})"></div>
                   ${pacerData.dayPhase === 'active' ? `<div class="anchor-target-needle" style="left: ${pacerData.targetPct}%;" title="Target Pace Now: ${pacerData.targetPct}%"></div>` : ''}
                 </div>
                 <div class="anchor-dual-subline">
@@ -1649,7 +1649,7 @@ function setAnchorStageAction(habitId, stage, dateStr = activeTrackingDate) {
   const isMove = (habitId === 'h-move' || (habit && habit.name.toLowerCase() === 'move'));
   const stageDesc = isMove
     ? { 0.25: '25% (75 cal)', 0.5: '50% floor (150 cal)', 0.75: '75% (225 cal)', 1: '100% (300 cal)' }
-    : { 0.25: '25% (3h)', 0.5: '50% floor (6h)', 0.75: '75% (9h)', 1: '100% (12h)' };
+    : { 0.25: '25% (3)', 0.5: '50% floor (6)', 0.75: '75% (9)', 1: '100% (12)' };
 
   if (nextStage === 1) {
     const otherId = isMove ? 'h-stand' : 'h-move';
