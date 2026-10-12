@@ -248,6 +248,12 @@
   color: #38BDF8;
 }
 
+.finance-kpi-card .card-roi-surplus-pill.surplus {
+  background: rgba(56, 189, 248, 0.18);
+  color: #7DD3FC;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
 /* --------------------------------------------------------------------------
    High-Spend Category Flags Banner
    -------------------------------------------------------------------------- */

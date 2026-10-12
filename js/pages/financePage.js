@@ -492,39 +492,43 @@ function renderFinanceRecurringCommitmentsSection() {
       <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 16px; gap: 12px;">
         <!-- 1. Total -->
         <div class="finance-kpi-card" style="border-top: 3.5px solid #7C3AED; padding: 12px 16px;">
-          <span class="finance-kpi-label">
-            <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #7C3AED;"></i>
-            Total
-          </span>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary);">
-            $${grossMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+          <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span class="finance-kpi-label">
+              <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #C084FC;"></i>
+              Total
+            </span>
+          </div>
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #FFFFFF;">
+            $${grossMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #94A3B8;">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(grossMonthlySubs * 12).toFixed(2)}/yr total commitments (${subs.length} active)</span>
         </div>
 
         <!-- 2. Reimbursed -->
         <div class="finance-kpi-card" style="border-top: 3.5px solid #38BDF8; padding: 12px 16px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
             <span class="finance-kpi-label">
               <i data-lucide="check-check" style="width: 12px; height: 12px; color: #38BDF8;"></i>
               Reimbursed
             </span>
-            <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem;">100% Card Offset</span>
+            <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem; background: rgba(56, 189, 248, 0.18); color: #7DD3FC; border: 1px solid rgba(56, 189, 248, 0.35);">100% Card Offset</span>
           </div>
           <span class="finance-kpi-value" style="font-size: 1.25rem; color: #FFFFFF;">
-            $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+            $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #94A3B8;">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(coveredMonthlySubs * 12).toFixed(2)}/yr card synergy offset (Disney+, NYT, Walmart+)</span>
         </div>
 
         <!-- 3. Out of Pocket -->
         <div class="finance-kpi-card" style="border-top: 3.5px solid #4F46E5; padding: 12px 16px;">
-          <span class="finance-kpi-label">
-            <i data-lucide="wallet" style="width: 12px; height: 12px; color: #4F46E5;"></i>
-            Out of Pocket
-          </span>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #4F46E5;">
-            $${netMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+          <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span class="finance-kpi-label">
+              <i data-lucide="wallet" style="width: 12px; height: 12px; color: #818CF8;"></i>
+              Out of Pocket
+            </span>
+          </div>
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #FFFFFF;">
+            $${netMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #94A3B8;">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(netMonthlySubs * 12).toFixed(2)}/yr true net burn</span>
         </div>
