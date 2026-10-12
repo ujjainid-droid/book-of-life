@@ -423,11 +423,11 @@ body.dark-mode .zlog-pulse-card {
 }
 
 .zlog-stat-card {
-  background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
-  border: 1.5px solid #6EE7B7;
+  background: linear-gradient(135deg, #064E3B 0%, #022C22 100%);
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
-  box-shadow: 0 4px 14px rgba(6, 95, 70, 0.08);
+  box-shadow: 0 4px 16px rgba(2, 44, 34, 0.22);
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
@@ -439,22 +439,22 @@ body.dark-mode .zlog-pulse-card {
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: #059669;
+  height: 3.5px;
+  background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
 .zlog-stat-card:hover {
   transform: translateY(-2px);
-  border-color: #059669;
-  box-shadow: 0 8px 20px rgba(6, 95, 70, 0.14);
+  border-color: #34D399;
+  box-shadow: 0 8px 24px rgba(2, 44, 34, 0.35);
 }
 
 [data-theme="dark"] .zlog-stat-card,
 body.dark-mode .zlog-stat-card {
-  background: linear-gradient(135deg, rgba(6, 95, 70, 0.45) 0%, rgba(6, 78, 59, 0.6) 100%);
-  border: 1.5px solid #10B981;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(135deg, #022C22 0%, #011C15 100%);
+  border: 1.5px solid rgba(52, 211, 153, 0.45);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
 }
 
 [data-theme="dark"] .zlog-stat-card::after,
@@ -467,7 +467,7 @@ body.dark-mode .zlog-stat-card::after {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #064E3B;
+  color: #A7F3D0;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -476,33 +476,34 @@ body.dark-mode .zlog-stat-card::after {
 
 [data-theme="dark"] .zlog-stat-label,
 body.dark-mode .zlog-stat-label {
-  color: #A7F3D0;
+  color: #6EE7B7;
 }
 
 .zlog-stat-val {
-  font-size: 1.6rem;
+  font-size: 1.65rem;
   font-weight: 900;
   font-family: var(--font-mono);
-  color: #022C22;
+  color: #FFFFFF;
   line-height: 1.1;
   letter-spacing: -0.02em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="dark"] .zlog-stat-val,
 body.dark-mode .zlog-stat-val {
-  color: #F0FDF4;
+  color: #FFFFFF;
 }
 
 .zlog-stat-sub {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #047857;
+  color: #6EE7B7;
   margin-top: 4px;
 }
 
 [data-theme="dark"] .zlog-stat-sub,
 body.dark-mode .zlog-stat-sub {
-  color: #6EE7B7;
+  color: #A7F3D0;
 }
 
 /* Active Regimen 4-Column Row */

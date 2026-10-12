@@ -199,17 +199,17 @@ function renderZLogPage(targetSubTab) {
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">💎 Good Days</div>
-          <div class="zlog-stat-val" style="color: #059669;">${stats.percentGood}%</div>
+          <div class="zlog-stat-val" style="color: #34D399;">${stats.percentGood}%</div>
           <div class="zlog-stat-sub">${stats.goodDays} rated ≥ 4</div>
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">🚨 Alert Events</div>
-          <div class="zlog-stat-val" style="color: ${stats.aggressionDays > 0 ? '#E06D53' : 'var(--text-primary)'};">${stats.aggressionDays}</div>
-          <div class="zlog-stat-sub">Reported events</div>
+          <div class="zlog-stat-val" style="color: ${stats.aggressionDays > 0 ? '#FCA5A5' : '#FFFFFF'};">${stats.aggressionDays}</div>
+          <div class="zlog-stat-sub">${stats.aggressionDays > 0 ? 'Reported events' : 'Zero reported'}</div>
         </div>
         <div class="zlog-stat-card">
           <div class="zlog-stat-label">📈 Average Rating</div>
-          <div class="zlog-stat-val" style="color: #065F46;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
+          <div class="zlog-stat-val" style="color: #6EE7B7;">${stats.avgRating} <span style="font-size: 0.85rem; color: #A7F3D0;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
         </div>
       </div>
