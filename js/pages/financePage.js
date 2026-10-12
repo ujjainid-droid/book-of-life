@@ -472,11 +472,8 @@ function renderFinanceRecurringCommitmentsSection() {
         <div>
           <h3 class="finance-section-title">
             <i data-lucide="repeat" style="width: 18px; height: 18px; color: #4F46E5;"></i>
-            <span>Active Recurring Commitments (${subs.length})</span>
+            <span>Subscriptions</span>
           </h3>
-          <span style="font-size: 0.78rem; color: var(--text-muted);">
-            Fixed monthly software &amp; subscription burn &bull; Gross: <strong>$${grossMonthlySubs.toFixed(2)}/mo</strong> &bull; Net Out-of-Pocket: <strong style="color: #0D9488;">$${netMonthlySubs.toFixed(2)}/mo</strong> ($${coveredMonthlySubs.toFixed(2)}/mo card offset)
-          </span>
         </div>
 
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
@@ -491,63 +488,82 @@ function renderFinanceRecurringCommitmentsSection() {
         </div>
       </div>
 
-      <!-- Synergy Callout Banner -->
-      <div class="subs-synergy-banner" style="margin-bottom: 14px; padding: 10px 14px;">
-        <div class="subs-synergy-content" style="gap: 10px;">
-          <div class="subs-synergy-icon" style="width: 28px; height: 28px;">
-            <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+      <!-- 3 Simple KPI Widgets: Total, Reimbursed, Out of Pocket -->
+      <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 16px; gap: 12px;">
+        <!-- 1. Total -->
+        <div class="finance-kpi-card" style="border-top: 3.5px solid #7C3AED; padding: 12px 16px;">
+          <span class="finance-kpi-label">
+            <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #7C3AED;"></i>
+            Total
+          </span>
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary);">
+            $${grossMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+          </span>
+          <span class="finance-kpi-sub">$${(grossMonthlySubs * 12).toFixed(2)}/yr total commitments (${subs.length} active)</span>
+        </div>
+
+        <!-- 2. Reimbursed -->
+        <div class="finance-kpi-card" style="border-top: 3.5px solid #0D9488; padding: 12px 16px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="finance-kpi-label">
+              <i data-lucide="check-check" style="width: 12px; height: 12px; color: #0D9488;"></i>
+              Reimbursed
+            </span>
+            <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem;">100% Card Offset</span>
           </div>
-          <div class="subs-synergy-text">
-            <span class="subs-synergy-title" style="font-size: 0.82rem;">Card Synergy Offset: $36.95/mo ($443.40/yr) 100% reimbursed</span>
-            <span class="subs-synergy-sub" style="font-size: 0.72rem;">Disney+ ($20/mo), NYT ($4/mo), and Walmart+ ($12.95/mo) are fully credited by Amex Platinum. True net burn is only <strong>$48.28/mo</strong>.</span>
-          </div>
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #0D9488;">
+            $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+          </span>
+          <span class="finance-kpi-sub">$${(coveredMonthlySubs * 12).toFixed(2)}/yr card synergy offset (Disney+, NYT, Walmart+)</span>
+        </div>
+
+        <!-- 3. Out of Pocket -->
+        <div class="finance-kpi-card" style="border-top: 3.5px solid #4F46E5; padding: 12px 16px;">
+          <span class="finance-kpi-label">
+            <i data-lucide="wallet" style="width: 12px; height: 12px; color: #4F46E5;"></i>
+            Out of Pocket
+          </span>
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #4F46E5;">
+            $${netMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+          </span>
+          <span class="finance-kpi-sub">$${(netMonthlySubs * 12).toFixed(2)}/yr true net burn</span>
         </div>
       </div>
 
-      <!-- Subscriptions Grid -->
-      <div class="finance-subs-grid">
+      <!-- Subscriptions Grid: Simple & Small (Name, Amount, Monthly/Annual, Renewal Date, Reimbursed Icon) -->
+      <div class="finance-subs-grid" style="grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px;">
         ${displayedSubs.map(s => {
-          const isOffset = s.cardPerk && (s.cardPerk.includes('Covered') || s.cardPerk.includes('Amex'));
+          const isOffset = s.cardPerk && (s.cardPerk.includes('Covered') || s.cardPerk.includes('Amex') || s.cardPerk.includes('credit'));
           const cost = parseFloat(s.cost) || 0;
+          const cadenceText = (s.cadence || 'monthly').toLowerCase().includes('annual') || (s.cadence || '').toLowerCase().includes('year') ? 'Annual' : 'Monthly';
           return `
-            <div class="finance-sub-card ${s.status === 'under_review' ? 'under-review' : ''}">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-                <div>
-                  <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">${escapeHtml(s.name)}</strong>
-                  <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 1px;">
-                    <span class="zlog-ood-badge" style="font-size: 0.62rem; padding: 1px 5px;">${escapeHtml(s.category || 'General')}</span>
-                    &bull; ${escapeHtml(s.card || 'Card')}
-                  </div>
-                </div>
-                <div style="text-align: right; flex-shrink: 0;">
-                  <span class="finance-amount-cell" style="font-size: 0.95rem; color: var(--text-primary);">
-                    $${cost.toFixed(2)}
+            <div class="finance-sub-card" style="padding: 10px 14px; gap: 6px; border-radius: 10px;">
+              <!-- Top Row: Name + Reimbursed Icon -->
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                <strong style="font-size: 0.85rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(s.name)}">
+                  ${escapeHtml(s.name)}
+                </strong>
+                ${isOffset ? `
+                  <span title="100% Reimbursed: ${escapeHtml(s.cardPerk)}" style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; background: rgba(13, 148, 136, 0.12); color: #0D9488; flex-shrink: 0;">
+                    <i data-lucide="check-check" style="width: 12px; height: 12px;"></i>
                   </span>
-                  <span style="font-size: 0.65rem; color: var(--text-muted);">/${escapeHtml(s.cadence || 'mo')}</span>
-                </div>
+                ` : ''}
               </div>
 
-              ${s.cardPerk ? `
-                <div style="margin-top: 2px;">
-                  <span class="sub-card-synergy-pill" style="font-size: 0.65rem; padding: 1px 6px;">
-                    <i data-lucide="${isOffset ? 'check-check' : 'tag'}" style="width: 9px; height: 9px;"></i>
-                    <span>${escapeHtml(s.cardPerk)}</span>
-                  </span>
-                </div>
-              ` : ''}
-
-              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--border-color, #E2E8F0);">
-                <span style="color: var(--text-secondary); font-size: 0.68rem;">
-                  Renews: <strong>${escapeHtml(s.nextRenewal || 'Monthly')}</strong>
+              <!-- Middle Row: Amount & Cadence -->
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-family: var(--font-mono, monospace); font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">
+                  $${cost.toFixed(2)}
                 </span>
-                <div style="display: flex; gap: 4px;">
-                  <button type="button" class="btn btn-secondary" onclick="toggleSubscriptionAudit('${s.id}')" style="font-size: 0.65rem; padding: 2px 6px;" title="Flag for cancellation review">
-                    ${s.status === 'under_review' ? 'Reviewing' : 'Audit'}
-                  </button>
-                  <button type="button" class="btn-text-danger" onclick="deleteSubscriptionItem('${s.id}')" style="background: none; border: none; font-size: 0.65rem; color: var(--text-muted); cursor: pointer; padding: 1px 3px;" title="Delete subscription">
-                    <i data-lucide="trash-2" style="width: 11px; height: 11px;"></i>
-                  </button>
-                </div>
+                <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">
+                  ${cadenceText}
+                </span>
+              </div>
+
+              <!-- Bottom Row: Renewal Date -->
+              <div style="font-size: 0.68rem; color: var(--text-muted); border-top: 1px dashed var(--border-color, #E2E8F0); padding-top: 4px; display: flex; justify-content: space-between; align-items: center;">
+                <span>Renews: <strong style="color: var(--text-secondary);">${escapeHtml(s.nextRenewal || 'Monthly')}</strong></span>
+                ${isOffset ? `<span style="color: #0D9488; font-weight: 600; font-size: 0.65rem;">Reimbursed</span>` : ''}
               </div>
             </div>
           `;
@@ -1042,7 +1058,7 @@ function renderFinanceBurn() {
         `}
       </div>
 
-      <!-- 3. Active Recurring Commitments (7) -->
+      <!-- 3. Subscriptions -->
       ${renderFinanceRecurringCommitmentsSection()}
 
       <!-- 4. Monthly Outlier Radar (vs. Rolling Baseline) -->
