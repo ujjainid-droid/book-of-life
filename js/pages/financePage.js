@@ -303,21 +303,13 @@ function renderFinanceWeeklyCadenceBar() {
    ========================================================================== */
 
 /**
- * Renders the 50 / 25 / 25 Target Split Blueprint Widget
- * Benchmarks actual spending & savings against:
- * - 50% Fixed Commitments (Non-negotiable baseline floor)
- * - 25% Discretionary Flex (Active lifestyle levers)
- * - 25% Savings Surplus (Liquid buffer swept to reserves)
+ * Renders the 50 / 25 / 25 Target Split Widget (Option 2: 3 Micro-Pills with Prominent %)
  */
 function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel) {
   const hasInflow = (typeof periodInflow === 'number') && periodInflow > 0;
   const incomeBase = hasInflow ? periodInflow : ((totalFixedSpend + totalFlexSpend) || 22350);
 
-  // Targets: 50% Fixed, 25% Discretionary, 25% Savings
-  const targetFixedPct = 50;
-  const targetFlexPct = 25;
-  const targetSavingsPct = 25;
-
+  // Target split benchmark
   const targetFixedAmt = incomeBase * 0.50;
   const targetFlexAmt = incomeBase * 0.25;
   const targetSavingsAmt = incomeBase * 0.25;
@@ -331,7 +323,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
   const actualFlexPct = incomeBase > 0 ? (actualFlexAmt / incomeBase) * 100 : 0;
   const actualSavingsPct = incomeBase > 0 ? (actualSavingsAmt / incomeBase) * 100 : 0;
 
-  // Variances against targets
+  // Variances
   const fixedDiffAmt = actualFixedAmt - targetFixedAmt;
   const flexDiffAmt = actualFlexAmt - targetFlexAmt;
   const savingsDiffAmt = actualSavingsAmt - targetSavingsAmt;
@@ -340,282 +332,89 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
   const flexIsUnderOrEqual = actualFlexPct <= 25.5;
   const savingsIsMetOrExceeded = actualSavingsPct >= 24.5;
 
-  // Overall status pill
-  let overallPill = '';
+  // Header status
+  let headerStatusText = '';
   if (savingsIsMetOrExceeded && fixedIsUnderOrEqual && flexIsUnderOrEqual) {
-    overallPill = `
-      <span class="finance-target-status-badge success">
-        <i data-lucide="check-check" style="width: 12px; height: 12px;"></i>
-        <span>✓ 50-25-25 Target Achieved</span>
-      </span>
-    `;
+    headerStatusText = '✓ 3 of 3 Targets Met';
   } else if (actualSavingsPct >= 25) {
-    overallPill = `
-      <span class="finance-target-status-badge success">
-        <i data-lucide="trending-up" style="width: 12px; height: 12px;"></i>
-        <span>🌱 +${(actualSavingsPct - 25).toFixed(1)}% Extra Savings Surplus</span>
-      </span>
-    `;
+    headerStatusText = `🌱 +${(actualSavingsPct - 25).toFixed(0)}% Extra Savings Surplus`;
   } else if (actualFlexPct > 25.5) {
-    overallPill = `
-      <span class="finance-target-status-badge alert">
-        <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
-        <span>⚡ Discretionary Over 25% (${actualFlexPct.toFixed(1)}%)</span>
-      </span>
-    `;
+    headerStatusText = '⚡ Discretionary Over 25%';
   } else if (actualFixedPct > 50.5) {
-    overallPill = `
-      <span class="finance-target-status-badge alert">
-        <i data-lucide="alert-circle" style="width: 12px; height: 12px;"></i>
-        <span>🛡️ Fixed Baseline Over 50% (${actualFixedPct.toFixed(1)}%)</span>
-      </span>
-    `;
+    headerStatusText = '🛡️ Fixed Commitments Over 50%';
   } else {
-    overallPill = `
-      <span class="finance-target-status-badge neutral">
-        <i data-lucide="compass" style="width: 12px; height: 12px;"></i>
-        <span>⚖️ Pacing Toward Target</span>
-      </span>
-    `;
+    headerStatusText = '⚖️ Pacing Toward Target';
   }
 
-  // Visual Comparative Bars
-  let actualBarHtml = '';
-  if (actualSavingsAmt >= 0 && (actualFixedPct + actualFlexPct + actualSavingsPct) > 0) {
-    const fixedWidth = Math.max(2, Math.min(96, actualFixedPct));
-    const flexWidth = Math.max(2, Math.min(96, actualFlexPct));
-    const savingsWidth = Math.max(0, 100 - fixedWidth - flexWidth);
-    actualBarHtml = `
-      <div class="finance-target-bar">
-        <div class="target-segment-fixed" style="width: ${fixedWidth}%;" title="Fixed: ${actualFixedPct.toFixed(1)}% ($${Math.round(actualFixedAmt).toLocaleString()})">
-          ${fixedWidth >= 12 ? `🛡️ ${actualFixedPct.toFixed(0)}%` : ''}
-        </div>
-        <div class="target-segment-flex" style="width: ${flexWidth}%;" title="Discretionary: ${actualFlexPct.toFixed(1)}% ($${Math.round(actualFlexAmt).toLocaleString()})">
-          ${flexWidth >= 12 ? `⚡ ${actualFlexPct.toFixed(0)}%` : ''}
-        </div>
-        ${savingsWidth > 0 ? `
-          <div class="target-segment-savings" style="width: ${savingsWidth}%;" title="Savings: ${actualSavingsPct.toFixed(1)}% (+$${Math.round(actualSavingsAmt).toLocaleString()})">
-            ${savingsWidth >= 12 ? `🌱 ${actualSavingsPct.toFixed(0)}%` : ''}
-          </div>
-        ` : ''}
-      </div>
-    `;
+  // Delta Pill texts
+  const fixedBadgeHtml = fixedIsUnderOrEqual
+    ? `<span class="finance-target-status-badge success">✓ -$${Math.round(Math.abs(fixedDiffAmt)).toLocaleString()} under</span>`
+    : `<span class="finance-target-status-badge alert">+$${Math.round(fixedDiffAmt).toLocaleString()} over</span>`;
+
+  const flexBadgeHtml = flexIsUnderOrEqual
+    ? `<span class="finance-target-status-badge success">✓ -$${Math.round(Math.abs(flexDiffAmt)).toLocaleString()} under</span>`
+    : `<span class="finance-target-status-badge alert">+$${Math.round(flexDiffAmt).toLocaleString()} over</span>`;
+
+  let savingsBadgeHtml = '';
+  if (savingsIsMetOrExceeded) {
+    savingsBadgeHtml = `<span class="finance-target-status-badge success">✓ +$${Math.round(savingsDiffAmt).toLocaleString()} surplus</span>`;
+  } else if (actualSavingsAmt >= 0) {
+    savingsBadgeHtml = `<span class="finance-target-status-badge neutral">Gap: -$${Math.round(Math.abs(savingsDiffAmt)).toLocaleString()}</span>`;
   } else {
-    // Deficit / Outflow exceeded inflow
-    const spendTotal = (actualFixedAmt + actualFlexAmt) || 1;
-    const fixedSpendPct = (actualFixedAmt / spendTotal) * 100;
-    const flexSpendPct = (actualFlexAmt / spendTotal) * 100;
-    actualBarHtml = `
-      <div class="finance-target-bar">
-        <div class="target-segment-fixed" style="width: ${fixedSpendPct}%;" title="Fixed: ${fixedSpendPct.toFixed(1)}% of spend">
-          🛡️ Fixed ${actualFixedPct.toFixed(0)}%
-        </div>
-        <div class="target-segment-flex" style="width: ${flexSpendPct}%;" title="Discretionary: ${flexSpendPct.toFixed(1)}% of spend">
-          ⚡ Flex ${actualFlexPct.toFixed(0)}%
-        </div>
-        <div class="target-segment-deficit" style="width: 12%;" title="Outflow exceeded inflow">
-          Deficit
-        </div>
-      </div>
-    `;
+    savingsBadgeHtml = `<span class="finance-target-status-badge alert">Deficit: -$${Math.round(Math.abs(actualSavingsAmt)).toLocaleString()}</span>`;
   }
 
   return `
     <div class="finance-target-split-card">
       <div class="finance-target-split-header">
-        <div class="finance-target-title-wrap">
-          <div class="finance-target-icon-bubble">
-            <i data-lucide="scale" style="width: 16px; height: 16px;"></i>
-          </div>
-          <div>
-            <div class="finance-target-title">
-              <span>50 / 25 / 25 Target Split Blueprint</span>
-              <span style="font-size: 0.72rem; font-weight: normal; color: var(--text-muted);">&bull; Fixed vs. Discretionary vs. Savings</span>
-            </div>
-            <div class="finance-target-subtitle">
-              Pacing for ${escapeHtml(periodLabel)} &bull; ${hasInflow ? `$${Math.round(incomeBase).toLocaleString()} verified income base` : 'Estimated income base'}
-            </div>
-          </div>
+        <div class="finance-target-title">
+          <span>⚖️</span>
+          <span>50 / 25 / 25 Target Split</span>
+          <span class="finance-target-subtitle">&bull; ${escapeHtml(periodLabel)} ($${Math.round(incomeBase).toLocaleString()} verified base)</span>
         </div>
-
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-          ${overallPill}
-        </div>
+        <span class="finance-target-header-status">${escapeHtml(headerStatusText)}</span>
       </div>
 
-      <!-- Comparative Dual Track (Target vs Actual) -->
-      <div class="finance-target-comparison-track">
-        <!-- Row 1: Target Benchmark -->
-        <div class="finance-target-bar-row">
-          <div class="finance-target-bar-label-row">
-            <span><strong>Target Blueprint:</strong> 50% Fixed &bull; 25% Discretionary &bull; 25% Savings</span>
-            <span>$${Math.round(incomeBase).toLocaleString()} Total Base</span>
-          </div>
-          <div class="finance-target-bar" title="Target: 50% Fixed, 25% Discretionary, 25% Savings">
-            <div class="target-segment-fixed" style="width: 50%;">
-              🛡️ 50% Fixed ($${Math.round(targetFixedAmt).toLocaleString()})
-            </div>
-            <div class="target-segment-flex" style="width: 25%;">
-              ⚡ 25% Discretionary ($${Math.round(targetFlexAmt).toLocaleString()})
-            </div>
-            <div class="target-segment-savings" style="width: 25%;">
-              🌱 25% Savings ($${Math.round(targetSavingsAmt).toLocaleString()})
+      <div class="finance-target-pills-grid">
+        <!-- Fixed Pill -->
+        <div class="finance-target-pill-card pillar-fixed">
+          <div class="finance-target-pill-left">
+            <div class="finance-target-pill-label">🛡️ Fixed (50% max)</div>
+            <div class="finance-target-value-wrap">
+              <span class="finance-target-pct-hero" style="color: #0F766E;">${Math.round(actualFixedPct)}%</span>
+              <span class="finance-target-amount">$${Math.round(actualFixedAmt).toLocaleString()}</span>
             </div>
           </div>
+          ${fixedBadgeHtml}
         </div>
 
-        <!-- Row 2: Actual Allocation -->
-        <div class="finance-target-bar-row" style="margin-top: 4px;">
-          <div class="finance-target-bar-label-row">
-            <span><strong>Actual Allocation:</strong> ${actualFixedPct.toFixed(1)}% Fixed &bull; ${actualFlexPct.toFixed(1)}% Discretionary &bull; ${actualSavingsPct.toFixed(1)}% Savings</span>
-            <span style="color: ${actualSavingsAmt >= 0 ? '#0D9488' : '#E11D48'}; font-weight: 700;">
-              ${actualSavingsAmt >= 0 ? '+' : '-'}$${Math.round(Math.abs(actualSavingsAmt)).toLocaleString()} Net Delta
-            </span>
-          </div>
-          ${actualBarHtml}
-        </div>
-      </div>
-
-      <!-- 3-Pillar Target Cards Grid -->
-      <div class="finance-target-pillars-grid">
-        
-        <!-- Pillar 1: Fixed Commitments (Target: 50%) -->
-        <div class="finance-target-pillar-card pillar-fixed">
-          <div class="finance-target-pillar-header">
-            <div class="finance-target-pillar-title">
-              <i data-lucide="shield-check" style="width: 14px; height: 14px; color: #0D9488;"></i>
-              <span>🛡️ Fixed Commitments</span>
-            </div>
-            <span class="finance-target-status-badge ${fixedIsUnderOrEqual ? 'success' : 'alert'}">
-              ${fixedIsUnderOrEqual 
-                ? `✓ Within 50% Target` 
-                : `+${(actualFixedPct - 50).toFixed(1)}% Over Target`}
-            </span>
-          </div>
-
-          <div class="finance-target-metrics-row">
-            <div>
-              <div class="finance-target-actual-val" style="color: #0F766E;">
-                $${Math.round(actualFixedAmt).toLocaleString()}
-              </div>
-              <div style="font-size: 0.70rem; color: var(--text-muted);">
-                ${actualFixedPct.toFixed(1)}% of income
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div class="finance-target-target-val">Target 50%: <strong>$${Math.round(targetFixedAmt).toLocaleString()}</strong></div>
-              <div style="font-size: 0.70rem; color: ${fixedIsUnderOrEqual ? '#0D9488' : '#E11D48'}; font-weight: 600;">
-                ${fixedIsUnderOrEqual ? `-$${Math.round(Math.abs(fixedDiffAmt)).toLocaleString()} under cap` : `+$${Math.round(fixedDiffAmt).toLocaleString()} over cap`}
-              </div>
+        <!-- Flex Pill -->
+        <div class="finance-target-pill-card pillar-flex">
+          <div class="finance-target-pill-left">
+            <div class="finance-target-pill-label">⚡ Flex (25% max)</div>
+            <div class="finance-target-value-wrap">
+              <span class="finance-target-pct-hero" style="color: #6D28D9;">${Math.round(actualFlexPct)}%</span>
+              <span class="finance-target-amount">$${Math.round(actualFlexAmt).toLocaleString()}</span>
             </div>
           </div>
-
-          <!-- Progress Meter with 50% Target Benchmark Marker -->
-          <div class="finance-target-meter-wrap">
-            <div class="finance-target-meter-track" title="Actual: ${actualFixedPct.toFixed(1)}% | Target: 50%">
-              <div class="finance-target-meter-fill ${fixedIsUnderOrEqual ? 'fixed' : 'over-cap'}" style="width: ${Math.min(100, Math.max(0, actualFixedPct))}%;"></div>
-              <div class="finance-target-marker" style="left: 50%;" title="50% Target Cap"></div>
-            </div>
-            <div class="finance-target-meter-labels">
-              <span>0%</span>
-              <span style="font-weight: 700; color: var(--text-secondary);">▲ 50% Target</span>
-              <span>100%</span>
-            </div>
-          </div>
+          ${flexBadgeHtml}
         </div>
 
-        <!-- Pillar 2: Discretionary Flex (Target: 25%) -->
-        <div class="finance-target-pillar-card pillar-flex">
-          <div class="finance-target-pillar-header">
-            <div class="finance-target-pillar-title">
-              <i data-lucide="sparkles" style="width: 14px; height: 14px; color: #7C3AED;"></i>
-              <span>⚡ Discretionary Flex</span>
-            </div>
-            <span class="finance-target-status-badge ${flexIsUnderOrEqual ? 'success' : 'alert'}">
-              ${flexIsUnderOrEqual 
-                ? `✓ Within 25% Target` 
-                : `+${(actualFlexPct - 25).toFixed(1)}% Over Target`}
-            </span>
-          </div>
-
-          <div class="finance-target-metrics-row">
-            <div>
-              <div class="finance-target-actual-val" style="color: #6D28D9;">
-                $${Math.round(actualFlexAmt).toLocaleString()}
-              </div>
-              <div style="font-size: 0.70rem; color: var(--text-muted);">
-                ${actualFlexPct.toFixed(1)}% of income
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div class="finance-target-target-val">Target 25%: <strong>$${Math.round(targetFlexAmt).toLocaleString()}</strong></div>
-              <div style="font-size: 0.70rem; color: ${flexIsUnderOrEqual ? '#0D9488' : '#E11D48'}; font-weight: 600;">
-                ${flexIsUnderOrEqual ? `-$${Math.round(Math.abs(flexDiffAmt)).toLocaleString()} under cap` : `+$${Math.round(flexDiffAmt).toLocaleString()} over cap`}
-              </div>
-            </div>
-          </div>
-
-          <!-- Progress Meter with 25% Target Benchmark Marker -->
-          <div class="finance-target-meter-wrap">
-            <div class="finance-target-meter-track" title="Actual: ${actualFlexPct.toFixed(1)}% | Target: 25%">
-              <div class="finance-target-meter-fill ${flexIsUnderOrEqual ? 'flex' : 'over-cap'}" style="width: ${Math.min(100, Math.max(0, actualFlexPct))}%;"></div>
-              <div class="finance-target-marker" style="left: 25%;" title="25% Target Cap"></div>
-            </div>
-            <div class="finance-target-meter-labels">
-              <span>0%</span>
-              <span style="font-weight: 700; color: var(--text-secondary);">▲ 25% Target</span>
-              <span>50%+</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Pillar 3: Savings Surplus (Target: 25%) -->
-        <div class="finance-target-pillar-card pillar-savings">
-          <div class="finance-target-pillar-header">
-            <div class="finance-target-pillar-title">
-              <i data-lucide="wallet" style="width: 14px; height: 14px; color: #10B981;"></i>
-              <span>🌱 Savings &amp; Net Surplus</span>
-            </div>
-            <span class="finance-target-status-badge ${savingsIsMetOrExceeded ? 'success' : (actualSavingsAmt < 0 ? 'alert' : 'neutral')}">
-              ${savingsIsMetOrExceeded 
-                ? `✓ Target Met (+${(actualSavingsPct - 25).toFixed(1)}%)` 
-                : (actualSavingsAmt < 0 ? `Deficit` : `Gap: -$${Math.round(Math.abs(savingsDiffAmt)).toLocaleString()}`)}
-            </span>
-          </div>
-
-          <div class="finance-target-metrics-row">
-            <div>
-              <div class="finance-target-actual-val" style="color: ${actualSavingsAmt >= 0 ? '#0F766E' : '#BE123C'};">
+        <!-- Savings Pill -->
+        <div class="finance-target-pill-card pillar-savings">
+          <div class="finance-target-pill-left">
+            <div class="finance-target-pill-label">🌱 Savings (25% min)</div>
+            <div class="finance-target-value-wrap">
+              <span class="finance-target-pct-hero" style="color: ${actualSavingsAmt >= 0 ? '#047857' : '#BE123C'};">
+                ${actualSavingsPct >= 0 ? '' : '-'}${Math.round(Math.abs(actualSavingsPct))}%
+              </span>
+              <span class="finance-target-amount">
                 ${actualSavingsAmt >= 0 ? '+' : '-'}$${Math.round(Math.abs(actualSavingsAmt)).toLocaleString()}
-              </div>
-              <div style="font-size: 0.70rem; color: var(--text-muted);">
-                ${actualSavingsPct.toFixed(1)}% of income
-              </div>
-            </div>
-            <div style="text-align: right;">
-              <div class="finance-target-target-val">Target 25%: <strong>$${Math.round(targetSavingsAmt).toLocaleString()}</strong></div>
-              <div style="font-size: 0.70rem; color: ${savingsIsMetOrExceeded ? '#0D9488' : (actualSavingsAmt < 0 ? '#E11D48' : '#6D28D9')}; font-weight: 600;">
-                ${savingsIsMetOrExceeded 
-                  ? `+$${Math.round(savingsDiffAmt).toLocaleString()} extra surplus` 
-                  : (actualSavingsAmt < 0 ? `Burn exceeded income` : `-$${Math.round(Math.abs(savingsDiffAmt)).toLocaleString()} to 25%`)}
-              </div>
+              </span>
             </div>
           </div>
-
-          <!-- Progress Meter with 25% Target Benchmark Marker -->
-          <div class="finance-target-meter-wrap">
-            <div class="finance-target-meter-track" title="Actual: ${actualSavingsPct.toFixed(1)}% | Target: 25%">
-              <div class="finance-target-meter-fill ${savingsIsMetOrExceeded ? 'savings' : (actualSavingsAmt < 0 ? 'over-cap' : 'savings')}" style="width: ${Math.min(100, Math.max(0, actualSavingsPct))}%;"></div>
-              <div class="finance-target-marker" style="left: 25%;" title="25% Savings Target"></div>
-            </div>
-            <div class="finance-target-meter-labels">
-              <span>0%</span>
-              <span style="font-weight: 700; color: var(--text-secondary);">▲ 25% Target</span>
-              <span>50%+</span>
-            </div>
-          </div>
+          ${savingsBadgeHtml}
         </div>
-
       </div>
     </div>
   `;
