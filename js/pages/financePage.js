@@ -1307,8 +1307,8 @@ function renderFinanceQuarterlyCadenceBar() {
     },
     {
       num: 3,
-      label: 'Charity & DAF',
-      hint: 'Plan & disburse quarterly charitable gifts & DAF grants',
+      label: 'Charity Donations',
+      hint: 'Plan & disburse quarterly charitable donations',
       action: null
     },
     {
