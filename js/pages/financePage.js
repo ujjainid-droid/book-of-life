@@ -32,7 +32,7 @@ let financeTxHighSpendOnly = false;
 let financeNwClassFilter = 'all';
 let financeNwSearchQuery = '';
 let selectedFinanceQuarter = '2026-Q3';
-let selectedCardRoiFilter = 'all';
+let selectedCardRoiFilter = 'amex-plat';
 let financeSubSearchQuery = '';
 let financeSubCategoryFilter = 'all';
 let financeLedgerCollapsed = (function() {
@@ -1583,10 +1583,16 @@ function renderFinanceSubscriptions() {
   const netAnnualValue = totalRealizedValue - totalAnnualFees;
   const overallBreakevenPct = totalAnnualFees > 0 ? Math.round((totalRealizedValue / totalAnnualFees) * 100) : 0;
 
-  // Filter cards if a single card filter is selected
-  const displayedCards = (selectedCardRoiFilter === 'all')
-    ? cardStats
-    : cardStats.filter(c => c.id === selectedCardRoiFilter);
+  // Negative value cards analysis
+  const negativeCards = cardStats.filter(c => c.netValue < 0);
+  const negativeCardsCount = negativeCards.length;
+  const totalDeficit = negativeCards.reduce((acc, c) => acc + Math.abs(c.netValue), 0);
+
+  // Default to first card if 'all' or unset
+  if (!selectedCardRoiFilter || selectedCardRoiFilter === 'all') {
+    selectedCardRoiFilter = 'amex-plat';
+  }
+  const displayedCards = cardStats.filter(c => c.id === selectedCardRoiFilter);
 
   // Month abbreviations
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1595,7 +1601,7 @@ function renderFinanceSubscriptions() {
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px;">
       
-      <!-- 1. Executive Horizon KPI Deck (Simplified 3-Tile Metric Row) -->
+      <!-- 1. Executive Horizon KPI Deck (4-Tile Metric Row with Negative Value Attention) -->
       <div class="finance-horizon-deck">
         <div class="finance-horizon-deck-header">
           <div class="finance-horizon-deck-title">
@@ -1611,7 +1617,7 @@ function renderFinanceSubscriptions() {
           </div>
         </div>
 
-        <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+        <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
           <!-- Card 1: Annual Fees Baseline -->
           <div class="finance-kpi-card" style="border-top: 3.5px solid #7C3AED;">
             <span class="finance-kpi-label">
@@ -1619,7 +1625,7 @@ function renderFinanceSubscriptions() {
               4 Annual Fee Cards
             </span>
             <span class="finance-kpi-value" style="color: #6D28D9;">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
-            <span class="finance-kpi-sub">Amex Plat ($895) + 3 Chase Cards ($95 ea)</span>
+            <span class="finance-kpi-sub">Amex Plat ($895) + 3 Chase ($95 ea)</span>
           </div>
 
           <!-- Card 2: Realized Perks & Credits -->
@@ -1642,7 +1648,31 @@ function renderFinanceSubscriptions() {
               <span class="card-roi-surplus-pill surplus" style="font-size: 0.64rem;">${overallBreakevenPct}% Breakeven</span>
             </div>
             <span class="finance-kpi-value" style="color: #0D9488;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
-            <span class="finance-kpi-sub">Perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</span>
+            <span class="finance-kpi-sub">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</span>
+          </div>
+
+          <!-- Card 4: Negative Value Cards Widget -->
+          <div class="finance-kpi-card" style="border-top: 3.5px solid ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="finance-kpi-label">
+                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'};"></i>
+                Negative Value Cards
+              </span>
+              <span class="card-roi-surplus-pill" style="font-size: 0.64rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.12)' : 'rgba(13, 148, 136, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(13, 148, 136, 0.25)'};">
+                ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
+              </span>
+            </div>
+            <span class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'};">
+              ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}
+              <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);"> net drag</span>
+            </span>
+            <div class="finance-kpi-sub" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+              ${negativeCards.length > 0 ? negativeCards.map(c => `
+                <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; background: rgba(225, 29, 72, 0.08); color: #E11D48; border: 1px solid rgba(225, 29, 72, 0.2); font-weight: 600; font-size: 0.7rem; cursor: pointer;" title="Inspect ${escapeHtml(c.shortName)}">
+                  ${escapeHtml(c.shortName || c.name)} (-$${Math.round(Math.abs(c.netValue))})
+                </span>
+              `).join('') : '<span style="color: #0D9488;">✓ All 4 cards exceeding annual fee!</span>'}
+            </div>
           </div>
         </div>
       </div>
@@ -1660,22 +1690,19 @@ function renderFinanceSubscriptions() {
             </span>
           </div>
 
-          <!-- Card Filter Pills with Live Surplus Indicators -->
+          <!-- Card Filter Pills with Live Surplus/Deficit Indicators -->
           <div class="card-roi-filter-pills">
-            <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'all' ? 'active' : ''}" onclick="setCardRoiFilter('all')">
-              <span>All 4 Cards ($1,180)</span>
-            </button>
             <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'amex-plat' ? 'active' : ''}" onclick="setCardRoiFilter('amex-plat')">
               <span>Amex Plat ($895) <strong style="color: #0D9488; margin-left: 2px;">+$92</strong></span>
             </button>
             <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'csp-u' ? 'active' : ''}" onclick="setCardRoiFilter('csp-u')">
-              <span>CSP (U) ($95)</span>
+              <span>CSP (U) ($95) <strong style="color: #E11D48; margin-left: 2px;">-$95</strong></span>
             </button>
             <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'csp-t' ? 'active' : ''}" onclick="setCardRoiFilter('csp-t')">
               <span>CSP (T) ($95) <strong style="color: #0D9488; margin-left: 2px;">+$125</strong></span>
             </button>
             <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'hyatt-card' ? 'active' : ''}" onclick="setCardRoiFilter('hyatt-card')">
-              <span>Hyatt ($95)</span>
+              <span>Hyatt ($95) <strong style="color: #E11D48; margin-left: 2px;">-$95</strong></span>
             </button>
           </div>
         </div>
