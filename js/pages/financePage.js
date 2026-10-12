@@ -449,11 +449,11 @@ function renderFinanceBurn() {
     targetMonths = ['2026-09'];
     baselineScale = 1;
   } else if (financeActivePeriod === 'last_qtr') {
-    periodLabel = 'Last Quarter (Q3 2026 &bull; Jul–Sep)';
+    periodLabel = 'Q3 2026 (Jul–Sep)';
     targetMonths = ['2026-07', '2026-08', '2026-09'];
     baselineScale = 3;
   } else if (financeActivePeriod === 'ytd') {
-    periodLabel = '2026 Year-to-Date (Jan–Oct)';
+    periodLabel = '2026 YTD (Jan–Oct)';
     targetMonths = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10'];
     baselineScale = 10;
   }
@@ -470,33 +470,50 @@ function renderFinanceBurn() {
     }
   });
 
-  let netCashFlow = periodInflow - periodOutflow;
-  let isPositive = netCashFlow >= 0;
-  let savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
-
   // Compute Category Spend Map for the selected period
   const categorySpendMap = {};
   categories.forEach(c => { categorySpendMap[c.name] = 0; });
 
-  const periodTxs = transactions.filter(t => {
-    if (!t || !t.date) return false;
-    return targetMonths.some(m => t.date.startsWith(m));
+  // Baseline sum for proportional distribution of months without itemized transactions
+  const totalBaselineSum = categories.reduce((sum, c) => sum + (baselines[c.name] || c.baseline || 500), 0) || 1;
+
+  let totalAggregatedOutflow = 0;
+
+  targetMonths.forEach(mStr => {
+    const mTransactions = transactions.filter(t => t && t.date && t.date.startsWith(mStr));
+    const summary = monthlySummaries.find(m => m.month === mStr);
+    const summaryOutflow = summary ? (parseFloat(summary.outflow) || 0) : 0;
+
+    if (mTransactions.length > 0) {
+      let mSpend = 0;
+      mTransactions.forEach(t => {
+        const amt = parseFloat(t.amount) || 0;
+        const isInc = t.isIncome || t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0;
+        if (!isInc) {
+          const catName = t.category || 'Discretionary';
+          categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
+          mSpend += amt;
+        }
+      });
+      totalAggregatedOutflow += mSpend;
+    } else if (summaryOutflow > 0) {
+      // Allocate month outflow proportionally across categories based on baseline weights
+      categories.forEach(c => {
+        const base = baselines[c.name] || c.baseline || 500;
+        const weight = base / totalBaselineSum;
+        const catShare = summaryOutflow * weight;
+        categorySpendMap[c.name] = (categorySpendMap[c.name] || 0) + catShare;
+      });
+      totalAggregatedOutflow += summaryOutflow;
+    }
   });
 
-  if (periodTxs.length > 0) {
-    periodTxs.forEach(t => {
-      const amt = parseFloat(t.amount) || 0;
-      const isInc = t.isIncome || t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0;
-      if (!isInc) {
-        const catName = t.category || 'Discretionary';
-        categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
-      }
-    });
-  } else {
-    // Proportional fallback based on rolling baseline scale
+  // Fallback if no transactions and no summaries
+  if (totalAggregatedOutflow === 0) {
     categories.forEach(c => {
       const base = baselines[c.name] || c.baseline || 500;
       categorySpendMap[c.name] = base * baselineScale;
+      totalAggregatedOutflow += base * baselineScale;
     });
   }
 
@@ -564,7 +581,11 @@ function renderFinanceBurn() {
   const totalFlexSpend = flexCategories.reduce((sum, c) => sum + c.spent, 0);
   const macroTotal = (totalFixedSpend + totalFlexSpend) || 1;
 
-  if (periodTxs.length > 0 && (totalFixedSpend + totalFlexSpend) > 0) {
+  let netCashFlow = periodInflow - periodOutflow;
+  let isPositive = netCashFlow >= 0;
+  let savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
+
+  if (totalAggregatedOutflow > 0) {
     periodOutflow = totalFixedSpend + totalFlexSpend;
     netCashFlow = periodInflow - periodOutflow;
     isPositive = netCashFlow >= 0;
@@ -599,18 +620,18 @@ function renderFinanceBurn() {
       <!-- 1. Hero Cash Flow Split & Synced Period Selector -->
       <div class="finance-flow-hero">
         <div class="finance-flow-header">
-          <div>
+          <div class="finance-flow-header-left">
             <h2 class="finance-hero-title">
               <span>💳</span>
               <span>Cash Flow &amp; Spend Radar</span>
             </h2>
-            <p class="finance-hero-sub">
-              ${periodLabel} &bull; Macro earn vs. burn clarity &bull; Zero budget tracking
+            <p class="finance-hero-sub" title="${escapeHtml(periodLabel)} &bull; Macro earn vs. burn clarity">
+              ${periodLabel} &bull; Macro earn vs. burn clarity
             </p>
           </div>
 
           <!-- Timeframe Filter Capsules (This Month / Last Month / Last Qtr / YTD) -->
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <div class="finance-flow-header-right">
             ${renderPeriodFilterPills()}
             <button class="btn btn-secondary" onclick="openLogCashFlowModal(selectedFinanceMonth)" style="font-size: 0.74rem; padding: 4px 10px;" title="Adjust month cash flow figures">
               <i data-lucide="edit-3" style="width: 12px; height: 12px;"></i>

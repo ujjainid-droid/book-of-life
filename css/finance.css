@@ -661,8 +661,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-wrap: nowrap;
+  gap: 14px;
+}
+
+.finance-flow-header-left {
+  min-width: 0;
+  flex: 1;
+}
+
+.finance-flow-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.finance-flow-header .finance-hero-sub {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .finance-period-capsules {
@@ -1737,5 +1755,8 @@
   border: 1px solid rgba(139, 92, 246, 0.2);
 }
 
-
-
+@media (max-width: 768px) {
+  .finance-flow-header {
+    flex-wrap: wrap;
+  }
+}
