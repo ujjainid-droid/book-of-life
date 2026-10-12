@@ -32,6 +32,13 @@ let financeTxHighSpendOnly = false;
 let financeNwClassFilter = 'all';
 let financeNwSearchQuery = '';
 let selectedFinanceQuarter = '2026-Q3';
+let financeLedgerCollapsed = (function() {
+  try {
+    return localStorage.getItem('margo_finance_ledger_collapsed') === 'true';
+  } catch (e) {
+    return false;
+  }
+})();
 
 function renderFinancePage(targetSubTab) {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('bunker-subview-frame');
@@ -1276,14 +1283,31 @@ function toggleFinanceAnnualChecklistItem(itemNum, event) {
   renderFinanceRunway();
 }
 
+function toggleFinanceLedgerCollapse(event) {
+  if (event) event.stopPropagation();
+  financeLedgerCollapsed = !financeLedgerCollapsed;
+  try {
+    localStorage.setItem('margo_finance_ledger_collapsed', financeLedgerCollapsed ? 'true' : 'false');
+  } catch (e) {}
+  renderFinanceRunway();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.toggleFinanceLedgerCollapse = toggleFinanceLedgerCollapse;
+
 function setFinanceNwClassFilter(filter) {
   financeNwClassFilter = filter;
+  financeLedgerCollapsed = false; // automatically expand when user clicks a category
   renderFinanceRunway();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function handleFinanceNwSearch(e) {
   financeNwSearchQuery = (e.target.value || '').toLowerCase().trim();
+  if (financeNwSearchQuery) {
+    financeLedgerCollapsed = false; // automatically expand when user searches
+  }
   renderFinanceRunway();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
 function renderFinanceQuarterlyCadenceBar() {
@@ -1893,19 +1917,25 @@ function renderFinanceRunway() {
       <!-- 5. Historical Net Worth Progression (Interactive Sparkline & Trajectory Curve) -->
       ${renderFinanceMilestonesSparkline(milestones)}
 
-      <!-- 6. Active Accounts Ledger & Class Filter Strip -->
+      <!-- 6. Active Accounts Ledger & Class Filter Strip (Collapsible) -->
       <div class="finance-section-box">
-        <div class="finance-section-header" style="flex-wrap: wrap; gap: 10px;">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="wallet" style="width: 18px; height: 18px; color: #0D9488;"></i>
-              <span>Active Accounts Ledger (${filteredAccounts.length} of ${accounts.length})</span>
-            </h3>
-            <span style="font-size: 0.76rem; color: var(--text-muted);">Reconciled institutional balances as of ${asOfDate}</span>
+        <div class="finance-section-header" style="flex-wrap: wrap; gap: 10px; cursor: pointer; user-select: none;" onclick="toggleFinanceLedgerCollapse(event)" title="${financeLedgerCollapsed ? 'Click to expand 35 active accounts' : 'Click to collapse active accounts'}">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" class="finance-ledger-collapse-btn" onclick="toggleFinanceLedgerCollapse(event)" title="${financeLedgerCollapsed ? 'Expand 35 active accounts' : 'Collapse ledger'}">
+              <i data-lucide="${financeLedgerCollapsed ? 'chevron-down' : 'chevron-up'}" style="width: 12px; height: 12px;"></i>
+              <span>${financeLedgerCollapsed ? 'Expand' : 'Collapse'}</span>
+            </button>
+            <div>
+              <h3 class="finance-section-title">
+                <i data-lucide="wallet" style="width: 18px; height: 18px; color: #0D9488;"></i>
+                <span>Active Accounts Ledger (${filteredAccounts.length} of ${accounts.length})</span>
+              </h3>
+              <span style="font-size: 0.76rem; color: var(--text-muted);">Reconciled institutional balances as of ${asOfDate}</span>
+            </div>
           </div>
 
           <!-- Ledger Search Input -->
-          <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;" onclick="event.stopPropagation()">
             <div style="position: relative; width: 220px;">
               <input type="text" class="form-control" placeholder="Search account..." value="${escapeHtml(financeNwSearchQuery)}" oninput="handleFinanceNwSearch(event)" style="font-size: 0.78rem; padding: 4px 10px 4px 28px; border-radius: 999px;">
               <i data-lucide="search" style="position: absolute; left: 9px; top: 7px; width: 13px; height: 13px; color: var(--text-muted);"></i>
@@ -1913,61 +1943,63 @@ function renderFinanceRunway() {
           </div>
         </div>
 
-        <!-- Filter Pills Row -->
-        <div class="finance-nw-filters" style="margin-bottom: 14px;">
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'all' ? 'active' : ''}" onclick="setFinanceNwClassFilter('all')">
-            All (${accounts.length})
-          </button>
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'retirement' ? 'active' : ''}" onclick="setFinanceNwClassFilter('retirement')">
-            Retirement (${classBreakdown.retirement.count})
-          </button>
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'brokerage' ? 'active' : ''}" onclick="setFinanceNwClassFilter('brokerage')">
-            Brokerage &amp; RSUs (${classBreakdown.brokerage.count})
-          </button>
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'realestate' ? 'active' : ''}" onclick="setFinanceNwClassFilter('realestate')">
-            Real Estate (${classBreakdown.realestate.count})
-          </button>
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'cash' ? 'active' : ''}" onclick="setFinanceNwClassFilter('cash')">
-            Cash (${classBreakdown.cash.count})
-          </button>
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'education' ? 'active' : ''}" onclick="setFinanceNwClassFilter('education')">
-            529 Plan (${classBreakdown.education.count})
-          </button>
-          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'liability' ? 'active' : ''}" onclick="setFinanceNwClassFilter('liability')">
-            Liabilities (${classBreakdown.liability.count})
-          </button>
-        </div>
+        ${!financeLedgerCollapsed ? `
+          <!-- Filter Pills Row -->
+          <div class="finance-nw-filters" style="margin-bottom: 14px; margin-top: 14px;">
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'all' ? 'active' : ''}" onclick="setFinanceNwClassFilter('all')">
+              All (${accounts.length})
+            </button>
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'retirement' ? 'active' : ''}" onclick="setFinanceNwClassFilter('retirement')">
+              Retirement (${classBreakdown.retirement.count})
+            </button>
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'brokerage' ? 'active' : ''}" onclick="setFinanceNwClassFilter('brokerage')">
+              Brokerage &amp; RSUs (${classBreakdown.brokerage.count})
+            </button>
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'realestate' ? 'active' : ''}" onclick="setFinanceNwClassFilter('realestate')">
+              Real Estate (${classBreakdown.realestate.count})
+            </button>
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'cash' ? 'active' : ''}" onclick="setFinanceNwClassFilter('cash')">
+              Cash (${classBreakdown.cash.count})
+            </button>
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'education' ? 'active' : ''}" onclick="setFinanceNwClassFilter('education')">
+              529 Plan (${classBreakdown.education.count})
+            </button>
+            <button class="finance-nw-filter-pill ${financeNwClassFilter === 'liability' ? 'active' : ''}" onclick="setFinanceNwClassFilter('liability')">
+              Liabilities (${classBreakdown.liability.count})
+            </button>
+          </div>
 
-        <!-- Accounts Grid -->
-        <div class="finance-accounts-grid">
-          ${filteredAccounts.map(acc => {
-            const isLiab = acc.assetClass === 'liability';
-            const bal = parseFloat(acc.balance) || 0;
-            const balColor = isLiab ? '#E11D48' : '#0D9488';
-            return `
-              <div class="finance-acc-card" style="${isLiab ? 'border-left: 3px solid #E11D48;' : ''}">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-                  <div style="min-width: 0;">
-                    <strong style="font-size: 0.88rem; color: var(--text-primary); display: block; line-height: 1.25;" title="${escapeHtml(acc.name)}">
-                      ${escapeHtml(acc.name)}
-                    </strong>
-                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">
-                      ${escapeHtml(acc.institution || 'Institutional')} &bull; ${escapeHtml(acc.subType || acc.assetClass)}
+          <!-- Accounts Grid -->
+          <div class="finance-accounts-grid">
+            ${filteredAccounts.map(acc => {
+              const isLiab = acc.assetClass === 'liability';
+              const bal = parseFloat(acc.balance) || 0;
+              const balColor = isLiab ? '#E11D48' : '#0D9488';
+              return `
+                <div class="finance-acc-card" style="${isLiab ? 'border-left: 3px solid #E11D48;' : ''}">
+                  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                    <div style="min-width: 0;">
+                      <strong style="font-size: 0.88rem; color: var(--text-primary); display: block; line-height: 1.25;" title="${escapeHtml(acc.name)}">
+                        ${escapeHtml(acc.name)}
+                      </strong>
+                      <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">
+                        ${escapeHtml(acc.institution || 'Institutional')} &bull; ${escapeHtml(acc.subType || acc.assetClass)}
+                      </div>
                     </div>
+                    ${acc.apy ? `<span class="zlog-ood-badge funded" style="font-size: 0.66rem; flex-shrink: 0;">APY ${escapeHtml(acc.apy)}</span>` : ''}
                   </div>
-                  ${acc.apy ? `<span class="zlog-ood-badge funded" style="font-size: 0.66rem; flex-shrink: 0;">APY ${escapeHtml(acc.apy)}</span>` : ''}
+                  <div class="finance-kpi-value" style="font-size: 1.3rem; color: ${balColor}; margin: 8px 0 3px 0;">
+                    ${isLiab ? '-' : ''}$${Math.abs(bal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: var(--text-muted);">
+                    <span>Class: <strong style="text-transform: capitalize;">${escapeHtml(acc.assetClass)}</strong></span>
+                    <span>${escapeHtml(acc.updated || asOfDate)}</span>
+                  </div>
                 </div>
-                <div class="finance-kpi-value" style="font-size: 1.3rem; color: ${balColor}; margin: 8px 0 3px 0;">
-                  ${isLiab ? '-' : ''}$${Math.abs(bal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: var(--text-muted);">
-                  <span>Class: <strong style="text-transform: capitalize;">${escapeHtml(acc.assetClass)}</strong></span>
-                  <span>${escapeHtml(acc.updated || asOfDate)}</span>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
+              `;
+            }).join('')}
+          </div>
+        ` : ''}
       </div>
 
       <!-- 7. Compact Balances CSV Upload / Drag-and-Drop Zone -->

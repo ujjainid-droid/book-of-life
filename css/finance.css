@@ -1163,7 +1163,41 @@
   color: #2DD4BF;
 }
 
-/* Ledger & Filter Pills */
+/* Ledger & Filter Pills (Collapsible) */
+.finance-ledger-collapse-btn {
+  font-size: 0.70rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-surface, #F1F5F9);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.12s ease;
+  user-select: none;
+}
+
+.finance-ledger-collapse-btn:hover {
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-primary);
+  border-color: #0D9488;
+}
+
+[data-theme="dark"] .finance-ledger-collapse-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .finance-ledger-collapse-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  color: #F8FAFC;
+  border-color: #2DD4BF;
+}
+
 .finance-nw-filters {
   display: flex;
   flex-wrap: wrap;
