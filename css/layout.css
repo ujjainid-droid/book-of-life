@@ -169,9 +169,9 @@ html, body {
 
 .nav-capsule-btn.active#nav-btn-finance,
 .domain-capsule-btn.active#domain-btn-finance {
-  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
+  background: linear-gradient(135deg, #0369A1 0%, #075985 100%);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+  box-shadow: 0 2px 8px rgba(3, 105, 161, 0.35);
 }
 
 .nav-badge,

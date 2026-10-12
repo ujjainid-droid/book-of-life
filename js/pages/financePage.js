@@ -820,7 +820,7 @@ function renderFinanceBurn() {
             <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
                 <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? 'var(--fin-primary)' : '#E11D48'};"></i>
-                <span>Net Cash Flow Delta</span>
+                <span>Net Cash Flow</span>
               </span>
               ${isPositive ? `
                 <span class="finance-flow-badge-pos">
@@ -1636,40 +1636,44 @@ function renderFinanceSubscriptions() {
         <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
           <!-- Card 1: Annual Fees Baseline -->
           <div class="finance-kpi-card" style="border-top: 3.5px solid #7C3AED;">
-            <span class="finance-kpi-label">
-              <i data-lucide="credit-card" style="width: 13px; height: 13px; color: #7C3AED;"></i>
-              4 Annual Fee Cards
-            </span>
-            <span class="finance-kpi-value" style="color: #6D28D9;">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
+            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span class="finance-kpi-label">
+                <i data-lucide="credit-card" style="width: 13px; height: 13px; color: #A78BFA;"></i>
+                4 Annual Fee Cards
+              </span>
+            </div>
+            <span class="finance-kpi-value" style="color: #FFFFFF;">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #94A3B8;">/yr</span></span>
             <span class="finance-kpi-sub">Amex Plat ($895) + 3 Chase ($95 ea)</span>
           </div>
 
           <!-- Card 2: Realized Perks & Credits -->
           <div class="finance-kpi-card" style="border-top: 3.5px solid #38BDF8;">
-            <span class="finance-kpi-label">
-              <i data-lucide="gift" style="width: 13px; height: 13px; color: #38BDF8;"></i>
-              Realized Perks &amp; Credits
-            </span>
-            <span class="finance-kpi-value" style="color: #FFFFFF;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
+            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span class="finance-kpi-label">
+                <i data-lucide="gift" style="width: 13px; height: 13px; color: #38BDF8;"></i>
+                Realized Perks &amp; Credits
+              </span>
+            </div>
+            <span class="finance-kpi-value" style="color: #FFFFFF;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #94A3B8;">/yr</span></span>
             <span class="finance-kpi-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</span>
           </div>
 
           <!-- Card 3: Net Fee ROI & Surplus -->
           <div class="finance-kpi-card" style="border-top: 3.5px solid #38BDF8;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span class="finance-kpi-label">
                 <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #38BDF8;"></i>
                 Net Fee ROI Surplus
               </span>
               <span class="card-roi-surplus-pill surplus" style="font-size: 0.64rem;">${overallBreakevenPct}% Breakeven</span>
             </div>
-            <span class="finance-kpi-value" style="color: #38BDF8;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
+            <span class="finance-kpi-value" style="color: #38BDF8;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #94A3B8;">/yr</span></span>
             <span class="finance-kpi-sub">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</span>
           </div>
 
           <!-- Card 4: Negative Value Cards Widget -->
           <div class="finance-kpi-card" style="border-top: 3.5px solid ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'}; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span class="finance-kpi-label">
                 <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'};"></i>
                 Negative Value Cards
@@ -1680,7 +1684,7 @@ function renderFinanceSubscriptions() {
             </div>
             <span class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'};">
               ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}
-              <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);"> net drag</span>
+              <span style="font-size: 0.85rem; font-weight: 500; color: #94A3B8;"> net drag</span>
             </span>
             <div class="finance-kpi-sub" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
               ${negativeCards.length > 0 ? negativeCards.map(c => `
