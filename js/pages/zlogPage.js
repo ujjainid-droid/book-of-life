@@ -190,46 +190,24 @@ function renderZLogPage(targetSubTab) {
         </div>
       </div>
 
-      <!-- 1-Tap Tactile Quick Care Docket -->
-      <div class="zlog-care-docket">
-        <span class="zlog-docket-label">
-          <i data-lucide="zap" style="width: 13px; height: 13px;"></i> Quick Care:
-        </span>
-        <button class="zlog-docket-pill" onclick="quickLogCareAction('meds')" title="Quick log morning/evening meds taken">
-          <span>💊</span> <span>Meds Given</span>
-        </button>
-        <button class="zlog-docket-pill" onclick="quickLogCareAction('meal')" title="Quick log meal / nutrition taken">
-          <span>🥩</span> <span>Meal Fed</span>
-        </button>
-        <button class="zlog-docket-pill" onclick="quickLogCareAction('walk')" title="Quick log outdoor exercise / walk">
-          <span>🐾</span> <span>Outdoor Walk</span>
-        </button>
-        <button class="zlog-docket-pill alert" onclick="quickLogCareAction('alert')" title="Quick record behavior incident or alert">
-          <span>⚡</span> <span>Incident / Alert</span>
-        </button>
-        <button class="zlog-docket-pill active" onclick="openZLogEntryModal()" title="Open detailed daily log modal">
-          <span>📝</span> <span>Full Day Log</span>
-        </button>
-      </div>
-
       <!-- Quick Metrics Strip -->
       <div class="zlog-stats-strip">
-        <div class="zlog-stat-card" style="border-top: 3px solid #065F46;">
+        <div class="zlog-stat-card">
           <div class="zlog-stat-label">Total Logged</div>
           <div class="zlog-stat-val">${stats.totalLogged}</div>
           <div class="zlog-stat-sub">Historical Days</div>
         </div>
-        <div class="zlog-stat-card" style="border-top: 3px solid #059669;">
+        <div class="zlog-stat-card">
           <div class="zlog-stat-label">💎 Good Days</div>
           <div class="zlog-stat-val" style="color: #059669;">${stats.percentGood}%</div>
           <div class="zlog-stat-sub">${stats.goodDays} rated ≥ 4</div>
         </div>
-        <div class="zlog-stat-card" style="border-top: 3px solid ${stats.aggressionDays > 0 ? '#E06D53' : '#0D9488'};">
+        <div class="zlog-stat-card">
           <div class="zlog-stat-label">🚨 Alert Events</div>
           <div class="zlog-stat-val" style="color: ${stats.aggressionDays > 0 ? '#E06D53' : 'var(--text-primary)'};">${stats.aggressionDays}</div>
           <div class="zlog-stat-sub">Reported events</div>
         </div>
-        <div class="zlog-stat-card" style="border-top: 3px solid #10B981;">
+        <div class="zlog-stat-card">
           <div class="zlog-stat-label">📈 Average Rating</div>
           <div class="zlog-stat-val" style="color: #065F46;">${stats.avgRating} <span style="font-size: 0.85rem;">/ 5</span></div>
           <div class="zlog-stat-sub">${stats.totalRated} rated entries</div>
@@ -4074,49 +4052,3 @@ async function deleteZLogPdfEntryAttachment(id, dateStr) {
   }
 }
 
-/**
- * 1-Tap Tactile Quick Care Docket Action
- */
-function quickLogCareAction(type) {
-  const todayStr = formatDateIso(new Date());
-  const entry = storage.getZLogEntry(todayStr) || { date: todayStr };
-  const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-  if (type === 'meds') {
-    entry.meds = entry.meds || {};
-    entry.meds.z = true;
-    entry.meds.g = true;
-    entry.meds.rit = true;
-    const noteLine = `💊 Meds administered at ${currentTime}.`;
-    if (!entry.notes || !entry.notes.includes(noteLine)) {
-      entry.notes = entry.notes ? `${entry.notes}\n${noteLine}` : noteLine;
-    }
-    storage.saveZLogEntry(todayStr, entry);
-    if (typeof showToast === 'function') showToast('✓ Logged meds administered for today');
-  } else if (type === 'meal') {
-    const noteLine = `🥩 Meal & hydration completed at ${currentTime}.`;
-    if (!entry.notes || !entry.notes.includes(noteLine)) {
-      entry.notes = entry.notes ? `${entry.notes}\n${noteLine}` : noteLine;
-    }
-    storage.saveZLogEntry(todayStr, entry);
-    if (typeof showToast === 'function') showToast('✓ Logged meal fed for today');
-  } else if (type === 'walk') {
-    const noteLine = `🐾 Outdoor sensory walk completed at ${currentTime}.`;
-    if (!entry.notes || !entry.notes.includes(noteLine)) {
-      entry.notes = entry.notes ? `${entry.notes}\n${noteLine}` : noteLine;
-    }
-    storage.saveZLogEntry(todayStr, entry);
-    if (typeof showToast === 'function') showToast('✓ Logged outdoor walk for today');
-  } else if (type === 'alert') {
-    const promptNote = prompt('⚡ Incident / Alert Notes (or leave blank to flag date):', '');
-    if (promptNote === null) return; // user cancelled
-    entry.aggression = true;
-    const noteLine = `🚨 Alert/Incident logged at ${currentTime}${promptNote ? ': ' + promptNote : ''}`;
-    entry.notes = entry.notes ? `${entry.notes}\n${noteLine}` : noteLine;
-    storage.saveZLogEntry(todayStr, entry);
-    if (typeof showToast === 'function') showToast('⚠️ Incident logged for today');
-  }
-
-  // Refresh current view
-  renderZLogPage();
-}
