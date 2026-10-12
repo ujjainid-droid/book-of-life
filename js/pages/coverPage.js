@@ -50,11 +50,24 @@ function getGoalPacerData(targetDateStr = activeTrackingDate) {
   const endHour = Number(activeConfig.end) || (isWeekend ? 22 : 21);
   const totalWindowHours = Math.max(1, endHour - startHour);
 
-  // Floor midpoint hour (50% through the active day window)
-  const floorBenchmarkHour = startHour + (totalWindowHours / 2); // 2:00 PM weekday, 3:30 PM weekend
-  const floorBenchmarkTimeStr = isWeekend ? '3:30 PM' : '2:00 PM';
+  // Exact 25%, 50%, 75%, 100% quartile benchmark hours
+  // Weekday: 7 AM – 9 PM (14h) -> 25% at 10:30 AM, 50% at 2:00 PM, 75% at 5:30 PM, 100% at 9:00 PM
+  // Weekend: 9 AM – 10 PM (13h) -> 25% at 12:15 PM, 50% at 3:30 PM, 75% at 6:45 PM, 100% at 10:00 PM
+  const q25Hour = startHour + (totalWindowHours * 0.25);
+  const q50Hour = startHour + (totalWindowHours * 0.50);
+  const q75Hour = startHour + (totalWindowHours * 0.75);
+  const q100Hour = endHour;
+
+  const q25TimeStr = isWeekend ? '12:15 PM' : '10:30 AM';
+  const q50TimeStr = isWeekend ? '3:30 PM' : '2:00 PM';
+  const q75TimeStr = isWeekend ? '6:45 PM' : '5:30 PM';
+  const q100TimeStr = isWeekend ? '10:00 PM' : '9:00 PM';
   const startHourStr = isWeekend ? '9:00 AM' : '7:00 AM';
   const endHourStr = isWeekend ? '10:00 PM' : '9:00 PM';
+
+  // Floor midpoint alias
+  const floorBenchmarkHour = q50Hour;
+  const floorBenchmarkTimeStr = q50TimeStr;
 
   let currentHourDecimal = 0;
   let isPastDay = false;
@@ -93,6 +106,8 @@ function getGoalPacerData(targetDateStr = activeTrackingDate) {
     elapsedPct = Math.min(100, Math.max(0, (elapsedHours / totalWindowHours) * 100));
   }
 
+  const targetPct = dayPhase === 'ended' ? 100 : (dayPhase === 'pre' ? 0 : Math.round(elapsedPct));
+
   return {
     isWeekend,
     isToday,
@@ -104,47 +119,81 @@ function getGoalPacerData(targetDateStr = activeTrackingDate) {
     startHourStr,
     endHourStr,
     totalWindowHours,
+    q25Hour,
+    q50Hour,
+    q75Hour,
+    q100Hour,
+    q25TimeStr,
+    q50TimeStr,
+    q75TimeStr,
+    q100TimeStr,
     floorBenchmarkHour,
     floorBenchmarkTimeStr,
     currentHourDecimal,
     elapsedHours,
     remainingHours,
     elapsedPct,
+    targetPct,
     scheduleLabel: activeConfig.label || (isWeekend ? 'Weekend · 9 AM – 10 PM' : 'Weekday · 7 AM – 9 PM')
   };
 }
 window.getGoalPacerData = getGoalPacerData;
 
 function getMoveAnchorPacer(moveStage, pacerData) {
-  const { dayPhase, elapsedPct, remainingHours, floorBenchmarkTimeStr, isToday, isPastDay, endHourStr } = pacerData;
+  const { dayPhase, elapsedPct, remainingHours, q25TimeStr, q50TimeStr, q75TimeStr, q100TimeStr, isToday, isPastDay, endHourStr, startHourStr, targetPct } = pacerData;
 
-  // Move stage: 0 = off, 0.5 = 50% floor, 1 = 100% closed
+  // Move stage: 0 = Off, 0.25 = 25%, 0.5 = 50% Floor, 0.75 = 75%, 1 = 100% Closed
+  const progressVal = Math.round((moveStage || 0) * 100);
+  const delta = Math.round(progressVal - targetPct);
+
   if (moveStage === 1) {
     return {
       statusClass: 'pacer-ahead',
-      badgeText: 'Goal Closed ✨',
-      subline: '100% closed · Full movement momentum achieved ⚡',
-      progressVal: 100
+      badgeText: '100% Closed ✨',
+      sublineLeft: '100% closed · Full movement momentum achieved ⚡',
+      sublineRight: '<strong>Complete</strong>',
+      progressVal: 100,
+      delta: 0
+    };
+  }
+
+  if (moveStage === 0.75) {
+    const statusClass = delta >= 5 ? 'pacer-ahead' : (delta >= -5 ? 'pacer-ontrack' : (delta >= -20 ? 'pacer-attention' : 'pacer-behind'));
+    const badgeText = delta >= 5 ? `+${delta}% Ahead` : (delta >= -5 ? 'On Track' : `${delta}% Behind`);
+    return {
+      statusClass,
+      badgeText,
+      sublineLeft: `75% achieved (+8 XP) · Push for 100% before ${q100TimeStr}`,
+      sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
+      progressVal: 75,
+      delta
     };
   }
 
   if (moveStage === 0.5) {
-    if (elapsedPct < 50) {
-      return {
-        statusClass: 'pacer-ahead',
-        badgeText: 'Ahead · Floor Safe 🛡️',
-        subline: `Locked early before ${floorBenchmarkTimeStr}! Streak safe (+5 XP) · Push for 100% ⚡`,
-        progressVal: 50
-      };
-    } else {
-      const leftStr = remainingHours > 0 ? `${formatHoursMinutes(remainingHours)} left` : 'day ended';
-      return {
-        statusClass: 'pacer-ontrack',
-        badgeText: 'On Track · Floor Safe 🛡️',
-        subline: `50% floor protected (+5 XP) · ${leftStr} to close 100% before ${endHourStr}`,
-        progressVal: 50
-      };
-    }
+    const statusClass = delta >= 5 ? 'pacer-ahead' : (delta >= -5 ? 'pacer-ontrack' : (delta >= -20 ? 'pacer-attention' : 'pacer-behind'));
+    const badgeText = delta >= 5 ? `+${delta}% Ahead` : (delta >= -5 ? 'On Track' : `${delta}% Behind`);
+    return {
+      statusClass,
+      badgeText,
+      sublineLeft: `50% floor locked 🛡️ (+5 XP) · Next: 75% by ${q75TimeStr}`,
+      sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
+      progressVal: 50,
+      delta
+    };
+  }
+
+  if (moveStage === 0.25) {
+    const statusClass = delta >= 5 ? 'pacer-ahead' : (delta >= -5 ? 'pacer-ontrack' : (delta >= -20 ? 'pacer-attention' : 'pacer-behind'));
+    const badgeText = delta >= 5 ? `+${delta}% Ahead` : (delta >= -5 ? 'On Track' : `${delta}% Behind`);
+    return {
+      statusClass,
+      badgeText,
+      sublineLeft: `25% logged (+2 XP) · Reach 50% floor before ${q50TimeStr}`,
+      sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
+      progressVal: 25,
+      delta
+    };
   }
 
   // moveStage === 0 (Off)
@@ -152,8 +201,10 @@ function getMoveAnchorPacer(moveStage, pacerData) {
     return {
       statusClass: 'pacer-neutral',
       badgeText: 'Missed',
-      subline: 'Anchor was not logged for this past date',
-      progressVal: 0
+      sublineLeft: 'Anchor was not logged for this past date',
+      sublineRight: 'Past Date',
+      progressVal: 0,
+      delta: 0
     };
   }
 
@@ -161,8 +212,10 @@ function getMoveAnchorPacer(moveStage, pacerData) {
     return {
       statusClass: 'pacer-neutral',
       badgeText: 'Pre-Day',
-      subline: `Day begins at ${pacerData.startHourStr} · 50% floor benchmark at ${floorBenchmarkTimeStr}`,
-      progressVal: 0
+      sublineLeft: `Day begins at ${startHourStr} · 25% target at ${q25TimeStr}`,
+      sublineRight: `Starts ${startHourStr}`,
+      progressVal: 0,
+      delta: 0
     };
   }
 
@@ -170,74 +223,93 @@ function getMoveAnchorPacer(moveStage, pacerData) {
     return {
       statusClass: 'pacer-behind',
       badgeText: 'Day Concluded',
-      subline: `Active window ended at ${endHourStr} · Rest & reset for tomorrow`,
-      progressVal: 0
+      sublineLeft: `Active window ended at ${endHourStr} · Rest & reset for tomorrow`,
+      sublineRight: 'Concluded',
+      progressVal: 0,
+      delta: -100
     };
   }
 
-  // Active day:
-  if (elapsedPct < 30) {
-    return {
-      statusClass: 'pacer-ontrack',
-      badgeText: 'Morning Pace',
-      subline: `On pace · 50% floor benchmark at ${floorBenchmarkTimeStr} (${formatHoursMinutes(remainingHours)} remaining)`,
-      progressVal: 0
-    };
+  // Active day (0% progress)
+  const statusClass = delta >= -5 ? 'pacer-ontrack' : (delta >= -25 ? 'pacer-attention' : 'pacer-behind');
+  const badgeText = delta >= -5 ? 'On Pace' : `${delta}% Behind`;
+  let sublineLeft = '';
+  if (elapsedPct < 25) {
+    sublineLeft = `On pace · 25% milestone at ${q25TimeStr} (Floor: 50% by ${q50TimeStr})`;
   } else if (elapsedPct < 50) {
-    const minsToFloor = Math.max(1, Math.round((pacerData.floorBenchmarkHour - pacerData.currentHourDecimal) * 60));
-    return {
-      statusClass: 'pacer-attention',
-      badgeText: 'Floor Approaching ⏳',
-      subline: `~${minsToFloor}m until ${floorBenchmarkTimeStr} · Secure 50% floor to protect streak (+5 XP)`,
-      progressVal: 0
-    };
-  } else if (elapsedPct < 80) {
-    return {
-      statusClass: 'pacer-behind',
-      badgeText: 'Behind Pace ⏳',
-      subline: `Past ${floorBenchmarkTimeStr} benchmark · Lock 50% floor soon (${formatHoursMinutes(remainingHours)} left until ${endHourStr})`,
-      progressVal: 0
-    };
+    sublineLeft = `Past ${q25TimeStr} · Secure 50% floor (+5 XP) before ${q50TimeStr}`;
+  } else if (elapsedPct < 75) {
+    sublineLeft = `Past ${q50TimeStr} floor · Lock 50% floor soon to protect streak!`;
   } else {
-    return {
-      statusClass: 'pacer-behind',
-      badgeText: 'Evening Crunch 🚨',
-      subline: `Only ${formatHoursMinutes(remainingHours)} left until ${endHourStr} · Log 50% floor to save streak!`,
-      progressVal: 0
-    };
+    sublineLeft = `Evening crunch · Only ${formatHoursMinutes(remainingHours)} left to defend streak!`;
   }
+
+  return {
+    statusClass,
+    badgeText,
+    sublineLeft,
+    sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta}%)`,
+    progressVal: 0,
+    delta
+  };
 }
 window.getMoveAnchorPacer = getMoveAnchorPacer;
 
 function getStandRingPacer(standStage, pacerData) {
-  const { dayPhase, elapsedPct, remainingHours, totalWindowHours, isToday, isPastDay, endHourStr, startHourStr } = pacerData;
-  const maxBuffer = totalWindowHours - 12; // 2h buffer on weekdays (14h), 1h buffer on weekends (13h)
+  const { dayPhase, elapsedPct, remainingHours, q25TimeStr, q50TimeStr, q75TimeStr, q100TimeStr, isToday, isPastDay, endHourStr, startHourStr, targetPct } = pacerData;
+
+  // Stand stage: 0 = Off (0h), 0.25 = 25% (3h), 0.5 = 50% Floor (6h), 0.75 = 75% (9h), 1 = 100% Closed (12h)
+  const progressVal = Math.round((standStage || 0) * 100);
+  const delta = Math.round(progressVal - targetPct);
 
   if (standStage === 1) {
     return {
       statusClass: 'pacer-ahead',
-      badgeText: 'Ring Closed ✨',
-      subline: '12/12 stand hours completed · Stand ring fully closed ⚡',
-      progressVal: 100
+      badgeText: '12/12 Closed ✨',
+      sublineLeft: '12/12 stand hours completed · Stand ring fully closed ⚡',
+      sublineRight: '<strong>Complete</strong>',
+      progressVal: 100,
+      delta: 0
+    };
+  }
+
+  if (standStage === 0.75) {
+    const statusClass = delta >= 5 ? 'pacer-ahead' : (delta >= -5 ? 'pacer-ontrack' : (delta >= -20 ? 'pacer-attention' : 'pacer-behind'));
+    const badgeText = delta >= 5 ? `+${delta}% Ahead` : (delta >= -5 ? 'On Track' : `${delta}% Behind`);
+    return {
+      statusClass,
+      badgeText,
+      sublineLeft: `9 stands logged (+8 XP) · 3 more to close 12/12 before ${q100TimeStr}`,
+      sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
+      progressVal: 75,
+      delta
     };
   }
 
   if (standStage === 0.5) {
-    if (elapsedPct < 50) {
-      return {
-        statusClass: 'pacer-ahead',
-        badgeText: 'Ahead · Floor Safe 🛡️',
-        subline: `6+ stands logged early! 🛡️ · On track for 12/12 (${formatHoursMinutes(remainingHours)} left)`,
-        progressVal: 50
-      };
-    } else {
-      return {
-        statusClass: 'pacer-ontrack',
-        badgeText: 'On Track · Floor Safe 🛡️',
-        subline: `50% floor (6 stands) locked · ${formatHoursMinutes(remainingHours)} to close full ring`,
-        progressVal: 50
-      };
-    }
+    const statusClass = delta >= 5 ? 'pacer-ahead' : (delta >= -5 ? 'pacer-ontrack' : (delta >= -20 ? 'pacer-attention' : 'pacer-behind'));
+    const badgeText = delta >= 5 ? `+${delta}% Ahead` : (delta >= -5 ? 'On Track' : `${delta}% Behind`);
+    return {
+      statusClass,
+      badgeText,
+      sublineLeft: `6 stands floor locked 🛡️ (+5 XP) · Next: 9 stands by ${q75TimeStr}`,
+      sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
+      progressVal: 50,
+      delta
+    };
+  }
+
+  if (standStage === 0.25) {
+    const statusClass = delta >= 5 ? 'pacer-ahead' : (delta >= -5 ? 'pacer-ontrack' : (delta >= -20 ? 'pacer-attention' : 'pacer-behind'));
+    const badgeText = delta >= 5 ? `+${delta}% Ahead` : (delta >= -5 ? 'On Track' : `${delta}% Behind`);
+    return {
+      statusClass,
+      badgeText,
+      sublineLeft: `3 stands logged (+2 XP) · Reach 6-stand floor before ${q50TimeStr}`,
+      sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta >= 0 ? `+${delta}%` : `${delta}%`})`,
+      progressVal: 25,
+      delta
+    };
   }
 
   // standStage === 0 (Off)
@@ -245,8 +317,10 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass: 'pacer-neutral',
       badgeText: 'Missed',
-      subline: 'Stand ring was not logged for this past date',
-      progressVal: 0
+      sublineLeft: 'Stand ring was not logged for this past date',
+      sublineRight: 'Past Date',
+      progressVal: 0,
+      delta: 0
     };
   }
 
@@ -254,8 +328,10 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass: 'pacer-neutral',
       badgeText: 'Pre-Day',
-      subline: `Day begins at ${startHourStr} · 12 stand hours target (${maxBuffer}h buffer window)`,
-      progressVal: 0
+      sublineLeft: `Day begins at ${startHourStr} · Target 3 stands by ${q25TimeStr}`,
+      sublineRight: `Starts ${startHourStr}`,
+      progressVal: 0,
+      delta: 0
     };
   }
 
@@ -263,35 +339,35 @@ function getStandRingPacer(standStage, pacerData) {
     return {
       statusClass: 'pacer-behind',
       badgeText: 'Day Concluded',
-      subline: `Active window ended at ${endHourStr} · Rest & reset for tomorrow`,
-      progressVal: 0
+      sublineLeft: `Active window ended at ${endHourStr} · Rest & reset for tomorrow`,
+      sublineRight: 'Concluded',
+      progressVal: 0,
+      delta: -100
     };
   }
 
-  // Active day:
-  const remainingHoursInt = Math.floor(remainingHours);
-  if (remainingHoursInt >= 12) {
-    return {
-      statusClass: 'pacer-ontrack',
-      badgeText: 'On Pace',
-      subline: `${remainingHoursInt}h active remaining · Ample time to close full 12/12 stand ring`,
-      progressVal: 0
-    };
-  } else if (remainingHoursInt >= 6) {
-    return {
-      statusClass: 'pacer-attention',
-      badgeText: 'Floor Feasible ⏳',
-      subline: `${remainingHoursInt}h left until ${endHourStr} · Full ring tight, aim for 6-stand floor (+5 XP)`,
-      progressVal: 0
-    };
+  // Active day (0% progress)
+  const statusClass = delta >= -5 ? 'pacer-ontrack' : (delta >= -25 ? 'pacer-attention' : 'pacer-behind');
+  const badgeText = delta >= -5 ? 'On Pace' : `${delta}% Behind`;
+  let sublineLeft = '';
+  if (elapsedPct < 25) {
+    sublineLeft = `On pace · 3 stands target by ${q25TimeStr} (Floor: 6 by ${q50TimeStr})`;
+  } else if (elapsedPct < 50) {
+    sublineLeft = `Past ${q25TimeStr} · Stand each hour to reach 6-stand floor by ${q50TimeStr}`;
+  } else if (elapsedPct < 75) {
+    sublineLeft = `Past ${q50TimeStr} floor · Lock 6 stands now to protect streak!`;
   } else {
-    return {
-      statusClass: 'pacer-behind',
-      badgeText: 'Low Buffer 🚨',
-      subline: `Only ${formatHoursMinutes(remainingHours)} left · Stand now each hour to protect streak!`,
-      progressVal: 0
-    };
+    sublineLeft = `Low buffer · Only ${formatHoursMinutes(remainingHours)} left · Stand now to save streak!`;
   }
+
+  return {
+    statusClass,
+    badgeText,
+    sublineLeft,
+    sublineRight: `<strong>Target: ${targetPct}%</strong> (${delta}%)`,
+    progressVal: 0,
+    delta
+  };
 }
 window.getStandRingPacer = getStandRingPacer;
 
@@ -336,9 +412,9 @@ function renderDailySheet() {
   const standId = standHabit ? standHabit.id : 'h-stand';
 
   const rawMove = dayHabitsState[moveId];
-  const moveStage = (rawMove === 1 || rawMove === true) ? 1 : (rawMove === 0.5 ? 0.5 : 0);
+  const moveStage = (rawMove === 1 || rawMove === true) ? 1 : (rawMove === 0.75 ? 0.75 : (rawMove === 0.5 ? 0.5 : (rawMove === 0.25 ? 0.25 : 0)));
   const rawStand = dayHabitsState[standId];
-  const standStage = (rawStand === 1 || rawStand === true) ? 1 : (rawStand === 0.5 ? 0.5 : 0);
+  const standStage = (rawStand === 1 || rawStand === true) ? 1 : (rawStand === 0.75 ? 0.75 : (rawStand === 0.5 ? 0.5 : (rawStand === 0.25 ? 0.25 : 0)));
   const isMoveDone = moveStage > 0;
   const isStandDone = standStage > 0;
 
@@ -601,10 +677,19 @@ function renderDailySheet() {
               </div>
               <div class="day-pacer-track">
                 <div class="day-pacer-fill" style="width: ${pacerData.elapsedPct}%;"></div>
-                <div class="day-pacer-marker marker-floor" style="left: 50%;" title="50% Floor Benchmark (${pacerData.floorBenchmarkTimeStr})"></div>
+                <div class="day-pacer-marker marker-25" style="left: 25%;" title="25% Milestone (${pacerData.q25TimeStr})"></div>
+                <div class="day-pacer-marker marker-floor" style="left: 50%;" title="50% Floor Benchmark (${pacerData.q50TimeStr})"></div>
+                <div class="day-pacer-marker marker-75" style="left: 75%;" title="75% Milestone (${pacerData.q75TimeStr})"></div>
                 ${pacerData.dayPhase === 'active' ? `
                   <div class="day-pacer-needle" style="left: ${pacerData.elapsedPct}%;" title="Now (${Math.round(pacerData.elapsedPct)}% of active day)"></div>
                 ` : ''}
+              </div>
+              <div class="day-pacer-quartiles-legend">
+                <span>Start: ${pacerData.startHourStr}</span>
+                <span>25%: ${pacerData.q25TimeStr}</span>
+                <span class="legend-floor">50% Floor: ${pacerData.q50TimeStr}</span>
+                <span>75%: ${pacerData.q75TimeStr}</span>
+                <span>100%: ${pacerData.endHourStr}</span>
               </div>
             </div>
 
@@ -618,19 +703,32 @@ function renderDailySheet() {
                 <button type="button" class="mockup-seg-btn seg-off ${moveStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">
                   😴 Off
                 </button>
+                <button type="button" class="mockup-seg-btn seg-25 ${moveStage === 0.25 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.25, '${activeTrackingDate}')">
+                  🌱 25%
+                </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${moveStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">
                   🛡️ 50%
+                </button>
+                <button type="button" class="mockup-seg-btn seg-75 ${moveStage === 0.75 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.75, '${activeTrackingDate}')">
+                  🌿 75%
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${moveStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">
                   ⚡ 100%
                 </button>
               </div>
-              <div class="anchor-pacer-footer">
-                <div class="anchor-pacer-gauge-line">
-                  <div class="pacer-gauge-fill" style="width: ${movePacer.progressVal}%;"></div>
-                  ${pacerData.dayPhase === 'active' ? `<div class="pacer-gauge-needle" style="left: ${pacerData.elapsedPct}%;" title="Day Pace: ${Math.round(pacerData.elapsedPct)}%"></div>` : ''}
+              <div class="anchor-dual-track-wrap">
+                <div class="anchor-dual-bar-container">
+                  <div class="anchor-ghost-target-fill" style="width: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>
+                  <div class="anchor-actual-progress-fill" style="width: ${movePacer.progressVal}%;"></div>
+                  <div class="anchor-notch-marker notch-25" style="left: 25%;" title="25% Milestone (${pacerData.q25TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-50" style="left: 50%;" title="50% Floor Benchmark (${pacerData.q50TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-75" style="left: 75%;" title="75% Milestone (${pacerData.q75TimeStr})"></div>
+                  ${pacerData.dayPhase === 'active' ? `<div class="anchor-target-needle" style="left: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>` : ''}
                 </div>
-                <div class="anchor-pacer-subtext">${movePacer.subline}</div>
+                <div class="anchor-dual-subline">
+                  <span>${movePacer.sublineLeft}</span>
+                  <span>${movePacer.sublineRight}</span>
+                </div>
               </div>
             </div>
 
@@ -644,19 +742,32 @@ function renderDailySheet() {
                 <button type="button" class="mockup-seg-btn seg-off ${standStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">
                   😴 Off
                 </button>
+                <button type="button" class="mockup-seg-btn seg-25 ${standStage === 0.25 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.25, '${activeTrackingDate}')">
+                  🌱 25% (3h)
+                </button>
                 <button type="button" class="mockup-seg-btn seg-floor ${standStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">
-                  🛡️ 50%
+                  🛡️ 50% (6h)
+                </button>
+                <button type="button" class="mockup-seg-btn seg-75 ${standStage === 0.75 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.75, '${activeTrackingDate}')">
+                  🌿 75% (9h)
                 </button>
                 <button type="button" class="mockup-seg-btn seg-closed ${standStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">
-                  ⚡ 100%
+                  ⚡ 100% (12h)
                 </button>
               </div>
-              <div class="anchor-pacer-footer">
-                <div class="anchor-pacer-gauge-line">
-                  <div class="pacer-gauge-fill" style="width: ${standPacer.progressVal}%;"></div>
-                  ${pacerData.dayPhase === 'active' ? `<div class="pacer-gauge-needle" style="left: ${pacerData.elapsedPct}%;" title="Day Pace: ${Math.round(pacerData.elapsedPct)}%"></div>` : ''}
+              <div class="anchor-dual-track-wrap">
+                <div class="anchor-dual-bar-container">
+                  <div class="anchor-ghost-target-fill" style="width: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>
+                  <div class="anchor-actual-progress-fill" style="width: ${standPacer.progressVal}%;"></div>
+                  <div class="anchor-notch-marker notch-25" style="left: 25%;" title="25% Milestone (${pacerData.q25TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-50" style="left: 50%;" title="50% Floor Benchmark (${pacerData.q50TimeStr})"></div>
+                  <div class="anchor-notch-marker notch-75" style="left: 75%;" title="75% Milestone (${pacerData.q75TimeStr})"></div>
+                  ${pacerData.dayPhase === 'active' ? `<div class="anchor-target-needle" style="left: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>` : ''}
                 </div>
-                <div class="anchor-pacer-subtext">${standPacer.subline}</div>
+                <div class="anchor-dual-subline">
+                  <span>${standPacer.sublineLeft}</span>
+                  <span>${standPacer.sublineRight}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1540,10 +1651,14 @@ function setAnchorStageAction(habitId, stage, dateStr = activeTrackingDate) {
       triggerConfetti();
       showToast(`👑 Anchors 100% Closed! Sprout unlocked Supreme Legend! (+10 XP)`);
     } else {
-      showToast(`✓ "${hName}" 100% Closed (+10 XP)`);
+      showToast(`⚡ "${hName}" 100% Closed (+10 XP)`);
     }
+  } else if (nextStage === 0.75) {
+    showToast(`🌿 "${hName}" 75% Strong Momentum (+8 XP)`);
   } else if (nextStage === 0.5) {
     showToast(`🛡️ "${hName}" 50% Floor Defended (+5 XP, streak protected)`);
+  } else if (nextStage === 0.25) {
+    showToast(`🌱 "${hName}" 25% Activated (+2 XP)`);
   } else {
     showToast(`"${hName}" set to Off`);
   }
