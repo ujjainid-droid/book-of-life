@@ -925,53 +925,238 @@
   color: var(--text-muted);
 }
 
-/* Historical Milestones Progression */
-.finance-milestones-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 8px;
-}
-
-.finance-milestone-chip {
+/* --------------------------------------------------------------------------
+   Historical Net Worth Progression: Interactive Sparkline & Trajectory Curve
+   -------------------------------------------------------------------------- */
+.finance-sparkline-card {
   background: var(--bg-card, #FFFFFF);
-  border: 1px solid var(--border-color, #E2E8F0);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  border-radius: var(--radius-lg, 14px);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  text-align: center;
+  gap: 14px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
-[data-theme="dark"] .finance-milestone-chip {
+[data-theme="dark"] .finance-sparkline-card {
   background: var(--bg-surface, #1E293B);
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(124, 58, 237, 0.3);
 }
 
-.finance-milestone-chip.active {
-  border-color: #0D9488;
-  background: rgba(13, 148, 136, 0.06);
+.finance-sparkline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.finance-milestone-date {
-  font-size: 0.68rem;
+.finance-sparkline-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.finance-sparkline-title {
+  font-size: 0.88rem;
   font-weight: 700;
-  text-transform: uppercase;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.finance-sparkline-sub {
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 
-.finance-milestone-nw {
-  font-family: var(--font-mono, "JetBrains Mono", monospace);
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: var(--text-primary);
+.finance-sparkline-summary {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
 }
 
-.finance-milestone-delta {
+.finance-sparkline-hero-val {
   font-family: var(--font-mono, "JetBrains Mono", monospace);
-  font-size: 0.68rem;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #7C3AED;
+  line-height: 1;
+}
+
+[data-theme="dark"] .finance-sparkline-hero-val {
+  color: #A78BFA;
+}
+
+.finance-sparkline-gain-badge {
+  font-size: 0.72rem;
   font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(13, 148, 136, 0.1);
   color: #0D9488;
+  border: 1px solid rgba(13, 148, 136, 0.22);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .finance-sparkline-gain-badge {
+  background: rgba(13, 148, 136, 0.2);
+  color: #2DD4BF;
+  border-color: rgba(13, 148, 136, 0.38);
+}
+
+.finance-sparkline-svg-wrap {
+  width: 100%;
+  height: 95px;
+  position: relative;
+  overflow: visible;
+}
+
+.finance-sparkline-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.finance-sparkline-knot {
+  cursor: pointer;
+  transition: r 0.15s ease, stroke-width 0.15s ease;
+}
+
+.finance-sparkline-knot:hover {
+  r: 6.5;
+  stroke-width: 3.5;
+}
+
+.finance-sparkline-labels-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light, #F1F5F9);
+}
+
+@media (max-width: 768px) {
+  .finance-sparkline-labels-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .finance-sparkline-labels-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+[data-theme="dark"] .finance-sparkline-labels-row {
+  border-top-color: rgba(255, 255, 255, 0.06);
+}
+
+.finance-sparkline-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.finance-sparkline-col:hover {
+  background: rgba(124, 58, 237, 0.04);
+  border-color: rgba(124, 58, 237, 0.18);
+}
+
+[data-theme="dark"] .finance-sparkline-col:hover {
+  background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.3);
+}
+
+.finance-sparkline-col.current {
+  background: rgba(124, 58, 237, 0.05);
+  border-color: rgba(124, 58, 237, 0.28);
+}
+
+[data-theme="dark"] .finance-sparkline-col.current {
+  background: rgba(124, 58, 237, 0.18);
+  border-color: rgba(124, 58, 237, 0.4);
+}
+
+.finance-sparkline-col-date {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.finance-sparkline-col.current .finance-sparkline-col-date {
+  color: #7C3AED;
+}
+
+[data-theme="dark"] .finance-sparkline-col.current .finance-sparkline-col-date {
+  color: #A78BFA;
+}
+
+.finance-sparkline-col-val {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.finance-sparkline-col.current .finance-sparkline-col-val {
+  color: #7C3AED;
+}
+
+[data-theme="dark"] .finance-sparkline-col.current .finance-sparkline-col-val {
+  color: #A78BFA;
+}
+
+.finance-sparkline-col-delta {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.66rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.finance-sparkline-col-delta.pos {
+  background: rgba(13, 148, 136, 0.08);
+  color: #0D9488;
+}
+
+[data-theme="dark"] .finance-sparkline-col-delta.pos {
+  background: rgba(13, 148, 136, 0.18);
+  color: #2DD4BF;
+}
+
+.finance-sparkline-col-delta.neg {
+  background: rgba(225, 29, 72, 0.08);
+  color: #E11D48;
+}
+
+[data-theme="dark"] .finance-sparkline-col-delta.neg {
+  background: rgba(225, 29, 72, 0.18);
+  color: #FDA4AF;
+}
+
+.finance-sparkline-col-delta.base {
+  background: var(--bg-surface, #F1F5F9);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .finance-sparkline-col-delta.base {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
 }
 
 [data-theme="dark"] .finance-milestone-delta {

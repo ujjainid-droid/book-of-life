@@ -1447,6 +1447,139 @@ function renderFinanceAnnualCadenceBar() {
   `;
 }
 
+/* --------------------------------------------------------------------------
+   Historical Net Worth Progression: Interactive Sparkline & Trajectory Curve
+   -------------------------------------------------------------------------- */
+function renderFinanceMilestonesSparkline(milestones) {
+  if (!milestones || milestones.length === 0) return '';
+
+  const firstM = milestones[0];
+  const lastM = milestones[milestones.length - 1];
+  const totalGain = lastM.netWorth - firstM.netWorth;
+  const totalGainPct = firstM.netWorth > 0 ? ((totalGain / firstM.netWorth) * 100).toFixed(1) : '0.0';
+  const totalGainSign = totalGain >= 0 ? '+' : '';
+
+  // Calculate coordinates for SVG
+  const values = milestones.map(m => m.netWorth);
+  const minVal = Math.min(...values);
+  const maxVal = Math.max(...values);
+  const valRange = maxVal - minVal || 1;
+  const floorVal = minVal - valRange * 0.12;
+  const ceilVal = maxVal + valRange * 0.10;
+  const spanVal = ceilVal - floorVal || 1;
+
+  const svgWidth = 700;
+  const xPad = 35;
+  const yTop = 14;
+  const yBottom = 78;
+
+  const points = milestones.map((m, idx) => {
+    const x = xPad + (idx / (milestones.length - 1)) * (svgWidth - 2 * xPad);
+    const norm = (m.netWorth - floorVal) / spanVal;
+    const y = yBottom - norm * (yBottom - yTop);
+    return { x, y, milestone: m, idx };
+  });
+
+  // Build smooth curve path
+  let pathD = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i];
+    const p1 = points[i + 1];
+    const cpx = (p0.x + p1.x) / 2;
+    pathD += ` C ${cpx.toFixed(1)} ${p0.y.toFixed(1)}, ${cpx.toFixed(1)} ${p1.y.toFixed(1)}, ${p1.x.toFixed(1)} ${p1.y.toFixed(1)}`;
+  }
+
+  // Area fill path
+  const areaD = `${pathD} L ${points[points.length - 1].x.toFixed(1)} 90 L ${points[0].x.toFixed(1)} 90 Z`;
+
+  // Format date helper (e.g. 2026-05-02 -> May '26, 2026-10-11 -> Oct 11)
+  const formatShortDate = (dateStr, isLatest) => {
+    if (isLatest) return 'Oct 11 (Now)';
+    try {
+      const parts = dateStr.split('-');
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const mIdx = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      if (day > 1 && day < 28) return `${monthNames[mIdx]} ${day}`;
+      return `${monthNames[mIdx]} '${parts[0].slice(2)}`;
+    } catch (e) {
+      return dateStr;
+    }
+  };
+
+  return `
+    <div class="finance-sparkline-card">
+      <div class="finance-sparkline-header">
+        <div class="finance-sparkline-title-group">
+          <h3 class="finance-sparkline-title">
+            <i data-lucide="trending-up" style="width: 17px; height: 17px; color: #7C3AED;"></i>
+            <span>Historical Net Worth Progression</span>
+          </h3>
+          <span class="finance-sparkline-sub">6-Month continuous compounding trajectory &bull; Verified from Monarch Balances export</span>
+        </div>
+        <div class="finance-sparkline-summary">
+          <span class="finance-sparkline-hero-val">$${Math.round(lastM.netWorth).toLocaleString()}</span>
+          <span class="finance-sparkline-gain-badge">${totalGainSign}$${Math.round(totalGain).toLocaleString()} (${totalGainSign}${totalGainPct}%)</span>
+        </div>
+      </div>
+
+      <!-- Interactive SVG Sparkline -->
+      <div class="finance-sparkline-svg-wrap">
+        <svg class="finance-sparkline-svg" viewBox="0 0 700 90" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="nwCurveGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#7C3AED" stop-opacity="0.22" />
+              <stop offset="100%" stop-color="#7C3AED" stop-opacity="0.00" />
+            </linearGradient>
+          </defs>
+          <!-- Gradient area -->
+          <path d="${areaD}" fill="url(#nwCurveGradient)" />
+          <!-- Smooth line -->
+          <path d="${pathD}" fill="none" stroke="#7C3AED" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+          <!-- Knots -->
+          ${points.map((p, idx) => {
+            const isLatest = idx === points.length - 1;
+            const r = isLatest ? '5.5' : '4';
+            const strokeW = isLatest ? '2.5' : '2';
+            const fill = isLatest ? '#7C3AED' : '#FFFFFF';
+            const stroke = isLatest ? '#FFFFFF' : '#7C3AED';
+            return `
+              <circle class="finance-sparkline-knot" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r}"
+                      fill="${fill}" stroke="${stroke}" stroke-width="${strokeW}"
+                      title="${p.milestone.date}: $${(p.milestone.netWorth / 1e6).toFixed(2)}M" />
+            `;
+          }).join('')}
+        </svg>
+      </div>
+
+      <!-- 7 Milestone Columns -->
+      <div class="finance-sparkline-labels-row">
+        ${milestones.map((m, idx) => {
+          const prev = idx > 0 ? milestones[idx - 1] : null;
+          const delta = prev ? (m.netWorth - prev.netWorth) : 0;
+          const deltaSign = delta >= 0 ? '+' : '';
+          const isLatest = idx === milestones.length - 1;
+          const dateLabel = formatShortDate(m.date, isLatest);
+          let deltaClass = 'base';
+          let deltaText = 'Baseline';
+          if (prev) {
+            deltaClass = delta >= 0 ? 'pos' : 'neg';
+            deltaText = `${deltaSign}$${Math.round(delta / 1e3)}k`;
+          }
+
+          return `
+            <div class="finance-sparkline-col ${isLatest ? 'current' : ''}">
+              <span class="finance-sparkline-col-date">${dateLabel}</span>
+              <span class="finance-sparkline-col-val">$${(m.netWorth / 1e6).toFixed(2)}M</span>
+              <span class="finance-sparkline-col-delta ${deltaClass}">${deltaText}</span>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
 /* ==========================================================================
    Sub-View 3: Net Worth Horizon, Runway & Quarterly Ledger
    ========================================================================== */
@@ -1757,42 +1890,8 @@ function renderFinanceRunway() {
         </div>
       </div>
 
-      <!-- 5. Historical Milestones Trajectory (May - October 2026) -->
-      ${milestones.length > 0 ? `
-        <div class="finance-section-box">
-          <div class="finance-section-header">
-            <div>
-              <h3 class="finance-section-title">
-                <i data-lucide="activity" style="width: 18px; height: 18px; color: #0D9488;"></i>
-                <span>Historical Net Worth Progression</span>
-              </h3>
-              <span style="font-size: 0.76rem; color: var(--text-muted);">Monthly snapshot cadence verified from Monarch Balances export</span>
-            </div>
-          </div>
-
-          <div class="finance-milestones-row">
-            ${milestones.map((m, idx) => {
-              const prev = idx > 0 ? milestones[idx - 1] : null;
-              const delta = prev ? (m.netWorth - prev.netWorth) : 0;
-              const deltaSign = delta >= 0 ? '+' : '';
-              const isLatest = idx === milestones.length - 1;
-              return `
-                <div class="finance-milestone-chip ${isLatest ? 'active' : ''}">
-                  <span class="finance-milestone-date">${m.date}</span>
-                  <span class="finance-milestone-nw">$${(m.netWorth / 1e6).toFixed(2)}M</span>
-                  ${prev ? `
-                    <span class="finance-milestone-delta" style="color: ${delta >= 0 ? '#0D9488' : '#E11D48'};">
-                      ${deltaSign}$${Math.round(delta / 1e3)}k
-                    </span>
-                  ` : `
-                    <span class="finance-milestone-delta" style="color: var(--text-muted);">Baseline</span>
-                  `}
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      ` : ''}
+      <!-- 5. Historical Net Worth Progression (Interactive Sparkline & Trajectory Curve) -->
+      ${renderFinanceMilestonesSparkline(milestones)}
 
       <!-- 6. Active Accounts Ledger & Class Filter Strip -->
       <div class="finance-section-box">
