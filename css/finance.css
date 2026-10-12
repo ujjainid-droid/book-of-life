@@ -3015,3 +3015,647 @@
   border-color: rgba(45, 212, 191, 0.25);
 }
 
+/* ==========================================================================
+   Google Sheet Card ROI Matrix & Transaction Matcher Styles
+   ========================================================================== */
+.card-roi-sheet-card {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-lg, 16px);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+[data-theme="dark"] .card-roi-sheet-card {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-roi-sheet-card.theme-violet {
+  border-top: 4px solid #7C3AED;
+}
+.card-roi-sheet-card.theme-indigo {
+  border-top: 4px solid #4F46E5;
+}
+.card-roi-sheet-card.theme-sky {
+  border-top: 4px solid #0284C7;
+}
+.card-roi-sheet-card.theme-teal {
+  border-top: 4px solid #0D9488;
+}
+
+.card-roi-sheet-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.card-roi-sheet-card-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-roi-sheet-card-title {
+  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.card-roi-sheet-card-meta {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-roi-sheet-card-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.card-roi-sheet-kpi-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 6px 12px;
+  background: var(--bg-subtle, #F8FAFC);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: 10px;
+}
+
+[data-theme="dark"] .card-roi-sheet-kpi-chip {
+  background: rgba(15, 23, 42, 0.5);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-sheet-kpi-val {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.card-roi-sheet-kpi-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+/* Sheet Table Architecture */
+.card-roi-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-card, #FFFFFF);
+}
+
+[data-theme="dark"] .card-roi-table-wrap {
+  background: rgba(15, 23, 42, 0.35);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.78rem;
+  min-width: 820px;
+}
+
+.card-roi-table thead th {
+  background: var(--bg-subtle, #F8FAFC);
+  padding: 10px 14px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .card-roi-table thead th {
+  background: rgba(15, 23, 42, 0.6);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-group-row td {
+  background: rgba(124, 58, 237, 0.04);
+  padding: 7px 14px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #6D28D9;
+  letter-spacing: 0.03em;
+  border-top: 1px solid var(--border-color, #E2E8F0);
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+}
+
+[data-theme="dark"] .card-roi-group-row td {
+  background: rgba(124, 58, 237, 0.12);
+  color: #A78BFA;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-row {
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+  transition: background 0.15s ease;
+}
+
+[data-theme="dark"] .card-roi-row {
+  border-bottom-color: rgba(255, 255, 255, 0.06);
+}
+
+.card-roi-row:hover {
+  background: var(--bg-subtle, #F8FAFC);
+}
+
+[data-theme="dark"] .card-roi-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.card-roi-row.active-benefit {
+  background: rgba(13, 148, 136, 0.02);
+}
+
+[data-theme="dark"] .card-roi-row.active-benefit {
+  background: rgba(13, 148, 136, 0.05);
+}
+
+.card-roi-td {
+  padding: 10px 14px;
+  vertical-align: middle;
+}
+
+.card-roi-cat-pill {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  background: var(--bg-subtle, #F1F5F9);
+  color: var(--text-secondary, #475569);
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .card-roi-cat-pill {
+  background: rgba(255, 255, 255, 0.08);
+  color: #94A3B8;
+}
+
+.card-roi-perk-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.3;
+}
+
+.card-roi-perk-notes {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.card-roi-face-val {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Month Strip (12 Pills) */
+.card-roi-month-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: nowrap;
+}
+
+.card-roi-month-pill {
+  width: 25px;
+  height: 25px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #CBD5E1);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-secondary, #64748B);
+  font-size: 0.68rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+[data-theme="dark"] .card-roi-month-pill {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+}
+
+.card-roi-month-pill:hover {
+  transform: translateY(-1px);
+  border-color: #0D9488;
+  color: #0D9488;
+}
+
+.card-roi-month-pill.active {
+  background: #0D9488;
+  border-color: #0D9488;
+  color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.3);
+  font-weight: 700;
+}
+
+/* Quarter Strip (Q1 - Q4) */
+.card-roi-quarter-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-roi-quarter-pill {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #CBD5E1);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-secondary, #64748B);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .card-roi-quarter-pill {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+}
+
+.card-roi-quarter-pill:hover {
+  border-color: #0D9488;
+  color: #0D9488;
+}
+
+.card-roi-quarter-pill.active {
+  background: #0D9488;
+  border-color: #0D9488;
+  color: #FFFFFF;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.3);
+}
+
+/* Semi-Annual Strip (H1 / H2) */
+.card-roi-semi-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.card-roi-semi-pill {
+  padding: 4px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #CBD5E1);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-secondary, #64748B);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .card-roi-semi-pill {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+}
+
+.card-roi-semi-pill:hover {
+  border-color: #0D9488;
+  color: #0D9488;
+}
+
+.card-roi-semi-pill.active {
+  background: #0D9488;
+  border-color: #0D9488;
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+/* Annual / Multi-Year / Milestone Toggle Pill */
+.card-roi-claim-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border-color, #CBD5E1);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .card-roi-claim-toggle {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.card-roi-claim-toggle:hover {
+  border-color: #0D9488;
+  color: #0D9488;
+}
+
+.card-roi-claim-toggle.claimed {
+  background: rgba(13, 148, 136, 0.12);
+  border-color: #0D9488;
+  color: #0D9488;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .card-roi-claim-toggle.claimed {
+  background: rgba(45, 212, 191, 0.15);
+  color: #2DD4BF;
+  border-color: #2DD4BF;
+}
+
+/* Total Saved Column */
+.card-roi-saved-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  white-space: nowrap;
+}
+
+.card-roi-saved-pill.has-savings {
+  background: rgba(13, 148, 136, 0.12);
+  color: #0D9488;
+}
+
+[data-theme="dark"] .card-roi-saved-pill.has-savings {
+  background: rgba(45, 212, 191, 0.15);
+  color: #2DD4BF;
+}
+
+/* Actions */
+.card-roi-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-card, #FFFFFF);
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+[data-theme="dark"] .card-roi-action-btn {
+  background: rgba(30, 41, 59, 0.6);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-action-btn:hover {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: #7C3AED;
+  color: #7C3AED;
+}
+
+.card-roi-action-btn.has-links {
+  background: rgba(13, 148, 136, 0.08);
+  border-color: rgba(13, 148, 136, 0.25);
+  color: #0D9488;
+}
+
+/* Table Footer Row */
+.card-roi-table-tfoot td {
+  background: var(--bg-subtle, #F8FAFC);
+  padding: 12px 14px;
+  font-size: 0.78rem;
+  border-top: 2px solid var(--border-color, #E2E8F0);
+}
+
+[data-theme="dark"] .card-roi-table-tfoot td {
+  background: rgba(15, 23, 42, 0.6);
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   Transaction Matcher & Manual Redemption Modal
+   ========================================================================== */
+.card-roi-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 16px;
+  animation: modalFadeIn 0.2s ease;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.card-roi-modal {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: var(--radius-lg, 16px);
+  width: 100%;
+  max-width: 680px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .card-roi-modal {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.card-roi-modal-header {
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--border-color, #E2E8F0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+[data-theme="dark"] .card-roi-modal-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-roi-modal-title {
+  font-family: var(--font-serif, "Newsreader", Georgia, serif);
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.card-roi-modal-tabs {
+  display: flex;
+  background: var(--bg-subtle, #F1F5F9);
+  padding: 4px;
+  border-radius: 10px;
+  margin: 14px 22px 0;
+  gap: 4px;
+}
+
+[data-theme="dark"] .card-roi-modal-tabs {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.card-roi-modal-tab-btn {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.card-roi-modal-tab-btn.active {
+  background: var(--bg-card, #FFFFFF);
+  color: #7C3AED;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .card-roi-modal-tab-btn.active {
+  background: var(--bg-surface, #1E293B);
+  color: #A78BFA;
+}
+
+.card-roi-modal-body {
+  padding: 18px 22px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-roi-tx-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color, #E2E8F0);
+  background: var(--bg-card, #FFFFFF);
+  gap: 12px;
+  transition: border-color 0.15s ease;
+}
+
+[data-theme="dark"] .card-roi-tx-item {
+  background: rgba(15, 23, 42, 0.35);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.card-roi-tx-item:hover {
+  border-color: #0D9488;
+}
+
+.card-roi-tx-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.card-roi-tx-merchant {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.card-roi-tx-meta {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.card-roi-tx-amount {
+  font-family: var(--font-mono, "JetBrains Mono", monospace);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  flex-shrink: 0;
+}
+
+.card-roi-tx-link-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid #0D9488;
+  background: rgba(13, 148, 136, 0.1);
+  color: #0D9488;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.card-roi-tx-link-btn:hover {
+  background: #0D9488;
+  color: #FFFFFF;
+}
+
+

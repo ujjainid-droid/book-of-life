@@ -2728,7 +2728,11 @@ class StorageManager {
 
   getFinanceCardsROI() {
     const fin = this.getFinanceData();
-    if (!Array.isArray(fin.cardsROI) || fin.cardsROI.length === 0) {
+    // Ensure data is synced with the rich Google Sheet schema if benefits are missing periods
+    const needsMigration = !Array.isArray(fin.cardsROI) || fin.cardsROI.length === 0 ||
+      (fin.cardsROI[0] && (!fin.cardsROI[0].benefits || !fin.cardsROI[0].benefits[0].periods));
+
+    if (needsMigration) {
       if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
         fin.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
         try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
@@ -2750,12 +2754,138 @@ class StorageManager {
     b.realized = !b.realized;
     if (b.realized && (b.realizedValue === undefined || b.realizedValue === 0)) {
       b.realizedValue = b.maxVal;
+      if (b.periods) {
+        Object.keys(b.periods).forEach(k => b.periods[k] = true);
+      }
     } else if (!b.realized) {
       b.realizedValue = 0;
+      if (b.periods) {
+        Object.keys(b.periods).forEach(k => b.periods[k] = false);
+      }
     }
     try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
     this.saveData();
     return b;
+  }
+
+  toggleFinanceCardPeriod(cardId, benefitId, periodKey) {
+    const fin = this.getFinanceData();
+    const cards = this.getFinanceCardsROI();
+    const card = cards.find(c => c.id === cardId);
+    if (!card || !Array.isArray(card.benefits)) return null;
+    const b = card.benefits.find(ben => ben.id === benefitId);
+    if (!b) return null;
+
+    if (!b.periods) b.periods = {};
+    b.periods[periodKey] = !b.periods[periodKey];
+
+    // Recalculate realizedValue based on trackType and period values
+    let calculated = 0;
+    if (b.trackType === 'monthly') {
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      months.forEach(m => {
+        if (b.periods[m]) {
+          const val = (b.periodValues && b.periodValues[m] !== undefined) ? b.periodValues[m] : (b.maxVal / 12);
+          calculated += val;
+        }
+      });
+      // Specific sheet match for Uber ($100 when Jan,Mar,Jun,Jul,Aug,Sep active)
+      if (b.id === 'amex-uber') {
+        const activeCount = months.filter(m => b.periods[m]).length;
+        if (activeCount === 6 && b.periods.Jan && b.periods.Mar && b.periods.Jun && b.periods.Jul && b.periods.Aug && b.periods.Sep) {
+          calculated = 100;
+        }
+      }
+    } else if (b.trackType === 'quarterly') {
+      const qKeys = Object.keys(b.periods);
+      qKeys.forEach(q => {
+        if (b.periods[q]) {
+          const val = (b.periodValues && b.periodValues[q] !== undefined) ? b.periodValues[q] : (b.maxVal / 4);
+          calculated += val;
+        }
+      });
+    } else if (b.trackType === 'semi-annual') {
+      ['H1', 'H2'].forEach(h => {
+        if (b.periods[h]) {
+          const val = (b.periodValues && b.periodValues[h] !== undefined) ? b.periodValues[h] : (b.maxVal / 2);
+          calculated += val;
+        }
+      });
+    } else if (b.trackType === 'annual' || b.trackType === 'multi-year') {
+      calculated = b.periods[periodKey] ? b.maxVal : 0;
+    } else if (b.trackType === 'status' || b.trackType === 'milestone') {
+      calculated = b.periods[periodKey] ? b.maxVal : 0;
+    }
+
+    // Add any manual logged redemptions
+    if (Array.isArray(b.redemptions) && b.redemptions.length > 0) {
+      const manualSum = b.redemptions.reduce((acc, r) => acc + (parseFloat(r.amount) || 0), 0);
+      calculated = Math.max(calculated, manualSum);
+    }
+
+    b.realizedValue = Math.round(calculated * 100) / 100;
+    b.realized = b.realizedValue > 0;
+
+    try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+    this.saveData();
+    return { card, benefit: b };
+  }
+
+  logFinanceCardRedemption(cardId, benefitId, redemption) {
+    const fin = this.getFinanceData();
+    const cards = this.getFinanceCardsROI();
+    const card = cards.find(c => c.id === cardId);
+    if (!card || !Array.isArray(card.benefits)) return null;
+    const b = card.benefits.find(ben => ben.id === benefitId);
+    if (!b) return null;
+
+    if (!Array.isArray(b.redemptions)) b.redemptions = [];
+    const newRedemption = {
+      id: 'red-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+      date: redemption.date || new Date().toISOString().split('T')[0],
+      amount: parseFloat(redemption.amount) || 0,
+      note: (redemption.note || '').trim(),
+      merchant: (redemption.merchant || '').trim(),
+      period: redemption.period || '',
+      txId: redemption.txId || null,
+      source: redemption.source || 'manual'
+    };
+
+    b.redemptions.unshift(newRedemption);
+
+    // If period was specified, toggle that period on
+    if (newRedemption.period && b.periods) {
+      b.periods[newRedemption.period] = true;
+    }
+
+    // Update realized value
+    b.realizedValue = (parseFloat(b.realizedValue) || 0) + newRedemption.amount;
+    b.realized = true;
+
+    try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+    this.saveData();
+    return newRedemption;
+  }
+
+  deleteFinanceCardRedemption(cardId, benefitId, redemptionId) {
+    const fin = this.getFinanceData();
+    const cards = this.getFinanceCardsROI();
+    const card = cards.find(c => c.id === cardId);
+    if (!card || !Array.isArray(card.benefits)) return null;
+    const b = card.benefits.find(ben => ben.id === benefitId);
+    if (!b || !Array.isArray(b.redemptions)) return null;
+
+    const removed = b.redemptions.find(r => r.id === redemptionId);
+    b.redemptions = b.redemptions.filter(r => r.id !== redemptionId);
+
+    if (removed) {
+      b.realizedValue = Math.max(0, (parseFloat(b.realizedValue) || 0) - (parseFloat(removed.amount) || 0));
+      b.realized = b.realizedValue > 0;
+    }
+
+    try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+    this.saveData();
+    return true;
   }
 
   updateFinanceCardBenefitValue(cardId, benefitId, value) {
