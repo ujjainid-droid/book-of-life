@@ -368,7 +368,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
   if (savingsIsMetOrExceeded) {
     savingsBadgeHtml = `<span class="finance-target-status-badge success">✓ +$${Math.round(savingsDiffAmt).toLocaleString()} surplus</span>`;
   } else if (actualSavingsAmt >= 0) {
-    savingsBadgeHtml = `<span class="finance-target-status-badge neutral">Gap: -$${Math.round(Math.abs(savingsDiffAmt)).toLocaleString()}</span>`;
+    savingsBadgeHtml = `<span class="finance-target-status-badge alert">Gap: -$${Math.round(Math.abs(savingsDiffAmt)).toLocaleString()}</span>`;
   } else {
     savingsBadgeHtml = `<span class="finance-target-status-badge alert">Deficit: -$${Math.round(Math.abs(actualSavingsAmt)).toLocaleString()}</span>`;
   }
@@ -410,11 +410,11 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
         </div>
 
         <!-- Savings Pill -->
-        <div class="finance-target-pill-card pillar-savings">
+        <div class="finance-target-pill-card pillar-savings ${!savingsIsMetOrExceeded ? 'gap-alert' : ''}">
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🌱 Savings (25% min)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${actualSavingsAmt >= 0 ? '#047857' : '#BE123C'};">
+              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#047857' : '#BE123C'};">
                 ${savingsPct >= 0 ? '' : '-'}${Math.abs(savingsPct)}%
               </span>
               <span class="finance-target-amount">

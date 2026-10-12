@@ -1665,6 +1665,10 @@
   border-left: 3px solid #10B981;
 }
 
+.finance-target-pill-card.pillar-savings.gap-alert {
+  border-left-color: #E11D48;
+}
+
 .finance-target-pill-left {
   display: flex;
   flex-direction: column;
