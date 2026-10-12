@@ -8410,11 +8410,271 @@ body.dark-mode .protocol-sample-btn {
   gap: 8px;
 }
 
+.anchor-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .anchor-label {
   font-size: 0.96rem;
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.01em;
+}
+
+/* Time-of-Day Goal Progress Pacers for Move & Stand */
+.anchors-day-pacer-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(139, 92, 246, 0.05);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 12px;
+  margin-bottom: 4px;
+}
+
+[data-theme="dark"] .anchors-day-pacer-bar {
+  background: rgba(139, 92, 246, 0.09);
+  border-color: rgba(139, 92, 246, 0.22);
+}
+
+.day-pacer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.day-pacer-schedule-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #6D28D9;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="dark"] .day-pacer-schedule-tag {
+  color: #C4B5FD;
+}
+
+.day-pacer-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8B5CF6;
+  box-shadow: 0 0 6px rgba(139, 92, 246, 0.6);
+  flex-shrink: 0;
+}
+
+.day-pacer-time-stat {
+  font-size: 0.74rem;
+  color: #64748B;
+  font-weight: 500;
+}
+
+[data-theme="dark"] .day-pacer-time-stat {
+  color: #94A3B8;
+}
+
+.day-pacer-time-stat strong {
+  color: var(--text-primary, #0F172A);
+  font-weight: 700;
+}
+
+[data-theme="dark"] .day-pacer-time-stat strong {
+  color: #F8FAFC;
+}
+
+.day-pacer-track {
+  position: relative;
+  height: 6px;
+  background: rgba(100, 116, 139, 0.12);
+  border-radius: 9999px;
+  overflow: visible;
+}
+
+[data-theme="dark"] .day-pacer-track {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.day-pacer-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #8B5CF6 0%, #0D9488 100%);
+  transition: width 0.3s ease;
+  max-width: 100%;
+}
+
+.day-pacer-marker {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 12px;
+  background: rgba(100, 116, 139, 0.4);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.day-pacer-marker.marker-floor {
+  background: #6D28D9;
+}
+
+[data-theme="dark"] .day-pacer-marker.marker-floor {
+  background: #A78BFA;
+}
+
+.day-pacer-needle {
+  position: absolute;
+  top: -4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #0D9488;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.5);
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
+  transition: left 0.3s ease;
+}
+
+[data-theme="dark"] .day-pacer-needle {
+  border-color: #0F172A;
+  box-shadow: 0 0 8px rgba(13, 148, 136, 0.7);
+}
+
+.anchor-pacer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  padding: 2.5px 8.5px;
+  border-radius: 9999px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.anchor-pacer-badge.pacer-ahead {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6D28D9;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+}
+
+[data-theme="dark"] .anchor-pacer-badge.pacer-ahead {
+  background: rgba(139, 92, 246, 0.22);
+  color: #C4B5FD;
+  border-color: rgba(167, 139, 250, 0.35);
+}
+
+.anchor-pacer-badge.pacer-ontrack {
+  background: rgba(13, 148, 136, 0.10);
+  color: #0F766E;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+[data-theme="dark"] .anchor-pacer-badge.pacer-ontrack {
+  background: rgba(13, 148, 136, 0.20);
+  color: #2DD4BF;
+  border-color: rgba(45, 212, 191, 0.32);
+}
+
+.anchor-pacer-badge.pacer-attention {
+  background: rgba(99, 102, 241, 0.10);
+  color: #4F46E5;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+}
+
+[data-theme="dark"] .anchor-pacer-badge.pacer-attention {
+  background: rgba(99, 102, 241, 0.20);
+  color: #A5B4FC;
+  border-color: rgba(165, 180, 252, 0.32);
+}
+
+.anchor-pacer-badge.pacer-behind {
+  background: rgba(225, 29, 72, 0.10);
+  color: #BE123C;
+  border: 1px solid rgba(225, 29, 72, 0.25);
+}
+
+[data-theme="dark"] .anchor-pacer-badge.pacer-behind {
+  background: rgba(225, 29, 72, 0.20);
+  color: #FDA4AF;
+  border-color: rgba(253, 164, 175, 0.32);
+}
+
+.anchor-pacer-badge.pacer-neutral {
+  background: rgba(100, 116, 139, 0.10);
+  color: #475569;
+  border: 1px solid rgba(100, 116, 139, 0.20);
+}
+
+[data-theme="dark"] .anchor-pacer-badge.pacer-neutral {
+  background: rgba(100, 116, 139, 0.20);
+  color: #94A3B8;
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.anchor-pacer-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 2px 2px 0 2px;
+}
+
+.anchor-pacer-gauge-line {
+  position: relative;
+  height: 4px;
+  background: rgba(100, 116, 139, 0.10);
+  border-radius: 9999px;
+  overflow: visible;
+}
+
+[data-theme="dark"] .anchor-pacer-gauge-line {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pacer-gauge-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #8B5CF6 0%, #0D9488 100%);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 100%;
+}
+
+.pacer-gauge-needle {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 10px;
+  background: #6D28D9;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: 0 0 4px rgba(109, 40, 217, 0.4);
+}
+
+[data-theme="dark"] .pacer-gauge-needle {
+  background: #C4B5FD;
+  box-shadow: 0 0 4px rgba(196, 181, 253, 0.6);
+}
+
+.anchor-pacer-subtext {
+  font-size: 0.74rem;
+  color: #64748B;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+[data-theme="dark"] .anchor-pacer-subtext {
+  color: #94A3B8;
 }
 
 /* Mockup Pill Track Container (Shallower & Sleeker) */

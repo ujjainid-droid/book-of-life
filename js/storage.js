@@ -223,6 +223,11 @@ class StorageManager {
       claimedRewards: [],
       // Quick Thoughts & Ideas Inbox
       quickThoughts: [],
+      // Time-of-Day Goal Progress Pacer Schedule (Weekdays 7am-9pm, Weekends 9am-10pm)
+      pacerSchedule: {
+        weekday: { start: 7, end: 21, label: 'Weekday · 7 AM – 9 PM' },
+        weekend: { start: 9, end: 22, label: 'Weekend · 9 AM – 10 PM' }
+      },
       // Currently Terrorizing active projects list
       activeTerrorizing: ['10k steps', 'Close rings'],
       // Cover Page: Unified Life Architecture & Focus Board (Now vs Later)
@@ -2074,6 +2079,29 @@ class StorageManager {
     this.data.energyMode = (mode === 'maint') ? 'maint' : 'power';
     this.saveData();
     return this.data.energyMode;
+  }
+
+  // --- Time-of-Day Goal Progress Pacers for Move & Stand ---
+  getPacerSchedule() {
+    if (!this.data.pacerSchedule || !this.data.pacerSchedule.weekday || !this.data.pacerSchedule.weekend) {
+      this.data.pacerSchedule = {
+        weekday: { start: 7, end: 21, label: 'Weekday · 7 AM – 9 PM' },
+        weekend: { start: 9, end: 22, label: 'Weekend · 9 AM – 10 PM' }
+      };
+      this.saveData();
+    }
+    return this.data.pacerSchedule;
+  }
+
+  setPacerSchedule(schedule) {
+    if (schedule && typeof schedule === 'object') {
+      this.data.pacerSchedule = {
+        weekday: schedule.weekday || { start: 7, end: 21, label: 'Weekday · 7 AM – 9 PM' },
+        weekend: schedule.weekend || { start: 9, end: 22, label: 'Weekend · 9 AM – 10 PM' }
+      };
+      this.saveData();
+    }
+    return this.data.pacerSchedule;
   }
 
   // --- Cover Page: Unified Life Architecture & Focus Board (Now vs. Later) ---
