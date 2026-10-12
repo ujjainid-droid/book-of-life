@@ -1521,135 +1521,145 @@ function renderFinanceRunway() {
       <!-- 2. Annual Financial Governance Strip (Option 1 Horizontal Checkpoints) -->
       ${renderFinanceAnnualCadenceBar()}
 
-      <!-- 3. Option B: Deconstructed Nordic Cards (Net Worth · Runway · Asset Allocation Donut) -->
-      <div class="finance-nw-deconstructed-grid">
-        <!-- Card 1: Portfolio Net Worth -->
-        <div class="finance-nw-tile-card">
-          <div class="finance-nw-tile-top">
-            <span class="finance-nw-tile-lbl">
-              <i data-lucide="shield-check" style="width: 13px; height: 13px; color: #0D9488;"></i>
-              <span>Portfolio Net Worth</span>
-            </span>
-            <div style="display: flex; gap: 4px;">
-              <button class="btn btn-secondary" onclick="triggerBalancesFileInput()" style="font-size: 0.68rem; padding: 2px 7px;" title="Upload or refresh Monarch Balances CSV">
-                <i data-lucide="upload-cloud" style="width: 11px; height: 11px;"></i>
-                <span>Sync CSV</span>
-              </button>
-              <button class="btn btn-secondary" onclick="openUpdateBalancesModal()" style="font-size: 0.68rem; padding: 2px 7px;" title="Manually edit account balance values">
-                <i data-lucide="edit-3" style="width: 11px; height: 11px;"></i>
-                <span>Edit</span>
-              </button>
-            </div>
+      <!-- 3. Executive Horizon Deck (Option B: Net Worth · Runway · Asset Allocation Donut) -->
+      <div class="finance-horizon-deck">
+        <div class="finance-horizon-deck-header">
+          <div class="finance-horizon-deck-title">
+            <i data-lucide="compass" style="width: 13px; height: 13px; color: #7C3AED;"></i>
+            <span>Portfolio Horizon &bull; Verified Balances</span>
+            <span style="font-size: 0.68rem; font-weight: normal; color: var(--text-muted);">(As of ${escapeHtml(asOfDate)})</span>
           </div>
-          <div>
-            <div class="finance-nw-tile-hero">
-              $${Math.round(netWorth).toLocaleString()}
-            </div>
-            <div style="display: flex; align-items: center; gap: 6px; margin-top: 4px;">
+          <div class="finance-horizon-deck-actions">
+            <button class="btn btn-secondary" onclick="triggerBalancesFileInput()" style="font-size: 0.68rem; padding: 2px 8px;" title="Upload or refresh Monarch Balances CSV">
+              <i data-lucide="upload-cloud" style="width: 11px; height: 11px;"></i>
+              <span>Sync CSV</span>
+            </button>
+            <button class="btn btn-secondary" onclick="openUpdateBalancesModal()" style="font-size: 0.68rem; padding: 2px 8px;" title="Manually edit account balance values">
+              <i data-lucide="edit-3" style="width: 11px; height: 11px;"></i>
+              <span>Edit</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="finance-nw-deconstructed-grid">
+          <!-- Card 1: Portfolio Net Worth (Distinct Royal Violet Theme) -->
+          <div class="finance-nw-tile-card card-nw">
+            <div class="finance-nw-tile-top">
+              <span class="finance-nw-tile-lbl">
+                <i data-lucide="sparkles" style="width: 13px; height: 13px; color: #7C3AED;"></i>
+                <span>Portfolio Net Worth</span>
+              </span>
               <span class="finance-nw-tile-badge">+23.8% 6mo</span>
-              <span class="finance-nw-tile-sub">+$1.20M rolling expansion</span>
             </div>
-          </div>
-          <div class="finance-nw-tile-footer">
-            <span>Assets: <strong>$${(totalAssets / 1e6).toFixed(2)}M</strong></span>
-            <span>Debt: <strong style="color: #E11D48;">-$${Math.round(totalLiabilities / 1e3)}k</strong> (4.5%)</span>
-          </div>
-        </div>
-
-        <!-- Card 2: Liquid Runway -->
-        <div class="finance-nw-tile-card">
-          <div class="finance-nw-tile-top">
-            <span class="finance-nw-tile-lbl">
-              <i data-lucide="droplet" style="width: 13px; height: 13px; color: #10B981;"></i>
-              <span>Liquid Cash Runway</span>
-            </span>
-            <span class="finance-nw-tile-badge">Healthy (Secure)</span>
-          </div>
-          <div>
-            <div class="finance-nw-tile-hero" style="color: #0D9488;">
-              ${runwayMonths} Mo
-            </div>
-            <div style="font-family: var(--font-mono, monospace); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">
-              $${Math.round(liquidCash).toLocaleString()} Cash Reserves
-            </div>
-          </div>
-          <div class="finance-nw-tile-footer">
-            <span>Target: <strong>$${monthlyTarget.toLocaleString()}/mo</strong></span>
-            <span>Checking, HYSA &amp; FSA</span>
-          </div>
-        </div>
-
-        <!-- Card 3: Macro Allocation with Donut Chart -->
-        <div class="finance-nw-tile-card">
-          <div class="finance-nw-tile-top">
-            <span class="finance-nw-tile-lbl">
-              <i data-lucide="pie-chart" style="width: 13px; height: 13px; color: #7C3AED;"></i>
-              <span>Asset Allocation</span>
-            </span>
-            <span style="font-size: 0.68rem; font-weight: 600; color: var(--text-muted);">$${(totalAssets / 1e6).toFixed(2)}M Total</span>
-          </div>
-
-          <div class="finance-donut-layout">
-            <!-- SVG Donut Chart (Radius = 32, Circumference ≈ 201.06) -->
-            <div class="finance-donut-svg-wrap">
-              <svg class="finance-donut-svg" viewBox="0 0 86 86">
-                <circle cx="43" cy="43" r="32" fill="none" stroke="var(--border-color, #E2E8F0)" stroke-width="11" />
-                ${(() => {
-                  const circumference = 2 * Math.PI * 32;
-                  let cumOffset = 0;
-                  const slices = [
-                    { name: 'Retirement', pct: parseFloat(allocPcts.retirement) || 0, color: '#7C3AED' },
-                    { name: 'Brokerage', pct: parseFloat(allocPcts.brokerage) || 0, color: '#4F46E5' },
-                    { name: 'Real Estate', pct: parseFloat(allocPcts.realestate) || 0, color: '#0D9488' },
-                    { name: 'Cash', pct: parseFloat(allocPcts.cash) || 0, color: '#10B981' },
-                    { name: '529 Plan', pct: parseFloat(allocPcts.education) || 0, color: '#64748B' }
-                  ];
-                  return slices.map(s => {
-                    const len = (s.pct / 100) * circumference;
-                    const offset = cumOffset;
-                    cumOffset += len;
-                    return `
-                      <circle cx="43" cy="43" r="32" fill="none" stroke="${s.color}" stroke-width="11"
-                              stroke-dasharray="${len.toFixed(2)} ${(circumference - len).toFixed(2)}"
-                              stroke-dashoffset="-${offset.toFixed(2)}" />
-                    `;
-                  }).join('');
-                })()}
-              </svg>
-              <div class="finance-donut-center-text">
-                <span class="finance-donut-center-val">$${(totalAssets / 1e6).toFixed(1)}M</span>
-                <span class="finance-donut-center-lbl">Assets</span>
+            <div>
+              <div class="finance-nw-tile-hero">
+                $${Math.round(netWorth).toLocaleString()}
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 4px;">
+                +$1.20M rolling expansion
               </div>
             </div>
-
-            <!-- Legend -->
-            <div class="finance-donut-legend">
-              <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('retirement')" style="cursor: pointer;" title="Filter ledger to Retirement">
-                <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #7C3AED;"></span>Retirement</span>
-                <span class="finance-donut-legend-pct">${allocPcts.retirement}%</span>
-              </div>
-              <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('brokerage')" style="cursor: pointer;" title="Filter ledger to Brokerage">
-                <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #4F46E5;"></span>Brokerage</span>
-                <span class="finance-donut-legend-pct">${allocPcts.brokerage}%</span>
-              </div>
-              <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate">
-                <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #0D9488;"></span>Real Estate</span>
-                <span class="finance-donut-legend-pct">${allocPcts.realestate}%</span>
-              </div>
-              <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('cash')" style="cursor: pointer;" title="Filter ledger to Cash">
-                <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #10B981;"></span>Cash</span>
-                <span class="finance-donut-legend-pct">${allocPcts.cash}%</span>
-              </div>
-              <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('education')" style="cursor: pointer;" title="Filter ledger to 529 Plan">
-                <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #64748B;"></span>529 Plan</span>
-                <span class="finance-donut-legend-pct">${allocPcts.education}%</span>
-              </div>
+            <div class="finance-nw-tile-footer">
+              <span>Assets: <strong>$${(totalAssets / 1e6).toFixed(2)}M</strong></span>
+              <span>Debt: <strong style="color: #E11D48;">-$${Math.round(totalLiabilities / 1e3)}k</strong> (4.5%)</span>
             </div>
           </div>
 
-          <div class="finance-nw-tile-footer">
-            <span>Portfolio Breakdown</span>
-            <span>100% Reconciled</span>
+          <!-- Card 2: Liquid Runway (Distinct Sea Glass Teal Theme) -->
+          <div class="finance-nw-tile-card card-runway">
+            <div class="finance-nw-tile-top">
+              <span class="finance-nw-tile-lbl">
+                <i data-lucide="droplet" style="width: 13px; height: 13px; color: #0D9488;"></i>
+                <span>Liquid Cash Runway</span>
+              </span>
+              <span class="finance-nw-tile-badge">Healthy (Secure)</span>
+            </div>
+            <div>
+              <div class="finance-nw-tile-hero">
+                ${runwayMonths} Mo
+              </div>
+              <div style="font-family: var(--font-mono, monospace); font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">
+                $${Math.round(liquidCash).toLocaleString()} Cash Reserves
+              </div>
+            </div>
+            <div class="finance-nw-tile-footer">
+              <span>Target: <strong>$${monthlyTarget.toLocaleString()}/mo</strong></span>
+              <span>Checking, HYSA &amp; FSA</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Macro Allocation with Donut Chart (Distinct Indigo Theme) -->
+          <div class="finance-nw-tile-card card-alloc">
+            <div class="finance-nw-tile-top">
+              <span class="finance-nw-tile-lbl">
+                <i data-lucide="pie-chart" style="width: 13px; height: 13px; color: #4F46E5;"></i>
+                <span>Asset Allocation</span>
+              </span>
+              <span style="font-size: 0.68rem; font-weight: 600; color: var(--text-muted);">$${(totalAssets / 1e6).toFixed(2)}M Total</span>
+            </div>
+
+            <div class="finance-donut-layout">
+              <!-- SVG Donut Chart (Radius = 32, Circumference ≈ 201.06) -->
+              <div class="finance-donut-svg-wrap">
+                <svg class="finance-donut-svg" viewBox="0 0 86 86">
+                  <circle cx="43" cy="43" r="32" fill="none" stroke="var(--border-color, #E2E8F0)" stroke-width="11" />
+                  ${(() => {
+                    const circumference = 2 * Math.PI * 32;
+                    let cumOffset = 0;
+                    const slices = [
+                      { name: 'Retirement', pct: parseFloat(allocPcts.retirement) || 0, color: '#7C3AED' },
+                      { name: 'Brokerage', pct: parseFloat(allocPcts.brokerage) || 0, color: '#4F46E5' },
+                      { name: 'Real Estate', pct: parseFloat(allocPcts.realestate) || 0, color: '#0D9488' },
+                      { name: 'Cash', pct: parseFloat(allocPcts.cash) || 0, color: '#10B981' },
+                      { name: '529 Plan', pct: parseFloat(allocPcts.education) || 0, color: '#64748B' }
+                    ];
+                    return slices.map(s => {
+                      const len = (s.pct / 100) * circumference;
+                      const offset = cumOffset;
+                      cumOffset += len;
+                      return `
+                        <circle cx="43" cy="43" r="32" fill="none" stroke="${s.color}" stroke-width="11"
+                                stroke-dasharray="${len.toFixed(2)} ${(circumference - len).toFixed(2)}"
+                                stroke-dashoffset="-${offset.toFixed(2)}" />
+                      `;
+                    }).join('');
+                  })()}
+                </svg>
+                <div class="finance-donut-center-text">
+                  <span class="finance-donut-center-val">$${(totalAssets / 1e6).toFixed(1)}M</span>
+                  <span class="finance-donut-center-lbl">Assets</span>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div class="finance-donut-legend">
+                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('retirement')" style="cursor: pointer;" title="Filter ledger to Retirement">
+                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #7C3AED;"></span>Retirement</span>
+                  <span class="finance-donut-legend-pct">${allocPcts.retirement}%</span>
+                </div>
+                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('brokerage')" style="cursor: pointer;" title="Filter ledger to Brokerage">
+                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #4F46E5;"></span>Brokerage</span>
+                  <span class="finance-donut-legend-pct">${allocPcts.brokerage}%</span>
+                </div>
+                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate">
+                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #0D9488;"></span>Real Estate</span>
+                  <span class="finance-donut-legend-pct">${allocPcts.realestate}%</span>
+                </div>
+                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('cash')" style="cursor: pointer;" title="Filter ledger to Cash">
+                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #10B981;"></span>Cash</span>
+                  <span class="finance-donut-legend-pct">${allocPcts.cash}%</span>
+                </div>
+                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('education')" style="cursor: pointer;" title="Filter ledger to 529 Plan">
+                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #64748B;"></span>529 Plan</span>
+                  <span class="finance-donut-legend-pct">${allocPcts.education}%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="finance-nw-tile-footer">
+              <span>Portfolio Breakdown</span>
+              <span>100% Reconciled</span>
+            </div>
           </div>
         </div>
       </div>
