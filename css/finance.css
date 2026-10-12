@@ -2735,11 +2735,11 @@
 .card-roi-meter-box {
   background: var(--bg-subtle, #F8FAFC);
   border: 1px solid var(--border-color, #E2E8F0);
-  border-radius: var(--radius-md, 10px);
-  padding: 12px 14px;
+  border-radius: var(--radius-md, 8px);
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 [data-theme="dark"] .card-roi-meter-box {
@@ -2751,11 +2751,11 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 0.75rem;
+  font-size: 0.74rem;
 }
 
 .card-roi-meter-track {
-  height: 8px;
+  height: 6px;
   background: rgba(0, 0, 0, 0.06);
   border-radius: 999px;
   overflow: hidden;
@@ -2770,14 +2770,6 @@
   height: 100%;
   border-radius: 999px;
   transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card-roi-meter-stats {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.72rem;
-  font-weight: 600;
 }
 
 .card-roi-surplus-pill {
@@ -2817,14 +2809,14 @@
 .card-roi-benefits-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .card-benefit-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 8px 11px;
   border-radius: 8px;
   border: 1px solid var(--border-color, #E2E8F0);
   background: var(--bg-card, #FFFFFF);

@@ -71,9 +71,9 @@ function renderFinancePage(targetSubTab) {
             <span>💸</span>
             <span>Cash Flow &amp; Radar</span>
           </button>
-          <button class="finance-subnav-btn ${activeFinanceSubTab === 'subscriptions' ? 'active' : ''}" onclick="switchFinanceSubTab('subscriptions')" title="Recurring Subscriptions &amp; Annual Fee ROI">
-            <span>🎟️</span>
-            <span>Subscriptions &amp; Card ROI</span>
+          <button class="finance-subnav-btn ${activeFinanceSubTab === 'subscriptions' ? 'active' : ''}" onclick="switchFinanceSubTab('subscriptions')" title="Annual Fee ROI &amp; Breakeven (4 Cards)">
+            <span>💳</span>
+            <span>Card Fee ROI</span>
           </button>
           <button class="finance-subnav-btn ${activeFinanceSubTab === 'runway' ? 'active' : ''}" onclick="switchFinanceSubTab('runway')" title="Net Worth Horizon &amp; Quarterly Ledger">
             <span>📈</span>
@@ -104,9 +104,9 @@ function renderFinancePage(targetSubTab) {
             </button>
           ` : ''}
           ${activeFinanceSubTab === 'subscriptions' ? `
-            <button class="btn btn-secondary" onclick="openAddSubscriptionModal()" style="font-size: 0.78rem; padding: 5px 12px;">
-              <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
-              <span>Add Subscription</span>
+            <button class="btn btn-secondary" onclick="handleResetCardBenefits()" style="font-size: 0.78rem; padding: 5px 12px;" title="Reset perk redemptions to default baseline values">
+              <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+              <span>Reset Perks</span>
             </button>
           ` : ''}
           ${activeFinanceSubTab === 'runway' ? `
@@ -434,6 +434,124 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           </div>
           ${savingsBadgeHtml}
         </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFinanceRecurringCommitmentsSection() {
+  const fin = storage.getFinanceData();
+  const subs = (typeof storage.getFinanceSubscriptions === 'function') ? storage.getFinanceSubscriptions() : (fin.subscriptions || []);
+
+  const grossMonthlySubs = subs.reduce((sum, s) => {
+    const cost = parseFloat(s.cost) || 0;
+    if (s.cadence === 'annual') return sum + (cost / 12);
+    if (s.cadence === 'lifetime') return sum;
+    return sum + cost;
+  }, 0);
+
+  const coveredMonthlySubs = 36.95; // Disney+ $20, NYT $4, Walmart+ $12.95
+  const netMonthlySubs = Math.max(0, grossMonthlySubs - coveredMonthlySubs);
+
+  const displayedSubs = subs.filter(s => {
+    if (financeSubCategoryFilter !== 'all' && s.category !== financeSubCategoryFilter) return false;
+    if (financeSubSearchQuery) {
+      const q = financeSubSearchQuery;
+      const matchName = (s.name || '').toLowerCase().includes(q);
+      const matchCat = (s.category || '').toLowerCase().includes(q);
+      const matchCard = (s.card || '').toLowerCase().includes(q);
+      const matchPerk = (s.cardPerk || '').toLowerCase().includes(q);
+      if (!matchName && !matchCat && !matchCard && !matchPerk) return false;
+    }
+    return true;
+  });
+
+  return `
+    <div class="finance-section-box" id="finance-recurring-commitments-box">
+      <div class="finance-section-header">
+        <div>
+          <h3 class="finance-section-title">
+            <i data-lucide="repeat" style="width: 18px; height: 18px; color: #4F46E5;"></i>
+            <span>Active Recurring Commitments (${subs.length})</span>
+          </h3>
+          <span style="font-size: 0.78rem; color: var(--text-muted);">
+            Fixed monthly software &amp; subscription burn &bull; Gross: <strong>$${grossMonthlySubs.toFixed(2)}/mo</strong> &bull; Net Out-of-Pocket: <strong style="color: #0D9488;">$${netMonthlySubs.toFixed(2)}/mo</strong> ($${coveredMonthlySubs.toFixed(2)}/mo card offset)
+          </span>
+        </div>
+
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <div class="finance-tx-search" style="min-width: 150px;">
+            <i data-lucide="search" style="width: 12px; height: 12px;"></i>
+            <input type="text" class="finance-search-input" placeholder="Search..." value="${escapeHtml(financeSubSearchQuery)}" oninput="handleFinanceSubSearch(event)" style="font-size: 0.75rem; padding: 4px 8px 4px 26px;">
+          </div>
+          <button class="btn btn-secondary" onclick="openAddSubscriptionModal()" style="font-size: 0.74rem; padding: 4px 10px;">
+            <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+            <span>Add Service</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Synergy Callout Banner -->
+      <div class="subs-synergy-banner" style="margin-bottom: 14px; padding: 10px 14px;">
+        <div class="subs-synergy-content" style="gap: 10px;">
+          <div class="subs-synergy-icon" style="width: 28px; height: 28px;">
+            <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+          </div>
+          <div class="subs-synergy-text">
+            <span class="subs-synergy-title" style="font-size: 0.82rem;">Card Synergy Offset: $36.95/mo ($443.40/yr) 100% reimbursed</span>
+            <span class="subs-synergy-sub" style="font-size: 0.72rem;">Disney+ ($20/mo), NYT ($4/mo), and Walmart+ ($12.95/mo) are fully credited by Amex Platinum. True net burn is only <strong>$48.28/mo</strong>.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscriptions Grid -->
+      <div class="finance-subs-grid">
+        ${displayedSubs.map(s => {
+          const isOffset = s.cardPerk && (s.cardPerk.includes('Covered') || s.cardPerk.includes('Amex'));
+          const cost = parseFloat(s.cost) || 0;
+          return `
+            <div class="finance-sub-card ${s.status === 'under_review' ? 'under-review' : ''}">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <div>
+                  <strong style="font-size: 0.88rem; color: var(--text-primary); display: block;">${escapeHtml(s.name)}</strong>
+                  <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 1px;">
+                    <span class="zlog-ood-badge" style="font-size: 0.62rem; padding: 1px 5px;">${escapeHtml(s.category || 'General')}</span>
+                    &bull; ${escapeHtml(s.card || 'Card')}
+                  </div>
+                </div>
+                <div style="text-align: right; flex-shrink: 0;">
+                  <span class="finance-amount-cell" style="font-size: 0.95rem; color: var(--text-primary);">
+                    $${cost.toFixed(2)}
+                  </span>
+                  <span style="font-size: 0.65rem; color: var(--text-muted);">/${escapeHtml(s.cadence || 'mo')}</span>
+                </div>
+              </div>
+
+              ${s.cardPerk ? `
+                <div style="margin-top: 2px;">
+                  <span class="sub-card-synergy-pill" style="font-size: 0.65rem; padding: 1px 6px;">
+                    <i data-lucide="${isOffset ? 'check-check' : 'tag'}" style="width: 9px; height: 9px;"></i>
+                    <span>${escapeHtml(s.cardPerk)}</span>
+                  </span>
+                </div>
+              ` : ''}
+
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.7rem; margin-top: 4px; padding-top: 4px; border-top: 1px dashed var(--border-color, #E2E8F0);">
+                <span style="color: var(--text-secondary); font-size: 0.68rem;">
+                  Renews: <strong>${escapeHtml(s.nextRenewal || 'Monthly')}</strong>
+                </span>
+                <div style="display: flex; gap: 4px;">
+                  <button type="button" class="btn btn-secondary" onclick="toggleSubscriptionAudit('${s.id}')" style="font-size: 0.65rem; padding: 2px 6px;" title="Flag for cancellation review">
+                    ${s.status === 'under_review' ? 'Reviewing' : 'Audit'}
+                  </button>
+                  <button type="button" class="btn-text-danger" onclick="deleteSubscriptionItem('${s.id}')" style="background: none; border: none; font-size: 0.65rem; color: var(--text-muted); cursor: pointer; padding: 1px 3px;" title="Delete subscription">
+                    <i data-lucide="trash-2" style="width: 11px; height: 11px;"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('')}
       </div>
     </div>
   `;
@@ -924,7 +1042,10 @@ function renderFinanceBurn() {
         `}
       </div>
 
-      <!-- 3. Monthly Outlier Radar (vs. Rolling Baseline) -->
+      <!-- 3. Active Recurring Commitments (7) -->
+      ${renderFinanceRecurringCommitmentsSection()}
+
+      <!-- 4. Monthly Outlier Radar (vs. Rolling Baseline) -->
       <div class="finance-section-box" id="finance-outliers-radar">
         <div class="finance-section-header">
           <div>
@@ -1135,12 +1256,20 @@ function handleResetCardBenefits() {
 
 function handleFinanceSubSearch(e) {
   financeSubSearchQuery = (e.target.value || '').toLowerCase().trim();
-  renderFinanceSubscriptions();
+  if (activeFinanceSubTab === 'burn') {
+    renderFinanceBurn();
+  } else {
+    renderFinanceSubscriptions();
+  }
 }
 
 function setFinanceSubCategoryFilter(cat) {
   financeSubCategoryFilter = cat;
-  renderFinanceSubscriptions();
+  if (activeFinanceSubTab === 'burn') {
+    renderFinanceBurn();
+  } else {
+    renderFinanceSubscriptions();
+  }
 }
 
 function renderFinanceSubscriptions() {
@@ -1149,7 +1278,6 @@ function renderFinanceSubscriptions() {
 
   const fin = storage.getFinanceData();
   const cards = (typeof storage.getFinanceCardsROI === 'function') ? storage.getFinanceCardsROI() : (fin.cardsROI || []);
-  const subs = (typeof storage.getFinanceSubscriptions === 'function') ? storage.getFinanceSubscriptions() : (fin.subscriptions || []);
 
   // 1. Calculate Card ROI Metrics across the 4 cards with fees
   let totalAnnualFees = 0;
@@ -1190,49 +1318,20 @@ function renderFinanceSubscriptions() {
   const netAnnualValue = totalRealizedValue - totalAnnualFees;
   const overallBreakevenPct = totalAnnualFees > 0 ? Math.round((totalRealizedValue / totalAnnualFees) * 100) : 0;
 
-  // 2. Calculate Subscriptions Metrics
-  const grossMonthlySubs = subs.reduce((sum, s) => {
-    const cost = parseFloat(s.cost) || 0;
-    if (s.cadence === 'annual') return sum + (cost / 12);
-    if (s.cadence === 'lifetime') return sum;
-    return sum + cost;
-  }, 0);
-
-  // Subscriptions offset by card perks (Disney $20, NYT $4, Walmart+ $12.95)
-  const coveredMonthlySubs = 36.95; 
-  const netMonthlySubs = Math.max(0, grossMonthlySubs - coveredMonthlySubs);
-  const annualizedGrossSubs = grossMonthlySubs * 12;
-  const underReviewCount = subs.filter(s => s.status === 'under_review').length;
-
   // Filter cards if a single card filter is selected
   const displayedCards = (selectedCardRoiFilter === 'all')
     ? cardStats
     : cardStats.filter(c => c.id === selectedCardRoiFilter);
 
-  // Filter subscriptions
-  const subCategories = ['all', ...Array.from(new Set(subs.map(s => s.category || 'General').filter(Boolean)))];
-  const displayedSubs = subs.filter(s => {
-    if (financeSubCategoryFilter !== 'all' && s.category !== financeSubCategoryFilter) return false;
-    if (financeSubSearchQuery) {
-      const q = financeSubSearchQuery;
-      const matchName = (s.name || '').toLowerCase().includes(q);
-      const matchCat = (s.category || '').toLowerCase().includes(q);
-      const matchCard = (s.card || '').toLowerCase().includes(q);
-      const matchPerk = (s.cardPerk || '').toLowerCase().includes(q);
-      if (!matchName && !matchCat && !matchCard && !matchPerk) return false;
-    }
-    return true;
-  });
-
   container.innerHTML = `
-    <div style="display: flex; flex-direction: column; gap: 22px;">
+    <div style="display: flex; flex-direction: column; gap: 20px;">
       
-      <!-- 1. Executive Horizon KPI Deck -->
+      <!-- 1. Executive Horizon KPI Deck (Simplified 3-Tile Metric Row) -->
       <div class="finance-horizon-deck">
         <div class="finance-horizon-deck-header">
           <div class="finance-horizon-deck-title">
             <i data-lucide="sparkles" style="width: 14px; height: 14px; color: #7C3AED;"></i>
-            <span>Executive Card ROI &amp; Subscriptions Horizon</span>
+            <span>Executive Card Fee ROI Horizon</span>
             <span style="font-weight: 500; text-transform: none; color: var(--text-muted);">&bull; 4 Fee Cards Tracked &bull; Breakeven Engine</span>
           </div>
           <div class="finance-horizon-deck-actions">
@@ -1240,14 +1339,10 @@ function renderFinanceSubscriptions() {
               <i data-lucide="rotate-ccw" style="width: 12px; height: 12px;"></i>
               <span>Reset Perks</span>
             </button>
-            <button class="btn btn-secondary" onclick="openAddSubscriptionModal()" style="font-size: 0.72rem; padding: 4px 10px;">
-              <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
-              <span>Add Sub</span>
-            </button>
           </div>
         </div>
 
-        <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
           <!-- Card 1: Annual Fees Baseline -->
           <div class="finance-kpi-card" style="border-top: 3.5px solid #7C3AED;">
             <span class="finance-kpi-label">
@@ -1255,7 +1350,7 @@ function renderFinanceSubscriptions() {
               4 Annual Fee Cards
             </span>
             <span class="finance-kpi-value" style="color: #6D28D9;">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
-            <span class="finance-kpi-sub">Amex Plat ($895) + CSP (U) ($95) + CSP (T) ($95) + Hyatt ($95)</span>
+            <span class="finance-kpi-sub">Amex Plat ($895) + 3 Chase Cards ($95 ea)</span>
           </div>
 
           <!-- Card 2: Realized Perks & Credits -->
@@ -1265,7 +1360,7 @@ function renderFinanceSubscriptions() {
               Realized Perks &amp; Credits
             </span>
             <span class="finance-kpi-value" style="color: #0F766E;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
-            <span class="finance-kpi-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits redeemed ($${Math.round(totalPotentialValue).toLocaleString()} max value)</span>
+            <span class="finance-kpi-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} max)</span>
           </div>
 
           <!-- Card 3: Net Fee ROI & Surplus -->
@@ -1278,24 +1373,7 @@ function renderFinanceSubscriptions() {
               <span class="card-roi-surplus-pill surplus" style="font-size: 0.64rem;">${overallBreakevenPct}% Breakeven</span>
             </div>
             <span class="finance-kpi-value" style="color: #0D9488;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
-            <span class="finance-kpi-sub">Perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net cash-equivalent</span>
-          </div>
-
-          <!-- Card 4: Subscriptions Monthly Out-of-Pocket -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid #4F46E5;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <span class="finance-kpi-label">
-                <i data-lucide="repeat" style="width: 13px; height: 13px; color: #4F46E5;"></i>
-                Monthly Subscriptions
-              </span>
-              ${underReviewCount > 0 ? `
-                <span class="finance-flag-pill danger" style="font-size: 0.62rem; padding: 1px 6px;">${underReviewCount} Review</span>
-              ` : ''}
-            </div>
-            <span class="finance-kpi-value">$${grossMonthlySubs.toFixed(2)}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/mo</span></span>
-            <span class="finance-kpi-sub">
-              <strong>$${netMonthlySubs.toFixed(2)}/mo net out-of-pocket</strong> ($${coveredMonthlySubs.toFixed(2)}/mo card offset)
-            </span>
+            <span class="finance-kpi-sub">Perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</span>
           </div>
         </div>
       </div>
@@ -1346,7 +1424,7 @@ function renderFinanceSubscriptions() {
                   <div class="card-roi-identity">
                     <span class="card-roi-network-tag" style="color: ${c.color || '#7C3AED'};">${escapeHtml(c.network)}</span>
                     <h4 class="card-roi-title">${escapeHtml(c.shortName || c.name)}</h4>
-                    <span class="card-roi-account">${escapeHtml(c.accountName)} &bull; Renews ${escapeHtml(c.renewalMonth || 'Annual')}</span>
+                    <span class="card-roi-account">${escapeHtml(c.accountName)} &bull; ${escapeHtml(c.renewalMonth || 'Annual')}</span>
                   </div>
                   <div class="card-roi-fee-badge">
                     <span class="card-roi-fee-val" style="color: ${c.color || '#7C3AED'};">$${c.annualFee}</span>
@@ -1368,17 +1446,12 @@ function renderFinanceSubscriptions() {
                   <div class="card-roi-meter-track">
                     <div class="card-roi-meter-fill" style="width: ${meterPct}%; background: ${isBreakeven ? '#0D9488' : (c.color || '#7C3AED')};"></div>
                   </div>
-
-                  <div class="card-roi-meter-stats">
-                    <span style="color: var(--text-muted);">${c.breakevenPct}% Breakeven Ratio</span>
-                    <span style="color: var(--text-muted);">Max Potential: $${Math.round(c.cardMax)}</span>
-                  </div>
                 </div>
 
                 <!-- Interactive Benefits Checklist -->
                 <div>
                   <div class="card-roi-benefits-header" style="margin-bottom: 8px;">
-                    <span>Perks &amp; Credits Checklist</span>
+                    <span>Perks Checklist</span>
                     <span>${(c.benefits || []).filter(b => b.realized).length} of ${(c.benefits || []).length} active</span>
                   </div>
                   <div class="card-roi-benefits-list">
@@ -1386,7 +1459,7 @@ function renderFinanceSubscriptions() {
                       const isRealized = !!b.realized;
                       const val = (b.realizedValue !== undefined) ? b.realizedValue : b.maxVal;
                       return `
-                        <div class="card-benefit-row ${isRealized ? 'realized' : ''}" onclick="handleToggleCardBenefit('${c.id}', '${b.id}', event)" title="Click to toggle redemption status">
+                        <div class="card-benefit-row ${isRealized ? 'realized' : ''}" onclick="handleToggleCardBenefit('${c.id}', '${b.id}', event)" title="Click to toggle redemption">
                           <div class="card-benefit-check-box">
                             ${isRealized ? `<i data-lucide="check" style="width: 12px; height: 12px; stroke-width: 3;"></i>` : ''}
                           </div>
@@ -1399,114 +1472,10 @@ function renderFinanceSubscriptions() {
                           </div>
                           <div class="card-benefit-val-box">
                             <span class="card-benefit-val">+$${val}</span>
-                            <span class="card-benefit-max">Max $${b.maxVal}</span>
                           </div>
                         </div>
                       `;
                     }).join('')}
-                  </div>
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-
-      <!-- 3. Section: Recurring Subscriptions & Card Synergy Audit -->
-      <div class="finance-section-box">
-        <!-- Synergy Callout Banner -->
-        <div class="subs-synergy-banner" style="margin-bottom: 18px;">
-          <div class="subs-synergy-content">
-            <div class="subs-synergy-icon">
-              <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
-            </div>
-            <div class="subs-synergy-text">
-              <span class="subs-synergy-title">Card Synergy Optimization: $36.95/mo ($443.40/yr) is 100% reimbursed</span>
-              <span class="subs-synergy-sub">Disney+ ($20/mo), NYT ($4/mo), and Walmart+ ($12.95/mo) are fully covered by Amex Platinum credits. True out-of-pocket spend is reduced to <strong>$48.28/mo</strong>.</span>
-            </div>
-          </div>
-          <button class="btn btn-secondary" onclick="openAddSubscriptionModal()" style="font-size: 0.74rem; padding: 4px 12px; flex-shrink: 0;">
-            <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
-            <span>Add Service</span>
-          </button>
-        </div>
-
-        <div class="finance-section-header">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="repeat" style="width: 18px; height: 18px; color: #4F46E5;"></i>
-              <span>Active Recurring Commitments (${subs.length})</span>
-            </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Monthly and annual recurring services audit &bull; Total Gross Commit: $${grossMonthlySubs.toFixed(2)}/mo ($${annualizedGrossSubs.toFixed(2)}/yr)
-            </span>
-          </div>
-
-          <!-- Search and Filter Bar -->
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <div class="finance-tx-search" style="min-width: 180px;">
-              <i data-lucide="search" style="width: 13px; height: 13px;"></i>
-              <input type="text" class="finance-search-input" placeholder="Search subscriptions..." value="${escapeHtml(financeSubSearchQuery)}" oninput="handleFinanceSubSearch(event)">
-            </div>
-            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-              ${subCategories.map(cat => `
-                <button class="finance-outlier-filter-btn ${financeSubCategoryFilter === cat ? 'active' : ''}" onclick="setFinanceSubCategoryFilter('${cat}')" style="font-size: 0.72rem; padding: 3px 9px;">
-                  ${cat === 'all' ? 'All' : cat}
-                </button>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-
-        <!-- Subscriptions Grid -->
-        <div class="finance-subs-grid">
-          ${displayedSubs.map(s => {
-            const isOffset = s.cardPerk && (s.cardPerk.includes('Covered') || s.cardPerk.includes('Amex'));
-            const cost = parseFloat(s.cost) || 0;
-            return `
-              <div class="finance-sub-card ${s.status === 'under_review' ? 'under-review' : ''}">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-                  <div>
-                    <strong style="font-size: 0.92rem; color: var(--text-primary); display: block;">${escapeHtml(s.name)}</strong>
-                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">
-                      <span class="zlog-ood-badge" style="font-size: 0.64rem; padding: 1px 6px;">${escapeHtml(s.category || 'General')}</span>
-                      &bull; Billed to <strong>${escapeHtml(s.card || 'Credit Card')}</strong>
-                    </div>
-                  </div>
-                  <div style="text-align: right; flex-shrink: 0;">
-                    <span class="finance-amount-cell" style="font-size: 1.05rem; color: var(--text-primary);">
-                      $${cost.toFixed(2)}
-                    </span>
-                    <div style="font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase;">/${escapeHtml(s.cadence || 'mo')}</div>
-                  </div>
-                </div>
-
-                ${s.cardPerk ? `
-                  <div style="margin-top: 2px;">
-                    <span class="sub-card-synergy-pill">
-                      <i data-lucide="${isOffset ? 'check-check' : 'tag'}" style="width: 10px; height: 10px;"></i>
-                      <span>${escapeHtml(s.cardPerk)}</span>
-                    </span>
-                  </div>
-                ` : ''}
-
-                ${s.notes ? `
-                  <div style="font-size: 0.72rem; color: var(--text-muted); font-style: italic; margin-top: 2px;">
-                    ${escapeHtml(s.notes)}
-                  </div>
-                ` : ''}
-
-                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.74rem; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color, #E2E8F0);">
-                  <span style="color: var(--text-secondary); font-size: 0.7rem;">
-                    Renews: <strong>${escapeHtml(s.nextRenewal || 'Monthly')}</strong>
-                  </span>
-                  <div style="display: flex; gap: 6px;">
-                    <button type="button" class="btn btn-secondary" onclick="toggleSubscriptionAudit('${s.id}')" style="font-size: 0.68rem; padding: 2px 7px;" title="Flag for cancellation review">
-                      ${s.status === 'under_review' ? 'Reviewing' : 'Audit'}
-                    </button>
-                    <button type="button" class="btn-text-danger" onclick="deleteSubscriptionItem('${s.id}')" style="background: none; border: none; font-size: 0.68rem; color: var(--text-muted); cursor: pointer; padding: 2px 4px;" title="Delete subscription">
-                      <i data-lucide="trash-2" style="width: 12px; height: 12px;"></i>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -3053,14 +3022,22 @@ function toggleSubscriptionAudit(id) {
   if (sub) {
     sub.status = (sub.status === 'under_review') ? 'active' : 'under_review';
     storage.saveFinanceData(fin);
-    renderFinanceSubscriptions();
+    if (activeFinanceSubTab === 'burn') {
+      renderFinanceBurn();
+    } else {
+      renderFinanceSubscriptions();
+    }
   }
 }
 
 function deleteSubscriptionItem(id) {
   if (confirm('Delete this subscription?')) {
     storage.deleteFinanceSubscription(id);
-    renderFinanceSubscriptions();
+    if (activeFinanceSubTab === 'burn') {
+      renderFinanceBurn();
+    } else {
+      renderFinanceSubscriptions();
+    }
   }
 }
 
@@ -3129,7 +3106,11 @@ function submitAddSubscriptionModal(e) {
   };
   storage.addFinanceSubscription(sub);
   closeAddSubscriptionModal();
-  renderFinanceSubscriptions();
+  if (activeFinanceSubTab === 'burn') {
+    renderFinanceBurn();
+  } else {
+    renderFinanceSubscriptions();
+  }
 }
 
 function closeAddSubscriptionModal() {
