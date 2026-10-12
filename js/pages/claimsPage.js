@@ -144,7 +144,6 @@ function renderClaimsPage(targetContainer) {
           <div class="claims-quick-chips">
             <button type="button" class="quick-chip" onclick="quickFillVisit('Dr. Michael Barness', 300, 'self')">Dr. Barness ($300)</button>
             <button type="button" class="quick-chip" onclick="quickFillVisit('Mindsoother Therapy', 225, 'provider')">Mindsoother ($225)</button>
-            <button type="button" class="quick-chip" onclick="quickFillVisit('Roseland Psychotherapy', 255, 'provider')">Roseland ($255)</button>
           </div>
         </div>
         <form class="claims-log-form" id="quick-add-claim-form" onsubmit="handleQuickAddClaim(event)">
