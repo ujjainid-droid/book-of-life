@@ -9258,6 +9258,377 @@ const DEFAULT_REAL_CLAIMS = [
   }
 ];
 
+const DEFAULT_NET_WORTH_DATA = {
+  "asOfDate": "2026-10-11",
+  "totalAssets": 6506243.67,
+  "totalLiabilities": 290484.68,
+  "netWorth": 6215758.99,
+  "liquidCash": 275755.25,
+  "accounts": [
+    {
+      "id": "acc-39565205",
+      "name": "5 Stonewall Dr Livingston NJ 07039",
+      "balance": 1339700.0,
+      "assetClass": "realestate",
+      "subType": "Primary Residence",
+      "institution": "Livingston NJ",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-43602709",
+      "name": "Tom\u2019s ERCO 401k",
+      "balance": 799987.53,
+      "assetClass": "retirement",
+      "subType": "401(k) Plan",
+      "institution": "Google / ERCO",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-33558366",
+      "name": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "balance": 790651.59,
+      "assetClass": "retirement",
+      "subType": "IRA (Trad / Roth)",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-86772609",
+      "name": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "balance": 674725.44,
+      "assetClass": "brokerage",
+      "subType": "Taxable Brokerage",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-16454974",
+      "name": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "balance": 561153.11,
+      "assetClass": "retirement",
+      "subType": "IRA (Trad / Roth)",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-13943549",
+      "name": "Google Equity Awards (...ards)",
+      "balance": 502033.37,
+      "assetClass": "equity",
+      "subType": "Company Stock / RSUs",
+      "institution": "Google / Morgan Stanley",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-29439402",
+      "name": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "balance": 443186.65,
+      "assetClass": "brokerage",
+      "subType": "Taxable Brokerage",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-16954342",
+      "name": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "balance": 410089.0,
+      "assetClass": "retirement",
+      "subType": "401(k) Plan",
+      "institution": "Google / ERCO",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-86716765",
+      "name": "Joint WROS - TOD (...3919)",
+      "balance": 400748.17,
+      "assetClass": "brokerage",
+      "subType": "Taxable Brokerage",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-60246289",
+      "name": "360 Performance Savings (...4275)",
+      "balance": 217743.44,
+      "assetClass": "cash",
+      "subType": "High-Yield Savings & CD",
+      "institution": "Capital One",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-62515658",
+      "name": "Schwab 529 Plan ...-01 (....-01)",
+      "balance": 112223.74,
+      "assetClass": "education",
+      "subType": "529 College Savings",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-38969274",
+      "name": "Stock Plan (MRK) -9148 (...9148)",
+      "balance": 84873.73,
+      "assetClass": "equity",
+      "subType": "Company Stock / RSUs",
+      "institution": "Google / Morgan Stanley",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-70667186",
+      "name": "Thomas L Healy - Roth IRA Brokerage Account - ****3746 (Managed) (...3746)",
+      "balance": 36865.85,
+      "assetClass": "retirement",
+      "subType": "IRA (Trad / Roth)",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-63925421",
+      "name": "2023 Ford Mustang MACH-E GT",
+      "balance": 36401.3,
+      "assetClass": "vehicle",
+      "subType": "Vehicle Equity",
+      "institution": "Vehicle",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-35211830",
+      "name": "2024 Audi Q4 Etron Premium Plus",
+      "balance": 33939.15,
+      "assetClass": "vehicle",
+      "subType": "Vehicle Equity",
+      "institution": "Vehicle",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-70598831",
+      "name": "CD (...2555)",
+      "balance": 29402.92,
+      "assetClass": "cash",
+      "subType": "High-Yield Savings & CD",
+      "institution": "Capital One",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-41346781",
+      "name": "Primary Checking ...002 (....002)",
+      "balance": 27265.58,
+      "assetClass": "cash",
+      "subType": "Checking & Cash",
+      "institution": "Schwab / Apple",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-77658014",
+      "name": "Individual Brokerage -9148 (...9148)",
+      "balance": 3733.3,
+      "assetClass": "brokerage",
+      "subType": "Taxable Brokerage",
+      "institution": "Schwab",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-19412290",
+      "name": "360 Checking (...5441)",
+      "balance": 1133.63,
+      "assetClass": "cash",
+      "subType": "Checking & Cash",
+      "institution": "Schwab / Apple",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-56942867",
+      "name": "Costco Visa 3744 due 17th",
+      "balance": 176.49,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Citi",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-32595898",
+      "name": "Kids Savings Account (...8421)",
+      "balance": 142.62,
+      "assetClass": "cash",
+      "subType": "High-Yield Savings & CD",
+      "institution": "Capital One",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-20885884",
+      "name": "Apple Cash",
+      "balance": 67.06,
+      "assetClass": "cash",
+      "subType": "Checking & Cash",
+      "institution": "Schwab / Apple",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-21431657",
+      "name": "Apple Card due 27th",
+      "balance": 0.0,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Apple",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-71014830",
+      "name": "Target Circle Card (...9620) due 1st",
+      "balance": 0.0,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Credit Card",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-16358273",
+      "name": "T AMEX HH 1006 due 4th",
+      "balance": 0.0,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Amex",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-47001079",
+      "name": "T Amex Everyday 1002 due 5th",
+      "balance": 0.0,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Amex",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-83011538",
+      "name": "U Amex EveryDay 3003 due 5th",
+      "balance": 0.0,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Amex",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-62616546",
+      "name": "U AMEX HH 2000 due 13th",
+      "balance": 0.0,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Amex",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-76589782",
+      "name": "U Amazon 9598 due 15th",
+      "balance": -77.54,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Chase",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-38088401",
+      "name": "U WOH.6581 due 21st",
+      "balance": -232.16,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Chase",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-74621296",
+      "name": "U AMEX Plat 1003 due 6th",
+      "balance": -685.41,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Amex",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-81702020",
+      "name": "U CFF (...2344) due 15th",
+      "balance": -1105.36,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Chase",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-47751417",
+      "name": "T CSP 5914 due 15th",
+      "balance": -3473.18,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Chase",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-57195158",
+      "name": "U CSP (...8373) due 15th",
+      "balance": -7768.78,
+      "assetClass": "liability",
+      "subType": "Revolving Credit",
+      "institution": "Chase",
+      "updated": "2026-10-11"
+    },
+    {
+      "id": "acc-59100196",
+      "name": "Mortgage (...1331) due 16th",
+      "balance": -277142.25,
+      "assetClass": "liability",
+      "subType": "Mortgage",
+      "institution": "Chase / Loan",
+      "updated": "2026-10-11"
+    }
+  ],
+  "milestones": [
+    {
+      "date": "2026-05-02",
+      "assets": 5327881.29,
+      "liabilities": 309278.64,
+      "netWorth": 5018602.65
+    },
+    {
+      "date": "2026-06-01",
+      "assets": 6371633.2,
+      "liabilities": 297536.72,
+      "netWorth": 6074096.48
+    },
+    {
+      "date": "2026-07-01",
+      "assets": 6385018.36,
+      "liabilities": 297264.72,
+      "netWorth": 6087753.64
+    },
+    {
+      "date": "2026-08-01",
+      "assets": 6404934.99,
+      "liabilities": 293896.9,
+      "netWorth": 6111038.09
+    },
+    {
+      "date": "2026-09-01",
+      "assets": 6482553.33,
+      "liabilities": 289515.88,
+      "netWorth": 6193037.45
+    },
+    {
+      "date": "2026-10-01",
+      "assets": 6534663.09,
+      "liabilities": 289674.48,
+      "netWorth": 6244988.61
+    },
+    {
+      "date": "2026-10-11",
+      "assets": 6506243.67,
+      "liabilities": 290484.68,
+      "netWorth": 6215758.99
+    }
+  ]
+};
+
+DEFAULT_FINANCE_DATA.netWorth = DEFAULT_NET_WORTH_DATA;
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { DEFAULT_FINANCE_DATA, DEFAULT_REAL_CLAIMS };
 }

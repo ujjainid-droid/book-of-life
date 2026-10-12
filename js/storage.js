@@ -2460,6 +2460,15 @@ class StorageManager {
       }
     }
 
+    if (this.data.finance && (!this.data.finance.netWorth || !Array.isArray(this.data.finance.netWorth.accounts) || this.data.finance.netWorth.accounts.length === 0)) {
+      if (typeof DEFAULT_NET_WORTH_DATA !== 'undefined') {
+        this.data.finance.netWorth = JSON.parse(JSON.stringify(DEFAULT_NET_WORTH_DATA));
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        } catch (e) {}
+      }
+    }
+
     return this.data.finance;
   }
 
@@ -2528,6 +2537,77 @@ class StorageManager {
     this.saveData();
     return { checklist: fin.weeklyChecklists[iso], allDone };
   }
+
+  getFinanceQuarterlyChecklist(quarterKey = 'Q4 2026') {
+    const fin = this.getFinanceData();
+    if (!fin.quarterlyChecklists || typeof fin.quarterlyChecklists !== 'object') {
+      fin.quarterlyChecklists = {};
+    }
+    const qKey = quarterKey || 'Q4 2026';
+    if (!fin.quarterlyChecklists[qKey]) {
+      fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+    }
+    return fin.quarterlyChecklists[qKey];
+  }
+
+  setFinanceQuarterlyChecklistItem(quarterKey = 'Q4 2026', itemNum, isDone) {
+    const fin = this.getFinanceData();
+    if (!fin.quarterlyChecklists || typeof fin.quarterlyChecklists !== 'object') {
+      fin.quarterlyChecklists = {};
+    }
+    const qKey = quarterKey || 'Q4 2026';
+    if (!fin.quarterlyChecklists[qKey]) {
+      fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+    }
+    fin.quarterlyChecklists[qKey][itemNum] = !!isDone;
+    const allDone = [1, 2, 3, 4, 5, 6].every(num => !!fin.quarterlyChecklists[qKey][num]);
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return { checklist: fin.quarterlyChecklists[qKey], allDone };
+  }
+
+  getFinanceAnnualChecklist(yearKey = '2026') {
+    const fin = this.getFinanceData();
+    if (!fin.annualChecklists || typeof fin.annualChecklists !== 'object') {
+      fin.annualChecklists = {};
+    }
+    const yKey = yearKey || '2026';
+    if (!fin.annualChecklists[yKey]) {
+      fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false };
+    }
+    return fin.annualChecklists[yKey];
+  }
+
+  setFinanceAnnualChecklistItem(yearKey = '2026', itemNum, isDone) {
+    const fin = this.getFinanceData();
+    if (!fin.annualChecklists || typeof fin.annualChecklists !== 'object') {
+      fin.annualChecklists = {};
+    }
+    const yKey = yearKey || '2026';
+    if (!fin.annualChecklists[yKey]) {
+      fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false };
+    }
+    fin.annualChecklists[yKey][itemNum] = !!isDone;
+    const allDone = [1, 2, 3].every(num => !!fin.annualChecklists[yKey][num]);
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return { checklist: fin.annualChecklists[yKey], allDone };
+  }
+
+  saveFinanceNetWorth(data) {
+    const fin = this.getFinanceData();
+    fin.netWorth = data;
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return fin.netWorth;
+  }
+
 
   saveMonthlyCashFlowSummary(summary) {
     const fin = this.getFinanceData();

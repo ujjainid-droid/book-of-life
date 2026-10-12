@@ -29,6 +29,8 @@ let selectedFinanceMonth = '2026-10';
 let financeTxSearchQuery = '';
 let financeTxCategoryFilter = 'all';
 let financeTxHighSpendOnly = false;
+let financeNwClassFilter = 'all';
+let financeNwSearchQuery = '';
 
 function renderFinancePage(targetSubTab) {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('bunker-subview-frame');
@@ -1214,92 +1216,907 @@ function renderFinanceClaims() {
 }
 
 /* ==========================================================================
-   Sub-View 4: Accounts & Runway Calculator
+   Quarterly & Annual Review Cadence Engines
+   ========================================================================== */
+function getCurrentQuarterKey() {
+  const d = new Date();
+  const q = Math.floor(d.getMonth() / 3) + 1;
+  return `${d.getFullYear()}-Q${q}`;
+}
+
+function getCurrentYearKey() {
+  return String(new Date().getFullYear());
+}
+
+function toggleFinanceQuarterlyChecklistItem(itemNum, event) {
+  if (event) event.stopPropagation();
+  const qKey = getCurrentQuarterKey();
+  const checklist = storage.getFinanceQuarterlyChecklist(qKey);
+  const currentVal = !!checklist[itemNum];
+  const { allDone } = storage.setFinanceQuarterlyChecklistItem(qKey, itemNum, !currentVal);
+
+  if (allDone) {
+    if (typeof confetti === 'function') {
+      try { confetti({ particleCount: 45, spread: 70, origin: { y: 0.18 } }); } catch (e) {}
+    }
+    if (typeof showToast === 'function') {
+      showToast(`🎉 All 6 quarterly checklist items complete for ${qKey}!`, 'success');
+    }
+  } else if (!currentVal) {
+    if (typeof showToast === 'function') {
+      showToast(`✓ Step ${itemNum} marked complete`);
+    }
+  }
+  renderFinanceRunway();
+}
+
+function toggleFinanceAnnualChecklistItem(itemNum, event) {
+  if (event) event.stopPropagation();
+  const yKey = getCurrentYearKey();
+  const checklist = storage.getFinanceAnnualChecklist(yKey);
+  const currentVal = !!checklist[itemNum];
+  const { allDone } = storage.setFinanceAnnualChecklistItem(yKey, itemNum, !currentVal);
+
+  if (allDone) {
+    if (typeof confetti === 'function') {
+      try { confetti({ particleCount: 45, spread: 70, origin: { y: 0.18 } }); } catch (e) {}
+    }
+    if (typeof showToast === 'function') {
+      showToast(`🎉 All 3 annual governance items complete for ${yKey}!`, 'success');
+    }
+  } else if (!currentVal) {
+    if (typeof showToast === 'function') {
+      showToast(`✓ Annual task ${itemNum} marked complete`);
+    }
+  }
+  renderFinanceRunway();
+}
+
+function setFinanceNwClassFilter(filter) {
+  financeNwClassFilter = filter;
+  renderFinanceRunway();
+}
+
+function handleFinanceNwSearch(e) {
+  financeNwSearchQuery = (e.target.value || '').toLowerCase().trim();
+  renderFinanceRunway();
+}
+
+function renderFinanceQuarterlyCadenceBar() {
+  const qKey = getCurrentQuarterKey();
+  const checklist = storage.getFinanceQuarterlyChecklist(qKey);
+  const doneCount = [1, 2, 3, 4, 5, 6].filter(num => !!checklist[num]).length;
+  const allDone = doneCount === 6;
+
+  const items = [
+    {
+      num: 1,
+      label: '401k contribution review',
+      hint: 'Elective deferral pacing toward $23.5k/$30k max',
+      action: null
+    },
+    {
+      num: 2,
+      label: 'Tax withholding review',
+      hint: 'Audit W-4 federal/state withholdings & estimates',
+      action: null
+    },
+    {
+      num: 3,
+      label: 'Charity donations',
+      hint: 'Plan & disburse quarterly charitable gifts & DAF',
+      action: null
+    },
+    {
+      num: 4,
+      label: 'Freedom Flex QTR categories',
+      hint: 'Activate 5% rotating quarterly cash back categories',
+      action: `
+        <a href="https://www.chase.com/mybonus" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Activate Freedom Flex 5% Categories">
+          <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
+        </a>
+      `
+    },
+    {
+      num: 5,
+      label: 'Category trends & savings',
+      hint: 'Spot check category trends for savings opportunity',
+      action: `
+        <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); switchFinanceSubTab('burn'); setTimeout(() => scrollToFinanceOutliers(), 50);" title="Jump to Cash Flow &amp; Outliers Radar">
+          <i data-lucide="compass" style="width: 11px; height: 11px;"></i>
+        </button>
+      `
+    },
+    {
+      num: 6,
+      label: 'UR + MR spend plan',
+      hint: 'Plan redemption strategy for Chase UR & Amex MR',
+      action: null
+    }
+  ];
+
+  return `
+    <div class="finance-checklist-hero-card">
+      <div class="finance-checklist-header">
+        <div class="finance-checklist-header-left">
+          <span class="finance-checklist-badge">Quarterly Cadence</span>
+          <h3 class="finance-checklist-title">Quarterly Review &amp; Optimization</h3>
+          <span class="finance-checklist-week">${qKey} Focus (October &ndash; December)</span>
+        </div>
+        <div class="finance-checklist-header-right">
+          <span class="finance-checklist-status-badge ${allDone ? 'all-done' : ''}">
+            ${allDone ? '✓ All Done' : `${doneCount} of 6 Complete`}
+          </span>
+        </div>
+      </div>
+      <div class="finance-cadence-pills-row six-cols">
+        ${items.map(item => {
+          const isDone = !!checklist[item.num];
+          return `
+            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
+              <div class="cadence-pill-left">
+                <span class="cadence-check-icon">
+                  <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
+                </span>
+                <span class="cadence-pill-num">${item.num}.</span>
+                <span class="cadence-pill-title">${item.label}</span>
+              </div>
+              ${item.action ? item.action : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function renderFinanceAnnualCadenceBar() {
+  const yKey = getCurrentYearKey();
+  const checklist = storage.getFinanceAnnualChecklist(yKey);
+  const doneCount = [1, 2, 3].filter(num => !!checklist[num]).length;
+  const allDone = doneCount === 3;
+
+  const items = [
+    {
+      num: 1,
+      label: 'Check credit report',
+      hint: 'annualcreditreport.com credit check',
+      action: `
+        <a href="https://www.annualcreditreport.com" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Open AnnualCreditReport.com">
+          <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
+        </a>
+      `
+    },
+    {
+      num: 2,
+      label: 'ANNUAL Retirement scenario planning',
+      hint: 'Monte Carlo models & safe withdrawal review',
+      action: null
+    },
+    {
+      num: 3,
+      label: 'ANNUAL Unclaimed property search',
+      hint: 'Search NYS / state registries for unclaimed funds',
+      action: `
+        <a href="https://www.osc.ny.gov/unclaimed-funds" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Search NYS Unclaimed Funds">
+          <i data-lucide="external-link" style="width: 11px; height: 11px;"></i>
+        </a>
+      `
+    }
+  ];
+
+  return `
+    <div class="finance-checklist-hero-card">
+      <div class="finance-checklist-header">
+        <div class="finance-checklist-header-left">
+          <span class="finance-checklist-badge">Annual Cadence</span>
+          <h3 class="finance-checklist-title">Annual Financial Governance</h3>
+          <span class="finance-checklist-week">${yKey} Comprehensive Review</span>
+        </div>
+        <div class="finance-checklist-header-right">
+          <span class="finance-checklist-status-badge ${allDone ? 'all-done' : ''}">
+            ${allDone ? '✓ All Done' : `${doneCount} of 3 Complete`}
+          </span>
+        </div>
+      </div>
+      <div class="finance-cadence-pills-row three-cols">
+        ${items.map(item => {
+          const isDone = !!checklist[item.num];
+          return `
+            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
+              <div class="cadence-pill-left">
+                <span class="cadence-check-icon">
+                  <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
+                </span>
+                <span class="cadence-pill-num">${item.num}.</span>
+                <span class="cadence-pill-title">${item.label}</span>
+              </div>
+              ${item.action ? item.action : ''}
+            </div>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/* ==========================================================================
+   Sub-View 3: Net Worth Horizon, Runway & Quarterly Ledger
    ========================================================================== */
 function renderFinanceRunway() {
   const container = document.getElementById('finance-subview-container');
   if (!container) return;
 
   const fin = storage.getFinanceData();
-  const accounts = fin.accounts || [];
+  const nw = fin.netWorth || (typeof DEFAULT_NET_WORTH_DATA !== 'undefined' ? DEFAULT_NET_WORTH_DATA : {});
   const monthlyTarget = fin.monthlyTarget || 9500;
 
-  const totalLiquid = accounts.reduce((sum, a) => sum + (parseFloat(a.balance) || 0), 0);
-  const runwayMonths = monthlyTarget > 0 ? (totalLiquid / monthlyTarget).toFixed(1) : '—';
+  const totalAssets = nw.totalAssets || 6506243.67;
+  const totalLiabilities = nw.totalLiabilities || 290484.68;
+  const netWorth = nw.netWorth || (totalAssets - totalLiabilities);
+  const liquidCash = nw.liquidCash || 275755.25;
+  const runwayMonths = monthlyTarget > 0 ? (liquidCash / monthlyTarget).toFixed(1) : '29.0';
+  const asOfDate = nw.asOfDate || '2026-10-11';
 
-  let runwayBadgeClass = 'safe';
-  let runwayStatusLabel = 'Healthy Runway (Secure)';
-  if (parseFloat(runwayMonths) < 3) {
-    runwayBadgeClass = 'danger';
-    runwayStatusLabel = 'Critical Runway (< 3 months)';
-  } else if (parseFloat(runwayMonths) < 6) {
-    runwayBadgeClass = 'warning';
-    runwayStatusLabel = 'Moderate Runway (3–6 months)';
-  }
+  const accounts = Array.isArray(nw.accounts) ? nw.accounts : (fin.accounts || []);
+  const milestones = Array.isArray(nw.milestones) ? nw.milestones : [];
+
+  // Group asset classes
+  const classBreakdown = {
+    retirement: { name: 'Retirement (401k & IRAs)', icon: 'shield', color: '#7C3AED', total: 0, count: 0 },
+    brokerage: { name: 'Taxable Brokerage & RSUs', icon: 'trending-up', color: '#4F46E5', total: 0, count: 0 },
+    realestate: { name: 'Real Estate & Vehicles', icon: 'home', color: '#0D9488', total: 0, count: 0 },
+    cash: { name: 'Cash Reserves & Runway', icon: 'droplet', color: '#10B981', total: 0, count: 0 },
+    education: { name: 'Education Fund (529)', icon: 'graduation-cap', color: '#64748B', total: 0, count: 0 },
+    liability: { name: 'Mortgage & Liabilities', icon: 'credit-card', color: '#E11D48', total: 0, count: 0 }
+  };
+
+  accounts.forEach(acc => {
+    let cls = acc.assetClass || 'brokerage';
+    if (cls === 'equity') cls = 'brokerage';
+    if (!classBreakdown[cls]) cls = 'brokerage';
+    classBreakdown[cls].total += Math.abs(parseFloat(acc.balance) || 0);
+    classBreakdown[cls].count += 1;
+  });
+
+  const macroAssetSum = totalAssets > 0 ? totalAssets : 1;
+  const allocPcts = {
+    retirement: ((classBreakdown.retirement.total / macroAssetSum) * 100).toFixed(1),
+    brokerage: ((classBreakdown.brokerage.total / macroAssetSum) * 100).toFixed(1),
+    realestate: ((classBreakdown.realestate.total / macroAssetSum) * 100).toFixed(1),
+    cash: ((classBreakdown.cash.total / macroAssetSum) * 100).toFixed(1),
+    education: ((classBreakdown.education.total / macroAssetSum) * 100).toFixed(1)
+  };
+
+  // Filter accounts
+  const filteredAccounts = accounts.filter(acc => {
+    let cls = acc.assetClass || 'brokerage';
+    if (cls === 'equity') cls = 'brokerage';
+    if (financeNwClassFilter !== 'all' && cls !== financeNwClassFilter) {
+      return false;
+    }
+    if (financeNwSearchQuery) {
+      const q = financeNwSearchQuery;
+      const matchName = (acc.name || '').toLowerCase().includes(q);
+      const matchInst = (acc.institution || '').toLowerCase().includes(q);
+      const matchSub = (acc.subType || '').toLowerCase().includes(q);
+      if (!matchName && !matchInst && !matchSub) return false;
+    }
+    return true;
+  });
 
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px;">
       
-      <!-- Runway Hero Banner -->
+      <!-- 1. Top Quarterly Review Cadence Strip (Option 1 Horizontal Checkpoints) -->
+      ${renderFinanceQuarterlyCadenceBar()}
+
+      <!-- 2. Annual Financial Governance Strip (Option 1 Horizontal Checkpoints) -->
+      ${renderFinanceAnnualCadenceBar()}
+
+      <!-- 3. Net Worth Horizon Hero Card -->
       <div class="finance-runway-hero">
-        <div>
-          <span style="font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
-            Cash Runway Calculator
-          </span>
-          <div class="finance-runway-stat">${runwayMonths} Months</div>
-          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">
-            Based on $${monthlyTarget.toLocaleString()} monthly burn target across $${totalLiquid.toLocaleString('en-US', { minimumFractionDigits: 2 })} liquid reserves.
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+                Portfolio Horizon &bull; Net Worth
+              </span>
+              <span class="finance-runway-badge">
+                <i data-lucide="shield-check" style="width: 12px; height: 12px;"></i>
+                <span>As of ${asOfDate}</span>
+              </span>
+            </div>
+            <div class="finance-nw-stat-val hero-val" style="margin-top: 4px;">
+              $${Math.round(netWorth).toLocaleString()}
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
+              <strong style="color: #0D9488;">+$1,197,156 (+23.8%)</strong> portfolio expansion across rolling 6 months
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="triggerBalancesFileInput()" style="font-size: 0.74rem; padding: 5px 12px;" title="Upload or refresh Monarch Balances CSV">
+              <i data-lucide="upload-cloud" style="width: 13px; height: 13px;"></i>
+              <span>Sync Balances CSV</span>
+            </button>
+            <button class="btn btn-secondary" onclick="openUpdateBalancesModal()" style="font-size: 0.74rem; padding: 5px 12px;" title="Manually edit account balance values">
+              <i data-lucide="edit-3" style="width: 13px; height: 13px;"></i>
+              <span>Edit Balances</span>
+            </button>
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
-          <span class="finance-flag-pill ${runwayBadgeClass}" style="font-size: 0.82rem; padding: 6px 14px;">
-            ✓ ${runwayStatusLabel}
-          </span>
-          <button class="btn btn-secondary" onclick="openUpdateBalancesModal()" style="font-size: 0.78rem; padding: 5px 12px;">
-            <i data-lucide="edit-2" style="width: 13px; height: 13px;"></i>
-            <span>Update Balances</span>
-          </button>
+        <div class="finance-nw-hero-stats">
+          <div class="finance-nw-stat-col">
+            <span class="finance-nw-stat-label">
+              <i data-lucide="trending-up" style="width: 12px; height: 12px; color: #4F46E5;"></i>
+              <span>Total Assets</span>
+            </span>
+            <div class="finance-nw-stat-val">$${Math.round(totalAssets).toLocaleString()}</div>
+            <span class="finance-nw-stat-sub">Across 21 asset holdings</span>
+          </div>
+
+          <div class="finance-nw-stat-col">
+            <span class="finance-nw-stat-label">
+              <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #E11D48;"></i>
+              <span>Total Liabilities</span>
+            </span>
+            <div class="finance-nw-stat-val" style="color: #E11D48;">-$${Math.round(totalLiabilities).toLocaleString()}</div>
+            <span class="finance-nw-stat-sub">4.5% debt ratio (Mortgage &amp; Cards)</span>
+          </div>
+
+          <div class="finance-nw-stat-col">
+            <span class="finance-nw-stat-label">
+              <i data-lucide="droplet" style="width: 12px; height: 12px; color: #10B981;"></i>
+              <span>Liquid Cash</span>
+            </span>
+            <div class="finance-nw-stat-val">$${Math.round(liquidCash).toLocaleString()}</div>
+            <span class="finance-nw-stat-sub">Checking, HYSA &amp; FSA reserves</span>
+          </div>
+
+          <div class="finance-nw-stat-col">
+            <span class="finance-nw-stat-label">
+              <i data-lucide="hourglass" style="width: 12px; height: 12px; color: #0D9488;"></i>
+              <span>Cash Runway</span>
+            </span>
+            <div class="finance-nw-stat-val" style="color: #0D9488;">${runwayMonths} Mo</div>
+            <span class="finance-nw-stat-sub">At $${monthlyTarget.toLocaleString()}/mo burn target</span>
+          </div>
+        </div>
+
+        <!-- Macro Asset Allocation Stacked Bar -->
+        <div class="finance-alloc-bar-container">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.72rem; color: var(--text-muted);">
+            <strong style="text-transform: uppercase; letter-spacing: 0.05em;">Macro Asset Allocation</strong>
+            <span>100% of Asset Portfolio</span>
+          </div>
+          <div class="finance-alloc-bar">
+            <div class="finance-alloc-segment" style="width: ${allocPcts.retirement}%; background: #7C3AED;" title="Retirement: ${allocPcts.retirement}%"></div>
+            <div class="finance-alloc-segment" style="width: ${allocPcts.brokerage}%; background: #4F46E5;" title="Brokerage &amp; RSUs: ${allocPcts.brokerage}%"></div>
+            <div class="finance-alloc-segment" style="width: ${allocPcts.realestate}%; background: #0D9488;" title="Real Estate &amp; Property: ${allocPcts.realestate}%"></div>
+            <div class="finance-alloc-segment" style="width: ${allocPcts.cash}%; background: #10B981;" title="Liquid Cash: ${allocPcts.cash}%"></div>
+            <div class="finance-alloc-segment" style="width: ${allocPcts.education}%; background: #64748B;" title="529 Education: ${allocPcts.education}%"></div>
+          </div>
+          <div class="finance-alloc-legend">
+            <div class="finance-alloc-legend-item">
+              <span class="finance-alloc-dot" style="background: #7C3AED;"></span>
+              <span>Retirement: <strong>${allocPcts.retirement}%</strong> ($${(classBreakdown.retirement.total / 1e6).toFixed(2)}M)</span>
+            </div>
+            <div class="finance-alloc-legend-item">
+              <span class="finance-alloc-dot" style="background: #4F46E5;"></span>
+              <span>Brokerage &amp; RSUs: <strong>${allocPcts.brokerage}%</strong> ($${(classBreakdown.brokerage.total / 1e6).toFixed(2)}M)</span>
+            </div>
+            <div class="finance-alloc-legend-item">
+              <span class="finance-alloc-dot" style="background: #0D9488;"></span>
+              <span>Real Estate: <strong>${allocPcts.realestate}%</strong> ($${(classBreakdown.realestate.total / 1e6).toFixed(2)}M)</span>
+            </div>
+            <div class="finance-alloc-legend-item">
+              <span class="finance-alloc-dot" style="background: #10B981;"></span>
+              <span>Cash: <strong>${allocPcts.cash}%</strong> ($${Math.round(classBreakdown.cash.total / 1e3)}k)</span>
+            </div>
+            <div class="finance-alloc-legend-item">
+              <span class="finance-alloc-dot" style="background: #64748B;"></span>
+              <span>529 Plan: <strong>${allocPcts.education}%</strong> ($${Math.round(classBreakdown.education.total / 1e3)}k)</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Accounts Grid -->
-      <div class="finance-section-box">
-        <div class="finance-section-header">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="wallet" style="width: 18px; height: 18px; color: #059669;"></i>
-              <span>Liquid &amp; Cash Accounts</span>
-            </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">Checking, High-Yield Savings, FSA &amp; Sinking Funds</span>
+      <!-- 4. Six Asset Classes Matrix Cards -->
+      <div class="finance-nw-classes-grid">
+        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('retirement')" style="cursor: pointer;" title="Filter ledger to Retirement accounts">
+          <div class="finance-nw-class-header">
+            <span class="finance-nw-class-title">
+              <i data-lucide="shield" style="width: 15px; height: 15px; color: #7C3AED;"></i>
+              <span>Retirement (401k &amp; IRAs)</span>
+            </span>
+            <span class="finance-target-status-badge neutral">${allocPcts.retirement}% Share</span>
+          </div>
+          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.retirement.total).toLocaleString()}</div>
+          <div class="finance-nw-class-footer">
+            <span>${classBreakdown.retirement.count} accounts</span>
+            <span>Google 401k &amp; Schwab IRAs</span>
           </div>
         </div>
 
-        <div class="finance-accounts-grid">
-          ${accounts.map(acc => `
-            <div class="finance-acc-card">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                <div>
-                  <strong style="font-size: 0.92rem; color: var(--text-primary);">${escapeHtml(acc.name)}</strong>
-                  <div style="font-size: 0.74rem; color: var(--text-muted);">${escapeHtml(acc.institution)} &bull; ${escapeHtml(acc.type.toUpperCase())}</div>
-                </div>
-                ${acc.apy ? `<span class="zlog-ood-badge funded" style="font-size: 0.68rem;">APY ${escapeHtml(acc.apy)}</span>` : ''}
-              </div>
-              <div class="finance-kpi-value" style="font-size: 1.35rem; color: #059669; margin: 8px 0 4px 0;">
-                $${(parseFloat(acc.balance) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">
-                Updated: ${escapeHtml(acc.updated || 'Recently')}
-              </div>
-            </div>
-          `).join('')}
+        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('brokerage')" style="cursor: pointer;" title="Filter ledger to Taxable Brokerage accounts">
+          <div class="finance-nw-class-header">
+            <span class="finance-nw-class-title">
+              <i data-lucide="trending-up" style="width: 15px; height: 15px; color: #4F46E5;"></i>
+              <span>Taxable Brokerage &amp; RSUs</span>
+            </span>
+            <span class="finance-target-status-badge neutral">${allocPcts.brokerage}% Share</span>
+          </div>
+          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.brokerage.total).toLocaleString()}</div>
+          <div class="finance-nw-class-footer">
+            <span>${classBreakdown.brokerage.count} accounts</span>
+            <span>Schwab &amp; Google Equity Awards</span>
+          </div>
         </div>
+
+        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate &amp; Vehicles">
+          <div class="finance-nw-class-header">
+            <span class="finance-nw-class-title">
+              <i data-lucide="home" style="width: 15px; height: 15px; color: #0D9488;"></i>
+              <span>Real Estate &amp; Vehicles</span>
+            </span>
+            <span class="finance-target-status-badge success">${allocPcts.realestate}% Share</span>
+          </div>
+          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.realestate.total).toLocaleString()}</div>
+          <div class="finance-nw-class-footer">
+            <span>${classBreakdown.realestate.count} assets</span>
+            <span>Livingston NJ ($1.34M) &bull; Tesla Y</span>
+          </div>
+        </div>
+
+        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('cash')" style="cursor: pointer;" title="Filter ledger to Cash &amp; Liquid reserves">
+          <div class="finance-nw-class-header">
+            <span class="finance-nw-class-title">
+              <i data-lucide="droplet" style="width: 15px; height: 15px; color: #10B981;"></i>
+              <span>Cash &amp; Liquid Reserves</span>
+            </span>
+            <span class="finance-target-status-badge success">${runwayMonths} Mo Runway</span>
+          </div>
+          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.cash.total).toLocaleString()}</div>
+          <div class="finance-nw-class-footer">
+            <span>${classBreakdown.cash.count} accounts</span>
+            <span>Capital One 360 HYSA &bull; Chase</span>
+          </div>
+        </div>
+
+        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('education')" style="cursor: pointer;" title="Filter ledger to 529 Education">
+          <div class="finance-nw-class-header">
+            <span class="finance-nw-class-title">
+              <i data-lucide="graduation-cap" style="width: 15px; height: 15px; color: #64748B;"></i>
+              <span>Education Fund (529)</span>
+            </span>
+            <span class="finance-target-status-badge neutral">${allocPcts.education}% Share</span>
+          </div>
+          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.education.total).toLocaleString()}</div>
+          <div class="finance-nw-class-footer">
+            <span>${classBreakdown.education.count} account</span>
+            <span>Schwab 529 College Plan</span>
+          </div>
+        </div>
+
+        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('liability')" style="cursor: pointer;" title="Filter ledger to Liabilities">
+          <div class="finance-nw-class-header">
+            <span class="finance-nw-class-title">
+              <i data-lucide="credit-card" style="width: 15px; height: 15px; color: #E11D48;"></i>
+              <span>Liabilities &amp; Debt</span>
+            </span>
+            <span class="finance-target-status-badge alert">4.5% Debt Ratio</span>
+          </div>
+          <div class="finance-nw-class-amount" style="color: #E11D48;">-$${Math.round(classBreakdown.liability.total).toLocaleString()}</div>
+          <div class="finance-nw-class-footer">
+            <span>${classBreakdown.liability.count} accounts</span>
+            <span>Mortgage ($277k) + Credit Cards</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Historical Milestones Trajectory (May - October 2026) -->
+      ${milestones.length > 0 ? `
+        <div class="finance-section-box">
+          <div class="finance-section-header">
+            <div>
+              <h3 class="finance-section-title">
+                <i data-lucide="activity" style="width: 18px; height: 18px; color: #0D9488;"></i>
+                <span>Historical Net Worth Progression</span>
+              </h3>
+              <span style="font-size: 0.76rem; color: var(--text-muted);">Monthly snapshot cadence verified from Monarch Balances export</span>
+            </div>
+          </div>
+
+          <div class="finance-milestones-row">
+            ${milestones.map((m, idx) => {
+              const prev = idx > 0 ? milestones[idx - 1] : null;
+              const delta = prev ? (m.netWorth - prev.netWorth) : 0;
+              const deltaSign = delta >= 0 ? '+' : '';
+              const isLatest = idx === milestones.length - 1;
+              return `
+                <div class="finance-milestone-chip ${isLatest ? 'active' : ''}">
+                  <span class="finance-milestone-date">${m.date}</span>
+                  <span class="finance-milestone-nw">$${(m.netWorth / 1e6).toFixed(2)}M</span>
+                  ${prev ? `
+                    <span class="finance-milestone-delta" style="color: ${delta >= 0 ? '#0D9488' : '#E11D48'};">
+                      ${deltaSign}$${Math.round(delta / 1e3)}k
+                    </span>
+                  ` : `
+                    <span class="finance-milestone-delta" style="color: var(--text-muted);">Baseline</span>
+                  `}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- 6. Active Accounts Ledger & Class Filter Strip -->
+      <div class="finance-section-box">
+        <div class="finance-section-header" style="flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 class="finance-section-title">
+              <i data-lucide="wallet" style="width: 18px; height: 18px; color: #0D9488;"></i>
+              <span>Active Accounts Ledger (${filteredAccounts.length} of ${accounts.length})</span>
+            </h3>
+            <span style="font-size: 0.76rem; color: var(--text-muted);">Reconciled institutional balances as of ${asOfDate}</span>
+          </div>
+
+          <!-- Ledger Search Input -->
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="position: relative; width: 220px;">
+              <input type="text" class="form-control" placeholder="Search account..." value="${escapeHtml(financeNwSearchQuery)}" oninput="handleFinanceNwSearch(event)" style="font-size: 0.78rem; padding: 4px 10px 4px 28px; border-radius: 999px;">
+              <i data-lucide="search" style="position: absolute; left: 9px; top: 7px; width: 13px; height: 13px; color: var(--text-muted);"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter Pills Row -->
+        <div class="finance-nw-filters" style="margin-bottom: 14px;">
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'all' ? 'active' : ''}" onclick="setFinanceNwClassFilter('all')">
+            All (${accounts.length})
+          </button>
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'retirement' ? 'active' : ''}" onclick="setFinanceNwClassFilter('retirement')">
+            Retirement (${classBreakdown.retirement.count})
+          </button>
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'brokerage' ? 'active' : ''}" onclick="setFinanceNwClassFilter('brokerage')">
+            Brokerage &amp; RSUs (${classBreakdown.brokerage.count})
+          </button>
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'realestate' ? 'active' : ''}" onclick="setFinanceNwClassFilter('realestate')">
+            Real Estate (${classBreakdown.realestate.count})
+          </button>
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'cash' ? 'active' : ''}" onclick="setFinanceNwClassFilter('cash')">
+            Cash (${classBreakdown.cash.count})
+          </button>
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'education' ? 'active' : ''}" onclick="setFinanceNwClassFilter('education')">
+            529 Plan (${classBreakdown.education.count})
+          </button>
+          <button class="finance-nw-filter-pill ${financeNwClassFilter === 'liability' ? 'active' : ''}" onclick="setFinanceNwClassFilter('liability')">
+            Liabilities (${classBreakdown.liability.count})
+          </button>
+        </div>
+
+        <!-- Accounts Grid -->
+        <div class="finance-accounts-grid">
+          ${filteredAccounts.map(acc => {
+            const isLiab = acc.assetClass === 'liability';
+            const bal = parseFloat(acc.balance) || 0;
+            const balColor = isLiab ? '#E11D48' : '#0D9488';
+            return `
+              <div class="finance-acc-card" style="${isLiab ? 'border-left: 3px solid #E11D48;' : ''}">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                  <div style="min-width: 0;">
+                    <strong style="font-size: 0.88rem; color: var(--text-primary); display: block; line-height: 1.25;" title="${escapeHtml(acc.name)}">
+                      ${escapeHtml(acc.name)}
+                    </strong>
+                    <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">
+                      ${escapeHtml(acc.institution || 'Institutional')} &bull; ${escapeHtml(acc.subType || acc.assetClass)}
+                    </div>
+                  </div>
+                  ${acc.apy ? `<span class="zlog-ood-badge funded" style="font-size: 0.66rem; flex-shrink: 0;">APY ${escapeHtml(acc.apy)}</span>` : ''}
+                </div>
+                <div class="finance-kpi-value" style="font-size: 1.3rem; color: ${balColor}; margin: 8px 0 3px 0;">
+                  ${isLiab ? '-' : ''}$${Math.abs(bal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.70rem; color: var(--text-muted);">
+                  <span>Class: <strong style="text-transform: capitalize;">${escapeHtml(acc.assetClass)}</strong></span>
+                  <span>${escapeHtml(acc.updated || asOfDate)}</span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+
+      <!-- 7. Compact Balances CSV Upload / Drag-and-Drop Zone -->
+      <div class="monarch-dropzone-compact" id="balances-dropzone-el" onclick="triggerBalancesFileInput()">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; width: 100%;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="monarch-dropzone-icon" style="width: 34px; height: 34px; margin: 0; background: var(--bg-card); color: #0D9488; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="upload-cloud" style="width: 18px; height: 18px;"></i>
+            </div>
+            <div style="text-align: left;">
+              <strong style="font-size: 0.86rem; color: var(--text-primary); display: block;">Sync Monarch Balances CSV</strong>
+              <span style="font-size: 0.74rem; color: var(--text-muted);">Drop Balances_*.csv to refresh Net Worth, 35 accounts &amp; historical milestones</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: 8px;" onclick="event.stopPropagation()">
+            <button class="btn btn-secondary" onclick="triggerBalancesFileInput()" style="font-size: 0.74rem; padding: 4px 10px;">
+              <i data-lucide="folder-open" style="width: 12px; height: 12px;"></i>
+              <span>Browse Balances CSV</span>
+            </button>
+          </div>
+        </div>
+        <input type="file" id="balances-file-input" accept=".csv" style="display: none;" onchange="handleBalancesFileSelected(event)">
       </div>
 
     </div>
   `;
 
+  // Attach drag and drop listeners to balances dropzone
+  setupBalancesDropzoneListeners();
   if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+
+function setupBalancesDropzoneListeners() {
+  const dropzone = document.getElementById('balances-dropzone-el');
+  if (!dropzone) return;
+
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.add('dragover');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropzone.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.remove('dragover');
+    }, false);
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        parseAndLoadBalancesCSV(ev.target.result);
+      };
+      reader.readAsText(file);
+    }
+  }, false);
+}
+
+function triggerBalancesFileInput() {
+  let input = document.getElementById('balances-file-input');
+  if (!input) {
+    input = document.createElement('input');
+    input.type = 'file';
+    input.id = 'balances-file-input';
+    input.accept = '.csv';
+    input.style.display = 'none';
+    input.addEventListener('change', handleBalancesFileSelected);
+    document.body.appendChild(input);
+  }
+  input.click();
+}
+
+function handleBalancesFileSelected(event) {
+  const file = event.target.files && event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      parseAndLoadBalancesCSV(e.target.result);
+    };
+    reader.readAsText(file);
+    try { event.target.value = ''; } catch(e) {}
+  }
+}
+
+function parseAndLoadBalancesCSV(csvText) {
+  try {
+    const rows = parseCSVString(csvText);
+    if (rows.length < 2) {
+      alert('The uploaded balances CSV does not contain enough rows.');
+      return;
+    }
+
+    const headers = rows[0].map(h => h.trim().toLowerCase());
+    const dateIdx = headers.findIndex(h => h.includes('date') && !h.includes('updated'));
+    const accountIdx = headers.findIndex(h => h === 'account' || (h.includes('account') && !h.includes('type')));
+    const typeIdx = headers.findIndex(h => h.includes('account type') || h.includes('type'));
+    const subTypeIdx = headers.findIndex(h => h.includes('subtype'));
+    const balanceIdx = headers.findIndex(h => h.includes('balance'));
+    const updatedIdx = headers.findIndex(h => h.includes('updated'));
+
+    if (balanceIdx === -1 || accountIdx === -1) {
+      alert('Could not locate "Account" and "Balance" columns in this CSV file.');
+      return;
+    }
+
+    let maxDate = '';
+    const dateGroups = {};
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      if (!row || row.length === 0) continue;
+      const dStr = (row[dateIdx] || '').trim();
+      if (!dStr) continue;
+      if (dStr > maxDate) maxDate = dStr;
+      if (!dateGroups[dStr]) dateGroups[dStr] = [];
+      dateGroups[dStr].push(row);
+    }
+
+    if (!maxDate || !dateGroups[maxDate]) {
+      alert('Could not determine snapshot dates in this CSV.');
+      return;
+    }
+
+    const classifyAccount = (name, type, subType, bal) => {
+      const n = name.toLowerCase();
+      const t = type.toLowerCase();
+      const st = subType.toLowerCase();
+
+      if (t === 'loan' || t === 'credit card' || st.includes('credit') || st.includes('mortgage') || st.includes('loan')) {
+        return 'liability';
+      }
+      if (bal < 0) return 'liability';
+
+      if (t === 'real estate' || t === 'asset' || st.includes('residence') || st.includes('vehicle') || st.includes('property')) {
+        return 'realestate';
+      }
+
+      if (t.includes('retirement') || st.includes('401') || st.includes('ira') || n.includes('401k') || n.includes('ira')) {
+        return 'retirement';
+      }
+
+      if (st.includes('529') || n.includes('529') || t.includes('education')) {
+        return 'education';
+      }
+
+      if (n.includes('equity awards') || n.includes('rsu')) {
+        return 'equity';
+      }
+
+      if (t.includes('brokerage') || t.includes('investment') || st.includes('brokerage')) {
+        return 'brokerage';
+      }
+
+      if (t.includes('depository') || t.includes('cash') || st.includes('checking') || st.includes('savings') || st.includes('cd')) {
+        return 'cash';
+      }
+
+      return 'brokerage';
+    };
+
+    const getInstitutionFromName = (name, type) => {
+      const n = name.toLowerCase();
+      if (n.includes('google')) return 'Google / ERCO';
+      if (n.includes('schwab')) return 'Schwab';
+      if (n.includes('chase') || n.includes('csp') || n.includes('cff')) return 'Chase';
+      if (n.includes('capital one') || n.includes('360')) return 'Capital One';
+      if (n.includes('amex') || n.includes('american express')) return 'Amex';
+      if (n.includes('fidelity')) return 'Fidelity';
+      if (n.includes('citi')) return 'Citi';
+      if (n.includes('stonewall') || n.includes('livingston')) return 'Livingston NJ';
+      if (n.includes('tesla')) return 'Tesla';
+      return type || 'Other';
+    };
+
+    const latestRows = dateGroups[maxDate];
+    const parsedAccounts = [];
+    let totalAssets = 0;
+    let totalLiabilities = 0;
+    let liquidCash = 0;
+
+    latestRows.forEach((r, idx) => {
+      const name = (r[accountIdx] || '').trim();
+      if (!name) return;
+      const rawBal = (r[balanceIdx] || '0').replace(/[\$,]/g, '').trim();
+      const bal = parseFloat(rawBal) || 0;
+      const type = (typeIdx !== -1 && r[typeIdx]) ? r[typeIdx].trim() : '';
+      const subType = (subTypeIdx !== -1 && r[subTypeIdx]) ? r[subTypeIdx].trim() : '';
+      const updated = (updatedIdx !== -1 && r[updatedIdx]) ? r[updatedIdx].trim() : maxDate;
+
+      const assetClass = classifyAccount(name, type, subType, bal);
+
+      if (assetClass === 'liability') {
+        const liabBal = bal > 0 ? -bal : bal;
+        totalLiabilities += Math.abs(liabBal);
+        parsedAccounts.push({
+          id: `acc-${idx}-${Date.now()}`,
+          name,
+          balance: liabBal,
+          assetClass,
+          subType: subType || (type === 'loan' ? 'Mortgage' : 'Revolving Credit'),
+          institution: getInstitutionFromName(name, type),
+          updated
+        });
+      } else {
+        totalAssets += bal;
+        if (assetClass === 'cash') {
+          liquidCash += bal;
+        }
+        parsedAccounts.push({
+          id: `acc-${idx}-${Date.now()}`,
+          name,
+          balance: bal,
+          assetClass,
+          subType: subType || type,
+          institution: getInstitutionFromName(name, type),
+          updated
+        });
+      }
+    });
+
+    parsedAccounts.sort((a, b) => {
+      if (a.assetClass === 'liability' && b.assetClass !== 'liability') return 1;
+      if (a.assetClass !== 'liability' && b.assetClass === 'liability') return -1;
+      return Math.abs(b.balance) - Math.abs(a.balance);
+    });
+
+    const sortedDates = Object.keys(dateGroups).sort();
+    const milestoneDates = new Set();
+    sortedDates.forEach(d => {
+      if (d.endsWith('-01')) milestoneDates.add(d);
+    });
+    if (sortedDates.length > 0) {
+      milestoneDates.add(sortedDates[0]);
+      milestoneDates.add(maxDate);
+    }
+
+    const milestones = Array.from(milestoneDates).sort().map(d => {
+      const dayRows = dateGroups[d];
+      let dayAssets = 0;
+      let dayLiabilities = 0;
+      dayRows.forEach(r => {
+        const rawBal = (r[balanceIdx] || '0').replace(/[\$,]/g, '').trim();
+        const bal = parseFloat(rawBal) || 0;
+        const name = (r[accountIdx] || '').trim();
+        const type = (typeIdx !== -1 && r[typeIdx]) ? r[typeIdx].trim() : '';
+        const subType = (subTypeIdx !== -1 && r[subTypeIdx]) ? r[subTypeIdx].trim() : '';
+        const cls = classifyAccount(name, type, subType, bal);
+        if (cls === 'liability') {
+          dayLiabilities += Math.abs(bal);
+        } else {
+          dayAssets += bal;
+        }
+      });
+      return {
+        date: d,
+        assets: parseFloat(dayAssets.toFixed(2)),
+        liabilities: parseFloat(dayLiabilities.toFixed(2)),
+        netWorth: parseFloat((dayAssets - dayLiabilities).toFixed(2))
+      };
+    });
+
+    const netWorthData = {
+      asOfDate: maxDate,
+      totalAssets: parseFloat(totalAssets.toFixed(2)),
+      totalLiabilities: parseFloat(totalLiabilities.toFixed(2)),
+      netWorth: parseFloat((totalAssets - totalLiabilities).toFixed(2)),
+      liquidCash: parseFloat(liquidCash.toFixed(2)),
+      accounts: parsedAccounts,
+      milestones
+    };
+
+    storage.saveFinanceNetWorth(netWorthData);
+
+    if (typeof showToast === 'function') {
+      showToast(`✓ Loaded Balances CSV! Net Worth: $${Math.round(netWorthData.netWorth).toLocaleString()} across ${parsedAccounts.length} accounts.`, 'success');
+    }
+    renderFinanceRunway();
+  } catch (err) {
+    console.error('Failed to parse balances CSV:', err);
+    alert('Failed to parse balances CSV: ' + err.message);
+  }
 }
 
 /* ==========================================================================
@@ -1361,7 +2178,12 @@ function processMonarchCSVFile(file) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const text = e.target.result;
-    parseAndLoadMonarchCSV(text);
+    const lowerFirstLine = (text.slice(0, 1000) || '').toLowerCase();
+    if (lowerFirstLine.includes('balance') && lowerFirstLine.includes('account') && !lowerFirstLine.includes('merchant')) {
+      parseAndLoadBalancesCSV(text);
+    } else {
+      parseAndLoadMonarchCSV(text);
+    }
   };
   reader.readAsText(file);
 }
@@ -1381,6 +2203,10 @@ function parseAndLoadMonarchCSV(csvText) {
     }
 
     const headers = rows[0].map(h => h.trim().toLowerCase());
+    if (headers.includes('balance') && headers.includes('account') && !headers.includes('merchant')) {
+      parseAndLoadBalancesCSV(csvText);
+      return;
+    }
     const dateIdx = headers.findIndex(h => h.includes('date'));
     const merchantIdx = headers.findIndex(h => h.includes('merchant') || h.includes('description') || h.includes('payee'));
     const categoryIdx = headers.findIndex(h => h.includes('category'));
