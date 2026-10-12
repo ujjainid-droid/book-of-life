@@ -15,23 +15,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_CLEAN_RECONCILED_V5';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V12';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
-          const claimsMap = new Map();
-          DEFAULT_REAL_CLAIMS.forEach(c => {
-            if (c && c.id) claimsMap.set(c.id, { ...c });
-          });
-          if (Array.isArray(this.data.claims)) {
-            this.data.claims.forEach(c => {
-              if (c && c.id && /^claim-\d{10,}-/.test(c.id) && !claimsMap.has(c.id)) {
-                claimsMap.set(c.id, { ...c });
-              }
-            });
-          }
-          this.data.claims = Array.from(claimsMap.values());
-          this.data.claimsSeedVersion = 5;
+          this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
+          this.data.claimsSeedVersion = 12;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -1663,14 +1652,28 @@ class StorageManager {
   // --- Medical Claims & Recovery Methods ---
 
   getClaims() {
-    if (!Array.isArray(this.data.claims)) this.data.claims = [];
+    if (!Array.isArray(this.data.claims) || this.data.claims.length === 0) {
+      if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
+        this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
+      } else {
+        this.data.claims = [];
+      }
+    }
+
+    const realIds = (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS))
+      ? new Set(DEFAULT_REAL_CLAIMS.map(c => c.id))
+      : new Set();
+
     this.data.claims = this.data.claims.filter(c => {
       if (!c || !c.id) return false;
       if (c.id.startsWith('claim-demo-')) return false;
       if (c.id === 'claim-ms-01') return false;
       if (/^claim-barness-\d+$/.test(c.id)) return false;
-      return true;
+      if (realIds.has(c.id)) return true;
+      if (/^claim-\d{13,}-/.test(c.id)) return true;
+      return false;
     });
+
     return this.data.claims;
   }
 

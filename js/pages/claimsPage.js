@@ -90,22 +90,51 @@ function renderClaimsPage(targetContainer) {
         </div>
       </div>
 
-      <!-- 2. Quiet 3-Stat Summary Strip -->
-      <div class="claims-summary-strip">
-        <div class="claims-stat-item highlight">
-          <span class="claims-stat-number">$${stats.totalPendingRecovery.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          <span class="claims-stat-desc">pending recovery ($${stats.totalFloatingSpend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} floating)</span>
+      <!-- 2. The 3 Dedicated Metric Widgets (Requested by User) -->
+      <div class="claims-widgets-grid">
+        
+        <!-- Widget a: $ Pending Reimbursement -->
+        <div class="claims-widget-card highlight">
+          <div class="claims-widget-header">
+            <span class="claims-widget-label">Pending Reimbursement</span>
+            <span class="claims-widget-badge">Floating</span>
+          </div>
+          <div class="claims-widget-value">$${stats.totalPendingRecovery.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="claims-widget-sub">$${stats.totalFloatingSpend.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} paid out-of-pocket</div>
         </div>
-        <div class="claims-stat-divider"></div>
-        <div class="claims-stat-item ${counts.readyToSend + counts.missingDeposit > 0 ? 'alert' : ''}">
-          <span class="claims-stat-number">${counts.readyToSend + counts.missingDeposit}</span>
-          <span class="claims-stat-desc">need action (${counts.readyToSend} unfiled &bull; ${counts.missingDeposit} missing deposits)</span>
+
+        <!-- Widget b: Number of Open Claims -->
+        <div class="claims-widget-card" onclick="setClaimsFilter('all')" style="cursor: pointer;" title="Click to view all open claims">
+          <div class="claims-widget-header">
+            <span class="claims-widget-label">Open Claims</span>
+            <span class="claims-widget-badge" style="background:rgba(139, 92, 246, 0.12); color:#7C3AED;">${counts.allActive} Active</span>
+          </div>
+          <div class="claims-widget-value" style="color:var(--text-primary);">${counts.allActive}</div>
+          <div class="claims-widget-sub">Awaiting filing, review, or deposit</div>
         </div>
-        <div class="claims-stat-divider"></div>
-        <div class="claims-stat-item">
-          <span class="claims-stat-number">$${stats.totalSettled.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          <span class="claims-stat-desc">settled in bank (${counts.settled} visits)</span>
+
+        <!-- Widget c: To File, Missing Deposits, In Flight -->
+        <div class="claims-widget-card">
+          <div class="claims-widget-header">
+            <span class="claims-widget-label">Action Breakdown</span>
+            <span class="claims-widget-sub" style="margin:0; font-size:0.7rem;">Click to filter</span>
+          </div>
+          <div class="claims-breakdown-row">
+            <button type="button" class="claims-breakdown-chip ${activeClaimsFilter === 'ready_to_send' ? 'active' : ''}" onclick="setClaimsFilter('ready_to_send')">
+              <span>📤 To File</span>
+              <span class="chip-count" style="font-weight:700; color:var(--primary);">${counts.readyToSend}</span>
+            </button>
+            <button type="button" class="claims-breakdown-chip ${activeClaimsFilter === 'check_due' ? 'active' : ''}" onclick="setClaimsFilter('check_due')">
+              <span style="color:#E11D48;">⚠️ Missing Deposits</span>
+              <span class="chip-count" style="font-weight:700; color:#E11D48;">${counts.missingDeposit}</span>
+            </button>
+            <button type="button" class="claims-breakdown-chip ${activeClaimsFilter === 'with_included_health' ? 'active' : ''}" onclick="setClaimsFilter('with_included_health')">
+              <span>⏳ In Flight</span>
+              <span class="chip-count" style="font-weight:700; color:var(--text-secondary);">${counts.inFlight}</span>
+            </button>
+          </div>
         </div>
+
       </div>
 
       <!-- 3. Fast Log Visit (1-line + Quick Chips) -->
