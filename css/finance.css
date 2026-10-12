@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Book of Life / Life OS - Personal Finance Hub Styling (Nordic Emerald)
+   Book of Life / Life OS - Personal Finance Hub Styling (Obsidian & Frost Blue)
    ========================================================================== */
 
 :root {
-  --fin-primary: #0F766E; /* Sovereign Marine Teal */
-  --fin-primary-hover: #115E59;
-  --fin-primary-light: rgba(15, 118, 110, 0.08);
-  --fin-primary-border: rgba(15, 118, 110, 0.28);
+  --fin-primary: #0284C7; /* Frost Steel Blue */
+  --fin-primary-hover: #0369A1;
+  --fin-primary-light: rgba(2, 132, 199, 0.08);
+  --fin-primary-border: rgba(2, 132, 199, 0.28);
   --fin-violet: #7C3AED;
   --fin-violet-hover: #6D28D9;
   --fin-violet-light: #F5F3FF;
@@ -20,10 +20,10 @@
 }
 
 [data-theme="dark"] {
-  --fin-primary: #2DD4BF;
-  --fin-primary-hover: #14B8A6;
-  --fin-primary-light: rgba(45, 212, 191, 0.15);
-  --fin-primary-border: rgba(45, 212, 191, 0.35);
+  --fin-primary: #38BDF8; /* Radiant Frost Ice */
+  --fin-primary-hover: #7DD3FC;
+  --fin-primary-light: rgba(56, 189, 248, 0.15);
+  --fin-primary-border: rgba(56, 189, 248, 0.35);
   --fin-violet: #8B5CF6;
   --fin-violet-hover: #A78BFA;
   --fin-violet-light: rgba(139, 92, 246, 0.15);
@@ -94,17 +94,17 @@
 }
 
 .finance-subnav-btn.active {
-  background: linear-gradient(135deg, #0F766E 0%, #115E59 100%);
+  background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%);
   color: #FFFFFF;
-  border-color: #0F766E;
-  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.35);
+  border-color: #0284C7;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
 }
 
 /* --------------------------------------------------------------------------
    Hero Card & KPI Cards
    -------------------------------------------------------------------------- */
 .finance-hero-card {
-  background: linear-gradient(135deg, rgba(15, 118, 110, 0.08) 0%, rgba(17, 94, 89, 0.02) 100%);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.06) 0%, rgba(15, 23, 42, 0.02) 100%);
   border: 1.5px solid var(--fin-primary-border);
   border-radius: var(--radius-lg, 14px);
   padding: 22px 24px;
@@ -123,7 +123,7 @@
   font-family: var(--font-serif, "Newsreader", Georgia, serif);
   font-size: 1.55rem;
   font-weight: 700;
-  color: #0F766E;
+  color: #0369A1;
   margin: 0 0 4px 0;
   display: flex;
   align-items: center;
@@ -131,7 +131,7 @@
 }
 
 [data-theme="dark"] .finance-hero-title {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .finance-hero-sub {
@@ -147,14 +147,14 @@
 }
 
 .finance-kpi-card {
-  background: linear-gradient(135deg, #115E59 0%, #042F2E 100%);
-  border: 1.5px solid rgba(45, 212, 191, 0.35);
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.3);
   border-radius: var(--radius-md, 10px);
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  box-shadow: 0 4px 14px rgba(4, 47, 46, 0.2);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
@@ -167,19 +167,19 @@
   left: 0;
   right: 0;
   height: 3.5px;
-  background: linear-gradient(90deg, #14B8A6 0%, #2DD4BF 100%);
+  background: linear-gradient(90deg, #38BDF8 0%, #0284C7 100%);
 }
 
 .finance-kpi-card:hover {
   transform: translateY(-2px);
-  border-color: #2DD4BF;
-  box-shadow: 0 8px 22px rgba(4, 47, 46, 0.3);
+  border-color: #38BDF8;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.35);
 }
 
 [data-theme="dark"] .finance-kpi-card {
-  background: linear-gradient(135deg, #042F2E 0%, #021E1D 100%);
-  border: 1.5px solid rgba(45, 212, 191, 0.4);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(135deg, #18181B 0%, #09090B 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
 }
 
 .finance-kpi-label {
@@ -187,14 +187,14 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #CCFBF1;
+  color: #BAE6FD;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 [data-theme="dark"] .finance-kpi-label {
-  color: #99F6E4;
+  color: #7DD3FC;
 }
 
 .finance-kpi-value {
@@ -203,7 +203,7 @@
   font-weight: 800;
   color: #FFFFFF;
   line-height: 1.2;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="dark"] .finance-kpi-value {
@@ -213,11 +213,11 @@
 .finance-kpi-sub {
   font-size: 0.74rem;
   font-weight: 600;
-  color: #5EEAD4;
+  color: #38BDF8;
 }
 
 [data-theme="dark"] .finance-kpi-sub {
-  color: #2DD4BF;
+  color: #7DD3FC;
 }
 
 /* --------------------------------------------------------------------------
@@ -306,13 +306,13 @@
 
 .finance-flag-pill.safe {
   background: var(--fin-primary-light);
-  color: #0F766E;
+  color: #0284C7;
   border: 1px solid var(--fin-primary-border);
 }
 
 [data-theme="dark"] .finance-flag-pill.safe {
-  background: rgba(6, 95, 70, 0.3);
-  color: #A7F3D0;
+  background: rgba(2, 132, 199, 0.2);
+  color: #7DD3FC;
 }
 
 /* --------------------------------------------------------------------------
@@ -719,23 +719,23 @@
 }
 
 .finance-nw-tile-card.card-runway .finance-nw-tile-hero {
-  color: #0D9488;
+  color: #0284C7;
 }
 
 [data-theme="dark"] .finance-nw-tile-card.card-runway .finance-nw-tile-hero {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .finance-nw-tile-card.card-runway .finance-nw-tile-badge {
-  background: rgba(13, 148, 136, 0.08);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.22);
+  background: rgba(2, 132, 199, 0.08);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.22);
 }
 
 [data-theme="dark"] .finance-nw-tile-card.card-runway .finance-nw-tile-badge {
-  background: rgba(13, 148, 136, 0.2);
-  color: #5EEAD4;
-  border-color: rgba(13, 148, 136, 0.4);
+  background: rgba(2, 132, 199, 0.2);
+  color: #7DD3FC;
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
 /* Card 3: Asset Allocation - Distinct Indigo Theme */
@@ -779,22 +779,22 @@
 }
 
 [data-theme="dark"] .finance-nw-tile-badge {
-  background: rgba(13, 148, 136, 0.18);
-  color: #2DD4BF;
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(2, 132, 199, 0.18);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.35);
 }
 
 .finance-nw-tile-hero {
   font-family: var(--font-mono, "JetBrains Mono", monospace);
   font-size: 1.85rem;
   font-weight: 800;
-  color: #0D9488;
+  color: #0284C7;
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
 
 [data-theme="dark"] .finance-nw-tile-hero {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .finance-nw-tile-sub {
@@ -1037,9 +1037,9 @@
 }
 
 [data-theme="dark"] .finance-sparkline-gain-badge {
-  background: rgba(13, 148, 136, 0.2);
-  color: #2DD4BF;
-  border-color: rgba(13, 148, 136, 0.38);
+  background: rgba(2, 132, 199, 0.2);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.38);
 }
 
 .finance-sparkline-svg-wrap {
@@ -1170,8 +1170,8 @@
 }
 
 [data-theme="dark"] .finance-sparkline-col-delta.pos {
-  background: rgba(13, 148, 136, 0.18);
-  color: #2DD4BF;
+  background: rgba(2, 132, 199, 0.18);
+  color: #38BDF8;
 }
 
 .finance-sparkline-col-delta.neg {
@@ -1195,7 +1195,7 @@
 }
 
 [data-theme="dark"] .finance-milestone-delta {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 /* Ledger & Filter Pills (Collapsible) */
@@ -1218,7 +1218,7 @@
 .finance-ledger-collapse-btn:hover {
   background: var(--bg-card, #FFFFFF);
   color: var(--text-primary);
-  border-color: #0D9488;
+  border-color: #0284C7;
 }
 
 [data-theme="dark"] .finance-ledger-collapse-btn {
@@ -1230,7 +1230,7 @@
 [data-theme="dark"] .finance-ledger-collapse-btn:hover {
   background: rgba(30, 41, 59, 0.9);
   color: #F8FAFC;
-  border-color: #2DD4BF;
+  border-color: #38BDF8;
 }
 
 .finance-nw-filters {
@@ -1285,7 +1285,7 @@
   font-size: 0.78rem;
   font-weight: 700;
   background: var(--fin-primary-light);
-  color: #0F766E;
+  color: #0284C7;
 }
 
 .finance-accounts-grid {
@@ -1343,7 +1343,7 @@
    Page 1: Cash Flow Split Hero & Month Selector
    -------------------------------------------------------------------------- */
 .finance-flow-hero {
-  background: linear-gradient(135deg, rgba(15, 118, 110, 0.09) 0%, rgba(17, 94, 89, 0.03) 100%);
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.07) 0%, rgba(15, 23, 42, 0.02) 100%);
   border: 1.5px solid var(--fin-primary-border);
   border-radius: var(--radius-lg, 14px);
   padding: 22px 24px;
@@ -1382,21 +1382,21 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  background: #E6F4F2;
+  background: #F0F9FF;
   padding: 3px;
   border-radius: 999px;
-  border: 1.5px solid rgba(15, 118, 110, 0.25);
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
 }
 
 [data-theme="dark"] .finance-period-capsules {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(45, 212, 191, 0.3);
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .finance-period-btn {
   border: none;
   background: transparent;
-  color: #0F766E;
+  color: #0369A1;
   font-size: 0.76rem;
   font-weight: 700;
   padding: 5px 12px;
@@ -1407,19 +1407,19 @@
 }
 
 .finance-period-btn:hover {
-  color: #115E59;
+  color: #0284C7;
 }
 
 .finance-period-btn.active {
-  background: #0F766E;
+  background: #0284C7;
   color: #FFFFFF;
   font-weight: 800;
-  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
 }
 
 [data-theme="dark"] .finance-period-btn.active {
-  background: #14B8A6;
-  color: #042F2E;
+  background: #38BDF8;
+  color: #0F172A;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
@@ -1436,7 +1436,7 @@
 
 .monarch-dropzone-compact:hover {
   border-color: var(--fin-primary);
-  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.15);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
 }
 
 .finance-month-selector {
@@ -1444,18 +1444,18 @@
   align-items: center;
   gap: 8px;
   background: #FFFFFF;
-  border: 1.5px solid rgba(15, 118, 110, 0.25);
+  border: 1.5px solid rgba(2, 132, 199, 0.25);
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #0F766E;
+  color: #0284C7;
 }
 
 [data-theme="dark"] .finance-month-selector {
   background: var(--bg-surface, #1E293B);
-  border-color: rgba(45, 212, 191, 0.3);
-  color: #2DD4BF;
+  border-color: rgba(56, 189, 248, 0.3);
+  color: #38BDF8;
 }
 
 .finance-month-select-input {
@@ -1463,13 +1463,13 @@
   background: transparent;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #0F766E;
+  color: #0284C7;
   cursor: pointer;
   outline: none;
 }
 
 [data-theme="dark"] .finance-month-select-input {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .finance-flow-split-grid {
@@ -1487,7 +1487,7 @@
 
 .finance-flow-col {
   background: #FFFFFF;
-  border: 1.5px solid rgba(15, 118, 110, 0.25);
+  border: 1.5px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-md, 12px);
   padding: 16px 18px;
   display: flex;
@@ -1496,18 +1496,18 @@
   position: relative;
   transition: all var(--transition-fast);
   min-width: 0;
-  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.04);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.04);
 }
 
 .finance-flow-col:hover {
   transform: translateY(-1px);
-  border-color: #0F766E;
-  box-shadow: 0 6px 18px rgba(15, 118, 110, 0.1);
+  border-color: #0284C7;
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.12);
 }
 
 [data-theme="dark"] .finance-flow-col {
   background: rgba(30, 41, 59, 0.7);
-  border-color: rgba(45, 212, 191, 0.25);
+  border-color: rgba(56, 189, 248, 0.25);
 }
 
 .finance-flow-col-header {
@@ -1521,9 +1521,9 @@
 }
 
 .finance-flow-col.surplus-highlight {
-  border-color: #0F766E;
-  background: linear-gradient(135deg, rgba(15, 118, 110, 0.05) 0%, rgba(45, 212, 191, 0.02) 100%);
-  box-shadow: 0 4px 16px rgba(15, 118, 110, 0.12);
+  border-color: #0284C7;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(56, 189, 248, 0.02) 100%);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
 }
 
 .finance-flow-col.deficit-highlight {
@@ -1540,7 +1540,7 @@
   font-size: 0.70rem;
   font-weight: 700;
   background: var(--fin-primary-light);
-  color: #0F766E;
+  color: #0284C7;
   border: 1px solid var(--fin-primary-border);
   white-space: nowrap;
   flex-shrink: 0;
@@ -1683,16 +1683,16 @@
 }
 
 .finance-outlier-filter-btn.baseline {
-  background: rgba(13, 148, 136, 0.06);
-  color: #0F766E;
-  border-color: rgba(13, 148, 136, 0.25);
+  background: rgba(2, 132, 199, 0.06);
+  color: #0284C7;
+  border-color: rgba(2, 132, 199, 0.25);
 }
 
 .finance-outlier-filter-btn.baseline.active {
-  background: #0D9488;
+  background: #0284C7;
   color: #FFFFFF;
-  border-color: #0D9488;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+  border-color: #0284C7;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
 }
 
 .finance-outlier-filter-btn.reduced {
@@ -1917,7 +1917,7 @@
 
 .finance-macro-bar-fixed {
   height: 100%;
-  background: linear-gradient(90deg, #0F766E 0%, #0D9488 100%);
+  background: linear-gradient(90deg, #0284C7 0%, #38BDF8 100%);
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -2199,9 +2199,9 @@
 }
 
 [data-theme="dark"] .finance-cadence-progress-pill.done {
-  background: rgba(13, 148, 136, 0.22);
-  color: #2DD4BF;
-  border-color: rgba(13, 148, 136, 0.4);
+  background: rgba(2, 132, 199, 0.22);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.4);
 }
 
 .finance-cadence-pills-row {
@@ -2388,11 +2388,11 @@
 }
 
 .finance-cadence-pill-btn.done .cadence-pill-num {
-  color: #0D9488;
+  color: #0284C7;
 }
 
 [data-theme="dark"] .finance-cadence-pill-btn.done .cadence-pill-num {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .cadence-pill-title {
@@ -2406,12 +2406,12 @@
 }
 
 .finance-cadence-pill-btn.done .cadence-pill-title {
-  color: #0F766E;
+  color: #0284C7;
   font-weight: 700;
 }
 
 [data-theme="dark"] .finance-cadence-pill-btn.done .cadence-pill-title {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .cadence-pill-action-btn {
@@ -2831,15 +2831,15 @@
 }
 
 .card-roi-surplus-pill.surplus {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.25);
 }
 
 [data-theme="dark"] .card-roi-surplus-pill.surplus {
-  color: #2DD4BF;
-  background: rgba(45, 212, 191, 0.15);
-  border-color: rgba(45, 212, 191, 0.3);
+  color: #38BDF8;
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 /* Benefits Checklist */
@@ -2889,13 +2889,13 @@
 }
 
 .card-benefit-row.realized {
-  border-color: rgba(15, 118, 110, 0.35);
-  background: rgba(15, 118, 110, 0.06);
+  border-color: rgba(2, 132, 199, 0.35);
+  background: rgba(2, 132, 199, 0.06);
 }
 
 [data-theme="dark"] .card-benefit-row.realized {
-  border-color: rgba(45, 212, 191, 0.35);
-  background: rgba(45, 212, 191, 0.08);
+  border-color: rgba(56, 189, 248, 0.35);
+  background: rgba(56, 189, 248, 0.08);
 }
 
 .card-benefit-check-box {
@@ -2913,8 +2913,8 @@
 }
 
 .card-benefit-row.realized .card-benefit-check-box {
-  background: #0F766E;
-  border-color: #0F766E;
+  background: #0284C7;
+  border-color: #0284C7;
   color: #FFFFFF;
 }
 
@@ -2973,11 +2973,11 @@
 }
 
 .card-benefit-row.realized .card-benefit-val {
-  color: #0D9488;
+  color: #0284C7;
 }
 
 [data-theme="dark"] .card-benefit-row.realized .card-benefit-val {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .card-benefit-max {
@@ -2987,8 +2987,8 @@
 
 /* Subscriptions Synergy Banner */
 .subs-synergy-banner {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(13, 148, 136, 0.06) 100%);
-  border: 1px solid rgba(13, 148, 136, 0.22);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(2, 132, 199, 0.06) 100%);
+  border: 1px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-md, 12px);
   padding: 14px 18px;
   display: flex;
@@ -2999,8 +2999,8 @@
 }
 
 [data-theme="dark"] .subs-synergy-banner {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(13, 148, 136, 0.12) 100%);
-  border-color: rgba(45, 212, 191, 0.25);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(56, 189, 248, 0.12) 100%);
+  border-color: rgba(56, 189, 248, 0.25);
 }
 
 .subs-synergy-content {
@@ -3014,8 +3014,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(13, 148, 136, 0.12);
-  color: #0D9488;
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3023,8 +3023,8 @@
 }
 
 [data-theme="dark"] .subs-synergy-icon {
-  background: rgba(45, 212, 191, 0.18);
-  color: #2DD4BF;
+  background: rgba(56, 189, 248, 0.18);
+  color: #38BDF8;
 }
 
 .subs-synergy-text {
@@ -3052,15 +3052,15 @@
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 999px;
-  background: rgba(13, 148, 136, 0.1);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.22);
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284C7;
+  border: 1px solid rgba(2, 132, 199, 0.22);
 }
 
 [data-theme="dark"] .sub-card-synergy-pill {
-  background: rgba(45, 212, 191, 0.14);
-  color: #2DD4BF;
-  border-color: rgba(45, 212, 191, 0.25);
+  background: rgba(56, 189, 248, 0.14);
+  color: #38BDF8;
+  border-color: rgba(56, 189, 248, 0.25);
 }
 
 /* ==========================================================================
@@ -3447,15 +3447,15 @@
 
 .card-roi-claim-toggle.claimed {
   background: rgba(13, 148, 136, 0.12);
-  border-color: #0D9488;
-  color: #0D9488;
+  border-color: #0284C7;
+  color: #0284C7;
   font-weight: 700;
 }
 
 [data-theme="dark"] .card-roi-claim-toggle.claimed {
-  background: rgba(45, 212, 191, 0.15);
-  color: #2DD4BF;
-  border-color: #2DD4BF;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
+  border-color: #38BDF8;
 }
 
 /* Total Saved Column */
@@ -3473,13 +3473,13 @@
 }
 
 .card-roi-saved-pill.has-savings {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0D9488;
+  background: rgba(2, 132, 199, 0.12);
+  color: #0284C7;
 }
 
 [data-theme="dark"] .card-roi-saved-pill.has-savings {
-  background: rgba(45, 212, 191, 0.15);
-  color: #2DD4BF;
+  background: rgba(56, 189, 248, 0.15);
+  color: #38BDF8;
 }
 
 /* Actions */

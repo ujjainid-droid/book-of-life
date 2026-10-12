@@ -400,7 +400,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🛡️ Fixed (50% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: #0F766E;">${fixedPct}%</span>
+              <span class="finance-target-pct-hero" style="color: var(--fin-primary);">${fixedPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFixedAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -503,15 +503,15 @@ function renderFinanceRecurringCommitmentsSection() {
         </div>
 
         <!-- 2. Reimbursed -->
-        <div class="finance-kpi-card" style="border-top: 3.5px solid #0D9488; padding: 12px 16px;">
+        <div class="finance-kpi-card" style="border-top: 3.5px solid #38BDF8; padding: 12px 16px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span class="finance-kpi-label">
-              <i data-lucide="check-check" style="width: 12px; height: 12px; color: #0D9488;"></i>
+              <i data-lucide="check-check" style="width: 12px; height: 12px; color: #38BDF8;"></i>
               Reimbursed
             </span>
             <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem;">100% Card Offset</span>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #0D9488;">
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: #FFFFFF;">
             $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: var(--text-muted);">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(coveredMonthlySubs * 12).toFixed(2)}/yr card synergy offset (Disney+, NYT, Walmart+)</span>
@@ -791,11 +791,11 @@ function renderFinanceBurn() {
           <div class="finance-flow-col">
             <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
-                <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: #0D9488;"></i>
+                <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: var(--fin-primary);"></i>
                 <span>Total Income Inflow</span>
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: #0F766E;">
+            <span class="finance-kpi-value" style="color: var(--fin-primary);">
               $${periodInflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">Verified salary + distributions</span>
@@ -819,7 +819,7 @@ function renderFinanceBurn() {
           <div class="finance-flow-col ${isPositive ? 'surplus-highlight' : 'deficit-highlight'}">
             <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
-                <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? '#0D9488' : '#E11D48'};"></i>
+                <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? 'var(--fin-primary)' : '#E11D48'};"></i>
                 <span>Net Cash Flow Delta</span>
               </span>
               ${isPositive ? `
@@ -834,7 +834,7 @@ function renderFinanceBurn() {
                 </span>
               `}
             </div>
-            <span class="finance-kpi-value" style="color: ${isPositive ? '#0D9488' : '#E11D48'};">
+            <span class="finance-kpi-value" style="color: ${isPositive ? 'var(--fin-primary)' : '#E11D48'};">
               ${isPositive ? '+' : '-'}$${Math.abs(netCashFlow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">
@@ -922,14 +922,14 @@ function renderFinanceBurn() {
                 <div class="finance-pillar-card-header">
                   <div>
                     <div class="finance-pillar-title">
-                      <i data-lucide="shield-check" style="width: 17px; height: 17px; color: #0D9488;"></i>
+                      <i data-lucide="shield-check" style="width: 17px; height: 17px; color: var(--fin-primary);"></i>
                       <span>Pillar 1: Fixed Commitments</span>
                     </div>
-                    <div class="finance-pillar-amount" style="color: #0F766E;">
+                    <div class="finance-pillar-amount" style="color: var(--fin-primary);">
                       $${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
                   </div>
-                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(13, 148, 136, 0.12); color: #0F766E; border: 1px solid rgba(13, 148, 136, 0.25);">
+                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: var(--fin-primary-light); color: var(--fin-primary); border: 1px solid var(--fin-primary-border);">
                     ${fixedRatioPct}% of spend
                   </span>
                 </div>
@@ -940,7 +940,7 @@ function renderFinanceBurn() {
                     return `
                       <div class="finance-pillar-row">
                         <div class="finance-pillar-row-left">
-                          <i data-lucide="${c.icon || 'shield'}" style="width: 15px; height: 15px; color: #0D9488; flex-shrink: 0;"></i>
+                          <i data-lucide="${c.icon || 'shield'}" style="width: 15px; height: 15px; color: var(--fin-primary); flex-shrink: 0;"></i>
                           <span class="finance-pillar-row-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
                         </div>
                         <div class="finance-pillar-row-right">
@@ -953,7 +953,7 @@ function renderFinanceBurn() {
                 </div>
 
                 <div class="finance-pillar-footer">
-                  <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: #0D9488; flex-shrink: 0;"></i>
+                  <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: var(--fin-primary); flex-shrink: 0;"></i>
                   <span>Shielded baseline floor required to sustain home, health &amp; family.</span>
                 </div>
               </div>
@@ -1645,40 +1645,40 @@ function renderFinanceSubscriptions() {
           </div>
 
           <!-- Card 2: Realized Perks & Credits -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid #0D9488;">
+          <div class="finance-kpi-card" style="border-top: 3.5px solid #38BDF8;">
             <span class="finance-kpi-label">
-              <i data-lucide="gift" style="width: 13px; height: 13px; color: #0D9488;"></i>
+              <i data-lucide="gift" style="width: 13px; height: 13px; color: #38BDF8;"></i>
               Realized Perks &amp; Credits
             </span>
-            <span class="finance-kpi-value" style="color: #0F766E;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
+            <span class="finance-kpi-value" style="color: #FFFFFF;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
             <span class="finance-kpi-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</span>
           </div>
 
           <!-- Card 3: Net Fee ROI & Surplus -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid #0D9488;">
+          <div class="finance-kpi-card" style="border-top: 3.5px solid #38BDF8;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span class="finance-kpi-label">
-                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #0D9488;"></i>
+                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #38BDF8;"></i>
                 Net Fee ROI Surplus
               </span>
               <span class="card-roi-surplus-pill surplus" style="font-size: 0.64rem;">${overallBreakevenPct}% Breakeven</span>
             </div>
-            <span class="finance-kpi-value" style="color: #0D9488;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
+            <span class="finance-kpi-value" style="color: #38BDF8;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);">/yr</span></span>
             <span class="finance-kpi-sub">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</span>
           </div>
 
           <!-- Card 4: Negative Value Cards Widget -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
+          <div class="finance-kpi-card" style="border-top: 3.5px solid ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'}; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span class="finance-kpi-label">
-                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'};"></i>
+                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'};"></i>
                 Negative Value Cards
               </span>
-              <span class="card-roi-surplus-pill" style="font-size: 0.64rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.12)' : 'rgba(13, 148, 136, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(13, 148, 136, 0.25)'};">
+              <span class="card-roi-surplus-pill" style="font-size: 0.64rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.12)' : 'rgba(2, 132, 199, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(56, 189, 248, 0.25)'};">
                 ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'};">
+            <span class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#38BDF8'};">
               ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}
               <span style="font-size: 0.85rem; font-weight: 500; color: var(--text-muted);"> net drag</span>
             </span>
@@ -1762,12 +1762,12 @@ function renderFinanceSubscriptions() {
                     </div>
 
                     <div class="card-roi-sheet-kpi-chip">
-                      <span class="card-roi-sheet-kpi-val" style="color: #0D9488;">$${Math.round(c.cardRealized)}</span>
+                      <span class="card-roi-sheet-kpi-val" style="color: var(--fin-primary);">$${Math.round(c.cardRealized)}</span>
                       <span class="card-roi-sheet-kpi-label">Value Redeemed</span>
                     </div>
 
-                    <div class="card-roi-sheet-kpi-chip" style="border-color: ${isBreakeven ? 'rgba(13, 148, 136, 0.3)' : 'var(--border-color)'};">
-                      <span class="card-roi-sheet-kpi-val" style="color: ${isBreakeven ? '#0D9488' : 'var(--text-muted)'};">
+                    <div class="card-roi-sheet-kpi-chip" style="border-color: ${isBreakeven ? 'var(--fin-primary-border)' : 'var(--border-color)'};">
+                      <span class="card-roi-sheet-kpi-val" style="color: ${isBreakeven ? 'var(--fin-primary)' : 'var(--text-muted)'};">
                         ${surplusSign}$${Math.round(c.netValue)}
                       </span>
                       <span class="card-roi-sheet-kpi-label">${isBreakeven ? 'Net Surplus' : 'Net Value'}</span>
@@ -1792,7 +1792,7 @@ function renderFinanceSubscriptions() {
                   </div>
 
                   <div class="card-roi-meter-track">
-                    <div class="card-roi-meter-fill" style="width: ${meterPct}%; background: ${isBreakeven ? '#0D9488' : (c.color || '#7C3AED')};"></div>
+                    <div class="card-roi-meter-fill" style="width: ${meterPct}%; background: ${isBreakeven ? 'var(--fin-primary)' : (c.color || '#7C3AED')};"></div>
                   </div>
                 </div>
 
@@ -2737,7 +2737,7 @@ function renderFinanceRunway() {
             ${filteredAccounts.map(acc => {
               const isLiab = acc.assetClass === 'liability';
               const bal = parseFloat(acc.balance) || 0;
-              const balColor = isLiab ? '#E11D48' : '#0D9488';
+              const balColor = isLiab ? '#E11D48' : 'var(--fin-primary)';
               return `
                 <div class="finance-acc-card" style="${isLiab ? 'border-left: 3px solid #E11D48;' : ''}">
                   <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
