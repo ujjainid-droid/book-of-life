@@ -2888,13 +2888,95 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-10-11": {
+    "date": "2026-10-11",
+    "rawDate": "Sun, 10 -11- 26",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- mostly good but periods of complaining about being bored and hyper
+- continues to say he does not want to go to the new school
+- got angry at one point when asked to stop playing YT on the Google Home in our room 
+- did a good job eating his dinner of pumpkin soup",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "5mg",
+      "ritDose": "5mg",
+      "mag": false,
+      "magDose": "Daily",
+      "mel": false,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-10-10": {
+    "date": "2026-10-10",
+    "rawDate": "Sat, 10 -10- 26",
+    "rating": 5,
+    "ratingRaw": "Great Day",
+    "aggression": false,
+    "notes": "- good day overall
+- called dojo and asked them to give him a pep talk about ood school
+- little snippy here and there but overall ok
+- didn't do any school work 
+- drove by Newmark; not happy about changing school still",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg",
+      "ritDose": "15mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "2mg"
+    }
+  },
+  "2026-10-09": {
+    "date": "2026-10-09",
+    "rawDate": "Fri, 10 - 9- 26",
+    "rating": 5,
+    "ratingRaw": "Great Day",
+    "aggression": false,
+    "notes": "- good morning
+- good at pickup
+- wanted to play as soon as he got home
+- got snippy when we asked him to put his backpack away forst
+- otherwise good rest of the evening",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": false,
+      "magDose": "Daily",
+      "mel": false,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-10-08": {
     "date": "2026-10-08",
     "rawDate": "Thu, 10 - 8- 26",
-    "rating": null,
-    "ratingRaw": "",
+    "rating": 5,
+    "ratingRaw": "Great Day",
     "aggression": false,
-    "notes": "",
+    "notes": "- good morning
+- did not call from school or aftercare
+- good at pickup and went to MA
+- wasn't 100% focussed but did reasonably well
+- in very good mood in the evening
+- did some math practice but nothing else",
     "meds": {
       "z": true,
       "zDose": "75mg",

@@ -811,7 +811,7 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 14;
+        merged.zlogSeedVersion < 15;
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
@@ -865,7 +865,7 @@ class StorageManager {
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 14;
+        merged.zlogSeedVersion = 15;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);

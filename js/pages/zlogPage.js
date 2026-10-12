@@ -77,7 +77,7 @@ function renderZLogPage(targetSubTab) {
   const currentTitration = storage.getTitrationHistory();
   const hasTit35 = currentTitration.some(t => t && (t.id === 'tit-35' || (t.date === '2026-09-19' && t.medication && t.medication.includes('Risperdal'))));
   const isStaleCorrupted = !storage.data.zlogSeedVersion ||
-    storage.data.zlogSeedVersion < 14 ||
+    storage.data.zlogSeedVersion < 15 ||
     !storage.data.titrationSeedVersion ||
     storage.data.titrationSeedVersion < 7 ||
     currentTitration.length < 35 ||
@@ -138,7 +138,7 @@ function renderZLogPage(targetSubTab) {
         }
       }
       storage.data.zlogEntries = cleanDefaults;
-      storage.data.zlogSeedVersion = 14;
+      storage.data.zlogSeedVersion = 15;
     }
     if (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') {
       const existing = Array.isArray(storage.data.titrationHistory) ? storage.data.titrationHistory : [];
