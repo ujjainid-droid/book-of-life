@@ -278,7 +278,7 @@ function renderFinanceWeeklyCadenceBar() {
     <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#A7F3D0' : '#FF5A5F'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#34D399' : '#E05A47'};"></i>
           <span>Weekly Cadence</span>
           <span class="finance-cadence-sub">&bull; ${escapeHtml(dateLabel)}</span>
         </div>
@@ -400,7 +400,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🛡️ Fixed (50% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: var(--fin-primary);">${fixedPct}%</span>
+              <span class="finance-target-pct-hero" style="color: ${fixedIsUnderOrEqual ? '#3A3A42' : '#E05A47'};">${fixedPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFixedAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -412,7 +412,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">⚡ Flex (25% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: #6D28D9;">${flexPct}%</span>
+              <span class="finance-target-pct-hero" style="color: ${flexIsUnderOrEqual ? '#4F46E5' : '#E05A47'};">${flexPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFlexAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -424,7 +424,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🌱 Savings (25% min)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#065F46' : '#FF5A5F'};">
+              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#0F766E' : '#E05A47'};">
                 ${savingsPct >= 0 ? '' : '-'}${Math.abs(savingsPct)}%
               </span>
               <span class="finance-target-amount">
@@ -693,7 +693,7 @@ function renderFinanceBurn() {
   const otherCategories = categoryList.slice(4);
   const otherSpend = otherCategories.reduce((s, c) => s + c.spent, 0);
 
-  const paretoColors = ['#7C3AED', '#E11D48', '#0D9488', '#4F46E5', '#64748B'];
+  const paretoColors = ['#4F46E5', '#0D9488', '#E05A47', '#6366F1', '#64748B'];
 
   // 1b. Split Pillar Matrix Partition (Fixed Anchors vs. Discretionary Flex)
   const isFixedCategory = (c) => {
@@ -795,11 +795,11 @@ function renderFinanceBurn() {
           <div class="finance-flow-col">
             <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
-                <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: var(--fin-primary);"></i>
+                <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: #0D9488;"></i>
                 <span>Total Income Inflow</span>
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: var(--fin-primary);">
+            <span class="finance-kpi-value" style="color: #0F766E;">
               $${periodInflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">Verified salary + distributions</span>
@@ -809,11 +809,11 @@ function renderFinanceBurn() {
           <div class="finance-flow-col">
             <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
-                <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; color: #FF5A5F;"></i>
+                <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; color: #E05A47;"></i>
                 <span>Total Spend Outflow</span>
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: var(--text-primary);">
+            <span class="finance-kpi-value" style="color: var(--text-primary, #3A3A42);">
               $${periodOutflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">Fixed commitments + discretionary</span>
@@ -823,7 +823,7 @@ function renderFinanceBurn() {
           <div class="finance-flow-col ${isPositive ? 'surplus-highlight' : 'deficit-highlight'}">
             <div class="finance-flow-col-header">
               <span class="finance-kpi-label">
-                <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? '#065F46' : '#FF5A5F'};"></i>
+                <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? '#0F766E' : '#E05A47'};"></i>
                 <span>Net Cash Flow</span>
               </span>
               ${isPositive ? `
@@ -838,7 +838,7 @@ function renderFinanceBurn() {
                 </span>
               `}
             </div>
-            <span class="finance-kpi-value" style="color: ${isPositive ? '#065F46' : '#FF5A5F'};">
+            <span class="finance-kpi-value" style="color: ${isPositive ? '#0F766E' : '#E05A47'};">
               ${isPositive ? '+' : '-'}$${Math.abs(netCashFlow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
             <span class="finance-kpi-sub">
@@ -857,7 +857,7 @@ function renderFinanceBurn() {
         <div class="finance-section-header">
           <div>
             <h3 class="finance-section-title">
-              <i data-lucide="${financeDriversViewMode === 'pillars' ? 'columns-2' : 'bar-chart-3'}" style="width: 18px; height: 18px; color: var(--fin-violet);"></i>
+              <i data-lucide="${financeDriversViewMode === 'pillars' ? 'columns-2' : 'bar-chart-3'}" style="width: 18px; height: 18px; color: #4F46E5;"></i>
               <span>${financeDriversViewMode === 'pillars' ? 'Capital Allocation Matrix (Fixed vs. Flex)' : 'Top Spending Drivers (80/20 Pareto Distribution)'}</span>
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
@@ -901,7 +901,7 @@ function renderFinanceBurn() {
                   <span style="color: #0F766E; font-weight: 700;">
                     🛡️ Fixed Anchors: ${fixedRatioPct}% ($${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
                   </span>
-                  <span style="color: #7C3AED; font-weight: 700;">
+                  <span style="color: #4F46E5; font-weight: 700;">
                     ⚡ Discretionary Flex: ${flexRatioPct}% ($${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
                   </span>
                 </div>
@@ -926,14 +926,14 @@ function renderFinanceBurn() {
                 <div class="finance-pillar-card-header">
                   <div>
                     <div class="finance-pillar-title">
-                      <i data-lucide="shield-check" style="width: 17px; height: 17px; color: var(--fin-primary);"></i>
+                      <i data-lucide="shield-check" style="width: 17px; height: 17px; color: #0D9488;"></i>
                       <span>Pillar 1: Fixed Commitments</span>
                     </div>
-                    <div class="finance-pillar-amount" style="color: var(--fin-primary);">
+                    <div class="finance-pillar-amount" style="color: var(--text-primary, #3A3A42);">
                       $${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
                   </div>
-                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: var(--fin-primary-light); color: var(--fin-primary); border: 1px solid var(--fin-primary-border);">
+                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(13, 148, 136, 0.12); color: #0F766E; border: 1px solid rgba(13, 148, 136, 0.25);">
                     ${fixedRatioPct}% of spend
                   </span>
                 </div>
@@ -944,7 +944,7 @@ function renderFinanceBurn() {
                     return `
                       <div class="finance-pillar-row">
                         <div class="finance-pillar-row-left">
-                          <i data-lucide="${c.icon || 'shield'}" style="width: 15px; height: 15px; color: var(--fin-primary); flex-shrink: 0;"></i>
+                          <i data-lucide="${c.icon || 'shield'}" style="width: 15px; height: 15px; color: #0D9488; flex-shrink: 0;"></i>
                           <span class="finance-pillar-row-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
                         </div>
                         <div class="finance-pillar-row-right">
@@ -957,7 +957,7 @@ function renderFinanceBurn() {
                 </div>
 
                 <div class="finance-pillar-footer">
-                  <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: var(--fin-primary); flex-shrink: 0;"></i>
+                  <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: #0D9488; flex-shrink: 0;"></i>
                   <span>Shielded baseline floor required to sustain home, health &amp; family.</span>
                 </div>
               </div>
@@ -967,14 +967,14 @@ function renderFinanceBurn() {
                 <div class="finance-pillar-card-header">
                   <div>
                     <div class="finance-pillar-title">
-                      <i data-lucide="sliders" style="width: 17px; height: 17px; color: #7C3AED;"></i>
+                      <i data-lucide="sliders" style="width: 17px; height: 17px; color: #4F46E5;"></i>
                       <span>Pillar 2: Discretionary Levers</span>
                     </div>
-                    <div class="finance-pillar-amount" style="color: #6D28D9;">
+                    <div class="finance-pillar-amount" style="color: #4F46E5;">
                       $${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
                   </div>
-                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(124, 58, 237, 0.12); color: #6D28D9; border: 1px solid rgba(124, 58, 237, 0.25);">
+                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(99, 102, 241, 0.12); color: #4F46E5; border: 1px solid rgba(99, 102, 241, 0.25);">
                     ${flexRatioPct}% of spend
                   </span>
                 </div>
@@ -986,7 +986,7 @@ function renderFinanceBurn() {
                     return `
                       <div class="finance-pillar-row">
                         <div class="finance-pillar-row-left">
-                          <i data-lucide="${c.icon || 'sparkles'}" style="width: 15px; height: 15px; color: ${isSpike ? '#FF5A5F' : 'var(--text-primary)'}; flex-shrink: 0;"></i>
+                          <i data-lucide="${c.icon || 'sparkles'}" style="width: 15px; height: 15px; color: ${isSpike ? '#E05A47' : 'var(--text-primary)'}; flex-shrink: 0;"></i>
                           <div>
                             <span class="finance-pillar-row-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
                             ${isSpike ? `
@@ -997,7 +997,7 @@ function renderFinanceBurn() {
                           </div>
                         </div>
                         <div class="finance-pillar-row-right">
-                          <span class="finance-pillar-row-amount" style="color: ${isSpike ? '#FF5A5F' : 'var(--text-primary)'};">$${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
+                          <span class="finance-pillar-row-amount" style="color: ${isSpike ? '#E05A47' : 'var(--text-primary)'};">$${c.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                           <span class="finance-pillar-row-pct">${pct}% of total</span>
                         </div>
                       </div>
@@ -2124,7 +2124,7 @@ function renderFinanceQuarterlyCadenceBar() {
     <div class="finance-cadence-strip-card cadence-strip-quarterly ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#A7F3D0' : '#FF5A5F'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#34D399' : '#E05A47'};"></i>
           <span>Quarterly Review</span>
           <div class="finance-cadence-quarter-capsules">
             <button class="finance-cadence-q-btn ${qKey === '2026-Q3' ? 'active' : ''}" onclick="selectFinanceQuarter('2026-Q3')" title="Review closed Q3 2026 (July – September)">
