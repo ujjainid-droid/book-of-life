@@ -1174,8 +1174,8 @@ function renderZLogCalendar() {
       <div class="zlog-cal-kpi-row">
         <div class="zlog-cal-kpi-card" style="border-left: 3px solid #2563EB;">
           <div class="zlog-cal-kpi-label">Monthly Average Rating</div>
-          <div class="zlog-cal-kpi-val" style="color: #2563EB;">
-            ${avgRating} <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">/ 5</span>
+          <div class="zlog-cal-kpi-val" style="color: #0284C7;">
+            ${avgRating} <span style="font-size: 0.82rem; font-weight: 600; color: #64748B;">/ 5</span>
           </div>
           <div class="zlog-cal-kpi-sub">${totalRatedDays} rated of ${daysInMonth} days</div>
         </div>
@@ -1186,9 +1186,9 @@ function renderZLogCalendar() {
           <div class="zlog-cal-kpi-sub">${goodDaysCount} good or great days</div>
         </div>
 
-        <div class="zlog-cal-kpi-card" style="border-left: 3px solid ${countAggression > 0 ? '#DC2626' : 'var(--border-light)'};">
+        <div class="zlog-cal-kpi-card" style="border-left: 3px solid ${countAggression > 0 ? '#DC2626' : 'rgba(2, 132, 199, 0.22)'};">
           <div class="zlog-cal-kpi-label">Aggression Incidents</div>
-          <div class="zlog-cal-kpi-val" style="color: ${countAggression > 0 ? '#DC2626' : 'var(--text-primary)'};">
+          <div class="zlog-cal-kpi-val" style="color: ${countAggression > 0 ? '#DC2626' : '#1E293B'};">
             ${countAggression}
           </div>
           <div class="zlog-cal-kpi-sub">${percentAgg}% of logged days</div>
@@ -1197,7 +1197,7 @@ function renderZLogCalendar() {
         <div class="zlog-cal-kpi-card" style="border-left: 3px solid #0284C7;">
           <div class="zlog-cal-kpi-label">Month Logging Coverage</div>
           <div class="zlog-cal-kpi-val" style="color: #0284C7;">
-            ${totalDaysWithData} <span style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted);">/ ${daysInMonth}d</span>
+            ${totalDaysWithData} <span style="font-size: 0.82rem; font-weight: 600; color: #64748B;">/ ${daysInMonth}d</span>
           </div>
           <div class="zlog-cal-kpi-sub">${Math.round((totalDaysWithData / daysInMonth) * 100)}% days recorded</div>
         </div>
@@ -1839,12 +1839,12 @@ function renderZLogTitration() {
 
         <div 
           class="zlog-stat-card zlog-regimen-card is-discontinued ${zlogTitrationMedFilter === 'risperdal' ? 'is-active-filter' : ''}" 
-          style="border-left: 4px solid #94A3B8; opacity: 0.75; background: var(--bg-surface);" 
+          style="border-left: 4px solid #94A3B8; opacity: 0.85;" 
           onclick="setTitrationMedFilter('risperdal')"
           title="Click to filter titration history to Risperdal"
         >
-          <div class="zlog-stat-label" style="color: var(--text-muted);">As Needed / PRN</div>
-          <div class="zlog-regimen-name" style="color: var(--text-secondary);" title="Risperdal (risperidone)">Risperdal</div>
+          <div class="zlog-stat-label" style="color: #64748B;">As Needed / PRN</div>
+          <div class="zlog-regimen-name" style="color: #1E293B;" title="Risperdal (risperidone)">Risperdal</div>
           <div class="zlog-regimen-dose" style="color: #64748B;">PRN (0 mg regular)</div>
           <div class="zlog-regimen-meta" title="Prescriber: Dr. Barness (Stopped regular 9/19)">Stopped regular 9/19</div>
         </div>

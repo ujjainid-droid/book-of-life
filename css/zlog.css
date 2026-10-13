@@ -555,7 +555,7 @@ body.dark-mode .zlog-stat-sub {
 }
 
 .zlog-regimen-card {
-  background: #f2f6f9;
+  background: #E5EDF2;
   border: 1.5px solid rgba(2, 132, 199, 0.22);
   padding: 10px 10px;
   min-width: 0;
@@ -563,10 +563,14 @@ body.dark-mode .zlog-stat-sub {
   flex-direction: column;
 }
 
+.zlog-regimen-card .zlog-stat-label {
+  color: #0284C7;
+}
+
 .zlog-regimen-name {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: #1E293B;
   margin: 2px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -584,7 +588,7 @@ body.dark-mode .zlog-stat-sub {
 
 .zlog-regimen-meta {
   font-size: 0.67rem;
-  color: var(--text-muted);
+  color: #64748B;
   margin-top: 4px;
   white-space: nowrap;
   overflow: hidden;
@@ -2803,8 +2807,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-trendline-kpi {
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  background: #E5EDF2;
+  border: 1px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
 }
@@ -2814,7 +2818,7 @@ body.dark-mode .zlog-month-badge {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--text-muted);
+  color: #475569;
 }
 
 .zlog-trendline-kpi-val {
@@ -2822,11 +2826,12 @@ body.dark-mode .zlog-month-badge {
   font-weight: 800;
   line-height: 1.2;
   margin: 2px 0;
+  color: #1E293B;
 }
 
 .zlog-trendline-kpi-sub {
   font-size: 0.65rem;
-  color: var(--text-secondary);
+  color: #64748B;
 }
 
 .zlog-trendline-svg-wrap {
@@ -3152,11 +3157,11 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-cal-kpi-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
+  background: #E5EDF2;
+  border: 1px solid rgba(2, 132, 199, 0.22);
   border-radius: var(--radius-md);
   padding: 10px 12px;
-  box-shadow: var(--shadow-subtle);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
   position: relative;
   overflow: hidden;
 }
@@ -3166,7 +3171,7 @@ body.dark-mode .zlog-month-badge {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--text-muted);
+  color: #475569;
 }
 
 .zlog-cal-kpi-val {
@@ -3175,11 +3180,12 @@ body.dark-mode .zlog-month-badge {
   line-height: 1.15;
   margin: 3px 0 2px;
   font-family: var(--font-sans);
+  color: #1E293B;
 }
 
 .zlog-cal-kpi-sub {
   font-size: 0.70rem;
-  color: var(--text-muted);
+  color: #64748B;
 }
 
 /* Distribution Spectrum Bar */
