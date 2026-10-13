@@ -3,7 +3,7 @@
    Color Scheme:
    - Background: Eggshell (#FAF8F5)
    - Surface / Card: Chalk Gray (#EFECE6)
-   - Primary Text: Deep Ink (#18181B)
+   - Primary Text: Deep Ink (#3a3A42)
    - Positive / Income: Soft Mint (#A7F3D0)
    - Action / Alert: Electric Coral (#FF5A5F)
    ========================================================================== */
@@ -12,7 +12,7 @@
   --fin-bg: #FAF8F5;
   --fin-surface: #EFECE6;
   --fin-surface-hover: #E5E0D8;
-  --fin-text: #18181B;
+  --fin-text: #3a3A42;
   --fin-text-secondary: #52525B;
   --fin-text-muted: #71717A;
 
@@ -31,9 +31,9 @@
   --fin-danger-bg: rgba(255, 90, 95, 0.12);
   --fin-danger-border: rgba(255, 90, 95, 0.35);
 
-  --fin-neutral: #18181B;
+  --fin-neutral: #3a3A42;
   --fin-neutral-bg: #EFECE6;
-  --fin-neutral-border: rgba(24, 24, 27, 0.12);
+  --fin-neutral-border: rgba(58, 58, 66, 0.12);
 }
 
 [data-theme="dark"] {
@@ -67,14 +67,14 @@
   --bg-surface-hover: #E5E0D8;
   --bg-subtle: #EFECE6;
 
-  --text-primary: #18181B;
+  --text-primary: #3a3A42;
   --text-secondary: #52525B;
   --text-muted: #71717A;
 
-  --border-light: rgba(24, 24, 27, 0.12);
-  --border-subtle: rgba(24, 24, 27, 0.08);
-  --border-strong: rgba(24, 24, 27, 0.22);
-  --border-color: rgba(24, 24, 27, 0.12);
+  --border-light: rgba(58, 58, 66, 0.12);
+  --border-subtle: rgba(58, 58, 66, 0.08);
+  --border-strong: rgba(58, 58, 66, 0.22);
+  --border-color: rgba(58, 58, 66, 0.12);
 
   --primary: #FF5A5F;
   --primary-hover: #E0484D;
@@ -209,7 +209,7 @@ body.dark-mode .finance-page-container {
   font-size: 1.55rem;
   font-weight: 700;
   letter-spacing: -0.025em;
-  color: #18181B;
+  color: #3a3A42;
   margin: 0 0 4px 0;
   display: flex;
   align-items: center;
@@ -297,7 +297,7 @@ body.dark-mode .finance-page-container {
   font-size: 1.55rem;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #18181B;
+  color: #3a3A42;
   line-height: 1.2;
   text-shadow: none;
   -webkit-font-smoothing: antialiased;
@@ -832,7 +832,7 @@ body.dark-mode .finance-page-container {
 }
 
 .finance-nw-tile-card.card-runway .finance-nw-tile-hero {
-  color: var(--text-primary, #18181B);
+  color: var(--text-primary, #3a3A42);
 }
 
 [data-theme="dark"] .finance-nw-tile-card.card-runway .finance-nw-tile-hero {
@@ -901,7 +901,7 @@ body.dark-mode .finance-page-container {
   font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 1.85rem;
   font-weight: 800;
-  color: var(--text-primary, #18181B);
+  color: var(--text-primary, #3a3A42);
   line-height: 1.1;
   letter-spacing: -0.02em;
 }
@@ -1386,7 +1386,7 @@ body.dark-mode .finance-page-container {
   font-family: var(--font-sans); font-variant-numeric: tabular-nums;
   font-size: 2.2rem;
   font-weight: 800;
-  color: var(--text-primary, #18181B);
+  color: var(--text-primary, #3a3A42);
   line-height: 1;
 }
 
@@ -1559,12 +1559,12 @@ body.dark-mode .finance-page-container {
   align-items: center;
   gap: 8px;
   background: var(--bg-card, #EFECE6);
-  border: 1px solid var(--border-color, rgba(24, 24, 27, 0.12));
+  border: 1px solid var(--border-color, rgba(58, 58, 66, 0.12));
   border-radius: 999px;
   padding: 4px 12px;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--text-primary, #18181B);
+  color: var(--text-primary, #3a3A42);
 }
 
 [data-theme="dark"] .finance-month-selector {
@@ -1578,7 +1578,7 @@ body.dark-mode .finance-page-container {
   background: transparent;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--text-primary, #18181B);
+  color: var(--text-primary, #3a3A42);
   cursor: pointer;
   outline: none;
 }
@@ -1840,15 +1840,15 @@ body.dark-mode .finance-page-container {
 
 .finance-outlier-filter-btn.baseline {
   background: var(--bg-card, #EFECE6);
-  color: var(--text-primary, #18181B);
-  border-color: var(--border-color, rgba(24, 24, 27, 0.15));
+  color: var(--text-primary, #3a3A42);
+  border-color: var(--border-color, rgba(58, 58, 66, 0.15));
 }
 
 .finance-outlier-filter-btn.baseline.active {
-  background: #18181B;
+  background: #3a3A42;
   color: #FFFFFF;
-  border-color: #18181B;
-  box-shadow: 0 2px 8px rgba(24, 24, 27, 0.3);
+  border-color: #3a3A42;
+  box-shadow: 0 2px 8px rgba(58, 58, 66, 0.3);
 }
 
 .finance-outlier-filter-btn.reduced {
@@ -2073,7 +2073,7 @@ body.dark-mode .finance-page-container {
 
 .finance-macro-bar-fixed {
   height: 100%;
-  background: #18181B;
+  background: #3a3A42;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -2255,7 +2255,7 @@ body.dark-mode .finance-page-container {
    Weekly Sunday Cadence Checkpoint Strip (Option 1: Horizontal Breadcrumbs)
    -------------------------------------------------------------------------- */
 .finance-cadence-strip-card {
-  background: #18181B;
+  background: #3a3A42;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius-md, 12px);
   padding: 12px 16px;
@@ -2267,44 +2267,44 @@ body.dark-mode .finance-page-container {
 }
 
 [data-theme="dark"] .finance-cadence-strip-card {
-  background: #18181B;
+  background: #3a3A42;
   border-color: rgba(255, 255, 255, 0.12);
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
 }
 
 .finance-cadence-strip-card.all-done {
   border-color: rgba(167, 243, 208, 0.45);
-  background: #18181B;
+  background: #3a3A42;
   box-shadow: 0 4px 18px rgba(167, 243, 208, 0.15);
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.all-done {
   border-color: rgba(167, 243, 208, 0.45);
-  background: #18181B;
+  background: #3a3A42;
 }
 
 /* Quarterly Cadence */
 .finance-cadence-strip-card.cadence-strip-quarterly {
-  background: #18181B;
+  background: #3a3A42;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-top: 3.5px solid #FF5A5F;
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.cadence-strip-quarterly {
-  background: #18181B;
+  background: #3a3A42;
   border-color: rgba(255, 255, 255, 0.12);
   border-top: 3.5px solid #FF5A5F;
 }
 
 /* Annual Governance */
 .finance-cadence-strip-card.cadence-strip-annual {
-  background: #18181B;
+  background: #3a3A42;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-top: 3.5px solid #A7F3D0;
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.cadence-strip-annual {
-  background: #18181B;
+  background: #3a3A42;
   border-color: rgba(255, 255, 255, 0.12);
   border-top: 3.5px solid #A7F3D0;
 }
@@ -2770,8 +2770,8 @@ body.dark-mode .finance-page-container {
 
 .finance-target-status-badge.neutral {
   background: var(--bg-card, #EFECE6);
-  color: var(--text-primary, #18181B);
-  border: 1px solid var(--border-color, rgba(24, 24, 27, 0.15));
+  color: var(--text-primary, #3a3A42);
+  border: 1px solid var(--border-color, rgba(58, 58, 66, 0.15));
 }
 
 @media (max-width: 768px) {

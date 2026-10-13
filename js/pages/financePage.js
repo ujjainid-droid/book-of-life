@@ -498,7 +498,7 @@ function renderFinanceRecurringCommitmentsSection() {
               Total
             </span>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #18181B);">
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
             $${grossMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(grossMonthlySubs * 12).toFixed(2)}/yr total commitments (${subs.length} active)</span>
@@ -513,7 +513,7 @@ function renderFinanceRecurringCommitmentsSection() {
             </span>
             <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem; background: #A7F3D0; color: #065F46; border: 1px solid rgba(6, 95, 70, 0.25);">100% Card Offset</span>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #18181B);">
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
             $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(coveredMonthlySubs * 12).toFixed(2)}/yr card synergy offset (Disney+, NYT, Walmart+)</span>
@@ -527,7 +527,7 @@ function renderFinanceRecurringCommitmentsSection() {
               Out of Pocket
             </span>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #18181B);">
+          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
             $${netMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
           </span>
           <span class="finance-kpi-sub">$${(netMonthlySubs * 12).toFixed(2)}/yr true net burn</span>
@@ -1646,7 +1646,7 @@ function renderFinanceSubscriptions() {
                 4 Annual Fee Cards
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: var(--text-primary, #18181B);">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
+            <span class="finance-kpi-value" style="color: var(--text-primary, #3a3A42);">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
             <span class="finance-kpi-sub">Amex Plat ($895) + 3 Chase ($95 ea)</span>
           </div>
 
@@ -1658,7 +1658,7 @@ function renderFinanceSubscriptions() {
                 Realized Perks &amp; Credits
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: var(--text-primary, #18181B);">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
+            <span class="finance-kpi-value" style="color: var(--text-primary, #3a3A42);">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
             <span class="finance-kpi-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</span>
           </div>
 
@@ -2745,7 +2745,7 @@ function renderFinanceRunway() {
             ${filteredAccounts.map(acc => {
               const isLiab = acc.assetClass === 'liability';
               const bal = parseFloat(acc.balance) || 0;
-              const balColor = isLiab ? '#FF5A5F' : 'var(--text-primary, #18181B)';
+              const balColor = isLiab ? '#FF5A5F' : 'var(--text-primary, #3a3A42)';
               return `
                 <div class="finance-acc-card" style="${isLiab ? 'border-left: 3px solid #FF5A5F;' : ''}">
                   <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
