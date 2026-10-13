@@ -179,7 +179,7 @@ function renderZLogPage(targetSubTab) {
             <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i>
             <span>Sync Data</span>
           </button>
-          <button class="btn btn-secondary" onclick="exportZLogData()" title="Export all Z log entries as CSV" style="font-size: 0.8rem; padding: 6px 12px; color: #1E293B; border-color: #CBD5E1; background: #f2f6f9;">
+          <button class="btn btn-secondary" onclick="exportZLogData()" title="${activeZLogSubTab === 'titration' ? 'Export Meds &amp; Protocol adjustment history as CSV' : 'Export all Z log entries as CSV'}" style="font-size: 0.8rem; padding: 6px 12px; color: #1E293B; border-color: #CBD5E1; background: #f2f6f9;">
             <i data-lucide="download" style="width: 14px; height: 14px;"></i>
             <span>Export CSV</span>
           </button>
@@ -232,10 +232,16 @@ function renderZLogPage(targetSubTab) {
         </div>
 
         ${activeZLogSubTab === 'titration' ? `
-          <button class="btn btn-secondary" onclick="openTitrationModal()" style="font-size: 0.78rem; padding: 4px 10px;">
-            <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i>
-            <span>Add Dosage Change</span>
-          </button>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="btn btn-secondary" onclick="exportTitrationCSV()" style="font-size: 0.78rem; padding: 4px 10px;" title="Export Meds &amp; Protocol adjustment history to CSV">
+              <i data-lucide="download" style="width: 14px; height: 14px;"></i>
+              <span>Export CSV</span>
+            </button>
+            <button class="btn btn-secondary" onclick="openTitrationModal()" style="font-size: 0.78rem; padding: 4px 10px;">
+              <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i>
+              <span>Add Dosage Change</span>
+            </button>
+          </div>
         ` : ''}
       </div>
 
@@ -1866,6 +1872,16 @@ function renderZLogTitration() {
             <i data-lucide="message-square" style="width: 11px; height: 11px;"></i>
             <span id="zlog-toggle-all-notes-btn-text">${zlogTitrationAllNotesOpen ? 'Hide All Notes' : 'Expand All Notes'}</span>
           </button>
+          <button 
+            type="button" 
+            class="zlog-note-btn" 
+            onclick="exportTitrationCSV()" 
+            title="Export Meds &amp; Protocol adjustment history to CSV"
+            style="margin-left: 4px;"
+          >
+            <i data-lucide="download" style="width: 11px; height: 11px;"></i>
+            <span>Export CSV</span>
+          </button>
         </div>
 
         <!-- 3-Way Group By Selector -->
@@ -3413,8 +3429,45 @@ function forceSyncZLogDefaults() {
    CSV Export
    -------------------------------------------------------------------------- */
 function exportZLogData() {
+  if (typeof activeZLogSubTab !== 'undefined' && activeZLogSubTab === 'titration') {
+    exportTitrationCSV();
+    return;
+  }
   if (typeof storage !== 'undefined' && typeof storage.exportZLogCSV === 'function') {
     storage.exportZLogCSV();
+  }
+}
+
+function exportTitrationCSV() {
+  if (typeof storage !== 'undefined' && typeof storage.exportTitrationCSV === 'function') {
+    let titrationList = storage.getTitrationHistory();
+    if (!Array.isArray(titrationList) || titrationList.length === 0) {
+      titrationList = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? [...DEFAULT_TITRATION_HISTORY] : [];
+    }
+
+    // Export the subset matching active search / filters if applied
+    const filteredList = titrationList.filter(record => {
+      if (typeof zlogTitrationMedFilter !== 'undefined' && zlogTitrationMedFilter !== 'all') {
+        const k = getTitrationMedKey(record.medication);
+        if (k !== zlogTitrationMedFilter) return false;
+      }
+      if (typeof zlogTitrationYearFilter !== 'undefined' && zlogTitrationYearFilter !== 'all') {
+        const y = (record.date || '').substring(0, 4);
+        if (y !== zlogTitrationYearFilter) return false;
+      }
+      if (typeof zlogTitrationSearchQuery !== 'undefined' && zlogTitrationSearchQuery.trim()) {
+        const q = zlogTitrationSearchQuery.toLowerCase().trim();
+        const hay = `${record.date} ${record.medication} ${record.dosage} ${record.action} ${record.notes || ''} ${record.prescriber || ''} ${record.snapshot || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    const sortedList = (typeof sortTitrationRecords === 'function') 
+      ? sortTitrationRecords(filteredList, typeof zlogTitrationSortOrder !== 'undefined' ? zlogTitrationSortOrder : 'asc')
+      : filteredList;
+
+    storage.exportTitrationCSV(sortedList);
   }
 }
 

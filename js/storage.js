@@ -2082,6 +2082,40 @@ class StorageManager {
     link.remove();
   }
 
+  exportTitrationCSV(customRecords = null) {
+    let list = Array.isArray(customRecords) ? customRecords : this.getTitrationHistory();
+    if (!Array.isArray(list) || list.length === 0) {
+      list = (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? [...DEFAULT_TITRATION_HISTORY] : [];
+    }
+    const headers = ['Date', 'Medication', 'Dosage', 'Action', 'Prescriber', 'Clinical Notes', 'Context / Snapshot'];
+    let csvRows = [headers.map(h => `"${h}"`).join(',')];
+    list.forEach(r => {
+      const row = [
+        r.date || '',
+        r.medication || '',
+        r.dosage || '',
+        r.action || '',
+        r.prescriber || 'Dr Barness',
+        (r.notes || '').replace(/\r?\n/g, ' '),
+        (r.snapshot || '').replace(/\r?\n/g, ' ')
+      ];
+      csvRows.push(row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','));
+    });
+    const csvContent = csvRows.join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `ZLog_Meds_Protocol_${formatDateIso(new Date())}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    if (typeof showToast === 'function') {
+      showToast(`Exported ${list.length} Meds & Protocol records as CSV`, 'success');
+    }
+  }
+
   /* --------------------------------------------------------------------------
      Sanctuary Journal & Energy Mode Methods
      -------------------------------------------------------------------------- */
