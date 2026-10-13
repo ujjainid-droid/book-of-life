@@ -278,7 +278,7 @@ function renderFinanceWeeklyCadenceBar() {
     <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#A7F3D0' : '#FF5A5F'};"></i>
           <span>Weekly Cadence</span>
           <span class="finance-cadence-sub">&bull; ${escapeHtml(dateLabel)}</span>
         </div>
@@ -2124,7 +2124,7 @@ function renderFinanceQuarterlyCadenceBar() {
     <div class="finance-cadence-strip-card cadence-strip-quarterly ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#A7F3D0' : '#FF5A5F'};"></i>
           <span>Quarterly Review</span>
           <div class="finance-cadence-quarter-capsules">
             <button class="finance-cadence-q-btn ${qKey === '2026-Q3' ? 'active' : ''}" onclick="selectFinanceQuarter('2026-Q3')" title="Review closed Q3 2026 (July – September)">
