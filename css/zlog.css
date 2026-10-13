@@ -471,31 +471,24 @@ body.dark-mode .zlog-page-container {
 }
 
 .zlog-stat-card {
-  background: #f2f6f9;
-  border: 1.5px solid rgba(2, 132, 199, 0.25);
+  background: #1E293B;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-lg);
   padding: 14px 16px;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
   transition: all var(--transition-fast);
   position: relative;
   overflow: hidden;
 }
 
 .zlog-stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3.5px;
-  background: linear-gradient(90deg, #0284C7 0%, #38BDF8 100%);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  display: none !important;
 }
 
 .zlog-stat-card:hover {
   transform: translateY(-2px);
-  border-color: #0284C7;
-  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.15);
+  border-color: #38BDF8;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.2);
 }
 
 [data-theme="dark"] .zlog-stat-card,
@@ -507,7 +500,7 @@ body.dark-mode .zlog-stat-card {
 
 [data-theme="dark"] .zlog-stat-card::after,
 body.dark-mode .zlog-stat-card::after {
-  background: #38BDF8;
+  display: none !important;
 }
 
 .zlog-stat-label {
@@ -515,7 +508,7 @@ body.dark-mode .zlog-stat-card::after {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #0284C7;
+  color: #38BDF8;
   margin-bottom: 6px;
   display: flex;
   align-items: center;
@@ -531,7 +524,7 @@ body.dark-mode .zlog-stat-label {
   font-size: 1.65rem;
   font-weight: 900;
   font-family: var(--font-mono);
-  color: #1E293B;
+  color: #FFFFFF;
   line-height: 1.1;
   letter-spacing: -0.02em;
   text-shadow: none;
@@ -545,7 +538,7 @@ body.dark-mode .zlog-stat-val {
 .zlog-stat-sub {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #64748B;
+  color: #94A3B8;
   margin-top: 4px;
 }
 
@@ -562,6 +555,8 @@ body.dark-mode .zlog-stat-sub {
 }
 
 .zlog-regimen-card {
+  background: #f2f6f9;
+  border: 1.5px solid rgba(2, 132, 199, 0.22);
   padding: 10px 10px;
   min-width: 0;
   display: flex;
