@@ -3466,6 +3466,40 @@ class StorageManager {
     return false;
   }
 
+  // --- Hobby Shortlist Methods (0 of 3 picked) ---
+  getHobbyShortlist() {
+    if (!Array.isArray(this.data.hobbyShortlist)) {
+      this.data.hobbyShortlist = [];
+      this.saveData();
+    }
+    return this.data.hobbyShortlist;
+  }
+
+  toggleHobbyShortlist(hobbyName) {
+    const list = this.getHobbyShortlist();
+    const idx = list.indexOf(hobbyName);
+    if (idx !== -1) {
+      list.splice(idx, 1);
+    } else {
+      if (list.length >= 3) {
+        list.shift(); // keep max 3 slots
+      }
+      list.push(hobbyName);
+    }
+    this.saveData();
+    return list;
+  }
+
+  removeFromHobbyShortlist(hobbyName) {
+    const list = this.getHobbyShortlist();
+    const idx = list.indexOf(hobbyName);
+    if (idx !== -1) {
+      list.splice(idx, 1);
+      this.saveData();
+    }
+    return list;
+  }
+
   resetToDefaults() {
     this.data = this.getDefaultState();
     this.saveData();
