@@ -11,8 +11,35 @@ class StorageManager {
     this.applyWhereInfoLivesAuditUpdate();
     this.applyCleanClaimsMigration();
     this.applyHobbiesSeedMigration();
+    this.applyZLogOctoberMissingDatesMigration();
     this.recalculateAllStreaks();
     this.recalculatePointsFromHistory();
+  }
+
+  applyZLogOctoberMissingDatesMigration() {
+    const marker = 'BOL_ZLOG_OCTOBER_MISSING_DATES_V16';
+    try {
+      if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
+        if (!this.data.zlogEntries) this.data.zlogEntries = {};
+        const missingDates = ['2026-10-12', '2026-10-13', '2026-10-14'];
+        let updated = false;
+        if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
+          missingDates.forEach(dateStr => {
+            if (DEFAULT_ZLOG_ENTRIES[dateStr]) {
+              this.data.zlogEntries[dateStr] = JSON.parse(JSON.stringify(DEFAULT_ZLOG_ENTRIES[dateStr]));
+              updated = true;
+            }
+          });
+        }
+        if (updated) {
+          this.data.zlogSeedVersion = 16;
+          this.saveData();
+        }
+        try { localStorage.setItem(marker, 'true'); } catch (e) {}
+      }
+    } catch (e) {
+      console.warn('Z Log October missing dates migration failed', e);
+    }
   }
 
   applyCleanClaimsMigration() {
@@ -899,7 +926,7 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 15;
+        merged.zlogSeedVersion < 16;
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
@@ -953,7 +980,7 @@ class StorageManager {
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 15;
+        merged.zlogSeedVersion = 16;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);

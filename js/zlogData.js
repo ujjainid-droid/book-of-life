@@ -2888,6 +2888,72 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-10-14": {
+    "date": "2026-10-14",
+    "rawDate": "Wed, 10 -14- 26",
+    "rating": 5,
+    "ratingRaw": "Great Day",
+    "aggression": false,
+    "notes": "- got accepted at Newmark! Very exciting. Z was very happy. \n- called me at dismissal not wanting to go to Melissa's\n- but in the end went and did well; was very calm \n- good rest of the evening\n- even did some reading ",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-10-13": {
+    "date": "2026-10-13",
+    "rawDate": "Tue, 10 -13- 26",
+    "rating": 5,
+    "ratingRaw": "Great Day",
+    "aggression": false,
+    "notes": "- Had the intake interview with Newmark today. \n- Z knocked it out of the park; was super engaged, polite, not hyper; day went as well as we could have hoped\n- went to RH after\n- good rest of the afternoon / evening\n- had a zoom call with Dr B ",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-10-12": {
+    "date": "2026-10-12",
+    "rawDate": "Mon, 10 -12- 26",
+    "rating": 5,
+    "ratingRaw": "Great Day",
+    "aggression": false,
+    "notes": "- school closed; in MA camp\n- in good mood but super hyper and loud in the morning\n- had a good day; in very good mood at pickup\n- seems more open to the intake at Newmark tomorrow\n- made a little LEGO model to bring with him\n- went to MA class and did well\n- had a hard time falling asleep ",
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "2mg"
+    }
+  },
   "2026-10-11": {
     "date": "2026-10-11",
     "rawDate": "Sun, 10 -11- 26",
