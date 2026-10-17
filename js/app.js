@@ -469,6 +469,17 @@ function resetToToday() {
   renderDailySheet();
 }
 
+function forceReloadFresh() {
+  try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('v_t', Date.now().toString());
+    window.location.replace(url.toString());
+  } catch (e) {
+    window.location.reload(true);
+  }
+}
+window.forceReloadFresh = forceReloadFresh;
+
 /* --------------------------------------------------------------------------
    Settings Modal (rendered inline)
    -------------------------------------------------------------------------- */
@@ -589,8 +600,8 @@ function openSettingsModal() {
           <i data-lucide="refresh-cw" style="color:var(--primary);width:18px;height:18px;"></i>
           <h3>App Cache & Updates</h3>
         </div>
-        <p class="settings-desc">Force reload the app and clear browser cache on mobile.</p>
-        <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="window.location.reload(true)">
+        <p class="settings-desc">Force reload the app and bust standalone iOS cache on mobile.</p>
+        <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="forceReloadFresh()">
           <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Force Refresh App
         </button>
       </div>
