@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>margo. — Compass (Serene Life Architecture)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-app: #F5F3FA;
+      --bg-card: #FFFFFF;
+      --bg-surface: #F8FAFC;
+      --bg-surface-hover: #EEF2F6;
+      --border-subtle: rgba(124, 58, 237, 0.08);
+      --border-card: rgba(124, 58, 237, 0.12);
+      
+      --text-primary: #1E1B4B;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      
+      /* Cool-Leaning MARGO Palette (Strictly ZERO Yellow / Amber) */
+      --margo-m: #4F46E5;       /* Arctic Indigo (Move) */
+      --margo-stand: #A78BFA;   /* Soft Wisteria (Stand) */
+      --margo-a: #E11D48;       /* Cool Rose Orchid (Aesthetic) */
+      --margo-r: #7C3AED;       /* Royal Violet (Reflect) */
+      --margo-g: #06B6D4;       /* Borealis Cyan (Grow) */
+      --margo-o: #1E293B;       /* Midnight Polar Slate (Organize) */
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      --shadow-card: 0 10px 25px -5px rgba(124, 58, 237, 0.06), 0 2px 6px rgba(15, 23, 42, 0.03);
+      --shadow-hover: 0 16px 32px -8px rgba(124, 58, 237, 0.10), 0 4px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-app);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(167, 139, 250, 0.12), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.08), transparent 45%);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-frame {
+      width: 100%;
+      max-width: 580px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px 6px;
+    }
+
+    .wordmark {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-style: italic;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      display: inline-flex;
+      align-items: baseline;
+      text-decoration: none;
+    }
+    .wordmark-text {
+      background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 42%, #06B6D4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .wordmark-dot {
+      color: #06B6D4;
+      display: inline-block;
+      margin-left: -1px;
+      font-style: italic;
+    }
+
+    /* Nav Capsule Switcher */
+    .nav-capsule {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 9999px;
+      padding: 3px;
+      gap: 3px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .nav-btn {
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      padding: 5px 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .nav-btn:hover { color: var(--text-primary); background: var(--bg-surface-hover); }
+    .nav-btn.active {
+      background: var(--text-primary);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(30, 27, 75, 0.25);
+    }
+
+    /* Card Base */
+    .editorial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 22px 24px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.2s ease;
+    }
+
+    /* North Star Hero Card */
+    .north-star-card {
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF9FD 100%);
+      padding: 24px 26px 22px;
+      gap: 12px;
+    }
+
+    .north-star-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--margo-r);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .north-star-title {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      font-weight: 600;
+      font-style: italic;
+      line-height: 1.3;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+    .north-star-title:hover { opacity: 0.88; }
+
+    .mantra-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      padding-top: 4px;
+    }
+    .mantra-dot { color: var(--margo-g); font-size: 0.6rem; }
+
+    /* MARGO 5 Pillars Grid */
+    .pillars-section-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+      padding: 4px 6px 0;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .pillar-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 18px;
+      padding: 16px 18px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    .pillar-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(124, 58, 237, 0.25);
+    }
+
+    .pillar-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pillar-letter {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .pillar-letter.m { color: var(--margo-m); }
+    .pillar-letter.a { color: var(--margo-a); }
+    .pillar-letter.r { color: var(--margo-r); }
+    .pillar-letter.g { color: var(--margo-g); }
+    .pillar-letter.o { color: var(--margo-o); }
+
+    .pillar-glyph {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .pillar-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .pillar-focus {
+      font-size: 0.74rem;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    .pillar-track {
+      height: 3px;
+      background: rgba(124, 58, 237, 0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .pillar-fill {
+      height: 100%;
+      border-radius: 9999px;
+    }
+    .pillar-fill.m { width: 70%; background: var(--margo-m); }
+    .pillar-fill.a { width: 85%; background: var(--margo-a); }
+    .pillar-fill.r { width: 50%; background: var(--margo-r); }
+    .pillar-fill.g { width: 60%; background: var(--margo-g); }
+    .pillar-fill.o { width: 75%; background: var(--margo-o); }
+
+    /* Current Active Campaigns - Clean Editorial List */
+    .campaigns-card {
+      padding: 22px 24px;
+      gap: 14px;
+    }
+
+    .campaign-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .campaign-heading {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    .campaigns-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .campaign-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 14px;
+      background: var(--bg-surface);
+      border: 1px solid rgba(124, 58, 237, 0.06);
+      border-radius: 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .campaign-item:hover {
+      background: var(--bg-surface-hover);
+      border-color: rgba(124, 58, 237, 0.18);
+      transform: translateY(-0.5px);
+    }
+
+    .campaign-item-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .campaign-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .campaign-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .campaign-status {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* On-Deck Parking Lot Collapsible */
+    .ondeck-box {
+      border: 1px dashed var(--border-card);
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .ondeck-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+
+    .ondeck-items {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(124, 58, 237, 0.08);
+      font-size: 0.80rem;
+      color: var(--text-muted);
+    }
+    .ondeck-box.open .ondeck-items { display: flex; }
+
+    footer {
+      text-align: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      padding: 12px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-frame">
+    <!-- Header with Gradient Wordmark & Navigation Switcher -->
+    <header>
+      <a href="today-tactile-preview.html" class="wordmark"><span class="wordmark-text">margo</span><span class="wordmark-dot">.</span></a>
+      
+      <nav class="nav-capsule">
+        <a href="today-tactile-preview.html" class="nav-btn">Today</a>
+        <a href="compass-tactile-preview.html" class="nav-btn active">Compass</a>
+      </nav>
+    </header>
+
+    <!-- North Star Season Focus Hero Card -->
+    <div class="editorial-card north-star-card">
+      <div class="north-star-eyebrow">
+        <span>North Star · Q4 2026</span>
+        <span style="font-family: var(--font-mono); font-size: 0.68rem; color: var(--margo-g);">● Active Baseline</span>
+      </div>
+
+      <div class="north-star-title" onclick="editTheme()" title="Click to edit seasonal focus">
+        Calm Mastery, Health Baseline & Vitality
+      </div>
+
+      <div class="mantra-line">
+        <span>simple</span>
+        <span class="mantra-dot">◆</span>
+        <span>visible</span>
+        <span class="mantra-dot">◆</span>
+        <span>next step</span>
+        <span class="mantra-dot">◆</span>
+        <span>done</span>
+      </div>
+    </div>
+
+    <!-- The 5 MARGO Pillars Landscape -->
+    <div class="pillars-section-title">The 5 Pillars</div>
+    
+    <div class="pillars-grid">
+      <!-- M: Move -->
+      <div class="pillar-card" onclick="alert('Move Pillar: Active baseline 10k steps, daily move ring, strength sessions.')">
+        <div class="pillar-top-row">
+          <span class="pillar-letter m">M</span>
+          <span class="pillar-glyph">⚡</span>
+        </div>
+        <div class="pillar-name">Move</div>
+        <div class="pillar-focus">300 cal ring · 10k steps</div>
+        <div class="pillar-track"><div class="pillar-fill m"></div></div>
+      </div>
+
+      <!-- A: Aesthetic -->
+      <div class="pillar-card" onclick="alert('Aesthetic Pillar: Abbey Yung haircare protocol, AM/PM skincare, wardrobe capsules.')">
+        <div class="pillar-top-row">
+          <span class="pillar-letter a">A</span>
+          <span class="pillar-glyph">✨</span>
+        </div>
+        <div class="pillar-name">Aesthetic</div>
+        <div class="pillar-focus">Haircare · Skincare anchor</div>
+        <div class="pillar-track"><div class="pillar-fill a"></div></div>
+      </div>
+
+      <!-- R: Reflect -->
+      <div class="pillar-card" onclick="alert('Reflect Pillar: Sanctuary journal, solo recharge, calm boundaries.')">
+        <div class="pillar-top-row">
+          <span class="pillar-letter r">R</span>
+          <span class="pillar-glyph">🌙</span>
+        </div>
+        <div class="pillar-name">Reflect</div>
+        <div class="pillar-focus">Sanctuary journal · Me time</div>
+        <div class="pillar-track"><div class="pillar-fill r"></div></div>
+      </div>
+
+      <!-- G: Grow -->
+      <div class="pillar-card" onclick="alert('Grow Pillar: Daily reading, 2L hydration, podcast insights.')">
+        <div class="pillar-top-row">
+          <span class="pillar-letter g">G</span>
+          <span class="pillar-glyph">📖</span>
+        </div>
+        <div class="pillar-name">Grow</div>
+        <div class="pillar-focus">2L Hydrate · Read 20 pages</div>
+        <div class="pillar-track"><div class="pillar-fill g"></div></div>
+      </div>
+
+      <!-- O: Organize (Full Width) -->
+      <div class="pillar-card" style="grid-column: span 2;" onclick="alert('Organize Pillar: Family logistics, school advocacy, claims reconciliation.')">
+        <div class="pillar-top-row">
+          <span class="pillar-letter o">O</span>
+          <span class="pillar-glyph">💼</span>
+        </div>
+        <div class="pillar-name">Organize</div>
+        <div class="pillar-focus">School IEP · Medical claims · Sinking funds</div>
+        <div class="pillar-track"><div class="pillar-fill o"></div></div>
+      </div>
+    </div>
+
+    <!-- Current Active Campaigns (Now) — Pristine Typographic List -->
+    <div class="editorial-card campaigns-card">
+      <div class="campaign-heading-row">
+        <div class="campaign-heading">Current Active Focus</div>
+        <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);">4 in flight</span>
+      </div>
+
+      <div class="campaigns-list">
+        <div class="campaign-item" onclick="openDomain('School')">
+          <div class="campaign-item-left">
+            <span class="campaign-dot" style="background: var(--margo-m);"></span>
+            <span class="campaign-title">Z School Transition & IEP</span>
+          </div>
+          <span class="campaign-status">In Flight</span>
+        </div>
+
+        <div class="campaign-item" onclick="openDomain('Haircare')">
+          <div class="campaign-item-left">
+            <span class="campaign-dot" style="background: var(--margo-a);"></span>
+            <span class="campaign-title">Abbey Yung Hair Protocol</span>
+          </div>
+          <span class="campaign-status">Maintaining</span>
+        </div>
+
+        <div class="campaign-item" onclick="openDomain('Claims')">
+          <div class="campaign-item-left">
+            <span class="campaign-dot" style="background: var(--margo-g);"></span>
+            <span class="campaign-title">Out-of-Network Claims</span>
+          </div>
+          <span class="campaign-status">In Flight</span>
+        </div>
+
+        <div class="campaign-item" onclick="openDomain('Surgery')">
+          <div class="campaign-item-left">
+            <span class="campaign-dot" style="background: var(--margo-r);"></span>
+            <span class="campaign-title">Surgery Recovery & Health</span>
+          </div>
+          <span class="campaign-status">In Flight</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiet On-Deck Parking Lot -->
+    <div class="ondeck-box" id="ondeck-box" onclick="toggleOnDeck()">
+      <div class="ondeck-header">
+        <span>⏳ On Deck (Parking Lot) · 6 items</span>
+        <span id="ondeck-toggle-arrow">▾</span>
+      </div>
+      <div class="ondeck-items">
+        <div>• Fall / Winter Wardrobe Capsule</div>
+        <div>• Personal Finance & Monarch Reconciliation</div>
+        <div>• Home Room-by-Room Declutter</div>
+        <div>• Foot Care Protocol</div>
+        <div>• Under Eye Treatments</div>
+        <div>• Nutrition & Healthy Meal Prep</div>
+      </div>
+    </div>
+
+    <!-- Editorial Footnote -->
+    <footer>
+      “simple · visible · next step · done”
+    </footer>
+  </div>
+
+  <script>
+    function editTheme() {
+      const current = document.querySelector('.north-star-title').textContent.trim();
+      const updated = prompt('Edit Q4 North Star Season Focus:', current);
+      if (updated && updated.trim()) {
+        document.querySelector('.north-star-title').textContent = updated.trim();
+        confetti({
+          particleCount: 16,
+          spread: 45,
+          origin: { y: 0.5 },
+          colors: ['#06B6D4', '#4F46E5', '#A78BFA']
+        });
+      }
+    }
+
+    function toggleOnDeck() {
+      const box = document.getElementById('ondeck-box');
+      box.classList.toggle('open');
+      document.getElementById('ondeck-toggle-arrow').textContent = box.classList.contains('open') ? '▴' : '▾';
+    }
+
+    function openDomain(name) {
+      confetti({
+        particleCount: 12,
+        spread: 35,
+        origin: { y: 0.6 },
+        colors: ['#06B6D4', '#4F46E5', '#A78BFA']
+      });
+    }
+  </script>
+</body>
+</html>

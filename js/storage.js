@@ -217,6 +217,23 @@ class StorageManager {
         weekday: { start: 7, end: 21, label: 'Weekday · 7 AM – 9 PM' },
         weekend: { start: 9, end: 22, label: 'Weekend · 9 AM – 10 PM' }
       },
+      // Aurora Daily Granular State (Move calories, 12-hour Stand tiles, Anchor milestones, Active Quick Chips)
+      auroraDailyState: {},
+      // Period-Based Custom Average Goals (e.g. 10k Daily Steps for October)
+      periodGoals: [
+        {
+          id: 'pg-oct-steps',
+          title: '10k Steps · October',
+          targetAvg: 10000,
+          unit: 'steps',
+          startDate: '2026-10-01',
+          endDate: '2026-10-31',
+          logs: {}
+        }
+      ],
+      // Daily Weight Tracking: { [dateStr]: number } (e.g. 110.4)
+      weightLogs: {},
+      weightTarget: 110,
       // Currently Terrorizing active projects list
       activeTerrorizing: ['10k steps', 'Close rings'],
       // Cover Page: Unified Life Architecture & Focus Board (Now vs Later)
@@ -248,7 +265,7 @@ class StorageManager {
           },
           {
             id: 'camp-oon',
-            title: 'oon reimbrsement',
+            title: 'oon',
             status: 'IP',
             theme: 'cat-finance',
             tools: {
@@ -698,6 +715,55 @@ class StorageManager {
           });
         }
 
+        // 11b. AuroraDailyState: Preserve granular Move calories, Stand hours & Quick chips
+        if (s.auroraDailyState && typeof s.auroraDailyState === 'object') {
+          if (!merged.auroraDailyState) merged.auroraDailyState = {};
+          Object.entries(s.auroraDailyState).forEach(([dStr, aObj]) => {
+            if (snap.key === STORAGE_KEY || !merged.auroraDailyState[dStr]) {
+              merged.auroraDailyState[dStr] = { ...aObj };
+            }
+          });
+        }
+
+        // 11c. PeriodGoals: Preserve custom time-period goals and daily logs
+        if (Array.isArray(s.periodGoals) && s.periodGoals.length > 0) {
+          if (!Array.isArray(merged.periodGoals)) merged.periodGoals = [];
+          const pgMap = new Map();
+          merged.periodGoals.forEach(pg => {
+            if (pg && pg.id) pgMap.set(pg.id, { ...pg, logs: { ...(pg.logs || {}) } });
+          });
+          s.periodGoals.forEach(pg => {
+            if (pg && pg.id) {
+              const ex = pgMap.get(pg.id);
+              if (!ex) {
+                pgMap.set(pg.id, { ...pg, logs: { ...(pg.logs || {}) } });
+              } else {
+                pgMap.set(pg.id, {
+                  ...ex,
+                  ...pg,
+                  logs: { ...(ex.logs || {}), ...(pg.logs || {}) }
+                });
+              }
+            }
+          });
+          merged.periodGoals = Array.from(pgMap.values());
+        }
+
+        // 11d. WeightTracker: Preserve weight logs and target
+        if (s.weightLogs && typeof s.weightLogs === 'object') {
+          if (!merged.weightLogs) merged.weightLogs = {};
+          Object.entries(s.weightLogs).forEach(([dStr, wVal]) => {
+            if (snap.key === STORAGE_KEY || merged.weightLogs[dStr] === undefined) {
+              if (wVal !== null && wVal !== undefined && !isNaN(Number(wVal))) {
+                merged.weightLogs[dStr] = Math.round(Number(wVal) * 10) / 10;
+              }
+            }
+          });
+        }
+        if (s.weightTarget !== undefined && !isNaN(Number(s.weightTarget)) && Number(s.weightTarget) > 0) {
+          merged.weightTarget = Math.round(Number(s.weightTarget) * 10) / 10;
+        }
+
         // 12. Finance Hub State (Monarch summaries, categories, baselines, and transactions)
         if (s.finance && typeof s.finance === 'object') {
           if (!merged.finance) merged.finance = {};
@@ -1094,6 +1160,294 @@ class StorageManager {
     this.saveData();
   }
 
+  getAuroraDayState(dateStr = formatDateIso(new Date())) {
+    if (!this.data.auroraDailyState) this.data.auroraDailyState = {};
+    if (!this.data.auroraDailyState[dateStr]) {
+      const dayHabits = (this.data.habitsState && this.data.habitsState[dateStr]) || {};
+      const rawMove = dayHabits['h-move'];
+      const moveStage = (rawMove === 1 || rawMove === true) ? 1 : (rawMove === 0.75 ? 0.75 : (rawMove === 0.5 ? 0.5 : (rawMove === 0.25 ? 0.25 : 0)));
+      const rawStand = dayHabits['h-stand'];
+      const standStage = (rawStand === 1 || rawStand === true) ? 1 : (rawStand === 0.75 ? 0.75 : (rawStand === 0.5 ? 0.5 : (rawStand === 0.25 ? 0.25 : 0)));
+
+      const initialMoveCal = Math.round(moveStage * 300);
+      const initialStandCount = Math.round(standStage * 12);
+      const hours = [];
+      for (let i = 0; i < 12; i++) {
+        hours.push(i < initialStandCount);
+      }
+
+      const stageToAnchIdx = (s) => (s >= 1 ? 4 : (s >= 0.75 ? 3 : (s >= 0.5 ? 2 : (s >= 0.25 ? 1 : 0))));
+      this.data.auroraDailyState[dateStr] = {
+        moveCal: initialMoveCal,
+        hours,
+        anch: {
+          move: stageToAnchIdx(moveStage),
+          stand: stageToAnchIdx(standStage)
+        },
+        chips: []
+      };
+    } else {
+      const s = this.data.auroraDailyState[dateStr];
+      if (!Array.isArray(s.hours) || s.hours.length < 12) {
+        const hrs = [];
+        for (let i = 0; i < 12; i++) hrs.push(!!(s.hours && s.hours[i]));
+        s.hours = hrs;
+      }
+      if (!s.anch) s.anch = { move: 0, stand: 0 };
+      if (!Array.isArray(s.chips)) s.chips = [];
+      if (typeof s.moveCal !== 'number') s.moveCal = 0;
+    }
+    return this.data.auroraDailyState[dateStr];
+  }
+
+  saveAuroraDayState(dateStr, patch) {
+    const cur = this.getAuroraDayState(dateStr);
+    Object.assign(cur, patch);
+    cur.updatedAt = Date.now();
+
+    // Sync Move & Stand back to habitsState for streaks and XP
+    const moveCal = Math.max(0, Math.min(300, Number(cur.moveCal) || 0));
+    cur.moveCal = moveCal;
+    const moveStage = moveCal >= 300 ? 1 : (moveCal >= 225 ? 0.75 : (moveCal >= 150 ? 0.5 : (moveCal >= 75 ? 0.25 : 0)));
+    this.setAnchorStage('h-move', moveStage, dateStr);
+
+    const standCount = (cur.hours || []).filter(Boolean).length;
+    const standStage = standCount >= 12 ? 1 : (standCount >= 9 ? 0.75 : (standCount >= 6 ? 0.5 : (standCount >= 3 ? 0.25 : 0)));
+    this.setAnchorStage('h-stand', standStage, dateStr);
+
+    const stageToAnchIdx = (s) => (s >= 1 ? 4 : (s >= 0.75 ? 3 : (s >= 0.5 ? 2 : (s >= 0.25 ? 1 : 0))));
+    if (!cur.anch) cur.anch = { move: 0, stand: 0 };
+    cur.anch.move = stageToAnchIdx(moveStage);
+    cur.anch.stand = stageToAnchIdx(standStage);
+
+    this.saveData();
+    return cur;
+  }
+
+  // --- Custom Period Average Goals Methods (e.g. 10k Steps for Oct) ---
+
+  getPeriodGoals() {
+    if (!Array.isArray(this.data.periodGoals) || this.data.periodGoals.length === 0) {
+      this.data.periodGoals = [
+        {
+          id: 'pg-oct-steps',
+          title: '10k Steps · October',
+          targetAvg: 10000,
+          unit: 'steps',
+          startDate: '2026-10-01',
+          endDate: '2026-10-31',
+          logs: {}
+        }
+      ];
+    }
+    return this.data.periodGoals;
+  }
+
+  getPeriodGoal(goalId) {
+    const list = this.getPeriodGoals();
+    if (!goalId) return list[0] || null;
+    return list.find(g => g.id === goalId) || list[0] || null;
+  }
+
+  logPeriodGoalDay(goalId, dateStr, rawVal) {
+    const goal = this.getPeriodGoal(goalId);
+    if (!goal) return null;
+    if (!goal.logs || typeof goal.logs !== 'object') goal.logs = {};
+
+    if (rawVal === null || rawVal === undefined || String(rawVal).trim() === '') {
+      delete goal.logs[dateStr];
+    } else {
+      const num = Math.max(0, Number(rawVal) || 0);
+      goal.logs[dateStr] = num;
+    }
+    goal.updatedAt = Date.now();
+    this.saveData();
+    return goal;
+  }
+
+  savePeriodGoal(payload) {
+    const list = this.getPeriodGoals();
+    const id = payload.id || `pg-${Date.now()}`;
+    const existing = list.find(g => g.id === id);
+    if (existing) {
+      existing.title = (payload.title || existing.title || 'Custom Period Goal').trim();
+      existing.targetAvg = Math.max(1, Number(payload.targetAvg) || existing.targetAvg || 10000);
+      existing.unit = (payload.unit || existing.unit || 'steps').trim();
+      existing.startDate = payload.startDate || existing.startDate || '2026-10-01';
+      existing.endDate = payload.endDate || existing.endDate || '2026-10-31';
+      existing.updatedAt = Date.now();
+      this.saveData();
+      return existing;
+    } else {
+      const newGoal = {
+        id,
+        title: (payload.title || 'Custom Period Goal').trim(),
+        targetAvg: Math.max(1, Number(payload.targetAvg) || 10000),
+        unit: (payload.unit || 'steps').trim(),
+        startDate: payload.startDate || '2026-10-01',
+        endDate: payload.endDate || '2026-10-31',
+        logs: {},
+        updatedAt: Date.now()
+      };
+      list.push(newGoal);
+      this.saveData();
+      return newGoal;
+    }
+  }
+
+  deletePeriodGoal(goalId) {
+    if (!Array.isArray(this.data.periodGoals)) return;
+    if (this.data.periodGoals.length <= 1) return; // keep at least one period goal card
+    this.data.periodGoals = this.data.periodGoals.filter(g => g.id !== goalId);
+    this.saveData();
+  }
+
+  getPeriodGoalStats(goal, refDateStr = formatDateIso(new Date())) {
+    if (!goal) return null;
+    const startObj = parseDateIso(goal.startDate || '2026-10-01');
+    const endObj = parseDateIso(goal.endDate || '2026-10-31');
+    startObj.setHours(0, 0, 0, 0);
+    endObj.setHours(0, 0, 0, 0);
+
+    const dates = [];
+    const cur = new Date(startObj);
+    let safety = 0;
+    while (cur <= endObj && safety < 400) {
+      dates.push(formatDateIso(cur));
+      cur.setDate(cur.getDate() + 1);
+      safety++;
+    }
+    if (dates.length === 0) {
+      dates.push(goal.startDate || refDateStr);
+    }
+
+    const totalDays = dates.length;
+    const targetAvg = Math.max(1, Number(goal.targetAvg) || 10000);
+    const totalTargetVolume = totalDays * targetAvg;
+    const logs = goal.logs || {};
+
+    let loggedDaysCount = 0;
+    let totalLoggedSum = 0;
+    dates.forEach(d => {
+      const v = logs[d];
+      if (v !== undefined && v !== null && v !== '') {
+        const num = Number(v);
+        if (!isNaN(num) && num >= 0) {
+          loggedDaysCount++;
+          totalLoggedSum += num;
+        }
+      }
+    });
+
+    const currentAvg = loggedDaysCount > 0 ? Math.round(totalLoggedSum / loggedDaysCount) : 0;
+    const daysLeft = Math.max(0, totalDays - loggedDaysCount);
+    const remainingVolume = Math.max(0, totalTargetVolume - totalLoggedSum);
+    const neededAvgForBalance = daysLeft > 0 ? Math.ceil(remainingVolume / daysLeft) : 0;
+    const avgProgressPct = Math.min(100, Math.round((currentAvg / targetAvg) * 100));
+    const volumeProgressPct = Math.min(100, Math.round((totalLoggedSum / totalTargetVolume) * 100));
+    const dayRaw = logs[refDateStr];
+    const dayValue = (dayRaw !== undefined && dayRaw !== null && dayRaw !== '') ? Number(dayRaw) : null;
+    const isDateInRange = (refDateStr >= dates[0] && refDateStr <= dates[dates.length - 1]);
+
+    return {
+      dates,
+      totalDays,
+      targetAvg,
+      totalTargetVolume,
+      loggedDaysCount,
+      totalLoggedSum,
+      currentAvg,
+      daysLeft,
+      remainingVolume,
+      neededAvgForBalance,
+      avgProgressPct,
+      volumeProgressPct,
+      dayValue,
+      isDateInRange,
+      isOnTrack: loggedDaysCount > 0 && currentAvg >= targetAvg
+    };
+  }
+
+  // --- Daily Weight Tracker Methods (Target: 110 lbs) ---
+
+  getWeight(dateStr = formatDateIso(new Date())) {
+    if (!this.data.weightLogs) this.data.weightLogs = {};
+    const val = this.data.weightLogs[dateStr];
+    if (val === undefined || val === null || val === '' || isNaN(Number(val))) {
+      return null;
+    }
+    return Math.round(Number(val) * 10) / 10;
+  }
+
+  setWeight(val, dateStr = formatDateIso(new Date())) {
+    if (!this.data.weightLogs) this.data.weightLogs = {};
+    if (val === null || val === undefined || String(val).trim() === '') {
+      delete this.data.weightLogs[dateStr];
+    } else {
+      const num = Number(val);
+      if (isNaN(num) || num <= 0) {
+        delete this.data.weightLogs[dateStr];
+      } else {
+        this.data.weightLogs[dateStr] = Math.round(num * 10) / 10;
+      }
+    }
+    this.data.weightUpdatedAt = Date.now();
+    this.saveData();
+    return this.getWeight(dateStr);
+  }
+
+  stepWeight(delta, dateStr = formatDateIso(new Date())) {
+    const current = this.getWeight(dateStr);
+    const target = this.getWeightTarget();
+    let base = current;
+    if (base === null) {
+      const latest = this.getLatestLoggedWeight();
+      base = latest ? latest.weight : target;
+    }
+    const nextVal = Math.max(1, Math.round((base + delta) * 10) / 10);
+    return this.setWeight(nextVal, dateStr);
+  }
+
+  getWeightTarget() {
+    if (this.data.weightTarget !== undefined && !isNaN(Number(this.data.weightTarget)) && Number(this.data.weightTarget) > 0) {
+      return Number(this.data.weightTarget);
+    }
+    return 110;
+  }
+
+  setWeightTarget(target) {
+    const num = Number(target);
+    if (!isNaN(num) && num > 0) {
+      this.data.weightTarget = Math.round(num * 10) / 10;
+      this.saveData();
+    }
+    return this.getWeightTarget();
+  }
+
+  getLatestLoggedWeight(beforeOrOnDateStr = formatDateIso(new Date())) {
+    if (!this.data.weightLogs) return null;
+    const entries = Object.entries(this.data.weightLogs)
+      .filter(([d, w]) => d <= beforeOrOnDateStr && w !== null && !isNaN(Number(w)))
+      .sort((a, b) => b[0].localeCompare(a[0]));
+    if (entries.length === 0) return null;
+    return { dateStr: entries[0][0], weight: Math.round(Number(entries[0][1]) * 10) / 10 };
+  }
+
+  getWeightStats(dateStr = formatDateIso(new Date())) {
+    const current = this.getWeight(dateStr);
+    const target = this.getWeightTarget();
+    const latest = this.getLatestLoggedWeight(dateStr);
+    const diff = (current !== null) ? Math.round((current - target) * 10) / 10 : null;
+    const isAtTarget = (diff !== null) && Math.abs(diff) <= 0.2;
+    return {
+      current,
+      target,
+      diff,
+      isAtTarget,
+      latest
+    };
+  }
+
   recalculateStreak(habitId) {
     if (!this.data.habitStreaks) this.data.habitStreaks = {};
 
@@ -1125,6 +1479,15 @@ class StorageManager {
     }
 
     this.data.habitStreaks[habitId] = streak;
+  }
+
+  recalculateAllStreaks() {
+    if (!this.data.habitStreaks) this.data.habitStreaks = {};
+    const habits = this.getHabits(true);
+    habits.forEach(h => {
+      this.recalculateStreak(h.id);
+    });
+    return this.data.habitStreaks;
   }
 
   // --- Good Choices (vs Not) Tracker Methods ---
@@ -2241,6 +2604,12 @@ class StorageManager {
           updated = true;
         }
       }
+      if (item && (item.id === 'camp-oon' || (item.title || '').toLowerCase().includes('reimb') || (item.title || '').toLowerCase() === 'oon reimbrsement')) {
+        if (item.title !== 'oon') {
+          item.title = 'oon';
+          updated = true;
+        }
+      }
     });
     if (updated) this.saveData();
     return this.data.coverCampaigns;
@@ -2252,10 +2621,12 @@ class StorageManager {
     const newCamp = {
       id: 'camp-' + Date.now(),
       title: (itemData.title || 'Untitled Focus').trim(),
+      cat: itemData.cat || 'GROW',
       status: itemData.status || (listKey === 'now' ? 'IP' : 'NS'),
-      tools: Array.isArray(itemData.tools) ? itemData.tools : [
+      visibleTools: Array.isArray(itemData.visibleTools) ? itemData.visibleTools : undefined,
+      tools: Array.isArray(itemData.tools) ? itemData.tools : (itemData.tools || [
         { label: 'Apple Note', noteQuery: itemData.title }
-      ]
+      ])
     };
     campaigns[listKey].push(newCamp);
     this.saveData();
@@ -2575,7 +2946,9 @@ class StorageManager {
     const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
     if (!fin.weeklyChecklists[iso] || typeof fin.weeklyChecklists[iso] !== 'object') {
       const wasDone = !!(fin.weeklySundayUpdates && fin.weeklySundayUpdates[iso]);
-      fin.weeklyChecklists[iso] = { 1: wasDone, 2: wasDone, 3: wasDone, 4: wasDone, 5: wasDone };
+      fin.weeklyChecklists[iso] = { 1: wasDone, 2: wasDone, 3: wasDone, 4: wasDone, 5: wasDone, 6: wasDone };
+    } else if (fin.weeklyChecklists[iso][6] === undefined) {
+      fin.weeklyChecklists[iso][6] = false;
     }
     return fin.weeklyChecklists[iso];
   }
@@ -2587,11 +2960,11 @@ class StorageManager {
     }
     const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
     if (!fin.weeklyChecklists[iso]) {
-      fin.weeklyChecklists[iso] = { 1: false, 2: false, 3: false, 4: false, 5: false };
+      fin.weeklyChecklists[iso] = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
     }
     fin.weeklyChecklists[iso][itemNum] = !!isDone;
 
-    const allDone = [1, 2, 3, 4, 5].every(num => !!fin.weeklyChecklists[iso][num]);
+    const allDone = [1, 2, 3, 4, 5, 6].every(num => !!fin.weeklyChecklists[iso][num]);
     this.setFinanceSundayUpdated(iso, allDone);
 
     try {

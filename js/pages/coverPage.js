@@ -375,6 +375,582 @@ function renderCoverPage() {
   renderDailySheet();
 }
 
+const AURORA_GOOD_CHIPS = [
+  '🥑 Made a Good Choice',
+  '🚶 Outdoor Walk',
+  '🏋️ Worked Out',
+  '🍎 Fruits',
+  '🥦 Vegetables',
+  '😴 Slept Well'
+];
+const AURORA_BAD_CHIPS = [
+  '🍟 Junk Food',
+  '🍭 Too Much Sugar',
+  '📱 Doomscrolled'
+];
+/* --------------------------------------------------------------------------
+   Bed Potato Daily Roasts Catalog & Day-to-Day Midnight Rotation Engine
+   -------------------------------------------------------------------------- */
+const BED_POTATO_ROASTS = [
+  'The bar was in hell, but look at you contemplating it.',
+  'You actually got vertical today. Society thanks you for the bare minimum.',
+  'Operating at dangerously low momentum. The mattress has filed for adverse possession.',
+  'Overthinking burned exactly zero calories. Put your shoes on.',
+  'Look at you prioritizing horizontal living. Your bed sheets are so proud.',
+  'Rumor has it you\'re planning to stand up today. Let\'s not start wild rumors.',
+  'Your pillows are staging an intervention. They need personal space.',
+  'The ceiling fan has seen enough of your face for one morning. Move.',
+  'Discipline is remembering what you promised yourself before you met this blanket.',
+  'One good choice before 2 PM prevents a full bedtime existential crisis.',
+  'You\'ve been in potato mode for 12 hours. Time to sprout, spud.',
+  'Netflix just asked if you\'re still alive, not just watching.',
+  'Even a sourdough starter has more active fermentation than your morning.',
+  'Your Stand ring is sitting at zero crying into its silicon strap.',
+  'Gravity didn\'t get stronger overnight. It\'s just you. Up you go.',
+  'Your future self sent a postcard from tonight: "Please just do the Move ring."',
+  'Horizontal champion of the world. Time to defend your title in an upright stance.',
+  'The floor isn\'t going to stand on itself. Give it some company.',
+  'Congratulations on breathing. Now let\'s try walking across the room.',
+  'You are exactly one vertical movement away from defying biological expectations.',
+  'The blanket burrito was majestic, but the kitchen has called last orders.',
+  'A 10-minute walk cures about 80% of what\'s currently annoying you.',
+  'Don\'t make me poke you again. You know what needs doing today.',
+  'Your phone battery has dropped 40% and you haven\'t moved four inches.',
+  'If inertia were an Olympic sport, you\'d take home the gold-plated duvet.',
+  'The bar wasn\'t lowered, it was buried. Grab a shovel and start stepping.',
+  'Rise and shine? How about rise and mildly participate in reality.',
+  'Your Apple Watch just buzzed out of sheer boredom. Stand up.',
+  'Comfort zones are great, but nothing ever grew in bed except laundry piles.',
+  'You survived yesterday. Today\'s targets stand no chance once you actually get up.',
+  'Look at you contemplating verticality. We love to see tentative ambition.',
+  'The sofa is getting jealous of how much quality time you\'re giving the bed.',
+  'You can\'t scroll your way to closed rings. Hands off the glass, feet on the floor.',
+  'Energy doesn\'t show up before you move. Move first, motivation second.',
+  'Rest is sacred. But whatever you\'re doing right now is legally loitering.'
+];
+
+const AURORA_QUOTES = BED_POTATO_ROASTS;
+let auroraQuoteIdx = 0;
+let potatoPokeOffset = 0;
+
+function getBedPotatoRoast(dateStr = activeTrackingDate, offset = 0) {
+  if (!BED_POTATO_ROASTS || BED_POTATO_ROASTS.length === 0) {
+    return 'The bar was in hell, but look at you contemplating it.';
+  }
+  const target = dateStr || activeTrackingDate || (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : '2026-10-17');
+  const parts = String(target).split('-').map(Number);
+  const year = parts[0] || 2026;
+  const month = parts[1] || 1;
+  const day = parts[2] || 1;
+
+  // Day-of-year calculation for deterministic rotation
+  const dObj = new Date(year, month - 1, day);
+  const startOfYear = new Date(year, 0, 1);
+  const dayOfYear = Math.max(0, Math.floor((dObj - startOfYear) / (1000 * 60 * 60 * 24)));
+
+  const totalIdx = Math.abs(dayOfYear + (year * 7) + offset) % BED_POTATO_ROASTS.length;
+  return BED_POTATO_ROASTS[totalIdx];
+}
+window.getBedPotatoRoast = getBedPotatoRoast;
+
+function getAuroraDayProgress() {
+  const d = new Date();
+  const m = d.getHours() * 60 + d.getMinutes();
+  return Math.max(0, Math.min(1, (m - 420) / 840));
+}
+
+function getAuroraPaceText(kind, val, anchIdx) {
+  const max = kind === 'move' ? 300 : 12;
+  const unit = kind === 'move' ? 'cal' : 'hrs';
+  const TIMES = { 25: '10:30 AM', 50: '2:00 PM', 75: '5:30 PM', 100: '9:00 PM' };
+  if (!anchIdx) {
+    return `No anchor set · floor ${max / 2} ${unit} by 2:00 PM`;
+  }
+  const pct = [0, 25, 50, 75, 100][anchIdx] || 50;
+  const target = (max * pct) / 100;
+  const pr = getAuroraDayProgress();
+  if (val >= max && pct === 100) {
+    return `Closed ✨ · 100% goal (${max} ${unit}) achieved!`;
+  }
+  const status = val >= target ? 'Hit' : (val >= max * pr ? 'On pace' : 'Behind pace');
+  return `${status} · ${pct}% milestone (${target} ${unit}) by ${TIMES[pct] || '9:00 PM'}`;
+}
+
+function auroraStepMoveCal(delta, dateStr = activeTrackingDate) {
+  const s = storage.getAuroraDayState(dateStr);
+  const nextMove = Math.max(0, Math.min(300, (s.moveCal || 0) + delta));
+  storage.saveAuroraDayState(dateStr, { moveCal: nextMove });
+  renderDailySheet();
+}
+window.auroraStepMoveCal = auroraStepMoveCal;
+
+function auroraSetAnchorChip(kind, idx, dateStr = activeTrackingDate) {
+  const s = storage.getAuroraDayState(dateStr);
+  const nextAnch = { ...(s.anch || { move: 0, stand: 0 }), [kind]: idx };
+  const patch = { anch: nextAnch };
+  // Quick-setting Move calories
+  if (kind === 'move' && idx > 0) {
+    const milestoneCal = [0, 75, 150, 225, 300][idx] || 0;
+    if ((s.moveCal || 0) < milestoneCal || idx === 4) {
+      patch.moveCal = milestoneCal;
+    }
+  } else if (kind === 'move' && idx === 0) {
+    patch.moveCal = 0;
+  }
+
+  // Quick-setting Stand hours
+  if (kind === 'stand' && idx > 0) {
+    const targetHours = [0, 3, 6, 9, 12][idx] || 0;
+    const currentCount = (s.hours || []).filter(Boolean).length;
+    if (currentCount < targetHours || idx === 4) {
+      patch.hours = Array.from({ length: 12 }, (_, i) => i < targetHours);
+    }
+  } else if (kind === 'stand' && idx === 0) {
+    patch.hours = Array.from({ length: 12 }, () => false);
+  }
+
+  storage.saveAuroraDayState(dateStr, patch);
+  renderDailySheet();
+}
+window.auroraSetAnchorChip = auroraSetAnchorChip;
+
+function auroraToggleStandHour(hourIdx, dateStr = activeTrackingDate) {
+  const s = storage.getAuroraDayState(dateStr);
+  const nextHours = [...(s.hours || [])];
+  while (nextHours.length < 12) nextHours.push(false);
+  nextHours[hourIdx] = !nextHours[hourIdx];
+  storage.saveAuroraDayState(dateStr, { hours: nextHours });
+  renderDailySheet();
+}
+window.auroraToggleStandHour = auroraToggleStandHour;
+
+function auroraToggleQuickChip(name, kind, dateStr = activeTrackingDate) {
+  const s = storage.getAuroraDayState(dateStr);
+  const nextChips = [...(s.chips || [])];
+  const idx = nextChips.indexOf(name);
+  if (idx > -1) {
+    nextChips.splice(idx, 1);
+    storage.recordChoice(kind === 'g' ? 'good' : 'not', -1, dateStr);
+  } else {
+    nextChips.push(name);
+    storage.recordChoice(kind === 'g' ? 'good' : 'not', 1, dateStr);
+  }
+  storage.saveAuroraDayState(dateStr, { chips: nextChips });
+  renderDailySheet();
+}
+window.auroraToggleQuickChip = auroraToggleQuickChip;
+
+function auroraToggleMood(moodIdx, dateStr = activeTrackingDate) {
+  // moodIdx 0..4 maps to HEALTH_LEVELS 5..1 (Thriving=5, Solid=4, Surviving=3, Dragging=2, Zombie=1)
+  const targetLvl = 5 - moodIdx;
+  const currentLvl = storage.getHealthLevel(dateStr);
+  if (currentLvl === targetLvl) {
+    storage.clearHealthLevel(dateStr);
+  } else {
+    storage.setHealthLevel(targetLvl, dateStr);
+  }
+  renderDailySheet();
+}
+window.auroraToggleMood = auroraToggleMood;
+
+function auroraPokeMascot() {
+  potatoPokeOffset++;
+  auroraQuoteIdx = (auroraQuoteIdx + 1) % BED_POTATO_ROASTS.length;
+  const roast = getBedPotatoRoast(activeTrackingDate, potatoPokeOffset);
+  const qEl = document.getElementById('quote');
+  if (qEl) {
+    qEl.textContent = roast;
+  }
+  const mascotSvg = document.querySelector('.aurora-app .mascot svg');
+  if (mascotSvg) {
+    mascotSvg.classList.remove('mascot-poked');
+    void mascotSvg.offsetWidth;
+    mascotSvg.classList.add('mascot-poked');
+  }
+}
+window.auroraPokeMascot = auroraPokeMascot;
+
+function auroraPromptCustomMove(dateStr = activeTrackingDate) {
+  const name = window.prompt('Name your custom move');
+  if (name && name.trim()) {
+    storage.addDayGoal(name.trim(), dateStr);
+    if (typeof showToast === 'function') {
+      showToast(`Saved "${name.trim()}"`);
+    }
+    renderDailySheet();
+  }
+}
+window.auroraPromptCustomMove = auroraPromptCustomMove;
+
+function submitInlineCustomHabit(event, dateStr = activeTrackingDate) {
+  if (event) event.preventDefault();
+  const input = document.getElementById('inline-custom-habit-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  storage.addDayGoal(val, dateStr);
+  input.value = '';
+  if (typeof showToast === 'function') {
+    const dObj = parseDateIso(dateStr);
+    const dayLabel = dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    showToast(`✓ Added habit "${val}" for ${dayLabel} (+15 XP)`);
+  }
+  renderDailySheet();
+}
+window.submitInlineCustomHabit = submitInlineCustomHabit;
+
+// --- Weight Tracker Actions ---
+
+function auroraStepWeight(delta, dateStr = activeTrackingDate) {
+  if (typeof storage.stepWeight !== 'function') return;
+  const updatedWeight = storage.stepWeight(delta, dateStr);
+  const stats = storage.getWeightStats(dateStr);
+  if (typeof showToast === 'function') {
+    if (stats.isAtTarget) {
+      showToast(`✓ Weight: ${updatedWeight.toFixed(1)} lbs · Target Met! ✨`);
+      if (typeof confetti === 'function') {
+        try { confetti({ particleCount: 30, spread: 55, origin: { y: 0.7 } }); } catch (e) {}
+      }
+    } else {
+      const diffText = stats.diff > 0 ? `+${stats.diff.toFixed(1)} lbs over` : `${stats.diff.toFixed(1)} lbs under`;
+      showToast(`✓ Weight: ${updatedWeight.toFixed(1)} lbs (${diffText} 110 target)`);
+    }
+  }
+  renderDailySheet();
+}
+window.auroraStepWeight = auroraStepWeight;
+
+function auroraSaveWeightInput(val, dateStr = activeTrackingDate) {
+  if (val === null || val === undefined || String(val).trim() === '') {
+    storage.setWeight(null, dateStr);
+    if (typeof showToast === 'function') showToast(`Cleared weight entry for ${dateStr}`);
+  } else {
+    const num = parseFloat(val);
+    if (isNaN(num) || num <= 0) {
+      if (typeof showToast === 'function') showToast('Please enter a valid weight (e.g. 110.0)');
+      renderDailySheet();
+      return;
+    }
+    const updatedWeight = storage.setWeight(num, dateStr);
+    const stats = storage.getWeightStats(dateStr);
+    if (typeof showToast === 'function') {
+      if (stats.isAtTarget) {
+        showToast(`✓ Weight: ${updatedWeight.toFixed(1)} lbs · Target Met! ✨`);
+        if (typeof confetti === 'function') {
+          try { confetti({ particleCount: 35, spread: 60, origin: { y: 0.7 } }); } catch (e) {}
+        }
+      } else {
+        const diffText = stats.diff > 0 ? `+${stats.diff.toFixed(1)} lbs over` : `${stats.diff.toFixed(1)} lbs under`;
+        showToast(`✓ Weight: ${updatedWeight.toFixed(1)} lbs (${diffText} 110 target)`);
+      }
+    }
+  }
+  renderDailySheet();
+}
+window.auroraSaveWeightInput = auroraSaveWeightInput;
+
+function auroraClearWeight(dateStr = activeTrackingDate) {
+  if (typeof storage.setWeight !== 'function') return;
+  storage.setWeight(null, dateStr);
+  if (typeof showToast === 'function') {
+    showToast(`Cleared weight log for ${dateStr}`);
+  }
+  renderDailySheet();
+}
+window.auroraClearWeight = auroraClearWeight;
+
+let activePeriodGoalId = null;
+let periodGoalModalMode = 'log'; // 'log' | 'edit' | 'new'
+
+function selectAuroraPeriodGoal(goalId) {
+  activePeriodGoalId = goalId;
+  renderDailySheet();
+}
+window.selectAuroraPeriodGoal = selectAuroraPeriodGoal;
+
+function submitAuroraPeriodGoalDay(goalId, dateStr = activeTrackingDate) {
+  const input = document.getElementById(`aurora-pg-input-${goalId}`);
+  if (!input) return;
+  const raw = input.value.trim();
+  const updatedGoal = storage.logPeriodGoalDay(goalId, dateStr, raw);
+  if (updatedGoal && typeof showToast === 'function') {
+    const stats = storage.getPeriodGoalStats(updatedGoal, dateStr);
+    if (raw === '') {
+      showToast(`Cleared entry for ${dateStr}`);
+    } else {
+      showToast(`✓ Logged ${Number(raw).toLocaleString()} ${updatedGoal.unit} · Avg: ${stats.currentAvg.toLocaleString()} (${stats.daysLeft}d left, need ${stats.neededAvgForBalance.toLocaleString()}/d)`);
+    }
+  }
+  renderDailySheet();
+}
+window.submitAuroraPeriodGoalDay = submitAuroraPeriodGoalDay;
+
+function stepAuroraPeriodGoalDay(goalId, delta, dateStr = activeTrackingDate) {
+  const goal = storage.getPeriodGoal(goalId);
+  if (!goal) return;
+  const currentRaw = (goal.logs && goal.logs[dateStr] !== undefined && goal.logs[dateStr] !== null && goal.logs[dateStr] !== '')
+    ? Number(goal.logs[dateStr])
+    : 0;
+  const nextVal = Math.max(0, currentRaw + delta);
+  storage.logPeriodGoalDay(goalId, dateStr, nextVal);
+  renderDailySheet();
+}
+window.stepAuroraPeriodGoalDay = stepAuroraPeriodGoalDay;
+
+function renderAuroraPeriodGoalsWidget(dateStr = activeTrackingDate) {
+  if (typeof storage.getPeriodGoals !== 'function') return '';
+  const goals = storage.getPeriodGoals();
+  if (!goals || goals.length === 0) return '';
+
+  if (!activePeriodGoalId || !goals.some(g => g.id === activePeriodGoalId)) {
+    activePeriodGoalId = goals[0].id;
+  }
+  const goal = storage.getPeriodGoal(activePeriodGoalId);
+  if (!goal) return '';
+
+  const stats = storage.getPeriodGoalStats(goal, dateStr);
+  const todayIso = formatDateIso(new Date());
+  const dObj = parseDateIso(dateStr);
+  const shortDayLabel = (dateStr === todayIso)
+    ? 'Today'
+    : dObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  const isAheadOrOnTrack = stats.loggedDaysCount > 0 && stats.currentAvg >= stats.targetAvg;
+  const barColor = isAheadOrOnTrack
+    ? 'var(--good, #2EBF91)'
+    : (stats.avgProgressPct >= 75 ? 'var(--accent, #5CE1F0)' : 'var(--violet, #B5ABFF)');
+
+  return `
+    <section class="card panel span2 aurora-period-card" aria-labelledby="pgT" id="section-period-goal">
+      <div class="between" style="gap:8px">
+        <div class="aurora-pg-title-row">
+          <span class="ttl" id="pgT" style="color:var(--accent)">${escapeHtml(goal.title.toUpperCase())}</span>
+          ${goals.length > 1 ? `
+            <div class="aurora-pg-tabs">
+              ${goals.map(g => `
+                <button type="button" class="aurora-pg-tab ${g.id === goal.id ? 'on' : ''}" onclick="selectAuroraPeriodGoal('${g.id}')">${escapeHtml(g.title)}</button>
+              `).join('')}
+            </div>
+          ` : ''}
+        </div>
+        <div class="row">
+          <span class="num" id="pgAvgVal" style="font-size:22px">${stats.currentAvg.toLocaleString()}</span>
+          <span class="unit">/ ${stats.targetAvg.toLocaleString()} ${escapeHtml(goal.unit)} avg</span>
+        </div>
+      </div>
+
+      <div class="aurora-pg-bar-track" title="${stats.avgProgressPct}% of target average">
+        <div class="aurora-pg-bar-fill" style="width:${Math.max(stats.loggedDaysCount > 0 ? 4 : 0, stats.avgProgressPct)}%;background:${barColor}"></div>
+      </div>
+
+      <div class="between muted" style="font-size:12px">
+        <span><strong style="color:var(--text)">${stats.daysLeft}d left</strong> · ${stats.loggedDaysCount}/${stats.totalDays} logged</span>
+        <span>Balance avg needed: <strong style="color:${stats.neededAvgForBalance <= stats.targetAvg ? 'var(--good-text, #8FE9CB)' : 'var(--accent, #5CE1F0)'}">${stats.daysLeft > 0 ? stats.neededAvgForBalance.toLocaleString() : '0'}</strong>/${escapeHtml(goal.unit === 'steps' ? 'day' : 'd')}</span>
+      </div>
+
+      <div class="aurora-pg-inline-entry">
+        <span class="aurora-pg-day-tag">${escapeHtml(shortDayLabel)}</span>
+        <input type="number"
+               id="aurora-pg-input-${goal.id}"
+               class="aurora-pg-input"
+               min="0"
+               placeholder="Enter ${escapeHtml(goal.unit)}…"
+               value="${stats.dayValue !== null ? stats.dayValue : ''}"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();submitAuroraPeriodGoalDay('${goal.id}','${dateStr}');}">
+        <button type="button" class="aurora-pg-save-btn" onclick="submitAuroraPeriodGoalDay('${goal.id}', '${dateStr}')">${stats.dayValue !== null ? 'Update' : 'Log'}</button>
+        <button type="button" class="aurora-pg-more-btn" onclick="openPeriodGoalModal('${goal.id}', 'log')" title="All days & goal settings">⋯</button>
+      </div>
+    </section>
+  `;
+}
+window.renderAuroraPeriodGoalsWidget = renderAuroraPeriodGoalsWidget;
+
+function openPeriodGoalModal(goalId = activePeriodGoalId, mode = 'log') {
+  if (goalId) activePeriodGoalId = goalId;
+  periodGoalModalMode = mode || 'log';
+  renderPeriodGoalModalContent();
+  const modal = document.getElementById('modal-period-goal');
+  if (modal) modal.classList.add('active');
+}
+window.openPeriodGoalModal = openPeriodGoalModal;
+
+function switchPeriodGoalModalTab(mode) {
+  periodGoalModalMode = mode;
+  renderPeriodGoalModalContent();
+}
+window.switchPeriodGoalModalTab = switchPeriodGoalModalTab;
+
+function savePeriodGoalDayFromModal(goalId, dateStr, val) {
+  storage.logPeriodGoalDay(goalId, dateStr, val);
+  renderDailySheet();
+  renderPeriodGoalModalContent();
+}
+window.savePeriodGoalDayFromModal = savePeriodGoalDayFromModal;
+
+function submitPeriodGoalConfigForm(event, isNew = false) {
+  if (event) event.preventDefault();
+  const title = (document.getElementById('pg-form-title')?.value || '').trim();
+  const targetAvg = Number(document.getElementById('pg-form-target')?.value || 10000);
+  const unit = (document.getElementById('pg-form-unit')?.value || 'steps').trim();
+  const startDate = document.getElementById('pg-form-start')?.value || '2026-10-01';
+  const endDate = document.getElementById('pg-form-end')?.value || '2026-10-31';
+
+  if (!title) return;
+  const saved = storage.savePeriodGoal({
+    id: isNew ? `pg-${Date.now()}` : activePeriodGoalId,
+    title,
+    targetAvg,
+    unit,
+    startDate,
+    endDate
+  });
+  if (saved) {
+    activePeriodGoalId = saved.id;
+  }
+  periodGoalModalMode = 'log';
+  renderDailySheet();
+  renderPeriodGoalModalContent();
+  if (typeof showToast === 'function') {
+    showToast(`✓ Saved period goal: "${title}"`);
+  }
+}
+window.submitPeriodGoalConfigForm = submitPeriodGoalConfigForm;
+
+function deletePeriodGoalFromModal(goalId) {
+  const goals = storage.getPeriodGoals();
+  if (goals.length <= 1) {
+    if (typeof showToast === 'function') showToast('At least one period goal must remain.');
+    return;
+  }
+  if (confirm('Delete this period goal and its logged entries?')) {
+    storage.deletePeriodGoal(goalId);
+    const remaining = storage.getPeriodGoals();
+    activePeriodGoalId = remaining[0]?.id || null;
+    periodGoalModalMode = 'log';
+    renderDailySheet();
+    renderPeriodGoalModalContent();
+  }
+}
+window.deletePeriodGoalFromModal = deletePeriodGoalFromModal;
+
+function renderPeriodGoalModalContent() {
+  const body = document.getElementById('period-goal-modal-body');
+  if (!body) return;
+
+  const goals = storage.getPeriodGoals();
+  const goal = storage.getPeriodGoal(activePeriodGoalId) || goals[0];
+  if (!goal) return;
+
+  const stats = storage.getPeriodGoalStats(goal, activeTrackingDate);
+  const todayIso = formatDateIso(new Date());
+
+  const tabsHtml = `
+    <div class="aurora-pg-modal-tabs">
+      <button type="button" class="aurora-pg-modal-tab ${periodGoalModalMode === 'log' ? 'on' : ''}" onclick="switchPeriodGoalModalTab('log')">📅 Daily Log (${stats.loggedDaysCount}/${stats.totalDays})</button>
+      <button type="button" class="aurora-pg-modal-tab ${periodGoalModalMode === 'edit' ? 'on' : ''}" onclick="switchPeriodGoalModalTab('edit')">⚙️ Edit Goal</button>
+      <button type="button" class="aurora-pg-modal-tab ${periodGoalModalMode === 'new' ? 'on' : ''}" onclick="switchPeriodGoalModalTab('new')">＋ New Period Goal</button>
+    </div>
+  `;
+
+  if (periodGoalModalMode === 'edit' || periodGoalModalMode === 'new') {
+    const isNew = (periodGoalModalMode === 'new');
+    const gData = isNew
+      ? { title: '', targetAvg: 10000, unit: 'steps', startDate: '2026-10-01', endDate: '2026-10-31' }
+      : goal;
+
+    body.innerHTML = `
+      ${tabsHtml}
+      <form class="aurora-pg-form" onsubmit="submitPeriodGoalConfigForm(event, ${isNew})">
+        <div class="form-group">
+          <label class="form-label">Goal Title</label>
+          <input type="text" id="pg-form-title" class="form-input" placeholder="e.g. 10k Steps · October" value="${escapeHtml(gData.title)}" required>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label">Target Daily Average</label>
+            <input type="number" id="pg-form-target" class="form-input" min="1" value="${gData.targetAvg}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Unit</label>
+            <input type="text" id="pg-form-unit" class="form-input" placeholder="steps, min, pages..." value="${escapeHtml(gData.unit)}" required>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label">Start Date</label>
+            <input type="date" id="pg-form-start" class="form-input" value="${gData.startDate}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date</label>
+            <input type="date" id="pg-form-end" class="form-input" value="${gData.endDate}" required>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+          ${(!isNew && goals.length > 1) ? `
+            <button type="button" class="btn btn-secondary" style="color:var(--bad)" onclick="deletePeriodGoalFromModal('${goal.id}')">Delete Goal</button>
+          ` : '<span></span>'}
+          <div style="display:flex;gap:10px">
+            <button type="button" class="btn btn-secondary" onclick="switchPeriodGoalModalTab('log')">Cancel</button>
+            <button type="submit" class="btn btn-primary">${isNew ? 'Create Goal' : 'Save Changes'}</button>
+          </div>
+        </div>
+      </form>
+    `;
+    return;
+  }
+
+  // Daily Log breakdown view
+  const rowsHtml = stats.dates.map(dStr => {
+    const dObj = parseDateIso(dStr);
+    const label = dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    const rawVal = (goal.logs && goal.logs[dStr] !== undefined && goal.logs[dStr] !== null && goal.logs[dStr] !== '')
+      ? Number(goal.logs[dStr])
+      : '';
+    const isHit = (rawVal !== '' && rawVal >= stats.targetAvg);
+    const isTodayRow = (dStr === todayIso);
+
+    return `
+      <div class="aurora-pg-log-row ${isTodayRow ? 'is-today' : ''} ${isHit ? 'is-hit' : ''}">
+        <div class="aurora-pg-log-date">
+          <strong>${escapeHtml(label)}</strong>
+          ${isTodayRow ? `<span class="aurora-hair-today-tag">Today</span>` : ''}
+        </div>
+        <div class="aurora-pg-log-input-wrap">
+          <input type="number"
+                 class="aurora-pg-log-input"
+                 min="0"
+                 placeholder="—"
+                 value="${rawVal}"
+                 onchange="savePeriodGoalDayFromModal('${goal.id}', '${dStr}', this.value)">
+          <span class="muted" style="font-size:12px">${escapeHtml(goal.unit)}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  body.innerHTML = `
+    ${tabsHtml}
+    <div class="aurora-pg-modal-summary">
+      <div>
+        <span class="m-lbl">CURRENT AVG</span>
+        <strong>${stats.currentAvg.toLocaleString()} / ${stats.targetAvg.toLocaleString()} ${escapeHtml(goal.unit)}</strong>
+      </div>
+      <div>
+        <span class="m-lbl">DAYS LEFT</span>
+        <strong>${stats.daysLeft}d (${stats.loggedDaysCount}/${stats.totalDays} logged)</strong>
+      </div>
+      <div>
+        <span class="m-lbl">NEEDED FOR BALANCE</span>
+        <strong style="color:var(--accent)">${stats.daysLeft > 0 ? stats.neededAvgForBalance.toLocaleString() : '0'} ${escapeHtml(goal.unit)}/d</strong>
+      </div>
+    </div>
+    <div class="aurora-pg-log-list">
+      ${rowsHtml}
+    </div>
+  `;
+}
+window.renderPeriodGoalModalContent = renderPeriodGoalModalContent;
+
 function renderDailySheet() {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
@@ -382,146 +958,85 @@ function renderDailySheet() {
   const todayIso = formatDateIso(new Date());
   const selectedDateObj = parseDateIso(activeTrackingDate);
   const isToday = (activeTrackingDate === todayIso);
-  const energyMode = (typeof storage !== 'undefined' && typeof storage.getEnergyMode === 'function')
-    ? storage.getEnergyMode()
-    : 'power';
-  const isMaintenance = (energyMode === 'maint');
 
-  // Update Header Date Label
-  const headerDateLabel = document.getElementById('header-date-label');
-  if (headerDateLabel) {
-    if (isToday) {
-      const formatted = selectedDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      headerDateLabel.textContent = `Today, ${formatted}`;
-      headerDateLabel.classList.remove('is-past-date');
-    } else {
-      const formatted = selectedDateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      headerDateLabel.textContent = `📅 ${formatted}`;
-      headerDateLabel.classList.add('is-past-date');
-    }
-  }
-
-  // Active Habits & State for this date
   const habits = storage.getHabits();
-  const dayHabitsState = storage.data.habitsState[activeTrackingDate] || {};
-
-  // Look up Move and Stand habits & 3-stage state (0: off, 0.5: 50% floor, 1: 100% closed)
   const moveHabit = habits.find(h => h && (h.id === 'h-move' || h.name.toLowerCase().trim() === 'move'));
   const standHabit = habits.find(h => h && (h.id === 'h-stand' || h.name.toLowerCase().trim() === 'stand' || h.name.toLowerCase().trim() === 'stand ring'));
   const moveId = moveHabit ? moveHabit.id : 'h-move';
   const standId = standHabit ? standHabit.id : 'h-stand';
 
-  const rawMove = dayHabitsState[moveId];
-  const moveStage = (rawMove === 1 || rawMove === true) ? 1 : (rawMove === 0.75 ? 0.75 : (rawMove === 0.5 ? 0.5 : (rawMove === 0.25 ? 0.25 : 0)));
-  const rawStand = dayHabitsState[standId];
-  const standStage = (rawStand === 1 || rawStand === true) ? 1 : (rawStand === 0.75 ? 0.75 : (rawStand === 0.5 ? 0.5 : (rawStand === 0.25 ? 0.25 : 0)));
-  const isMoveDone = moveStage > 0;
-  const isStandDone = standStage > 0;
+  // Ensure all live streaks are freshly computed from logged habit states
+  if (typeof storage.recalculateAllStreaks === 'function') {
+    storage.recalculateAllStreaks();
+  } else if (Array.isArray(habits)) {
+    habits.forEach(h => {
+      if (typeof storage.recalculateStreak === 'function') storage.recalculateStreak(h.id);
+    });
+  }
 
-  let completedTodayCount = 0;
-  habits.forEach(h => {
-    if (h.cadence === 'daily') {
-      if (dayHabitsState[h.id]) completedTodayCount++;
-    } else {
-      if (Number(dayHabitsState[h.id] || 0) > 0 || dayHabitsState[h.id]) completedTodayCount++;
-    }
-  });
-
-  // Calculate Sunday-start Weekly Stats for streak strip
-  const sundayOfSelectedWeek = getSundayOfWeek(selectedDateObj);
-  const weeklyStats = calculateWeeklyStats(sundayOfSelectedWeek, habits, storage.data.habitsState);
-
-  // Streak calculation
   let maxStreak = 0;
-  let moveStreak = storage.data.habitStreaks[moveId] || 0;
-  let standStreak = storage.data.habitStreaks[standId] || 0;
+  let moveStreak = (storage.data.habitStreaks && storage.data.habitStreaks[moveId]) || 0;
+  let standStreak = (storage.data.habitStreaks && storage.data.habitStreaks[standId]) || 0;
   habits.forEach(h => {
-    const s = storage.data.habitStreaks[h.id] || 0;
+    const s = (storage.data.habitStreaks && storage.data.habitStreaks[h.id]) || 0;
     if (s > maxStreak) maxStreak = s;
   });
+  const currentStreak = Math.max(0, moveStreak, standStreak, maxStreak);
 
-  // Day-Specific Bonus Goals for this date
-  const dateDayGoals = storage.getDayGoals(activeTrackingDate);
+  // Aurora granular state for activeTrackingDate
+  const auroraState = storage.getAuroraDayState(activeTrackingDate);
+  const moveVal = Math.max(0, Math.min(300, Number(auroraState.moveCal) || 0));
+  const hoursArr = auroraState.hours || [];
+  const standVal = hoursArr.filter(Boolean).length;
+  const moveAnchIdx = (auroraState.anch && typeof auroraState.anch.move === 'number') ? auroraState.anch.move : 0;
+  const standAnchIdx = (auroraState.anch && typeof auroraState.anch.stand === 'number') ? auroraState.anch.stand : 0;
+  const activeChips = auroraState.chips || [];
 
-  // Good Choices for this date
+  // Choices & All-Time Momentum
   const dateChoices = storage.getChoices(activeTrackingDate);
-  const totalChoices = (dateChoices.good || 0) + (dateChoices.not || 0);
-  const goodRatio = totalChoices > 0 ? Math.round((dateChoices.good / totalChoices) * 100) : 100;
-  const goodBarWidth = totalChoices > 0 ? Math.round((dateChoices.good / totalChoices) * 100) : 100;
-  const notBarWidth = totalChoices > 0 ? 100 - goodBarWidth : 0;
-
-  // Running Weekly Good vs Bad Tally (Sun to Sat) & All-Time Running Total
-  const weeklyChoices = storage.getWeeklyChoices(sundayOfSelectedWeek);
   const runningChoices = storage.getRunningChoices();
+  // Baseline historical tally 41 good / 25 not so good + running logged
+  const totalGoodAllTime = Math.max(41 + (dateChoices.good || 0), runningChoices.totalGood || (41 + (dateChoices.good || 0)));
+  const totalBadAllTime = Math.max(25 + (dateChoices.not || 0), runningChoices.totalNot || (25 + (dateChoices.not || 0)));
+  const netMomentum = totalGoodAllTime - totalBadAllTime;
+  const posPct = (totalGoodAllTime + totalBadAllTime) > 0
+    ? Math.round((totalGoodAllTime / (totalGoodAllTime + totalBadAllTime)) * 100)
+    : 100;
+  const momentumTierClass = (function(p) {
+    if (p < 50) return 'momentum-under-50';
+    if (p < 75) return 'momentum-50-74';
+    if (p < 80) return 'momentum-75-79';
+    if (p < 85) return 'momentum-80-84';
+    if (p < 90) return 'momentum-85-89';
+    if (p < 95) return 'momentum-90-94';
+    return 'momentum-95-100';
+  })(posPct);
 
-  // Health & Vitality Check-in for this date
+  // Mood / Vitality (5=Thriving -> idx 0, ..., 1=Zombie -> idx 4)
   const currentHealthLevel = storage.getHealthLevel(activeTrackingDate);
-  const currentHealthMeta = (currentHealthLevel && typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[currentHealthLevel] : null;
-  const weeklyHealth = storage.getWeeklyHealth(sundayOfSelectedWeek);
-  const runningHealth = storage.getRunningHealth();
+  const activeMoodIdx = currentHealthLevel ? (5 - currentHealthLevel) : -1;
+  const MOOD_LABELS = ['Thriving', 'Solid', 'Surviving', 'Dragging', 'Zombie'];
 
-  // Gamification: Sassy Status & Rewards
-  const currentPoints = storage.getPoints();
-  const statusInfo = getSassyStatus(currentPoints);
-
-  // Daily Sassy Affirmation with rotating visual
-  const dailyAff = (typeof getDailyAffirmation === 'function')
-    ? getDailyAffirmation(activeTrackingDate, customAffirmationOffset)
-    : { emoji: '🥔', text: "You actually got vertical today. Society thanks you for the bare minimum." };
-
-  // Sanctuary Journal entry for this date
+  // Journal
   const journalEntry = (typeof storage.getJournal === 'function')
     ? storage.getJournal(activeTrackingDate)
     : null;
-  const allJournals = (typeof storage.getAllJournals === 'function')
-    ? storage.getAllJournals()
-    : [];
+  const journalText = journalEntry ? journalEntry.text : '';
 
-  // Active Habits without Move and Stand (which have dedicated Momentum Anchors)
-  const additionalHabits = habits.filter(h => 
-    h && 
-    h.id !== moveId && 
-    h.id !== standId && 
-    h.name.toLowerCase().trim() !== 'move' && 
-    h.name.toLowerCase().trim() !== 'stand' && 
-    h.name.toLowerCase().trim() !== 'stand ring'
-  );
-
-
-  // Visual Breadcrumbs: Checkpoints Status Calculations
-  const hasChoice = (dateChoices.good || 0) + (dateChoices.not || 0) > 0;
-  const hasHealth = !!currentHealthLevel;
-  const anchorsDone = (moveStage === 1 && standStage === 1);
-  const anchorsFloor = (moveStage > 0 || standStage > 0);
+  // Haircare
   const hairCareState = (typeof storage !== 'undefined' && typeof storage.getHairCareState === 'function')
     ? storage.getHairCareState(activeTrackingDate)
     : {};
-  const isHairCompleted = !!hairCareState.completed;
-  const isHairSkipped = !!hairCareState.skipped;
-  const hasHairCare = isHairCompleted || isHairSkipped;
-  const hasJournal = !!(journalEntry && journalEntry.text && journalEntry.text.trim().length > 0);
-  const totalDayGoals = dateDayGoals.length;
-  const completedDayGoals = dateDayGoals.filter(g => g && g.completed).length;
-  const hasGoals = totalDayGoals > 0;
-  const goalsDone = hasGoals && (completedDayGoals === totalDayGoals);
+  const isHairDone = !!(hairCareState.completed || hairCareState.skipped);
+  const hairRoutine = getHairCareRoutineForDate(activeTrackingDate);
 
-  const totalRequired = hasGoals ? 6 : 5;
-  let completedCheckpoints = 0;
-  if (hasChoice) completedCheckpoints++;
-  if (hasHealth) completedCheckpoints++;
-  if (anchorsFloor) completedCheckpoints++;
-  if (hasHairCare) completedCheckpoints++;
-  if (hasJournal) completedCheckpoints++;
-  if (hasGoals && goalsDone) completedCheckpoints++;
-  const allCheckpointsDone = (completedCheckpoints >= totalRequired);
-
-  // Z Log status for active tracking date
+  // Z Hub status
   const todayZLog = (typeof storage !== 'undefined' && typeof storage.getZLogEntry === 'function')
     ? storage.getZLogEntry(activeTrackingDate)
     : null;
   const isZLogLogged = !!(todayZLog && (
-    (todayZLog.rating !== null && todayZLog.rating !== undefined) || 
-    (todayZLog.notes && todayZLog.notes.trim().length > 0) || 
+    (todayZLog.rating !== null && todayZLog.rating !== undefined) ||
+    (todayZLog.notes && todayZLog.notes.trim().length > 0) ||
     (todayZLog.aggression) ||
     (todayZLog.updatedAt && todayZLog.meds && (todayZLog.meds.z || todayZLog.meds.g || todayZLog.meds.rit || todayZLog.meds.mag || todayZLog.meds.mel || todayZLog.meds.ris))
   ));
@@ -529,7 +1044,7 @@ function renderDailySheet() {
     ? ZLOG_RATINGS[todayZLog.rating]
     : null;
 
-  // Clean up any previously auto-populated dummy goals from storage
+  // Custom moves / day goals
   const dummyTexts = new Set([
     'morning mobility',
     'stretch session',
@@ -538,507 +1053,334 @@ function renderDailySheet() {
     'stand and stretch',
     'desk stand offs'
   ]);
-  let storedGoals = storage.getDayGoals(activeTrackingDate) || [];
-  const cleanedGoals = storedGoals.filter(g => !dummyTexts.has((g.text || '').toLowerCase().trim()));
-  if (cleanedGoals.length !== storedGoals.length) {
-    storage.data.dayGoals[activeTrackingDate] = cleanedGoals;
-    storage.saveData();
+  const storedGoals = storage.getDayGoals(activeTrackingDate) || [];
+  const customHabits = storedGoals.filter(g => g && !dummyTexts.has((g.text || '').toLowerCase().trim()));
+  const customHabitsDone = customHabits.filter(g => g.completed).length;
+  const shortDayName = isToday
+    ? 'today'
+    : selectedDateObj.toLocaleDateString('en-US', { weekday: 'short' });
+
+  // Day Clock progress
+  const pr = isToday ? getAuroraDayProgress() : (activeTrackingDate < todayIso ? 1 : 0);
+  const dayPctNum = Math.round(pr * 100);
+  const dayFillWidth = Math.max(4, pr * 100);
+
+  const formattedDateHeader = selectedDateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  // 4-Segment Move widths
+  const segWidths = [0, 1, 2, 3].map(i => {
+    const w = Math.max(0, Math.min(1, (moveVal - i * 75) / 75));
+    return Math.round(w * 100);
+  });
+
+  const standNoteText = standVal >= 6 ? 'Floor reached' : `${6 - standVal} to floor by 2 PM`;
+  const mvPaceText = getAuroraPaceText('move', moveVal, moveAnchIdx);
+  const stPaceText = getAuroraPaceText('stand', standVal, standAnchIdx);
+  const currentQuote = getBedPotatoRoast(activeTrackingDate, potatoPokeOffset);
+  const dailyRoastObj = (typeof getDailyAffirmation === 'function')
+    ? getDailyAffirmation(activeTrackingDate, typeof customAffirmationOffset === 'number' ? customAffirmationOffset : 0)
+    : { text: currentQuote };
+  const allJournals = (typeof storage !== 'undefined' && typeof storage.getAllJournals === 'function')
+    ? storage.getAllJournals()
+    : [];
+
+  // Weight Tracker state (Target: 110 lbs)
+  const weightStats = (typeof storage.getWeightStats === 'function')
+    ? storage.getWeightStats(activeTrackingDate)
+    : { current: null, target: 110, diff: null, isAtTarget: false, latest: null };
+  const currentWeight = weightStats.current;
+  const targetWeight = weightStats.target || 110;
+  const weightDiff = weightStats.diff;
+  const isWeightAtTarget = weightStats.isAtTarget;
+  const isWeightLogged = (currentWeight !== null);
+
+  // Visual Gauge: 105 lbs (0%) to 115 lbs (100%), so 110 lbs is precisely at the 50% target notch
+  let weightBarWidth = 0;
+  if (isWeightLogged) {
+    weightBarWidth = Math.max(4, Math.min(100, Math.round(((currentWeight - 105) / 10) * 100)));
   }
-  const displayGoals = cleanedGoals;
 
-  const GOOD_CHIPS = [
-    { label: '💧 Hydrated', type: 'good' },
-    { label: '🥗 Whole Foods', type: 'good' },
-    { label: '😴 Slept Well', type: 'good' },
-    { label: '🧘‍♀️ Meditated', type: 'good' },
-    { label: '👟 Walked More', type: 'good' },
-    { label: '🧠 Deep Focus', type: 'good' },
-    { label: '🚫 Avoided Sugar', type: 'good' },
-    { label: '☕ Took Breaks', type: 'good' }
-  ];
+  let weightStatusPillText = '110 LBS TARGET';
+  let weightStatusPillClass = 'idle';
+  let weightStatusNote = 'Tap − / + or type to log';
 
-  const NOT_GOOD_CHIPS = [
-    { label: '🍰 Ate Dessert', type: 'not' },
-    { label: '🍟 Junk Food', type: 'not' },
-    { label: '🫥 Skipped Meals', type: 'not' },
-    { label: '📱 Doomscrolled', type: 'not' }
-  ];
-
-  const formattedDateLong = selectedDateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  const currentStreak = Math.max(moveStreak, standStreak, maxStreak, 7);
-
-  // Mascot Companion State & Dialogue
-  const mascotInfo = (typeof getMascotStateInfo === 'function')
-    ? getMascotStateInfo(moveStage, standStage, totalChoices, hasHealth, isMaintenance)
-    : {
-        state: 'potato',
-        tierTitle: 'Bed Potato',
-        badge: '🥔',
-        subtitle: 'Morning Baseline · Awaiting Move Anchor',
-        quips: [dailyAff.text]
-      };
-
-  let currentMascotQuip = dailyAff.text;
-  if (mascotInfo.quips && mascotInfo.quips.length > 0) {
-    const quipIdx = (sproutPokeIndex + customAffirmationOffset) % mascotInfo.quips.length;
-    currentMascotQuip = mascotInfo.quips[quipIdx];
+  if (isWeightLogged) {
+    if (isWeightAtTarget) {
+      weightStatusPillText = '✓ TARGET MET';
+      weightStatusPillClass = 'met';
+      weightStatusNote = `On target (${currentWeight.toFixed(1)} lbs) ✨`;
+    } else if (weightDiff > 0) {
+      weightStatusPillText = `+${weightDiff.toFixed(1)} LBS`;
+      weightStatusPillClass = 'above';
+      weightStatusNote = `+${weightDiff.toFixed(1)} lbs over 110 target`;
+    } else {
+      weightStatusPillText = `${weightDiff.toFixed(1)} LBS`;
+      weightStatusPillClass = 'below';
+      weightStatusNote = `${weightDiff.toFixed(1)} lbs under 110 target`;
+    }
   }
-
-  // Goal Progress Pacers for Move and Stand based on time of day
-  const pacerData = getGoalPacerData(activeTrackingDate);
-  const movePacer = getMoveAnchorPacer(moveStage, pacerData);
-  const standPacer = getStandRingPacer(standStage, pacerData);
 
   container.innerHTML = `
-    <div class="today-mockup-wrapper">
-      ${!isToday ? `
-        <!-- Past Date Return Banner -->
-        <div class="past-date-banner" style="margin-bottom: 0;">
-          <div class="past-date-info">
-            <span class="past-date-icon">🕒</span>
-            <div>
-              <div class="past-date-title">Viewing Past Date: <strong>${selectedDateObj.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</strong></div>
-              <div class="past-date-sub">Any habits, journal entries, or good choices checked off will be saved to this date.</div>
-            </div>
-          </div>
-          <div class="past-date-actions">
-            <button class="btn btn-secondary btn-xs" onclick="navigateDate(-1)" title="Previous Day">← Previous Day</button>
-            <button class="btn btn-primary btn-xs" onclick="resetToToday()">↩ Return to Today</button>
-            <button class="btn btn-secondary btn-xs" onclick="navigateDate(1)" title="Next Day">Next Day →</button>
-          </div>
-        </div>
-      ` : ''}
+    <div class="aurora-app">
 
-      <!-- Floating Center HUD Pill: Exactly like Mockup -->
-      <div class="today-floating-hud">
-        <button class="hud-nav-btn" onclick="navigateDate(-1)" title="Previous Day">‹</button>
-        <div class="hud-date-pill" onclick="triggerHeaderDatePicker()" style="cursor: pointer;" title="Active Date — Tap to pick a specific date">
-          <span class="hud-cal-icon">🗓️</span>
-          <span class="hud-date-text">${formattedDateLong}</span>
+      <header class="card head span2 today-top-bar" id="today-top-bar">
+        <div class="today-top-bar-left" onclick="triggerHeaderDatePicker()" style="cursor:pointer" title="Tap to pick date">
+          <span class="today-top-bar-date">
+            ${escapeHtml(formattedDateHeader)}
+            ${!isToday ? `<button type="button" class="today-return-btn" onclick="event.stopPropagation();resetToToday()" title="Return to today">Today</button>` : ''}
+          </span>
+          <h1 class="today-top-bar-title aurora-wordmark" aria-label="margo"><span class="today-m-mark aurora-m-mark">m</span><span class="today-argo aurora-argo">argo</span></h1>
         </div>
-        <div class="hud-divider"></div>
-        <div class="hud-streak-pill" title="Anchor Streak">
-          <span class="hud-fire-icon">🔥</span>
-          <span class="hud-streak-text">${currentStreak}d Streak</span>
+        <div class="today-top-bar-right">
+          <span class="today-top-bar-streak">${currentStreak}</span>
+          <span class="today-top-bar-sub">day streak</span>
         </div>
-        <button class="hud-nav-btn" onclick="navigateDate(1)" title="Next Day">›</button>
-        ${!isToday ? `<button class="hud-today-btn" onclick="resetToToday()">Today</button>` : ''}
+      </header>
+
+      <div class="col a">
+        <section class="mascot" aria-label="Bed Potato">
+          <span class="label">BED POTATO</span>
+          <svg width="96" height="104" viewBox="0 0 104 112" role="img" aria-label="Sleeping potato mascot">
+            <ellipse cx="50" cy="48" rx="34" ry="30" fill="#E0AE70"/>
+            <path d="M36 46 q6 6 12 0 M56 46 q6 6 12 0" stroke="#5a3b17" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="34" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
+            <circle cx="66" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
+            <rect x="14" y="68" width="72" height="34" rx="10" fill="#7B6CFF"/>
+          </svg>
+          <p id="quote">${escapeHtml(currentQuote)}</p>
+          <button type="button" class="poke" id="poke" onclick="auroraPokeMascot()">Poke me</button>
+        </section>
+
+        <section class="card" id="section-day-clock">
+          <div class="label">DAY CLOCK</div>
+          <div class="big" id="dayPct" style="margin-top:8px">${dayPctNum}%</div>
+          <div class="bar"><i id="dayFill" style="width:${dayFillWidth}%"></i><u></u></div>
+          <div class="muted" style="margin-top:8px">Floor at 2:00 PM</div>
+        </section>
+
+        <section class="card weight-tracker-card" id="section-weight-tracker">
+          <div class="between">
+            <span class="label">WEIGHT</span>
+            <span class="weight-status-pill ${weightStatusPillClass}">${weightStatusPillText}</span>
+          </div>
+
+          <div class="weight-main-row">
+            <button type="button" class="w-step-btn minus" onclick="auroraStepWeight(-0.2, '${activeTrackingDate}')" title="Subtract 0.2 lbs" aria-label="Decrease weight by 0.2 lbs">−</button>
+            <div class="w-val-display" title="Click to edit weight directly">
+              <input type="number" step="0.1" id="weight-input-${activeTrackingDate}" class="w-val-input" value="${isWeightLogged ? currentWeight.toFixed(1) : ''}" placeholder="${isWeightLogged ? currentWeight.toFixed(1) : '110.0'}" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" aria-label="Weight in pounds">
+              <span class="w-val-unit">lbs</span>
+            </div>
+            <button type="button" class="w-step-btn plus" onclick="auroraStepWeight(0.2, '${activeTrackingDate}')" title="Add 0.2 lbs" aria-label="Increase weight by 0.2 lbs">+</button>
+          </div>
+
+          <div class="bar weight-bar ${isWeightAtTarget ? 'met' : (isWeightLogged ? (weightDiff > 0 ? 'above' : 'below') : '')}">
+            <i style="width:${weightBarWidth}%"></i>
+            <u title="Target: 110 lbs"></u>
+          </div>
+
+          <div class="between weight-footer" style="margin-top:8px">
+            <span class="muted">${weightStatusNote}</span>
+            ${isWeightLogged ? `
+              <button type="button" class="w-reset-link" onclick="auroraClearWeight('${activeTrackingDate}')" title="Clear weight log for this day">Reset</button>
+            ` : ''}
+          </div>
+        </section>
+
+        <section class="card custom-habits-card" id="section-custom-habits">
+          <div class="between">
+            <span class="label">CUSTOM HABITS</span>
+            <span class="custom-habits-badge" id="customHabitsBadge">${customHabitsDone}/${customHabits.length}</span>
+          </div>
+
+          <div class="custom-habits-list" id="customHabitsList">
+            ${customHabits.length === 0 ? `
+              <div class="custom-habits-empty-hint">No custom habits for ${escapeHtml(shortDayName)} yet.</div>
+            ` : customHabits.map(g => `
+              <div class="custom-habit-row ${g.completed ? 'done' : ''}">
+                <button type="button" class="custom-habit-check" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.completed ? 'Mark incomplete' : 'Complete (+15 XP)'}">
+                  ${g.completed ? '✓' : ''}
+                </button>
+                <span class="custom-habit-text" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">${escapeHtml(g.text)}</span>
+                <button type="button" class="custom-habit-del" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="Delete habit">×</button>
+              </div>
+            `).join('')}
+          </div>
+
+          <form class="custom-habit-add-form" onsubmit="submitInlineCustomHabit(event, '${activeTrackingDate}')">
+            <input type="text" id="inline-custom-habit-input" class="custom-habit-input" placeholder="+ Add habit for ${escapeHtml(shortDayName)}…" required>
+            <button type="submit" class="custom-habit-add-btn" title="Add habit">+</button>
+          </form>
+        </section>
       </div>
 
-      <!-- Interactive Mascot Companion & Daily Roast Hub -->
-      <div class="today-daily-roast-banner today-mascot-banner">
-        <div class="mascot-avatar-wrapper" id="sprout-mascot-avatar" onclick="pokeSproutAction()" title="Poke Sprout for cheeky motivation &amp; tips!">
-          <div class="mascot-svg-box">
-            ${typeof renderSproutSvg === 'function' ? renderSproutSvg(mascotInfo.state) : `<span style="font-size: 2.2rem;">${mascotInfo.badge}</span>`}
-          </div>
-          <div class="mascot-poke-hint">Poke me!</div>
-        </div>
+      <div class="col b">
 
-        <div class="roast-quote-content mascot-speech-bubble">
-          <div class="mascot-tier-header">
-            <span class="roast-badge-pill" onclick="rotateDailyRoast()" title="Tap to shuffle daily quip">
-              <span class="roast-badge-sparkle">${mascotInfo.badge}</span>
-              <span class="roast-badge-label">${escapeHtml(mascotInfo.tierTitle)}</span>
-              <span class="roast-badge-shuffle">↻</span>
-            </span>
-            <span class="mascot-state-sub">${escapeHtml(mascotInfo.subtitle)}</span>
+        <section class="card panel span2" aria-labelledby="mvT" id="section-move-anchor">
+          <div class="between">
+            <span class="ttl" id="mvT" style="color:var(--move)">MOVE</span>
+            <div class="row"><span class="num" id="moveVal">${moveVal}</span><span class="unit">/ 300 cal</span></div>
           </div>
-          <div class="roast-text-row">
-            <span class="roast-text">"${escapeHtml(currentMascotQuip)}"</span>
+          <div class="segs" id="segs">
+            <div class="seg"><b style="width:${segWidths[0]}%"></b></div>
+            <div class="seg floor"><b style="width:${segWidths[1]}%"></b></div>
+            <div class="seg"><b style="width:${segWidths[2]}%"></b></div>
+            <div class="seg"><b style="width:${segWidths[3]}%"></b></div>
           </div>
-        </div>
+          <div class="seglabels"><span>75</span><span class="fl">150 floor</span><span>225</span><span>300</span></div>
+          <div class="step">
+            <button type="button" id="mvMinus" aria-label="Remove 25 calories" onclick="auroraStepMoveCal(-25, '${activeTrackingDate}')">-25</button>
+            <button type="button" id="mvPlus" class="add" aria-label="Add 25 calories" onclick="auroraStepMoveCal(25, '${activeTrackingDate}')">+25 cal</button>
+            <span class="muted">Log as you move</span>
+          </div>
+          <div class="chips m" id="mvAnch" role="group" aria-label="Move anchor">
+            <button type="button" aria-pressed="${moveAnchIdx === 0 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 0, '${activeTrackingDate}')">Off</button>
+            <button type="button" aria-pressed="${moveAnchIdx === 1 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 1, '${activeTrackingDate}')">25%</button>
+            <button type="button" aria-pressed="${moveAnchIdx === 2 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 2, '${activeTrackingDate}')">50%</button>
+            <button type="button" aria-pressed="${moveAnchIdx === 3 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 3, '${activeTrackingDate}')">75%</button>
+            <button type="button" aria-pressed="${moveAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 4, '${activeTrackingDate}')">100%</button>
+          </div>
+          <span class="muted" id="mvPace">${escapeHtml(mvPaceText)}</span>
+        </section>
 
-        <div class="roast-actions">
-          <button type="button" class="roast-reward-btn" onclick="claimSassyReward('${statusInfo.currentTier.title.replace(/'/g, "\\'")}')" title="${statusInfo.currentTier.reward}">
-            🍰 Treat Yourself
-          </button>
-        </div>
+        <section class="card panel span2" aria-labelledby="stT" id="section-stand-anchor">
+          <div class="between">
+            <span class="ttl" id="stT" style="color:var(--stand)">STAND</span>
+            <div class="row"><span class="num" id="standVal">${standVal}</span><span class="unit">/ 12 hrs</span></div>
+          </div>
+          <div class="tiles" id="tiles">
+            ${Array.from({ length: 12 }, (_, h) => `
+              <button type="button"
+                      class="${h === 5 ? 'floor' : ''}"
+                      aria-label="Stand hour ${h + 1}"
+                      aria-pressed="${hoursArr[h] ? 'true' : 'false'}"
+                      onclick="auroraToggleStandHour(${h}, '${activeTrackingDate}')">${h + 1}</button>
+            `).join('')}
+          </div>
+          <div class="between muted">
+            <span>Tap each hour you stand</span>
+            <span id="standNote" style="color:var(--text);font-weight:700">${escapeHtml(standNoteText)}</span>
+          </div>
+          <div class="chips s" id="stAnch" role="group" aria-label="Stand anchor">
+            <button type="button" aria-pressed="${standAnchIdx === 0 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 0, '${activeTrackingDate}')">Off</button>
+            <button type="button" aria-pressed="${standAnchIdx === 1 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 1, '${activeTrackingDate}')">25%</button>
+            <button type="button" aria-pressed="${standAnchIdx === 2 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 2, '${activeTrackingDate}')">50%</button>
+            <button type="button" aria-pressed="${standAnchIdx === 3 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 3, '${activeTrackingDate}')">75%</button>
+            <button type="button" aria-pressed="${standAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 4, '${activeTrackingDate}')">100%</button>
+          </div>
+          <span class="muted" id="stPace">${escapeHtml(stPaceText)}</span>
+        </section>
+
+        ${renderAuroraPeriodGoalsWidget(activeTrackingDate)}
+
+        <button type="button" class="tile2 hair" id="hair" aria-pressed="${isHairDone ? 'true' : 'false'}" onclick="openHairCareLogModal('${activeTrackingDate}')">
+          <span class="label">HAIRCARE · ${escapeHtml(hairRoutine.badge)}</span>
+          <span class="v" id="hairV">${hairCareState.completed ? 'Done ✓' : (hairCareState.skipped ? 'Skipped ⏭️' : 'Pending · View Log')}</span>
+        </button>
+
+        <button type="button" class="tile2 zhub" id="zhub" onclick="openZLogEntryModal('${activeTrackingDate}')">
+          <span class="label">Z HUB</span>
+          <span class="v" id="zV">${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged ✓') : 'Log'}</span>
+        </button>
+
       </div>
 
-      <!-- 1. Anchors & Goals Card -->
-      <div class="today-section-block">
-        <h2 class="today-section-title">1. Anchors &amp; Goals 🚀</h2>
-        
-        <div class="today-card today-card-anchors-goals">
-          <!-- Left Column: Move Anchor & Stand Ring with Time-of-Day Pacers -->
-          <div class="anchors-col">
-            <!-- Time-of-Day Day Arc Pacer Bar -->
-            <div class="anchors-day-pacer-bar">
-              <div class="day-pacer-meta">
-                <span class="day-pacer-schedule-tag">
-                  <span class="day-pacer-dot"></span>
-                  ${pacerData.scheduleLabel}
-                </span>
-                <span class="day-pacer-time-stat">
-                  ${pacerData.dayPhase === 'active' 
-                    ? `<strong>${Math.round(pacerData.elapsedPct)}%</strong> of day elapsed &bull; ${formatHoursMinutes(pacerData.remainingHours)} left`
-                    : (pacerData.dayPhase === 'pre' ? `Starts at ${pacerData.startHourStr}` : 'Concluded')}
-                </span>
-              </div>
-              <div class="day-pacer-track">
-                <div class="day-pacer-fill" style="width: ${pacerData.elapsedPct}%;"></div>
-                <div class="day-pacer-marker marker-25" style="left: 25%;" title="25% Milestone (${pacerData.q25TimeStr})"></div>
-                <div class="day-pacer-marker marker-floor" style="left: 50%;" title="50% Floor Benchmark (${pacerData.q50TimeStr})"></div>
-                <div class="day-pacer-marker marker-75" style="left: 75%;" title="75% Milestone (${pacerData.q75TimeStr})"></div>
-                ${pacerData.dayPhase === 'active' ? `
-                  <div class="day-pacer-needle" style="left: ${pacerData.elapsedPct}%;" title="Now (${Math.round(pacerData.elapsedPct)}% of active day)"></div>
-                ` : ''}
-              </div>
-              <div class="day-pacer-quartiles-legend">
-                <span>Start: ${pacerData.startHourStr}</span>
-                <span>25%: ${pacerData.q25TimeStr}</span>
-                <span class="legend-floor">50% Floor: ${pacerData.q50TimeStr}</span>
-                <span>75%: ${pacerData.q75TimeStr}</span>
-                <span>100%: ${pacerData.endHourStr}</span>
-              </div>
-            </div>
+      <div class="col c">
 
-            <!-- Move Anchor -->
-            <div class="anchor-track-group">
-              <div class="anchor-header-row">
-                <div class="anchor-label">
-                  🏃‍♀️ Move Anchor
-                  <span class="anchor-goal-tag">300 cal</span>
-                </div>
-                <span class="anchor-pacer-badge ${movePacer.statusClass}">${movePacer.badgeText}</span>
-              </div>
-              <div class="mockup-track-container">
-                <button type="button" class="mockup-seg-btn seg-off ${moveStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0, '${activeTrackingDate}')">
-                  😴 Off
-                </button>
-                <button type="button" class="mockup-seg-btn seg-25 ${moveStage === 0.25 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.25, '${activeTrackingDate}')">
-                  🌱 25% (75)
-                </button>
-                <button type="button" class="mockup-seg-btn seg-floor ${moveStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.5, '${activeTrackingDate}')">
-                  🛡️ 50% (150)
-                </button>
-                <button type="button" class="mockup-seg-btn seg-75 ${moveStage === 0.75 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 0.75, '${activeTrackingDate}')">
-                  🌿 75% (225)
-                </button>
-                <button type="button" class="mockup-seg-btn seg-closed ${moveStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${moveId}', 1, '${activeTrackingDate}')">
-                  ⚡ 100% (300)
-                </button>
-              </div>
-              <div class="anchor-dual-track-wrap">
-                <div class="anchor-dual-bar-container">
-                  <div class="anchor-ghost-target-fill" style="width: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>
-                  <div class="anchor-actual-progress-fill" style="width: ${movePacer.progressVal}%;"></div>
-                  <div class="anchor-notch-marker notch-25" style="left: 25%;" title="25% Milestone: 75 cal (${pacerData.q25TimeStr})"></div>
-                  <div class="anchor-notch-marker notch-50" style="left: 50%;" title="50% Floor Benchmark: 150 cal (${pacerData.q50TimeStr})"></div>
-                  <div class="anchor-notch-marker notch-75" style="left: 75%;" title="75% Milestone: 225 cal (${pacerData.q75TimeStr})"></div>
-                  ${pacerData.dayPhase === 'active' ? `<div class="anchor-target-needle" style="left: ${pacerData.targetPct}%;" title="Target Pace Now: ${pacerData.targetPct}%"></div>` : ''}
-                </div>
-                <div class="anchor-dual-subline">
-                  <span>${movePacer.sublineLeft}</span>
-                  <span>${movePacer.sublineRight}</span>
-                </div>
-              </div>
+        <div class="choice g" role="group" aria-label="Good choices" id="section-good-choices">
+          <span class="t">Good choices</span>
+          <div class="between">
+            <span class="n" id="goodN">${dateChoices.good || 0}</span>
+            <div class="step">
+              <button type="button" style="color:#04201A;border-color:#04201A" id="gMinus" aria-label="Remove good choice" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">-</button>
+              <button type="button" style="background:#04201A;color:#fff;border-color:#04201A" id="gPlus" aria-label="Add good choice" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">+</button>
             </div>
-
-            <!-- Stand Ring -->
-            <div class="anchor-track-group">
-              <div class="anchor-header-row">
-                <div class="anchor-label">
-                  🦩 Stand Ring
-                  <span class="anchor-goal-tag">12</span>
-                </div>
-                <span class="anchor-pacer-badge ${standPacer.statusClass}">${standPacer.badgeText}</span>
-              </div>
-              <div class="mockup-track-container">
-                <button type="button" class="mockup-seg-btn seg-off ${standStage === 0 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0, '${activeTrackingDate}')">
-                  😴 Off
-                </button>
-                <button type="button" class="mockup-seg-btn seg-25 ${standStage === 0.25 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.25, '${activeTrackingDate}')">
-                  🌱 25% (3)
-                </button>
-                <button type="button" class="mockup-seg-btn seg-floor ${standStage === 0.5 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.5, '${activeTrackingDate}')">
-                  🛡️ 50% (6)
-                </button>
-                <button type="button" class="mockup-seg-btn seg-75 ${standStage === 0.75 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 0.75, '${activeTrackingDate}')">
-                  🌿 75% (9)
-                </button>
-                <button type="button" class="mockup-seg-btn seg-closed ${standStage === 1 ? 'is-active' : ''}" onclick="setAnchorStageAction('${standId}', 1, '${activeTrackingDate}')">
-                  ⚡ 100% (12)
-                </button>
-              </div>
-              <div class="anchor-dual-track-wrap">
-                <div class="anchor-dual-bar-container">
-                  <div class="anchor-ghost-target-fill" style="width: ${pacerData.targetPct}%;" title="Target Pace: ${pacerData.targetPct}%"></div>
-                  <div class="anchor-actual-progress-fill" style="width: ${standPacer.progressVal}%;"></div>
-                  <div class="anchor-notch-marker notch-25" style="left: 25%;" title="25% Milestone: 3 (${pacerData.q25TimeStr})"></div>
-                  <div class="anchor-notch-marker notch-50" style="left: 50%;" title="50% Floor Benchmark: 6 (${pacerData.q50TimeStr})"></div>
-                  <div class="anchor-notch-marker notch-75" style="left: 75%;" title="75% Milestone: 9 (${pacerData.q75TimeStr})"></div>
-                  ${pacerData.dayPhase === 'active' ? `<div class="anchor-target-needle" style="left: ${pacerData.targetPct}%;" title="Target Pace Now: ${pacerData.targetPct}%"></div>` : ''}
-                </div>
-                <div class="anchor-dual-subline">
-                  <span>${standPacer.sublineLeft}</span>
-                  <span>${standPacer.sublineRight}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column: Goals Checklist -->
-          <div class="goals-col">
-            <div class="mockup-goals-list">
-              ${displayGoals.map(g => `
-                <div class="mockup-goal-item ${g.completed ? 'is-completed' : ''}">
-                  <div class="mockup-goal-checkbox" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.completed ? 'Mark pending' : 'Mark done'}">
-                    ${g.completed ? '✨' : ''}
-                  </div>
-                  <span class="mockup-goal-label" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">${escapeHtml(g.text)}</span>
-                  <button class="goal-del-btn" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="Delete goal">×</button>
-                </div>
-              `).join('')}
-            </div>
-
-            <!-- Minimal Inline Add Row -->
-            <form class="mockup-goal-add-form" onsubmit="submitAddDayGoalInline(event, '${activeTrackingDate}', 'mockup-goal-input')">
-              <span class="goal-add-icon">🪄</span>
-              <input type="text" id="mockup-goal-input" class="mockup-goal-add-input" placeholder="Add custom move..." required />
-            </form>
           </div>
         </div>
+
+        <div class="choice b" role="group" aria-label="Not so good choices">
+          <span class="t">Not so good</span>
+          <div class="between">
+            <span class="n" id="badN">${dateChoices.not || 0}</span>
+            <div class="step">
+              <button type="button" style="color:#2A0603;border-color:#2A0603" id="bMinus" aria-label="Remove not so good choice" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">-</button>
+              <button type="button" style="background:#2A0603;color:#fff;border-color:#2A0603" id="bPlus" aria-label="Add not so good choice" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">+</button>
+            </div>
+          </div>
+        </div>
+
+        <section class="card span2" style="display:flex;flex-direction:column;gap:10px">
+          <span class="label">QUICK LOG</span>
+          <div class="quick" id="quick">
+            ${AURORA_GOOD_CHIPS.map(n => `
+              <button type="button"
+                      class="g"
+                      data-name="${escapeHtml(n)}"
+                      aria-pressed="${activeChips.includes(n) ? 'true' : 'false'}"
+                      onclick="auroraToggleQuickChip('${n.replace(/'/g, "\\'")}', 'g', '${activeTrackingDate}')">${escapeHtml(n)}</button>
+            `).join('')}
+            ${AURORA_BAD_CHIPS.map(n => `
+              <button type="button"
+                      class="b"
+                      data-name="${escapeHtml(n)}"
+                      aria-pressed="${activeChips.includes(n) ? 'true' : 'false'}"
+                      onclick="auroraToggleQuickChip('${n.replace(/'/g, "\\'")}', 'b', '${activeTrackingDate}')">${escapeHtml(n)}</button>
+            `).join('')}
+          </div>
+        </section>
+
+        <section class="card momentum span2 ${momentumTierClass}" id="section-momentum">
+          <div class="momentum-strip-left">
+            <span class="label">MOMENTUM</span>
+            <span class="big" id="net">${netMomentum >= 0 ? `+${netMomentum}` : netMomentum}</span>
+          </div>
+          <div class="momentum-strip-right">
+            <span class="momentum-pct" id="pos">${posPct}% positive</span>
+            <span class="momentum-sep">·</span>
+            <small id="allTime">${totalGoodAllTime} good / ${totalBadAllTime} not so good</small>
+          </div>
+        </section>
+
+        <section class="card checkin span2" aria-labelledby="ciT" id="section-sanctuary-journal">
+          <div class="between" style="align-items: center; margin-bottom: 2px;">
+            <h2 id="ciT" style="margin: 0;">Evening check-in</h2>
+            <button type="button" class="journal-archive-btn" onclick="openJournalArchiveModal()" title="View past reflections & archived journals">
+              <span>Archive</span>
+              ${allJournals.length > 0 ? `<span class="journal-archive-badge">${allJournals.length}</span>` : ''}
+            </button>
+          </div>
+          <div class="moods" id="moods" role="group" aria-label="How healthy do I feel">
+            ${MOOD_LABELS.map((lbl, idx) => `
+              <button type="button"
+                      aria-pressed="${activeMoodIdx === idx ? 'true' : 'false'}"
+                      onclick="auroraToggleMood(${idx}, '${activeTrackingDate}')">${lbl}</button>
+            `).join('')}
+          </div>
+          <label for="journal" class="muted" style="font-size:13px">How did your day feel?</label>
+          <textarea id="journal" class="aurora-journal" placeholder="Reflections, wins, or a brain dump" oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)">${escapeHtml(journalText)}</textarea>
+          <div class="between">
+            <span class="muted" id="saved">${journalText ? 'Saved' : 'Auto-saves as you type'}</span>
+          </div>
+          <button type="button" class="save" id="save" onclick="saveMockupJournalAction('${activeTrackingDate}')">Save journal</button>
+        </section>
+
       </div>
 
-      <!-- Row 2: 2. Good Choices & 3. Evening Check-in & Journal (Side-by-side) -->
-      <div class="today-row-2">
-        <!-- 2. Good Choices -->
-        <div class="today-col-left">
-          <h2 class="today-section-title">2. Good Choices 🥑</h2>
-          <div class="today-card today-card-choices" id="section-good-choices">
-            <!-- 1. Top Tally Widgets & Steppers -->
-            <div class="choices-tally-header">
-              <div class="choices-tally-grid">
-                <!-- Good Choice Counter Card -->
-                <div class="choice-counter-box counter-good">
-                  <div class="counter-box-info">
-                    <span class="counter-box-label">🥑 Good Choices</span>
-                    <span class="counter-box-num">${dateChoices.good || 0}</span>
-                  </div>
-                  <div class="counter-box-steppers">
-                    <button type="button" class="stepper-btn stepper-minus" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')" title="Subtract 1 Good Choice" ${dateChoices.good <= 0 ? 'disabled' : ''}>−</button>
-                    <button type="button" class="stepper-btn stepper-plus" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')" title="Add 1 Good Choice">＋</button>
-                  </div>
-                </div>
-
-                <!-- Not-so-good Counter Card -->
-                <div class="choice-counter-box counter-not">
-                  <div class="counter-box-info">
-                    <span class="counter-box-label">🍩 Not-so-good</span>
-                    <span class="counter-box-num">${dateChoices.not || 0}</span>
-                  </div>
-                  <div class="counter-box-steppers">
-                    <button type="button" class="stepper-btn stepper-minus" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')" title="Subtract 1 Not-so-good" ${dateChoices.not <= 0 ? 'disabled' : ''}>−</button>
-                    <button type="button" class="stepper-btn stepper-plus" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')" title="Add 1 Not-so-good">＋</button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Ratio & Reset Bar -->
-              <div class="mockup-choice-ratio-info">
-                <span class="ratio-text">${totalChoices > 0 ? `<strong>${goodRatio}% Good</strong> (${dateChoices.good} vs ${dateChoices.not})` : 'Tap chips or steppers to log daily momentum'}</span>
-                ${totalChoices > 0 ? `
-                  <button class="choice-mini-undo" onclick="resetChoicesAction('${activeTrackingDate}')" title="Reset both counts to 0">🧹 Reset</button>
-                ` : ''}
-              </div>
-
-              <div class="mockup-ratio-bar">
-                <div class="ratio-bar-good" style="width: ${goodBarWidth}%;"></div>
-                <div class="ratio-bar-not" style="width: ${notBarWidth}%;"></div>
-              </div>
-            </div>
-
-            <!-- Option 1: Horizontal Streamlined Momentum Ribbon -->
-            <div class="choices-momentum-ribbon">
-              <!-- Left: Circular Net Pill & Label -->
-              <div class="ribbon-net-group">
-                <div class="ribbon-net-badge ${runningChoices.net >= 0 ? 'is-pos' : 'is-neg'}" title="Net Good Choices (All-Time)">
-                  <span class="ribbon-net-num">${runningChoices.net >= 0 ? `+${runningChoices.net}` : runningChoices.net}</span>
-                  <span class="ribbon-net-sub">Net</span>
-                </div>
-                <div class="ribbon-title-col">
-                  <div class="ribbon-title-text">🚀 Running Momentum</div>
-                  <div class="ribbon-ratio-text"><strong>${runningChoices.total > 0 ? runningChoices.ratio : 100}%</strong> Positive Choices</div>
-                </div>
-              </div>
-
-              <!-- Right: Clean Inline Split Stats -->
-              <div class="ribbon-stats-group">
-                <div class="ribbon-stat-item">
-                  <span class="ribbon-stat-label">This Week</span>
-                  <div class="ribbon-stat-values">
-                    <span class="ribbon-val-good">${weeklyChoices.totalGood}</span>
-                    <span class="ribbon-val-sep">/</span>
-                    <span class="ribbon-val-not">${weeklyChoices.totalNot}</span>
-                  </div>
-                </div>
-
-                <div class="ribbon-stat-divider"></div>
-
-                <div class="ribbon-stat-item">
-                  <span class="ribbon-stat-label">All-Time</span>
-                  <div class="ribbon-stat-values">
-                    <span class="ribbon-val-good">${runningChoices.totalGood}</span>
-                    <span class="ribbon-val-sep">/</span>
-                    <span class="ribbon-val-not">${runningChoices.totalNot}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Choice Options (Smaller Chips) -->
-            <div class="choices-options-section">
-              <div class="choices-options-group">
-                <div class="choices-group-label label-good">Good choices</div>
-                <div class="mockup-chips-cloud">
-                  ${GOOD_CHIPS.map(chip => `
-                    <button type="button" class="mockup-chip chip-cyan" onclick="recordChoiceChip('${chip.label}', 'good', '${activeTrackingDate}')">
-                      ${escapeHtml(chip.label)}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-
-              <div class="choices-options-group" style="margin-top: 10px;">
-                <div class="choices-group-label label-not">Not-so-good</div>
-                <div class="mockup-chips-cloud" style="margin-bottom: 0;">
-                  ${NOT_GOOD_CHIPS.map(chip => `
-                    <button type="button" class="mockup-chip chip-rose" onclick="recordChoiceChip('${chip.label}', 'not', '${activeTrackingDate}')">
-                      ${escapeHtml(chip.label)}
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Evening Check-in & Journal -->
-        <div class="today-col-right">
-          <div class="today-section-header-row">
-            <h2 class="today-section-title" style="margin-bottom: 0;">3. Evening Check-in &amp; Journal 🌙</h2>
-            <div class="journal-tab-pill-switcher">
-              <button type="button" class="journal-tab-pill ${sanctuaryJournalTab === 'today' ? 'active' : ''}" onclick="setSanctuaryJournalTab('today')">
-                ✍️ Today
-              </button>
-              <button type="button" class="journal-tab-pill ${sanctuaryJournalTab === 'archive' ? 'active' : ''}" onclick="setSanctuaryJournalTab('archive')">
-                📚 Archive (${allJournals.length})
-              </button>
-            </div>
-          </div>
-
-          <div class="today-card today-card-journal" id="section-sanctuary-journal">
-            ${sanctuaryJournalTab === 'archive' ? `
-              <!-- ARCHIVE VIEW: Where to see saved journal entries -->
-              <div class="journal-archive-pane">
-                <div class="archive-filter-row" style="margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;">
-                  <div class="archive-filter-pills">
-                    <button type="button" class="archive-filter-btn ${sanctuaryArchiveFilter === 'all' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('all')">All (${allJournals.length})</button>
-                    <button type="button" class="archive-filter-btn ${sanctuaryArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('last_week')">Last Week</button>
-                    <button type="button" class="archive-filter-btn ${sanctuaryArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setSanctuaryArchiveFilter('this_month')">This Month</button>
-                  </div>
-                  <button type="button" class="journal-back-today-btn" onclick="setSanctuaryJournalTab('today')">✍️ Back to Today</button>
-                </div>
-
-                <!-- SQUARE CARDS GRID -->
-                <div class="journal-square-grid">
-                  ${renderJournalSquareGrid(allJournals, sanctuaryArchiveFilter)}
-                </div>
-              </div>
-            ` : `
-              <!-- TODAY VIEW: Vibrant Vitality & Evening Reflection -->
-              <div class="mockup-subhead" style="color: #7C3AED;">🔋 How Healthy Do I Feel?</div>
-              
-              <!-- Previous Vitality Level Options: 5 (Thriving) to 1 (Zombie) with custom pastel colors -->
-              <div class="health-buttons-grid" style="margin-bottom: 12px;">
-                ${[5, 4, 3, 2, 1].map(lvl => {
-                  const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[lvl] : { emoji: '✨', label: `Lvl ${lvl}`, desc: '', sassy: '' };
-                  const isSelected = (currentHealthLevel === lvl);
-                  return `
-                    <button type="button" 
-                            class="health-btn ${isSelected ? 'active' : ''}" 
-                            data-lvl="${lvl}"
-                            onclick="recordHealthLevelAction(${lvl}, '${activeTrackingDate}')"
-                            title="${meta.label}: ${meta.desc}">
-                       <span class="health-btn-emoji">${meta.emoji}</span>
-                      <span class="health-btn-label">${meta.label}</span>
-                    </button>
-                  `;
-                }).join('')}
-              </div>
-
-              <!-- Sassy Saying / Insight -->
-              ${currentHealthMeta ? `
-                <div class="health-sassy-quote" style="margin-bottom: 16px;">
-                  <span class="quote-icon">${currentHealthMeta.emoji}</span>
-                  <div>
-                    <strong>${currentHealthMeta.label}:</strong> <em>"${currentHealthMeta.sassy}"</em>
-                  </div>
-                </div>
-              ` : ''}
-
-              <div class="journal-subhead-row">
-                <div class="mockup-subhead" style="color: #4F46E5; margin-bottom: 0;">🔮 How did your day feel?</div>
-                ${allJournals.length > 0 ? `
-                  <button type="button" class="journal-view-archive-link" onclick="setSanctuaryJournalTab('archive')">
-                    📚 View Archive (${allJournals.length}) →
-                  </button>
-                ` : ''}
-              </div>
-
-              <!-- Journal Box with Color & Polish -->
-              <div class="mockup-journal-box">
-                <textarea 
-                  class="mockup-journal-textarea" 
-                  id="mockup-journal-input" 
-                  placeholder="Type your evening reflections, wins, or brain dump here..."
-                  oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)"
-                >${escapeHtml(journalEntry ? journalEntry.text : '')}</textarea>
-                
-                <div class="mockup-journal-bottom">
-                  <span class="journal-autosave-note" id="journal-autosave-status">
-                    ${journalEntry && journalEntry.text ? `✓ Auto-saved (${journalEntry.wordCount || 0} words)` : 'Auto-saves as you type'}
-                  </span>
-                  <button type="button" class="mockup-journal-save-btn" onclick="saveMockupJournalAction('${activeTrackingDate}')">
-                    <span>🪄</span>
-                    <span>Save Journal</span>
-                  </button>
-                </div>
-              </div>
-
-              <!-- Sleek Quick Access Badges (Haircare & Z Log) with Rich Colors and Quick-Check -->
-              <div class="mockup-quick-utilities">
-                <div class="util-badge-item badge-haircare ${isHairCompleted ? 'is-done' : ''}">
-                  <button type="button" class="util-badge-btn-main" onclick="toggleMockupHaircare()" title="View Abbey Yung Hair Care Protocol">
-                    <span>✨💇‍♀️</span>
-                    <span>Haircare: <strong>${isHairCompleted ? 'Done ✓' : (isHairSkipped ? 'Skipped' : 'Pending')}</strong></span>
-                  </button>
-                  <button type="button" class="util-badge-quick-check ${isHairCompleted ? 'checked' : ''}" onclick="toggleHairCareDayAction('${activeTrackingDate}')" title="${isHairCompleted ? 'Mark Pending' : 'Check off routine (+10 XP)'}">
-                    ${isHairCompleted ? '✓' : '○'}
-                  </button>
-                </div>
-
-                <div class="util-badge-item badge-zlog">
-                  <button type="button" class="util-badge-btn-main" onclick="openZLogEntryModal('${activeTrackingDate}')" title="Z Log Daily Regulation">
-                    <span>🐾</span>
-                    <span>Z Hub: <strong>${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Done ✓') : 'Log +10 XP'}</strong></span>
-                  </button>
-                </div>
-              </div>
-            `}
-          </div>
-        </div>
-      </div>
-
-      <!-- Collapsible Abbey Yung Hair Care Card (When tapped) -->
-      ${mockupHaircareExpanded ? `
-        <div style="margin-top: 4px;">
-          ${renderHairCareCard(activeTrackingDate, isToday)}
-        </div>
-      ` : ''}
     </div>
   `;
+
+  const hairModal = document.getElementById('modal-haircare-log');
+  if (hairModal && hairModal.classList.contains('active') && typeof renderHairCareModalContent === 'function') {
+    renderHairCareModalContent(activeTrackingDate);
+  }
+
+  const archiveModal = document.getElementById('modal-journal-archive');
+  if (archiveModal && archiveModal.classList.contains('active') && typeof renderJournalArchiveModalContent === 'function') {
+    renderJournalArchiveModalContent();
+  }
 
   if (window.lucide) {
     lucide.createIcons();
@@ -1114,6 +1456,114 @@ function setSanctuaryArchiveFilter(filter) {
   renderDailySheet();
 }
 
+let journalArchiveFilter = 'all'; // 'all' | 'last_week' | 'this_month'
+let journalArchiveSearch = '';
+
+function openJournalArchiveModal() {
+  renderJournalArchiveModalContent();
+  const modal = document.getElementById('modal-journal-archive');
+  if (modal) {
+    modal.classList.add('active');
+  }
+}
+window.openJournalArchiveModal = openJournalArchiveModal;
+
+function setJournalArchiveFilter(filter) {
+  journalArchiveFilter = filter;
+  renderJournalArchiveModalContent();
+}
+window.setJournalArchiveFilter = setJournalArchiveFilter;
+
+function handleJournalArchiveSearch(query) {
+  journalArchiveSearch = query || '';
+  renderJournalArchiveModalContent();
+}
+window.handleJournalArchiveSearch = handleJournalArchiveSearch;
+
+function renderJournalArchiveModalContent() {
+  const body = document.getElementById('journal-archive-modal-body');
+  if (!body) return;
+
+  const allJournals = (typeof storage !== 'undefined' && typeof storage.getAllJournals === 'function')
+    ? storage.getAllJournals()
+    : [];
+
+  const todayIso = formatDateIso(new Date());
+  let filtered = allJournals;
+
+  if (journalArchiveFilter === 'last_week') {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const minIso = formatDateIso(sevenDaysAgo);
+    filtered = allJournals.filter(j => j.date >= minIso);
+  } else if (journalArchiveFilter === 'this_month') {
+    const curMonth = todayIso.substring(0, 7);
+    filtered = allJournals.filter(j => j.date.startsWith(curMonth));
+  }
+
+  if (journalArchiveSearch && journalArchiveSearch.trim()) {
+    const q = journalArchiveSearch.toLowerCase().trim();
+    filtered = filtered.filter(j => (j.text || '').toLowerCase().includes(q) || (j.date || '').includes(q));
+  }
+
+  body.innerHTML = `
+    <div class="journal-archive-modal-top">
+      <div class="journal-archive-filter-row">
+        <div class="journal-archive-filters">
+          <button type="button" class="journal-filter-chip ${journalArchiveFilter === 'all' ? 'active' : ''}" onclick="setJournalArchiveFilter('all')">All (${allJournals.length})</button>
+          <button type="button" class="journal-filter-chip ${journalArchiveFilter === 'last_week' ? 'active' : ''}" onclick="setJournalArchiveFilter('last_week')">Past 7 Days</button>
+          <button type="button" class="journal-filter-chip ${journalArchiveFilter === 'this_month' ? 'active' : ''}" onclick="setJournalArchiveFilter('this_month')">This Month</button>
+        </div>
+        <div class="journal-archive-search-box">
+          <input type="text"
+                 class="journal-archive-search-input"
+                 placeholder="Search reflections…"
+                 value="${escapeHtml(journalArchiveSearch)}"
+                 oninput="handleJournalArchiveSearch(this.value)">
+        </div>
+      </div>
+    </div>
+
+    <div class="journal-archive-cards-list">
+      ${filtered.length === 0 ? `
+        <div class="journal-empty-archive">
+          <span>✍️</span>
+          <p>${allJournals.length === 0 ? 'No journal entries saved yet. Fill out today’s check-in to start your reflection archive!' : 'No reflections match your search or filter.'}</p>
+        </div>
+      ` : filtered.map(j => {
+        const dateObj = parseDateIso(j.date);
+        const dateTitle = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        const isCurrent = (j.date === activeTrackingDate);
+        const isToday = (j.date === todayIso);
+        const healthLevel = (typeof storage.getHealthLevel === 'function') ? storage.getHealthLevel(j.date) : null;
+        const healthMeta = (healthLevel && typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[healthLevel] : null;
+
+        return `
+          <div class="journal-archive-entry-card ${isCurrent ? 'is-current-active' : ''}">
+            <div class="journal-archive-card-header">
+              <div class="journal-archive-header-left">
+                <strong>${escapeHtml(dateTitle)}</strong>
+                ${isToday ? `<span class="journal-archive-today-tag">Today</span>` : ''}
+                ${healthMeta ? `<span class="square-health-pill">${healthMeta.emoji} ${healthMeta.label}</span>` : ''}
+              </div>
+              <div class="journal-archive-header-right">
+                <span class="square-word-count">${j.wordCount || (j.text ? j.text.split(/\\s+/).filter(Boolean).length : 0)} words</span>
+                <button type="button" class="journal-archive-jump-btn" onclick="closeAllModals(); jumpToTrackingDate('${j.date}')" title="Jump to full sheet for ${j.date}">Jump 📅</button>
+              </div>
+            </div>
+            <div class="journal-archive-card-text">
+              "${escapeHtml(j.text)}"
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+
+  if (window.lucide) lucide.createIcons();
+}
+window.renderJournalArchiveModalContent = renderJournalArchiveModalContent;
+
 function toggleSanctuaryJournalEdit() {
   sanctuaryJournalEditing = !sanctuaryJournalEditing;
   renderDailySheet();
@@ -1127,16 +1577,24 @@ function toggleSanctuaryJournalEdit() {
 
 let journalAutoSaveTimer = null;
 function handleSanctuaryJournalInput(dateStr, value) {
-  const status = document.getElementById('journal-autosave-status');
+  const status = document.getElementById('saved') || document.getElementById('journal-autosave-status');
   if (status) {
-    status.innerHTML = '<span style="color: var(--warning);">● Saving...</span>';
+    if (status.id === 'saved') {
+      status.textContent = 'Saving...';
+    } else {
+      status.innerHTML = '<span style="color: var(--warning);">● Saving...</span>';
+    }
   }
 
   clearTimeout(journalAutoSaveTimer);
   journalAutoSaveTimer = setTimeout(() => {
     storage.saveJournal(dateStr, value);
     if (status) {
-      status.innerHTML = '<span style="color: var(--success); font-weight: 600;">✓ Auto-saved</span>';
+      if (status.id === 'saved') {
+        status.textContent = 'Saved';
+      } else {
+        status.innerHTML = '<span style="color: var(--success); font-weight: 600;">✓ Auto-saved</span>';
+      }
     }
   }, 400);
 }
@@ -1492,12 +1950,15 @@ window.recordChoiceChip = recordChoiceChip;
  * Save Mockup Journal Action
  */
 function saveMockupJournalAction(dateStr = activeTrackingDate) {
-  const input = document.getElementById('mockup-journal-input');
+  const input = document.getElementById('journal') || document.getElementById('mockup-journal-input');
   if (input) {
     const val = input.value.trim();
     storage.saveJournal(dateStr, val);
-    showToast('✓ Evening Journal Saved to Sanctuary (+10 XP)');
-    renderDailySheet();
+    const savedEl = document.getElementById('saved');
+    if (savedEl) {
+      savedEl.textContent = val ? 'Journal saved' : 'Empty journal';
+    }
+    showToast(val ? 'Journal saved' : 'Empty journal');
   }
 }
 window.saveMockupJournalAction = saveMockupJournalAction;
@@ -1505,8 +1966,8 @@ window.saveMockupJournalAction = saveMockupJournalAction;
 /**
  * Health Level Action
  */
-function recordHealthLevelAction(level, dateStr) {
-  storage.setHealthLevel(dateStr, level);
+function recordHealthLevelAction(level, dateStr = activeTrackingDate) {
+  storage.setHealthLevel(level, dateStr);
   renderDailySheet();
   const meta = (typeof HEALTH_LEVELS !== 'undefined') ? HEALTH_LEVELS[level] : null;
   if (meta) {
@@ -1517,22 +1978,22 @@ function recordHealthLevelAction(level, dateStr) {
 /**
  * Day Goals Actions
  */
-function toggleDayGoalAction(goalId, dateStr) {
-  storage.toggleDayGoal(dateStr, goalId);
+function toggleDayGoalAction(goalId, dateStr = activeTrackingDate) {
+  storage.toggleDayGoal(goalId, dateStr);
   renderDailySheet();
 }
 
-function deleteDayGoalAction(goalId, dateStr) {
-  storage.deleteDayGoal(dateStr, goalId);
+function deleteDayGoalAction(goalId, dateStr = activeTrackingDate) {
+  storage.deleteDayGoal(goalId, dateStr);
   renderDailySheet();
 }
 
-function submitAddDayGoalInline(event, dateStr, inputId) {
-  event.preventDefault();
+function submitAddDayGoalInline(event, dateStr = activeTrackingDate, inputId = 'sheet-day-goal-input') {
+  if (event) event.preventDefault();
   const input = document.getElementById(inputId);
   if (!input || !input.value.trim()) return;
 
-  storage.addDayGoal(dateStr, input.value.trim());
+  storage.addDayGoal(input.value.trim(), dateStr);
   input.value = '';
   renderDailySheet();
   showToast('✓ Day-Specific Goal Added (+15 XP when completed)');
@@ -2129,6 +2590,49 @@ function renderHairCareCard(dateStr, isToday) {
   `;
 }
 window.renderHairCareCard = renderHairCareCard;
+
+function renderHairCareModalContent(dateStr = activeTrackingDate) {
+  const body = document.getElementById('haircare-modal-body');
+  if (!body) return;
+  const todayIso = formatDateIso(new Date());
+  const isToday = (dateStr === todayIso);
+  const dateObj = parseDateIso(dateStr);
+  const fullFormattedDate = dateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  body.innerHTML = `
+    <div class="aurora-hair-modal-nav">
+      <button type="button" class="aurora-hair-nav-btn" onclick="navigateDate(-1)">‹ Prev Day</button>
+      <div class="aurora-hair-nav-date">
+        <strong>${escapeHtml(fullFormattedDate)}</strong>
+        ${!isToday ? `<button type="button" class="aurora-hair-today-btn" onclick="resetToToday()">Jump to Today</button>` : `<span class="aurora-hair-today-tag">Today</span>`}
+      </div>
+      <button type="button" class="aurora-hair-nav-btn" onclick="navigateDate(1)">Next Day ›</button>
+    </div>
+    ${renderHairCareCard(dateStr, isToday)}
+  `;
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+window.renderHairCareModalContent = renderHairCareModalContent;
+
+function openHairCareLogModal(dateStr = activeTrackingDate) {
+  if (dateStr) {
+    activeTrackingDate = dateStr;
+  }
+  hairCalendarCollapsed = false;
+  renderHairCareModalContent(activeTrackingDate);
+  const modal = document.getElementById('modal-haircare-log');
+  if (modal) {
+    modal.classList.add('active');
+  }
+}
+window.openHairCareLogModal = openHairCareLogModal;
 
 /* ==========================================================================
    MARGO Framework 5-Bucket Collapsible Widget

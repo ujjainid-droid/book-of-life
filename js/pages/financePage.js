@@ -43,6 +43,26 @@ let financeLedgerCollapsed = (function() {
   }
 })();
 
+let financeMatrixCollapsed = (function() {
+  try {
+    const saved = localStorage.getItem('margo_finance_matrix_collapsed');
+    return saved === null ? true : saved === 'true'; // Collapsed by default
+  } catch (e) {
+    return true;
+  }
+})();
+
+function toggleFinanceMatrixCollapse(event) {
+  if (event) event.stopPropagation();
+  financeMatrixCollapsed = !financeMatrixCollapsed;
+  try {
+    localStorage.setItem('margo_finance_matrix_collapsed', financeMatrixCollapsed ? 'true' : 'false');
+  } catch (e) {}
+  renderFinanceBurn();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.toggleFinanceMatrixCollapse = toggleFinanceMatrixCollapse;
+
 function renderFinancePage(targetSubTab) {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('bunker-subview-frame');
   if (!container) return;
@@ -165,6 +185,10 @@ function changeFinancePeriod(period) {
 
 function setFinanceDriversView(mode) {
   financeDriversViewMode = mode;
+  financeMatrixCollapsed = false;
+  try {
+    localStorage.setItem('margo_finance_matrix_collapsed', 'false');
+  } catch (e) {}
   renderFinanceBurn();
 }
 
@@ -174,13 +198,22 @@ function setFinanceOutlierFilter(filter) {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+function changeFinanceMonth(mIso) {
+  selectedFinanceMonth = mIso;
+  if (mIso === '2026-10') financeActivePeriod = 'this_month';
+  else if (mIso === '2026-09') financeActivePeriod = 'last_month';
+  renderFinanceBurn();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.changeFinanceMonth = changeFinanceMonth;
+
 function renderPeriodFilterPills() {
   return `
     <div class="finance-period-capsules">
-      <button class="finance-period-btn ${financeActivePeriod === 'this_month' ? 'active' : ''}" onclick="changeFinancePeriod('this_month')">This Month</button>
-      <button class="finance-period-btn ${financeActivePeriod === 'last_month' ? 'active' : ''}" onclick="changeFinancePeriod('last_month')">Last Month</button>
-      <button class="finance-period-btn ${financeActivePeriod === 'last_qtr' ? 'active' : ''}" onclick="changeFinancePeriod('last_qtr')">Last Qtr (Q3)</button>
-      <button class="finance-period-btn ${financeActivePeriod === 'ytd' ? 'active' : ''}" onclick="changeFinancePeriod('ytd')">YTD (2026)</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'this_month' ? 'active' : ''}" onclick="changeFinancePeriod('this_month')">This month</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'last_month' ? 'active' : ''}" onclick="changeFinancePeriod('last_month')">Last month</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'last_qtr' ? 'active' : ''}" onclick="changeFinancePeriod('last_qtr')">Last quarter</button>
+      <button class="finance-period-btn ${financeActivePeriod === 'ytd' ? 'active' : ''}" onclick="changeFinancePeriod('ytd')">Year to date</button>
     </div>
   `;
 }
@@ -278,7 +311,7 @@ function renderFinanceWeeklyCadenceBar() {
     <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#34D399' : '#E05A47'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
           <span>Weekly Cadence</span>
           <span class="finance-cadence-sub">&bull; ${escapeHtml(dateLabel)}</span>
         </div>
@@ -358,7 +391,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
   } else if (rawSavingsPct >= 25) {
     headerStatusText = `🌱 +${(rawSavingsPct - 25).toFixed(0)}% Extra Savings Surplus`;
   } else if (rawFlexPct > 25.5) {
-    headerStatusText = '⚡ Discretionary Over 25%';
+    headerStatusText = '💫 Discretionary Over 25%';
   } else if (rawFixedPct > 50.5) {
     headerStatusText = '🛡️ Fixed Commitments Over 50%';
   } else {
@@ -400,7 +433,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🛡️ Fixed (50% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${fixedIsUnderOrEqual ? '#3A3A42' : '#E05A47'};">${fixedPct}%</span>
+              <span class="finance-target-pct-hero" style="color: ${fixedIsUnderOrEqual ? '#0F766E' : '#E05A47'};">${fixedPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFixedAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -410,9 +443,9 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
         <!-- Flex Pill -->
         <div class="finance-target-pill-card pillar-flex">
           <div class="finance-target-pill-left">
-            <div class="finance-target-pill-label">⚡ Flex (25% max)</div>
+            <div class="finance-target-pill-label">💫 Flex (25% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${flexIsUnderOrEqual ? '#4F46E5' : '#E05A47'};">${flexPct}%</span>
+              <span class="finance-target-pct-hero" style="color: ${flexIsUnderOrEqual ? '#7C3AED' : '#E05A47'};">${flexPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFlexAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -424,7 +457,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🌱 Savings (25% min)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#0F766E' : '#E05A47'};">
+              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#0D9488' : '#E05A47'};">
                 ${savingsPct >= 0 ? '' : '-'}${Math.abs(savingsPct)}%
               </span>
               <span class="finance-target-amount">
@@ -477,12 +510,23 @@ function renderFinanceRecurringCommitmentsSection() {
         </div>
 
         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-          <div class="finance-tx-search" style="min-width: 150px;">
-            <i data-lucide="search" style="width: 12px; height: 12px;"></i>
-            <input type="text" class="finance-search-input" placeholder="Search..." value="${escapeHtml(financeSubSearchQuery)}" oninput="handleFinanceSubSearch(event)" style="font-size: 0.75rem; padding: 4px 8px 4px 26px;">
+          <div class="finance-search-wrap">
+            <i data-lucide="search" class="finance-search-icon"></i>
+            <input type="text" 
+                   class="finance-search-input" 
+                   placeholder="Search subscriptions..." 
+                   value="${escapeHtml(financeSubSearchQuery)}" 
+                   oninput="handleFinanceSubSearch(event)"
+                   autocomplete="off"
+                   spellcheck="false">
+            ${financeSubSearchQuery ? `
+              <button type="button" class="finance-search-clear-btn" onclick="clearFinanceSubSearch(event)" title="Clear search">
+                <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+              </button>
+            ` : ''}
           </div>
-          <button class="btn btn-secondary" onclick="openAddSubscriptionModal()" style="font-size: 0.74rem; padding: 4px 10px;">
-            <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+          <button class="finance-btn-add-service" onclick="openAddSubscriptionModal()" title="Add a new subscription or service">
+            <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
             <span>Add Service</span>
           </button>
         </div>
@@ -491,10 +535,10 @@ function renderFinanceRecurringCommitmentsSection() {
       <!-- 3 Simple KPI Widgets: Total, Reimbursed, Out of Pocket -->
       <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 16px; gap: 12px;">
         <!-- 1. Total -->
-        <div class="finance-kpi-card" style="border-top: 3.5px solid var(--text-primary); padding: 12px 16px;">
+        <div class="finance-kpi-card accent-violet" style="padding: 12px 16px;">
           <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
             <span class="finance-kpi-label">
-              <i data-lucide="credit-card" style="width: 12px; height: 12px; color: var(--text-muted);"></i>
+              <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #7C3AED;"></i>
               Total
             </span>
           </div>
@@ -505,13 +549,13 @@ function renderFinanceRecurringCommitmentsSection() {
         </div>
 
         <!-- 2. Reimbursed -->
-        <div class="finance-kpi-card" style="border-top: 3.5px solid #A7F3D0; padding: 12px 16px;">
+        <div class="finance-kpi-card accent-teal" style="padding: 12px 16px;">
           <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
             <span class="finance-kpi-label">
-              <i data-lucide="check-check" style="width: 12px; height: 12px; color: #065F46;"></i>
+              <i data-lucide="check-check" style="width: 12px; height: 12px; color: #0D9488;"></i>
               Reimbursed
             </span>
-            <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem; background: #A7F3D0; color: #065F46; border: 1px solid rgba(6, 95, 70, 0.25);">100% Card Offset</span>
+            <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem; background: rgba(13, 148, 136, 0.12); color: #0D9488; border: 1px solid rgba(13, 148, 136, 0.25);">100% Card Offset</span>
           </div>
           <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
             $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
@@ -520,10 +564,10 @@ function renderFinanceRecurringCommitmentsSection() {
         </div>
 
         <!-- 3. Out of Pocket -->
-        <div class="finance-kpi-card" style="border-top: 3.5px solid #FF5A5F; padding: 12px 16px;">
+        <div class="finance-kpi-card accent-rose" style="padding: 12px 16px;">
           <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
             <span class="finance-kpi-label">
-              <i data-lucide="wallet" style="width: 12px; height: 12px; color: #FF5A5F;"></i>
+              <i data-lucide="wallet" style="width: 12px; height: 12px; color: #E11D48;"></i>
               Out of Pocket
             </span>
           </div>
@@ -572,6 +616,213 @@ function renderFinanceRecurringCommitmentsSection() {
             </div>
           `;
         }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Renders the Executive Dashboard Card (Cash Flow Hero + Net by Month Chart + Inflow/Outflow/Saved + 50/25/25 Split)
+ */
+function renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod) {
+  const hasInflow = (typeof periodInflow === 'number') && periodInflow > 0;
+  const incomeBase = hasInflow ? periodInflow : ((totalFixedSpend + totalFlexSpend) || 22350);
+
+  // Spend calculations
+  const actualFixedAmt = totalFixedSpend;
+  const actualFlexAmt = totalFlexSpend;
+  const actualOutflow = actualFixedAmt + actualFlexAmt;
+  const actualSavingsAmt = incomeBase - actualOutflow;
+
+  const rawFixedPct = incomeBase > 0 ? (actualFixedAmt / incomeBase) * 100 : 0;
+  const rawFlexPct = incomeBase > 0 ? (actualFlexAmt / incomeBase) * 100 : 0;
+  const rawSavingsPct = incomeBase > 0 ? (actualSavingsAmt / incomeBase) * 100 : 0;
+
+  // Whole number percentages summing to 100%
+  let fixedPct = Math.round(rawFixedPct);
+  let flexPct = Math.round(rawFlexPct);
+  let savingsPct = 100 - fixedPct - flexPct;
+  if (actualSavingsAmt < 0) {
+    savingsPct = Math.round(rawSavingsPct);
+  }
+
+  // 50 / 25 / 25 Targets
+  const fixedIsUnderOrEqual = rawFixedPct <= 50.5;
+  const flexIsUnderOrEqual = rawFlexPct <= 25.5;
+  const savingsIsMetOrExceeded = rawSavingsPct >= 24.5;
+  const targetMetCount = (fixedIsUnderOrEqual ? 1 : 0) + (flexIsUnderOrEqual ? 1 : 0) + (savingsIsMetOrExceeded ? 1 : 0);
+
+  // Month navigation & 6-month bar chart
+  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const activeMonthIso = selectedFinanceMonth || '2026-10';
+  const [yStr, mStr] = activeMonthIso.split('-');
+  let currentYear = parseInt(yStr, 10) || 2026;
+  let currentMonth = parseInt(mStr, 10) || 10;
+
+  const last6Months = [];
+  for (let i = 5; i >= 0; i--) {
+    let m = currentMonth - i;
+    let y = currentYear;
+    while (m <= 0) {
+      m += 12;
+      y -= 1;
+    }
+    const iso = `${y}-${String(m).padStart(2, '0')}`;
+    const label = monthNames[m - 1];
+    last6Months.push({ iso, label });
+  }
+
+  const chartData = last6Months.map(item => {
+    const summary = (monthlySummaries || []).find(s => s.month === item.iso);
+    let net = 0;
+    if (summary) {
+      const inc = parseFloat(summary.income) || 0;
+      const out = parseFloat(summary.outflow) || 0;
+      net = inc - out;
+    } else {
+      net = item.iso === activeMonthIso ? netCashFlow : 4200;
+    }
+    return {
+      ...item,
+      net,
+      isActive: item.iso === activeMonthIso
+    };
+  });
+
+  const maxNet = Math.max(...chartData.map(d => Math.abs(d.net)), 6000);
+
+  const heroSign = netCashFlow >= 0 ? '+' : '-';
+  const heroFormatted = `${heroSign}$${Math.round(Math.abs(netCashFlow)).toLocaleString()}`;
+  const subcaptionText = netCashFlow >= 0
+    ? `${savingsPct}% of income saved`
+    : `${Math.abs(savingsPct)}% deficit burn`;
+
+  return `
+    <div class="finance-executive-card">
+      <!-- Top Row: Net Cash Flow Hero + Net by Month Bar Chart -->
+      <div class="finance-exec-top">
+        <div class="finance-exec-net-col">
+          <span class="finance-exec-label">Net cash flow &bull; ${escapeHtml(periodLabel)}</span>
+          <div class="finance-exec-hero-val ${netCashFlow < 0 ? 'negative' : ''}">
+            ${heroFormatted}
+          </div>
+          <span class="finance-exec-hero-sub">${escapeHtml(subcaptionText)}</span>
+        </div>
+
+        <div class="finance-exec-chart-col">
+          <span class="finance-exec-label">Net by month</span>
+          <div class="finance-exec-bars-row">
+            ${chartData.map(d => {
+              const heightPx = Math.max(16, Math.round((Math.abs(d.net) / maxNet) * 56));
+              return `
+                <div class="finance-exec-bar-col" onclick="changeFinanceMonth('${d.iso}')" title="${d.label} ${d.iso}: ${d.net >= 0 ? '+' : '-'}$${Math.round(Math.abs(d.net)).toLocaleString()}">
+                  <div class="finance-exec-bar ${d.isActive ? 'active' : ''}" style="height: ${heightPx}px;"></div>
+                  <span class="finance-exec-bar-month">${d.label}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider 1 -->
+      <div class="finance-exec-divider"></div>
+
+      <!-- Middle Row: Inflow / Outflow / Saved KPIs -->
+      <div class="finance-exec-kpis">
+        <div class="finance-exec-kpi-col">
+          <span class="finance-exec-label">Inflow</span>
+          <div class="finance-exec-kpi-val">$${Math.round(periodInflow).toLocaleString()}</div>
+          <span class="finance-exec-kpi-sub">Salary and verified</span>
+        </div>
+
+        <div class="finance-exec-kpi-col">
+          <span class="finance-exec-label">Outflow</span>
+          <div class="finance-exec-kpi-val">$${Math.round(actualOutflow).toLocaleString()}</div>
+          <span class="finance-exec-kpi-sub">Fixed plus flex</span>
+        </div>
+
+        <div class="finance-exec-kpi-col">
+          <span class="finance-exec-label">Saved</span>
+          <div class="finance-exec-kpi-val saved">${savingsPct}%</div>
+          <span class="finance-exec-kpi-sub">of inflow</span>
+        </div>
+      </div>
+
+      <!-- Divider 2 -->
+      <div class="finance-exec-divider"></div>
+
+      <!-- Bottom Row: 50 / 25 / 25 Split Benchmark -->
+      <div class="finance-exec-split-section">
+        <div class="finance-exec-split-header">
+          <h3 class="finance-exec-split-title">50 / 25 / 25 split</h3>
+          <span class="finance-exec-split-badge">${targetMetCount} of 3 on target</span>
+        </div>
+
+        <div class="finance-exec-split-rows">
+          <!-- Fixed Row -->
+          <div class="finance-exec-split-row">
+            <div class="finance-exec-row-label">
+              <span class="finance-exec-row-title">
+                <span class="dot dot-fixed"></span>
+                <span>Fixed</span>
+              </span>
+              <span class="finance-exec-row-target">Target &le; 50%</span>
+            </div>
+            <div class="finance-exec-bar-track">
+              <div class="finance-exec-bar-fill fill-fixed" style="width: ${Math.min(100, Math.max(0, fixedPct))}%;"></div>
+              <div class="finance-exec-tick-marker" style="left: 50%;" title="50% Target Threshold"></div>
+            </div>
+            <div class="finance-exec-row-stat">
+              <span class="finance-exec-stat-val">${fixedPct}%</span>
+              <span class="finance-exec-stat-status ${fixedIsUnderOrEqual ? 'on-target' : 'alert'}">
+                ${fixedIsUnderOrEqual ? 'On target' : 'Over target'}
+              </span>
+            </div>
+          </div>
+
+          <!-- Flex Row -->
+          <div class="finance-exec-split-row">
+            <div class="finance-exec-row-label">
+              <span class="finance-exec-row-title">
+                <span class="dot dot-flex"></span>
+                <span>Flex</span>
+              </span>
+              <span class="finance-exec-row-target">Target &le; 25%</span>
+            </div>
+            <div class="finance-exec-bar-track">
+              <div class="finance-exec-bar-fill fill-flex" style="width: ${Math.min(100, Math.max(0, flexPct))}%;"></div>
+              <div class="finance-exec-tick-marker" style="left: 25%;" title="25% Target Threshold"></div>
+            </div>
+            <div class="finance-exec-row-stat">
+              <span class="finance-exec-stat-val">${flexPct}%</span>
+              <span class="finance-exec-stat-status ${flexIsUnderOrEqual ? 'on-target' : 'alert'}">
+                ${flexIsUnderOrEqual ? 'On target' : 'Over target'}
+              </span>
+            </div>
+          </div>
+
+          <!-- Save Row -->
+          <div class="finance-exec-split-row">
+            <div class="finance-exec-row-label">
+              <span class="finance-exec-row-title">
+                <span class="dot dot-save"></span>
+                <span>Save</span>
+              </span>
+              <span class="finance-exec-row-target">Target &ge; 25%</span>
+            </div>
+            <div class="finance-exec-bar-track">
+              <div class="finance-exec-bar-fill fill-save" style="width: ${Math.min(100, Math.max(0, savingsPct))}%;"></div>
+              <div class="finance-exec-tick-marker" style="left: 25%;" title="25% Target Threshold"></div>
+            </div>
+            <div class="finance-exec-row-stat">
+              <span class="finance-exec-stat-val">${savingsPct}%</span>
+              <span class="finance-exec-stat-status ${savingsIsMetOrExceeded ? 'on-target' : 'alert'}">
+                ${savingsIsMetOrExceeded ? 'On target' : 'Under target'}
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -765,109 +1016,40 @@ function renderFinanceBurn() {
       <!-- Top Weekly Sunday Cadence Task Checkbox -->
       ${renderFinanceWeeklyCadenceBar()}
 
-      <!-- 1. Hero Cash Flow Split & Synced Period Selector -->
-      <div class="finance-flow-hero">
-        <div class="finance-flow-header">
-          <div class="finance-flow-header-left">
-            <h2 class="finance-hero-title">
-              <span>💳</span>
-              <span>Cash Flow &amp; Spend Radar</span>
-            </h2>
-            <p class="finance-hero-sub" title="${escapeHtml(periodLabel)} &bull; Macro earn vs. burn clarity">
-              ${periodLabel} &bull; Macro earn vs. burn clarity
-            </p>
-          </div>
-
-          <!-- Timeframe Filter Capsules (This Month / Last Month / Last Qtr / YTD) -->
-          <div class="finance-flow-header-right">
-            ${renderPeriodFilterPills()}
-            <button class="btn btn-secondary" onclick="openLogCashFlowModal(selectedFinanceMonth)" style="font-size: 0.74rem; padding: 4px 10px;" title="Adjust month cash flow figures">
-              <i data-lucide="edit-3" style="width: 12px; height: 12px;"></i>
-              <span>Edit</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- 3-Column Hero Cash Flow Split -->
-        <div class="finance-flow-split-grid">
-          
-          <!-- Column 1: Income Earned -->
-          <div class="finance-flow-col">
-            <div class="finance-flow-col-header">
-              <span class="finance-kpi-label">
-                <i data-lucide="arrow-down-left" style="width: 13px; height: 13px; color: #0D9488;"></i>
-                <span>Total Income Inflow</span>
-              </span>
-            </div>
-            <span class="finance-kpi-value" style="color: #0F766E;">
-              $${periodInflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-            <span class="finance-kpi-sub">Verified salary + distributions</span>
-          </div>
-
-          <!-- Column 2: Total Outflow -->
-          <div class="finance-flow-col">
-            <div class="finance-flow-col-header">
-              <span class="finance-kpi-label">
-                <i data-lucide="arrow-up-right" style="width: 13px; height: 13px; color: #E05A47;"></i>
-                <span>Total Spend Outflow</span>
-              </span>
-            </div>
-            <span class="finance-kpi-value" style="color: var(--text-primary, #3A3A42);">
-              $${periodOutflow.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-            <span class="finance-kpi-sub">Fixed commitments + discretionary</span>
-          </div>
-
-          <!-- Column 3: Net Cash Flow Surplus / Deficit -->
-          <div class="finance-flow-col ${isPositive ? 'surplus-highlight' : 'deficit-highlight'}">
-            <div class="finance-flow-col-header">
-              <span class="finance-kpi-label">
-                <i data-lucide="sparkles" style="width: 13px; height: 13px; color: ${isPositive ? '#0F766E' : '#E05A47'};"></i>
-                <span>Net Cash Flow</span>
-              </span>
-              ${isPositive ? `
-                <span class="finance-flow-badge-pos">
-                  <i data-lucide="check" style="width: 11px; height: 11px;"></i>
-                  <span>${savingsRate}% Saved</span>
-                </span>
-              ` : `
-                <span class="finance-flow-badge-neg">
-                  <i data-lucide="alert-triangle" style="width: 11px; height: 11px;"></i>
-                  <span>Deficit</span>
-                </span>
-              `}
-            </div>
-            <span class="finance-kpi-value" style="color: ${isPositive ? '#0F766E' : '#E05A47'};">
-              ${isPositive ? '+' : '-'}$${Math.abs(netCashFlow).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </span>
-            <span class="finance-kpi-sub">
-              ${isPositive ? 'Liquid buffer swept to reserves' : 'Burn exceeded inflows in period'}
-            </span>
-          </div>
-
-        </div>
+      <!-- Timeframe Filter Capsules & Quick Edit -->
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+        ${renderPeriodFilterPills()}
+        <button class="btn btn-secondary" onclick="openLogCashFlowModal(selectedFinanceMonth)" style="font-size: 0.74rem; padding: 6px 12px; border-radius: 999px;" title="Adjust month cash flow figures">
+          <i data-lucide="edit-3" style="width: 12px; height: 12px;"></i>
+          <span>Edit Month Cash Flow</span>
+        </button>
       </div>
 
-      <!-- 2. Target Allocation Blueprint: 50 / 25 / 25 Split Benchmark -->
-      ${renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel)}
+      <!-- Executive Dashboard Card: Cash Flow & 50/25/25 Split -->
+      ${renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod)}
 
       <!-- 3. Capital Allocation Matrix / Top Spending Drivers (with Dual View Option) -->
-      <div class="finance-section-box">
-        <div class="finance-section-header">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="${financeDriversViewMode === 'pillars' ? 'columns-2' : 'bar-chart-3'}" style="width: 18px; height: 18px; color: #4F46E5;"></i>
-              <span>${financeDriversViewMode === 'pillars' ? 'Capital Allocation Matrix (Fixed vs. Flex)' : 'Top Spending Drivers (80/20 Pareto Distribution)'}</span>
-            </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
-              ${financeDriversViewMode === 'pillars' 
-                ? `Macro capital split for ${periodLabel} &bull; Non-negotiable floor vs. flexible lifestyle levers` 
-                : `Where 80% of capital flowed during ${periodLabel}`}
-            </span>
+      <div class="finance-section-box" id="finance-drivers-section-box">
+        <div class="finance-section-header" style="flex-wrap: wrap; gap: 10px; cursor: pointer; user-select: none;" onclick="toggleFinanceMatrixCollapse(event)" title="${financeMatrixCollapsed ? 'Click to expand Capital Allocation Matrix' : 'Click to collapse Capital Allocation Matrix'}">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" class="finance-collapse-btn" onclick="toggleFinanceMatrixCollapse(event)" title="${financeMatrixCollapsed ? 'Expand Capital Allocation Matrix' : 'Collapse Capital Allocation Matrix'}">
+              <i data-lucide="${financeMatrixCollapsed ? 'chevron-down' : 'chevron-up'}" style="width: 12px; height: 12px;"></i>
+              <span>${financeMatrixCollapsed ? 'Expand' : 'Collapse'}</span>
+            </button>
+            <div>
+              <h3 class="finance-section-title">
+                <i data-lucide="${financeDriversViewMode === 'pillars' ? 'columns-2' : 'bar-chart-3'}" style="width: 18px; height: 18px; color: #7C3AED;"></i>
+                <span>${financeDriversViewMode === 'pillars' ? 'Capital Allocation Matrix (Fixed vs. Flex)' : 'Top Spending Drivers (80/20 Pareto Distribution)'}</span>
+              </h3>
+              <span style="font-size: 0.78rem; color: var(--text-muted);">
+                ${financeDriversViewMode === 'pillars' 
+                  ? `Macro capital split for ${periodLabel} &bull; Non-negotiable floor vs. flexible lifestyle levers` 
+                  : `Where 80% of capital flowed during ${periodLabel}`}
+              </span>
+            </div>
           </div>
 
-          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;" onclick="event.stopPropagation()">
             <!-- View Mode Switcher: Split Pillars vs Ribbon -->
             <div class="finance-view-toggle-capsules">
               <button class="finance-view-toggle-btn ${financeDriversViewMode === 'pillars' ? 'active' : ''}" onclick="setFinanceDriversView('pillars')" title="View side-by-side fixed vs. discretionary pillars">
@@ -887,6 +1069,7 @@ function renderFinanceBurn() {
           </div>
         </div>
 
+        ${!financeMatrixCollapsed ? `
         ${financeDriversViewMode === 'pillars' ? `
           <!-- Option 5: Split Pillar Matrix Layout -->
           <div class="finance-pillars-wrapper">
@@ -898,11 +1081,11 @@ function renderFinanceBurn() {
                   Macro Outflow Split &bull; <strong>$${(totalFixedSpend + totalFlexSpend).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</strong> Total Capital
                 </span>
                 <div style="display: flex; gap: 14px; font-size: 0.76rem; flex-wrap: wrap;">
-                  <span style="color: #0F766E; font-weight: 700;">
+                  <span class="finance-macro-legend-fixed">
                     🛡️ Fixed Anchors: ${fixedRatioPct}% ($${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
                   </span>
-                  <span style="color: #4F46E5; font-weight: 700;">
-                    ⚡ Discretionary Flex: ${flexRatioPct}% ($${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
+                  <span class="finance-macro-legend-flex">
+                    💫 Discretionary Flex: ${flexRatioPct}% ($${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })})
                   </span>
                 </div>
               </div>
@@ -913,7 +1096,7 @@ function renderFinanceBurn() {
                   🛡️ Fixed Anchors ${fixedRatioPct}%
                 </div>
                 <div class="finance-macro-bar-flex" style="width: ${flexRatioPct}%;">
-                  ⚡ Discretionary Flex ${flexRatioPct}%
+                  💫 Discretionary Flex ${flexRatioPct}%
                 </div>
               </div>
             </div>
@@ -926,14 +1109,14 @@ function renderFinanceBurn() {
                 <div class="finance-pillar-card-header">
                   <div>
                     <div class="finance-pillar-title">
-                      <i data-lucide="shield-check" style="width: 17px; height: 17px; color: #0D9488;"></i>
+                      <i data-lucide="shield-check" class="finance-pillar-fixed-icon" style="width: 17px; height: 17px;"></i>
                       <span>Pillar 1: Fixed Commitments</span>
                     </div>
                     <div class="finance-pillar-amount" style="color: var(--text-primary, #3A3A42);">
                       $${totalFixedSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
                   </div>
-                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(13, 148, 136, 0.12); color: #0F766E; border: 1px solid rgba(13, 148, 136, 0.25);">
+                  <span class="finance-pillar-badge fixed">
                     ${fixedRatioPct}% of spend
                   </span>
                 </div>
@@ -944,7 +1127,7 @@ function renderFinanceBurn() {
                     return `
                       <div class="finance-pillar-row">
                         <div class="finance-pillar-row-left">
-                          <i data-lucide="${c.icon || 'shield'}" style="width: 15px; height: 15px; color: #0D9488; flex-shrink: 0;"></i>
+                          <i data-lucide="${c.icon || 'shield'}" class="finance-pillar-fixed-icon" style="width: 15px; height: 15px; flex-shrink: 0;"></i>
                           <span class="finance-pillar-row-name" title="${escapeHtml(c.name)}">${escapeHtml(c.name)}</span>
                         </div>
                         <div class="finance-pillar-row-right">
@@ -957,7 +1140,7 @@ function renderFinanceBurn() {
                 </div>
 
                 <div class="finance-pillar-footer">
-                  <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: #0D9488; flex-shrink: 0;"></i>
+                  <i data-lucide="check-circle-2" class="finance-pillar-fixed-icon" style="width: 14px; height: 14px; flex-shrink: 0;"></i>
                   <span>Shielded baseline floor required to sustain home, health &amp; family.</span>
                 </div>
               </div>
@@ -967,14 +1150,14 @@ function renderFinanceBurn() {
                 <div class="finance-pillar-card-header">
                   <div>
                     <div class="finance-pillar-title">
-                      <i data-lucide="sliders" style="width: 17px; height: 17px; color: #4F46E5;"></i>
+                      <i data-lucide="sliders" style="width: 17px; height: 17px; color: #7C3AED;"></i>
                       <span>Pillar 2: Discretionary Levers</span>
                     </div>
-                    <div class="finance-pillar-amount" style="color: #4F46E5;">
+                    <div class="finance-pillar-amount" style="color: #7C3AED;">
                       $${totalFlexSpend.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     </div>
                   </div>
-                  <span class="zlog-ood-badge" style="font-size: 0.7rem; background: rgba(99, 102, 241, 0.12); color: #4F46E5; border: 1px solid rgba(99, 102, 241, 0.25);">
+                  <span class="finance-pillar-badge flex">
                     ${flexRatioPct}% of spend
                   </span>
                 </div>
@@ -1060,6 +1243,7 @@ function renderFinanceBurn() {
             </div>
           </div>
         `}
+        ` : ''}
       </div>
 
       <!-- 3. Subscriptions -->
@@ -1540,13 +1724,46 @@ function renderCardRoiModal() {
 }
 
 function handleFinanceSubSearch(e) {
+  const cursorStart = (e.target && typeof e.target.selectionStart === 'number') ? e.target.selectionStart : null;
+  const cursorEnd = (e.target && typeof e.target.selectionEnd === 'number') ? e.target.selectionEnd : null;
   financeSubSearchQuery = (e.target.value || '').toLowerCase().trim();
+
   if (activeFinanceSubTab === 'burn') {
     renderFinanceBurn();
   } else {
     renderFinanceSubscriptions();
   }
+
+  setTimeout(() => {
+    const input = document.querySelector('#finance-recurring-commitments-box .finance-search-input, .finance-search-wrap .finance-search-input');
+    if (input) {
+      input.focus();
+      try {
+        if (cursorStart !== null && cursorEnd !== null) {
+          input.setSelectionRange(cursorStart, cursorEnd);
+        }
+      } catch (err) {}
+    }
+  }, 0);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
 }
+window.handleFinanceSubSearch = handleFinanceSubSearch;
+
+function clearFinanceSubSearch(event) {
+  if (event) event.stopPropagation();
+  financeSubSearchQuery = '';
+  if (activeFinanceSubTab === 'burn') {
+    renderFinanceBurn();
+  } else {
+    renderFinanceSubscriptions();
+  }
+  setTimeout(() => {
+    const input = document.querySelector('#finance-recurring-commitments-box .finance-search-input, .finance-search-wrap .finance-search-input');
+    if (input) input.focus();
+  }, 0);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.clearFinanceSubSearch = clearFinanceSubSearch;
 
 function setFinanceSubCategoryFilter(cat) {
   financeSubCategoryFilter = cat;
@@ -1639,65 +1856,66 @@ function renderFinanceSubscriptions() {
 
         <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
           <!-- Card 1: Annual Fees Baseline -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid var(--text-primary); padding: 12px 16px;">
-            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div class="finance-kpi-card accent-indigo" style="padding: 14px 16px;">
+            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span class="finance-kpi-label">
-                <i data-lucide="credit-card" style="width: 13px; height: 13px; color: var(--text-muted);"></i>
-                4 Annual Fee Cards
+                <i data-lucide="credit-card" style="width: 13px; height: 13px; color: #6366F1;"></i>
+                <span>4 Annual Fee Cards</span>
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: var(--text-primary, #3a3A42);">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
-            <span class="finance-kpi-sub">Amex Plat ($895) + 3 Chase ($95 ea)</span>
+            <div class="finance-kpi-value" style="color: var(--text-primary, #3a3A42); margin-bottom: 4px;">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
+            <div class="finance-kpi-sub" style="margin-top: auto;">Amex Plat ($895) + 3 Chase ($95 ea)</div>
           </div>
 
           <!-- Card 2: Realized Perks & Credits -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid #FF5A5F; padding: 12px 16px;">
-            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div class="finance-kpi-card accent-violet" style="padding: 14px 16px;">
+            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span class="finance-kpi-label">
-                <i data-lucide="gift" style="width: 13px; height: 13px; color: #FF5A5F;"></i>
-                Realized Perks &amp; Credits
+                <i data-lucide="gift" style="width: 13px; height: 13px; color: #7C3AED;"></i>
+                <span>Realized Perks</span>
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: var(--text-primary, #3a3A42);">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
-            <span class="finance-kpi-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</span>
+            <div class="finance-kpi-value" style="color: #7C3AED; margin-bottom: 4px;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
+            <div class="finance-kpi-sub" style="margin-top: auto;">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</div>
           </div>
 
           <!-- Card 3: Net Fee ROI & Surplus -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid #A7F3D0; padding: 12px 16px;">
-            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div class="finance-kpi-card accent-teal" style="padding: 14px 16px;">
+            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="finance-kpi-label">
-                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #065F46;"></i>
-                Net Fee ROI Surplus
+                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #0D9488;"></i>
+                <span>Net Fee Surplus</span>
               </span>
-              <span class="card-roi-surplus-pill surplus" style="font-size: 0.64rem;">${overallBreakevenPct}% Breakeven</span>
+              <span class="card-roi-surplus-pill surplus" style="font-size: 0.65rem; background: rgba(13, 148, 136, 0.12); color: #0D9488; border: 1px solid rgba(13, 148, 136, 0.25); white-space: nowrap; flex-shrink: 0;">${overallBreakevenPct}% Breakeven</span>
             </div>
-            <span class="finance-kpi-value" style="color: #065F46;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.85rem; font-weight: 500; color: #71717A;">/yr</span></span>
-            <span class="finance-kpi-sub">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</span>
+            <div class="finance-kpi-value" style="color: #0D9488; margin-bottom: 4px;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
+            <div class="finance-kpi-sub" style="margin-top: auto;">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</div>
           </div>
 
           <!-- Card 4: Negative Value Cards Widget -->
-          <div class="finance-kpi-card" style="border-top: 3.5px solid ${negativeCardsCount > 0 ? '#FF5A5F' : '#A7F3D0'}; padding: 12px 16px; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
-            <div style="height: 24px; min-height: 24px; max-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <div class="finance-kpi-card accent-rose" style="padding: 14px 16px; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
+            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="finance-kpi-label">
-                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#FF5A5F' : '#065F46'};"></i>
-                Negative Value Cards
+                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'};"></i>
+                <span>Drag Below Fee</span>
               </span>
-              <span class="card-roi-surplus-pill" style="font-size: 0.64rem; background: ${negativeCardsCount > 0 ? 'rgba(255, 90, 95, 0.12)' : '#A7F3D0'}; color: ${negativeCardsCount > 0 ? '#FF5A5F' : '#065F46'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(255, 90, 95, 0.3)' : 'rgba(6, 95, 70, 0.25)'};">
+              <span class="card-roi-surplus-pill" style="font-size: 0.65rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.10)' : 'rgba(13, 148, 136, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(13, 148, 136, 0.25)'}; white-space: nowrap; flex-shrink: 0;">
                 ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
               </span>
             </div>
-            <span class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#FF5A5F' : '#065F46'};">
+            <div class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; margin-bottom: 4px;">
               ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}
-              <span style="font-size: 0.85rem; font-weight: 500; color: #71717A;"> net drag</span>
-            </span>
-            <div class="finance-kpi-sub" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
+              <span style="font-size: 0.82rem; font-weight: 500; color: #71717A;"> net drag</span>
+            </div>
+            <div class="finance-kpi-sub" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px;">
               ${negativeCards.length > 0 ? negativeCards.map(c => `
-                <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; background: rgba(255, 90, 95, 0.12); color: #FF5A5F; border: 1px solid rgba(255, 90, 95, 0.3); font-weight: 600; font-size: 0.7rem; cursor: pointer;" title="Inspect ${escapeHtml(c.shortName)}">
+                <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; background: rgba(225, 29, 72, 0.08); color: #E11D48; border: 1px solid rgba(225, 29, 72, 0.22); font-weight: 600; font-size: 0.68rem; cursor: pointer;" title="Inspect ${escapeHtml(c.shortName)}">
                   ${escapeHtml(c.shortName || c.name)} (-$${Math.round(Math.abs(c.netValue))})
                 </span>
-              `).join('') : '<span style="color: #065F46;">✓ All 4 cards exceeding annual fee!</span>'}
+              `).join('') : '<span style="color: #0D9488; font-weight: 600;">✓ All 4 cards exceeding annual fee!</span>'}
             </div>
           </div>
+        </div>
         </div>
       </div>
 
@@ -2055,13 +2273,39 @@ function setFinanceNwClassFilter(filter) {
 }
 
 function handleFinanceNwSearch(e) {
+  const cursorStart = (e.target && typeof e.target.selectionStart === 'number') ? e.target.selectionStart : null;
+  const cursorEnd = (e.target && typeof e.target.selectionEnd === 'number') ? e.target.selectionEnd : null;
   financeNwSearchQuery = (e.target.value || '').toLowerCase().trim();
   if (financeNwSearchQuery) {
     financeLedgerCollapsed = false; // automatically expand when user searches
   }
   renderFinanceRunway();
+  setTimeout(() => {
+    const input = document.querySelector('#finance-active-accounts-ledger .finance-search-input, .finance-nw-table-box .finance-search-input');
+    if (input) {
+      input.focus();
+      try {
+        if (cursorStart !== null && cursorEnd !== null) {
+          input.setSelectionRange(cursorStart, cursorEnd);
+        }
+      } catch (err) {}
+    }
+  }, 0);
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
+window.handleFinanceNwSearch = handleFinanceNwSearch;
+
+function clearFinanceNwSearch(event) {
+  if (event) event.stopPropagation();
+  financeNwSearchQuery = '';
+  renderFinanceRunway();
+  setTimeout(() => {
+    const input = document.querySelector('#finance-active-accounts-ledger .finance-search-input, .finance-nw-table-box .finance-search-input');
+    if (input) input.focus();
+  }, 0);
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.clearFinanceNwSearch = clearFinanceNwSearch;
 
 function renderFinanceQuarterlyCadenceBar() {
   const qKey = getCurrentQuarterKey();
@@ -2689,7 +2933,7 @@ function renderFinanceRunway() {
       ${renderFinanceMilestonesSparkline(milestones)}
 
       <!-- 6. Active Accounts Ledger & Class Filter Strip (Collapsible) -->
-      <div class="finance-section-box">
+      <div class="finance-section-box" id="finance-active-accounts-ledger">
         <div class="finance-section-header" style="flex-wrap: wrap; gap: 10px; cursor: pointer; user-select: none;" onclick="toggleFinanceLedgerCollapse(event)" title="${financeLedgerCollapsed ? 'Click to expand 35 active accounts' : 'Click to collapse active accounts'}">
           <div style="display: flex; align-items: center; gap: 10px;">
             <button type="button" class="finance-ledger-collapse-btn" onclick="toggleFinanceLedgerCollapse(event)" title="${financeLedgerCollapsed ? 'Expand 35 active accounts' : 'Collapse ledger'}">
@@ -2707,9 +2951,20 @@ function renderFinanceRunway() {
 
           <!-- Ledger Search Input -->
           <div style="display: flex; align-items: center; gap: 8px;" onclick="event.stopPropagation()">
-            <div style="position: relative; width: 220px;">
-              <input type="text" class="form-control" placeholder="Search account..." value="${escapeHtml(financeNwSearchQuery)}" oninput="handleFinanceNwSearch(event)" style="font-size: 0.78rem; padding: 4px 10px 4px 28px; border-radius: 999px;">
-              <i data-lucide="search" style="position: absolute; left: 9px; top: 7px; width: 13px; height: 13px; color: var(--text-muted);"></i>
+            <div class="finance-search-wrap">
+              <i data-lucide="search" class="finance-search-icon"></i>
+              <input type="text" 
+                     class="finance-search-input" 
+                     placeholder="Search account..." 
+                     value="${escapeHtml(financeNwSearchQuery)}" 
+                     oninput="handleFinanceNwSearch(event)"
+                     autocomplete="off"
+                     spellcheck="false">
+              ${financeNwSearchQuery ? `
+                <button type="button" class="finance-search-clear-btn" onclick="clearFinanceNwSearch(event)" title="Clear search">
+                  <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+                </button>
+              ` : ''}
             </div>
           </div>
         </div>

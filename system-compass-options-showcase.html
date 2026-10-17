@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>margo. — System Compass Alternative Aesthetics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F5F3FA;
+      --card: #FFFFFF;
+      --card-subtle: #F8FAFC;
+      --line: rgba(124, 58, 237, 0.12);
+      --text: #1E1B4B;
+      --text-muted: #64748B;
+      
+      --violet: #7C3AED;
+      --violet-bg: #EDE9FE;
+      --rose: #E11D48;
+      --rose-bg: #FFE4E6;
+      --blue: #2563EB;
+      --blue-bg: #EFF6FF;
+      --teal: #0D9488;
+      --teal-bg: #CCFBF1;
+      --green: #15803D;
+      --green-bg: #DCFCE7;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 40px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    .page-header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .page-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 2.2rem;
+      font-style: italic;
+      color: var(--violet);
+    }
+    .page-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Option Container */
+    .option-block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 14px 34px -10px rgba(124, 58, 237, 0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .option-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 12px;
+    }
+    .option-num {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .option-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--violet);
+      background: var(--violet-bg);
+      padding: 3px 10px;
+      border-radius: 9999px;
+    }
+
+    /* ======================================================== */
+    /* OPTION A: NATIVE TACTILE PIPELINE (PURE CSS, NO IMAGE)   */
+    /* ======================================================== */
+    .tactile-pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .t-node {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 16px;
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.04);
+      transition: all 0.15s ease;
+    }
+    .t-node:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.08);
+    }
+
+    .t-node-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .t-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .icon-m { background: var(--violet-bg); color: var(--violet); font-family: 'Newsreader', serif; font-style: italic; font-size: 1.3rem; }
+    .icon-mail { background: var(--rose-bg); color: var(--rose); }
+    .icon-t3 { background: var(--blue-bg); color: var(--blue); }
+    .icon-notes { background: var(--violet-bg); color: var(--violet); }
+    .icon-drive { background: var(--teal-bg); color: var(--teal); }
+
+    .t-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .t-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .badge-cmd { background: var(--violet-bg); color: var(--violet); }
+    .badge-inflow { background: var(--rose-bg); color: var(--rose); }
+    .badge-exec { background: var(--blue-bg); color: var(--blue); }
+    .badge-notes { background: var(--violet-bg); color: var(--violet); }
+    .badge-vault { background: var(--teal-bg); color: var(--teal); }
+
+    /* Things 3 Expanded Node */
+    .t-node.t-things {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+      border-color: rgba(37, 99, 235, 0.25);
+    }
+    .t-things-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .t-tags-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .t-tag-pill {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.12s ease;
+    }
+    .t-tag-pill:hover { transform: translateY(-1px); }
+    .t-tag-high {
+      background: var(--violet-bg);
+      color: var(--violet);
+      border: 1px solid rgba(124, 58, 237, 0.3);
+    }
+    .t-tag-active {
+      background: var(--blue-bg);
+      color: var(--blue);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+    }
+    .t-tag-later {
+      background: var(--green-bg);
+      color: var(--green);
+      border: 1px solid rgba(21, 128, 61, 0.25);
+    }
+
+    /* Minimal Connectors between nodes */
+    .t-rail-arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      margin: -4px 0;
+      user-select: none;
+      opacity: 0.6;
+    }
+
+    /* ======================================================== */
+    /* OPTION B: BENTO GRID DASHBOARD                           */
+    /* ======================================================== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .bento-hero {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #FAF8FF 0%, #F5F1FF 100%);
+      border: 1.5px solid rgba(124, 58, 237, 0.2);
+      border-radius: 18px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .bento-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .bento-card.things-hub {
+      grid-column: 1 / -1;
+      background: #FBFDFF;
+      border-color: rgba(37, 99, 235, 0.2);
+    }
+
+    /* ======================================================== */
+    /* OPTION C: SWISS TRANSIT / METRO MINIMALISM (AIRY)        */
+    /* ======================================================== */
+    .metro-track {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      padding-left: 28px;
+      max-width: 480px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .metro-spine {
+      position: absolute;
+      left: 11px;
+      top: 14px;
+      bottom: 24px;
+      width: 3px;
+      background: linear-gradient(180deg, var(--violet) 0%, var(--rose) 25%, var(--blue) 50%, var(--teal) 100%);
+      border-radius: 2px;
+    }
+
+    .metro-station {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 0;
+      position: relative;
+    }
+
+    .metro-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 3.5px solid var(--violet);
+      position: absolute;
+      left: -23px;
+      top: 15px;
+    }
+    .metro-dot.mail { border-color: var(--rose); }
+    .metro-dot.t3 { border-color: var(--blue); }
+    .metro-dot.notes { border-color: var(--violet); }
+    .metro-dot.drive { border-color: var(--teal); }
+
+    .metro-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .metro-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .metro-name {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .choice-badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="page-header">
+      <h1 class="page-title">System Compass Aesthetics</h1>
+      <p class="page-sub">Explore 3 native design directions that eliminate static image scaling issues entirely.</p>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 1. OPTION A: NATIVE TACTILE PIPELINE                     -->
+    <!-- ======================================================== -->
+    <div class="option-block">
+      <div class="option-meta">
+        <div class="option-num">
+          <span>Option A</span>
+          <span>Tactile Interactive Pipeline</span>
+        </div>
+        <span class="option-tag">Recommended · Native CSS</span>
+      </div>
+      <p style="font-size: 0.86rem; color: var(--text-muted);">
+        Rendered directly in native HTML/CSS (no image file). Typography renders at 100% full Retina crispness, all tags are 1-tap clickable to launch Things 3, and it responds seamlessly to dark and light mode.
+      </p>
+
+      <div class="tactile-pipeline">
+        <!-- margo -->
+        <div class="t-node" onclick="alert('Opens Sanctuary / Today')">
+          <div class="t-node-left">
+            <div class="t-icon icon-m">m</div>
+            <div class="t-title">margo</div>
+          </div>
+          <span class="t-badge badge-cmd">COMMAND &amp; CONTROL</span>
+        </div>
+
+        <div class="t-rail-arrow">│ (priorities &amp; focus)</div>
+
+        <!-- Gmail -->
+        <div class="t-node" onclick="window.open('https://mail.google.com')">
+          <div class="t-node-left">
+            <div class="t-icon icon-mail">✉</div>
+            <div class="t-title">Gmail</div>
+          </div>
+          <span class="t-badge badge-inflow">INFLOW &amp; SIGNAL</span>
+        </div>
+
+        <div class="t-rail-arrow">▼ (triaged into tasks)</div>
+
+        <!-- Things 3 -->
+        <div class="t-node t-things">
+          <div class="t-things-head">
+            <div class="t-node-left">
+              <div class="t-icon icon-t3">T3</div>
+              <div class="t-title">Things 3</div>
+            </div>
+            <span class="t-badge badge-exec">EXECUTION</span>
+          </div>
+          <div class="t-tags-row">
+            <span class="t-tag-pill t-tag-high" title="Do First">⚡ #active · #high priority <span style="font-size:0.64rem; opacity:0.8;">(Do first)</span></span>
+            <span class="t-tag-pill t-tag-active">🔹 #active</span>
+            <span class="t-tag-pill t-tag-later">⏳ #later</span>
+          </div>
+        </div>
+
+        <div class="t-rail-arrow">⇅ (project briefs &amp; checklists)</div>
+
+        <!-- Apple Notes -->
+        <div class="t-node">
+          <div class="t-node-left">
+            <div class="t-icon icon-notes">N</div>
+            <div class="t-title">Apple Notes</div>
+          </div>
+          <span class="t-badge badge-notes">MASTER NOTES</span>
+        </div>
+
+        <div class="t-rail-arrow">▼ (permanent record archive)</div>
+
+        <!-- Google Drive -->
+        <div class="t-node" onclick="window.open('https://drive.google.com')">
+          <div class="t-node-left">
+            <div class="t-icon icon-drive">G</div>
+            <div class="t-title">Google Drive</div>
+          </div>
+          <span class="t-badge badge-vault">MASTER VAULT</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 2. OPTION B: BENTO GRID DASHBOARD                        -->
+    <!-- ======================================================== -->
+    <div class="option-block">
+      <div class="option-meta">
+        <div class="option-num">
+          <span>Option B</span>
+          <span>Modern Bento Grid</span>
+        </div>
+        <span class="option-tag">Spacious · Apple / Linear Style</span>
+      </div>
+      <p style="font-size: 0.86rem; color: var(--text-muted);">
+        A balanced multi-card Bento cluster. Eliminates narrow vertical crowding by giving margo and Things 3 dedicated modular blocks.
+      </p>
+
+      <div class="bento-grid">
+        <!-- Top Hero: margo -->
+        <div class="bento-hero">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="t-node-left">
+              <div class="t-icon" style="background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); color:#6D4BDB; font-family:Georgia,serif; font-style:italic; font-size:1.15rem; font-weight:800;">m</div>
+              <div class="t-title">margo</div>
+            </div>
+            <span class="t-badge badge-cmd">COMMAND &amp; CONTROL</span>
+          </div>
+        </div>
+
+        <!-- Things 3 (Center Action) -->
+        <div class="bento-card things-hub">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="t-node-left">
+              <div class="t-icon" style="background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); color:#1A6FD0; font-weight:800; font-size:0.85rem;">T3</div>
+              <div class="t-title">Things 3</div>
+            </div>
+            <span class="t-badge badge-exec">EXECUTION</span>
+          </div>
+          <div class="t-tags-row" style="display:flex; flex-direction:row; flex-wrap:nowrap; gap:6px; width:100%;">
+            <span class="t-tag-pill t-tag-high" style="flex:1.6 1 0; text-align:center; padding:5px 4px; font-size:0.68rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">#active · #high priority</span>
+            <span class="t-tag-pill t-tag-active" style="flex:1 1 0; text-align:center; padding:5px 4px; font-size:0.68rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">#active</span>
+            <span class="t-tag-pill t-tag-later" style="flex:1 1 0; text-align:center; padding:5px 4px; font-size:0.68rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">#later</span>
+          </div>
+        </div>
+
+        <!-- Left: Gmail -->
+        <div class="bento-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="t-icon" style="background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); color:#C8321F; display:flex; align-items:center; justify-content:center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>
+            </div>
+            <span class="t-badge badge-inflow">INFLOW</span>
+          </div>
+          <div class="t-title">Gmail</div>
+        </div>
+
+        <!-- Right: Apple Notes -->
+        <div class="bento-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="t-icon" style="background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); color:#C8321F; font-weight:800; font-size:0.85rem;">N</div>
+            <span class="t-badge badge-notes">MASTER NOTES</span>
+          </div>
+          <div class="t-title">Apple Notes</div>
+        </div>
+
+        <!-- Bottom: Google Drive Full Span -->
+        <div class="bento-hero" style="grid-column: 1 / -1; background: #F4FBF9; border-color: rgba(13, 148, 136, 0.2);">
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+            <div class="t-node-left">
+              <div class="t-icon" style="background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.1); color:#2F5FD0; font-weight:800; font-size:0.85rem;">G</div>
+              <div class="t-title">Google Drive</div>
+            </div>
+            <span class="t-badge badge-vault">MASTER VAULT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- 3. OPTION C: SWISS TRANSIT / METRO MINIMALISM            -->
+    <!-- ======================================================== -->
+    <div class="option-block">
+      <div class="option-meta">
+        <div class="option-num">
+          <span>Option C</span>
+          <span>Swiss Metro / Transit Spine</span>
+        </div>
+        <span class="option-tag">Minimalist · Zero Card Clutter</span>
+      </div>
+      <p style="font-size: 0.86rem; color: var(--text-muted);">
+        Ultra-lightweight aesthetic with zero box-in-a-box framing. A single colored timeline connects all 5 tools with maximum white space.
+      </p>
+
+      <div class="metro-track">
+        <div class="metro-spine"></div>
+
+        <!-- Station 1 -->
+        <div class="metro-station">
+          <div class="metro-dot"></div>
+          <div class="metro-content">
+            <div class="metro-title-wrap">
+              <span class="metro-name">margo</span>
+              <span style="font-size: 0.74rem; color: var(--text-muted);">Identity &bull; Daily Anchors</span>
+            </div>
+            <span class="t-badge badge-cmd">COMMAND &amp; CONTROL</span>
+          </div>
+        </div>
+
+        <!-- Station 2 -->
+        <div class="metro-station">
+          <div class="metro-dot mail"></div>
+          <div class="metro-content">
+            <div class="metro-title-wrap">
+              <span class="metro-name">Gmail</span>
+              <span style="font-size: 0.74rem; color: var(--text-muted);">Inbound Comms &bull; Signal</span>
+            </div>
+            <span class="t-badge badge-inflow">INFLOW</span>
+          </div>
+        </div>
+
+        <!-- Station 3 -->
+        <div class="metro-station">
+          <div class="metro-dot t3"></div>
+          <div class="metro-content" style="flex-direction: column; align-items: stretch; gap: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="metro-name">Things 3</span>
+              <span class="t-badge badge-exec">EXECUTION</span>
+            </div>
+            <div class="t-tags-row">
+              <span class="t-tag-pill t-tag-high">⚡ #active · #high priority</span>
+              <span class="t-tag-pill t-tag-active">🔹 #active</span>
+              <span class="t-tag-pill t-tag-later">⏳ #later</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Station 4 -->
+        <div class="metro-station">
+          <div class="metro-dot notes"></div>
+          <div class="metro-content">
+            <div class="metro-title-wrap">
+              <span class="metro-name">Apple Notes</span>
+              <span style="font-size: 0.74rem; color: var(--text-muted);">Project Briefs &bull; Strategy Loop</span>
+            </div>
+            <span class="t-badge badge-notes">MASTER NOTES</span>
+          </div>
+        </div>
+
+        <!-- Station 5 -->
+        <div class="metro-station">
+          <div class="metro-dot drive"></div>
+          <div class="metro-content">
+            <div class="metro-title-wrap">
+              <span class="metro-name">Google Drive</span>
+              <span style="font-size: 0.74rem; color: var(--text-muted);">Permanent Archival Safe</span>
+            </div>
+            <span class="t-badge badge-vault">MASTER VAULT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

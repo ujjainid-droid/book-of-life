@@ -487,6 +487,53 @@ class SyncManager {
       }
     }
 
+    // 7c. AuroraDailyState: Two-way merge by updatedAt
+    const mergedAuroraDailyState = { ...(storage.data.auroraDailyState || {}) };
+    if (incoming.auroraDailyState && typeof incoming.auroraDailyState === 'object') {
+      Object.entries(incoming.auroraDailyState).forEach(([dStr, aObj]) => {
+        const loc = mergedAuroraDailyState[dStr];
+        if (!loc) {
+          mergedAuroraDailyState[dStr] = { ...aObj };
+        } else {
+          const locTime = (loc && loc.updatedAt) || 0;
+          const incTime = (aObj && aObj.updatedAt) || 0;
+          if (incTime > locTime) {
+            mergedAuroraDailyState[dStr] = { ...aObj };
+          } else if (JSON.stringify(aObj) !== JSON.stringify(loc)) {
+            localWasRicher = true;
+          }
+        }
+      });
+    }
+
+    // 11c. PeriodGoals: 2-way merge preserving daily logs
+    const pgMap = new Map();
+    (Array.isArray(storage.data.periodGoals) ? storage.data.periodGoals : []).forEach(pg => {
+      if (pg && pg.id) pgMap.set(pg.id, { ...pg, logs: { ...(pg.logs || {}) } });
+    });
+    if (Array.isArray(incoming.periodGoals)) {
+      incoming.periodGoals.forEach(pg => {
+        if (pg && pg.id) {
+          const loc = pgMap.get(pg.id);
+          if (!loc) {
+            pgMap.set(pg.id, { ...pg, logs: { ...(pg.logs || {}) } });
+          } else {
+            const locTime = loc.updatedAt || 0;
+            const incTime = pg.updatedAt || 0;
+            const mergedLogs = incTime >= locTime
+              ? { ...(loc.logs || {}), ...(pg.logs || {}) }
+              : { ...(pg.logs || {}), ...(loc.logs || {}) };
+            pgMap.set(pg.id, {
+              ...(incTime >= locTime ? loc : pg),
+              ...(incTime >= locTime ? pg : loc),
+              logs: mergedLogs
+            });
+          }
+        }
+      });
+    }
+    const mergedPeriodGoals = Array.from(pgMap.values());
+
     // Apply consolidated data
     storage.data = {
       ...storage.data,
@@ -498,6 +545,8 @@ class SyncManager {
       points: mergedPoints,
       habits: mergedHabits,
       habitsState: mergedHabitsState,
+      auroraDailyState: mergedAuroraDailyState,
+      periodGoals: mergedPeriodGoals.length > 0 ? mergedPeriodGoals : storage.getPeriodGoals(),
       choicesState: mergedChoices,
       healthState: mergedHealth,
       dayGoals: mergedDayGoals,

@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>margo. — Today (Full Life OS Edition)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500;1,6..72,600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-app: #F5F3FA;
+      --bg-card: #FFFFFF;
+      --bg-surface: #F8FAFC;
+      --bg-surface-hover: #EEF2F6;
+      --border-subtle: rgba(124, 58, 237, 0.08);
+      --border-card: rgba(124, 58, 237, 0.12);
+      
+      --text-primary: #1E1B4B;
+      --text-secondary: #475569;
+      --text-muted: #64748B;
+      
+      /* Cool-Leaning MARGO Palette (Strictly ZERO Yellow / Amber) */
+      --margo-m: #4F46E5;       /* Arctic Indigo (Move) */
+      --margo-stand: #A78BFA;   /* Soft Wisteria (Stand) */
+      --margo-a: #E11D48;       /* Cool Rose Orchid (Aesthetic) */
+      --margo-r: #7C3AED;       /* Royal Violet (Reflect) */
+      --margo-g: #06B6D4;       /* Borealis Cyan (Grow) */
+      --margo-o: #1E293B;       /* Midnight Polar Slate (Organize) */
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      
+      --shadow-card: 0 10px 25px -5px rgba(124, 58, 237, 0.06), 0 2px 6px rgba(15, 23, 42, 0.03);
+      --shadow-hover: 0 16px 32px -8px rgba(124, 58, 237, 0.10), 0 4px 10px rgba(15, 23, 42, 0.04);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-app);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(167, 139, 250, 0.12), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(6, 182, 212, 0.08), transparent 45%);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 16px 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-frame {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: relative;
+    }
+
+    /* Header */
+    header {
+      position: relative;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 4px 8px;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Signature Gradient Wordmark */
+    .wordmark {
+      font-family: var(--font-serif);
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-style: italic;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      display: inline-flex;
+      align-items: baseline;
+    }
+    .wordmark-text {
+      background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 42%, #06B6D4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .wordmark-dot {
+      color: #06B6D4;
+      display: inline-block;
+      margin-left: -1px;
+      font-style: italic;
+    }
+
+    .header-date {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Tactile Capsule Horizon Bar */
+    .horizon-capsule-card {
+      position: relative;
+      z-index: 110;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+    .horizon-capsule-card:hover {
+      box-shadow: var(--shadow-hover);
+      transform: translateY(-1px);
+    }
+
+    .capsule-track-wrap {
+      position: relative;
+      width: 90px;
+      height: 16px;
+      background: rgba(124, 58, 237, 0.08);
+      border-radius: 9999px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .capsule-fill-move {
+      height: 100%;
+      background: linear-gradient(90deg, #4F46E5, #6366F1);
+      width: 50%;
+      transition: width 0.3s ease;
+    }
+
+    .capsule-fill-stand {
+      height: 100%;
+      background: linear-gradient(90deg, #A78BFA, #C084FC);
+      width: 50%;
+      transition: width 0.3s ease;
+    }
+
+    .capsule-pacer-pill {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #06B6D4;
+      box-shadow: 0 0 8px #06B6D4;
+      border-radius: 2px;
+      transform: translateX(-50%);
+    }
+
+    .capsule-stats {
+      display: flex;
+      flex-direction: column;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+      line-height: 1.25;
+    }
+    .capsule-stats strong { color: var(--text-primary); font-weight: 700; }
+
+    /* HUD Popover - Top-Level Z-Index */
+    .hud-popover {
+      display: none;
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: #FFFFFF;
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 14px 16px;
+      box-shadow: 0 20px 40px -8px rgba(30, 27, 75, 0.22), 0 4px 12px rgba(15, 23, 42, 0.08);
+      z-index: 1000;
+      width: 240px;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .hud-popover.open { display: flex; }
+
+    .hud-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(124, 58, 237, 0.08);
+      padding-bottom: 6px;
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hud-stepper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      padding: 3px 8px;
+      border-radius: 8px;
+    }
+
+    .hud-stepper button {
+      background: transparent;
+      border: none;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 4px;
+    }
+
+    .hud-val {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      min-width: 75px;
+      text-align: center;
+    }
+
+    /* Editorial Card Base */
+    .editorial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Sprout Mascot Card */
+    .sprout-card {
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding: 24px 20px 20px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FAF9FD 100%);
+      z-index: 1;
+    }
+
+    .tier-pill {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--margo-r);
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.16);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .sprout-stage {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .sprout-character {
+      width: 84px;
+      height: 94px;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .sprout-stage:hover .sprout-character {
+      transform: scale(1.08) rotate(-4deg);
+    }
+
+    .speech-bubble {
+      position: relative;
+      background: var(--bg-card);
+      border: 1.5px solid var(--text-primary);
+      border-radius: 16px;
+      padding: 10px 16px;
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      max-width: 250px;
+      text-align: left;
+      line-height: 1.35;
+      box-shadow: 2px 2px 0px var(--text-primary);
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -9px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: 7px solid transparent;
+      border-bottom: 7px solid transparent;
+      border-right: 9px solid var(--text-primary);
+    }
+
+    /* How Healthy Do I Feel - Vitality Card */
+    .vitality-card {
+      padding: 18px 20px;
+      gap: 10px;
+    }
+
+    .vitality-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .vitality-title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    .vitality-status-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--margo-g);
+      background: rgba(6, 182, 212, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .vitality-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+
+    .vitality-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .vitality-btn:hover {
+      background: var(--bg-surface-hover);
+      border-color: rgba(124, 58, 237, 0.2);
+      transform: translateY(-1px);
+    }
+    .vitality-btn.active {
+      background: var(--text-primary);
+      border-color: var(--text-primary);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(30, 27, 75, 0.18);
+    }
+    .vitality-btn.active .v-name { color: #FFFFFF; }
+    .vitality-btn.active .v-num { color: var(--margo-g); }
+
+    .v-emoji { font-size: 1.15rem; line-height: 1; }
+    .v-num { font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700; color: var(--text-muted); }
+    .v-name { font-size: 0.70rem; font-weight: 600; color: var(--text-secondary); text-align: center; }
+
+    /* Audacity Meter Pill Card */
+    .audacity-card {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+    }
+
+    .audacity-label {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .audacity-sub {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .audacity-capsule {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9999px;
+      padding: 3px;
+      gap: 6px;
+    }
+
+    .audacity-stepper-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+      transition: all 0.15s ease;
+    }
+    .audacity-stepper-btn:hover {
+      background: var(--bg-surface-hover);
+      transform: scale(1.05);
+    }
+
+    .audacity-score {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--margo-r);
+      padding: 0 8px;
+    }
+
+    /* Habits Card */
+    .habits-card {
+      padding: 20px;
+      gap: 12px;
+    }
+
+    .card-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .card-heading {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    .add-habit-btn {
+      font-family: var(--font-sans);
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--margo-r);
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.16);
+      padding: 3px 10px;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .add-habit-btn:hover {
+      background: rgba(124, 58, 237, 0.14);
+      transform: translateY(-0.5px);
+    }
+
+    /* Custom Habit Adder Drawer */
+    .custom-habit-drawer {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-card);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 4px;
+    }
+    .custom-habit-drawer.open { display: flex; }
+
+    .drawer-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .drawer-input {
+      flex: 1;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-card);
+      background: #FFFFFF;
+      font-family: var(--font-sans);
+      font-size: 0.84rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+    .drawer-input:focus { border-color: var(--margo-m); }
+
+    .drawer-scope-select {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-card);
+      background: #FFFFFF;
+      font-family: var(--font-sans);
+      font-size: 0.76rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .drawer-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .drawer-submit-btn {
+      background: var(--text-primary);
+      color: #FFFFFF;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .habit-slats {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .habit-slat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      border: 1px solid rgba(124, 58, 237, 0.06);
+      border-radius: 12px;
+      padding: 11px 14px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+    .habit-slat:hover {
+      background: var(--bg-surface-hover);
+      border-color: rgba(124, 58, 237, 0.16);
+      transform: translateY(-0.5px);
+    }
+
+    .slat-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .slat-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(15, 23, 42, 0.25);
+      background: var(--bg-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+    .slat-check svg {
+      display: none;
+      width: 11px;
+      height: 11px;
+      stroke: #FFFFFF;
+      stroke-width: 2.5;
+    }
+
+    .category-badge {
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .badge-aesthetic { background: rgba(225, 29, 72, 0.1); color: var(--margo-a); }
+    .badge-move { background: rgba(79, 70, 229, 0.1); color: var(--margo-m); }
+    .badge-grow { background: rgba(6, 182, 212, 0.1); color: var(--margo-g); }
+    .badge-reflect { background: rgba(124, 58, 237, 0.1); color: var(--margo-r); }
+    .badge-organize { background: rgba(30, 41, 59, 0.1); color: var(--margo-o); }
+    .badge-temp { background: rgba(6, 182, 212, 0.14); color: var(--margo-g); border: 1px dashed var(--margo-g); }
+
+    .slat-text {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .slat-streak {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .habit-slat.completed {
+      opacity: 0.55;
+      background: rgba(241, 245, 249, 0.6);
+    }
+    .habit-slat.completed .slat-check {
+      background: var(--margo-r);
+      border-color: var(--margo-r);
+    }
+    .habit-slat.completed .slat-check svg { display: block; }
+    .habit-slat.completed .slat-text { text-decoration: line-through; }
+
+    /* Abbey Yung Real Protocol Card */
+    .haircare-card {
+      padding: 18px 20px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #FFF8FA 100%);
+      border: 1px solid rgba(225, 29, 72, 0.18);
+    }
+
+    .hair-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .hair-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hair-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--margo-a);
+      background: rgba(225, 29, 72, 0.12);
+      padding: 2px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+    }
+
+    .hair-routine-title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    .hair-steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(225, 29, 72, 0.1);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+    }
+
+    .hair-step-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      line-height: 1.4;
+    }
+    .hair-step-item strong { color: var(--text-primary); }
+
+    .hair-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .hair-btn {
+      padding: 5px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-card);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .hair-btn:hover { background: var(--bg-surface-hover); }
+    .hair-btn.active {
+      background: var(--margo-a);
+      color: #FFFFFF;
+      border-color: var(--margo-a);
+      box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
+    }
+
+    /* Sanctuary Reflection Card */
+    .journal-card {
+      padding: 20px;
+      gap: 8px;
+    }
+
+    .journal-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-style: italic;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+    .journal-textarea::placeholder {
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    footer {
+      text-align: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      padding: 12px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-frame">
+    <!-- Header with Wordmark & Sun-Path Horizon Bar -->
+    <header>
+      <div class="header-left">
+        <div class="wordmark"><span class="wordmark-text">margo</span><span class="wordmark-dot">.</span></div>
+        <div class="header-date">Wednesday, October 14</div>
+      </div>
+
+      <!-- Tactile Capsule Horizon Bar -->
+      <div class="horizon-capsule-card" onclick="toggleHud(event)">
+        <div class="capsule-track-wrap">
+          <div class="capsule-fill-move" id="cap-move" style="width: 50%;"></div>
+          <div class="capsule-fill-stand" id="cap-stand" style="width: 50%;"></div>
+          <div class="capsule-pacer-pill" id="cap-pacer-tick" style="left: 65%;" title="Target Pace at this hour: 65%"></div>
+        </div>
+        <div class="capsule-stats">
+          <strong id="cap-summary">100% Closed</strong>
+          <span style="color: var(--margo-g);" id="cap-pacer-label">+10% Ahead</span>
+        </div>
+
+        <!-- Micro-HUD Popover with High Z-Index -->
+        <div class="hud-popover" id="hud-popover" onclick="event.stopPropagation()">
+          <div class="hud-header">
+            <span>Log Activity Stats</span>
+            <span style="cursor: pointer; color: var(--text-muted);" onclick="toggleHud(event)">✕</span>
+          </div>
+          <div class="hud-row">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--margo-m);">Move</span>
+            <div class="hud-stepper">
+              <button type="button" onclick="stepMove(-50)">−</button>
+              <span class="hud-val" id="hud-move-val">300 / 300 cal</span>
+              <button type="button" onclick="stepMove(50)">+</button>
+            </div>
+          </div>
+          <div class="hud-row">
+            <span style="font-size: 0.8rem; font-weight: 600; color: var(--margo-stand);">Stand</span>
+            <div class="hud-stepper">
+              <button type="button" onclick="stepStand(-1)">−</button>
+              <span class="hud-val" id="hud-stand-val">12 / 12 hrs</span>
+              <button type="button" onclick="stepStand(1)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sprout Mascot Card with Real Sassy Dialogue & Live Tier -->
+    <div class="editorial-card sprout-card">
+      <div class="tier-pill" id="live-tier-badge" onclick="pokeSprout()" title="Your active tier from margoData.js">⚡ Functional Menace (185 XP)</div>
+      <div class="sprout-stage" onclick="pokeSprout()">
+        <!-- Vector Sprout with Cute Freckles & Leaf -->
+        <svg class="sprout-character" id="sprout-svg" viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M50 20 Q42 8 36 12 Q32 18 46 22 Z" fill="#06B6D4" stroke="#1E1B4B" stroke-width="1.8"/>
+          <path d="M50 20 Q58 6 66 10 Q70 16 54 22 Z" fill="#4F46E5" stroke="#1E1B4B" stroke-width="1.8"/>
+          <ellipse cx="50" cy="62" rx="36" ry="42" fill="#E8C394" stroke="#1E1B4B" stroke-width="2.5"/>
+          <circle cx="36" cy="52" r="1.5" fill="#C49B68"/>
+          <circle cx="42" cy="72" r="1.2" fill="#C49B68"/>
+          <circle cx="64" cy="56" r="1.5" fill="#C49B68"/>
+          <path d="M34 50 L42 53" stroke="#1E1B4B" stroke-width="2" stroke-linecap="round"/>
+          <path d="M66 50 L58 53" stroke="#1E1B4B" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="38" cy="56" r="3" fill="#1E1B4B"/>
+          <circle cx="62" cy="56" r="3" fill="#1E1B4B"/>
+          <path d="M44 68 Q50 74 56 68" stroke="#1E1B4B" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M22 66 Q12 56 16 48" stroke="#1E1B4B" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M78 66 Q88 56 84 48" stroke="#1E1B4B" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        </svg>
+
+        <div class="speech-bubble" id="sprout-speech">
+          “Operating at dangerously high momentum!”
+        </div>
+      </div>
+    </div>
+
+    <!-- How Healthy Do I Feel — Vitality Check-in Card -->
+    <div class="editorial-card vitality-card">
+      <div class="vitality-header-row">
+        <span class="vitality-title">How healthy do I feel today?</span>
+        <span class="vitality-status-tag" id="vitality-status-text">Solid · Level 4</span>
+      </div>
+      <div class="vitality-selector-grid">
+        <div class="vitality-btn" onclick="setVitalityLevel(1)" id="v-btn-1">
+          <span class="v-emoji">🧟</span>
+          <span class="v-num">1</span>
+          <span class="v-name">Zombie</span>
+        </div>
+        <div class="vitality-btn" onclick="setVitalityLevel(2)" id="v-btn-2">
+          <span class="v-emoji">🪫</span>
+          <span class="v-num">2</span>
+          <span class="v-name">Dragging</span>
+        </div>
+        <div class="vitality-btn" onclick="setVitalityLevel(3)" id="v-btn-3">
+          <span class="v-emoji">☕</span>
+          <span class="v-num">3</span>
+          <span class="v-name">Surviving</span>
+        </div>
+        <div class="vitality-btn active" onclick="setVitalityLevel(4)" id="v-btn-4">
+          <span class="v-emoji">⚡</span>
+          <span class="v-num">4</span>
+          <span class="v-name">Solid</span>
+        </div>
+        <div class="vitality-btn" onclick="setVitalityLevel(5)" id="v-btn-5">
+          <span class="v-emoji">🦄</span>
+          <span class="v-num">5</span>
+          <span class="v-name">Thriving</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audacity Meter Pill Card with Live Choices Integration -->
+    <div class="editorial-card audacity-card">
+      <div>
+        <div class="audacity-label">Audacity Meter</div>
+        <div class="audacity-sub">Net momentum from high-agency choices</div>
+      </div>
+      <div class="audacity-capsule">
+        <button type="button" class="audacity-stepper-btn" onclick="stepAudacity(-1)" title="Log moment of drift (−1)">−</button>
+        <span class="audacity-score" id="audacity-val">+4 ⚡</span>
+        <button type="button" class="audacity-stepper-btn" onclick="stepAudacity(1)" title="Log intentional high-agency choice (+1)">+</button>
+      </div>
+    </div>
+
+    <!-- Habits Card with Custom Habit Adder -->
+    <div class="editorial-card habits-card">
+      <div class="card-heading-row">
+        <div class="card-heading">Active Habit Stack</div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted);" id="habits-progress-meta">4 of 7 completed</span>
+          <button type="button" class="add-habit-btn" onclick="toggleCustomHabitDrawer()">+ Custom Habit</button>
+        </div>
+      </div>
+
+      <!-- Expandable Custom Habit Adder Drawer -->
+      <div class="custom-habit-drawer" id="custom-habit-drawer">
+        <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-primary);">Add a Custom Focus Habit</div>
+        <div class="drawer-row">
+          <input type="text" class="drawer-input" id="new-habit-text" placeholder="e.g. 15m stretch, No meetings before 10 AM, Drink electrolyte packet...">
+          <select class="drawer-scope-select" id="new-habit-scope">
+            <option value="today">Today only (Day Goal)</option>
+            <option value="7d">7-Day Sprint</option>
+            <option value="14d">14-Day Challenge</option>
+            <option value="permanent">Permanent Stack</option>
+          </select>
+        </div>
+        <div class="drawer-actions">
+          <button type="button" class="hair-btn" onclick="toggleCustomHabitDrawer()">Cancel</button>
+          <button type="button" class="drawer-submit-btn" onclick="saveCustomHabit()">Save Habit</button>
+        </div>
+      </div>
+      
+      <div class="habit-slats" id="habit-slats-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Real Abbey Yung Haircare Protocol Card (Wednesday: Bond Repair Day) -->
+    <div class="editorial-card haircare-card">
+      <div class="hair-header">
+        <div class="hair-title-group">
+          <span class="hair-badge">Aesthetic</span>
+          <span class="hair-routine-title">Wednesday — Bond Repair Wash Day</span>
+        </div>
+        <span style="font-size: 0.74rem; color: var(--margo-a); font-weight: 600;" id="hair-status-label">Protocol Active</span>
+      </div>
+
+      <div class="hair-steps-list">
+        <div class="hair-step-item">
+          <span>1.</span>
+          <div><strong>Pre-Shower Protection:</strong> Dampen lengths/ends; apply <strong>Olaplex No. 3 Hair Perfector</strong> (15–20 mins; skip oil).</div>
+        </div>
+        <div class="hair-step-item">
+          <span>2.</span>
+          <div><strong>Scalp Wash:</strong> Rinse No. 3 thoroughly. Cleanse scalp with <strong>Olaplex No. 4 Bond Shampoo</strong> for lightweight volume.</div>
+        </div>
+        <div class="hair-step-item">
+          <span>3.</span>
+          <div><strong>Bond Conditioning:</strong> Apply <strong>Olaplex No. 5 Conditioner</strong> strictly to bottom 2 inches for 2 mins; rinse clean.</div>
+        </div>
+        <div class="hair-step-item">
+          <span>4.</span>
+          <div><strong>Post-Shower Finish:</strong> Spray <strong>UNITE 7SECONDS Detangler</strong> on damp ends; blow-dry roots on low/medium.</div>
+        </div>
+      </div>
+
+      <div class="hair-actions">
+        <button type="button" class="hair-btn" id="btn-hair-done" onclick="setRealHair('done')">✓ Complete Routine (+15 XP)</button>
+        <button type="button" class="hair-btn" id="btn-hair-skip" onclick="setRealHair('skip')">Rest / Skip Day</button>
+      </div>
+    </div>
+
+    <!-- Sanctuary Journal Card with Real Persistence -->
+    <div class="editorial-card journal-card">
+      <div class="card-heading">Sanctuary Journal</div>
+      <textarea class="journal-textarea" id="journal-input" rows="2" placeholder="What gave you energy today? Reflect in peace..." oninput="saveJournal(this.value)"></textarea>
+    </div>
+
+    <!-- Footer Affirmation from margo SASSY_AFFIRMATIONS -->
+    <footer id="footer-affirmation">
+      “Drink your water or your organs will file a formal grievance with HR.”
+    </footer>
+  </div>
+
+  <script>
+    const HEALTH_DEFINITIONS = {
+      1: { name: "Zombie", text: "Zombie · Official goblin mode. Drink water, crawl under blankets, apologize to nobody." },
+      2: { name: "Dragging", text: "Dragging · Battery at 12%. Postpone unnecessary drama and conserve power." },
+      3: { name: "Surviving", text: "Surviving · Held together by coffee and sheer willpower, but upright." },
+      4: { name: "Solid", text: "Solid · Functional and thriving. Let's not ruin this with questionable decisions." },
+      5: { name: "Thriving", text: "Thriving · Peak vitality, invincible. Try not to intimidate mere mortals." }
+    };
+
+    // Real Habits Seed
+    let activeHabitsList = [
+      { id: 'h-move', name: 'Move Ring (300 cal)', bucket: 'M', streak: 7, completed: true },
+      { id: 'h-stand', name: 'Stand Ring (12 hrs)', bucket: 'M', streak: 7, completed: true },
+      { id: 'h-skincare', name: 'Skincare AM & PM', bucket: 'A', streak: 14, completed: true },
+      { id: 'h-steps', name: '10,000 Daily Steps', bucket: 'M', streak: 5, completed: false },
+      { id: 'h-water', name: 'Hydrate 2L Water', bucket: 'G', streak: 9, completed: true },
+      { id: 'h-metime', name: 'Dedicated Me Time', bucket: 'R', streak: 4, completed: false },
+      { id: 'h-outfits', name: 'Curate Weekly Outfits', bucket: 'A', streak: 2, completed: false }
+    ];
+
+    let currentMove = 300;
+    let currentStand = 12;
+    let currentAudacity = 4;
+    let currentPoints = 185;
+    let currentHealth = 4;
+
+    const realAffirmations = [
+      "Operating at dangerously high momentum!",
+      "The bar was in hell, but look at you walking over it like royalty.",
+      "One good choice before 10 AM prevents an existential crisis at 3 PM.",
+      "You survived 100% of your hardest days so far. Today stands no chance.",
+      "Done is better than perfect. Perfect is a myth made by people who never ship."
+    ];
+    let quoteIdx = 0;
+
+    function loadRealMargoData() {
+      try {
+        const raw = localStorage.getItem('BOOK_OF_LIFE_DATA_V2');
+        if (raw) {
+          const data = JSON.parse(raw);
+          const todayStr = new Date().toISOString().split('T')[0];
+          
+          if (data.points) currentPoints = Number(data.points);
+          
+          if (data.choicesState && data.choicesState[todayStr]) {
+            const c = data.choicesState[todayStr];
+            currentAudacity = (c.good || 0) - (c.not || 0);
+          }
+
+          if (data.healthState && data.healthState[todayStr]) {
+            const h = data.healthState[todayStr];
+            currentHealth = (typeof h === 'object') ? (h.level || 4) : Number(h || 4);
+          }
+
+          if (data.sanctuaryJournals && data.sanctuaryJournals[todayStr]) {
+            const j = data.sanctuaryJournals[todayStr];
+            document.getElementById('journal-input').value = j.text || '';
+          }
+
+          // Custom Day Goals (Today only habits)
+          if (data.dayGoals && Array.isArray(data.dayGoals[todayStr])) {
+            data.dayGoals[todayStr].forEach(g => {
+              if (g && g.text && !activeHabitsList.some(h => h.id === g.id)) {
+                activeHabitsList.push({
+                  id: g.id,
+                  name: g.text,
+                  bucket: 'O',
+                  streak: 0,
+                  completed: !!g.completed,
+                  isCustom: true,
+                  scopeTag: 'Today'
+                });
+              }
+            });
+          }
+
+          // Real habits from localStorage
+          if (Array.isArray(data.habits) && data.habits.length > 0) {
+            const dayState = (data.habitsState && data.habitsState[todayStr]) || {};
+            const streaks = data.habitStreaks || {};
+            
+            activeHabitsList = data.habits.map(h => ({
+              id: h.id,
+              name: h.name,
+              bucket: h.bucket || 'M',
+              streak: streaks[h.id] || 0,
+              completed: !!dayState[h.id]
+            }));
+          }
+        }
+      } catch (e) {
+        console.warn('LocalStorage load:', e);
+      }
+
+      setVitalityLevel(currentHealth, false);
+      renderHabits();
+    }
+
+    function renderHabits() {
+      const container = document.getElementById('habit-slats-container');
+      container.innerHTML = '';
+      
+      let completedCount = 0;
+
+      activeHabitsList.forEach(h => {
+        if (h.completed) completedCount++;
+        const badgeClass = h.isCustom ? 'badge-temp' : getBadgeClass(h.bucket);
+        const bucketName = h.scopeTag ? h.scopeTag : getBucketName(h.bucket);
+
+        const slat = document.createElement('div');
+        slat.className = `habit-slat ${h.completed ? 'completed' : ''}`;
+        slat.onclick = () => toggleHabitSlat(slat, h.id);
+        
+        slat.innerHTML = `
+          <div class="slat-left">
+            <div class="slat-check">
+              <svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <span class="category-badge ${badgeClass}">${bucketName}</span>
+            <span class="slat-text">${h.name}</span>
+          </div>
+          <span class="slat-streak">${h.streak > 0 ? h.streak + 'd' : '—'}</span>
+        `;
+        container.appendChild(slat);
+      });
+
+      document.getElementById('habits-progress-meta').textContent = `${completedCount} of ${activeHabitsList.length} completed`;
+      document.getElementById('audacity-val').textContent = `${currentAudacity > 0 ? '+' : ''}${currentAudacity} ⚡`;
+      document.getElementById('live-tier-badge').textContent = `⚡ Functional Menace (${currentPoints} XP)`;
+      updateCapsule();
+    }
+
+    function getBadgeClass(bucket) {
+      switch(bucket) {
+        case 'A': return 'badge-aesthetic';
+        case 'M': return 'badge-move';
+        case 'G': return 'badge-grow';
+        case 'R': return 'badge-reflect';
+        case 'O': return 'badge-organize';
+        default: return 'badge-move';
+      }
+    }
+
+    function getBucketName(bucket) {
+      switch(bucket) {
+        case 'A': return 'Aesthetic';
+        case 'M': return 'Move';
+        case 'G': return 'Grow';
+        case 'R': return 'Reflect';
+        case 'O': return 'Organize';
+        default: return 'Move';
+      }
+    }
+
+    function toggleHabitSlat(slat, habitId) {
+      slat.classList.toggle('completed');
+      const isDone = slat.classList.contains('completed');
+      
+      const target = activeHabitsList.find(h => h.id === habitId);
+      if (target) target.completed = isDone;
+
+      if (isDone) {
+        confetti({
+          particleCount: 16,
+          spread: 45,
+          origin: { y: 0.65 },
+          colors: ['#06B6D4', '#4F46E5', '#A78BFA', '#E11D48']
+        });
+      }
+
+      // Sync to localStorage
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const raw = localStorage.getItem('BOOK_OF_LIFE_DATA_V2');
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (!d.habitsState) d.habitsState = {};
+          if (!d.habitsState[todayStr]) d.habitsState[todayStr] = {};
+          d.habitsState[todayStr][habitId] = isDone;
+          localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(d));
+        }
+      } catch (e) {}
+
+      const completedCount = activeHabitsList.filter(h => h.completed).length;
+      document.getElementById('habits-progress-meta').textContent = `${completedCount} of ${activeHabitsList.length} completed`;
+    }
+
+    function toggleCustomHabitDrawer() {
+      const drawer = document.getElementById('custom-habit-drawer');
+      drawer.classList.toggle('open');
+      if (drawer.classList.contains('open')) {
+        document.getElementById('new-habit-text').focus();
+      }
+    }
+
+    function saveCustomHabit() {
+      const text = document.getElementById('new-habit-text').value.trim();
+      const scope = document.getElementById('new-habit-scope').value;
+      if (!text) return;
+
+      const newId = 'custom-' + Date.now();
+      const scopeLabel = scope === 'today' ? 'Today only' : (scope === '7d' ? '7d sprint' : (scope === '14d' ? '14d challenge' : 'Stack'));
+
+      activeHabitsList.push({
+        id: newId,
+        name: text,
+        bucket: 'G',
+        streak: 0,
+        completed: false,
+        isCustom: true,
+        scopeTag: scopeLabel
+      });
+
+      // Save to localStorage dayGoals or habits
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const raw = localStorage.getItem('BOOK_OF_LIFE_DATA_V2');
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (scope === 'today') {
+            if (!d.dayGoals) d.dayGoals = {};
+            if (!d.dayGoals[todayStr]) d.dayGoals[todayStr] = [];
+            d.dayGoals[todayStr].push({ id: newId, text: text, completed: false });
+          } else {
+            if (!d.habits) d.habits = [];
+            d.habits.push({ id: newId, name: text, bucket: 'G', cadence: 'daily', createdAt: todayStr });
+          }
+          localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(d));
+        }
+      } catch (e) {}
+
+      document.getElementById('new-habit-text').value = '';
+      toggleCustomHabitDrawer();
+      renderHabits();
+    }
+
+    function setVitalityLevel(lvl, shouldPersist = true) {
+      currentHealth = lvl;
+      for (let i = 1; i <= 5; i++) {
+        const btn = document.getElementById(`v-btn-${i}`);
+        if (btn) btn.classList.toggle('active', i === lvl);
+      }
+      
+      const meta = HEALTH_DEFINITIONS[lvl] || HEALTH_DEFINITIONS[4];
+      document.getElementById('vitality-status-text').textContent = `${meta.name} · Level ${lvl}`;
+
+      if (shouldPersist) {
+        document.getElementById('sprout-speech').textContent = `“${meta.text.split('·')[1].trim()}”`;
+        try {
+          const todayStr = new Date().toISOString().split('T')[0];
+          const raw = localStorage.getItem('BOOK_OF_LIFE_DATA_V2');
+          if (raw) {
+            const d = JSON.parse(raw);
+            if (!d.healthState) d.healthState = {};
+            d.healthState[todayStr] = { level: lvl, updatedAt: Date.now() };
+            localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(d));
+          }
+        } catch (e) {}
+      }
+    }
+
+    function toggleHud(e) {
+      if (e) e.stopPropagation();
+      document.getElementById('hud-popover').classList.toggle('open');
+    }
+
+    document.addEventListener('click', () => {
+      const hud = document.getElementById('hud-popover');
+      if (hud && hud.classList.contains('open')) hud.classList.remove('open');
+    });
+
+    function stepMove(delta) {
+      currentMove = Math.max(0, Math.min(300, currentMove + delta));
+      document.getElementById('hud-move-val').textContent = `${currentMove} / 300 cal`;
+      updateCapsule();
+    }
+
+    function stepStand(delta) {
+      currentStand = Math.max(0, Math.min(12, currentStand + delta));
+      document.getElementById('hud-stand-val').textContent = `${currentStand} / 12 hrs`;
+      updateCapsule();
+    }
+
+    function updateCapsule() {
+      const movePct = Math.round((currentMove / 300) * 100);
+      const standPct = Math.round((currentStand / 12) * 100);
+      document.getElementById('cap-move').style.width = `${Math.min(100, movePct)}%`;
+      document.getElementById('cap-stand').style.width = `${Math.min(100, standPct)}%`;
+      const avg = Math.round((movePct + standPct) / 2);
+      document.getElementById('cap-summary').textContent = `${avg}% Closed`;
+    }
+
+    function setRealHair(state) {
+      document.getElementById('btn-hair-done').classList.toggle('active', state === 'done');
+      document.getElementById('btn-hair-skip').classList.toggle('active', state === 'skip');
+      document.getElementById('hair-status-label').textContent = state === 'done' ? '✓ Completed Today' : 'Skipped / Rest Day';
+      if (state === 'done') {
+        confetti({
+          particleCount: 18,
+          spread: 45,
+          origin: { y: 0.75 },
+          colors: ['#E11D48', '#A78BFA', '#06B6D4']
+        });
+      }
+    }
+
+    function stepAudacity(delta) {
+      currentAudacity += delta;
+      document.getElementById('audacity-val').textContent = `${currentAudacity > 0 ? '+' : ''}${currentAudacity} ⚡`;
+      if (delta > 0) {
+        confetti({
+          particleCount: 14,
+          spread: 40,
+          origin: { y: 0.7 },
+          colors: ['#06B6D4', '#4F46E5', '#A78BFA']
+        });
+        pokeSprout();
+      }
+    }
+
+    function pokeSprout() {
+      quoteIdx = (quoteIdx + 1) % realAffirmations.length;
+      document.getElementById('sprout-speech').textContent = `“${realAffirmations[quoteIdx]}”`;
+      const svg = document.getElementById('sprout-svg');
+      svg.style.transform = 'scale(1.15) rotate(6deg)';
+      setTimeout(() => svg.style.transform = 'scale(1) rotate(0deg)', 200);
+    }
+
+    function saveJournal(val) {
+      try {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const raw = localStorage.getItem('BOOK_OF_LIFE_DATA_V2');
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (!d.sanctuaryJournals) d.sanctuaryJournals = {};
+          d.sanctuaryJournals[todayStr] = { date: todayStr, text: val, updatedAt: Date.now() };
+          localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(d));
+        }
+      } catch (e) {}
+    }
+
+    document.addEventListener('DOMContentLoaded', loadRealMargoData);
+  </script>
+</body>
+</html>

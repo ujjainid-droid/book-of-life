@@ -3,165 +3,202 @@
    ========================================================================== */
 
 :root {
-  /* Modern Ethereal Lavender, Polar Frost & Borealis Slate */
-  --bg-app: #F8FAFC;
-  --bg-book: #FBFCFE;
-  --bg-page: #FFFFFF;
-  --bg-surface: #F1F5F9;
-  --bg-surface-hover: #E2E8F0;
-  --bg-card: #FFFFFF;
+  /* Margo Aurora Palette Tokens */
+  --bg: #0F1020;
+  --card: #181A33;
+  --card2: #1C1D3A;
+  --line: #2E3060;
+  --chip: #3A3C6A;
+  --text: #EDEEFF;
+  --muted: #9496BC;
+  --track: #2A2C54;
+  --accent: #5CE1F0;
+  --accent-ink: #06202A;
+  --move: #FF8FD0;
+  --move-bg: #4A1840;
+  --move-ink: #FFE0F3;
+  --move-dark: #2A0A1F;
+  --stand: #7DB8FF;
+  --stand-bg: #0F2F5E;
+  --stand-dark: #06203F;
+  --good: #2EBF91;
+  --good-bg: #12372F;
+  --good-text: #8FE9CB;
+  --bad: #FF6B5B;
+  --bad-bg: #3F1A1A;
+  --bad-text: #FFB3A8;
+  --violet: #B5ABFF;
+  --violet-bg: #2A2563;
+  --rose: #FF8FD0;
+  --rose-bg: #4A1840;
+  --blue: #7DB8FF;
+  --blue-bg: #0F2F5E;
+  --green: #62D6B3;
+  --green-bg: #0F3B33;
+
+  /* Mapped to Global Variables for Sub-pages (Aurora Dark Default) */
+  --bg-app: #0F1020;
+  --bg-book: #181A33;
+  --bg-page: #181A33;
+  --bg-surface: #1C1D3A;
+  --bg-surface-hover: #2A2C54;
+  --bg-card: #181A33;
   
-  --border-light: rgba(124, 58, 237, 0.14);
-  --border-subtle: rgba(124, 58, 237, 0.08);
-  --border-strong: rgba(124, 58, 237, 0.28);
+  --border-light: #2E3060;
+  --border-subtle: rgba(181, 171, 255, 0.12);
+  --border-strong: rgba(92, 225, 240, 0.35);
   
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  --text-inverse: #FFFFFF;
+  --text-primary: #EDEEFF;
+  --text-secondary: #C8CAEA;
+  --text-muted: #9496BC;
+  --text-inverse: #0F1020;
 
-  /* Signature Royal Violet & Wisteria */
-  --primary: #7C3AED;
-  --primary-hover: #6D28D9;
-  --primary-light: #F5F3FF;
-  --primary-border: rgba(124, 58, 237, 0.26);
-  --primary-glow: rgba(124, 58, 237, 0.24);
-
-  /* Borealis Cyan & Glacial Complements */
-  --cyan-glacial: #06B6D4;
-  --cyan-light: #ECFEFF;
-  --cyan-border: #A5F3FC;
-  --cyan-dark: #0891B2;
-  --cyan-glow: rgba(6, 182, 212, 0.28);
-
-  --arctic-indigo: #4F46E5;
-  --arctic-indigo-light: #EEF2FF;
-  --arctic-indigo-border: #C7D2FE;
-  --arctic-indigo-dark: #3730A3;
-
-  /* Cool-Leaning MARGO 5-Bucket Palette (Strictly Zero Yellow/Amber) */
-  /* M — Move: Arctic Indigo / Royal Cobalt */
-  --margo-m: #4F46E5;
-  --margo-m-light: #EEF2FF;
-  --margo-m-border: #C7D2FE;
-  --margo-m-dark: #3730A3;
-
-  /* A — Aesthetic: Cool Rose Orchid / Berry */
-  --margo-a: #E11D48;
-  --margo-a-light: #FFF1F2;
-  --margo-a-border: #FECDD3;
-  --margo-a-dark: #9F1239;
-
-  /* R — Reflect: Soft Wisteria / Lilac Ice */
-  --margo-r: #A78BFA;
-  --margo-r-light: #F5F3FF;
-  --margo-r-border: #DDD6FE;
-  --margo-r-dark: #1E1B4B;
-
-  /* G — Grow: Glacial Ice Cyan / Sea Glass */
-  --margo-g: #06B6D4;
-  --margo-g-light: #ECFEFF;
-  --margo-g-border: #A5F3FC;
-  --margo-g-dark: #0891B2;
-
-  /* O — Organize: Midnight Polar Slate */
-  --margo-o: #1E293B;
-  --margo-o-light: #F1F5F9;
-  --margo-o-border: #CBD5E1;
-  --margo-o-dark: #0F172A;
-
-  /* Neutrals & Functional (Zero yellow/amber for status) */
-  --accent-gold: #06B6D4;
-  --success: #10B981;
-  --warning: #6366F1;
-  --danger: #EF4444;
-  --info: #0284C7;
-
-  /* Pure Modern Sans Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* Geometry & Shadows */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-xl: 22px;
-  --radius-full: 9999px;
-
-  --shadow-subtle: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --shadow-card: 0 4px 20px -2px rgba(124, 58, 237, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
-  --shadow-book: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.04);
-  --shadow-modal: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
-  
-  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-page: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Dark Mode - Deep Polar Slate & Luminous Glacial Ice */
-[data-theme="dark"] {
-  --bg-app: #0B0F19;
-  --bg-book: #101626;
-  --bg-page: #131B2E;
-  --bg-surface: #1B243B;
-  --bg-surface-hover: #24304E;
-  --bg-card: #151D33;
-  
-  --border-light: rgba(192, 132, 252, 0.16);
-  --border-subtle: rgba(192, 132, 252, 0.08);
-  --border-strong: rgba(56, 189, 248, 0.3);
-  
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-inverse: #0B0F19;
-
-  /* Neon Violet & Luminous Lilac */
-  --primary: #C084FC;
+  /* Signature Royal Violet & Aurora Cyan */
+  --primary: #B5ABFF;
   --primary-hover: #D8B4FE;
-  --primary-light: rgba(192, 132, 252, 0.16);
-  --primary-border: rgba(192, 132, 252, 0.35);
-  --primary-glow: rgba(192, 132, 252, 0.35);
+  --primary-light: rgba(181, 171, 255, 0.16);
+  --primary-border: rgba(181, 171, 255, 0.35);
+  --primary-glow: rgba(181, 171, 255, 0.35);
 
-  --cyan-glacial: #38BDF8;
-  --cyan-light: rgba(56, 189, 248, 0.15);
-  --cyan-border: rgba(56, 189, 248, 0.35);
+  --cyan-glacial: #5CE1F0;
+  --cyan-light: rgba(92, 225, 240, 0.15);
+  --cyan-border: rgba(92, 225, 240, 0.35);
   --cyan-dark: #7DD3FC;
-  --cyan-glow: rgba(56, 189, 248, 0.35);
+  --cyan-glow: rgba(92, 225, 240, 0.35);
 
-  --arctic-indigo: #818CF8;
-  --arctic-indigo-light: rgba(129, 140, 248, 0.15);
-  --arctic-indigo-border: rgba(129, 140, 248, 0.35);
+  --arctic-indigo: #7DB8FF;
+  --arctic-indigo-light: rgba(125, 184, 255, 0.15);
+  --arctic-indigo-border: rgba(125, 184, 255, 0.35);
   --arctic-indigo-dark: #A5B4FC;
 
-  --margo-m: #818CF8;
-  --margo-m-light: rgba(129, 140, 248, 0.15);
-  --margo-m-border: rgba(129, 140, 248, 0.35);
-  --margo-m-dark: #A5B4FC;
+  /* Cool-Leaning MARGO 5-Bucket Palette (Strictly Zero Yellow/Amber) */
+  --margo-m: #FF8FD0;
+  --margo-m-light: rgba(255, 143, 208, 0.15);
+  --margo-m-border: rgba(255, 143, 208, 0.35);
+  --margo-m-dark: #FFE0F3;
 
   --margo-a: #FB7185;
   --margo-a-light: rgba(251, 113, 133, 0.15);
   --margo-a-border: rgba(251, 113, 133, 0.35);
   --margo-a-dark: #FDA4AF;
 
-  --margo-r: #C084FC;
-  --margo-r-light: rgba(192, 132, 252, 0.15);
-  --margo-r-border: rgba(192, 132, 252, 0.35);
-  --margo-r-dark: #E9D5FF;
+  --margo-r: #B5ABFF;
+  --margo-r-light: rgba(181, 171, 255, 0.15);
+  --margo-r-border: rgba(181, 171, 255, 0.35);
+  --margo-r-dark: #E4E0FF;
 
-  --margo-g: #38BDF8;
-  --margo-g-light: rgba(56, 189, 248, 0.15);
-  --margo-g-border: rgba(56, 189, 248, 0.35);
-  --margo-g-dark: #7DD3FC;
+  --margo-g: #5CE1F0;
+  --margo-g-light: rgba(92, 225, 240, 0.15);
+  --margo-g-border: rgba(92, 225, 240, 0.35);
+  --margo-g-dark: #8FE9CB;
 
-  --margo-o: #94A3B8;
-  --margo-o-light: rgba(148, 163, 184, 0.15);
-  --margo-o-border: rgba(148, 163, 184, 0.35);
+  --margo-o: #7DB8FF;
+  --margo-o-light: rgba(125, 184, 255, 0.15);
+  --margo-o-border: rgba(125, 184, 255, 0.35);
   --margo-o-dark: #CBD5E1;
 
-  --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  --shadow-book: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --accent-gold: #5CE1F0;
+  --success: #2EBF91;
+  --warning: #7DB8FF;
+  --danger: #FF6B5B;
+  --info: #5CE1F0;
+
+  /* Typography */
+  --font-sans: 'Onest', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Geometry & Shadows */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  --shadow-subtle: 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-card: 0 4px 24px -2px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-book: 0 25px 50px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --shadow-modal: 0 25px 50px -12px rgba(0, 0, 0, 0.65);
+  
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-page: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Light Mode Variables & Theme Tokens */
+:root[data-theme="light"],
+[data-theme="light"] {
+  --bg: #F2F3FC;
+  --card: #FFFFFF;
+  --card2: #ECEEFB;
+  --line: #D5D8F2;
+  --chip: #C3C7EC;
+  --text: #1A1B3A;
+  --muted: #5A5D88;
+  --track: #E0E2F6;
+  --accent: #4C4AD9;
+  --accent-ink: #FFFFFF;
+  --move: #C92B86;
+  --move-bg: #FFE3F3;
+  --move-ink: #7A0F4D;
+  --move-dark: #FFFFFF;
+  --stand: #2F6FD0;
+  --stand-bg: #E1EDFF;
+  --stand-dark: #FFFFFF;
+  --good: #17935F;
+  --good-bg: #DDF5EC;
+  --good-text: #0F6B47;
+  --bad: #D6453A;
+  --bad-bg: #FFE6E2;
+  --bad-text: #A3281F;
+  --violet: #6552D6;
+  --violet-bg: #ECE8FF;
+  --rose: #C92B86;
+  --rose-bg: #FFE3F3;
+  --blue: #2F6FD0;
+  --blue-bg: #E1EDFF;
+  --green: #17935F;
+  --green-bg: #DDF5EC;
+
+  --bg-app: #F2F3FC;
+  --bg-book: #FFFFFF;
+  --bg-page: #FFFFFF;
+  --bg-surface: #ECEEFB;
+  --bg-surface-hover: #E0E2F6;
+  --bg-card: #FFFFFF;
+
+  --border-light: #D5D8F2;
+  --border-subtle: rgba(101, 82, 214, 0.12);
+  --border-strong: #C3C7EC;
+
+  --text-primary: #1A1B3A;
+  --text-secondary: #5A5D88;
+  --text-muted: #5A5D88;
+  --text-inverse: #FFFFFF;
+
+  --primary: #4C4AD9;
+  --primary-hover: #3D3BF3;
+  --primary-light: #ECE8FF;
+  --primary-border: #C3C7EC;
+  --primary-glow: rgba(76, 74, 217, 0.25);
+
+  --cyan-glacial: #2F6FD0;
+  --cyan-light: #E1EDFF;
+  --cyan-border: #D5D8F2;
+  --cyan-dark: #2F6FD0;
+
+  color-scheme: light;
+}
+
+:root[data-theme="light"] body,
+body[data-theme="light"],
+[data-theme="light"] body {
+  background:
+    radial-gradient(60% 36% at 12% -4%, rgba(47, 111, 208, 0.14), transparent 70%),
+    radial-gradient(45% 34% at 90% 0%, rgba(101, 82, 214, 0.14), transparent 70%),
+    #F2F3FC;
+  background-attachment: fixed;
+  color: #1A1B3A;
 }
 
 /* MARGO Bucket Utility Classes */

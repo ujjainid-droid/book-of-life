@@ -4,6 +4,52 @@
    ========================================================================== */
 
 let editingTopicAuditId = null;
+let compassUndoState = null;
+let compassToastTimer = null;
+
+function getCompassLens() {
+  try {
+    return localStorage.getItem('BOL_COMPASS_LENS') || 'visible';
+  } catch (e) {
+    return 'visible';
+  }
+}
+
+function setCompassLens(lens) {
+  try {
+    localStorage.setItem('BOL_COMPASS_LENS', lens);
+  } catch (e) {}
+  renderCoverHubPage();
+}
+window.setCompassLens = setCompassLens;
+
+function isCompassFwOpen() {
+  try {
+    const raw = localStorage.getItem('BOL_COMPASS_FW_OPEN');
+    return raw === null ? true : raw === 'true';
+  } catch (e) {
+    return true;
+  }
+}
+
+function toggleCompassFramework() {
+  const next = !isCompassFwOpen();
+  try {
+    localStorage.setItem('BOL_COMPASS_FW_OPEN', String(next));
+  } catch (e) {}
+  renderCoverHubPage();
+}
+window.toggleCompassFramework = toggleCompassFramework;
+
+const COMPASS_PILLARS = [
+  { k: 'M', n: 'Move', c: ['10k steps', 'Close rings', 'Calorie deficit', 'Cardio', 'Yoga', 'Weights'] },
+  { k: 'A', n: 'Aesthetic', c: ['Skincare', 'Signature outfits', 'Hair health', 'Footcare', 'Makeup'] },
+  { k: 'R', n: 'Reflect', c: ['Meditate', 'Journal', 'Me time'] },
+  { k: 'G', n: 'Grow', c: ['Hobbies', 'Learning'] },
+  { k: 'O', n: 'Organize', c: ['Home projects', 'Finances', 'Travel', 'Everyday chores'] }
+];
+
+const COMPASS_MAIL_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>';
 
 function renderCoverHubPage() {
   currentView = 'cover';
@@ -16,9 +62,13 @@ function renderCoverHubPage() {
 
   const coverTab = document.getElementById('nav-btn-cover');
   const todayTab = document.getElementById('nav-btn-today');
+  const zhubTab = document.getElementById('nav-btn-zhub');
+  const financeTab = document.getElementById('nav-btn-finance');
 
-  if (coverTab) coverTab.classList.add('active');
-  if (todayTab) todayTab.classList.remove('active');
+  if (coverTab) { coverTab.classList.add('active', 'on'); coverTab.setAttribute('aria-current', 'page'); }
+  if (todayTab) { todayTab.classList.remove('active', 'on'); todayTab.removeAttribute('aria-current'); }
+  if (zhubTab) { zhubTab.classList.remove('active', 'on'); zhubTab.removeAttribute('aria-current'); }
+  if (financeTab) { financeTab.classList.remove('active', 'on'); financeTab.removeAttribute('aria-current'); }
 
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
@@ -27,210 +77,205 @@ function renderCoverHubPage() {
     ? storage.getCoverCampaigns()
     : { now: [], later: [] };
 
-  const topicAudits = (typeof storage !== 'undefined' && typeof storage.getCoverTopicAudits === 'function')
-    ? storage.getCoverTopicAudits()
-    : [];
-
   const habits = (typeof storage !== 'undefined' && typeof storage.getHabits === 'function')
     ? storage.getHabits()
     : [];
 
   const seasonTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
+  const activeLens = getCompassLens();
+  const fwOpen = isCompassFwOpen();
+
+  let standPresetDisabled = false;
+  try {
+    standPresetDisabled = localStorage.getItem('BOL_COMPASS_STAND_PRESET_OFF') === 'true';
+  } catch (e) {}
+
+  let isWorkflowWide = false;
+  try {
+    isWorkflowWide = localStorage.getItem('BOL_COMPASS_WF_WIDE') === 'true';
+  } catch (e) {}
 
   container.innerHTML = `
-    <div class="cover-hub-container">
-      
-      <!-- Top Floating Mantras Pill (Matching Today's Floating HUD) -->
-      <div class="today-floating-hud cover-mantra-hud">
-        <div class="mantra-pill mantra-simple" title="Simple: Zero duplicate tracking or cognitive bloat">
-          <span>💫 simple</span>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="mantra-pill mantra-visible" title="Visible: If it isn't front-and-center, it doesn't happen">
-          <span>👁️ visible</span>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="mantra-pill mantra-next" title="Next step: Every area has exactly one obvious immediate move">
-          <span>🐾 next step</span>
-        </div>
-        <div class="hud-divider"></div>
-        <div class="mantra-pill mantra-done" title="Done: Frictionless 1-tap completion without guilt">
-          <span>🏁 done</span>
-        </div>
+    <div class="mc-app ${activeLens === 'simple' ? 'simple' : ''}" id="mc-app">
+
+      <div class="mc-lens" id="lens" role="group" aria-label="View">
+        <button type="button" aria-pressed="${activeLens === 'simple' ? 'true' : 'false'}" data-lens="simple" onclick="setCompassLens('simple')">simple</button>
+        <button type="button" aria-pressed="${activeLens === 'visible' ? 'true' : 'false'}" data-lens="visible" onclick="setCompassLens('visible')">visible</button>
+        <button type="button" aria-pressed="${activeLens === 'next' ? 'true' : 'false'}" data-lens="next" onclick="setCompassLens('next')">next step</button>
+        <button type="button" aria-pressed="${activeLens === 'done' ? 'true' : 'false'}" data-lens="done" onclick="setCompassLens('done')">done</button>
       </div>
 
-      <!-- Executive Season Focus HUD (Matching Today's Daily Roast Banner) -->
-      <div class="today-daily-roast-banner cover-header-hero today-mascot-banner">
-        <div class="mascot-avatar-wrapper" onclick="switchAppView('sanctuary')" title="Sprout: Tap to view Today's Daily Sheet &amp; Habits" style="cursor: pointer;">
-          <div class="mascot-svg-box" style="width: 58px; height: 58px;">
-            ${typeof renderSproutSvg === 'function' ? renderSproutSvg('momentum') : '<span style="font-size: 1.8rem;">🥔</span>'}
+      <section class="mc-banner" aria-label="Focus theme">
+        <div class="mc-bt">
+          <svg width="64" height="70" viewBox="0 0 104 112" role="img" aria-label="Bed Potato mascot" style="flex:none;cursor:pointer" onclick="switchAppView('sanctuary')" title="Tap to view Today">
+            <ellipse cx="50" cy="48" rx="34" ry="30" fill="#E0AE70"/>
+            <path d="M36 46 q6 6 12 0 M56 46 q6 6 12 0" stroke="#5a3b17" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <circle cx="34" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
+            <circle cx="66" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
+            <rect x="14" y="68" width="72" height="34" rx="10" fill="#7B6CFF"/>
+          </svg>
+          <div class="mc-txt">
+            <p class="mc-quote" id="cover-season-focus-text" onclick="promptEditSeasonFocus()" style="cursor:pointer" title="Tap to edit season focus">“${escapeHtml(seasonTheme)}”</p>
           </div>
-          <div class="mascot-poke-hint">Today →</div>
+        </div>
+        <div class="mc-stats">
+          <div class="mc-stat"><b id="sActive">${campaignsData.now.length}</b><span>Active focus</span></div>
+          <div class="mc-stat"><b id="sDeck">${campaignsData.later.length}</b><span>On deck</span></div>
+          <div class="mc-stat"><b>5</b><span>Pillars</span></div>
+        </div>
+      </section>
+
+      <section class="mc-board" id="board" aria-labelledby="bT">
+        <div class="mc-sechead">
+          <h2 id="bT">Life architecture &amp; focus board</h2>
         </div>
 
-        <div class="roast-badge-pill cover-season-pill" onclick="promptEditSeasonFocus()" title="Click to customize seasonal focus theme">
-          <span class="roast-badge-sparkle">🧭</span>
-          <span class="roast-badge-label">Focus Theme</span>
-          <span class="roast-badge-shuffle">✏️</span>
+        <div class="mc-lane-head">
+          <div class="l">
+            <span class="mc-lane-tag now">🐾 NOW</span>
+            <span class="mc-muted">Active focus · in flight, ball in court or tracked</span>
+          </div>
+          <button type="button" class="mc-add" id="addNow" onclick="promptAddCampaignItem('now')">+ Add focus</button>
         </div>
-        <div class="roast-quote-content">
-          <span class="roast-text" id="cover-season-focus-text">"${escapeHtml(seasonTheme)}"</span>
-        </div>
-        <div class="cover-hero-stats">
-          <div class="cover-stat-badge">
-            <div class="cover-stat-val" style="color: var(--primary, #7C3AED);">${campaignsData.now.length}</div>
-            <div class="cover-stat-label">🔮 Active Focus</div>
-          </div>
-          <div class="cover-stat-badge">
-            <div class="cover-stat-val" style="color: #0D9488;">${campaignsData.later.length}</div>
-            <div class="cover-stat-label">🚀 On Deck</div>
-          </div>
-          <div class="cover-stat-badge">
-            <div class="cover-stat-val" style="color: #64748B;">5</div>
-            <div class="cover-stat-label">🏛️ Pillars</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 1. System Compass & Tool Roles (Matching Today's Card Structure) -->
-      <div class="today-section-block">
-        <h2 class="today-section-title">1. System Compass &amp; Tool Architecture 🧭</h2>
-        <div class="today-card cover-compass-card" id="section-architecture-blueprint">
-          <div class="compass-strip-tools">
-            <div class="compass-tool-pill tool-pill-margo" title="margo: Central command radar &amp; habit momentum engine">
-              <span class="tool-icon"><span class="tool-symbol symbol-m">⚡</span></span>
-              <span class="tool-name">margo</span>
-              <span class="tool-role">&bull; Radar + Habits</span>
-            </div>
-            <div class="compass-tool-pill tool-pill-notes" title="Apple Notes: Master note repositories &amp; project roadmaps">
-              <span class="tool-icon">
-                <span class="tool-symbol" style="font-size: 1rem;">🍎</span>
-              </span>
-              <span class="tool-name">Apple Notes</span>
-              <span class="tool-role">&bull; Master Notes</span>
-            </div>
-            <div class="compass-tool-pill tool-pill-things" title="Things 3: Execution trigger chamber — next 1-2 physical strikes">
-              <span class="tool-icon"><span class="tool-symbol symbol-things" style="font-size: 0.95rem;">🚀</span></span>
-              <span class="tool-name">Things 3</span>
-              <span class="tool-role">&bull; Next Strike</span>
-            </div>
-            <div class="compass-tool-pill tool-pill-drive" title="Google Drive: Digital vault for signed PDFs &amp; official records">
-              <span class="tool-icon"><span class="tool-symbol symbol-google" style="font-size: 0.95rem;">🛸</span></span>
-              <span class="tool-name">Google Drive</span>
-              <span class="tool-role">&bull; Permanent Vault</span>
-            </div>
-            <div class="compass-tool-pill tool-pill-gmail" title="Gmail: Inbound &amp; outbound communications">
-              <span class="tool-icon"><i data-lucide="mail"></i></span>
-              <span class="tool-name">Gmail</span>
-              <span class="tool-role">&bull; Comms</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. Life Architecture & Focus Board: Now vs. Later (Matching Today's Card Structure) -->
-      <div class="today-section-block" id="section-active-campaigns">
-        <div class="today-section-header-row" style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
-          <h2 class="today-section-title" style="margin-bottom: 0;">2. Life Architecture &amp; Focus Board</h2>
-          <div class="unified-board-counts">
-            <span class="board-count-pill count-now">📌 ${campaignsData.now.length} Active (Now)</span>
-            <span class="board-count-pill count-later">⏳ ${campaignsData.later.length} On Deck (Later)</span>
-          </div>
+        <div class="mc-focus-grid" id="nowList">
+          ${campaignsData.now.length > 0
+            ? campaignsData.now.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')
+            : `<div class="mc-empty">Nothing active. Pull something in from Later.</div>`
+          }
         </div>
 
-        <div class="today-card unified-board-card cover-focus-card">
-          <!-- ================= SECTION 1: NOW ================= -->
-          <div class="focus-tier-block tier-now-block">
-            <div class="focus-tier-header">
-              <div class="tier-title-group">
-                <span class="focus-tier-badge tier-badge-now">📌 NOW</span>
-                <h3 class="focus-tier-heading">Active Focus</h3>
-                <span class="focus-tier-sub">In flight &bull; Ball in court or actively tracked</span>
-              </div>
-              <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('now')" title="Add item to Active Focus">+ Add Focus</button>
-            </div>
+        <div class="mc-divider"></div>
 
-            <div class="focus-bento-grid">
-              ${campaignsData.now.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
-              ${campaignsData.now.length === 0 ? `
-                <div class="tier-empty-state">
-                  <span>Nothing currently active. Enjoy the mental headspace!</span>
+        <div class="mc-lane-head">
+          <div class="l">
+            <span class="mc-lane-tag later">🧊 LATER</span>
+            <span class="mc-muted">On deck &amp; parking lot · next in queue once bandwidth opens</span>
+          </div>
+          <button type="button" class="mc-add" id="addLater" onclick="promptAddCampaignItem('later')">+ Add to later</button>
+        </div>
+        <div class="mc-later-grid" id="laterList">
+          ${campaignsData.later.length > 0
+            ? campaignsData.later.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')
+            : `<div class="mc-empty">Parking lot is empty.</div>`
+          }
+        </div>
+      </section>
+
+      <div class="mc-side">
+
+        <section class="mc-panel mc-workflow-panel ${isWorkflowWide ? 'is-wide' : ''}" aria-labelledby="tT" id="section-architecture-blueprint">
+          <div class="mc-panel-head">
+            <h2 id="tT">System compass</h2>
+          </div>
+
+          <!-- Modern Bento Grid Architecture (Native Interactive UI) -->
+          <div class="mc-bento-grid">
+            <!-- 1. margo -->
+            <div class="mc-bento-card mc-bento-hero" onclick="switchAppView('sanctuary')" title="margo (Tap to open Daily Sheet)">
+              <div class="mc-bento-top-row">
+                <div class="mc-bento-brand">
+                  <span class="mc-tb m">m</span>
+                  <span class="mc-bento-name">margo</span>
                 </div>
-              ` : ''}
-            </div>
-          </div>
-
-          <!-- Divider -->
-          <div class="focus-tier-divider"></div>
-
-          <!-- ================= SECTION 2: LATER ================= -->
-          <div class="focus-tier-block tier-later-block">
-            <div class="focus-tier-header">
-              <div class="tier-title-group">
-                <span class="focus-tier-badge tier-badge-later">⏳ LATER</span>
-                <h3 class="focus-tier-heading">On Deck &amp; Parking Lot</h3>
-                <span class="focus-tier-sub">Parked initiatives &bull; Next in queue once bandwidth opens</span>
+                <span class="mc-bento-badge cmd">COMMAND &amp; CONTROL</span>
               </div>
-              <button type="button" class="btn-tier-add" onclick="promptAddCampaignItem('later')" title="Add item to Parking Lot">+ Add to Later</button>
             </div>
 
-            <div class="directory-later-grid">
-              ${campaignsData.later.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
-              ${campaignsData.later.length === 0 ? `
-                <div class="tier-empty-state">
-                  <span>No parked items. Add initiatives you want to explore later!</span>
+            <!-- 2. Things 3 -->
+            <div class="mc-bento-card mc-bento-things" title="Things 3">
+              <div class="mc-bento-top-row" onclick="openThings3Query('')">
+                <div class="mc-bento-brand">
+                  <span class="mc-tb T3">T3</span>
+                  <span class="mc-bento-name">Things 3</span>
                 </div>
-              ` : ''}
+                <span class="mc-bento-badge exec">EXECUTION</span>
+              </div>
+              <div class="mc-bento-tags">
+                <span class="mc-bento-tag high" onclick="openThings3Query('🌶️ #high priority')" title="Open 🌶️ High Priority in Things 3">🌶️ High Priority</span>
+                <span class="mc-bento-tag active" onclick="openThings3Query('🐾 #active')" title="Open 🐾 Active in Things 3">🐾 Active</span>
+                <span class="mc-bento-tag later" onclick="openThings3Query('🧊 #later')" title="Open 🧊 Later in Things 3">🧊 Later</span>
+              </div>
+            </div>
+
+            <!-- 3. Gmail -->
+            <div class="mc-bento-card" onclick="window.open('https://mail.google.com', '_blank')" title="Gmail (Tap to open)">
+              <div class="mc-bento-top-row">
+                <span class="mc-tb mail">${COMPASS_MAIL_SVG}</span>
+                <span class="mc-bento-badge inflow">INFLOW</span>
+              </div>
+              <span class="mc-bento-name">Gmail</span>
+            </div>
+
+            <!-- 4. Apple Notes -->
+            <div class="mc-bento-card" onclick="copyAppleNoteLauncher('')" title="Apple Notes (Tap to open)">
+              <div class="mc-bento-top-row">
+                <span class="mc-tb N">N</span>
+                <span class="mc-bento-badge notes">MASTER NOTES</span>
+              </div>
+              <span class="mc-bento-name">Apple Notes</span>
+            </div>
+
+            <!-- 5. Google Drive -->
+            <div class="mc-bento-card mc-bento-vault" onclick="window.open('https://drive.google.com', '_blank')" title="Google Drive (Tap to open)">
+              <div class="mc-bento-top-row">
+                <div class="mc-bento-brand">
+                  <span class="mc-tb G">G</span>
+                  <span class="mc-bento-name">Google Drive</span>
+                </div>
+                <span class="mc-bento-badge vault">MASTER VAULT</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </section>
 
-      <!-- 3. MARGO Framework (5 Pillars) -->
-      <div class="today-section-block">
-        <h2 class="today-section-title">3. MARGO Framework (5 Pillars)</h2>
-        <div class="today-card margo-framework-shelf" id="section-framework-shelf">
-          ${typeof renderMargoFrameworkWidget === 'function' ? renderMargoFrameworkWidget() : ''}
-        </div>
-      </div>
-
-      <!-- 4. Habit Presets Repository -->
-      <div class="today-section-block">
-        <h2 class="today-section-title">4. Habit Presets Repository</h2>
-        <div class="today-card habit-presets-shelf" id="section-presets-shelf">
-          <div class="card-title-row" style="margin-bottom: 8px;">
-            <div class="title-with-desc">
-              <span class="card-sub-muted">Tap any preset to instantly add it to your daily tracking stack</span>
+        <section class="mc-panel" aria-labelledby="fT" id="section-framework-shelf">
+          <div class="mc-fw-head">
+            <div>
+              <h2 id="fT">MARGO framework</h2>
+              <span class="mc-muted">Daily intentional design buckets &amp; core focus areas</span>
             </div>
+            <button type="button" id="fwBtn" aria-expanded="${fwOpen ? 'true' : 'false'}" aria-controls="pillars" onclick="toggleCompassFramework()">${fwOpen ? 'Collapse' : 'Expand'}</button>
           </div>
+          <div class="mc-pillars" id="pillars" style="display:${fwOpen ? 'grid' : 'none'}">
+            ${COMPASS_PILLARS.map(p => `
+              <article class="mc-pl ${p.k}">
+                <div class="hd">
+                  <span class="ltr" aria-hidden="true">${p.k}</span>
+                  <h3>${escapeHtml(p.n)}</h3>
+                </div>
+                <div class="cs">
+                  ${p.c.map(chip => `<span>${escapeHtml(chip)}</span>`).join('')}
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </section>
 
-        <div class="presets-shelf-pills">
-          ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
-            const pName = preset.name.toLowerCase().trim();
-            const isAnchor = (pName === 'stand ring' || pName === 'stand' || pName === 'move');
-            const isAlreadyAdded = isAnchor || habits.some(h => 
-              h && h.name.toLowerCase().trim() === pName
-            );
-            if (isAlreadyAdded) {
-              const tooltip = isAnchor 
-                ? (pName === 'move' ? 'Move is your Hero Anchor #1' : 'Stand is your Hero Anchor #2') 
-                : `${escapeHtml(preset.name)} is already active in your daily stack`;
+        <section class="mc-panel" aria-labelledby="pT" id="section-presets-shelf">
+          <h2 id="pT">Habit presets</h2>
+          <span class="mc-muted">Tap a preset to add it to your daily tracking stack</span>
+          <div class="mc-presets" id="presets">
+            ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
+              const pName = preset.name.toLowerCase().trim();
+              const isStand = (pName === 'stand ring' || pName === 'stand');
+              const isAdded = isStand
+                ? !standPresetDisabled
+                : habits.some(h => h && h.name.toLowerCase().trim() === pName);
               return `
-                <span class="preset-pill-item added" title="${tooltip}">
-                  <span class="preset-pill-symbol">✓</span>
-                  <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
-                </span>
+                <button type="button"
+                        aria-pressed="${isAdded ? 'true' : 'false'}"
+                        data-n="${escapeHtml(preset.name)}"
+                        onclick="addHabitFromPresetCover(${pIdx})">${isAdded ? '✓ ' : '+ '}${escapeHtml(preset.name)}</button>
               `;
-            } else {
-              return `
-                <button type="button" class="preset-pill-item" onclick="addHabitFromPresetCover(${pIdx})" title="Add ${escapeHtml(preset.name)}: ${escapeHtml(preset.description)}">
-                  <span class="preset-pill-symbol plus">+</span>
-                  <span class="preset-pill-label">${escapeHtml(preset.name)}</span>
-                </button>
-              `;
-            }
-          }).join('')}
-        </div>
+            }).join('')}
+          </div>
+        </section>
+
+      </div>
+
+      <div id="mc-toast" role="status" aria-live="polite" style="display:${compassUndoState ? 'flex' : 'none'}">
+        <span id="mcToastMsg">${compassUndoState ? escapeHtml(compassUndoState.message) : ''}</span>
+        <button type="button" id="mcToastUndo" onclick="undoCompassRemove()">Undo</button>
       </div>
 
     </div>
@@ -244,13 +289,12 @@ window.renderCoverHubPage = renderCoverHubPage;
 
 function promptEditSeasonFocus() {
   const current = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
-  const updated = prompt('Edit Seasonal Focus Theme for Compass:', current);
+  const updated = prompt('Focus theme', current);
   if (updated && updated.trim()) {
     try {
       localStorage.setItem('BOL_COVER_SEASON_FOCUS', updated.trim());
     } catch (e) {}
     renderCoverHubPage();
-    if (typeof showToast === 'function') showToast('Updated Focus Theme');
   }
 }
 window.promptEditSeasonFocus = promptEditSeasonFocus;
@@ -259,62 +303,32 @@ window.promptEditSeasonFocus = promptEditSeasonFocus;
    Unified Life Architecture Card Renderer & Handlers
    -------------------------------------------------------------------------- */
 function getDomainThemeClass(camp) {
-  const t = (camp.title || camp.id || '').toLowerCase();
-  // Color 1 - Z school ....
-  if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor')) {
-    return 'theme-cat-school';
-  }
-  // Color 3 - oon reimbursement, personal finance
-  if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget') || t.includes('superbill')) {
-    return 'theme-cat-finance';
-  }
-  // Color 4 - Surgery & Health (Cerulean / Azure Blue)
-  if (t.includes('surgery') || t.includes('health') || t.includes('doctor') || t.includes('clinic')) {
-    return 'theme-cat-health';
-  }
-  // Home declutter
-  if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
-    return 'theme-cat-home';
-  }
-  // Food
-  if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook')) {
-    return 'theme-cat-food';
-  }
-  // Color 2 - Haircare, skin, foot, makeup, outfits, jewelry, under eye... (Personal Care & Aesthetics)
-  return 'theme-cat-care';
+  const meta = getCampaignCategoryMeta(camp);
+  return meta.theme;
 }
 window.getDomainThemeClass = getDomainThemeClass;
 
 function getCampaignCategoryMeta(camp) {
   const t = (camp.title || camp.id || '').toLowerCase();
   if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor')) {
-    return { tag: 'ED', name: 'School & IEP', theme: 'theme-cat-school', dotColor: '#7C3AED' };
+    return { tag: 'ED', name: 'School & IEP', theme: 'ED', dotColor: '#B5ABFF' };
   }
   if (t.includes('surgery') || t.includes('health') || t.includes('doctor') || t.includes('clinic')) {
-    return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'theme-cat-health', dotColor: '#0284C7' };
+    return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'HEALTH', dotColor: '#7DB8FF' };
   }
-  if (t.includes('chin')) {
-    return { tag: 'CARE', name: 'Aesthetics', theme: 'theme-cat-care', dotColor: '#E11D48' };
-  }
-  if (t.includes('shoe')) {
-    return { tag: 'CARE', name: 'Shoes & Style', theme: 'theme-cat-care', dotColor: '#E11D48' };
-  }
-  if (t.includes('hair')) {
-    return { tag: 'CARE', name: 'Haircare', theme: 'theme-cat-care', dotColor: '#E11D48' };
-  }
-  if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('superbill')) {
-    return { tag: 'FIN', name: 'Reimbursements', theme: 'theme-cat-finance', dotColor: '#059669' };
-  }
-  if (t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget')) {
-    return { tag: 'FIN', name: 'Personal Finance', theme: 'theme-cat-finance', dotColor: '#059669' };
+  if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('superbill') || t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget')) {
+    return { tag: 'FIN', name: 'Finance & Claims', theme: 'FIN', dotColor: '#62D6B3' };
   }
   if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
-    return { tag: 'HOME', name: 'Home Declutter', theme: 'theme-cat-home', dotColor: '#0D9488' };
+    return { tag: 'HOME', name: 'Home Declutter', theme: 'HOME', dotColor: '#62D6B3' };
   }
-  if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook')) {
-    return { tag: 'FOOD', name: 'Nutrition', theme: 'theme-cat-food', dotColor: '#65A30D' };
+  if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook') || t.includes('grow')) {
+    return { tag: 'GROW', name: 'Growth & Nutrition', theme: 'GROW', dotColor: '#B5ABFF' };
   }
-  return { tag: 'CARE', name: 'Aesthetics', theme: 'theme-cat-care', dotColor: '#E11D48' };
+  if (camp.cat && ['ED', 'HEALTH', 'FIN', 'HOME', 'CARE', 'GROW'].includes(camp.cat)) {
+    return { tag: camp.cat, name: camp.cat, theme: camp.cat, dotColor: '#FF8FD0' };
+  }
+  return { tag: 'CARE', name: 'Aesthetics', theme: 'CARE', dotColor: '#FF8FD0' };
 }
 window.getCampaignCategoryMeta = getCampaignCategoryMeta;
 
@@ -324,7 +338,6 @@ function resolveCampaignTools(camp) {
   const findInArr = (fn) => isArr ? tools.find(fn) : null;
   const campTitle = camp.title || '';
 
-  // 1. Margo tool
   let margoAction = 'margo';
   let margoLabel = campTitle;
   if (!isArr && tools.margo) {
@@ -338,7 +351,6 @@ function resolveCampaignTools(camp) {
     }
   }
 
-  // 2. Apple Notes tool
   let noteQuery = `# ${campTitle.toUpperCase().replace(/[^A-Z0-9_ ]/g, '')}`;
   if (!isArr && tools.apple && tools.apple.noteQuery) {
     noteQuery = tools.apple.noteQuery;
@@ -347,7 +359,6 @@ function resolveCampaignTools(camp) {
     if (a && a.noteQuery) noteQuery = a.noteQuery;
   }
 
-  // 3. Google Drive tool
   let driveFolder = campTitle;
   if (!isArr && tools.google && tools.google.folder) {
     driveFolder = tools.google.folder;
@@ -356,7 +367,6 @@ function resolveCampaignTools(camp) {
     if (g && g.folder) driveFolder = g.folder;
   }
 
-  // 4. Things 3 tool
   let thingsQuery = campTitle;
   if (!isArr && tools.things && tools.things.query) {
     thingsQuery = tools.things.query;
@@ -365,7 +375,6 @@ function resolveCampaignTools(camp) {
     if (t && t.query) thingsQuery = t.query;
   }
 
-  // 5. Gmail tool
   let emailQuery = campTitle;
   if (!isArr && tools.email && tools.email.emailQuery) {
     emailQuery = tools.email.emailQuery;
@@ -387,36 +396,59 @@ window.resolveCampaignTools = resolveCampaignTools;
 
 function renderUnifiedCampaignCard(camp, tier) {
   const isNow = tier === 'now';
-  const oppositeTier = isNow ? 'later' : 'now';
-  const shiftBtnLabel = isNow ? '&rarr; Later' : '&larr; Now';
-
   const isHaircare = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
   const isSurgery = (camp.id === 'camp-surgery' || (camp.title || '').toLowerCase().trim() === 'surgery');
   const isOon = (camp.id === 'camp-oon' || (camp.title || '').toLowerCase().includes('oon') || (camp.title || '').toLowerCase().includes('reimburse'));
   const catMeta = getCampaignCategoryMeta(camp);
-  const themeClass = catMeta.theme;
 
-  // Normalize status: IP, NS, Maintain, Done
+  // Normalize display title for Z school & oon to match Compass design cleanly while preserving custom titles
+  let displayTitle = camp.title || '';
+  if (camp.id === 'camp-school' && displayTitle.toLowerCase().includes('z school')) {
+    displayTitle = 'Z school & IEP';
+  } else if (camp.id === 'camp-oon' || displayTitle.toLowerCase().includes('reimb') || displayTitle.toLowerCase() === 'oon reimbrsement') {
+    displayTitle = 'oon';
+  }
+
+  // Normalize status: IP, Maintain, NS
   let statusKey = String(camp.status || (isHaircare ? 'Maintain' : (isNow ? 'IP' : 'NS'))).trim();
   if (isHaircare && (!camp.status || camp.status === 'IP')) statusKey = 'Maintain';
   else if (statusKey === 'strike' || statusKey.toLowerCase() === 'ip' || statusKey === 'active') statusKey = 'IP';
   else if (statusKey === 'ondeck' || statusKey === 'waiting' || statusKey.toLowerCase() === 'ns') statusKey = 'NS';
   else if (statusKey === 'review' || statusKey.toLowerCase() === 'maintain') statusKey = 'Maintain';
-  else if (statusKey.toLowerCase() === 'done') statusKey = 'Done';
-  else if (!['IP', 'NS', 'Maintain', 'Done'].includes(statusKey)) statusKey = isNow ? 'IP' : 'NS';
+  else if (!['IP', 'NS', 'Maintain'].includes(statusKey)) statusKey = isNow ? 'IP' : 'NS';
 
-  let statusBadgeHtml = '';
-  if (statusKey === 'IP') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-ip" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: IP (In Progress) &bull; Tap to change">IP</button>`;
-  } else if (statusKey === 'NS') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-ns" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: NS (Not Started) &bull; Tap to change">NS</button>`;
-  } else if (statusKey === 'Maintain') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-maintain" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: Maintain &bull; Tap to change">Maintain</button>`;
-  } else if (statusKey === 'Done') {
-    statusBadgeHtml = `<button type="button" class="sample-phase-pill pill-status-done" onclick="cycleCampaignStatus('${camp.id}', event)" title="Status: Done &bull; Tap to change">Done</button>`;
+  const statusNames = { IP: 'In progress', Maintain: 'Maintain', NS: 'Not started' };
+  const statusLabel = statusKey === 'Maintain' ? 'Maintain' : statusKey;
+  const statusBtnHtml = `
+    <button type="button"
+            class="mc-status ${statusKey}"
+            aria-label="Status: ${statusNames[statusKey] || statusKey}. Tap to change"
+            onclick="cycleCampaignStatus('${camp.id}', event)">
+      <i></i>${statusLabel}
+    </button>
+  `;
+
+  const escapedTitleForJs = escapeHtml((camp.title || '').replace(/'/g, "\\'"));
+  const xBtnHtml = `
+    <button type="button"
+            class="mc-x"
+            aria-label="Remove ${escapeHtml(displayTitle)}"
+            onclick="deleteCampaignAction('${camp.id}', '${tier}')">×</button>
+  `;
+
+  if (!isNow) {
+    return `
+      <div class="mc-lr ${catMeta.tag}">
+        <span class="mc-dot" aria-hidden="true"></span>
+        <span class="mc-nm" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</span>
+        ${statusBtnHtml}
+        <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to now" onclick="moveCampaignAction('${camp.id}', 'later', 'now')">← 🐾 Now</button>
+        ${xBtnHtml}
+      </div>
+    `;
   }
 
-  // Resolve tool launchers: m, 🍎, G, T3, email
+  // Resolve tool badges: m, N, G, T3, mail
   const { margoAction, margoLabel, noteQuery, driveFolder, thingsQuery, emailQuery } = resolveCampaignTools(camp);
 
   let showMargo = true;
@@ -427,10 +459,10 @@ function renderUnifiedCampaignCard(camp, tier) {
 
   if (Array.isArray(camp.visibleTools)) {
     showMargo = camp.visibleTools.includes('margo') || camp.visibleTools.includes('m');
-    showApple = camp.visibleTools.includes('apple');
-    showGoogle = camp.visibleTools.includes('google') || camp.visibleTools.includes('g');
-    showThings = camp.visibleTools.includes('things') || camp.visibleTools.includes('things3') || camp.visibleTools.includes('t3');
-    showEmail = camp.visibleTools.includes('email') || camp.visibleTools.includes('gmail');
+    showApple = camp.visibleTools.includes('apple') || camp.visibleTools.includes('N');
+    showGoogle = camp.visibleTools.includes('google') || camp.visibleTools.includes('g') || camp.visibleTools.includes('G');
+    showThings = camp.visibleTools.includes('things') || camp.visibleTools.includes('things3') || camp.visibleTools.includes('t3') || camp.visibleTools.includes('T3');
+    showEmail = camp.visibleTools.includes('email') || camp.visibleTools.includes('gmail') || camp.visibleTools.includes('mail');
   } else if (camp.tools && typeof camp.tools === 'object' && !Array.isArray(camp.tools)) {
     showMargo = camp.tools.margo !== undefined ? Boolean(camp.tools.margo) : true;
     showApple = camp.tools.apple !== undefined ? Boolean(camp.tools.apple) : true;
@@ -439,7 +471,6 @@ function renderUnifiedCampaignCard(camp, tier) {
     showEmail = camp.tools.email !== undefined ? Boolean(camp.tools.email) : true;
   }
 
-  // Haircare is explicitly only m and apple icon
   if (isHaircare) {
     showMargo = true;
     showApple = true;
@@ -447,8 +478,6 @@ function renderUnifiedCampaignCard(camp, tier) {
     showThings = false;
     showEmail = false;
   }
-
-  // Surgery is explicitly only apple and things3 icons
   if (isSurgery) {
     showMargo = false;
     showApple = true;
@@ -456,8 +485,6 @@ function renderUnifiedCampaignCard(camp, tier) {
     showThings = true;
     showEmail = false;
   }
-
-  // oon reimbursement is explicitly margo, Google Drive, T3, Gmail
   if (isOon) {
     showMargo = true;
     showApple = false;
@@ -466,95 +493,38 @@ function renderUnifiedCampaignCard(camp, tier) {
     showEmail = true;
   }
 
-  const toolButtons = [];
+  const toolBadges = [];
   if (showMargo) {
-    toolButtons.push(`
-      <button type="button" class="dock-tool-btn tool-badge-m" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="margo: ${escapeHtml(margoLabel)}">
-        <span class="tool-symbol symbol-m">m</span>
-      </button>
-    `);
+    toolBadges.push(`<button type="button" class="mc-tb m" title="margo: ${escapeHtml(margoLabel)}" aria-label="margo" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapedTitleForJs}')">m</button>`);
   }
   if (showApple) {
-    toolButtons.push(`
-      <button type="button" class="dock-tool-btn tool-badge-apple" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')" title="Apple Notes: ${escapeHtml(noteQuery)}">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
-      </button>
-    `);
+    toolBadges.push(`<button type="button" class="mc-tb N" title="Apple Notes: ${escapeHtml(noteQuery)}" aria-label="Apple Notes" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')">N</button>`);
   }
   if (showGoogle) {
-    toolButtons.push(`
-      <button type="button" class="dock-tool-btn tool-badge-google" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')" title="Google Drive: ${escapeHtml(driveFolder)}">
-        <span class="tool-symbol symbol-google">G</span>
-      </button>
-    `);
+    toolBadges.push(`<button type="button" class="mc-tb G" title="Google Drive: ${escapeHtml(driveFolder)}" aria-label="Google Drive" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')">G</button>`);
   }
   if (showThings) {
-    toolButtons.push(`
-      <button type="button" class="dock-tool-btn tool-badge-things" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')" title="Things 3: ${escapeHtml(thingsQuery)}">
-        <span class="tool-symbol symbol-things">T3</span>
-      </button>
-    `);
+    toolBadges.push(`<button type="button" class="mc-tb T3" title="Things 3: ${escapeHtml(thingsQuery)}" aria-label="Things 3" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')">T3</button>`);
   }
   if (showEmail) {
-    toolButtons.push(`
-      <button type="button" class="dock-tool-btn tool-badge-email" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')" title="Gmail: ${escapeHtml(emailQuery)}">
-        <i data-lucide="mail"></i>
-      </button>
-    `);
-  }
-  const dockHtml = toolButtons.join('<span class="dock-divider"></span>');
-
-  if (isNow) {
-    return `
-      <div class="bento-campaign-card tier-now ${themeClass}">
-        <div class="bento-card-top">
-          <div class="bento-title-group">
-            <span class="bento-cat-tag">${catMeta.tag}</span>
-            <h4 class="bento-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title || '')}</h4>
-          </div>
-          <div class="card-status-wrapper">
-            ${statusBadgeHtml}
-          </div>
-        </div>
-
-        <div class="bento-card-bottom">
-          <div class="bento-capsule-dock">
-            ${dockHtml}
-          </div>
-          <div class="bento-bottom-actions">
-            <button type="button" class="btn-tier-shift shift-tier-now" onclick="moveCampaignAction('${camp.id}', 'now', 'later')" title="Move to Later">
-              &rarr; Later
-            </button>
-            <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', 'now')" title="Delete domain">
-              <i data-lucide="x" style="width: 11px; height: 11px;"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
+    toolBadges.push(`<button type="button" class="mc-tb mail" title="Gmail: ${escapeHtml(emailQuery)}" aria-label="Gmail" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')">${COMPASS_MAIL_SVG}</button>`);
   }
 
-  // Later: Option 1 High-Density Directory Item
   return `
-    <div class="directory-campaign-item tier-later ${themeClass}">
-      <div class="dir-item-left">
-        <span class="dir-cat-dot" style="background-color: ${catMeta.dotColor};"></span>
-        <h4 class="dir-domain-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml((camp.title || '').replace(/'/g, "\\'"))}')" title="Click to edit title">${escapeHtml(camp.title || '')}</h4>
-      </div>
-      <div class="dir-item-right">
-        <div class="dir-status-wrap">
-          ${statusBadgeHtml}
-        </div>
-        <div class="dir-actions">
-          <button type="button" class="btn-tier-shift shift-tier-later" onclick="moveCampaignAction('${camp.id}', 'later', 'now')" title="Move to Now">
-            &larr; Now
-          </button>
-          <button type="button" class="btn-camp-delete" onclick="deleteCampaignAction('${camp.id}', 'later')" title="Delete domain">
-            <i data-lucide="x" style="width: 11px; height: 11px;"></i>
-          </button>
+    <article class="mc-fc ${catMeta.tag}">
+      <div class="top">
+        <span class="mc-tag">${catMeta.tag}</span>
+        <h3 onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
+        <div class="mc-top-actions">
+          ${statusBtnHtml}
+          <span class="mc-sep" aria-hidden="true"></span>
+          <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to later" onclick="moveCampaignAction('${camp.id}', 'now', 'later')">🧊 Later →</button>
         </div>
       </div>
-    </div>
+      <div class="bot">
+        <div class="mc-tools">${toolBadges.join('')}</div>
+      </div>
+    </article>
   `;
 }
 window.renderUnifiedCampaignCard = renderUnifiedCampaignCard;
@@ -566,25 +536,15 @@ function cycleCampaignStatus(campId, event) {
   let camp = campaigns.now.find(x => x.id === campId) || campaigns.later.find(x => x.id === campId);
   if (!camp) return;
 
-  const cycleOrder = ['IP', 'NS', 'Maintain', 'Done'];
+  const statusNext = { IP: 'Maintain', Maintain: 'NS', NS: 'IP' };
   let currentKey = camp.status || 'IP';
   if (currentKey === 'strike' || currentKey === 'active') currentKey = 'IP';
   else if (currentKey === 'ondeck' || currentKey === 'waiting') currentKey = 'NS';
   else if (currentKey === 'review') currentKey = 'Maintain';
 
-  const currentIdx = cycleOrder.indexOf(currentKey);
-  const nextStatus = cycleOrder[(currentIdx + 1) % cycleOrder.length];
+  const nextStatus = statusNext[currentKey] || 'IP';
   storage.updateCoverCampaignStatus(campId, nextStatus);
   renderCoverHubPage();
-  if (typeof showToast === 'function') {
-    const labels = {
-      IP: '⚡ IP (In Progress)',
-      NS: '⏳ NS (Not Started)',
-      Maintain: '🌿 Maintain',
-      Done: '✅ Done'
-    };
-    showToast(`Status: ${labels[nextStatus] || nextStatus}`);
-  }
 }
 window.cycleCampaignStatus = cycleCampaignStatus;
 
@@ -592,44 +552,70 @@ function moveCampaignAction(campId, fromTier, toTier) {
   if (typeof storage !== 'undefined') {
     storage.moveCoverCampaign(campId, fromTier, toTier);
     renderCoverHubPage();
-    if (typeof showToast === 'function') {
-      showToast(`Moved to ${toTier === 'now' ? 'Active Focus (Now)' : 'Parking Lot (Later)'}`);
-    }
   }
 }
 window.moveCampaignAction = moveCampaignAction;
 
 function deleteCampaignAction(campId, tier) {
   if (typeof storage !== 'undefined') {
-    storage.deleteCoverCampaign(campId, tier);
-    renderCoverHubPage();
-    if (typeof showToast === 'function') {
-      showToast('Removed domain from board');
+    const campaigns = storage.getCoverCampaigns();
+    const arr = campaigns[tier] || [];
+    const idx = arr.findIndex(x => x.id === campId);
+    if (idx !== -1) {
+      const removedItem = JSON.parse(JSON.stringify(arr[idx]));
+      storage.deleteCoverCampaign(campId, tier);
+      let displayTitle = removedItem.title || '';
+      if (removedItem.id === 'camp-school' && displayTitle.toLowerCase().includes('z school')) displayTitle = 'Z school & IEP';
+      else if (removedItem.id === 'camp-oon' || displayTitle.toLowerCase().includes('reimb') || displayTitle.toLowerCase() === 'oon reimbrsement') displayTitle = 'oon';
+
+      compassUndoState = {
+        tier,
+        index: idx,
+        item: removedItem,
+        message: `Removed "${displayTitle}"`
+      };
+      clearTimeout(compassToastTimer);
+      compassToastTimer = setTimeout(() => {
+        compassUndoState = null;
+        const toastEl = document.getElementById('mc-toast');
+        if (toastEl) toastEl.style.display = 'none';
+      }, 6000);
+      renderCoverHubPage();
     }
   }
 }
 window.deleteCampaignAction = deleteCampaignAction;
 
+function undoCompassRemove() {
+  if (!compassUndoState || typeof storage === 'undefined') return;
+  const { tier, index, item } = compassUndoState;
+  const campaigns = storage.getCoverCampaigns();
+  if (!campaigns[tier]) campaigns[tier] = [];
+  campaigns[tier].splice(Math.min(index, campaigns[tier].length), 0, item);
+  storage.saveData();
+  compassUndoState = null;
+  clearTimeout(compassToastTimer);
+  renderCoverHubPage();
+}
+window.undoCompassRemove = undoCompassRemove;
+
 function promptAddCampaignItem(tier) {
-  const title = prompt(`Add new ${tier === 'now' ? 'Active Focus (Now)' : 'Parking Lot (Later)'} domain:`);
+  const title = prompt(tier === 'now' ? 'New focus' : 'Add to later');
   if (title && title.trim().length > 0 && typeof storage !== 'undefined') {
     storage.addCoverCampaign(tier, {
       title: title.trim(),
+      cat: 'GROW',
       status: tier === 'now' ? 'IP' : 'NS',
-      tools: [
-        { label: 'Apple Note', noteQuery: title.trim() }
-      ]
+      visibleTools: [],
+      tools: {}
     });
     renderCoverHubPage();
-    if (typeof showToast === 'function') {
-      showToast(`Added to ${tier === 'now' ? 'Active Focus' : 'Parking Lot'}`);
-    }
   }
 }
 window.promptAddCampaignItem = promptAddCampaignItem;
 
 function promptEditCampaignTitle(campId, currentTitle) {
-  const newTitle = prompt('Edit domain title:', currentTitle);
+  const newTitle = prompt('Edit focus title:', currentTitle);
   if (newTitle && newTitle.trim().length > 0 && typeof storage !== 'undefined') {
     const campaigns = storage.getCoverCampaigns();
     let camp = campaigns.now.find(x => x.id === campId) || campaigns.later.find(x => x.id === campId);
@@ -805,13 +791,21 @@ function addHabitFromPresetCover(presetIndex) {
   if (!preset || typeof storage === 'undefined') return;
 
   const pName = preset.name.toLowerCase().trim();
-  if (pName === 'stand ring' || pName === 'stand' || pName === 'move') {
-    if (typeof showToast === 'function') showToast(`${preset.name} is already your Hero Anchor!`);
+  if (pName === 'stand ring' || pName === 'stand') {
+    try {
+      const currentOff = localStorage.getItem('BOL_COMPASS_STAND_PRESET_OFF') === 'true';
+      localStorage.setItem('BOL_COMPASS_STAND_PRESET_OFF', String(!currentOff));
+    } catch (e) {}
+    renderCoverHubPage();
     return;
   }
 
-  storage.addHabit(preset);
-  if (typeof showToast === 'function') showToast(`Added "${preset.name}" to your daily stack!`);
+  const existing = storage.getHabits().find(h => h && h.name.toLowerCase().trim() === pName);
+  if (existing && existing.id !== 'h-move' && existing.id !== 'h-stand') {
+    storage.deleteHabit(existing.id);
+  } else if (!existing) {
+    storage.addHabit(preset);
+  }
   renderCoverHubPage();
 }
 window.addHabitFromPresetCover = addHabitFromPresetCover;
@@ -1154,5 +1148,62 @@ function openSchoolBattlePlanModal() {
   if (window.lucide) lucide.createIcons();
 }
 window.openSchoolBattlePlanModal = openSchoolBattlePlanModal;
+
+function openCompassDiagramModal() {
+  let modal = document.getElementById('modal-compass-diagram');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-compass-diagram';
+    modal.className = 'modal-overlay';
+    modal.onclick = (e) => { if (e.target === modal) closeAllModals(); };
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML = `
+    <div class="modal-card modal-card-wide" style="max-width: 820px; padding: 18px 20px;">
+      <div class="modal-header" style="margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.2rem;">🧭</span>
+          <h3>System Compass Architecture</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <div style="border-radius: 18px; overflow: hidden; border: 1px solid var(--line); background: #FFFFFF; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 14px;">
+        <img src="assets/system-compass-architecture.svg?v=9.0.8" alt="System Compass Architecture Graphic" style="width: 100%; height: auto; display: block;">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <a href="system-compass-graphic.html" target="_blank" class="btn btn-secondary btn-sm" style="text-decoration: none;">↗ Open Full Viewer</a>
+        <button type="button" class="btn btn-primary btn-sm" onclick="closeAllModals()">Done</button>
+      </div>
+    </div>
+  `;
+  if (typeof openModal === 'function') {
+    openModal('modal-compass-diagram');
+  } else {
+    modal.classList.add('active');
+  }
+  if (window.lucide) lucide.createIcons();
+}
+window.openCompassDiagramModal = openCompassDiagramModal;
+
+function toggleWorkflowPanelWidth(e) {
+  if (e) e.stopPropagation();
+  let currentWide = false;
+  try {
+    currentWide = localStorage.getItem('BOL_COMPASS_WF_WIDE') === 'true';
+  } catch (err) {}
+  const nextWide = !currentWide;
+  try {
+    localStorage.setItem('BOL_COMPASS_WF_WIDE', String(nextWide));
+  } catch (err) {}
+  const panel = document.getElementById('section-architecture-blueprint');
+  if (panel) {
+    panel.classList.toggle('is-wide', nextWide);
+    const label = document.getElementById('wf-expand-text');
+    if (label) label.textContent = nextWide ? '⇤ Sidebar' : '⤢ Wide';
+  }
+}
+window.toggleWorkflowPanelWidth = toggleWorkflowPanelWidth;
+
+
 
 

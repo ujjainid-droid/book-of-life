@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typography Studio — Z's Care Sanctuary Font Options</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Onest:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F1020;
+      --card: rgba(24, 26, 51, 0.78);
+      --card-solid: #181A33;
+      --line: rgba(125, 140, 255, 0.18);
+      --chip: #3A3C6A;
+      --text: #EDEEFF;
+      --muted: #9496BC;
+      --cyan: #5CE1F0;
+      --blue: #7DB8FF;
+      --violet: #B5ABFF;
+      --rose: #FF8FD0;
+      --green: #62D6B3;
+      --pri: #5CE1F0;
+      --priInk: #06202A;
+      --font-body: 'Onest', system-ui, -apple-system, sans-serif;
+    }
+
+    :root[data-theme="light"] {
+      --bg: #F2F3FC;
+      --card: rgba(255, 255, 255, 0.82);
+      --card-solid: #FFFFFF;
+      --line: rgba(80, 92, 200, 0.18);
+      --chip: #C3C7EC;
+      --text: #1A1B3A;
+      --muted: #5A5D88;
+      --cyan: #17935F;
+      --blue: #2F6FD0;
+      --violet: #6552D6;
+      --rose: #C92B86;
+      --green: #177F63;
+      --pri: #4C4AD9;
+      --priInk: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      padding: 40px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.2s ease, color 0.2s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Top Studio Controls */
+    .studio-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .studio-title-area h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .studio-title-area p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .studio-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .theme-toggle-btn {
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 20px;
+      border: 1px solid var(--chip);
+      background: var(--card);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+    }
+    .theme-toggle-btn:hover {
+      border-color: var(--pri);
+      transform: translateY(-1px);
+    }
+
+    /* Font Option Card Block */
+    .option-card {
+      background: var(--card);
+      border: 1.5px solid var(--line);
+      border-radius: 28px;
+      padding: 24px 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transition: all 0.2s ease;
+    }
+    :root[data-theme="light"] .option-card {
+      box-shadow: 0 8px 24px -6px rgba(40, 50, 140, 0.12);
+    }
+    .option-card:hover {
+      border-color: rgba(181, 171, 255, 0.4);
+      transform: translateY(-2px);
+    }
+    .option-card.is-active-baseline {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 1px var(--violet), 0 14px 36px -8px rgba(181, 171, 255, 0.2);
+    }
+
+    /* Meta Pill Row */
+    .option-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    .option-number-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .option-tag-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(181, 171, 255, 0.14);
+      color: var(--violet);
+      border: 1px solid rgba(181, 171, 255, 0.3);
+    }
+
+    .option-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Exact Z Hub Header Mockup Frame */
+    .zhub-mockup-frame {
+      background: var(--card-solid);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo-box {
+      width: 50px;
+      height: 50px;
+      border-radius: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #5CE1F0, #7B6CFF 60%, #FF8FD0);
+      color: #0F1020;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(123, 108, 255, 0.35);
+    }
+    .logo-box svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    .text-column {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .heading-line {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .heading-title {
+      font-size: 26px;
+      line-height: 1.15;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .care-journal-badge {
+      display: inline-block;
+      font-family: 'Onest', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--pri);
+      border: 1px solid color-mix(in srgb, var(--pri) 45%, transparent);
+      border-radius: 12px;
+      padding: 3px 9px;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+
+    .sub-line {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* Mockup Actions */
+    .mockup-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .mockup-btn {
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 19px;
+      border: 1px solid var(--chip);
+      background: transparent;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+    }
+    .mockup-btn.primary {
+      background: var(--pri);
+      border-color: var(--pri);
+      color: var(--priInk);
+      font-weight: 800;
+    }
+
+    /* ======================================================== */
+    /* SPECIFIC FONT CLASSES                                    */
+    /* ======================================================== */
+    /* Baseline: Fraunces */
+    .font-fraunces {
+      font-family: 'Fraunces', Georgia, serif;
+      font-weight: 600;
+      font-variation-settings: 'opsz' 72, 'wght' 600;
+    }
+
+    /* Option 1: Newsreader */
+    .font-newsreader {
+      font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+      font-weight: 600;
+      font-style: normal;
+      font-size: 27px;
+    }
+    .font-newsreader-italic {
+      font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 28px;
+    }
+
+    /* Option 2: Instrument Serif */
+    .font-instrument {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-size: 32px;
+      letter-spacing: 0.01em;
+    }
+    .font-instrument-italic {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 33px;
+    }
+
+    /* Option 3: Cormorant Garamond */
+    .font-cormorant {
+      font-family: 'Cormorant Garamond', Garamond, Georgia, serif;
+      font-weight: 600;
+      font-size: 30px;
+      letter-spacing: -0.01em;
+    }
+
+    /* Option 4: Space Grotesk */
+    .font-space {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.03em;
+    }
+
+    /* Option 5: Plus Jakarta Sans */
+    .font-jakarta {
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      letter-spacing: -0.025em;
+    }
+
+    /* Responsive */
+    @media (max-width: 680px) {
+      .mockup-actions { display: none; }
+      .zhub-mockup-frame { padding: 14px 16px; }
+      .heading-title { font-size: 22px !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Studio Header -->
+    <header class="studio-header">
+      <div class="studio-title-area">
+        <h1>Typography Studio</h1>
+        <p>Previewing <strong>Z's Care Sanctuary [Care journal]</strong> across 6 distinct typographic voices.</p>
+      </div>
+      <div class="studio-controls">
+        <button type="button" class="theme-toggle-btn" onclick="togglePreviewTheme()">
+          🌓 <span id="themeBtnText">Switch to Light Mode</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ======================================================== -->
+    <!-- BASELINE: FRAUNCES (CURRENT)                             -->
+    <!-- ======================================================== -->
+    <div class="option-card is-active-baseline">
+      <div class="option-meta-row">
+        <div class="option-number-label">
+          <span>Current Baseline</span>
+          <span style="font-weight: 500; color: var(--muted); font-size: 0.8rem;">(Live in Production)</span>
+        </div>
+        <span class="option-tag-badge">Fraunces · Warm Soft Serif</span>
+      </div>
+      <p class="option-desc">
+        Variable Old-Style display serif with soft, fluid optical letterforms. Gives the header its current warm, handcrafted, reassuring presence.
+      </p>
+
+      <div class="zhub-mockup-frame">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-fraunces">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- OPTION 1: NEWSREADER                                     -->
+    <!-- ======================================================== -->
+    <div class="option-card">
+      <div class="option-meta-row">
+        <div class="option-number-label">
+          <span>Option 1</span>
+          <span>Newsreader</span>
+        </div>
+        <span class="option-tag-badge">Already Loaded · Literary Editorial</span>
+      </div>
+      <p class="option-desc">
+        Inspired by 20th-century British book typography (Production Type). Deeply calming, scholarly, and dignified. Matches the literary quote style on margo's Compass page.
+      </p>
+
+      <!-- 1A: Regular -->
+      <div class="zhub-mockup-frame">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-newsreader">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+
+      <!-- 1B: Italic Accent -->
+      <div class="zhub-mockup-frame" style="margin-top: -6px; opacity: 0.95;">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-newsreader-italic">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care (Italic variant)</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- OPTION 2: INSTRUMENT SERIF                               -->
+    <!-- ======================================================== -->
+    <div class="option-card">
+      <div class="option-meta-row">
+        <div class="option-number-label">
+          <span>Option 2</span>
+          <span>Instrument Serif</span>
+        </div>
+        <span class="option-tag-badge">High Fashion · Refined &amp; Delicate</span>
+      </div>
+      <p class="option-desc">
+        Ultra-refined, tall, high-contrast serif designed for luxury editorial magazines and contemporary wellness studios. It feels lithe, graceful, and deeply premium.
+      </p>
+
+      <!-- 2A: Upright -->
+      <div class="zhub-mockup-frame">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-instrument">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+
+      <!-- 2B: Italic -->
+      <div class="zhub-mockup-frame" style="margin-top: -6px; opacity: 0.95;">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-instrument-italic">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care (Italic variant)</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- OPTION 3: CORMORANT GARAMOND                             -->
+    <!-- ======================================================== -->
+    <div class="option-card">
+      <div class="option-meta-row">
+        <div class="option-number-label">
+          <span>Option 3</span>
+          <span>Cormorant Garamond</span>
+        </div>
+        <span class="option-tag-badge">Classical Renaissance · Poetic &amp; Timeless</span>
+      </div>
+      <p class="option-desc">
+        A breathtaking revival of traditional 16th-century Garamond, drawn with razor-thin hairlines. Imbues the Sanctuary with warmth, classical romance, and gentle care.
+      </p>
+
+      <div class="zhub-mockup-frame">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-cormorant">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- OPTION 4: SPACE GROTESK                                  -->
+    <!-- ======================================================== -->
+    <div class="option-card">
+      <div class="option-meta-row">
+        <div class="option-number-label">
+          <span>Option 4</span>
+          <span>Space Grotesk</span>
+        </div>
+        <span class="option-tag-badge">Already Loaded · Architectural Neo-Grotesk</span>
+      </div>
+      <p class="option-desc">
+        A distinct Scandinavian architectural sans-serif with subtle characterful junctions. Shifts the header away from serifs toward a confident, modern design studio aesthetic.
+      </p>
+
+      <div class="zhub-mockup-frame">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-space">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- OPTION 5: PLUS JAKARTA SANS                              -->
+    <!-- ======================================================== -->
+    <div class="option-card">
+      <div class="option-meta-row">
+        <div class="option-number-label">
+          <span>Option 5</span>
+          <span>Plus Jakarta Sans</span>
+        </div>
+        <span class="option-tag-badge">Precision Modern Geometric Sans</span>
+      </div>
+      <p class="option-desc">
+        Clean, rounded, and hyper-legible geometric grotesque (popularized by modern Apple and Linear interfaces). Delivers ultra-clean, functional software clarity.
+      </p>
+
+      <div class="zhub-mockup-frame">
+        <div class="brand-wrap">
+          <div class="logo-box">
+            <svg viewBox="0 0 24 24"><circle cx="8" cy="8.5" r="2.2"/><circle cx="16" cy="8.5" r="2.2"/><circle cx="4.8" cy="13.5" r="2"/><circle cx="19.2" cy="13.5" r="2"/><path d="M12 12.5c3.2 0 5.3 3 5.3 5.5 0 1.6-1.1 2.2-2.6 2.2-1 0-1.6-.5-2.7-.5s-1.7.5-2.7.5C8.1 20.2 6.7 19.6 6.7 18c0-2.5 2.1-5.5 5.3-5.5z"/></svg>
+          </div>
+          <div class="text-column">
+            <div class="heading-line">
+              <span class="heading-title font-jakarta">Z's Care Sanctuary</span>
+              <span class="care-journal-badge">Care journal</span>
+            </div>
+            <span class="sub-line">Safe harbor &middot; daily regulation &middot; 246 days of care</span>
+          </div>
+        </div>
+        <div class="mockup-actions">
+          <button class="mockup-btn primary">+ Log day</button>
+          <button class="mockup-btn">Export CSV</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function togglePreviewTheme() {
+      const root = document.documentElement;
+      const cur = root.getAttribute('data-theme') || 'dark';
+      const next = (cur === 'dark') ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      document.getElementById('themeBtnText').textContent = (next === 'light') ? 'Switch to Dark Mode' : 'Switch to Light Mode';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="margo">
+  <meta name="theme-color" content="#F4F5FB">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>margo</title>
+  
+  <!-- Google Fonts: Inter & Newsreader for Nordic Editorial aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600;1,6..72,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <!-- Modular Stylesheets with Cache Buster -->
+  <link rel="stylesheet" href="css/nordic-theme.css?v=8.9.66">
+  <link rel="stylesheet" href="css/layout.css?v=8.9.66">
+  <link rel="stylesheet" href="css/cover.css?v=8.9.66">
+  <link rel="stylesheet" href="css/habits.css?v=8.9.66">
+  <link rel="stylesheet" href="css/tasks.css?v=8.9.66">
+  <link rel="stylesheet" href="css/settings.css?v=8.9.66">
+  <link rel="stylesheet" href="css/claims.css?v=8.9.66">
+  <link rel="stylesheet" href="css/zlog.css?v=8.9.66">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=8.9.66">
+  <link rel="stylesheet" href="css/finance.css?v=8.9.66">
+</head>
+<body>
+
+  <div class="book-app">
+    <!-- Header -->
+    <header class="book-header">
+      <div class="header-left">
+        <div class="book-title-area" onclick="switchAppView('sanctuary')" style="cursor: pointer;" title="margo — Daily Sheet">
+          <h1><span class="margo-wordmark">margo</span><span class="margo-dot">.</span></h1>
+        </div>
+
+        <!-- Unified Main Navigation Capsule (Cohesive, Non-Shifting) -->
+        <nav class="main-nav-capsule" id="main-nav-capsule" aria-label="Main Navigation">
+          <button id="nav-btn-today" class="nav-capsule-btn active" onclick="switchAppView('sanctuary')" title="Today: Daily Habits, Momentum &amp; Reflections">
+            <span class="nav-btn-icon">🗓️</span>
+            <span class="nav-btn-label">Today</span>
+          </button>
+          <button id="nav-btn-cover" class="nav-capsule-btn" onclick="switchAppView('cover')" title="Compass: System Architecture, Life Focus &amp; Long-term Index">
+            <span class="nav-btn-icon">🧭</span>
+            <span class="nav-btn-label">Compass</span>
+          </button>
+          <button id="nav-btn-zhub" class="nav-capsule-btn" onclick="switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior &amp; Insights">
+            <span class="nav-btn-icon">🐾</span>
+            <span class="nav-btn-label">Z Hub</span>
+          </button>
+          <button id="nav-btn-finance" class="nav-capsule-btn" onclick="switchAppView('finance')" title="Finance: Burn, Subscriptions &amp; Reimbursements">
+            <span class="nav-btn-icon">💰</span>
+            <span class="nav-btn-label">Finance</span>
+            <span class="nav-badge" id="domain-claims-badge" style="display: none;"></span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="header-right">
+        <!-- Energy Dial (Power vs Maintenance - Always Present & Stable) -->
+        <div class="energy-dial-container" id="header-energy-dial">
+          <button id="dial-btn-power" class="energy-dial-btn active" onclick="setAppEnergyMode('power')" title="Power Mode: Full Stack">
+            <span class="dial-emoji">⚡</span>
+            <span class="dial-label">Power</span>
+          </button>
+          <button id="dial-btn-maint" class="energy-dial-btn" onclick="setAppEnergyMode('maint')" title="Maintenance Mode: Protect Baseline (Move + Stand, Zero Guilt)">
+            <span class="dial-emoji">🛡️</span>
+            <span class="dial-label">Maint</span>
+          </button>
+        </div>
+
+        <!-- Hidden input for Date Picker (triggered by floating HUD) -->
+        <input type="date" id="header-date-picker-input" class="hidden-date-picker" onchange="onHeaderDatePicked(this.value)">
+
+        <div class="header-actions">
+          <button class="icon-btn" title="Toggle Light / Dark Theme" onclick="toggleTheme()">
+            <i data-lucide="moon" id="header-theme-icon" style="width: 16px; height: 16px;"></i>
+          </button>
+          <button class="icon-btn" title="Settings &amp; Preferences" onclick="openSettingsModal()">
+            <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Single Daily Sheet Frame -->
+    <main class="daily-sheet-container" id="daily-sheet-container"></main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Add Habit Modal -->
+  <div class="modal-overlay" id="modal-add-habit" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Add New Habit</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form onsubmit="submitAddHabit(event)">
+        <div class="form-group">
+          <label class="form-label">Habit Name</label>
+          <input type="text" class="form-input" id="habit-name-input" placeholder="e.g. Move, 10k Steps, Hydrate 2L, Read 20m..." required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">MARGO Category</label>
+            <select class="form-select" id="habit-bucket-select">
+              <option value="M" selected>M — Move (Steps, Cardio, Yoga, Weights...)</option>
+              <option value="A">A — Aesthetic (Skincare, Foot care, Hair, Makeup...)</option>
+              <option value="R">R — Reflect (Meditate, Journal, Me time)</option>
+              <option value="G">G — Grow (Reading, Skills, Hobbies)</option>
+              <option value="O">O — Organize (Routines, Finances)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Frequency / Cadence</label>
+            <select class="form-select" id="habit-cadence-select" onchange="onCadenceChange(this.value, 'habit-target-group')">
+              <option value="daily" selected>Daily (Every Day)</option>
+              <option value="weekly">Target Times / Week</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="habit-target-group" style="display: none;">
+          <label class="form-label">Weekly Target (Days per week)</label>
+          <input type="number" min="1" max="7" class="form-input" id="habit-target-input" value="3">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Context / Motivation Note (Optional)</label>
+          <input type="text" class="form-input" id="habit-desc-input" placeholder="e.g. 10 minutes right after waking up">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Habit Modal -->
+  <div class="modal-overlay" id="modal-edit-habit" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Habit</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form onsubmit="submitEditHabit(event)">
+        <div class="form-group">
+          <label class="form-label">Habit Name</label>
+          <input type="text" class="form-input" id="edit-habit-name-input" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">MARGO Category</label>
+            <select class="form-select" id="edit-habit-bucket-select">
+              <option value="M">M — Move</option>
+              <option value="A">A — Aesthetic</option>
+              <option value="R">R — Reflect</option>
+              <option value="G">G — Grow</option>
+              <option value="O">O — Organize</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Frequency / Cadence</label>
+            <select class="form-select" id="edit-habit-cadence-select" onchange="onCadenceChange(this.value, 'edit-habit-target-group')">
+              <option value="daily">Daily (Every Day)</option>
+              <option value="weekly">Target Times / Week</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group" id="edit-habit-target-group" style="display: none;">
+          <label class="form-label">Weekly Target (Days per week)</label>
+          <input type="number" min="1" max="7" class="form-input" id="edit-habit-target-input" value="3">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Context / Motivation Note (Optional)</label>
+          <input type="text" class="form-input" id="edit-habit-desc-input">
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" style="color: var(--danger);" onclick="deleteCurrentEditingHabit()">
+            <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i> Delete Habit
+          </button>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Update Habit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Catch-Up Past Days Modal -->
+  <div class="modal-overlay" id="modal-past-days" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="calendar-check-2" style="color: var(--primary);"></i>
+          <h3>Catch-Up Past Days</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="past-days-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="modal-settings" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-lg">
+      <div class="modal-header">
+        <h3>Settings & Preferences</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="settings-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Cloud Sync Pairing Modal -->
+  <div class="modal-overlay" id="modal-sync-pair" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="smartphone" style="color: var(--primary);"></i>
+          <h3>Pair with iPhone</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="sync-pair-modal-body" style="text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px;"></div>
+    </div>
+  </div>
+
+  <!-- Included Health Export Modal -->
+  <div class="modal-overlay" id="modal-export-claims" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="copy" style="color: var(--primary);"></i>
+          <h3>Copy for Included Health</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div id="export-claims-body"></div>
+    </div>
+  </div>
+
+  <!-- Edit Claim Modal -->
+  <div class="modal-overlay" id="modal-edit-claim" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Edit Medical Claim</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="edit-claim-form" onsubmit="submitEditClaim(event)">
+        <div class="form-group">
+          <label class="form-label">Date of Service</label>
+          <input type="date" class="form-input" id="edit-claim-date" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Provider Name</label>
+          <input type="text" class="form-input" id="edit-claim-provider" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Bill / Charge Amount ($)</label>
+          <input type="number" step="0.01" min="0" class="form-input" id="edit-claim-amount" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Who Submits Claim?</label>
+            <select class="form-select" id="edit-claim-submission">
+              <option value="provider">🏢 Provider Submits (Courtesy)</option>
+              <option value="self">👤 I / Included Health Submit</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Expected Payout</label>
+            <select class="form-select" id="edit-claim-payout">
+              <option value="direct_deposit">🏦 Direct Deposit (Monarch)</option>
+              <option value="check">✉️ Mailed Paper Check</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Superbill Status</label>
+            <select class="form-select" id="edit-claim-superbill">
+              <option value="have">✅ Superbill Attached</option>
+              <option value="need">❌ Need Superbill</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current Stage</label>
+            <select class="form-select" id="edit-claim-stage">
+              <option value="with_included_health">🔵 Pending Insurance</option>
+              <option value="check_due">🟢 Check / Deposit Due</option>
+              <option value="ready_to_send">📤 Send to Included Health</option>
+              <option value="need_superbill">🔴 Need Superbill</option>
+              <option value="settled">⚪ Settled &amp; Reconciled</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Next Action</label>
+          <input type="text" class="form-input" id="edit-claim-nextaction" placeholder="Immediate next move...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (Optional)</label>
+          <textarea class="form-input" id="edit-claim-notes" rows="2" placeholder="e.g. Case number, provider phone, receipt notes..."></textarea>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Sanctuary Journal Entry (Square Card Expand) -->
+  <div class="modal-overlay" id="modal-journal-view" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-journal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <div>
+          <h3 id="journal-modal-title">Sanctuary Journal</h3>
+          <span id="journal-modal-subtitle" style="font-size: 0.76rem; color: var(--text-muted);"></span>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <div class="journal-modal-body" style="padding: 16px 0;">
+        <p id="journal-modal-content" class="journal-reading-text" style="font-family: var(--font-serif); font-style: italic; line-height: 1.7; font-size: 0.95rem; color: var(--text-primary); white-space: pre-wrap;"></p>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px; border-top: 1px solid var(--border-light); pt-3;">
+        <button class="btn btn-secondary btn-sm" id="journal-modal-jump-btn" type="button">📅 Jump to this Day</button>
+        <button class="btn btn-primary btn-sm" onclick="closeAllModals()" type="button">Done Reading</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Application Scripts with Cache Buster -->
+  <script src="js/margoData.js?v=8.9.66"></script>
+  <script src="js/zlogData.js?v=8.9.66"></script>
+  <script src="js/financeData.js?v=8.9.66"></script>
+  <script src="js/podcastData.js?v=8.9.66"></script>
+  <script src="js/pdfStore.js?v=8.9.66"></script>
+  <script src="js/storage.js?v=8.9.66"></script>
+  <script src="js/sync.js?v=8.9.66"></script>
+  <script src="js/pages/coverPage.js?v=8.9.66"></script>
+  <script src="js/pages/coverHubPage.js?v=8.9.66"></script>
+  <script src="js/pages/claimsPage.js?v=8.9.66"></script>
+  <script src="js/pages/zlogPage.js?v=8.9.66"></script>
+  <script src="js/pages/financePage.js?v=8.9.66"></script>
+  <script src="js/podcastAgent.js?v=8.9.66"></script>
+  <script src="js/app.js?v=8.9.66"></script>
+</body>
+</html>

@@ -10,19 +10,20 @@ let currentView = 'sanctuary'; // 'sanctuary' | 'cover' | 'zlog' | 'finance' | '
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
   // Apply saved theme
-  const savedTheme = storage.data.theme;
-  if (savedTheme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
-  }
-  updateThemeIcon();
+  let initialTheme = 'dark';
+  try {
+    const saved = localStorage.getItem('margo-theme') || (typeof storage !== 'undefined' && storage.data && storage.data.theme) || localStorage.getItem('margo-zhub-theme');
+    if (saved === 'light' || saved === 'dark') {
+      initialTheme = saved;
+    }
+  } catch (e) {}
+  setTheme(initialTheme, false);
 
   // Restore saved view (or URL hash)
   function parseHashRoute() {
     const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
     if (!rawHash) {
-      const saved = localStorage.getItem('BOL_ACTIVE_VIEW') || 'cover';
+      const saved = localStorage.getItem('BOL_ACTIVE_VIEW') || 'sanctuary';
       let sub = null;
       if (saved === 'finance' || saved === 'claims') {
         sub = localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn';
@@ -37,9 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
       return { view: 'zlog', subView: sub };
     }
-    if (rawHash.startsWith('finance') || rawHash.startsWith('claims')) {
+    if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money')) {
       const parts = rawHash.split(/[\/\-_?]/);
-      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn'));
+      let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn'));
+      if (sub === 'cash') sub = 'burn';
+      else if (sub === 'cards') sub = 'subscriptions';
+      else if (sub === 'worth') sub = 'runway';
+      else if (sub === 'med') sub = 'claims';
       return { view: 'finance', subView: sub };
     }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
@@ -117,9 +122,11 @@ function switchAppView(viewName, subViewName) {
       if (typeof activeZLogSubTab !== 'undefined') activeZLogSubTab = subViewName;
     }
   } else if (currentView === 'finance') {
-    if (subViewName && ['burn', 'subscriptions', 'claims', 'runway'].includes(subViewName)) {
-      try { localStorage.setItem('BOL_FINANCE_ACTIVE_SUBTAB', subViewName); } catch (e) {}
-      if (typeof activeFinanceSubTab !== 'undefined') activeFinanceSubTab = subViewName;
+    const validTabs = ['burn', 'subscriptions', 'runway', 'claims', 'cash', 'cards', 'worth', 'med'];
+    if (subViewName && validTabs.includes(subViewName)) {
+      const normalized = (subViewName === 'cash' ? 'burn' : (subViewName === 'cards' ? 'subscriptions' : (subViewName === 'worth' ? 'runway' : (subViewName === 'med' ? 'claims' : subViewName))));
+      try { localStorage.setItem('BOL_FINANCE_ACTIVE_SUBTAB', normalized); } catch (e) {}
+      if (typeof activeFinanceSubTab !== 'undefined') activeFinanceSubTab = normalized;
     }
   }
 
@@ -133,7 +140,8 @@ function switchAppView(viewName, subViewName) {
       targetHash = (zTab && zTab !== 'timeline') ? `zhub/${zTab}` : 'zhub';
     } else if (currentView === 'finance') {
       const finTab = subViewName || (typeof activeFinanceSubTab !== 'undefined' ? activeFinanceSubTab : localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB')) || 'burn';
-      targetHash = (finTab && finTab !== 'burn') ? `finance/${finTab}` : 'finance';
+      const normalized = (finTab === 'cash' ? 'burn' : (finTab === 'cards' ? 'subscriptions' : (finTab === 'worth' ? 'runway' : (finTab === 'med' ? 'claims' : finTab))));
+      targetHash = (normalized && normalized !== 'burn') ? `finance/${normalized}` : 'finance';
     } else if (currentView === 'podcasts') {
       targetHash = 'podcasts';
     } else if (currentView === 'sanctuary') {
@@ -156,10 +164,20 @@ function switchAppView(viewName, subViewName) {
   const financeBtn = document.getElementById('nav-btn-finance');
 
   // Update unified nav active states (stable across all pages)
-  if (todayBtn) todayBtn.classList.toggle('active', currentView === 'sanctuary');
-  if (coverBtn) coverBtn.classList.toggle('active', currentView === 'cover');
-  if (zhubBtn) zhubBtn.classList.toggle('active', currentView === 'zlog');
-  if (financeBtn) financeBtn.classList.toggle('active', currentView === 'finance');
+  const updateNavBtn = (btn, isActive) => {
+    if (!btn) return;
+    btn.classList.toggle('active', isActive);
+    btn.classList.toggle('on', isActive);
+    if (isActive) {
+      btn.setAttribute('aria-current', 'page');
+    } else {
+      btn.removeAttribute('aria-current');
+    }
+  };
+  updateNavBtn(todayBtn, currentView === 'sanctuary');
+  updateNavBtn(coverBtn, currentView === 'cover');
+  updateNavBtn(zhubBtn, currentView === 'zlog');
+  updateNavBtn(financeBtn, currentView === 'finance');
 
   // Also support old element IDs if referenced
   const domainBtnSanctuary = document.getElementById('domain-btn-sanctuary');
@@ -170,6 +188,12 @@ function switchAppView(viewName, subViewName) {
   if (domainBtnFinance) domainBtnFinance.classList.toggle('active', currentView === 'finance');
 
   updateEnergyDialUI();
+
+  // Clean up view-specific container classes
+  const sheetContainer = document.getElementById('daily-sheet-container');
+  if (sheetContainer && currentView !== 'finance') {
+    sheetContainer.classList.remove('has-mm-shell');
+  }
 
   // Render view directly into the daily sheet container
   if (currentView === 'zlog') {
@@ -293,7 +317,7 @@ function renderCurrentView() {
   let sub = null;
   if (active === 'zlog' || active === 'zhub') {
     sub = (typeof activeZLogSubTab !== 'undefined') ? activeZLogSubTab : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
-  } else if (active === 'finance' || active === 'claims') {
+  } else if (active === 'finance' || active === 'claims' || active === 'money') {
     sub = (typeof activeFinanceSubTab !== 'undefined') ? activeFinanceSubTab : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn');
   }
   switchAppView(active, sub);
@@ -312,28 +336,122 @@ function refreshAppBadges() {
 /* --------------------------------------------------------------------------
    Theme
    -------------------------------------------------------------------------- */
-function toggleTheme() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  setTheme(isDark ? 'light' : 'dark');
+function getActiveTheme() {
+  const rootTheme = document.documentElement.getAttribute('data-theme');
+  if (rootTheme === 'light' || rootTheme === 'dark') return rootTheme;
+  try {
+    const saved = localStorage.getItem('margo-theme') || (typeof storage !== 'undefined' && storage.data && storage.data.theme) || localStorage.getItem('margo-zhub-theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch (e) {}
+  return 'dark';
 }
 
-function setTheme(theme) {
-  if (theme === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-  } else {
-    document.documentElement.removeAttribute('data-theme');
+function toggleTheme() {
+  const current = getActiveTheme();
+  const next = (current === 'light') ? 'dark' : 'light';
+  setTheme(next);
+}
+
+function setTheme(theme, save = true) {
+  const t = (theme === 'light') ? 'light' : 'dark';
+  const isLight = (t === 'light');
+
+  document.documentElement.setAttribute('data-theme', t);
+
+  // Sync any active Z Hub containers
+  const zhubSanctuary = document.querySelector('.zhub-sanctuary');
+  if (zhubSanctuary) zhubSanctuary.setAttribute('data-theme', t);
+  const zhubWrap = document.querySelector('.zhub-sanctuary-wrap');
+  if (zhubWrap) zhubWrap.setAttribute('data-theme', t);
+
+  // Sync any active Money containers
+  const mmShell = document.querySelector('.mm-shell');
+  if (mmShell) mmShell.setAttribute('data-theme', t);
+
+  if (save) {
+    try {
+      localStorage.setItem('margo-theme', t);
+      localStorage.setItem('margo-zhub-theme', t);
+    } catch (e) {}
+    if (typeof storage !== 'undefined' && storage.data) {
+      storage.data.theme = t;
+      if (typeof storage.saveData === 'function') {
+        storage.saveData();
+      }
+    }
   }
-  storage.data.theme = theme;
-  storage.saveData();
+
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    metaTheme.content = isLight ? '#F2F3FC' : '#0F1020';
+  }
+
   updateThemeIcon();
 }
 
 function updateThemeIcon() {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+  // Global Floating Switcher
+  const globalBtn = document.getElementById('globalThemeBtn') || document.getElementById('themeBtn');
+  const globalIc = document.getElementById('globalThemeIc') || document.getElementById('themeIc');
+
+  if (globalBtn) {
+    globalBtn.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+    const label = isLight ? 'Switch to dark mode' : 'Switch to light mode';
+    globalBtn.setAttribute('aria-label', label);
+    globalBtn.setAttribute('title', label);
+  }
+
+  if (globalIc) {
+    // When in light mode, show the Moon icon to switch to dark.
+    // When in dark mode, show the Sun icon to switch to light.
+    if (isLight) {
+      globalIc.innerHTML = '<path d="M20 14.5A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500z"/>';
+    } else {
+      globalIc.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>';
+    }
+  }
+
+  // Z Hub top header theme button (if rendered)
+  const zhubBtn = document.querySelector('.zhub-sanctuary #themeBtn');
+  if (zhubBtn) {
+    zhubBtn.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+    zhubBtn.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+    const txt = zhubBtn.querySelector('.t');
+    if (txt) txt.textContent = isLight ? 'Dark' : 'Light';
+  }
+
+  // Money sidebar & mobile top bar theme buttons (if rendered)
+  const themeD = document.getElementById('themeD');
+  const themeM = document.getElementById('themeM');
+  const moonSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.500A8 8 0 0 1 9.500 4 8 8 0 1 0 20 14.500z"/></svg>';
+  const sunSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  if (themeD) {
+    themeD.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+    themeD.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+    themeD.innerHTML = `<span class="ic">${isLight ? moonSvg : sunSvg}</span> ${isLight ? 'Dark mode' : 'Light mode'}`;
+  }
+  if (themeM) {
+    themeM.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+    themeM.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+    themeM.innerHTML = `<span class="ic">${isLight ? moonSvg : sunSvg}</span>`;
+  }
+
+  // Compass tactile theme button
+  const mcThemeBtn = document.querySelector('.mc-theme-btn');
+  if (mcThemeBtn) {
+    mcThemeBtn.setAttribute('aria-pressed', isLight ? 'true' : 'false');
+    mcThemeBtn.setAttribute('aria-label', isLight ? 'Switch to dark mode' : 'Switch to light mode');
+    mcThemeBtn.innerHTML = `${isLight ? moonSvg : sunSvg} <span>${isLight ? 'Dark mode' : 'Light mode'}</span>`;
+  }
+
+  // Legacy header icon if present
   const icon = document.getElementById('header-theme-icon');
-  if (!icon) return;
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-  if (window.lucide) lucide.createIcons();
+  if (icon) {
+    icon.setAttribute('data-lucide', isLight ? 'moon' : 'sun');
+    if (window.lucide) lucide.createIcons();
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -721,7 +839,7 @@ function triggerConfetti() {
       particleCount: 85,
       spread: 70,
       origin: { y: 0.7 },
-      colors: ['#4E8765', '#D97768', '#7979B8', '#D49B35', '#3E5C76']
+      colors: ['#5CE1F0', '#FF8FD0', '#7DB8FF', '#2EBF91', '#B5ABFF']
     });
   }
 }

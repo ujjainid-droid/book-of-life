@@ -10,13 +10,25 @@
 
 html, body {
   height: 100%;
-  font-family: var(--font-sans);
-  background-color: var(--bg-app);
-  color: var(--text-primary);
+  font-family: 'Onest', var(--font-sans);
+  background-color: var(--bg, #0F1020);
+  color: var(--text, #EDEEFF);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
   overflow-x: hidden;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible, textarea:focus-visible {
+  outline: 2px solid var(--accent, #5CE1F0);
+  outline-offset: 2px;
 }
 
 /* App Container */
@@ -26,13 +38,157 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 24px 16px 40px;
+  padding: 0;
 }
 
-/* Header / App Bar */
+/* Floating Primary Navigation Dock (Bottom on mobile, Top on desktop >=900px) */
+.aurora-primary-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  padding: 0 16px calc(14px + env(safe-area-inset-bottom));
+  pointer-events: none;
+}
+
+.aurora-nav-pill {
+  max-width: 398px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--card, #181A33);
+  border: 1px solid var(--line, #2E3060);
+  border-radius: 28px;
+  padding: 6px;
+  pointer-events: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+
+.aurora-nav-link {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 22px;
+  color: var(--muted, #9496BC);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+  user-select: none;
+}
+
+.aurora-nav-link:hover {
+  color: var(--text, #EDEEFF);
+}
+
+.aurora-nav-link.on,
+.aurora-nav-link.active {
+  background: var(--accent, #5CE1F0);
+  color: var(--accent-ink, #06202A);
+  font-weight: 800;
+}
+
+@media (min-width: 900px) {
+  .aurora-primary-nav {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    padding: 16px 16px 0;
+    pointer-events: auto;
+    z-index: 10;
+  }
+  .aurora-nav-pill {
+    max-width: 460px;
+  }
+}
+
+:root[data-theme="light"] .aurora-nav-pill {
+  background: #FFFFFF;
+  border-color: var(--line);
+  box-shadow: 0 1px 2px rgba(40, 50, 140, 0.06), 0 8px 24px -12px rgba(40, 50, 140, 0.18);
+}
+
+:root[data-theme="light"] .aurora-nav-link {
+  color: var(--muted);
+}
+
+:root[data-theme="light"] .aurora-nav-link:hover {
+  color: var(--text);
+}
+
+:root[data-theme="light"] .aurora-nav-link.on,
+:root[data-theme="light"] .aurora-nav-link.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow: 0 2px 8px rgba(76, 74, 217, 0.35);
+}
+
+/* Fixed Global Theme Switcher Icon Button (Light / Dark) */
+.themeBtn {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 950;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--chip);
+  background: var(--card);
+  color: var(--text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+:root[data-theme="light"] .themeBtn {
+  background: #FFFFFF;
+  border-color: var(--chip);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(40, 50, 140, 0.06), 0 8px 24px -12px rgba(40, 50, 140, 0.18);
+}
+
+.themeBtn:hover {
+  transform: scale(1.06);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.themeBtn:active {
+  transform: scale(0.94);
+}
+
+.themeBtn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+}
+
+.hidden-date-picker {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Legacy Header / App Bar (kept for sub-components if needed) */
 .book-header {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1280px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -489,16 +645,22 @@ html, body {
   border-color: var(--primary);
 }
 
-/* Single Daily Sheet Wrapper (Unified 1060px Frame Across All Pages) */
+/* Single Daily Sheet Wrapper (Supports 430px Mobile & 1280px Desktop Aurora Dashboard) */
 .daily-sheet-container {
   width: 100%;
-  max-width: 1060px;
+  max-width: 1280px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 0 8px 60px 8px;
+  padding: 68px 16px calc(96px + env(safe-area-inset-bottom));
   box-sizing: border-box;
+}
+
+@media (min-width: 900px) {
+  .daily-sheet-container {
+    padding: 16px 24px 40px;
+  }
 }
 
 .tab-category-title {
