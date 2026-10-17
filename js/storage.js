@@ -1741,20 +1741,57 @@ class StorageManager {
     return this.data.dayGoals[dateStr];
   }
 
-  addDayGoal(text, dateStr = formatDateIso(new Date())) {
+  addDayGoal(text, dateStr = formatDateIso(new Date()), extraMeta = {}) {
     if (!text || !text.trim()) return null;
     const goals = this.getDayGoals(dateStr);
     const newGoal = {
-      id: `dg-${Date.now()}`,
+      id: extraMeta.id || `dg-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
       text: text.trim(),
       completed: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      ...extraMeta
     };
     goals.push(newGoal);
     if (!this.data.dayGoalsUpdatedAt) this.data.dayGoalsUpdatedAt = {};
     this.data.dayGoalsUpdatedAt[dateStr] = Date.now();
     this.saveData();
     return newGoal;
+  }
+
+  addRangeGoal(text, startDate, endDate) {
+    if (!text || !text.trim()) return [];
+    const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-17';
+    let sDate = startDate || todayIso;
+    let eDate = endDate || sDate;
+    if (eDate < sDate) {
+      const tmp = sDate; sDate = eDate; eDate = tmp;
+    }
+    const rangeId = `dgr-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`;
+    const parseFn = (typeof parseDateIso === 'function') ? parseDateIso : (s => new Date(s));
+    const formatFn = (typeof formatDateIso === 'function') ? formatDateIso : (d => d.toISOString().split('T')[0]);
+
+    const sObj = parseFn(sDate);
+    const eObj = parseFn(eDate);
+    const sLabel = sObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const eLabel = eObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const rangeLabel = (sDate === eDate) ? sLabel : `${sLabel} – ${eLabel}`;
+
+    const added = [];
+    const cur = new Date(sObj);
+    let count = 0;
+    while (cur <= eObj && count < 90) {
+      const dStr = formatFn(cur);
+      const g = this.addDayGoal(text, dStr, {
+        rangeId,
+        startDate: sDate,
+        endDate: eDate,
+        rangeLabel
+      });
+      if (g) added.push(g);
+      cur.setDate(cur.getDate() + 1);
+      count++;
+    }
+    return added;
   }
 
   toggleDayGoal(goalId, dateStr = formatDateIso(new Date())) {
@@ -1771,9 +1808,19 @@ class StorageManager {
     return false;
   }
 
-  deleteDayGoal(goalId, dateStr = formatDateIso(new Date())) {
+  deleteDayGoal(goalId, dateStr = formatDateIso(new Date()), deleteEntireRange = true) {
     const goals = this.getDayGoals(dateStr);
-    this.data.dayGoals[dateStr] = goals.filter(g => g.id !== goalId);
+    const target = goals.find(g => g.id === goalId);
+    if (target && target.rangeId && deleteEntireRange && this.data.dayGoals) {
+      const rangeId = target.rangeId;
+      Object.keys(this.data.dayGoals).forEach(d => {
+        if (Array.isArray(this.data.dayGoals[d])) {
+          this.data.dayGoals[d] = this.data.dayGoals[d].filter(g => g.rangeId !== rangeId && g.id !== goalId);
+        }
+      });
+    } else {
+      this.data.dayGoals[dateStr] = goals.filter(g => g.id !== goalId);
+    }
     if (!this.data.dayGoalsUpdatedAt) this.data.dayGoalsUpdatedAt = {};
     this.data.dayGoalsUpdatedAt[dateStr] = Date.now();
     this.saveData();

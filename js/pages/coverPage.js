@@ -582,18 +582,104 @@ function auroraPromptCustomMove(dateStr = activeTrackingDate) {
 }
 window.auroraPromptCustomMove = auroraPromptCustomMove;
 
+let letsDoScope = 'today'; // 'today' | 'range'
+let letsDoStartDate = '';
+let letsDoEndDate = '';
+
+function switchLetsDoScope(scope) {
+  letsDoScope = scope;
+  const row = document.getElementById('lets-do-range-row');
+  const btnToday = document.getElementById('scope-btn-today');
+  const btnRange = document.getElementById('scope-btn-range');
+  if (btnToday) btnToday.classList.toggle('active', scope === 'today');
+  if (btnRange) btnRange.classList.toggle('active', scope === 'range');
+  if (row) {
+    row.style.display = (scope === 'range') ? 'flex' : 'none';
+  }
+  const input = document.getElementById('inline-custom-habit-input');
+  if (input) {
+    input.placeholder = (scope === 'range')
+      ? 'What do you want to accomplish across this date range? Enter custom text…'
+      : 'What do you want to accomplish today? Enter custom text…';
+  }
+}
+window.switchLetsDoScope = switchLetsDoScope;
+
+function applyLetsDoPreset(days) {
+  const startInput = document.getElementById('lets-do-start-date');
+  const endInput = document.getElementById('lets-do-end-date');
+  const baseIso = (startInput && startInput.value) ? startInput.value : activeTrackingDate;
+  const parseFn = (typeof parseDateIso === 'function') ? parseDateIso : (s => new Date(s));
+  const formatFn = (typeof formatDateIso === 'function') ? formatDateIso : (d => d.toISOString().split('T')[0]);
+  const startD = parseFn(baseIso);
+  const endD = new Date(startD);
+  endD.setDate(endD.getDate() + (days - 1));
+  const endIso = formatFn(endD);
+  if (endInput) {
+    endInput.value = endIso;
+  }
+  letsDoEndDate = endIso;
+  if (startInput) {
+    letsDoStartDate = startInput.value;
+  }
+}
+window.applyLetsDoPreset = applyLetsDoPreset;
+
+function updateLetsDoDates() {
+  const startInput = document.getElementById('lets-do-start-date');
+  const endInput = document.getElementById('lets-do-end-date');
+  if (startInput) letsDoStartDate = startInput.value;
+  if (endInput) letsDoEndDate = endInput.value;
+}
+window.updateLetsDoDates = updateLetsDoDates;
+
+function handleLetsDoKeydown(event, dateStr = activeTrackingDate) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    submitInlineCustomHabit(event, dateStr);
+  }
+}
+window.handleLetsDoKeydown = handleLetsDoKeydown;
+
 function submitInlineCustomHabit(event, dateStr = activeTrackingDate) {
   if (event) event.preventDefault();
   const input = document.getElementById('inline-custom-habit-input');
   if (!input) return;
   const val = input.value.trim();
   if (!val) return;
-  storage.addDayGoal(val, dateStr);
-  input.value = '';
-  if (typeof showToast === 'function') {
-    const dObj = parseDateIso(dateStr);
-    const dayLabel = dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-    showToast(`✓ Added habit "${val}" for ${dayLabel} (+15 XP)`);
+
+  if (letsDoScope === 'range') {
+    const startInput = document.getElementById('lets-do-start-date');
+    const endInput = document.getElementById('lets-do-end-date');
+    let startIso = startInput ? startInput.value : dateStr;
+    let endIso = endInput ? endInput.value : dateStr;
+    if (!startIso) startIso = dateStr;
+    if (!endIso) endIso = startIso;
+    if (endIso < startIso) {
+      const tmp = startIso; startIso = endIso; endIso = tmp;
+    }
+
+    const added = storage.addRangeGoal(val, startIso, endIso);
+    input.value = '';
+    if (typeof showToast === 'function') {
+      const parseFn = (typeof parseDateIso === 'function') ? parseDateIso : (s => new Date(s));
+      const startObj = parseFn(startIso);
+      const endObj = parseFn(endIso);
+      const sLbl = startObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const eLbl = endObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      const rLbl = (startIso === endIso) ? sLbl : `${sLbl} – ${eLbl}`;
+      showToast(`✓ Added "${val}" for ${rLbl} (${added.length} days, +15 XP/day)`);
+    }
+  } else {
+    storage.addDayGoal(val, dateStr);
+    input.value = '';
+    if (typeof showToast === 'function') {
+      const parseFn = (typeof parseDateIso === 'function') ? parseDateIso : (s => new Date(s));
+      const dObj = parseFn(dateStr);
+      const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-17';
+      const dayLabel = (dateStr === todayIso) ? 'Today' : dObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+      showToast(`✓ Added "${val}" for ${dayLabel} (+15 XP)`);
+    }
   }
   renderDailySheet();
 }
@@ -1059,6 +1145,9 @@ function renderDailySheet() {
   const shortDayName = isToday
     ? 'today'
     : selectedDateObj.toLocaleDateString('en-US', { weekday: 'short' });
+  const defaultEndD = new Date(selectedDateObj);
+  defaultEndD.setDate(defaultEndD.getDate() + 6);
+  const defaultEndIso = formatDateIso(defaultEndD);
 
   // Day Clock progress
   const pr = isToday ? getAuroraDayProgress() : (activeTrackingDate < todayIso ? 1 : 0);
@@ -1190,29 +1279,81 @@ function renderDailySheet() {
           </div>
         </section>
 
-        <section class="card custom-habits-card" id="section-custom-habits">
+        <section class="card custom-habits-card lets-do-card" id="section-custom-habits">
           <div class="between">
-            <span class="label">CUSTOM HABITS</span>
+            <span class="label">LET'S DO THIS</span>
             <span class="custom-habits-badge" id="customHabitsBadge">${customHabitsDone}/${customHabits.length}</span>
           </div>
 
           <div class="custom-habits-list" id="customHabitsList">
             ${customHabits.length === 0 ? `
-              <div class="custom-habits-empty-hint">No custom habits for ${escapeHtml(shortDayName)} yet.</div>
+              <div class="custom-habits-empty-hint">No items for ${escapeHtml(shortDayName)} yet. Let's do this!</div>
             ` : customHabits.map(g => `
               <div class="custom-habit-row ${g.completed ? 'done' : ''}">
                 <button type="button" class="custom-habit-check" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.completed ? 'Mark incomplete' : 'Complete (+15 XP)'}">
                   ${g.completed ? '✓' : ''}
                 </button>
-                <span class="custom-habit-text" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">${escapeHtml(g.text)}</span>
-                <button type="button" class="custom-habit-del" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="Delete habit">×</button>
+                <div class="custom-habit-content" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                  <span class="custom-habit-text">${escapeHtml(g.text)}</span>
+                  ${g.rangeLabel ? `<span class="custom-habit-range-tag">📅 ${escapeHtml(g.rangeLabel)}</span>` : ''}
+                </div>
+                <button type="button" class="custom-habit-del" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.rangeId ? 'Delete for date range' : 'Delete'}">×</button>
               </div>
             `).join('')}
           </div>
 
-          <form class="custom-habit-add-form" onsubmit="submitInlineCustomHabit(event, '${activeTrackingDate}')">
-            <input type="text" id="inline-custom-habit-input" class="custom-habit-input" placeholder="+ Add habit for ${escapeHtml(shortDayName)}…" required>
-            <button type="submit" class="custom-habit-add-btn" title="Add habit">+</button>
+          <form class="custom-habit-add-form lets-do-form" onsubmit="submitInlineCustomHabit(event, '${activeTrackingDate}')">
+            <!-- Scope Selector: Today vs Date Range -->
+            <div class="lets-do-scope-row">
+              <div class="lets-do-scope-tabs" role="tablist">
+                <button type="button"
+                        class="lets-do-scope-btn ${letsDoScope === 'today' ? 'active' : ''}"
+                        id="scope-btn-today"
+                        onclick="switchLetsDoScope('today')">
+                  Today
+                </button>
+                <button type="button"
+                        class="lets-do-scope-btn ${letsDoScope === 'range' ? 'active' : ''}"
+                        id="scope-btn-range"
+                        onclick="switchLetsDoScope('range')">
+                  Date Range
+                </button>
+              </div>
+            </div>
+
+            <!-- Date Range Selector (expanded when Date Range is selected) -->
+            <div class="lets-do-range-row" id="lets-do-range-row" style="display: ${letsDoScope === 'range' ? 'flex' : 'none'};">
+              <div class="lets-do-range-pickers">
+                <div class="lets-do-date-field">
+                  <span class="lets-do-date-label">From</span>
+                  <input type="date" id="lets-do-start-date" class="lets-do-date-input" value="${letsDoStartDate || activeTrackingDate}" onchange="updateLetsDoDates()">
+                </div>
+                <span class="lets-do-arrow">→</span>
+                <div class="lets-do-date-field">
+                  <span class="lets-do-date-label">To</span>
+                  <input type="date" id="lets-do-end-date" class="lets-do-date-input" value="${letsDoEndDate || defaultEndIso}" onchange="updateLetsDoDates()">
+                </div>
+              </div>
+              <div class="lets-do-quick-presets">
+                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(3)">+3d</button>
+                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(7)">+7d</button>
+                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(14)">+14d</button>
+                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(30)">+30d</button>
+              </div>
+            </div>
+
+            <!-- Space to enter custom text -->
+            <div class="lets-do-input-area">
+              <textarea id="inline-custom-habit-input"
+                        class="custom-habit-textarea"
+                        rows="2"
+                        placeholder="${letsDoScope === 'range' ? 'What do you want to accomplish across this date range? Enter custom text…' : 'What do you want to accomplish today? Enter custom text…'}"
+                        onkeydown="handleLetsDoKeydown(event, '${activeTrackingDate}')"
+                        required></textarea>
+              <button type="submit" class="lets-do-add-btn" id="lets-do-add-btn" title="Add to Let's do this">
+                <span>+</span>
+              </button>
+            </div>
           </form>
         </section>
       </div>
