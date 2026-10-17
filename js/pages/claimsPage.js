@@ -542,11 +542,5 @@ function submitEditClaim(e) {
 
 function updateClaimsHeaderBadge(count) {
   const badge = document.getElementById('domain-claims-badge');
-  if (!badge) return;
-  if (count > 0) {
-    badge.textContent = count;
-    badge.style.display = 'inline-block';
-  } else {
-    badge.style.display = 'none';
-  }
+  if (badge) badge.style.display = 'none';
 }
