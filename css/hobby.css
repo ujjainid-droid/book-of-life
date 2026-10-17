@@ -1,46 +1,64 @@
 /* ==========================================================================
-   margo. — Hobby Tab: Serene & Minimalist (Stripped-Back Architecture)
-   Color Scheme: Nordic Ceramic Rose & Terracotta Blush
-   Visually distinct from Today (Violet), Compass (Slate), Z Hub (Cyan), Money (Green)
+   margo. — Hobby Tab Stylesheet: Clean Minimal Pipeline (Ocean Island Palette)
+   Color Palette: Extracted from Ocean Island / Iceberg Photo
+     #01374A (Deep Abyssal Teal / Navy)
+     #0395A7 (Aegean Marine Cyan)
+     #72ADBF (Glacial Mist Blue)
+     #5E877D (Nordic Slate Sage)
+     #2B5435 (Deep Forest Evergreen)
+   Architecture: Option 1 Tasting Pipeline — stripped of all extra sub text
    Strict Rule: Zero Yellow / Amber, Zero Dartboard Target Icons
    ========================================================================== */
 
 :root {
-  /* Hobby Distinct Theme: Ceramic Rose / Terracotta Blush */
-  --hobby-accent: #FB7185;
-  --hobby-accent-hover: #F43F5E;
-  --hobby-accent-ink: #FFFFFF;
-  --hobby-bg-soft: rgba(251, 113, 133, 0.08);
-  --hobby-border: rgba(251, 113, 133, 0.22);
-  --hobby-border-hover: rgba(251, 113, 133, 0.45);
-  --hobby-pill-active: #E11D48;
+  --iceberg-deep: #01374A;
+  --iceberg-marine: #0395A7;
+  --iceberg-mist: #72ADBF;
+  --iceberg-sage: #5E877D;
+  --iceberg-forest: #2B5435;
+
+  --hobby-accent: #0395A7;
+  --hobby-accent-hover: #028292;
+  --hobby-mist: #72ADBF;
+  --hobby-surface: rgba(1, 55, 74, 0.35);
+  --hobby-surface-card: #0A1C28;
+  --hobby-surface-hover: #102B3B;
+  --hobby-border: rgba(114, 173, 191, 0.22);
+  --hobby-border-hover: rgba(3, 149, 167, 0.55);
 }
 
 :root[data-theme="light"] {
-  --hobby-accent: #E11D48;
-  --hobby-accent-hover: #BE123C;
-  --hobby-accent-ink: #FFFFFF;
-  --hobby-bg-soft: #FFF1F2;
-  --hobby-border: rgba(225, 29, 72, 0.2);
-  --hobby-border-hover: rgba(225, 29, 72, 0.45);
-  --hobby-pill-active: #E11D48;
+  --iceberg-deep: #01374A;
+  --iceberg-marine: #0395A7;
+  --iceberg-mist: #72ADBF;
+  --iceberg-sage: #5E877D;
+  --iceberg-forest: #2B5435;
+
+  --hobby-accent: #0395A7;
+  --hobby-accent-hover: #01374A;
+  --hobby-mist: #01374A;
+  --hobby-surface: #F0F7F9;
+  --hobby-surface-card: #FFFFFF;
+  --hobby-surface-hover: #E3EFF3;
+  --hobby-border: rgba(3, 149, 167, 0.22);
+  --hobby-border-hover: rgba(3, 149, 167, 0.5);
 }
 
-/* Nav Link Special Highlight for Hobby Tab */
+/* Primary Navigation Highlight for Hobby Tab */
 #nav-btn-hobby.active,
 #nav-btn-hobby.on {
-  background: var(--hobby-accent, #FB7185) !important;
+  background: var(--iceberg-marine, #0395A7) !important;
   color: #FFFFFF !important;
 }
 
 .hobby-page-container {
   width: 100%;
-  max-width: 820px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 24px 16px 120px;
+  padding: 20px 16px 120px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
   animation: hobbyFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -49,299 +67,464 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Minimalist Page Header */
-.hobby-header-simple {
+/* Minimal Top Bar */
+.hobby-header-bar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 1px solid var(--line, #2E3060);
-  padding-bottom: 16px;
-  gap: 16px;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 14px;
+  padding: 14px 20px;
+  background: var(--hobby-surface-card);
+  border: 1px solid var(--hobby-border);
+  border-radius: 18px;
+  box-shadow: 0 4px 18px -4px rgba(1, 55, 74, 0.2);
 }
 
-.hobby-title-group h1 {
-  font-size: 26px;
+.hobby-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hobby-brand-badge {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(3, 149, 167, 0.15);
+  color: var(--iceberg-marine);
+  border: 1px solid rgba(3, 149, 167, 0.3);
+}
+
+:root[data-theme="light"] .hobby-brand-badge {
+  background: #E1F4F7;
+  color: #0395A7;
+  border-color: rgba(3, 149, 167, 0.3);
+}
+
+.hobby-main-title {
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--text, #EDEEFF);
   margin: 0;
   display: flex;
   align-items: center;
+  gap: 8px;
+}
+
+.hobby-top-controls {
+  display: flex;
+  align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
-.hobby-title-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--hobby-accent);
-  background: var(--hobby-bg-soft);
-  border: 1px solid var(--hobby-border);
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-
-.hobby-title-group p {
-  font-size: 13.5px;
-  color: var(--muted, #9496BC);
-  margin: 4px 0 0;
-}
-
-/* Mode Switcher Segmented Control */
-.hobby-segmented-bar {
-  display: inline-flex;
-  background: var(--card2, #1C1D3A);
-  border: 1px solid var(--line, #2E3060);
-  border-radius: 999px;
-  padding: 3px;
-  gap: 4px;
-}
-
-:root[data-theme="light"] .hobby-segmented-bar {
-  background: #ECEEFB;
-  border-color: #D5D8F2;
-}
-
-.hobby-segment-btn {
-  padding: 6px 16px;
-  border-radius: 999px;
+.btn-roulette-minimal {
+  background: rgba(3, 149, 167, 0.12);
+  border: 1px solid rgba(114, 173, 191, 0.35);
+  color: var(--iceberg-mist);
   font-size: 12.5px;
   font-weight: 700;
-  color: var(--muted, #9496BC);
-  background: transparent;
-  border: none;
+  padding: 7px 15px;
+  border-radius: 999px;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   transition: all 0.15s ease;
   user-select: none;
 }
 
-.hobby-segment-btn:hover {
-  color: var(--text, #EDEEFF);
-}
-
-.hobby-segment-btn.active {
-  background: var(--hobby-accent);
+.btn-roulette-minimal:hover {
+  background: var(--iceberg-marine);
   color: #FFFFFF;
+  border-color: var(--iceberg-marine);
 }
 
-/* SECTION 1: Active Tastings (Quiet, Generous Space) */
-.hobby-tastings-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+:root[data-theme="light"] .btn-roulette-minimal {
+  background: #E8F6F8;
+  color: #01374A;
+  border-color: rgba(3, 149, 167, 0.35);
 }
 
-.tasting-row-card {
-  background: var(--card, #181A33);
-  border: 1px solid var(--line, #2E3060);
-  border-radius: 16px;
-  padding: 18px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  transition: border-color 0.15s ease;
-}
-
-.tasting-row-card:hover {
-  border-color: var(--hobby-border-hover);
-}
-
-.tasting-row-card.featured {
-  border-left: 3px solid var(--hobby-accent);
-  background: linear-gradient(135deg, var(--hobby-bg-soft), var(--card, #181A33));
-}
-
-.tasting-info-left {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.tasting-name-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.tasting-row-name {
-  font-size: 15.5px;
-  font-weight: 800;
-  color: var(--text, #EDEEFF);
-  margin: 0;
-}
-
-.tasting-row-progress-text {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--hobby-accent);
-  background: var(--hobby-bg-soft);
-  border: 1px solid var(--hobby-border);
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-
-.tasting-row-desc {
-  font-size: 13px;
-  color: var(--muted, #9496BC);
-  margin: 0;
-  line-height: 1.4;
-}
-
-.tasting-actions-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-.btn-quiet-log {
-  padding: 7px 16px;
-  border-radius: 999px;
-  background: var(--hobby-accent);
+.btn-add-minimal-icon {
+  background: var(--iceberg-marine);
   color: #FFFFFF;
   border: none;
   font-size: 12.5px;
   font-weight: 700;
+  padding: 7px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity 0.15s ease;
+  user-select: none;
+}
+
+.btn-add-minimal-icon:hover {
+  opacity: 0.9;
+}
+
+/* Minimal Hero Spotlight: In Tasting (30 Days) */
+.hobby-spotlight-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hobby-spotlight-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--iceberg-mist);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+:root[data-theme="light"] .hobby-spotlight-title {
+  color: #01374A;
+}
+
+.spotlight-runways-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.minimal-tasting-widget {
+  background: var(--hobby-surface-card);
+  border: 1px solid var(--hobby-border);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.minimal-tasting-widget:hover {
+  border-color: var(--iceberg-marine);
+  transform: translateY(-1px);
+}
+
+.minimal-tasting-widget.featured {
+  border-left: 3px solid var(--iceberg-marine);
+  background: linear-gradient(135deg, rgba(3, 149, 167, 0.08), var(--hobby-surface-card));
+}
+
+.minimal-widget-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.minimal-widget-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text, #EDEEFF);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.minimal-widget-badge {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(3, 149, 167, 0.15);
+  color: var(--iceberg-marine);
+  border: 1px solid rgba(3, 149, 167, 0.3);
+  white-space: nowrap;
+}
+
+:root[data-theme="light"] .minimal-widget-badge {
+  background: #E1F4F7;
+  color: #0395A7;
+}
+
+.minimal-widget-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--muted, #9496BC);
+}
+
+.minimal-widget-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(114, 173, 191, 0.14);
+}
+
+.btn-minimal-log {
+  background: var(--iceberg-marine);
+  color: #FFFFFF;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 999px;
   cursor: pointer;
   transition: opacity 0.15s ease;
 }
 
-.btn-quiet-log:hover {
+.btn-minimal-log:hover {
   opacity: 0.9;
 }
 
-.btn-quiet-opt {
-  padding: 6px 12px;
-  border-radius: 8px;
+.minimal-stage-select {
   background: var(--card2, #1C1D3A);
-  color: var(--muted, #9496BC);
-  border: 1px solid var(--line, #2E3060);
-  font-size: 12px;
+  color: var(--text, #EDEEFF);
+  border: 1px solid var(--hobby-border);
+  font-size: 11.5px;
   font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-:root[data-theme="light"] .btn-quiet-opt {
-  background: #ECEEFB;
-  border-color: #D5D8F2;
-  color: #5A5D88;
+:root[data-theme="light"] .minimal-stage-select {
+  background: #F0F7F9;
+  border-color: rgba(3, 149, 167, 0.25);
+  color: #01374A;
 }
 
-/* SECTION 2: Clean Directory (1-Line Minimalist Rows) */
-.hobby-directory-wrap {
+/* Category Filter Bar */
+.hobby-filter-row {
   display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.pillar-section-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.pillar-header-clean {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted, #9496BC);
-  padding-left: 4px;
-}
-
-.clean-item-row {
-  background: var(--card, #181A33);
-  border: 1px solid var(--line, #2E3060);
-  border-radius: 12px;
-  padding: 10px 16px;
-  display: flex;
-  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
-  transition: background 0.15s ease, border-color 0.15s ease;
 }
 
-.clean-item-row:hover {
-  background: var(--card2, #1C1D3A);
-  border-color: var(--hobby-border);
-}
-
-:root[data-theme="light"] .clean-item-row:hover {
-  background: #ECEEFB;
-}
-
-.clean-item-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text, #EDEEFF);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.status-chip-btn {
-  font-size: 11.5px;
-  font-weight: 700;
-  padding: 4px 12px;
+.filter-pill-minimal {
+  padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--hobby-border);
+  background: var(--hobby-surface-card);
+  color: var(--muted, #9496BC);
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.status-chip-btn.status-want {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--muted, #9496BC);
-  border-color: var(--line, #2E3060);
-}
-:root[data-theme="light"] .status-chip-btn.status-want {
-  background: rgba(0, 0, 0, 0.04);
-  border-color: #D5D8F2;
+.filter-pill-minimal:hover {
+  border-color: var(--iceberg-marine);
+  color: var(--text, #EDEEFF);
 }
 
-.status-chip-btn.status-trial {
-  background: var(--hobby-bg-soft);
-  color: var(--hobby-accent);
-  border-color: var(--hobby-border);
+.filter-pill-minimal.active {
+  background: var(--iceberg-marine);
+  color: #FFFFFF;
+  border-color: var(--iceberg-marine);
 }
 
-.status-chip-btn.status-active {
-  background: rgba(46, 191, 145, 0.14);
-  color: #2EBF91;
-  border-color: rgba(46, 191, 145, 0.3);
+.filter-pill-count {
+  font-size: 10.5px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.14);
 }
 
-.status-chip-btn.status-shelved {
-  background: rgba(255, 255, 255, 0.03);
-  color: var(--muted, #9496BC);
-  opacity: 0.7;
+:root[data-theme="light"] .filter-pill-minimal:not(.active) .filter-pill-count {
+  background: rgba(1, 55, 74, 0.08);
+  color: #01374A;
 }
 
-/* Minimalist Add Button Footer */
-.hobby-footer-actions {
+/* 4-Stage Minimal Pipeline Board */
+.minimal-pipeline-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .minimal-pipeline-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .minimal-pipeline-board {
+    grid-template-columns: 1fr;
+  }
+}
+
+.minimal-stage-col {
+  background: var(--hobby-surface-card);
+  border: 1px solid var(--hobby-border);
+  border-radius: 16px;
+  padding: 14px;
   display: flex;
-  justify-content: center;
-  padding-top: 10px;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 380px;
 }
 
-.btn-add-minimal {
-  padding: 8px 20px;
-  border-radius: 999px;
-  border: 1px dashed var(--line, #2E3060);
-  background: transparent;
-  color: var(--muted, #9496BC);
-  font-size: 13px;
+.minimal-stage-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hobby-border);
+}
+
+.minimal-stage-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--iceberg-mist);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.col-want .minimal-stage-title { color: var(--iceberg-mist); }
+.col-trial .minimal-stage-title { color: var(--iceberg-marine); }
+.col-active .minimal-stage-title { color: var(--iceberg-forest); }
+.col-shelved .minimal-stage-title { color: var(--iceberg-sage); }
+
+:root[data-theme="light"] .col-want .minimal-stage-title { color: #01374A; }
+:root[data-theme="light"] .col-trial .minimal-stage-title { color: #0395A7; }
+:root[data-theme="light"] .col-active .minimal-stage-title { color: #2B5435; }
+:root[data-theme="light"] .col-shelved .minimal-stage-title { color: #5E877D; }
+
+.minimal-cards-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Minimal Strip Card (No extra sub text) */
+.minimal-strip-card {
+  background: var(--card2, #1C1D3A);
+  border: 1px solid var(--hobby-border);
+  border-radius: 12px;
+  padding: 9px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.minimal-strip-card:hover {
+  border-color: var(--iceberg-marine);
+  transform: translateY(-1px);
+}
+
+:root[data-theme="light"] .minimal-strip-card {
+  background: #F4F9FB;
+}
+
+.minimal-strip-card.is-pottery {
+  border-left: 3px solid var(--iceberg-marine);
+  background: linear-gradient(135deg, rgba(3, 149, 167, 0.08), var(--card2, #1C1D3A));
+}
+:root[data-theme="light"] .minimal-strip-card.is-pottery {
+  background: linear-gradient(135deg, #E6F6F9, #F4F9FB);
+}
+
+.minimal-card-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+}
+
+.minimal-card-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.minimal-card-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.minimal-card-name {
+  font-size: 13.5px;
   font-weight: 700;
+  color: var(--text, #EDEEFF);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.minimal-card-cat-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--iceberg-sage);
+}
+
+.minimal-stage-move-btn {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--hobby-border);
+  background: transparent;
+  color: var(--iceberg-mist);
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.15s ease;
 }
 
-.btn-add-minimal:hover {
-  border-color: var(--hobby-accent);
-  color: var(--hobby-accent);
-  background: var(--hobby-bg-soft);
+.minimal-stage-move-btn:hover {
+  background: rgba(3, 149, 167, 0.15);
+  border-color: var(--iceberg-marine);
+  color: var(--iceberg-marine);
+}
+
+:root[data-theme="light"] .minimal-stage-move-btn {
+  color: #01374A;
+}
+
+/* Minimal Roulette Spark Banner */
+.minimal-roulette-banner {
+  background: linear-gradient(135deg, rgba(1, 55, 74, 0.4), rgba(3, 149, 167, 0.25));
+  border: 1px solid var(--iceberg-marine);
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.roulette-spark-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text, #EDEEFF);
 }
