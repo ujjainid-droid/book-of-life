@@ -598,9 +598,7 @@ function switchLetsDoScope(scope) {
   }
   const input = document.getElementById('inline-custom-habit-input');
   if (input) {
-    input.placeholder = (scope === 'range')
-      ? 'What do you want to accomplish across this date range? Enter custom text…'
-      : 'What do you want to accomplish today? Enter custom text…';
+    input.placeholder = 'Do something fun!';
   }
 }
 window.switchLetsDoScope = switchLetsDoScope;
@@ -1347,7 +1345,7 @@ function renderDailySheet() {
               <textarea id="inline-custom-habit-input"
                         class="custom-habit-textarea"
                         rows="2"
-                        placeholder="${letsDoScope === 'range' ? 'What do you want to accomplish across this date range? Enter custom text…' : 'What do you want to accomplish today? Enter custom text…'}"
+                        placeholder="Do something fun!"
                         onkeydown="handleLetsDoKeydown(event, '${activeTrackingDate}')"
                         required></textarea>
               <button type="submit" class="lets-do-add-btn" id="lets-do-add-btn" title="Add to Let's do this">
