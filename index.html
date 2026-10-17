@@ -23,16 +23,17 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.1.24">
-  <link rel="stylesheet" href="css/layout.css?v=9.1.24">
-  <link rel="stylesheet" href="css/cover.css?v=9.1.24">
-  <link rel="stylesheet" href="css/habits.css?v=9.1.24">
-  <link rel="stylesheet" href="css/tasks.css?v=9.1.24">
-  <link rel="stylesheet" href="css/settings.css?v=9.1.24">
-  <link rel="stylesheet" href="css/claims.css?v=9.1.24">
-  <link rel="stylesheet" href="css/zlog.css?v=9.1.24">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.1.24">
-  <link rel="stylesheet" href="css/finance.css?v=9.1.24">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.1.25">
+  <link rel="stylesheet" href="css/layout.css?v=9.1.25">
+  <link rel="stylesheet" href="css/cover.css?v=9.1.25">
+  <link rel="stylesheet" href="css/habits.css?v=9.1.25">
+  <link rel="stylesheet" href="css/tasks.css?v=9.1.25">
+  <link rel="stylesheet" href="css/settings.css?v=9.1.25">
+  <link rel="stylesheet" href="css/claims.css?v=9.1.25">
+  <link rel="stylesheet" href="css/zlog.css?v=9.1.25">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.1.25">
+  <link rel="stylesheet" href="css/finance.css?v=9.1.25">
+  <link rel="stylesheet" href="css/hobby.css?v=9.1.25">
 </head>
 <body>
 
@@ -57,6 +58,7 @@
       <div class="aurora-nav-pill" id="main-nav-capsule">
         <a href="#today" id="nav-btn-today" class="aurora-nav-link on active" onclick="event.preventDefault(); switchAppView('sanctuary')" aria-current="page" title="Today: Daily Habits, Momentum &amp; Reflections">Today</a>
         <a href="#compass" id="nav-btn-cover" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('cover')" title="Compass: System Architecture, Life Focus &amp; Long-term Index">Compass</a>
+        <a href="#hobby" id="nav-btn-hobby" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('hobby')" title="Hobby: Tasting Menu &amp; Somatic Exploration">Hobby</a>
         <a href="#zhub" id="nav-btn-zhub" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior &amp; Insights">Z Hub</a>
         <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance')" title="Money: Burn, Subscriptions &amp; Reimbursements">
           <span>Money</span>
@@ -369,23 +371,114 @@
     </div>
   </div>
 
+  <!-- Modal: Log Hobby Session -->
+  <div class="modal-overlay" id="modal-log-hobby" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card hobby-modal-card">
+      <div class="modal-header">
+        <h3 id="log-hobby-modal-title">Log Hobby Session</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form onsubmit="submitLogHobbySession(event)">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" class="form-input" id="log-hobby-date" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Somatic Peace &amp; Presence (1 to 5)</label>
+          <div class="rating-stars-row">
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="radio" name="hobby-peace" value="1"> 1</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="radio" name="hobby-peace" value="2"> 2</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="radio" name="hobby-peace" value="3"> 3</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="radio" name="hobby-peace" value="4"> 4</label>
+            <label style="display:flex;align-items:center;gap:4px;font-size:13px;cursor:pointer;"><input type="radio" name="hobby-peace" value="5" checked> 5 ●</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Session Notes &amp; Retrospective (Optional)</label>
+          <textarea class="form-input" id="log-hobby-notes" rows="3" placeholder="e.g. Centering clay was so grounding. Screen-free flow for 2 hours."></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Session</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Custom Hobby -->
+  <div class="modal-overlay" id="modal-add-hobby" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card hobby-modal-card">
+      <div class="modal-header">
+        <h3>Add New Hobby</h3>
+        <button class="icon-btn" onclick="closeAllModals()"><i data-lucide="x"></i></button>
+      </div>
+      <form onsubmit="submitAddHobby(event)">
+        <div class="form-group">
+          <label class="form-label">Hobby Name</label>
+          <input type="text" class="form-input" id="add-hobby-name" placeholder="e.g. Stained Glass, Archery, Bouldering..." required>
+        </div>
+
+        <div class="hobby-form-grid">
+          <div class="form-group">
+            <label class="form-label">Pillar Category</label>
+            <select class="form-select" id="add-hobby-category">
+              <option value="creative" selected>Creative Flow</option>
+              <option value="sports">Sports &amp; Movement</option>
+              <option value="technical">Technical Craft</option>
+              <option value="misc">Miscellaneous &amp; Horizons</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Initial Stage</label>
+            <select class="form-select" id="add-hobby-stage">
+              <option value="trial" selected>🧪 In Tasting (30 Days)</option>
+              <option value="want">📋 Wishlist (Want to Try)</option>
+              <option value="active">⚡ Active Rhythm</option>
+              <option value="shelved">📦 Shelved (0 Guilt)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Icon / Emoji (Optional)</label>
+          <input type="text" class="form-input" id="add-hobby-icon" placeholder="e.g. 🏺, 🏹, 🧗, 🎻" style="max-width: 140px;">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description / Tasting Goal</label>
+          <input type="text" class="form-input" id="add-hobby-desc" placeholder="e.g. 4 weekend sessions at community arts studio">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeAllModals()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Hobby</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.1.24"></script>
-  <script src="js/zlogData.js?v=9.1.24"></script>
-  <script src="js/financeData.js?v=9.1.24"></script>
-  <script src="js/podcastData.js?v=9.1.24"></script>
-  <script src="js/pdfStore.js?v=9.1.24"></script>
-  <script src="js/storage.js?v=9.1.24"></script>
-  <script src="js/sync.js?v=9.1.24"></script>
-  <script src="js/pages/coverPage.js?v=9.1.24"></script>
-  <script src="js/pages/coverHubPage.js?v=9.1.24"></script>
-  <script src="js/pages/claimsPage.js?v=9.1.24"></script>
-  <script src="js/pages/zlogPage.js?v=9.1.24"></script>
-  <script src="js/pages/financePage.js?v=9.1.24"></script>
-  <script src="js/podcastAgent.js?v=9.1.24"></script>
-  <script src="js/app.js?v=9.1.24"></script>
+  <script src="js/margoData.js?v=9.1.25"></script>
+  <script src="js/zlogData.js?v=9.1.25"></script>
+  <script src="js/financeData.js?v=9.1.25"></script>
+  <script src="js/podcastData.js?v=9.1.25"></script>
+  <script src="js/pdfStore.js?v=9.1.25"></script>
+  <script src="js/storage.js?v=9.1.25"></script>
+  <script src="js/sync.js?v=9.1.25"></script>
+  <script src="js/pages/coverPage.js?v=9.1.25"></script>
+  <script src="js/pages/coverHubPage.js?v=9.1.25"></script>
+  <script src="js/pages/claimsPage.js?v=9.1.25"></script>
+  <script src="js/pages/zlogPage.js?v=9.1.25"></script>
+  <script src="js/pages/financePage.js?v=9.1.25"></script>
+  <script src="js/pages/hobbyPage.js?v=9.1.25"></script>
+  <script src="js/podcastAgent.js?v=9.1.25"></script>
+  <script src="js/app.js?v=9.1.25"></script>
 </body>
 </html>

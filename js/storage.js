@@ -10,6 +10,7 @@ class StorageManager {
     this.applyZeroResetFix();
     this.applyWhereInfoLivesAuditUpdate();
     this.applyCleanClaimsMigration();
+    this.applyHobbiesSeedMigration();
     this.recalculateAllStreaks();
     this.recalculatePointsFromHistory();
   }
@@ -27,6 +28,24 @@ class StorageManager {
       }
     } catch (e) {
       console.warn('Claims clean migration failed', e);
+    }
+  }
+
+  applyHobbiesSeedMigration() {
+    const marker = 'BOL_HOBBIES_SEED_V1';
+    try {
+      if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
+        if (!Array.isArray(this.data.hobbies) || this.data.hobbies.length === 0) {
+          if (typeof DEFAULT_HOBBIES !== 'undefined' && Array.isArray(DEFAULT_HOBBIES)) {
+            this.data.hobbies = JSON.parse(JSON.stringify(DEFAULT_HOBBIES));
+            this.data.hobbiesSeedVersion = 1;
+            this.saveData();
+          }
+        }
+        try { localStorage.setItem(marker, 'true'); } catch (e) {}
+      }
+    } catch (e) {
+      console.warn('Hobbies seed migration failed', e);
     }
   }
 
@@ -236,6 +255,9 @@ class StorageManager {
       weightTarget: 110,
       // Currently Terrorizing active projects list
       activeTerrorizing: ['10k steps', 'Close rings'],
+      // Hobbies Lifecycle & Tasting Pipeline
+      hobbies: (typeof DEFAULT_HOBBIES !== 'undefined') ? JSON.parse(JSON.stringify(DEFAULT_HOBBIES)) : [],
+      hobbiesSeedVersion: 1,
       // Cover Page: Unified Life Architecture & Focus Board (Now vs Later)
       coverCampaigns: {
         now: [
@@ -3348,6 +3370,100 @@ class StorageManager {
       }
     }
     return null;
+  }
+
+  // --- Hobby Management Methods ---
+  getHobbies() {
+    if (!Array.isArray(this.data.hobbies) || this.data.hobbies.length === 0) {
+      if (typeof DEFAULT_HOBBIES !== 'undefined' && Array.isArray(DEFAULT_HOBBIES)) {
+        this.data.hobbies = JSON.parse(JSON.stringify(DEFAULT_HOBBIES));
+        this.saveData();
+      } else {
+        this.data.hobbies = [];
+      }
+    }
+    return this.data.hobbies;
+  }
+
+  getHobby(hobbyId) {
+    return this.getHobbies().find(h => h.id === hobbyId);
+  }
+
+  updateHobbyStage(hobbyId, newStage) {
+    const hobby = this.getHobby(hobbyId);
+    if (!hobby) return null;
+    hobby.stage = newStage;
+    hobby.stageChangedAt = Date.now();
+    if (newStage === 'trial') {
+      if (!hobby.targetSessions) hobby.targetSessions = 4;
+      if (!hobby.sessionsLogged) hobby.sessionsLogged = 0;
+      if (!hobby.daysElapsed) hobby.daysElapsed = 1;
+      if (!hobby.maxDays) hobby.maxDays = 30;
+      hobby.trialStartedAt = Date.now();
+    }
+    this.saveData();
+    return hobby;
+  }
+
+  logHobbySession(hobbyId, sessionData = {}) {
+    const hobby = this.getHobby(hobbyId);
+    if (!hobby) return null;
+    hobby.sessionsLogged = (hobby.sessionsLogged || 0) + 1;
+    if (!Array.isArray(hobby.sessionHistory)) hobby.sessionHistory = [];
+    
+    const entry = {
+      date: sessionData.date || ((typeof formatDateIso === 'function') ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]),
+      notes: sessionData.notes || '',
+      peace: Number(sessionData.peace) || 5,
+      fun: Number(sessionData.fun) || 5,
+      effort: Number(sessionData.effort) || 3,
+      timestamp: Date.now()
+    };
+    hobby.sessionHistory.unshift(entry);
+    if (sessionData.notes) {
+      hobby.notes = sessionData.notes;
+    }
+    this.saveData();
+    return { hobby, entry, completedTarget: (hobby.sessionsLogged >= (hobby.targetSessions || 4)) };
+  }
+
+  saveHobby(hobbyData) {
+    if (!hobbyData) return null;
+    const hobbies = this.getHobbies();
+    let existing = hobbies.find(h => h.id === hobbyData.id);
+    if (existing) {
+      Object.assign(existing, hobbyData);
+    } else {
+      const newHobby = {
+        id: hobbyData.id || `hby-${Date.now()}`,
+        name: (hobbyData.name || '').trim(),
+        category: hobbyData.category || 'creative',
+        stage: hobbyData.stage || 'want',
+        icon: hobbyData.icon || '✨',
+        desc: hobbyData.desc || '',
+        tags: hobbyData.tags || [],
+        targetSessions: Number(hobbyData.targetSessions) || 4,
+        sessionsLogged: Number(hobbyData.sessionsLogged) || 0,
+        daysElapsed: Number(hobbyData.daysElapsed) || 1,
+        maxDays: Number(hobbyData.maxDays) || 30,
+        createdAt: Date.now()
+      };
+      hobbies.unshift(newHobby);
+      existing = newHobby;
+    }
+    this.saveData();
+    return existing;
+  }
+
+  deleteHobby(hobbyId) {
+    const hobbies = this.getHobbies();
+    const idx = hobbies.findIndex(h => h.id === hobbyId);
+    if (idx !== -1) {
+      hobbies.splice(idx, 1);
+      this.saveData();
+      return true;
+    }
+    return false;
   }
 
   resetToDefaults() {

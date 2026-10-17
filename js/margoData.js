@@ -970,5 +970,194 @@ function renderSproutSvg(state = 'potato') {
   `;
 }
 
+/* ==========================================================================
+   MARGO Hobby Taxonomy & Tasting Pipeline Defaults
+   ========================================================================== */
+const DEFAULT_HOBBIES = [
+  // --- IN TASTING (30-DAY RUNWAYS) ---
+  {
+    id: 'hby-pottery',
+    name: 'Pottery & Wheel Throwing ✨',
+    category: 'creative',
+    stage: 'trial',
+    icon: '🏺',
+    sessionsLogged: 2,
+    targetSessions: 4,
+    daysElapsed: 12,
+    maxDays: 30,
+    desc: 'Centering clay on the wheel. Tactile grounding, zero screens, high somatic peace.',
+    tags: ['Tactile', 'Studio', 'Screen-Free'],
+    notes: 'Intro class completed. Forearms engaged, deeply tranquil focus.',
+    rating: 5
+  },
+  {
+    id: 'hby-tennis',
+    name: 'Tennis',
+    category: 'sports',
+    stage: 'trial',
+    icon: '🎾',
+    sessionsLogged: 3,
+    targetSessions: 6,
+    daysElapsed: 21,
+    maxDays: 30,
+    desc: 'Drilling cross-court rallies and footwork cadence. Aerobic burst clears cognitive fatigue.',
+    tags: ['Racquet', 'Cardio', 'Outdoor'],
+    notes: 'Ball machine drills and backhand mechanics feeling crisp.',
+    rating: 5
+  },
+  {
+    id: 'hby-pilates',
+    name: 'Pilates (Reformer)',
+    category: 'sports',
+    stage: 'trial',
+    icon: '🤸',
+    sessionsLogged: 3,
+    targetSessions: 8,
+    daysElapsed: 16,
+    maxDays: 30,
+    desc: 'Core stability, pelvic alignment, and spinal length on reformer carriage.',
+    tags: ['Studio', 'Posture', 'Strength'],
+    notes: 'Great for thoracic mobility and deep core activation.',
+    rating: 4.8
+  },
+
+  // --- ACTIVE RHYTHMS ---
+  {
+    id: 'hby-yoga',
+    name: 'Yoga Flow',
+    category: 'sports',
+    stage: 'active',
+    icon: '🧘',
+    sessionsLogged: 16,
+    targetSessions: 4,
+    daysElapsed: 0,
+    maxDays: 0,
+    desc: 'Weekly restorative flow and deep hip openers. Baseline somatic maintenance.',
+    tags: ['Flow', 'Mobility', 'Weekly'],
+    notes: 'Consistent Sunday evening flow ritual.',
+    rating: 5
+  },
+  {
+    id: 'hby-coding',
+    name: 'Coding & Life OS',
+    category: 'technical',
+    stage: 'active',
+    icon: '💻',
+    sessionsLogged: 24,
+    targetSessions: 4,
+    daysElapsed: 0,
+    maxDays: 0,
+    desc: 'Building generative tools, personal life-OS modules, and interactive craft.',
+    tags: ['Digital', 'Craft', 'Flow'],
+    notes: 'Active weekly tinkering and toolcrafting.',
+    rating: 5
+  },
+  {
+    id: 'hby-bookclub',
+    name: 'Book Club & Reading',
+    category: 'creative',
+    stage: 'active',
+    icon: '📚',
+    sessionsLogged: 8,
+    targetSessions: 2,
+    daysElapsed: 0,
+    maxDays: 0,
+    desc: 'Monthly literary fiction selections and discussion circles.',
+    tags: ['Social', 'Mind', 'Monthly'],
+    notes: 'Finished current book discussion.',
+    rating: 4.5
+  },
+  {
+    id: 'hby-hiking',
+    name: 'Hiking',
+    category: 'sports',
+    stage: 'active',
+    icon: '🥾',
+    sessionsLogged: 7,
+    targetSessions: 2,
+    daysElapsed: 0,
+    maxDays: 0,
+    desc: 'Weekend forest trails, elevation gain, and quiet nature immersions.',
+    tags: ['Nature', 'Cardio', 'Solo/Duo'],
+    notes: 'Fall foliage trail loop completed.',
+    rating: 5
+  },
+
+  // --- SHELVED WITH ZERO GUILT ---
+  {
+    id: 'hby-crochet',
+    name: 'Crochet',
+    category: 'creative',
+    stage: 'shelved',
+    icon: '🪡',
+    sessionsLogged: 5,
+    targetSessions: 4,
+    daysElapsed: 0,
+    maxDays: 0,
+    desc: 'Completed winter scarf project. Shelved with joy until next winter season.',
+    tags: ['Yarn', 'Winter', 'Relaxing'],
+    notes: 'Warm scarf finished; paused gracefully.',
+    rating: 4
+  },
+  {
+    id: 'hby-piano',
+    name: 'Piano',
+    category: 'creative',
+    stage: 'shelved',
+    icon: '🎹',
+    sessionsLogged: 12,
+    targetSessions: 4,
+    daysElapsed: 0,
+    maxDays: 0,
+    desc: 'Practiced classical sonatinas; currently resting to make room for cello trial.',
+    tags: ['Music', 'Solo', 'Paused'],
+    notes: 'Enjoyed Chopin preludes; paused for string chamber trial.',
+    rating: 4.5
+  },
+
+  // --- WISHLIST / WANT TO TRY ---
+  // Sports
+  { id: 'hby-pickleball', name: 'Pickleball', category: 'sports', stage: 'want', icon: '🏓', desc: 'Fast-paced, low-barrier kitchen line dinking and agile footwork.', tags: ['Cardio', 'Social', 'Racquet'] },
+  { id: 'hby-padel', name: 'Padel', category: 'sports', stage: 'want', icon: '🏸', desc: 'Glass-wall doubles racquet sport; tactical angles and high-fun cardio.', tags: ['Racquet', 'Social 4-Player', 'Fast'] },
+  { id: 'hby-squash', name: 'Squash', category: 'sports', stage: 'want', icon: '🎾', desc: 'High-intensity enclosed court cardio with rubber ball rebounds.', tags: ['Cardio', 'Agility', 'Indoor'] },
+  { id: 'hby-kickboxing', name: 'Kickboxing', category: 'sports', stage: 'want', icon: '🥊', desc: 'Combative cardio combinations, heavy bag power strikes, and stress release.', tags: ['Strength', 'High Cardio', 'Release'] },
+  { id: 'hby-jazzercise', name: 'Jazzercise', category: 'sports', stage: 'want', icon: '💃', desc: 'Upbeat dance cardio choreography paired with strength intervals.', tags: ['Dance', 'Rhythm', 'High Energy'] },
+  { id: 'hby-zumba', name: 'Zumba', category: 'sports', stage: 'want', icon: '🎶', desc: 'Latin and world rhythm dance workout for pure joyful sweat.', tags: ['Dance', 'Cardio', 'Fun'] },
+  { id: 'hby-barre', name: 'Barre', category: 'sports', stage: 'want', icon: '🩰', desc: 'Isometric pulses, ballet-inspired posture, and muscle endurance burn.', tags: ['Posture', 'Isometric', 'Tone'] },
+  { id: 'hby-martialarts', name: 'Martial Arts', category: 'sports', stage: 'want', icon: '🥋', desc: 'Discipline, self-defense forms, spatial awareness, and body mechanics.', tags: ['Discipline', 'Agility', 'Focus'] },
+  { id: 'hby-running', name: 'Running', category: 'sports', stage: 'want', icon: '🏃', desc: 'Outdoor tempo strides, aerobic endurance base, and runner’s high.', tags: ['Endurance', 'Solo', 'Cardio'] },
+  { id: 'hby-cycling', name: 'Cycling', category: 'sports', stage: 'want', icon: '🚴', desc: 'Low-impact road or gravel cadence rides and scenic miles.', tags: ['Low-Impact', 'Cardio', 'Outdoor'] },
+  { id: 'hby-archery', name: 'Archery', category: 'sports', stage: 'want', icon: '🏹', desc: 'Somatic stillness, breath cycle control, and precision arrow release.', tags: ['Focus', 'Somatic', 'Breath'] },
+  { id: 'hby-bouldering', name: 'Bouldering', category: 'sports', stage: 'want', icon: '🧗', desc: 'Kinetic problem-solving on climbing walls with zero gear fuss.', tags: ['Strength', 'Tactical', 'Agility'] },
+
+  // Creative
+  { id: 'hby-cello', name: 'Cello & Chamber Ensemble', category: 'creative', stage: 'want', icon: '🎻', desc: 'Acoustic chamber trio or orchestra. Somatic musical flow and focus.', tags: ['Acoustic', 'Flow State', 'Music'] },
+  { id: 'hby-chess', name: 'Chess', category: 'creative', stage: 'want', icon: '♟️', desc: 'Classical opening theory, tactical puzzles, and mindful tempo.', tags: ['Tactics', 'Mind', 'Zen'] },
+  { id: 'hby-drawing', name: 'Drawing & Sketching', category: 'creative', stage: 'want', icon: '✏️', desc: 'Observational pencil sketching, contour lines, and visual journaling.', tags: ['Visual', 'Portable', 'Calm'] },
+  { id: 'hby-painting', name: 'Painting (Watercolor / Acrylic)', category: 'creative', stage: 'want', icon: '🎨', desc: 'Color theory, wet-on-wet pigments, and intuitive brush strokes.', tags: ['Color', 'Expressive', 'Studio'] },
+  { id: 'hby-reading', name: 'Reading (Solo Immersion)', category: 'creative', stage: 'want', icon: '📖', desc: 'Uninterrupted paper-book sessions with a warm beverage.', tags: ['Deep Focus', 'Quiet', 'Screen-Free'] },
+  { id: 'hby-writing', name: 'Creative Writing', category: 'creative', stage: 'want', icon: '✍️', desc: 'Short stories, poetic fragments, and longform personal essays.', tags: ['Voice', 'Solitude', 'Craft'] },
+  { id: 'hby-journaling', name: 'Sensory Journaling', category: 'creative', stage: 'want', icon: '📓', desc: 'Unfiltered stream-of-consciousness brain dumps and retrospective synthesis.', tags: ['Reflect', 'Clarity', 'Daily'] },
+  { id: 'hby-cooking', name: 'Gourmet Cooking', category: 'creative', stage: 'want', icon: '🍳', desc: 'Mastering classic sauces, knife skills, and seasonal ingredient pairing.', tags: ['Sensory', 'Taste', 'Home'] },
+  { id: 'hby-baking', name: 'Artisan Baking', category: 'creative', stage: 'want', icon: '🧁', desc: 'Sourdough scoring, laminated pastries, and precise oven springs.', tags: ['Precision', 'Warmth', 'Sunday'] },
+  { id: 'hby-photography', name: 'Photography', category: 'creative', stage: 'want', icon: '📸', desc: 'Street framing, prime lens focal lengths, and golden hour lighting.', tags: ['Visual', 'Composition', 'Walks'] },
+  { id: 'hby-knitting', name: 'Knitting', category: 'creative', stage: 'want', icon: '🧶', desc: 'Repetitive rhythm of needles, soft merino fibers, and tactile peace.', tags: ['Tactile', 'Cozy', 'Rhythm'] },
+  { id: 'hby-calligraphy', name: 'Calligraphy & Lettering', category: 'creative', stage: 'want', icon: '✒️', desc: 'Mindful nib pressure, ink flow, and elegant typography strokes.', tags: ['Stationery', 'Solo Zen', 'Ink'] },
+
+  // Technical
+  { id: 'hby-webdesign', name: 'Web Design & UI Craft', category: 'technical', stage: 'want', icon: '🌐', desc: 'Fluid typography, micro-interactions, and beautiful minimalist interfaces.', tags: ['Aesthetic', 'Digital', 'Craft'] },
+
+  // Miscellaneous / Horizons
+  { id: 'hby-planning', name: 'Strategic Life Planning', category: 'misc', stage: 'want', icon: '📅', desc: 'Quarterly reviews, vision mapping, and architecture synthesis.', tags: ['Clarity', 'Executive', 'Systems'] },
+  { id: 'hby-organizing', name: 'Curated Organizing', category: 'misc', stage: 'want', icon: '🗂️', desc: 'Minimalist physical spaces, clean drawer grids, and friction reduction.', tags: ['Order', 'Zen', 'Spaces'] },
+  { id: 'hby-graphicdesign', name: 'Graphic Design & Typography', category: 'misc', stage: 'want', icon: '📐', desc: 'Poster composition, font pairings, and geometric layout hierarchy.', tags: ['Visual', 'Layout', 'Print'] },
+  { id: 'hby-publicspeaking', name: 'Public Speaking', category: 'misc', stage: 'want', icon: '🎤', desc: 'Vocal modulation, stage presence, and captivating keynotes.', tags: ['Voice', 'Confidence', 'Leadership'] },
+  { id: 'hby-storytelling', name: 'Storytelling', category: 'misc', stage: 'want', icon: '📖', desc: 'Narrative structure, comedic timing, and emotional resonance in conversation.', tags: ['Connection', 'Social', 'Humor'] },
+  { id: 'hby-fashion', name: 'Fashion & Wardrobe Styling', category: 'misc', stage: 'want', icon: '👗', desc: 'Silhouette experimentation, fabric drape, capsule wardrobe curation.', tags: ['Aesthetic', 'Personal Identity', 'Texture'] },
+  { id: 'hby-traveling', name: 'Slow Traveling', category: 'misc', stage: 'want', icon: '✈️', desc: 'Immersive city walks, architectural tours, and unscripted detours.', tags: ['Adventure', 'Horizon', 'Presence'] },
+  { id: 'hby-cuisines', name: 'Exploring New Cuisines', category: 'misc', stage: 'want', icon: '🍜', desc: 'Hunting authentic regional dishes, spice profiles, and neighborhood gems.', tags: ['Taste', 'Culture', 'Social'] },
+  { id: 'hby-volunteer', name: 'Volunteering', category: 'misc', stage: 'want', icon: '🤝', desc: 'Hands-on community contribution and altruistic purpose.', tags: ['Community', 'Heart', 'Purpose'] }
+];
+
 
 

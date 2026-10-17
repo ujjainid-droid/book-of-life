@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return { view: 'finance', subView: sub };
     }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
+    if (rawHash.startsWith('hobby') || rawHash.startsWith('hobbies')) return { view: 'hobby', subView: null };
     if (rawHash.startsWith('cover') || rawHash.startsWith('compass')) return { view: 'cover', subView: null };
     if (rawHash.startsWith('sanctuary') || rawHash.startsWith('today')) return { view: 'sanctuary', subView: null };
     return { view: rawHash, subView: null };
@@ -110,6 +111,8 @@ function switchAppView(viewName, subViewName) {
   } else if (viewName === 'cover' || viewName === 'compass') {
     currentView = 'cover';
     localStorage.setItem('BOL_LAST_SANCTUARY_VIEW', 'cover');
+  } else if (viewName === 'hobby' || viewName === 'hobbies') {
+    currentView = 'hobby';
   } else {
     currentView = 'sanctuary';
     localStorage.setItem('BOL_LAST_SANCTUARY_VIEW', 'sanctuary');
@@ -135,6 +138,8 @@ function switchAppView(viewName, subViewName) {
     let targetHash = '';
     if (currentView === 'cover') {
       targetHash = 'compass';
+    } else if (currentView === 'hobby') {
+      targetHash = 'hobby';
     } else if (currentView === 'zlog') {
       const zTab = subViewName || (typeof activeZLogSubTab !== 'undefined' ? activeZLogSubTab : localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB')) || 'timeline';
       targetHash = (zTab && zTab !== 'timeline') ? `zhub/${zTab}` : 'zhub';
@@ -160,6 +165,7 @@ function switchAppView(viewName, subViewName) {
 
   const todayBtn = document.getElementById('nav-btn-today');
   const coverBtn = document.getElementById('nav-btn-cover');
+  const hobbyBtn = document.getElementById('nav-btn-hobby');
   const zhubBtn = document.getElementById('nav-btn-zhub');
   const financeBtn = document.getElementById('nav-btn-finance');
 
@@ -176,6 +182,7 @@ function switchAppView(viewName, subViewName) {
   };
   updateNavBtn(todayBtn, currentView === 'sanctuary');
   updateNavBtn(coverBtn, currentView === 'cover');
+  updateNavBtn(hobbyBtn, currentView === 'hobby');
   updateNavBtn(zhubBtn, currentView === 'zlog');
   updateNavBtn(financeBtn, currentView === 'finance');
 
@@ -208,6 +215,8 @@ function switchAppView(viewName, subViewName) {
     if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
   } else if (currentView === 'cover') {
     if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
+  } else if (currentView === 'hobby') {
+    if (typeof renderHobbyPage === 'function') renderHobbyPage();
   } else {
     if (typeof renderDailySheet === 'function') renderDailySheet();
   }

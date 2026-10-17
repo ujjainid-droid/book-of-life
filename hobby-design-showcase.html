@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>margo. — Hobby Tab Visual Design Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Onest:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F1020;
+      --card: #181A33;
+      --card2: #1C1D3A;
+      --card-hover: #22254B;
+      --line: #2E3060;
+      --chip: #3A3C6A;
+      --text: #EDEEFF;
+      --muted: #9496BC;
+      --track: #2A2C54;
+      
+      --violet: #B5ABFF;
+      --violet-bg: #2A2563;
+      --violet-border: rgba(181, 171, 255, 0.35);
+      
+      --cyan: #5CE1F0;
+      --cyan-bg: rgba(92, 225, 240, 0.12);
+      
+      --teal: #2EBF91;
+      --teal-bg: #12372F;
+      --teal-text: #8FE9CB;
+      
+      --rose: #FF8FD0;
+      --rose-bg: #4A1840;
+      --rose-text: #FFE0F3;
+      
+      --blue: #7DB8FF;
+      --blue-bg: #0F2F5E;
+      
+      --amber: #B5ABFF; /* Strict NO yellow rule: using violet/cyan */
+      --danger: #FF6B5B;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 26px;
+      --radius-full: 999px;
+    }
+
+    [data-theme="light"] {
+      --bg: #F2F3FC;
+      --card: #FFFFFF;
+      --card2: #ECEEFB;
+      --card-hover: #E3E6F8;
+      --line: #D5D8F2;
+      --chip: #C3C7EC;
+      --text: #1A1B3A;
+      --muted: #5A5D88;
+      --track: #E0E2F6;
+      
+      --violet: #6552D6;
+      --violet-bg: #ECE8FF;
+      --violet-border: rgba(101, 82, 214, 0.3);
+      
+      --cyan: #2F6FD0;
+      --cyan-bg: #E1EDFF;
+      
+      --teal: #17935F;
+      --teal-bg: #E6F9F2;
+      --teal-text: #0F6B47;
+      
+      --rose: #C92B86;
+      --rose-bg: #FFE3F3;
+      --rose-text: #7A0F4D;
+      
+      --blue: #2F6FD0;
+      --blue-bg: #E1EDFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Onest', -apple-system, sans-serif;
+      padding: 24px 16px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Top Master Bar */
+    .master-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      background: var(--violet-bg);
+      color: var(--violet);
+    }
+
+    .brand-title h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--chip);
+      background: var(--card2);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .btn:hover {
+      background: var(--card-hover);
+      border-color: var(--violet);
+    }
+    .btn.primary {
+      background: var(--violet);
+      color: #0F1020;
+      border-color: var(--violet);
+    }
+    [data-theme="light"] .btn.primary {
+      color: #FFFFFF;
+    }
+
+    /* View Switcher Capsule (Options 1, 2, 3) */
+    .view-switcher-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .view-capsule {
+      display: inline-flex;
+      background: var(--card2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      padding: 5px;
+      gap: 6px;
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.25);
+    }
+
+    .view-tab-btn {
+      padding: 9px 20px;
+      border-radius: var(--radius-full);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .view-tab-btn.active {
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.18);
+    }
+
+    .view-desc-banner {
+      font-size: 13.5px;
+      color: var(--muted);
+      text-align: center;
+      max-width: 680px;
+      line-height: 1.45;
+    }
+    .view-desc-banner strong {
+      color: var(--violet);
+    }
+
+    /* Nav bar representation mockup */
+    .mockup-nav-preview {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+    .mockup-nav-pill {
+      display: flex;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-full);
+      padding: 4px;
+      gap: 4px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+    }
+    .mockup-nav-link {
+      padding: 6px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .mockup-nav-link.active {
+      background: var(--violet);
+      color: #0F1020;
+    }
+    [data-theme="light"] .mockup-nav-link.active {
+      color: #FFFFFF;
+    }
+    .mockup-nav-link.new-tab {
+      background: var(--teal-bg);
+      color: var(--teal-text);
+      border: 1px solid rgba(46, 191, 145, 0.35);
+    }
+
+    /* ==========================================================================
+       OPTION 1: The "Hobby Tasting Menu & Lifecycle Pipeline"
+       ========================================================================== */
+    .option-pane {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeIn 0.25s ease;
+    }
+    .option-pane.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tasting-action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .stage-filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stage-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 12.5px;
+      font-weight: 700;
+      border: 1px solid var(--chip);
+      background: var(--card);
+      color: var(--muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .stage-pill.active {
+      background: var(--violet-bg);
+      color: var(--violet);
+      border-color: var(--violet-border);
+    }
+
+    .stage-count {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      background: var(--track);
+      color: var(--text);
+    }
+
+    .dice-btn {
+      background: linear-gradient(135deg, var(--teal-bg), var(--card));
+      border: 1px solid rgba(46, 191, 145, 0.4);
+      color: var(--teal-text);
+    }
+    .dice-btn:hover {
+      background: var(--teal-bg);
+      border-color: var(--teal);
+    }
+
+    /* Pipeline Columns Grid */
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pipeline-col {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 380px;
+    }
+
+    .pipeline-col-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .pipeline-col-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pipeline-col.want .pipeline-col-title { color: var(--blue); }
+    .pipeline-col.trial .pipeline-col-title { color: var(--rose); }
+    .pipeline-col.active-rhythm .pipeline-col-title { color: var(--teal); }
+    .pipeline-col.shelved .pipeline-col-title { color: var(--muted); }
+
+    .hobby-card-item {
+      background: var(--card2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+      cursor: pointer;
+    }
+    .hobby-card-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--violet);
+    }
+    .hobby-card-item.featured {
+      border-left: 3px solid var(--teal);
+      background: linear-gradient(135deg, rgba(46, 191, 145, 0.08), var(--card2));
+    }
+
+    .hobby-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .hobby-name {
+      font-weight: 800;
+      font-size: 14.5px;
+      color: var(--text);
+    }
+    .hobby-cat-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .cat-sports { background: rgba(125, 184, 255, 0.15); color: var(--blue); }
+    .cat-creative { background: rgba(255, 143, 208, 0.15); color: var(--rose); }
+    .cat-tech { background: rgba(92, 225, 240, 0.15); color: var(--cyan); }
+    .cat-misc { background: rgba(181, 171, 255, 0.15); color: var(--violet); }
+
+    .hobby-desc {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .hobby-footer-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .mini-tag {
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--track);
+      color: var(--text);
+      font-weight: 600;
+    }
+    .move-stage-btn {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--violet);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       OPTION 2: The "Nordic Bento Matrix"
+       ========================================================================== */
+    .bento-hero-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 768px) {
+      .bento-hero-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    .bento-stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .bento-stat-num {
+      font-size: 26px;
+      font-weight: 800;
+      font-family: 'Fraunces', serif;
+    }
+    .bento-stat-label {
+      font-size: 11.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .bento-pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 820px) {
+      .bento-pillars-grid { grid-template-columns: 1fr; }
+    }
+
+    .pillar-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .pillar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pillar-title {
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pillar-badge {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .hobby-chips-matrix {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .matrix-chip {
+      padding: 7px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--card2);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .matrix-chip:hover {
+      background: var(--card-hover);
+      border-color: var(--violet);
+    }
+    .matrix-chip.active-habit {
+      background: var(--teal-bg);
+      border-color: rgba(46, 191, 145, 0.4);
+      color: var(--teal-text);
+      font-weight: 700;
+    }
+    .matrix-chip.highlight-new {
+      background: linear-gradient(135deg, rgba(255, 143, 208, 0.15), var(--card2));
+      border-color: var(--rose);
+      color: var(--rose-text);
+      font-weight: 700;
+    }
+    .chip-star {
+      font-size: 10px;
+    }
+
+    /* ==========================================================================
+       OPTION 3: The "Field Notes Tasting Journal"
+       ========================================================================== */
+    .journal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .journal-entry-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+
+    .journal-entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .journal-date-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .journal-verdict-pill {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .verdict-keep { background: var(--teal-bg); color: var(--teal-text); border: 1px solid rgba(46, 191, 145, 0.35); }
+    .verdict-once { background: var(--violet-bg); color: var(--violet); border: 1px solid var(--violet-border); }
+    .verdict-not { background: rgba(255, 107, 91, 0.15); color: var(--danger); border: 1px solid rgba(255, 107, 91, 0.3); }
+
+    .journal-title {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .journal-reflection-quote {
+      font-family: 'Newsreader', serif;
+      font-style: italic;
+      font-size: 14.5px;
+      line-height: 1.5;
+      color: var(--text);
+      padding-left: 12px;
+      border-left: 2px solid var(--violet);
+    }
+
+    .journal-metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--line);
+    }
+    .metric-meter {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .meter-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .meter-dots {
+      color: var(--violet);
+      font-size: 12px;
+      letter-spacing: 2px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      opacity: 0;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+      padding: 10px 20px;
+      border-radius: var(--radius-full);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrap">
+
+    <!-- Master Header -->
+    <header class="master-header">
+      <div class="brand-title">
+        <span class="brand-badge">Design Preview</span>
+        <h1>New "Hobby" Tab Architecture</h1>
+      </div>
+      <div class="top-controls">
+        <button type="button" class="btn" onclick="toggleTheme()" id="themeToggleBtn">
+          <span>🌙 Dark</span>
+        </button>
+        <button type="button" class="btn primary" onclick="showToast('✨ Ready to implement into margo app!')">
+          <span>Implement Selected</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Nav Bar Location Preview -->
+    <div class="mockup-nav-preview">
+      <div class="mockup-nav-pill">
+        <span class="mockup-nav-link">Today</span>
+        <span class="mockup-nav-link">Compass</span>
+        <span class="mockup-nav-link">Z Hub</span>
+        <span class="mockup-nav-link new-tab">✨ Hobby</span>
+        <span class="mockup-nav-link">Money</span>
+      </div>
+    </div>
+
+    <!-- View Switcher -->
+    <div class="view-switcher-bar">
+      <div class="view-capsule" role="tablist">
+        <button type="button" class="view-tab-btn active" onclick="switchView(1)">
+          <span>Option 1: Tasting Pipeline</span>
+        </button>
+        <button type="button" class="view-tab-btn" onclick="switchView(2)">
+          <span>Option 2: Bento Matrix</span>
+        </button>
+        <button type="button" class="view-tab-btn" onclick="switchView(3)">
+          <span>Option 3: Field Notes Journal</span>
+        </button>
+      </div>
+      <div class="view-desc-banner" id="viewDesc">
+        <strong>Option 1: The Tasting Pipeline</strong> — Zero-guilt lifecycle tracking from curiosity backlog to 30-day trials and active habits.
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         VIEW 1: Tasting Pipeline
+         ==================================================================== -->
+    <section class="option-pane active" id="pane-1">
+      <div class="tasting-action-bar">
+        <div class="stage-filters">
+          <button type="button" class="stage-pill active" onclick="filterCategory('all')">All Pillars <span class="stage-count">36</span></button>
+          <button type="button" class="stage-pill" onclick="filterCategory('sports')">🏃 Sports <span class="stage-count">14</span></button>
+          <button type="button" class="stage-pill" onclick="filterCategory('creative')">🎨 Creative <span class="stage-count">15</span></button>
+          <button type="button" class="stage-pill" onclick="filterCategory('tech')">💻 Technical <span class="stage-count">2</span></button>
+          <button type="button" class="stage-pill" onclick="filterCategory('misc')">🧭 Miscellaneous <span class="stage-count">5</span></button>
+        </div>
+
+        <button type="button" class="btn dice-btn" onclick="randomSurpriseHobby()">
+          <span>🎲 Surprise Me for the Weekend</span>
+        </button>
+      </div>
+
+      <div class="pipeline-grid">
+        <!-- Col 1: Want to Try -->
+        <div class="pipeline-col want">
+          <div class="pipeline-col-header">
+            <span class="pipeline-col-title">💭 Want to Try</span>
+            <span class="stage-count">18</span>
+          </div>
+
+          <!-- Featured: Pottery & Wheel Throwing (Added) -->
+          <article class="hobby-card-item featured" data-cat="creative" onclick="showToast('🏺 Pottery: Centering clay provides a serene, tactile somatic reset.')">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Pottery &amp; Wheel Throwing ✨</span>
+              <span class="hobby-cat-badge cat-creative">Creative</span>
+            </div>
+            <p class="hobby-desc">Tactile somatic reset away from screens. Centering 3 lbs of clay on a wheel.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Studio Class</span>
+              <span class="mini-tag">Solo / Calm</span>
+              <button class="move-stage-btn" onclick="event.stopPropagation(); showToast('Promoted to In Tasting!')">Start Trial →</button>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="sports" onclick="showToast('🎾 Padel: Fastest-growing racquet sport, social and tactical.')">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Padel</span>
+              <span class="hobby-cat-badge cat-sports">Sports</span>
+            </div>
+            <p class="hobby-desc">Glass-wall doubles racquet sport; social, tactical, high-fun cardio.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Racquet</span>
+              <span class="mini-tag">Social 4-Player</span>
+              <button class="move-stage-btn">Start Trial →</button>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="creative" onclick="showToast('🎻 Adult Chamber Ensemble: Deep acoustic flow.')">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Cello / String Ensemble</span>
+              <span class="hobby-cat-badge cat-creative">Creative</span>
+            </div>
+            <p class="hobby-desc">Acoustic chamber trio or orchestra. Somatic musical flow and focus.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Instrument</span>
+              <span class="mini-tag">Flow State</span>
+              <button class="move-stage-btn">Start Trial →</button>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="sports">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Pickleball</span>
+              <span class="hobby-cat-badge cat-sports">Sports</span>
+            </div>
+            <p class="hobby-desc">Fast-paced, low-barrier kitchen line dinking and agile footwork.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Cardio</span>
+              <span class="mini-tag">Social</span>
+              <button class="move-stage-btn">Start Trial →</button>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="creative">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Calligraphy</span>
+              <span class="hobby-cat-badge cat-creative">Creative</span>
+            </div>
+            <p class="hobby-desc">Mindful nib pressure, ink flow, and elegant typography letters.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Stationery</span>
+              <span class="mini-tag">Solo Zen</span>
+              <button class="move-stage-btn">Start Trial →</button>
+            </div>
+          </article>
+        </div>
+
+        <!-- Col 2: In Tasting (Active Trial) -->
+        <div class="pipeline-col trial">
+          <div class="pipeline-col-header">
+            <span class="pipeline-col-title">🧪 In Tasting (30d)</span>
+            <span class="stage-count">3</span>
+          </div>
+
+          <article class="hobby-card-item" data-cat="sports">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Pilates (Reformer)</span>
+              <span class="hobby-cat-badge cat-sports">Sports</span>
+            </div>
+            <p class="hobby-desc">Trial: 2 classes/week at local studio. Core stability and spinal length.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Class 3 of 8</span>
+              <span class="mini-tag" style="color:var(--rose)">Rating: 4.8★</span>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="creative">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Sourdough &amp; Baking</span>
+              <span class="hobby-cat-badge cat-creative">Creative</span>
+            </div>
+            <p class="hobby-desc">Weekend fermentation and scoring patterns. Warm Sunday ritual.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Bake #2</span>
+              <span class="mini-tag">Weekend Morning</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Col 3: Active Rhythm -->
+        <div class="pipeline-col active-rhythm">
+          <div class="pipeline-col-header">
+            <span class="pipeline-col-title">⚡ Active Rhythm</span>
+            <span class="stage-count">4</span>
+          </div>
+
+          <article class="hobby-card-item" data-cat="sports">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Yoga Flow</span>
+              <span class="hobby-cat-badge cat-sports">Sports</span>
+            </div>
+            <p class="hobby-desc">Morning mobility &amp; evening unwind. Essential for physical momentum.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">3x / Week</span>
+              <span class="mini-tag" style="color:var(--teal)">Locked in (+15 XP)</span>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="creative">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Journaling</span>
+              <span class="hobby-cat-badge cat-creative">Creative</span>
+            </div>
+            <p class="hobby-desc">Daily sanctuary reflections &amp; brain dumps before bedtime.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Daily</span>
+              <span class="mini-tag" style="color:var(--violet)">MARGO R</span>
+            </div>
+          </article>
+
+          <article class="hobby-card-item" data-cat="tech">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Coding &amp; Web Design</span>
+              <span class="hobby-cat-badge cat-tech">Tech</span>
+            </div>
+            <p class="hobby-desc">Building personal systems, frontend architecture, and Life OS.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Weekend Flow</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Col 4: Shelved (No Guilt) -->
+        <div class="pipeline-col shelved">
+          <div class="pipeline-col-header">
+            <span class="pipeline-col-title">📦 Shelved / Seasonal</span>
+            <span class="stage-count">2</span>
+          </div>
+
+          <article class="hobby-card-item" data-cat="creative">
+            <div class="hobby-card-top">
+              <span class="hobby-name">Knitting</span>
+              <span class="hobby-cat-badge cat-creative">Creative</span>
+            </div>
+            <p class="hobby-desc">Made 2 scarves last winter. Perfect cozy winter season project.</p>
+            <div class="hobby-footer-tags">
+              <span class="mini-tag">Winter Only</span>
+              <span class="mini-tag">Zero Guilt</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 2: Nordic Bento Matrix
+         ==================================================================== -->
+    <section class="option-pane" id="pane-2">
+      <div class="bento-hero-bar">
+        <div class="bento-stat-card">
+          <span class="bento-stat-num" style="color:var(--blue)">14</span>
+          <span class="bento-stat-label">Sports &amp; Movement</span>
+        </div>
+        <div class="bento-stat-card">
+          <span class="bento-stat-num" style="color:var(--rose)">15</span>
+          <span class="bento-stat-label">Creative &amp; Arts</span>
+        </div>
+        <div class="bento-stat-card">
+          <span class="bento-stat-num" style="color:var(--cyan)">2</span>
+          <span class="bento-stat-label">Technical &amp; Maker</span>
+        </div>
+        <div class="bento-stat-card">
+          <span class="bento-stat-num" style="color:var(--violet)">5</span>
+          <span class="bento-stat-label">Miscellaneous &amp; Soul</span>
+        </div>
+      </div>
+
+      <div class="bento-pillars-grid">
+        <!-- Pillar 1: Sports & Motion -->
+        <div class="pillar-box">
+          <div class="pillar-header">
+            <span class="pillar-title">🏃 Sports &amp; Kinetic Motion</span>
+            <span class="pillar-badge">14 hobbies</span>
+          </div>
+          <div class="hobby-chips-matrix">
+            <span class="matrix-chip active-habit">✓ Yoga Flow</span>
+            <span class="matrix-chip active-habit">✓ Pilates</span>
+            <span class="matrix-chip highlight-new">🎾 Padel <small class="chip-star">Trial</small></span>
+            <span class="matrix-chip">Pickleball</span>
+            <span class="matrix-chip">Tennis</span>
+            <span class="matrix-chip">Squash</span>
+            <span class="matrix-chip">Kickboxing</span>
+            <span class="matrix-chip">Barre</span>
+            <span class="matrix-chip">Martial Arts</span>
+            <span class="matrix-chip">Zumba</span>
+            <span class="matrix-chip">Jazzercise</span>
+            <span class="matrix-chip">Hiking</span>
+            <span class="matrix-chip">Running</span>
+            <span class="matrix-chip">Cycling</span>
+          </div>
+        </div>
+
+        <!-- Pillar 2: Creative & Somatic Arts -->
+        <div class="pillar-box">
+          <div class="pillar-header">
+            <span class="pillar-title">🎨 Creative &amp; Somatic Flow</span>
+            <span class="pillar-badge">15 hobbies</span>
+          </div>
+          <div class="hobby-chips-matrix">
+            <span class="matrix-chip highlight-new">🏺 Pottery &amp; Wheel Throwing ✨</span>
+            <span class="matrix-chip highlight-new">🎻 Cello / Chamber Ensemble</span>
+            <span class="matrix-chip active-habit">✓ Journaling</span>
+            <span class="matrix-chip active-habit">✓ Reading</span>
+            <span class="matrix-chip">Piano</span>
+            <span class="matrix-chip">Painting</span>
+            <span class="matrix-chip">Drawing</span>
+            <span class="matrix-chip">Cooking</span>
+            <span class="matrix-chip">Baking</span>
+            <span class="matrix-chip">Book Club</span>
+            <span class="matrix-chip">Chess</span>
+            <span class="matrix-chip">Writing</span>
+            <span class="matrix-chip">Photography</span>
+            <span class="matrix-chip">Calligraphy</span>
+            <span class="matrix-chip">Crochet</span>
+          </div>
+        </div>
+
+        <!-- Pillar 3: Technical & Digital Craft -->
+        <div class="pillar-box">
+          <div class="pillar-header">
+            <span class="pillar-title">💻 Technical &amp; Digital Craft</span>
+            <span class="pillar-badge">2 hobbies</span>
+          </div>
+          <div class="hobby-chips-matrix">
+            <span class="matrix-chip active-habit">✓ Coding &amp; Architecture</span>
+            <span class="matrix-chip active-habit">✓ Web Design &amp; UI</span>
+          </div>
+        </div>
+
+        <!-- Pillar 4: Miscellaneous & Soul -->
+        <div class="pillar-box">
+          <div class="pillar-header">
+            <span class="pillar-title">🧭 Miscellaneous &amp; Expansion</span>
+            <span class="pillar-badge">5 hobbies</span>
+          </div>
+          <div class="hobby-chips-matrix">
+            <span class="matrix-chip active-habit">✓ Organizing &amp; Systems</span>
+            <span class="matrix-chip">Graphic Design</span>
+            <span class="matrix-chip">Public Speaking</span>
+            <span class="matrix-chip">Fashion &amp; Capsule Styling</span>
+            <span class="matrix-chip">Explore New Cuisines</span>
+            <span class="matrix-chip">Traveling</span>
+            <span class="matrix-chip">Volunteering</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         VIEW 3: Field Notes Tasting Journal
+         ==================================================================== -->
+    <section class="option-pane" id="pane-3">
+      <div class="journal-grid">
+        <!-- Entry 1: Pottery (Added) -->
+        <article class="journal-entry-card" style="border-left: 3px solid var(--rose);">
+          <div class="journal-entry-top">
+            <span class="journal-date-tag">Saturday Workshop · Oct 17</span>
+            <span class="journal-verdict-pill verdict-keep">Keep in Rotation ✨</span>
+          </div>
+          <h3 class="journal-title">🏺 Pottery &amp; Wheel Throwing (Intro Class)</h3>
+          <p class="journal-reflection-quote">
+            "Centering the clay was surprisingly physical and completely hypnotizing. 90 minutes went by in what felt like 10 minutes. Zero thoughts about emails or to-do lists. Made a shallow bowl and an espresso cup."
+          </p>
+          <div class="journal-metrics-row">
+            <div class="metric-meter">
+              <span class="meter-label">Fun &amp; Joy</span>
+              <span class="meter-dots">●●●●●</span>
+            </div>
+            <div class="metric-meter">
+              <span class="meter-label">Mental Peace</span>
+              <span class="meter-dots">●●●●●</span>
+            </div>
+            <div class="metric-meter">
+              <span class="meter-label">Physical Effort</span>
+              <span class="meter-dots">●●●○○</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Entry 2: Padel -->
+        <article class="journal-entry-card" style="border-left: 3px solid var(--teal);">
+          <div class="journal-entry-top">
+            <span class="journal-date-tag">Wednesday Evening · Oct 14</span>
+            <span class="journal-verdict-pill verdict-keep">Keep in Rotation</span>
+          </div>
+          <h3 class="journal-title">🎾 Padel 4-Player Match</h3>
+          <p class="journal-reflection-quote">
+            "Way more intuitive than tennis. The glass walls make rallies last forever. High heart rate, tons of laughs, and very easy on the joints."
+          </p>
+          <div class="journal-metrics-row">
+            <div class="metric-meter">
+              <span class="meter-label">Fun &amp; Joy</span>
+              <span class="meter-dots">●●●●●</span>
+            </div>
+            <div class="metric-meter">
+              <span class="meter-label">Mental Peace</span>
+              <span class="meter-dots">●●●●○</span>
+            </div>
+            <div class="metric-meter">
+              <span class="meter-label">Physical Effort</span>
+              <span class="meter-dots">●●●●○</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Entry 3: Knitting -->
+        <article class="journal-entry-card" style="border-left: 3px solid var(--violet);">
+          <div class="journal-entry-top">
+            <span class="journal-date-tag">Winter Session</span>
+            <span class="journal-verdict-pill verdict-once">Fun Seasonal</span>
+          </div>
+          <h3 class="journal-title">🧶 Merino Wool Scarf</h3>
+          <p class="journal-reflection-quote">
+            "Loved the repetitive rhythm while listening to podcasts, but definitely a winter-only cozy habit. Put needles away until next November with zero guilt."
+          </p>
+          <div class="journal-metrics-row">
+            <div class="metric-meter">
+              <span class="meter-label">Fun &amp; Joy</span>
+              <span class="meter-dots">●●●○○</span>
+            </div>
+            <div class="metric-meter">
+              <span class="meter-label">Mental Peace</span>
+              <span class="meter-dots">●●●●○</span>
+            </div>
+            <div class="metric-meter">
+              <span class="meter-label">Physical Effort</span>
+              <span class="meter-dots">●○○○○</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="toast" id="toast">
+    <span id="toastMsg">✓ Toast message</span>
+  </div>
+
+  <script>
+    const DESCS = {
+      1: '<strong>Option 1: The Tasting Pipeline</strong> — Zero-guilt lifecycle tracking from curiosity backlog to 30-day trials and active habits.',
+      2: '<strong>Option 2: The Nordic Bento Matrix</strong> — Overview of all 36 options categorized into 4 distinct pillars with quick-status tags.',
+      3: '<strong>Option 3: Field Notes Tasting Journal</strong> — Deep-dive memory cards capturing post-session ratings on Fun, Peace, and Effort.'
+    };
+
+    function switchView(optNum) {
+      document.querySelectorAll('.view-tab-btn').forEach((b, idx) => {
+        b.classList.toggle('active', (idx + 1) === optNum);
+      });
+      document.querySelectorAll('.option-pane').forEach((p, idx) => {
+        p.classList.toggle('active', (idx + 1) === optNum);
+      });
+      document.getElementById('viewDesc').innerHTML = DESCS[optNum] || '';
+    }
+
+    function toggleTheme() {
+      const doc = document.documentElement;
+      const isDark = doc.getAttribute('data-theme') === 'dark';
+      const next = isDark ? 'light' : 'dark';
+      doc.setAttribute('data-theme', next);
+      const btn = document.getElementById('themeToggleBtn');
+      if (btn) {
+        btn.innerHTML = (next === 'light') ? '<span>🪞 Day</span>' : '<span>🌙 Dark</span>';
+      }
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.stage-pill').forEach(b => b.classList.remove('active'));
+      event.target.closest('.stage-pill')?.classList.add('active');
+      const cards = document.querySelectorAll('.hobby-card-item');
+      cards.forEach(c => {
+        if (cat === 'all' || c.dataset.cat === cat) {
+          c.style.display = 'flex';
+        } else {
+          c.style.display = 'none';
+        }
+      });
+    }
+
+    const HOBBY_POOL = [
+      '🏺 Pottery & Wheel Throwing — Spend 2 hours centering clay with zero screens.',
+      '🎾 Padel — Book an intro clinic or doubles court with friends.',
+      '🎻 Cello / Chamber Music — Pull out the instrument for a 30-minute acoustic session.',
+      '🧗 Indoor Bouldering — Solve 5 physical movement puzzles at a climbing gym.',
+      '✒️ Modern Calligraphy — 20 minutes of mindful letter strokes and ink flow.',
+      '🥐 Sourdough Baking — Start a warm weekend morning fermentation batch.',
+      '🌿 Ikebana Floral Arranging — Craft a minimalist asymmetric floral structure.'
+    ];
+
+    function randomSurpriseHobby() {
+      const pick = HOBBY_POOL[Math.floor(Math.random() * HOBBY_POOL.length)];
+      showToast(`🎲 Weekend Pick: ${pick}`);
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      const msgEl = document.getElementById('toastMsg');
+      if (!el || !msgEl) return;
+      msgEl.innerHTML = msg;
+      el.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.remove('show');
+      }, 3600);
+    }
+  </script>
+</body>
+</html>
