@@ -1104,13 +1104,13 @@ function renderDailySheet() {
     weightBarWidth = Math.max(4, Math.min(100, Math.round(((currentWeight - 105) / 10) * 100)));
   }
 
-  let weightStatusPillText = '110 LBS TARGET';
+  let weightStatusPillText = 'TARGET 110';
   let weightStatusPillClass = 'idle';
   let weightStatusNote = 'Tap − / + or type to log';
 
   if (isWeightLogged) {
     if (isWeightAtTarget) {
-      weightStatusPillText = '✓ TARGET MET';
+      weightStatusPillText = '✓ MET';
       weightStatusPillClass = 'met';
       weightStatusNote = `On target (${currentWeight.toFixed(1)} lbs) ✨`;
     } else if (weightDiff > 0) {
