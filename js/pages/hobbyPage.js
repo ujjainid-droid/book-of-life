@@ -1,102 +1,47 @@
 /* ==========================================================================
-   margo. — Hobby Page: The Tasting Menu Pipeline (Option 1)
-   Architecture: Zero-guilt somatic and creative exploration with 30-day runways
-   Palette: Cool Lavender / Royal Violet foundation + Nordic Sea Glass Teal
+   margo. — Hobby Page: Serene & Minimalist (Stripped-Back Architecture)
+   Color Scheme: Nordic Ceramic Rose & Terracotta Blush
+   Visually distinct from Today (Violet), Compass (Slate), Z Hub (Cyan), Money (Green)
    Strict Rule: Zero Yellow / Amber, Zero Dartboard Target Icons
    ========================================================================== */
 
-let activeHobbyCategoryFilter = 'all';
-let activeRoulettePick = null;
+let activeHobbyViewMode = 'tasting'; // 'tasting' | 'catalog' | 'shelved'
 let activeLoggingHobbyId = null;
 
-const WEEKEND_ROULETTE_SUGGESTIONS = [
-  {
-    title: '🏺 Pottery & Wheel Throwing',
-    desc: 'Spend 2 hours centering wet clay on a wheel with zero screens and deep breath awareness.',
-    cat: 'creative',
-    hobbyId: 'hby-pottery'
-  },
-  {
-    title: '🏹 Archery Range Session',
-    desc: 'Focus on somatic stillness, shoulder alignment, and the quiet rhythm of the arrow release.',
-    cat: 'sports',
-    hobbyId: 'hby-archery'
-  },
-  {
-    title: '🎻 String Ensemble / Cello Flow',
-    desc: 'Acoustic tactile resonance. Revisit a favorite piece or explore an open chamber group.',
-    cat: 'creative',
-    hobbyId: 'hby-cello'
-  },
-  {
-    title: '🧗 Bouldering Problem-Solving',
-    desc: 'Kinetic physical chess. Grab chalk and try 4 route problems with friends.',
-    cat: 'sports',
-    hobbyId: 'hby-bouldering'
-  },
-  {
-    title: '🏓 Pickleball Doubles Clinic',
-    desc: 'Fast, playful kitchen-line dinking. High-dopamine cardio with zero intimidation.',
-    cat: 'sports',
-    hobbyId: 'hby-pickleball'
-  },
-  {
-    title: '🍜 Exploring Regional Cuisines',
-    desc: 'Pick an unfamiliar neighborhood market or eatery and sample authentic regional noodles or dumplings.',
-    cat: 'misc',
-    hobbyId: 'hby-cuisines'
-  },
-  {
-    title: '🧁 Artisan Sourdough Morning',
-    desc: 'Slow fermentation, precise geometric scoring, and the warm aroma of fresh-baked bread.',
-    cat: 'creative',
-    hobbyId: 'hby-baking'
+function setHobbyViewMode(mode) {
+  activeHobbyViewMode = mode;
+  renderHobbyPage();
+}
+window.setHobbyViewMode = setHobbyViewMode;
+
+function cycleHobbyStage(hobbyId) {
+  if (typeof storage === 'undefined') return;
+  const hobby = storage.getHobby(hobbyId);
+  if (!hobby) return;
+
+  // Simple cycle: want -> trial -> active -> shelved -> want
+  const nextStageMap = {
+    want: 'trial',
+    trial: 'active',
+    active: 'shelved',
+    shelved: 'want'
+  };
+  const newStage = nextStageMap[hobby.stage] || 'want';
+  const updated = storage.updateHobbyStage(hobbyId, newStage);
+
+  if (updated && typeof showToast === 'function') {
+    const labels = {
+      want: 'moved to Wishlist',
+      trial: 'started in 30-Day Tasting',
+      active: 'promoted to Active Rhythm',
+      shelved: 'shelved gracefully'
+    };
+    showToast(`${updated.icon || '✨'} ${updated.name}: ${labels[newStage]}`);
   }
-];
 
-function filterHobbyCategory(cat) {
-  activeHobbyCategoryFilter = cat;
   renderHobbyPage();
 }
-window.filterHobbyCategory = filterHobbyCategory;
-
-function rollWeekendRoulette() {
-  const pick = WEEKEND_ROULETTE_SUGGESTIONS[Math.floor(Math.random() * WEEKEND_ROULETTE_SUGGESTIONS.length)];
-  activeRoulettePick = pick;
-  if (typeof confetti === 'function') {
-    confetti({
-      particleCount: 25,
-      spread: 45,
-      origin: { y: 0.25 },
-      colors: ['#8B5CF6', '#2EBF91', '#5CE1F0', '#B5ABFF']
-    });
-  }
-  renderHobbyPage();
-}
-window.rollWeekendRoulette = rollWeekendRoulette;
-
-function dismissRoulette() {
-  activeRoulettePick = null;
-  renderHobbyPage();
-}
-window.dismissRoulette = dismissRoulette;
-
-function quickMoveHobbyStage(hobbyId, newStage) {
-  if (typeof storage !== 'undefined') {
-    const updated = storage.updateHobbyStage(hobbyId, newStage);
-    if (updated && typeof showToast === 'function') {
-      const stageLabels = {
-        want: 'moved to Wishlist',
-        trial: 'promoted to 30-Day Tasting Runway 🧪',
-        active: 'promoted to Active Rhythm ⚡',
-        shelved: 'shelved with zero guilt 📦'
-      };
-      showToast(`${updated.icon || '✨'} ${updated.name}: ${stageLabels[newStage] || 'stage updated'}`);
-    }
-  }
-  renderHobbyPage();
-}
-window.quickMoveHobbyStage = quickMoveHobbyStage;
+window.cycleHobbyStage = cycleHobbyStage;
 
 function openLogHobbyModal(hobbyId) {
   activeLoggingHobbyId = hobbyId;
@@ -136,12 +81,12 @@ function submitLogHobbySession(event) {
     const res = storage.logHobbySession(activeLoggingHobbyId, sessionData);
     if (res && typeof showToast === 'function') {
       if (res.completedTarget) {
-        showToast(`🎉 Goal achieved! Logged session ${res.hobby.sessionsLogged} of ${res.hobby.targetSessions} for ${res.hobby.name}!`);
+        showToast(`🎉 Goal achieved! ${res.hobby.sessionsLogged}/${res.hobby.targetSessions} sessions complete for ${res.hobby.name}!`);
         if (typeof confetti === 'function') {
           confetti({
-            particleCount: 50,
-            spread: 60,
-            colors: ['#8B5CF6', '#2EBF91', '#5CE1F0']
+            particleCount: 40,
+            spread: 50,
+            colors: ['#FB7185', '#E11D48', '#FDA4AF']
           });
         }
       } else {
@@ -193,7 +138,7 @@ function submitAddHobby(event) {
   if (typeof storage !== 'undefined') {
     storage.saveHobby(hobbyData);
     if (typeof showToast === 'function') {
-      showToast(`Added "${hobbyData.name}" to ${hobbyData.stage === 'trial' ? 'Tasting Runway' : 'Hobby Pipeline'}!`);
+      showToast(`Added "${hobbyData.name}"!`);
     }
   }
 
@@ -220,313 +165,192 @@ function renderHobbyPage() {
 
   const allHobbies = (typeof storage !== 'undefined') ? storage.getHobbies() : [];
 
-  // Filter by category if not 'all'
-  const filteredHobbies = (activeHobbyCategoryFilter === 'all')
-    ? allHobbies
-    : allHobbies.filter(h => h.category === activeHobbyCategoryFilter);
-
-  // Group by stage
-  const wantHobbies = filteredHobbies.filter(h => h.stage === 'want');
-  const trialHobbies = filteredHobbies.filter(h => h.stage === 'trial');
-  const activeHobbies = filteredHobbies.filter(h => h.stage === 'active');
-  const shelvedHobbies = filteredHobbies.filter(h => h.stage === 'shelved');
-
-  // Counts for pills
-  const totalCount = allHobbies.length;
-  const sportsCount = allHobbies.filter(h => h.category === 'sports').length;
-  const creativeCount = allHobbies.filter(h => h.category === 'creative').length;
-  const techCount = allHobbies.filter(h => h.category === 'technical').length;
-  const miscCount = allHobbies.filter(h => h.category === 'misc').length;
+  const trialHobbies = allHobbies.filter(h => h.stage === 'trial');
+  const activeHobbies = allHobbies.filter(h => h.stage === 'active');
+  const shelvedHobbies = allHobbies.filter(h => h.stage === 'shelved');
 
   let html = `
     <div class="hobby-page-container">
       
-      <!-- Master Hero Header -->
-      <section class="hobby-hero-header">
-        <div class="hobby-hero-meta">
-          <div class="hobby-badge-row">
-            <span class="hobby-pill-tag">Option 1 · Tasting Menu</span>
-            <span style="font-size: 12px; color: var(--muted); font-weight: 600;">Zero-Guilt LifeOS</span>
-          </div>
-          <h1 class="hobby-page-title">
-            <span>🎨</span> Hobby Tasting Menu
+      <!-- Minimalist Header -->
+      <header class="hobby-header-simple">
+        <div class="hobby-title-group">
+          <h1>
+            <span>🏺</span> Hobby
+            <span class="hobby-title-tag">Ceramic Rose</span>
           </h1>
-          <p class="hobby-page-subtitle">
-            Curiosity-driven exploration with 30-day runways. Try, rotate, and shelve without streak anxiety.
-          </p>
+          <p>Curiosity-driven somatic &amp; creative tasting runways.</p>
         </div>
 
-        <div class="hobby-hero-actions">
-          <button type="button" class="btn-roulette" onclick="rollWeekendRoulette()" title="Pick a random adventure for this weekend">
-            <span>🎲</span> Surprise Me This Weekend
+        <!-- 3-Segment Clean Control -->
+        <div class="hobby-segmented-bar" role="tablist">
+          <button type="button" class="hobby-segment-btn ${activeHobbyViewMode === 'tasting' ? 'active' : ''}" onclick="setHobbyViewMode('tasting')">
+            Tastings (${trialHobbies.length})
           </button>
-          <button type="button" class="btn-add-hobby" onclick="openAddHobbyModal()">
-            <span>+</span> Add Custom Hobby
+          <button type="button" class="hobby-segment-btn ${activeHobbyViewMode === 'catalog' ? 'active' : ''}" onclick="setHobbyViewMode('catalog')">
+            Catalog (${allHobbies.length})
+          </button>
+          <button type="button" class="hobby-segment-btn ${activeHobbyViewMode === 'shelved' ? 'active' : ''}" onclick="setHobbyViewMode('shelved')">
+            Shelved (${shelvedHobbies.length})
           </button>
         </div>
-      </section>
+      </header>
   `;
 
-  // Roulette Banner if active
-  if (activeRoulettePick) {
+  // VIEW 1: ACTIVE TASTINGS (DEFAULT)
+  if (activeHobbyViewMode === 'tasting') {
     html += `
-      <section class="roulette-overlay-banner">
-        <div class="roulette-banner-text">
-          <span class="roulette-dice-icon">🎲</span>
-          <div>
-            <h4 class="roulette-title">Weekend Tasting Spark: ${escapeHtml(activeRoulettePick.title)}</h4>
-            <p class="roulette-desc">${escapeHtml(activeRoulettePick.desc)}</p>
+      <section class="hobby-tastings-list">
+    `;
+
+    if (trialHobbies.length === 0) {
+      html += `
+        <div style="padding: 32px 20px; text-align: center; background: var(--card); border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); font-size: 13.5px;">
+          No active tastings running right now. Open the <strong>Catalog</strong> tab to start a 30-day runway.
+        </div>
+      `;
+    } else {
+      trialHobbies.forEach(h => {
+        const isPottery = h.id === 'hby-pottery';
+        const target = h.targetSessions || 4;
+        const logged = h.sessionsLogged || 0;
+
+        html += `
+          <div class="tasting-row-card ${isPottery ? 'featured' : ''}">
+            <div class="tasting-info-left">
+              <div class="tasting-name-row">
+                <span style="font-size: 1.15rem;">${h.icon || '✨'}</span>
+                <h3 class="tasting-row-name">${escapeHtml(h.name)}</h3>
+                <span class="tasting-row-progress-text">${logged} of ${target} sessions</span>
+              </div>
+              <p class="tasting-row-desc">${escapeHtml(h.desc || h.notes || '')}</p>
+            </div>
+
+            <div class="tasting-actions-right">
+              <button type="button" class="btn-quiet-log" onclick="openLogHobbyModal('${h.id}')">
+                + Log Session
+              </button>
+              <button type="button" class="btn-quiet-opt" onclick="cycleHobbyStage('${h.id}')" title="Click to rotate stage">
+                Next Stage →
+              </button>
+            </div>
           </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <button type="button" class="btn-log-session" onclick="quickMoveHobbyStage('${activeRoulettePick.hobbyId}', 'trial')">
-            Start 30-Day Tasting →
-          </button>
-          <button type="button" class="btn-roulette-close" onclick="dismissRoulette()" title="Dismiss">✕</button>
-        </div>
+        `;
+      });
+    }
+
+    html += `
       </section>
     `;
   }
 
-  // SPOTLIGHT SECTION: Currently In Tasting (30 Days)
-  html += `
-    <section class="hobby-spotlight-section">
-      <div class="hobby-section-header">
-        <h3 class="hobby-section-title">
-          <span>🧪</span> Currently In Tasting (30-Day Runways)
-        </h3>
-        <span style="font-size: 12px; color: var(--muted); font-weight: 700;">
-          ${trialHobbies.length} Active Runway${trialHobbies.length === 1 ? '' : 's'}
-        </span>
-      </div>
+  // VIEW 2: CLEAN DIRECTORY (CATALOG)
+  else if (activeHobbyViewMode === 'catalog') {
+    const pillars = [
+      { key: 'sports', label: '🏃 Sports & Somatic Movement' },
+      { key: 'creative', label: '🎨 Creative Flow & Craft' },
+      { key: 'technical', label: '💻 Technical Craft' },
+      { key: 'misc', label: '🔮 Horizons & Miscellaneous' }
+    ];
 
-      <div class="hobby-spotlight-grid">
-  `;
-
-  if (trialHobbies.length === 0) {
     html += `
-      <div style="grid-column: 1 / -1; padding: 24px; text-align: center; background: var(--card); border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); font-size: 13.5px;">
-        No active tastings running right now. Click <strong>"Start Trial →"</strong> on any hobby from the wishlist below!
-      </div>
+      <section class="hobby-directory-wrap">
     `;
-  } else {
-    trialHobbies.forEach(h => {
-      const isPottery = h.id === 'hby-pottery';
-      const target = h.targetSessions || 4;
-      const logged = h.sessionsLogged || 0;
-      const progressPercent = Math.min(100, Math.round((logged / target) * 100));
-      const days = h.daysElapsed || 12;
-      const maxDays = h.maxDays || 30;
+
+    pillars.forEach(p => {
+      const items = allHobbies.filter(h => h.category === p.key);
+      if (items.length === 0) return;
 
       html += `
-        <article class="tasting-spotlight-card ${isPottery ? 'featured-card' : ''}">
-          <div class="tasting-card-top">
-            <div class="tasting-card-heading">
-              <span class="tasting-sub-badge">
-                <span>${h.icon || '✨'}</span> ${h.category.toUpperCase()}
-              </span>
-              <h4 class="tasting-hobby-title">${escapeHtml(h.name)}</h4>
+        <div class="pillar-section-group">
+          <div class="pillar-header-clean">${p.label} (${items.length})</div>
+      `;
+
+      items.forEach(h => {
+        const stageLabels = {
+          want: 'Wishlist',
+          trial: 'In Tasting (30d)',
+          active: 'Active Rhythm',
+          shelved: 'Shelved'
+        };
+        const stageLabel = stageLabels[h.stage] || 'Wishlist';
+        const stageClass = `status-${h.stage || 'want'}`;
+
+        html += `
+          <div class="clean-item-row">
+            <div class="clean-item-title">
+              <span>${h.icon || '✨'}</span>
+              <span>${escapeHtml(h.name)}</span>
             </div>
-            <span class="tasting-session-badge">Session ${logged} of ${target}</span>
-          </div>
-
-          <p class="tasting-desc">${escapeHtml(h.desc || h.notes || '')}</p>
-
-          <div class="tasting-progress-track">
-            <div class="tasting-progress-fill" style="width: ${progressPercent}%;"></div>
-          </div>
-
-          <div class="tasting-meta-bar">
-            <span>Day ${days} of ${maxDays}</span>
-            <span>${progressPercent}% Complete</span>
-          </div>
-
-          <div class="tasting-card-controls">
-            <button type="button" class="btn-log-session" onclick="openLogHobbyModal('${h.id}')">
-              <span>+</span> Log Session
+            <button type="button" class="status-chip-btn ${stageClass}" onclick="cycleHobbyStage('${h.id}')" title="Tap to cycle status">
+              ${stageLabel}
             </button>
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <select class="stage-select-dropdown" onchange="quickMoveHobbyStage('${h.id}', this.value)">
-                <option value="trial" selected>🧪 In Tasting</option>
-                <option value="active">⚡ Promote to Active</option>
-                <option value="shelved">📦 Shelve (0 Guilt)</option>
-                <option value="want">📋 Move to Wishlist</option>
-              </select>
-            </div>
           </div>
-        </article>
+        `;
+      });
+
+      html += `
+        </div>
       `;
     });
+
+    html += `
+      </section>
+    `;
   }
 
-  html += `
-      </div>
-    </section>
-  `;
+  // VIEW 3: SHELVED WITH ZERO GUILT
+  else if (activeHobbyViewMode === 'shelved') {
+    html += `
+      <section class="hobby-tastings-list">
+    `;
 
-  // CATEGORY FILTER BAR
-  html += `
-    <section class="hobby-filter-bar">
-      <div class="hobby-category-pills">
-        <button type="button" class="hobby-cat-btn ${activeHobbyCategoryFilter === 'all' ? 'active' : ''}" onclick="filterHobbyCategory('all')">
-          All Pillars <span class="hobby-stage-pill-count">${totalCount}</span>
-        </button>
-        <button type="button" class="hobby-cat-btn ${activeHobbyCategoryFilter === 'sports' ? 'active' : ''}" onclick="filterHobbyCategory('sports')">
-          🏃 Sports <span class="hobby-stage-pill-count">${sportsCount}</span>
-        </button>
-        <button type="button" class="hobby-cat-btn ${activeHobbyCategoryFilter === 'creative' ? 'active' : ''}" onclick="filterHobbyCategory('creative')">
-          🎨 Creative <span class="hobby-stage-pill-count">${creativeCount}</span>
-        </button>
-        <button type="button" class="hobby-cat-btn ${activeHobbyCategoryFilter === 'technical' ? 'active' : ''}" onclick="filterHobbyCategory('technical')">
-          💻 Technical <span class="hobby-stage-pill-count">${techCount}</span>
-        </button>
-        <button type="button" class="hobby-cat-btn ${activeHobbyCategoryFilter === 'misc' ? 'active' : ''}" onclick="filterHobbyCategory('misc')">
-          🔮 Miscellaneous <span class="hobby-stage-pill-count">${miscCount}</span>
-        </button>
-      </div>
-    </section>
-  `;
-
-  // 4-STAGE PIPELINE BOARD
-  html += `
-    <section class="hobby-pipeline-board">
-
-      <!-- Column 1: Wishlist (Want to Try) -->
-      <div class="pipeline-stage-column stage-col-want">
-        <div class="stage-column-header">
-          <span class="stage-col-name">📋 Want to Try</span>
-          <span class="hobby-stage-pill-count">${wantHobbies.length}</span>
+    if (shelvedHobbies.length === 0) {
+      html += `
+        <div style="padding: 32px 20px; text-align: center; background: var(--card); border: 1px dashed var(--line); border-radius: 16px; color: var(--muted); font-size: 13.5px;">
+          No shelved hobbies yet. When you pause a hobby, it rests here peacefully with zero guilt.
         </div>
-        <div class="stage-col-cards">
-  `;
+      `;
+    } else {
+      shelvedHobbies.forEach(h => {
+        html += `
+          <div class="tasting-row-card">
+            <div class="tasting-info-left">
+              <div class="tasting-name-row">
+                <span style="font-size: 1.15rem;">${h.icon || '✨'}</span>
+                <h3 class="tasting-row-name">${escapeHtml(h.name)}</h3>
+                <span style="font-size: 12px; color: var(--muted);">Paused</span>
+              </div>
+              <p class="tasting-row-desc">${escapeHtml(h.desc || h.notes || '')}</p>
+            </div>
 
-  if (wantHobbies.length === 0) {
-    html += `<div style="color: var(--muted); font-size: 12px; text-align: center; padding: 20px;">No items in wishlist</div>`;
-  } else {
-    wantHobbies.forEach(h => {
-      html += renderHobbyCard(h);
-    });
+            <div class="tasting-actions-right">
+              <button type="button" class="btn-quiet-log" onclick="cycleHobbyStage('${h.id}')">
+                Taste Again →
+              </button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    html += `
+      </section>
+    `;
   }
 
+  // Footer Action: Quiet Add Custom Hobby Button
   html += `
-        </div>
-      </div>
+      <footer class="hobby-footer-actions">
+        <button type="button" class="btn-add-minimal" onclick="openAddHobbyModal()">
+          + Add Custom Hobby
+        </button>
+      </footer>
 
-      <!-- Column 2: In Tasting (30d Trials) -->
-      <div class="pipeline-stage-column stage-col-trial">
-        <div class="stage-column-header">
-          <span class="stage-col-name">🧪 In Tasting (30d)</span>
-          <span class="hobby-stage-pill-count">${trialHobbies.length}</span>
-        </div>
-        <div class="stage-col-cards">
-  `;
-
-  if (trialHobbies.length === 0) {
-    html += `<div style="color: var(--muted); font-size: 12px; text-align: center; padding: 20px;">No active trials</div>`;
-  } else {
-    trialHobbies.forEach(h => {
-      html += renderHobbyCard(h);
-    });
-  }
-
-  html += `
-        </div>
-      </div>
-
-      <!-- Column 3: Active Rhythm -->
-      <div class="pipeline-stage-column stage-col-active">
-        <div class="stage-column-header">
-          <span class="stage-col-name">⚡ Active Rhythm</span>
-          <span class="hobby-stage-pill-count">${activeHobbies.length}</span>
-        </div>
-        <div class="stage-col-cards">
-  `;
-
-  if (activeHobbies.length === 0) {
-    html += `<div style="color: var(--muted); font-size: 12px; text-align: center; padding: 20px;">No active rhythms</div>`;
-  } else {
-    activeHobbies.forEach(h => {
-      html += renderHobbyCard(h);
-    });
-  }
-
-  html += `
-        </div>
-      </div>
-
-      <!-- Column 4: Shelved with Zero Guilt -->
-      <div class="pipeline-stage-column stage-col-shelved">
-        <div class="stage-column-header">
-          <span class="stage-col-name">📦 Shelved (0 Guilt)</span>
-          <span class="hobby-stage-pill-count">${shelvedHobbies.length}</span>
-        </div>
-        <div class="stage-col-cards">
-  `;
-
-  if (shelvedHobbies.length === 0) {
-    html += `<div style="color: var(--muted); font-size: 12px; text-align: center; padding: 20px;">No shelved hobbies</div>`;
-  } else {
-    shelvedHobbies.forEach(h => {
-      html += renderHobbyCard(h);
-    });
-  }
-
-  html += `
-        </div>
-      </div>
-
-    </section>
-
-  </div> <!-- /.hobby-page-container -->
+    </div> <!-- /.hobby-page-container -->
   `;
 
   container.innerHTML = html;
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 window.renderHobbyPage = renderHobbyPage;
-
-function renderHobbyCard(h) {
-  const isPottery = h.id === 'hby-pottery';
-  const catClasses = {
-    sports: 'hobby-cat-sports',
-    creative: 'hobby-cat-creative',
-    technical: 'hobby-cat-technical',
-    misc: 'hobby-cat-misc'
-  };
-  const catBadgeClass = catClasses[h.category] || 'hobby-cat-creative';
-
-  let nextActionBtn = '';
-  if (h.stage === 'want') {
-    nextActionBtn = `<button type="button" class="hobby-quick-move-btn" onclick="quickMoveHobbyStage('${h.id}', 'trial')">Start Trial →</button>`;
-  } else if (h.stage === 'trial') {
-    nextActionBtn = `<button type="button" class="hobby-quick-move-btn" onclick="quickMoveHobbyStage('${h.id}', 'active')">Make Active ⚡</button>`;
-  } else if (h.stage === 'active') {
-    nextActionBtn = `<button type="button" class="hobby-quick-move-btn" onclick="quickMoveHobbyStage('${h.id}', 'shelved')">Shelve 📦</button>`;
-  } else if (h.stage === 'shelved') {
-    nextActionBtn = `<button type="button" class="hobby-quick-move-btn" onclick="quickMoveHobbyStage('${h.id}', 'trial')">Taste Again →</button>`;
-  }
-
-  const tagsHtml = (h.tags && h.tags.length > 0)
-    ? h.tags.slice(0, 2).map(t => `<span class="hobby-mini-tag">${escapeHtml(t)}</span>`).join('')
-    : '';
-
-  return `
-    <article class="hobby-item-card ${isPottery ? 'is-pottery' : ''}">
-      <div class="hobby-card-header-row">
-        <h5 class="hobby-card-title">
-          <span>${h.icon || '✨'}</span> ${escapeHtml(h.name)}
-        </h5>
-        <span class="hobby-cat-badge ${catBadgeClass}">${h.category}</span>
-      </div>
-
-      <p class="hobby-card-body">${escapeHtml(h.desc || '')}</p>
-
-      <div class="hobby-card-footer">
-        <div class="hobby-tags-group">
-          ${tagsHtml}
-        </div>
-        ${nextActionBtn}
-      </div>
-    </article>
-  `;
-}
