@@ -652,14 +652,17 @@ function renderFinanceRecurringCommitmentsSection() {
 /**
  * Renders the Executive Dashboard Card (Cash Flow Hero + Net by Month Chart + Inflow/Outflow/Saved + 50/25/25 Split)
  */
-function renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod) {
+function renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod, verifiedOutflow) {
   const hasInflow = (typeof periodInflow === 'number') && periodInflow > 0;
-  const incomeBase = hasInflow ? periodInflow : ((totalFixedSpend + totalFlexSpend) || 22350);
+  const actualOutflow = (typeof verifiedOutflow === 'number' && verifiedOutflow > 0) ? verifiedOutflow : (totalFixedSpend + totalFlexSpend);
+  const incomeBase = hasInflow ? periodInflow : (actualOutflow || 22350);
 
-  // Spend calculations
-  const actualFixedAmt = totalFixedSpend;
-  const actualFlexAmt = totalFlexSpend;
-  const actualOutflow = actualFixedAmt + actualFlexAmt;
+  // Spend calculations: scale fixed/flex to match verified outflow when available
+  const sumRawSpend = (totalFixedSpend + totalFlexSpend) || 1;
+  const actualFixedAmt = (typeof verifiedOutflow === 'number' && verifiedOutflow > 0)
+    ? (totalFixedSpend / sumRawSpend) * verifiedOutflow
+    : totalFixedSpend;
+  const actualFlexAmt = actualOutflow - actualFixedAmt;
   const actualSavingsAmt = incomeBase - actualOutflow;
 
   const rawFixedPct = incomeBase > 0 ? (actualFixedAmt / incomeBase) * 100 : 0;
@@ -913,11 +916,14 @@ function renderFinanceBurn() {
 
     if (mTransactions.length > 0) {
       let mSpend = 0;
+      const transferCats = ['Credit Card Payment', 'Transfer', 'Buy', 'Sell', 'Payment', 'Balance Adjustment'];
+      const incomeCats = ['Income', 'Paychecks', 'Other Income (incl cc reward credits)', 'Interest', 'Dividends & Capital Gains'];
       mTransactions.forEach(t => {
         const amt = parseFloat(t.amount) || 0;
-        const isInc = t.isIncome || t.category === 'Income' || (t.tags && t.tags.includes('Income')) || amt < 0;
-        if (!isInc) {
-          const catName = t.category || 'Discretionary';
+        const catName = t.category || 'Discretionary';
+        const isTransfer = transferCats.includes(catName);
+        const isInc = t.isIncome || incomeCats.includes(catName) || (t.tags && t.tags.includes('Income')) || amt < 0;
+        if (!isInc && !isTransfer) {
           categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
           mSpend += amt;
         }
@@ -1008,16 +1014,13 @@ function renderFinanceBurn() {
   const totalFlexSpend = flexCategories.reduce((sum, c) => sum + c.spent, 0);
   const macroTotal = (totalFixedSpend + totalFlexSpend) || 1;
 
+  // Prefer verified monthly summary outflow when available; fallback to transaction aggregate
+  if (periodOutflow === 0 && totalAggregatedOutflow > 0) {
+    periodOutflow = totalFixedSpend + totalFlexSpend;
+  }
   let netCashFlow = periodInflow - periodOutflow;
   let isPositive = netCashFlow >= 0;
   let savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
-
-  if (totalAggregatedOutflow > 0) {
-    periodOutflow = totalFixedSpend + totalFlexSpend;
-    netCashFlow = periodInflow - periodOutflow;
-    isPositive = netCashFlow >= 0;
-    savingsRate = periodInflow > 0 ? ((netCashFlow / periodInflow) * 100).toFixed(1) : 0;
-  }
 
   const fixedRatioPct = Math.round((totalFixedSpend / macroTotal) * 100);
   const flexRatioPct = 100 - fixedRatioPct;
@@ -1054,7 +1057,7 @@ function renderFinanceBurn() {
       </div>
 
       <!-- Executive Dashboard Card: Cash Flow & 50/25/25 Split -->
-      ${renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod)}
+      ${renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod, periodOutflow)}
 
       <!-- 3. Capital Allocation Matrix / Top Spending Drivers (with Dual View Option) -->
       <div class="finance-section-box" id="finance-drivers-section-box">
@@ -4304,9 +4307,11 @@ function renderFinanceBudget() {
   // Filter transactions for this month
   const monthTxs = transactions.filter(t => t && t.date && t.date.startsWith(selectedBudgetMonth));
   const catActuals = {};
+  const transferCats = ['Credit Card Payment', 'Transfer', 'Buy', 'Sell', 'Payment', 'Balance Adjustment'];
   monthTxs.forEach(t => {
-    if (!t.isIncome) {
-      catActuals[t.category] = (catActuals[t.category] || 0) + (parseFloat(t.amount) || 0);
+    const catName = t.category || '';
+    if (!t.isIncome && !transferCats.includes(catName)) {
+      catActuals[catName] = (catActuals[catName] || 0) + (parseFloat(t.amount) || 0);
     }
   });
 
