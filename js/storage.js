@@ -3028,6 +3028,23 @@ class StorageManager {
       }
     }
 
+    // Seed v9 migration: update category baselines and category budgets to agreed numbers
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 9)) {
+      this.data.finance.seedVersion = 9;
+      if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
+        if (DEFAULT_FINANCE_DATA.categoryBaselines) {
+          this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
+        }
+        if (Array.isArray(DEFAULT_FINANCE_DATA.categories)) {
+          this.data.finance.categories = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categories));
+        }
+      }
+      try {
+        localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+      } catch (e) {}
+      this.saveData();
+    }
+
     if (this.data.finance && (!this.data.finance.netWorth || !Array.isArray(this.data.finance.netWorth.accounts) || this.data.finance.netWorth.accounts.length === 0)) {
       if (typeof DEFAULT_NET_WORTH_DATA !== 'undefined') {
         this.data.finance.netWorth = JSON.parse(JSON.stringify(DEFAULT_NET_WORTH_DATA));

@@ -4426,8 +4426,7 @@ function renderFinanceBudget() {
     if (!c || !c.name) return false;
     if (query && !c.name.toLowerCase().includes(query)) return false;
 
-    const isCore = ['Groceries', 'Shopping', 'Eating out'].includes(c.name);
-    const isFixed = c.classification === 'Fixed Baseline' || ['Mortgage', 'Gas & Electric', 'Internet & Cable', 'Home Security', 'Water', 'Child Care', 'Subscriptions', 'Mocha'].includes(c.name);
+    const isFixed = c.classification === 'Fixed Baseline' || ['Mortgage', 'Gas & Electric', 'Internet & Cable', 'Home Security', 'Water', 'Child Care', 'Subscriptions', 'Mocha', 'Transportation', 'Insurance', 'Cell Phone'].includes(c.name);
 
     if (budgetCategoryFilter === 'core4') return isCore;
     if (budgetCategoryFilter === 'fixed') return isFixed;
@@ -4807,7 +4806,7 @@ function handleApplyStrictDiscretionaryBudget() {
 
   let trimmedSum = 0;
   categories.forEach(c => {
-    const isFixed = c.classification === 'Fixed Baseline' || ['Mortgage', 'Gas & Electric', 'Internet & Cable', 'Home Security', 'Water', 'Child Care', 'Subscriptions', 'Mocha'].includes(c.name);
+    const isFixed = c.classification === 'Fixed Baseline' || ['Mortgage', 'Gas & Electric', 'Internet & Cable', 'Home Security', 'Water', 'Child Care', 'Subscriptions', 'Mocha', 'Transportation', 'Insurance', 'Cell Phone'].includes(c.name);
     if (!isFixed) {
       const oldB = parseFloat(c.budget) || 0;
       const newB = Math.round(oldB * 0.9);

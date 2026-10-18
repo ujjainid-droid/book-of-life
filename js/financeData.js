@@ -3,36 +3,38 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 8,
+  "seedVersion": 9,
   "monthlyTarget": 22350,
   "savingsTarget": 5000,
   "alertSpendRatio": 0.85,
   "categoryBaselines": {
-    "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3": 370.83,
+    "C'mas, Bday, India gifts 🎄 🎂 🇮🇳": 370.83,
     "Camp": 379.38,
     "Cash & ATM": 266.94,
+    "Cell Phone": 20.0,
     "Charity": 68.0,
     "Child Activities": 958.14,
-    "Child Care": 249.9,
+    "Child Care": 450.0,
     "Clothing, Shoes, Jewelry": 477.56,
     "Credit Card + Financial Fees": 764.17,
     "Eating out": 1404.63,
     "Entertainment & Recreation": 17.33,
     "Fitness": 316.33,
-    "Gas & Electric": 1109.24,
+    "Gas & Electric": 1000.0,
     "Groceries": 1519.34,
     "Home Improvement": 158.77,
-    "Home Security": 40.85,
+    "Home Security": 24.51,
     "Home maintenance": 1639.88,
+    "Insurance": 350.0,
     "Internet & Cable": 79.99,
-    "Medical + Dentist": 1343.61,
-    "Mocha": 513.0,
+    "Medical + Dentist": 1400.0,
+    "Mocha": 500.0,
     "Mortgage": 5933.22,
     "School stuff + Education": 189.28,
     "Self care + Grooming": 329.58,
     "Shopping": 1812.11,
-    "Subscriptions": 274.66,
-    "Transportation": 385.2,
+    "Subscriptions": 85.0,
+    "Transportation": 400.0,
     "Travel & Vacation": 1450.02,
     "Water": 296.34
   },
@@ -450,16 +452,16 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-medical---dentist",
       "name": "Medical + Dentist",
-      "budget": 1344,
-      "baseline": 1343.61,
+      "budget": 1400,
+      "baseline": 1400.0,
       "classification": "Healthcare",
       "icon": "heart-pulse"
     },
     {
       "id": "cat-gas---electric",
       "name": "Gas & Electric",
-      "budget": 1109,
-      "baseline": 1109.24,
+      "budget": 1000,
+      "baseline": 1000.0,
       "classification": "Fixed Baseline",
       "icon": "zap"
     },
@@ -482,8 +484,8 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-mocha",
       "name": "Mocha",
-      "budget": 513,
-      "baseline": 513.0,
+      "budget": 500,
+      "baseline": 500.0,
       "classification": "Fixed Baseline",
       "icon": "paw-print"
     },
@@ -496,11 +498,19 @@ const DEFAULT_FINANCE_DATA = {
       "icon": "tag"
     },
     {
+      "id": "cat-child-care",
+      "name": "Child Care",
+      "budget": 450,
+      "baseline": 450.0,
+      "classification": "Fixed Baseline",
+      "icon": "baby"
+    },
+    {
       "id": "cat-transportation",
       "name": "Transportation",
-      "budget": 385,
-      "baseline": 385.2,
-      "classification": "Essential",
+      "budget": 400,
+      "baseline": 400.0,
+      "classification": "Fixed Baseline",
       "icon": "car"
     },
     {
@@ -513,11 +523,19 @@ const DEFAULT_FINANCE_DATA = {
     },
     {
       "id": "cat-c-mas--bday--india-gifts",
-      "name": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "name": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "budget": 371,
       "baseline": 370.83,
       "classification": "Discretionary",
       "icon": "gift"
+    },
+    {
+      "id": "cat-insurance",
+      "name": "Insurance",
+      "budget": 350,
+      "baseline": 350.0,
+      "classification": "Fixed Baseline",
+      "icon": "shield-check"
     },
     {
       "id": "cat-self-care---grooming",
@@ -546,9 +564,9 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-subscriptions",
       "name": "Subscriptions",
-      "budget": 275,
-      "baseline": 274.66,
-      "classification": "Discretionary",
+      "budget": 85,
+      "baseline": 85.0,
+      "classification": "Fixed Baseline",
       "icon": "repeat"
     },
     {
@@ -558,14 +576,6 @@ const DEFAULT_FINANCE_DATA = {
       "baseline": 266.94,
       "classification": "Discretionary",
       "icon": "tag"
-    },
-    {
-      "id": "cat-child-care",
-      "name": "Child Care",
-      "budget": 250,
-      "baseline": 249.9,
-      "classification": "Fixed Baseline",
-      "icon": "baby"
     },
     {
       "id": "cat-school-stuff---education",
@@ -602,10 +612,18 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-home-security",
       "name": "Home Security",
-      "budget": 41,
-      "baseline": 40.85,
+      "budget": 25,
+      "baseline": 24.51,
       "classification": "Fixed Baseline",
       "icon": "shield"
+    },
+    {
+      "id": "cat-cell-phone",
+      "name": "Cell Phone",
+      "budget": 20,
+      "baseline": 20.0,
+      "classification": "Fixed Baseline",
+      "icon": "smartphone"
     },
     {
       "id": "cat-entertainment---recreation",
