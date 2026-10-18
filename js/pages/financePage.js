@@ -4390,7 +4390,7 @@ function renderFinanceBudget() {
       <div class="budget-master-trio">
         
         <!-- Master Income Inflow -->
-        <div class="budget-master-card income-theme">
+        <div class="budget-master-card income-theme" onclick="openBudgetCategoryTransactionsModal('__income_inflow__', 'Verified Income Inflow')" title="Click to inspect all verified income inflow transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #0284C7;">
             <i data-lucide="trending-up"></i>
           </div>
@@ -4425,7 +4425,7 @@ function renderFinanceBudget() {
         </div>
 
         <!-- Master Living Outflows -->
-        <div class="budget-master-card">
+        <div class="budget-master-card" onclick="openBudgetCategoryTransactionsModal('__living_all__', 'All Living Expenses')" title="Click to inspect all living expense transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #7C3AED;">
             <i data-lucide="wallet"></i>
           </div>
@@ -4460,7 +4460,7 @@ function renderFinanceBudget() {
         </div>
 
         <!-- Master Wealth & Savings Envelope -->
-        <div class="budget-master-card savings-theme">
+        <div class="budget-master-card savings-theme" onclick="openBudgetCategoryTransactionsModal('__savings_transfers__', 'Direct Wealth Transfers')" title="Click to inspect direct wealth &amp; savings transfers" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #0D98BA;">
             <i data-lucide="gem"></i>
           </div>
@@ -4500,7 +4500,7 @@ function renderFinanceBudget() {
       <div class="budget-pillars-summer-grid">
         
         <!-- Card 1: Groceries (Peach Coral) -->
-        <div class="summer-widget-card theme-coral">
+        <div class="summer-widget-card theme-coral" onclick="openBudgetCategoryTransactionsModal('Groceries', 'Groceries')" title="Click to view all Groceries transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #EA580C;">
             <i data-lucide="shopping-cart"></i>
           </div>
@@ -4529,7 +4529,7 @@ function renderFinanceBudget() {
         </div>
 
         <!-- Card 2: Eating Out (Ocean Sky Blue) -->
-        <div class="summer-widget-card theme-sky">
+        <div class="summer-widget-card theme-sky" onclick="openBudgetCategoryTransactionsModal('Eating out', 'Eating Out')" title="Click to view all Eating Out transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #0284C7;">
             <i data-lucide="utensils"></i>
           </div>
@@ -4558,7 +4558,7 @@ function renderFinanceBudget() {
         </div>
 
         <!-- Card 3: Shopping (Lavender Sorbet) -->
-        <div class="summer-widget-card theme-lavender">
+        <div class="summer-widget-card theme-lavender" onclick="openBudgetCategoryTransactionsModal('Shopping', 'Shopping')" title="Click to view all Shopping transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #7C3AED;">
             <i data-lucide="shopping-bag"></i>
           </div>
@@ -4587,7 +4587,7 @@ function renderFinanceBudget() {
         </div>
 
         <!-- Card 4: Clothing, Shoes & Jewelry (Seafoam Mint) -->
-        <div class="summer-widget-card theme-mint">
+        <div class="summer-widget-card theme-mint" onclick="openBudgetCategoryTransactionsModal('Clothing, Shoes, Jewelry', 'Clothing &amp; Jewelry')" title="Click to view all Clothing &amp; Jewelry transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #0D98BA;">
             <i data-lucide="shirt"></i>
           </div>
@@ -4616,7 +4616,7 @@ function renderFinanceBudget() {
         </div>
 
         <!-- Card 5: Self care & Grooming (Sunset Rose Guava) -->
-        <div class="summer-widget-card theme-rose">
+        <div class="summer-widget-card theme-rose" onclick="openBudgetCategoryTransactionsModal('Self care + Grooming', 'Self Care &amp; Grooming')" title="Click to view all Self Care &amp; Grooming transactions" style="cursor: pointer;">
           <div class="summer-widget-watermark" style="color: #E11D48;">
             <i data-lucide="sparkles"></i>
           </div>
@@ -4732,9 +4732,9 @@ function renderFinanceBudget() {
               <!-- Dedicated Direct Transfers Row -->
               <tr style="background: rgba(13, 152, 186, 0.06);">
                 <td>
-                  <strong style="color: #0E7490; display: flex; align-items: center; gap: 6px;">
+                  <strong style="color: #0E7490; display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="openBudgetCategoryTransactionsModal('__savings_transfers__', 'Direct Wealth Transfers')" title="Click to inspect all direct wealth transfers">
                     <span>💎</span>
-                    <span>Direct Wealth Transfers (Capital One, Vanguard, Fidelity)</span>
+                    <span style="border-bottom: 1px dotted rgba(14, 116, 144, 0.5);">Direct Wealth Transfers (Capital One, Vanguard, Fidelity)</span>
                   </strong>
                 </td>
                 <td><span class="budget-badge budget-badge-teal">Direct Transfers</span></td>
@@ -4776,9 +4776,9 @@ function renderFinanceBudget() {
                 return `
                   <tr style="${isCore ? 'background: rgba(139, 92, 246, 0.04);' : ''}">
                     <td>
-                      <div style="font-weight: 700; color: var(--text-primary, #1A1B3A); display: flex; align-items: center; gap: 6px;">
+                      <div style="font-weight: 700; color: var(--text-primary, #1A1B3A); display: flex; align-items: center; gap: 6px; cursor: pointer;" onclick="openBudgetCategoryTransactionsModal('${escapeHtml(c.name)}', '${escapeHtml(c.name)}')" title="Click to view all ${escapeHtml(c.name)} transactions">
                         <span>${c.icon ? `<i data-lucide="${c.icon}" style="width: 14px; height: 14px; color: #7C3AED;"></i>` : '▫️'}</span>
-                        <span>${escapeHtml(c.name)}</span>
+                        <span style="border-bottom: 1px dotted rgba(139, 92, 246, 0.4);">${escapeHtml(c.name)}</span>
                       </div>
                     </td>
                     <td><span class="budget-badge ${classBadgeCls}">${escapeHtml(c.classification || 'Discretionary')}</span></td>
@@ -4975,4 +4975,372 @@ function exportBudgetCSV() {
 }
 window.exportBudgetCSV = exportBudgetCSV;
 window.renderFinanceBudget = renderFinanceBudget;
+
+/* ==========================================================================
+   Budget Category Transaction Drill-Down Modal
+   ========================================================================== */
+
+let currentBudgetModalCategory = null;
+let currentBudgetModalTitle = null;
+let currentBudgetModalSearch = '';
+let budgetModalKeydownHandler = null;
+
+function formatBudgetTxDate(dStr) {
+  if (!dStr) return '';
+  const parts = dStr.split('-');
+  if (parts.length < 3) return dStr;
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const m = parseInt(parts[1], 10);
+  const d = parseInt(parts[2], 10);
+  const mon = months[m - 1] || parts[1];
+  return `${mon} ${d}`;
+}
+
+function getBudgetCategoryTransactions(categoryKey, month) {
+  const fin = (typeof storage !== 'undefined' && typeof storage.getFinanceData === 'function')
+    ? storage.getFinanceData()
+    : (typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {});
+  const transactions = Array.isArray(fin.transactions) ? fin.transactions : [];
+  const targetMonth = month || selectedBudgetMonth || '2026-10';
+
+  const monthTxs = transactions.filter(t => t && t.date && t.date.startsWith(targetMonth));
+
+  if (categoryKey === '__income_inflow__') {
+    const incCats = ['Income', 'Paychecks', 'Other Income (incl cc reward credits)', 'Interest', 'Dividends & Capital Gains'];
+    return monthTxs.filter(t => t.isIncome || incCats.includes(t.category) || (parseFloat(t.amount) || 0) < 0)
+      .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  }
+
+  if (categoryKey === '__savings_transfers__') {
+    return monthTxs.filter(t => {
+      const act = (t.account || '').toLowerCase();
+      const merch = (t.merchant || '').toLowerCase();
+      const cat = (t.category || '').toLowerCase();
+      if (act.includes('401(k)') || merch.includes('401(k)') || cat.includes('plan contribution')) return false;
+      return (
+        ((act.includes('360 performance') || act.includes('capital one') || merch.includes('capital one')) && (t.isIncome || cat.includes('transfer') || cat.includes('deposit'))) ||
+        ((merch.includes('vanguard') || act.includes('vanguard') || merch.includes('fidelity') || act.includes('fidelity') || merch.includes('schwab') || act.includes('schwab') || act.includes('brokerage')) && (cat.includes('transfer') || cat.includes('invest') || t.amount === 750 || t.amount === 600 || t.amount === 800))
+      );
+    }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  }
+
+  if (categoryKey === '__living_all__') {
+    const transferCats = ['Credit Card Payment', 'Transfer', 'Buy', 'Sell', 'Payment', 'Balance Adjustment'];
+    return monthTxs.filter(t => {
+      if (t.isIncome || transferCats.includes(t.category || '')) return false;
+      const act = (t.account || '').toLowerCase();
+      const merch = (t.merchant || '').toLowerCase();
+      const cat = (t.category || '').toLowerCase();
+      if (act.includes('360 performance') || act.includes('vanguard') || act.includes('fidelity') || act.includes('schwab')) {
+        if (cat.includes('transfer') || cat.includes('invest') || t.amount === 750 || t.amount === 600 || t.amount === 800) return false;
+      }
+      return true;
+    }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  }
+
+  const catTarget = (categoryKey || '').toLowerCase().trim();
+  return monthTxs.filter(t => {
+    const tCat = (t.category || '').toLowerCase().trim();
+    if (catTarget === 'groceries') {
+      return tCat === 'groceries';
+    } else if (catTarget === 'eating out' || catTarget === 'dining') {
+      return tCat === 'eating out' || tCat === 'dining';
+    } else if (catTarget === 'shopping') {
+      return tCat === 'shopping';
+    } else if (catTarget.includes('clothing') || catTarget.includes('jewelry')) {
+      return tCat.includes('clothing') || tCat.includes('jewelry') || tCat.includes('shoes');
+    } else if (catTarget.includes('self care') || catTarget.includes('grooming')) {
+      return tCat.includes('self care') || tCat.includes('grooming');
+    }
+    return tCat === catTarget;
+  }).sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+}
+
+function getBudgetCategoryTarget(categoryKey) {
+  const fin = (typeof storage !== 'undefined' && typeof storage.getFinanceData === 'function')
+    ? storage.getFinanceData()
+    : (typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {});
+  const categories = Array.isArray(fin.categories) ? fin.categories : [];
+
+  if (categoryKey === '__income_inflow__') {
+    return parseFloat(fin.incomeTarget) || 22000;
+  }
+  if (categoryKey === '__savings_transfers__') {
+    const isNovOnward = (selectedBudgetMonth || '2026-10') >= '2026-11';
+    const defaultTarget = isNovOnward ? 3500 : 3000;
+    return (fin.savingsTarget && (!isNovOnward || fin.savingsTarget >= 3500)) ? parseFloat(fin.savingsTarget) : defaultTarget;
+  }
+  if (categoryKey === '__living_all__') {
+    let totalLiving = 0;
+    categories.forEach(c => { totalLiving += (parseFloat(c.budget) || 0); });
+    return totalLiving || 17350;
+  }
+
+  const catTarget = (categoryKey || '').toLowerCase().trim();
+  const matched = categories.find(c => {
+    const name = (c.name || '').toLowerCase().trim();
+    if (catTarget === 'groceries') return name === 'groceries';
+    if (catTarget === 'eating out' || catTarget === 'dining') return name === 'eating out' || name === 'dining';
+    if (catTarget === 'shopping') return name === 'shopping';
+    if (catTarget.includes('clothing') || catTarget.includes('jewelry')) return name.includes('clothing') || name.includes('jewelry');
+    if (catTarget.includes('self care') || catTarget.includes('grooming')) return name.includes('self care') || name.includes('grooming');
+    return name === catTarget;
+  });
+
+  if (matched && matched.budget) return parseFloat(matched.budget) || 0;
+  const baselines = fin.categoryBaselines || {};
+  if (matched && (baselines[matched.name] || matched.baseline)) return parseFloat(baselines[matched.name] || matched.baseline) || 0;
+  return 0;
+}
+
+function getBudgetCategoryMeta(categoryKey, customTitle) {
+  const key = (categoryKey || '').toLowerCase().trim();
+  if (key === '__income_inflow__') {
+    return { title: customTitle || 'Verified Income Inflows', icon: 'trending-up', color: '#0284C7', isIncome: true };
+  }
+  if (key === '__living_all__') {
+    return { title: customTitle || 'All Living Expenses', icon: 'wallet', color: '#7C3AED', isIncome: false };
+  }
+  if (key === '__savings_transfers__') {
+    return { title: customTitle || 'Direct Wealth Transfers', icon: 'gem', color: '#0D98BA', isIncome: false };
+  }
+  if (key === 'groceries') {
+    return { title: customTitle || 'Groceries', icon: 'shopping-cart', color: '#EA580C', isIncome: false };
+  }
+  if (key === 'eating out' || key === 'dining') {
+    return { title: customTitle || 'Eating Out', icon: 'utensils', color: '#0284C7', isIncome: false };
+  }
+  if (key === 'shopping') {
+    return { title: customTitle || 'Shopping', icon: 'shopping-bag', color: '#7C3AED', isIncome: false };
+  }
+  if (key.includes('clothing') || key.includes('jewelry')) {
+    return { title: customTitle || 'Clothing & Jewelry', icon: 'shirt', color: '#0D98BA', isIncome: false };
+  }
+  if (key.includes('self care') || key.includes('grooming')) {
+    return { title: customTitle || 'Self Care & Grooming', icon: 'sparkles', color: '#E11D48', isIncome: false };
+  }
+  return { title: customTitle || categoryKey, icon: 'receipt', color: '#7C3AED', isIncome: false };
+}
+
+function filterBudgetTransactions(txs, query) {
+  if (!query || !query.trim()) return txs;
+  const q = query.toLowerCase().trim();
+  return txs.filter(t => {
+    const merch = (t.merchant || '').toLowerCase();
+    const acct = (t.account || '').toLowerCase();
+    const cat = (t.category || '').toLowerCase();
+    const tags = (t.tags || '').toLowerCase();
+    const amt = String(t.amount || '');
+    return merch.includes(q) || acct.includes(q) || cat.includes(q) || tags.includes(q) || amt.includes(q);
+  });
+}
+
+function renderBudgetTxRowsHtml(txs, isIncome) {
+  if (!txs || txs.length === 0) {
+    return `
+      <tr>
+        <td colspan="5" style="text-align: center; padding: 44px 20px; color: var(--text-muted, #71717A);">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <i data-lucide="inbox" style="width: 32px; height: 32px; opacity: 0.45;"></i>
+            <div style="font-weight: 600; font-size: 0.9rem;">No transactions found</div>
+            <div style="font-size: 0.78rem;">Try adjusting your search query or select another period.</div>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  return txs.map(t => {
+    const dateFormatted = formatBudgetTxDate(t.date);
+    const amt = parseFloat(t.amount) || 0;
+    const isCredit = isIncome || t.isIncome || amt < 0;
+    const displayAmt = Math.abs(amt).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const amtColor = isCredit ? '#0D98BA' : 'var(--text-primary, #0F172A)';
+    const amtPrefix = isCredit ? '+' : '';
+
+    return `
+      <tr>
+        <td style="white-space: nowrap; font-size: 0.78rem; color: var(--text-muted, #71717A);">${escapeHtml(dateFormatted)}</td>
+        <td>
+          <div style="font-weight: 600; color: var(--text-primary, #0F172A);">${escapeHtml(t.merchant || 'Unknown')}</div>
+          ${t.tags ? `<div style="font-size: 0.70rem; color: #7C3AED;">#${escapeHtml(t.tags)}</div>` : ''}
+        </td>
+        <td>
+          <span style="display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.72rem; background: rgba(139, 92, 246, 0.08); color: #6D28D9; font-weight: 500;">
+            ${escapeHtml(t.category || 'General')}
+          </span>
+        </td>
+        <td>
+          <span class="budget-tx-account-badge" title="${escapeHtml(t.account || '')}">
+            ${escapeHtml(t.account || 'Primary')}
+          </span>
+        </td>
+        <td style="text-align: right; font-weight: 700; color: ${amtColor};" class="num-mono">
+          ${amtPrefix}$${displayAmt}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function handleBudgetModalSearchInput(val) {
+  currentBudgetModalSearch = val || '';
+  const txs = getBudgetCategoryTransactions(currentBudgetModalCategory, selectedBudgetMonth);
+  const meta = getBudgetCategoryMeta(currentBudgetModalCategory, currentBudgetModalTitle);
+  const filtered = filterBudgetTransactions(txs, currentBudgetModalSearch);
+  
+  const tbody = document.getElementById('budget-tx-modal-tbody');
+  if (tbody) {
+    tbody.innerHTML = renderBudgetTxRowsHtml(filtered, meta.isIncome);
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }
+
+  const countEl = document.getElementById('budget-tx-count-indicator');
+  if (countEl) {
+    countEl.textContent = `Showing ${filtered.length} of ${txs.length} transactions`;
+  }
+}
+window.handleBudgetModalSearchInput = handleBudgetModalSearchInput;
+
+function openBudgetCategoryTransactionsModal(categoryKey, customTitle) {
+  currentBudgetModalCategory = categoryKey;
+  currentBudgetModalTitle = customTitle || categoryKey;
+  currentBudgetModalSearch = '';
+
+  const txs = getBudgetCategoryTransactions(categoryKey, selectedBudgetMonth);
+  const targetBudget = getBudgetCategoryTarget(categoryKey);
+  const meta = getBudgetCategoryMeta(categoryKey, customTitle);
+  const monthLabel = formatFinanceMonthLabel(selectedBudgetMonth || '2026-10');
+
+  // Sum actuals
+  let totalSpent = 0;
+  txs.forEach(t => {
+    totalSpent += Math.abs(parseFloat(t.amount) || 0);
+  });
+  const remaining = targetBudget - totalSpent;
+
+  // Remove any prior modal
+  closeBudgetCategoryTransactionsModal();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'budget-category-tx-modal-overlay';
+  overlay.className = 'budget-tx-modal-overlay';
+  overlay.onclick = function(e) {
+    if (e.target === overlay) {
+      closeBudgetCategoryTransactionsModal();
+    }
+  };
+
+  overlay.innerHTML = `
+    <div class="budget-tx-modal" role="dialog" aria-modal="true" aria-labelledby="budget-tx-modal-heading">
+      
+      <!-- Modal Header -->
+      <div class="budget-tx-modal-header">
+        <div class="budget-tx-modal-title" id="budget-tx-modal-heading">
+          <div class="summer-widget-pill" style="width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: rgba(139, 92, 246, 0.1);">
+            <i data-lucide="${meta.icon}" style="width: 18px; height: 18px; color: ${meta.color};"></i>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span>${escapeHtml(meta.title)}</span>
+              <span class="budget-badge budget-badge-teal" style="font-size: 0.70rem; padding: 2px 7px;">${escapeHtml(monthLabel)}</span>
+            </div>
+            <div style="font-size: 0.76rem; font-weight: 400; color: var(--text-muted, #71717A);">Itemized transactions from Monarch feed</div>
+          </div>
+        </div>
+        <button type="button" class="budget-tx-close-btn" onclick="closeBudgetCategoryTransactionsModal()" aria-label="Close modal" title="Close (Esc)">✕</button>
+      </div>
+
+      <!-- Summary Stats Grid -->
+      <div class="budget-tx-modal-summary">
+        <div class="budget-tx-sum-card">
+          <span class="budget-tx-sum-label">${meta.isIncome ? 'Total Inflow' : 'Total Spent'}</span>
+          <span class="budget-tx-sum-val num-mono" style="color: ${meta.color};">$${Math.round(totalSpent).toLocaleString()}</span>
+        </div>
+        <div class="budget-tx-sum-card">
+          <span class="budget-tx-sum-label">Monthly Target</span>
+          <span class="budget-tx-sum-val num-mono">$${Math.round(targetBudget).toLocaleString()}</span>
+        </div>
+        <div class="budget-tx-sum-card">
+          <span class="budget-tx-sum-label">${meta.isIncome ? 'Status' : (remaining < 0 ? 'Over Target' : 'Remaining')}</span>
+          <span class="budget-tx-sum-val num-mono" style="color: ${meta.isIncome ? '#0D98BA' : (remaining < 0 ? '#E11D48' : '#0D98BA')};">
+            ${meta.isIncome ? `${targetBudget > 0 ? Math.round((totalSpent / targetBudget) * 100) : 100}%` : (remaining < 0 ? `-$${Math.abs(Math.round(remaining)).toLocaleString()}` : `$${Math.round(remaining).toLocaleString()}`)}
+          </span>
+        </div>
+        <div class="budget-tx-sum-card">
+          <span class="budget-tx-sum-label">Transactions</span>
+          <span class="budget-tx-sum-val num-mono">${txs.length}</span>
+        </div>
+      </div>
+
+      <!-- Live Search Bar -->
+      <div class="budget-tx-search-bar">
+        <i data-lucide="search" style="width: 15px; height: 15px; color: var(--text-muted, #71717A); flex-shrink: 0;"></i>
+        <input type="text" id="budget-tx-search-input" class="budget-tx-search-input" placeholder="Search merchant, account, note..." oninput="handleBudgetModalSearchInput(this.value)">
+      </div>
+
+      <!-- Table Body -->
+      <div class="budget-tx-modal-body">
+        <table class="budget-tx-table">
+          <thead>
+            <tr>
+              <th style="width: 90px;">Date</th>
+              <th>Merchant / Description</th>
+              <th style="width: 150px;">Category</th>
+              <th style="width: 170px;">Account</th>
+              <th style="width: 100px; text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="budget-tx-modal-tbody">
+            ${renderBudgetTxRowsHtml(txs, meta.isIncome)}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="budget-tx-modal-footer">
+        <span id="budget-tx-count-indicator">Showing ${txs.length} of ${txs.length} transactions</span>
+        <button type="button" class="budget-pill-btn" onclick="closeBudgetCategoryTransactionsModal()">
+          <span>Done</span>
+        </button>
+      </div>
+
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  // Setup ESC key listener
+  budgetModalKeydownHandler = function(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      closeBudgetCategoryTransactionsModal();
+    }
+  };
+  window.addEventListener('keydown', budgetModalKeydownHandler);
+
+  // Focus search input and render icons
+  setTimeout(() => {
+    const searchInput = document.getElementById('budget-tx-search-input');
+    if (searchInput) searchInput.focus();
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      window.lucide.createIcons();
+    }
+  }, 50);
+}
+window.openBudgetCategoryTransactionsModal = openBudgetCategoryTransactionsModal;
+
+function closeBudgetCategoryTransactionsModal() {
+  const overlay = document.getElementById('budget-category-tx-modal-overlay');
+  if (overlay) {
+    overlay.remove();
+  }
+  if (budgetModalKeydownHandler) {
+    window.removeEventListener('keydown', budgetModalKeydownHandler);
+    budgetModalKeydownHandler = null;
+  }
+}
+window.closeBudgetCategoryTransactionsModal = closeBudgetCategoryTransactionsModal;
+
 
