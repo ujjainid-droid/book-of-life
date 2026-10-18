@@ -3028,18 +3028,24 @@ class StorageManager {
       }
     }
 
-    // Seed v13 migration: Direct transfers target ($3k Oct, $3.5k Nov) and Wealth Sweep Pot
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 13)) {
-      this.data.finance.seedVersion = 13;
+    // Seed v14 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 14)) {
+      this.data.finance.seedVersion = 14;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
+        if (Array.isArray(DEFAULT_FINANCE_DATA.transactions)) {
+          this.data.finance.transactions = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.transactions));
+        }
+        if (Array.isArray(DEFAULT_FINANCE_DATA.monthlySummaries)) {
+          this.data.finance.monthlySummaries = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.monthlySummaries));
+        }
         if (DEFAULT_FINANCE_DATA.categoryBaselines) {
           this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
         }
         if (Array.isArray(DEFAULT_FINANCE_DATA.categories)) {
           this.data.finance.categories = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categories));
         }
-        this.data.finance.monthlyTarget = 18200;
-        this.data.finance.savingsTarget = 3000;
+        this.data.finance.monthlyTarget = DEFAULT_FINANCE_DATA.monthlyTarget || 18200;
+        this.data.finance.savingsTarget = DEFAULT_FINANCE_DATA.savingsTarget || 3000;
         if (this.data.finance.wealthSweepPot === undefined) {
           this.data.finance.wealthSweepPot = 4258.30;
         }

@@ -4484,39 +4484,71 @@ function renderFinanceBudget() {
         
         <!-- Master Living Outflows -->
         <div class="budget-master-card">
-          <div class="budget-master-head">
-            <span class="budget-master-lbl">Living Expenses Outflow Budget</span>
+          <div class="summer-widget-watermark" style="color: #7C3AED;">
+            <i data-lucide="wallet"></i>
+          </div>
+          <div class="summer-widget-top">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="summer-widget-pill">
+                <i data-lucide="wallet" style="width: 19px; height: 19px; color: #7C3AED;"></i>
+              </div>
+              <div>
+                <span class="budget-master-lbl" style="display: block;">Living Expenses Outflow</span>
+                <span style="font-size: 11px; color: var(--text-muted, #71717A);">Active monthly spending cap</span>
+              </div>
+            </div>
             <span class="budget-badge ${livingBadgeClass}">${livingStatusText}</span>
           </div>
-          <div class="budget-master-val num-mono">
-            $${Math.round(livingSpendMTD).toLocaleString()}
-            <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(totalLivingBudget).toLocaleString()} Target</span>
+
+          <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
+            <div class="budget-master-val num-mono">
+              $${Math.round(livingSpendMTD).toLocaleString()}
+              <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(totalLivingBudget).toLocaleString()} Target</span>
+            </div>
           </div>
-          <div class="budget-progress-wrap">
+
+          <div class="budget-progress-wrap" style="position: relative; z-index: 2;">
             <div class="budget-progress-fill ${livingSpendMTD > totalLivingBudget ? 'fill-rose' : 'fill-violet'}" style="width: ${livingSpentPct}%;"></div>
           </div>
-          <div class="budget-master-foot">
-            <span>Expected Pace at Day ${currentDayOfMonth}: <strong class="num-mono">$${livingExpectedMTD.toLocaleString()}</strong></span>
-            <strong class="num-mono" style="color: var(--fin-income, #0D9488);">$${Math.round(livingRemaining).toLocaleString()} Left ($${livingDailyRem}/day)</strong>
+
+          <div class="budget-master-foot" style="position: relative; z-index: 2;">
+            <span>Day ${currentDayOfMonth} pace: <strong class="num-mono">$${livingExpectedMTD.toLocaleString()}</strong></span>
+            <strong class="num-mono" style="color: ${livingRemaining < 0 ? '#E11D48' : 'var(--fin-income, #0D9488)'}; font-size: 12.5px;">$${Math.round(livingRemaining).toLocaleString()} Left ($${livingDailyRem}/day)</strong>
           </div>
         </div>
 
         <!-- Master Wealth & Savings Envelope -->
         <div class="budget-master-card savings-theme">
-          <div class="budget-master-head">
-            <span class="budget-master-lbl">💎 Direct Wealth Transfers</span>
+          <div class="summer-widget-watermark" style="color: #0D9488;">
+            <i data-lucide="gem"></i>
+          </div>
+          <div class="summer-widget-top">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="summer-widget-pill">
+                <i data-lucide="gem" style="width: 19px; height: 19px; color: #0D9488;"></i>
+              </div>
+              <div>
+                <span class="budget-master-lbl" style="display: block; color: #0F766E;">Direct Wealth Transfers</span>
+                <span style="font-size: 11px; color: #0F766E;">Capital One, Vanguard &amp; Fidelity</span>
+              </div>
+            </div>
             <span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span>
           </div>
-          <div class="budget-master-val num-mono" style="color: #0F766E;">
-            $${Math.round(savingsFundedMTD).toLocaleString()}
-            <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(savingsTarget).toLocaleString()} Target</span>
+
+          <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
+            <div class="budget-master-val num-mono" style="color: #0F766E;">
+              $${Math.round(savingsFundedMTD).toLocaleString()}
+              <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(savingsTarget).toLocaleString()} Target</span>
+            </div>
           </div>
-          <div class="budget-progress-wrap">
+
+          <div class="budget-progress-wrap" style="position: relative; z-index: 2;">
             <div class="budget-progress-fill fill-teal" style="width: ${savingsFundedPct}%;"></div>
           </div>
-          <div class="budget-master-foot">
-            <span style="color: #0F766E;">Capital One, Vanguard &amp; Fidelity (Excludes 401k)</span>
-            <strong class="num-mono" style="color: #0F766E;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
+
+          <div class="budget-master-foot" style="position: relative; z-index: 2;">
+            <span style="color: #0F766E;">Direct accounts (Excludes 401k)</span>
+            <strong class="num-mono" style="color: #0F766E; font-size: 12.5px;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
           </div>
         </div>
 
@@ -4673,36 +4705,56 @@ function renderFinanceBudget() {
       </div>
 
       <!-- 3B. Wealth Sweep Pot (Surplus Holding Tank) -->
-      <div class="wealth-sweep-pot-card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(139, 92, 246, 0.06) 100%); border: 1px solid rgba(13, 148, 136, 0.35); border-radius: 16px; padding: 18px 22px; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #0D9488, #8B5CF6);"></div>
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
-          <div>
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
-              <span style="font-size: 18px;">🔮</span>
-              <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #0F766E;">Wealth Sweep Pot</span>
-              <span class="budget-badge budget-badge-teal">TBD Holding Tank</span>
+      <div class="wealth-sweep-pot-card">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3.5px; background: linear-gradient(90deg, #0D9488, #8B5CF6, #F43F5E);"></div>
+        
+        <div class="summer-widget-watermark" style="color: #0D9488; opacity: 0.14;">
+          <i data-lucide="sparkles"></i>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 18px; position: relative; z-index: 2;">
+          <div style="max-width: 530px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+              <div class="summer-widget-pill" style="width: 38px; height: 38px;">
+                <span style="font-size: 18px; line-height: 1;">🔮</span>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 14.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #0F766E;">Wealth Sweep Holding Tank</span>
+                  <span class="budget-badge budget-badge-teal">Active Sweep</span>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted, #71717A);">Unspent living budget auto-swept to separate holding pot</div>
+              </div>
             </div>
-            <div style="font-size: 13px; color: var(--text-secondary, #64668B); max-width: 540px; line-height: 1.45;">
-              Any unspent monthly living budget is automatically swept out of checking into this separate holding pot. Keep it liquid until you decide where to deploy it (Vanguard VTI/VOO, Fidelity, or high-yield cash).
+            
+            <p style="font-size: 12.5px; color: var(--text-secondary, #64668B); line-height: 1.5; margin: 6px 0 12px;">
+              Any unspent monthly living budget is automatically protected from casual spending and swept into this separate holding tank. Keep it liquid until you deploy into index funds or high-yield cash.
+            </p>
+
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A);">Destinations:</span>
+              <span class="wealth-sweep-chip"><i data-lucide="shield-check" style="width: 12px; height: 12px;"></i> Vanguard VTI / VOO</span>
+              <span class="wealth-sweep-chip"><i data-lucide="trending-up" style="width: 12px; height: 12px;"></i> Fidelity Brokerage</span>
+              <span class="wealth-sweep-chip"><i data-lucide="credit-card" style="width: 12px; height: 12px;"></i> Capital One 360 Cash</span>
             </div>
           </div>
 
-          <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
-            <div style="text-align: right;">
-              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted, #71717A);">Current Month Surplus</div>
-              <div class="num-mono" style="font-size: 20px; font-weight: 800; color: #0D9488;">
+          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+            <div class="wealth-sweep-pot-statbox" style="text-align: right; min-width: 170px;">
+              <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A); margin-bottom: 2px;">October Surplus</div>
+              <div class="num-mono" style="font-size: 22px; font-weight: 800; color: #0D9488; line-height: 1.1;">
                 +$${Math.round(livingRemaining).toLocaleString()}
               </div>
-              <div style="font-size: 11px; color: #0F766E;">Unspent living cap</div>
+              <div style="font-size: 11px; color: #0F766E; font-weight: 600; margin-top: 3px;">Unspent living cap</div>
             </div>
 
-            <div style="border-left: 1px solid rgba(13, 148, 136, 0.25); padding-left: 20px; text-align: right;">
-              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted, #71717A);">Accumulated Pot Balance</div>
-              <div style="display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
-                <span class="num-mono" style="font-size: 24px; font-weight: 800; color: #7C3AED;">$</span>
-                <input type="number" step="100" class="num-mono" value="${Math.round(fin.wealthSweepPot || livingRemaining)}" onchange="handleUpdateWealthSweepPot(this.value)" style="font-size: 22px; font-weight: 800; color: #7C3AED; background: transparent; border: 1px dashed rgba(139, 92, 246, 0.35); border-radius: 8px; padding: 2px 8px; width: 130px; text-align: right;">
+            <div class="wealth-sweep-pot-statbox" style="text-align: right; min-width: 190px;">
+              <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A); margin-bottom: 2px;">Accumulated Pot Balance</div>
+              <div style="display: flex; align-items: center; gap: 4px; justify-content: flex-end;">
+                <span class="num-mono" style="font-size: 22px; font-weight: 800; color: #7C3AED;">$</span>
+                <input type="number" step="100" class="num-mono" value="${Math.round(fin.wealthSweepPot || livingRemaining)}" onchange="handleUpdateWealthSweepPot(this.value)" style="font-size: 20px; font-weight: 800; color: #7C3AED; background: transparent; border: 1px dashed rgba(139, 92, 246, 0.4); border-radius: 8px; padding: 2px 6px; width: 125px; text-align: right;">
               </div>
-              <div style="font-size: 11px; color: #7C3AED;">Ready for deployment</div>
+              <div style="font-size: 11px; color: #7C3AED; font-weight: 600; margin-top: 3px;">Ready for deployment</div>
             </div>
           </div>
         </div>
