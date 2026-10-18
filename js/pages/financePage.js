@@ -4240,6 +4240,45 @@ function renderFinanceBudget() {
     livingStatusText = 'On Track (Moderate)';
   }
 
+  // Income Inflow Budget calculations
+  let incomeMTD = parseFloat(activeSummary.income) || 0;
+  if (incomeMTD === 0 && monthTxs.length > 0) {
+    const incCats = ['Income', 'Paychecks', 'Other Income (incl cc reward credits)', 'Interest', 'Dividends & Capital Gains'];
+    monthTxs.forEach(t => {
+      const amt = parseFloat(t.amount) || 0;
+      const cat = t.category || '';
+      if (t.isIncome || incCats.includes(cat) || amt < 0) {
+        incomeMTD += Math.abs(amt);
+      }
+    });
+  }
+
+  const targetIncome = parseFloat(fin.incomeTarget) || 22000;
+  const incomePct = targetIncome > 0 ? Math.min(100, Math.round((incomeMTD / targetIncome) * 100)) : 0;
+  const incomeExpectedMTD = Math.round(targetIncome * monthFraction);
+  const incomeRemaining = Math.max(0, targetIncome - incomeMTD);
+
+  let incomeBadgeClass = 'budget-badge-sky';
+  let incomeStatusText = `${incomePct}% Received`;
+  if (incomeMTD >= targetIncome) {
+    incomeBadgeClass = 'budget-badge-teal';
+    incomeStatusText = '100% Received';
+  } else if (incomeMTD >= incomeExpectedMTD) {
+    incomeBadgeClass = 'budget-badge-sky';
+    incomeStatusText = `On Track (${incomePct}%)`;
+  } else {
+    incomeBadgeClass = 'budget-badge-violet';
+    incomeStatusText = `Pacing (${incomePct}%)`;
+  }
+
+  const isCurrentMonth = selectedBudgetMonth === '2026-10';
+  const incomeFootLeft = isCurrentMonth
+    ? `Day ${currentDayOfMonth} pace: <strong class="num-mono" style="color: #0284C7;">$${incomeExpectedMTD.toLocaleString()}</strong>`
+    : `Verified Monthly Inflow`;
+  const incomeFootRight = isCurrentMonth
+    ? (incomeRemaining > 0 ? `$${Math.round(incomeRemaining).toLocaleString()} to Goal` : `✓ Fully Received`)
+    : `<strong class="num-mono" style="color: #0284C7;">$${Math.round(incomeMTD).toLocaleString()} Total</strong>`;
+
   // Key 5 Living Categories (Groceries, Dining, Shopping, Clothing, Self Care)
   const grocCat = categories.find(c => c.name === 'Groceries') || { id: 'cat-groceries', name: 'Groceries', budget: 800, baseline: 1519.34 };
   const dineCat = categories.find(c => c.name === 'Eating out') || { id: 'cat-eating-out', name: 'Eating out', budget: 800, baseline: 1404.63 };
@@ -4347,9 +4386,44 @@ function renderFinanceBudget() {
         </div>
       </div>
 
-      <!-- 2. Dual Master Cards (Living Expenses Outflow vs. Savings-as-Spend) -->
-      <div class="budget-dual-master">
+      <!-- 2. Master Trio Cards (Income Inflow vs. Living Expenses Outflow vs. Direct Wealth Transfers) -->
+      <div class="budget-master-trio">
         
+        <!-- Master Income Inflow -->
+        <div class="budget-master-card income-theme">
+          <div class="summer-widget-watermark" style="color: #0284C7;">
+            <i data-lucide="trending-up"></i>
+          </div>
+          <div class="summer-widget-top">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="summer-widget-pill">
+                <i data-lucide="trending-up" style="width: 19px; height: 19px; color: #0284C7;"></i>
+              </div>
+              <div>
+                <span class="budget-master-lbl" style="display: block; color: #0284C7;">Verified Income Inflow</span>
+                <span style="font-size: 11px; color: #0284C7;">Take-home salary &amp; deposits</span>
+              </div>
+            </div>
+            <span class="budget-badge ${incomeBadgeClass}">${incomeStatusText}</span>
+          </div>
+
+          <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
+            <div class="budget-master-val num-mono" style="color: #0284C7;">
+              $${Math.round(incomeMTD).toLocaleString()}
+              <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(targetIncome).toLocaleString()} Target</span>
+            </div>
+          </div>
+
+          <div class="budget-progress-wrap" style="position: relative; z-index: 2;">
+            <div class="budget-progress-fill fill-sky" style="width: ${incomePct}%;"></div>
+          </div>
+
+          <div class="budget-master-foot" style="position: relative; z-index: 2;">
+            <span style="color: #0284C7;">${incomeFootLeft}</span>
+            <strong class="num-mono" style="color: #0284C7; font-size: 12.5px;">${incomeFootRight}</strong>
+          </div>
+        </div>
+
         <!-- Master Living Outflows -->
         <div class="budget-master-card">
           <div class="summer-widget-watermark" style="color: #7C3AED;">

@@ -6,6 +6,7 @@ const DEFAULT_FINANCE_DATA = {
   "seedVersion": 14,
   "monthlyTarget": 18200,
   "savingsTarget": 3000,
+  "incomeTarget": 22000,
   "wealthSweepPot": 4258.3,
   "alertSpendRatio": 0.85,
   "categoryBaselines": {

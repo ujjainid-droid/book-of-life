@@ -3059,6 +3059,7 @@ class StorageManager {
         }
         this.data.finance.monthlyTarget = DEFAULT_FINANCE_DATA.monthlyTarget || 18200;
         this.data.finance.savingsTarget = DEFAULT_FINANCE_DATA.savingsTarget || 3000;
+        this.data.finance.incomeTarget = DEFAULT_FINANCE_DATA.incomeTarget || 22000;
         if (this.data.finance.wealthSweepPot === undefined) {
           this.data.finance.wealthSweepPot = 4258.30;
         }

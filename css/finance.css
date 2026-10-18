@@ -4897,14 +4897,17 @@ body.dark-mode .budget-pill-btn:hover {
   border-color: #8B5CF6;
 }
 
-/* Dual Master Cards */
-.budget-dual-master {
+/* Master Trio Cards (Verified Income Inflow vs. Living Expenses Outflow vs. Direct Wealth Transfers) */
+.budget-dual-master,
+.budget-master-trio {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
+  margin-bottom: 24px;
 }
-@media (max-width: 768px) {
-  .budget-dual-master {
+@media (max-width: 1080px) {
+  .budget-dual-master,
+  .budget-master-trio {
     grid-template-columns: 1fr;
   }
 }
@@ -4929,6 +4932,18 @@ body.dark-mode .budget-master-card {
   background: linear-gradient(145deg, rgba(124, 58, 237, 0.18) 0%, #15182D 100%);
   border-color: rgba(139, 92, 246, 0.3);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Master Income Inflow Theme (Ocean Sky) */
+.budget-master-card.income-theme {
+  background: #EBF8FF;
+  background: linear-gradient(145deg, #F0F9FF 0%, #FFFFFF 100%);
+  border-color: rgba(2, 132, 199, 0.28);
+}
+[data-theme="dark"] .budget-master-card.income-theme,
+body.dark-mode .budget-master-card.income-theme {
+  border-color: rgba(56, 189, 248, 0.38);
+  background: linear-gradient(145deg, rgba(2, 132, 199, 0.2) 0%, #15182D 100%);
 }
 
 .budget-master-card.savings-theme {
@@ -4960,6 +4975,13 @@ body.dark-mode .budget-master-card.savings-theme {
 [data-theme="dark"] .budget-master-lbl,
 body.dark-mode .budget-master-lbl {
   color: #A78BFA;
+}
+.budget-master-card.income-theme .budget-master-lbl {
+  color: #0284C7;
+}
+[data-theme="dark"] .budget-master-card.income-theme .budget-master-lbl,
+body.dark-mode .budget-master-card.income-theme .budget-master-lbl {
+  color: #7DD3FC;
 }
 .budget-master-card.savings-theme .budget-master-lbl {
   color: #0E7490;
@@ -4997,6 +5019,7 @@ body.dark-mode .budget-progress-wrap {
   border-radius: 999px;
   transition: width 0.35s ease;
 }
+.fill-sky { background: linear-gradient(90deg, #0284C7, #38BDF8); }
 .fill-teal { background: linear-gradient(90deg, #0D98BA, #15B5D5); }
 .fill-violet { background: linear-gradient(90deg, #6D28D9, #8B5CF6); }
 .fill-rose { background: linear-gradient(90deg, #E11D48, #F43F5E); }
