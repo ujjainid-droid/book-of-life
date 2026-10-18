@@ -562,49 +562,93 @@ function renderFinanceRecurringCommitmentsSection() {
         </div>
       </div>
 
-      <!-- 3 Simple KPI Widgets: Total, Reimbursed, Out of Pocket -->
-      <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 16px; gap: 12px;">
-        <!-- 1. Total -->
-        <div class="finance-kpi-card accent-violet" style="padding: 12px 16px;">
-          <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span class="finance-kpi-label">
-              <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #7C3AED;"></i>
-              Total
-            </span>
+      <!-- 3 Cheery Summer KPI Widgets: Total, Reimbursed, Out of Pocket -->
+      <div class="finance-subs-summer-grid">
+        <!-- 1. Gross Commitments (Lavender Sorbet) -->
+        <div class="summer-widget-card theme-lavender">
+          <div class="summer-widget-watermark" style="color: #7C3AED;">
+            <i data-lucide="repeat"></i>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
-            $${grossMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
-          </span>
-          <span class="finance-kpi-sub">$${(grossMonthlySubs * 12).toFixed(2)}/yr total commitments (${subs.length} active)</span>
+          <div>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="repeat" style="width: 19px; height: 19px; color: #7C3AED;"></i>
+              </div>
+              <span class="budget-badge budget-badge-violet">${subs.length} Active Services</span>
+            </div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono">$${grossMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #64748B;">/mo</span></div>
+              <div class="summer-widget-title">Gross Commitments</div>
+              <div class="summer-widget-sub">$${(grossMonthlySubs * 12).toFixed(2)} / yr total recurring contracts</div>
+            </div>
+          </div>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: 100%; background: #7C3AED;"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>${subs.length} recurring accounts</span>
+              <strong class="num-mono" style="color: #7C3AED;">100% Tracked</strong>
+            </div>
+          </div>
         </div>
 
-        <!-- 2. Reimbursed -->
-        <div class="finance-kpi-card accent-teal" style="padding: 12px 16px;">
-          <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span class="finance-kpi-label">
-              <i data-lucide="check-check" style="width: 12px; height: 12px; color: #0D9488;"></i>
-              Reimbursed
-            </span>
-            <span class="card-roi-surplus-pill surplus" style="font-size: 0.62rem; background: rgba(13, 148, 136, 0.12); color: #0D9488; border: 1px solid rgba(13, 148, 136, 0.25);">100% Card Offset</span>
+        <!-- 2. Reimbursed Credits (Seafoam Mint) -->
+        <div class="summer-widget-card theme-mint">
+          <div class="summer-widget-watermark" style="color: #0D9488;">
+            <i data-lucide="shield-check"></i>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
-            $${coveredMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
-          </span>
-          <span class="finance-kpi-sub">$${(coveredMonthlySubs * 12).toFixed(2)}/yr card synergy offset (Disney+, NYT, Walmart+)</span>
+          <div>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="shield-check" style="width: 19px; height: 19px; color: #0D9488;"></i>
+              </div>
+              <span class="budget-badge budget-badge-teal">100% Card Offset</span>
+            </div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono" style="color: #0F766E;">$${coveredMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #0F766E;">/mo</span></div>
+              <div class="summer-widget-title">Reimbursed Credits</div>
+              <div class="summer-widget-sub">$${(coveredMonthlySubs * 12).toFixed(2)} / yr offset (Disney+, NYT, Walmart+)</div>
+            </div>
+          </div>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${Math.round((coveredMonthlySubs / (grossMonthlySubs || 1)) * 100)}%; background: #0D9488;"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Card synergy offsets</span>
+              <strong class="num-mono" style="color: #0D9488;">$0 Net Cost</strong>
+            </div>
+          </div>
         </div>
 
-        <!-- 3. Out of Pocket -->
-        <div class="finance-kpi-card accent-rose" style="padding: 12px 16px;">
-          <div style="height: 22px; min-height: 22px; max-height: 22px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span class="finance-kpi-label">
-              <i data-lucide="wallet" style="width: 12px; height: 12px; color: #E11D48;"></i>
-              Out of Pocket
-            </span>
+        <!-- 3. Out of Pocket Burn (Sunset Rose) -->
+        <div class="summer-widget-card theme-rose">
+          <div class="summer-widget-watermark" style="color: #E11D48;">
+            <i data-lucide="wallet"></i>
           </div>
-          <span class="finance-kpi-value" style="font-size: 1.25rem; color: var(--text-primary, #3a3A42);">
-            $${netMonthlySubs.toFixed(2)}<span style="font-size: 0.8rem; font-weight: 500; color: #71717A;">/mo</span>
-          </span>
-          <span class="finance-kpi-sub">$${(netMonthlySubs * 12).toFixed(2)}/yr true net burn</span>
+          <div>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="wallet" style="width: 19px; height: 19px; color: #E11D48;"></i>
+              </div>
+              <span class="budget-badge budget-badge-rose">True Net Burn</span>
+            </div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono" style="color: #BE123C;">$${netMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #BE123C;">/mo</span></div>
+              <div class="summer-widget-title">Out of Pocket Burn</div>
+              <div class="summer-widget-sub">$${(netMonthlySubs * 12).toFixed(2)} / yr personal outflow</div>
+            </div>
+          </div>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${Math.round((netMonthlySubs / (grossMonthlySubs || 1)) * 100)}%; background: #E11D48;"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Effective daily drain</span>
+              <strong class="num-mono" style="color: #BE123C;">$${(netMonthlySubs / 30).toFixed(2)} / day</strong>
+            </div>
+          </div>
         </div>
       </div>
 
