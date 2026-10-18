@@ -840,12 +840,12 @@ body.dark-mode .finance-sub-reimbursed-pill {
 .finance-horizon-deck {
   background: linear-gradient(135deg, rgba(124, 58, 237, 0.035) 0%, rgba(13, 152, 186, 0.045) 100%);
   border: 1px solid rgba(139, 92, 246, 0.22);
-  border-radius: var(--radius-lg, 16px);
-  padding: 16px;
+  border-radius: 22px;
+  padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 [data-theme="dark"] .finance-horizon-deck {
@@ -876,6 +876,24 @@ body.dark-mode .finance-sub-reimbursed-pill {
   display: flex;
   gap: 6px;
   align-items: center;
+}
+
+.finance-card-roi-summer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 1200px) {
+  .finance-card-roi-summer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .finance-card-roi-summer-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .finance-nw-deconstructed-grid {
@@ -5284,6 +5302,18 @@ body.dark-mode .budget-badge-teal {
   background: #0E7490;
   color: #FFFFFF !important;
   border: 1px solid rgba(94, 234, 212, 0.4);
+}
+
+.budget-badge-sky {
+  background: #0284C7;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+[data-theme="dark"] .budget-badge-sky,
+body.dark-mode .budget-badge-sky {
+  background: #0369A1;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(125, 211, 252, 0.4);
 }
 
 .budget-badge-violet {

@@ -1681,68 +1681,136 @@ function renderFinanceSubscriptions() {
           </div>
         </div>
 
-        <div class="finance-kpis-grid" style="grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));">
-          <!-- Card 1: Annual Fees Baseline -->
-          <div class="finance-kpi-card accent-indigo" style="padding: 14px 16px;">
-            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span class="finance-kpi-label">
-                <i data-lucide="credit-card" style="width: 13px; height: 13px; color: #6366F1;"></i>
-                <span>4 Annual Fee Cards</span>
-              </span>
+        <div class="finance-card-roi-summer-grid">
+          <!-- Card 1: 4 Annual Fee Cards (Ocean Sky) -->
+          <div class="summer-widget-card theme-sky">
+            <div class="summer-widget-watermark" style="color: #0284C7;">
+              <i data-lucide="credit-card"></i>
             </div>
-            <div class="finance-kpi-value" style="color: var(--text-primary, #3a3A42); margin-bottom: 4px;">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
-            <div class="finance-kpi-sub" style="margin-top: auto;">Amex Plat ($895) + 3 Chase ($95 ea)</div>
+            <div>
+              <div class="summer-widget-top">
+                <div class="summer-widget-pill">
+                  <i data-lucide="credit-card" style="width: 19px; height: 19px; color: #0284C7;"></i>
+                </div>
+                <span class="budget-badge budget-badge-sky">4 Fee Cards</span>
+              </div>
+              <div class="summer-widget-body">
+                <div class="summer-widget-spent num-mono">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 15px; font-weight: 600; color: #64748B;">/yr</span></div>
+                <div class="summer-widget-title">Annual Fee Baseline</div>
+                <div class="summer-widget-sub">Amex Plat ($895) + 3 Chase ($95 ea)</div>
+              </div>
+            </div>
+            <div class="summer-widget-foot">
+              <div class="summer-widget-bar-wrap">
+                <div class="summer-widget-bar-fill" style="width: 100%; background: #0284C7;"></div>
+              </div>
+              <div class="summer-widget-meta">
+                <span>Contracted fees</span>
+                <strong class="num-mono" style="color: #0284C7;">$${Math.round(totalAnnualFees / 12)}/mo</strong>
+              </div>
+            </div>
           </div>
 
-          <!-- Card 2: Realized Perks & Credits -->
-          <div class="finance-kpi-card accent-violet" style="padding: 14px 16px;">
-            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-              <span class="finance-kpi-label">
-                <i data-lucide="gift" style="width: 13px; height: 13px; color: #7C3AED;"></i>
-                <span>Realized Perks</span>
-              </span>
+          <!-- Card 2: Realized Perks & Credits (Lavender Sorbet) -->
+          <div class="summer-widget-card theme-lavender">
+            <div class="summer-widget-watermark" style="color: #7C3AED;">
+              <i data-lucide="gift"></i>
             </div>
-            <div class="finance-kpi-value" style="color: #7C3AED; margin-bottom: 4px;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
-            <div class="finance-kpi-sub" style="margin-top: auto;">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</div>
+            <div>
+              <div class="summer-widget-top">
+                <div class="summer-widget-pill">
+                  <i data-lucide="gift" style="width: 19px; height: 19px; color: #7C3AED;"></i>
+                </div>
+                <span class="budget-badge budget-badge-violet">${checkedBenefitsCount} Active Credits</span>
+              </div>
+              <div class="summer-widget-body">
+                <div class="summer-widget-spent num-mono" style="color: #7C3AED;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 15px; font-weight: 600; color: #7C3AED;">/yr</span></div>
+                <div class="summer-widget-title">Realized Perks</div>
+                <div class="summer-widget-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</div>
+              </div>
+            </div>
+            <div class="summer-widget-foot">
+              <div class="summer-widget-bar-wrap">
+                <div class="summer-widget-bar-fill" style="width: ${Math.min(100, Math.round((totalRealizedValue / (totalPotentialValue || 1)) * 100))}%; background: #7C3AED;"></div>
+              </div>
+              <div class="summer-widget-meta">
+                <span>Active potential</span>
+                <strong class="num-mono" style="color: #7C3AED;">${Math.round((totalRealizedValue / (totalPotentialValue || 1)) * 100)}% Claimed</strong>
+              </div>
+            </div>
           </div>
 
-          <!-- Card 3: Net Fee ROI & Surplus -->
-          <div class="finance-kpi-card accent-teal" style="padding: 14px 16px;">
-            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span class="finance-kpi-label">
-                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #0D98BA;"></i>
-                <span>Net Fee Surplus</span>
-              </span>
-              <span class="card-roi-surplus-pill surplus" style="font-size: 0.65rem; background: rgba(13, 152, 186, 0.12); color: #0D98BA; border: 1px solid rgba(13, 152, 186, 0.25); white-space: nowrap; flex-shrink: 0;">${overallBreakevenPct}% Breakeven</span>
+          <!-- Card 3: Net Fee Surplus (Pacific Blue-Green / Mint) -->
+          <div class="summer-widget-card theme-mint">
+            <div class="summer-widget-watermark" style="color: #0D98BA;">
+              <i data-lucide="trending-up"></i>
             </div>
-            <div class="finance-kpi-value" style="color: #0D98BA; margin-bottom: 4px;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
-            <div class="finance-kpi-sub" style="margin-top: auto;">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</div>
+            <div>
+              <div class="summer-widget-top">
+                <div class="summer-widget-pill">
+                  <i data-lucide="trending-up" style="width: 19px; height: 19px; color: #0D98BA;"></i>
+                </div>
+                <span class="budget-badge budget-badge-teal">${overallBreakevenPct}% Breakeven</span>
+              </div>
+              <div class="summer-widget-body">
+                <div class="summer-widget-spent num-mono" style="color: #0E7490;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 15px; font-weight: 600; color: #0E7490;">/yr</span></div>
+                <div class="summer-widget-title">Net Fee Surplus</div>
+                <div class="summer-widget-sub">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</div>
+              </div>
+            </div>
+            <div class="summer-widget-foot">
+              <div class="summer-widget-bar-wrap">
+                <div class="summer-widget-bar-fill" style="width: ${Math.min(100, overallBreakevenPct)}%; background: #0D98BA;"></div>
+              </div>
+              <div class="summer-widget-meta">
+                <span>Overall ROI</span>
+                <strong class="num-mono" style="color: #0E7490;">+${Math.max(0, overallBreakevenPct - 100)}% Margin</strong>
+              </div>
+            </div>
           </div>
 
-          <!-- Card 4: Negative Value Cards Widget -->
-          <div class="finance-kpi-card accent-rose" style="padding: 14px 16px; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
-            <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
-              <span class="finance-kpi-label">
-                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};"></i>
-                <span>Drag Below Fee</span>
-              </span>
-              <span class="card-roi-surplus-pill" style="font-size: 0.65rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.10)' : 'rgba(13, 152, 186, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(13, 152, 186, 0.25)'}; white-space: nowrap; flex-shrink: 0;">
-                ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
-              </span>
+          <!-- Card 4: Negative Value Cards Widget (Sunset Rose) -->
+          <div class="summer-widget-card ${negativeCardsCount > 0 ? 'theme-rose' : 'theme-mint'}" style="cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
+            <div class="summer-widget-watermark" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};">
+              <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}"></i>
             </div>
-            <div class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'}; margin-bottom: 4px;">
-              ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}
-              <span style="font-size: 0.82rem; font-weight: 500; color: #71717A;"> net drag</span>
-            </div>
-            <div class="finance-kpi-sub" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px;">
-              ${negativeCards.length > 0 ? negativeCards.map(c => `
-                <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; background: rgba(225, 29, 72, 0.08); color: #E11D48; border: 1px solid rgba(225, 29, 72, 0.22); font-weight: 600; font-size: 0.68rem; cursor: pointer;" title="Inspect ${escapeHtml(c.shortName)}">
-                  ${escapeHtml(c.shortName || c.name)} (-$${Math.round(Math.abs(c.netValue))})
+            <div>
+              <div class="summer-widget-top">
+                <div class="summer-widget-pill">
+                  <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 19px; height: 19px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};"></i>
+                </div>
+                <span class="budget-badge ${negativeCardsCount > 0 ? 'budget-badge-rose' : 'budget-badge-teal'}">
+                  ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
                 </span>
-              `).join('') : '<span style="color: #0D98BA; font-weight: 600;">✓ All 4 cards exceeding annual fee!</span>'}
+              </div>
+              <div class="summer-widget-body">
+                <div class="summer-widget-spent num-mono" style="color: ${negativeCardsCount > 0 ? '#BE123C' : '#0E7490'};">
+                  ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}<span style="font-size: 15px; font-weight: 600; color: ${negativeCardsCount > 0 ? '#BE123C' : '#0E7490'};"> net drag</span>
+                </div>
+                <div class="summer-widget-title">Drag Below Fee</div>
+                <div class="summer-widget-sub" style="margin-top: 4px;">
+                  ${negativeCards.length > 0 ? `
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                      ${negativeCards.map(c => `
+                        <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" class="budget-badge budget-badge-rose" style="font-size: 10px; padding: 2px 7px; cursor: pointer; border-radius: 99px;" title="Inspect ${escapeHtml(c.shortName)}">
+                          ${escapeHtml(c.shortName || c.name)} (-$${Math.round(Math.abs(c.netValue))})
+                        </span>
+                      `).join('')}
+                    </div>
+                  ` : '<span style="color: #0E7490; font-weight: 600;">✓ All 4 cards exceeding annual fee!</span>'}
+                </div>
+              </div>
+            </div>
+            <div class="summer-widget-foot">
+              <div class="summer-widget-bar-wrap">
+                <div class="summer-widget-bar-fill" style="width: ${negativeCardsCount > 0 ? Math.min(100, Math.round((totalDeficit / (totalAnnualFees || 1)) * 100)) : 100}%; background: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};"></div>
+              </div>
+              <div class="summer-widget-meta">
+                <span>${negativeCardsCount > 0 ? 'Drag intensity' : 'Portfolio status'}</span>
+                <strong class="num-mono" style="color: ${negativeCardsCount > 0 ? '#BE123C' : '#0E7490'};">${negativeCardsCount > 0 ? `${negativeCardsCount} cards below fee` : '100% Breakeven'}</strong>
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </div>
 
