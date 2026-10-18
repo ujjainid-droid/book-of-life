@@ -4792,15 +4792,7 @@ body.dark-mode .budget-master-card.savings-theme {
   background: linear-gradient(145deg, rgba(13, 148, 136, 0.2) 0%, #15182D 100%);
 }
 
-.budget-master-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3.5px;
-  background: linear-gradient(90deg, #7C3AED, #A78BFA);
-}
-.budget-master-card.savings-theme::before {
-  background: linear-gradient(90deg, #0D9488, #14B8A6);
-}
+
 
 .budget-master-head {
   display: flex;

@@ -4706,8 +4706,6 @@ function renderFinanceBudget() {
 
       <!-- 3B. Wealth Sweep Pot (Surplus Holding Tank) -->
       <div class="wealth-sweep-pot-card">
-        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3.5px; background: linear-gradient(90deg, #0D9488, #8B5CF6, #F43F5E);"></div>
-        
         <div class="summer-widget-watermark" style="color: #0D9488; opacity: 0.14;">
           <i data-lucide="sparkles"></i>
         </div>
