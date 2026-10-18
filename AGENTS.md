@@ -20,7 +20,7 @@
 
 3. **Design & Aesthetic Language**:
    - **Nordic Minimalist & Serene**: Cool lavender / royal violet foundation (`#8B5CF6`, `#6D28D9`).
-   - **Complementary Accents**: Nordic Sea Glass Teal (`#0D9488` / `#0F766E`) for checkpoint status and accents.
+   - **Complementary Accents**: Nordic Blue-Green (`#0D98BA` / `#0E7490`) for checkpoint status and accents.
    - **Strict Palette Rule**: **NO yellow or amber** for status indicators, buttons, or icons. Never use yellow icons or emojis (e.g. ☀️, ⭐, 🌟, 🟡, 💡, 💛, etc.).
    - **Forbidden Icons**: **NEVER use the target icon 🎯 anywhere in the app**. Use serene violet/teal or playful alternatives instead (e.g. 🔮, 💫, 🚀, 🏹, 🧭, 📍, 💠, ✨).
 

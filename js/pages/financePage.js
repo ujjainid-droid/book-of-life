@@ -341,7 +341,7 @@ function renderFinanceWeeklyCadenceBar() {
     <div class="finance-cadence-strip-card ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#7C3AED'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'calendar-check-2'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D98BA' : '#7C3AED'};"></i>
           <span>Weekly Cadence</span>
           <span class="finance-cadence-sub">&bull; ${escapeHtml(dateLabel)}</span>
         </div>
@@ -463,7 +463,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🛡️ Fixed (50% max)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${fixedIsUnderOrEqual ? '#0F766E' : '#E05A47'};">${fixedPct}%</span>
+              <span class="finance-target-pct-hero" style="color: ${fixedIsUnderOrEqual ? '#0E7490' : '#E05A47'};">${fixedPct}%</span>
               <span class="finance-target-amount">$${Math.round(actualFixedAmt).toLocaleString()}</span>
             </div>
           </div>
@@ -487,7 +487,7 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
           <div class="finance-target-pill-left">
             <div class="finance-target-pill-label">🌱 Savings (25% min)</div>
             <div class="finance-target-value-wrap">
-              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#0D9488' : '#E05A47'};">
+              <span class="finance-target-pct-hero" style="color: ${savingsIsMetOrExceeded ? '#0D98BA' : '#E05A47'};">
                 ${savingsPct >= 0 ? '' : '-'}${Math.abs(savingsPct)}%
               </span>
               <span class="finance-target-amount">
@@ -595,29 +595,29 @@ function renderFinanceRecurringCommitmentsSection() {
 
         <!-- 2. Reimbursed Credits (Seafoam Mint) -->
         <div class="summer-widget-card theme-mint">
-          <div class="summer-widget-watermark" style="color: #0D9488;">
+          <div class="summer-widget-watermark" style="color: #0D98BA;">
             <i data-lucide="shield-check"></i>
           </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shield-check" style="width: 19px; height: 19px; color: #0D9488;"></i>
+                <i data-lucide="shield-check" style="width: 19px; height: 19px; color: #0D98BA;"></i>
               </div>
               <span class="budget-badge budget-badge-teal">100% Card Offset</span>
             </div>
             <div class="summer-widget-body">
-              <div class="summer-widget-spent num-mono" style="color: #0F766E;">$${coveredMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #0F766E;">/mo</span></div>
+              <div class="summer-widget-spent num-mono" style="color: #0E7490;">$${coveredMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #0E7490;">/mo</span></div>
               <div class="summer-widget-title">Reimbursed Credits</div>
               <div class="summer-widget-sub">$${(coveredMonthlySubs * 12).toFixed(2)} / yr offset (Disney+, NYT, Walmart+)</div>
             </div>
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${Math.round((coveredMonthlySubs / (grossMonthlySubs || 1)) * 100)}%; background: #0D9488;"></div>
+              <div class="summer-widget-bar-fill" style="width: ${Math.round((coveredMonthlySubs / (grossMonthlySubs || 1)) * 100)}%; background: #0D98BA;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Card synergy offsets</span>
-              <strong class="num-mono" style="color: #0D9488;">$0 Net Cost</strong>
+              <strong class="num-mono" style="color: #0D98BA;">$0 Net Cost</strong>
             </div>
           </div>
         </div>
@@ -992,7 +992,7 @@ function renderFinanceBurn() {
   const otherCategories = categoryList.slice(4);
   const otherSpend = otherCategories.reduce((s, c) => s + c.spent, 0);
 
-  const paretoColors = ['#4F46E5', '#0D9488', '#E05A47', '#6366F1', '#64748B'];
+  const paretoColors = ['#4F46E5', '#0D98BA', '#E05A47', '#6366F1', '#64748B'];
 
   // 1b. Split Pillar Matrix Partition (Fixed Anchors vs. Discretionary Flex)
   const isFixedCategory = (c) => {
@@ -1081,7 +1081,7 @@ function renderFinanceBurn() {
         <div class="finance-section-header">
           <div>
             <h3 class="finance-section-title">
-              <i data-lucide="compass" style="width: 18px; height: 18px; color: #0D9488;"></i>
+              <i data-lucide="compass" style="width: 18px; height: 18px; color: #0D98BA;"></i>
               <span>Category Outlier Radar (vs. Rolling Baseline)</span>
             </h3>
             <span style="font-size: 0.78rem; color: var(--text-muted);">
@@ -1099,7 +1099,7 @@ function renderFinanceBurn() {
               <span>${outlierSpikes.length} Spikes</span>
             </button>
             <button class="finance-outlier-filter-btn baseline ${financeOutlierFilter === 'baseline' ? 'active' : ''}" onclick="setFinanceOutlierFilter('baseline')" title="Filter to categories on baseline">
-              <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'baseline' ? '#FFFFFF' : '#0D9488'};"></span>
+              <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'baseline' ? '#FFFFFF' : '#0D98BA'};"></span>
               <span>${onBaseline.length} On Baseline</span>
             </button>
             ${reducedSpends.length > 0 ? `
@@ -1205,7 +1205,7 @@ function renderFinanceBurn() {
           </div>
 
           <div class="finance-lever-item">
-            <div class="finance-lever-icon" style="background: rgba(13, 148, 136, 0.1); color: var(--fin-primary);">
+            <div class="finance-lever-icon" style="background: rgba(13, 152, 186, 0.1); color: var(--fin-primary);">
               <i data-lucide="receipt" style="width: 13px; height: 13px;"></i>
             </div>
             <div>
@@ -1446,7 +1446,7 @@ function renderCardRoiModal() {
           ${activeModalTab === 'transactions' ? `
             <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center;">
               <span>Showing transactions on <strong>${escapeHtml(card.accountName)}</strong></span>
-              <span style="color: #0D9488; font-weight: 600;">1-tap to link &amp; realize credit</span>
+              <span style="color: #0D98BA; font-weight: 600;">1-tap to link &amp; realize credit</span>
             </div>
 
             <div style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
@@ -1511,7 +1511,7 @@ function renderCardRoiModal() {
               </div>
 
               <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
-                <button type="submit" class="btn btn-primary" style="background: #0D9488; border-color: #0D9488;">
+                <button type="submit" class="btn btn-primary" style="background: #0D98BA; border-color: #0D98BA;">
                   <i data-lucide="check" style="width: 14px; height: 14px;"></i>
                   <span>Record Redemption</span>
                 </button>
@@ -1710,12 +1710,12 @@ function renderFinanceSubscriptions() {
           <div class="finance-kpi-card accent-teal" style="padding: 14px 16px;">
             <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="finance-kpi-label">
-                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #0D9488;"></i>
+                <i data-lucide="trending-up" style="width: 13px; height: 13px; color: #0D98BA;"></i>
                 <span>Net Fee Surplus</span>
               </span>
-              <span class="card-roi-surplus-pill surplus" style="font-size: 0.65rem; background: rgba(13, 148, 136, 0.12); color: #0D9488; border: 1px solid rgba(13, 148, 136, 0.25); white-space: nowrap; flex-shrink: 0;">${overallBreakevenPct}% Breakeven</span>
+              <span class="card-roi-surplus-pill surplus" style="font-size: 0.65rem; background: rgba(13, 152, 186, 0.12); color: #0D98BA; border: 1px solid rgba(13, 152, 186, 0.25); white-space: nowrap; flex-shrink: 0;">${overallBreakevenPct}% Breakeven</span>
             </div>
-            <div class="finance-kpi-value" style="color: #0D9488; margin-bottom: 4px;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
+            <div class="finance-kpi-value" style="color: #0D98BA; margin-bottom: 4px;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 0.82rem; font-weight: 500; color: #71717A;">/yr</span></div>
             <div class="finance-kpi-sub" style="margin-top: auto;">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</div>
           </div>
 
@@ -1723,14 +1723,14 @@ function renderFinanceSubscriptions() {
           <div class="finance-kpi-card accent-rose" style="padding: 14px 16px; cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
             <div style="min-height: 24px; display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
               <span class="finance-kpi-label">
-                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'};"></i>
+                <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 13px; height: 13px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};"></i>
                 <span>Drag Below Fee</span>
               </span>
-              <span class="card-roi-surplus-pill" style="font-size: 0.65rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.10)' : 'rgba(13, 148, 136, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(13, 148, 136, 0.25)'}; white-space: nowrap; flex-shrink: 0;">
+              <span class="card-roi-surplus-pill" style="font-size: 0.65rem; background: ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.10)' : 'rgba(13, 152, 186, 0.12)'}; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'}; border: 1px solid ${negativeCardsCount > 0 ? 'rgba(225, 29, 72, 0.25)' : 'rgba(13, 152, 186, 0.25)'}; white-space: nowrap; flex-shrink: 0;">
                 ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
               </span>
             </div>
-            <div class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D9488'}; margin-bottom: 4px;">
+            <div class="finance-kpi-value" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'}; margin-bottom: 4px;">
               ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}
               <span style="font-size: 0.82rem; font-weight: 500; color: #71717A;"> net drag</span>
             </div>
@@ -1739,7 +1739,7 @@ function renderFinanceSubscriptions() {
                 <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" style="display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 999px; background: rgba(225, 29, 72, 0.08); color: #E11D48; border: 1px solid rgba(225, 29, 72, 0.22); font-weight: 600; font-size: 0.68rem; cursor: pointer;" title="Inspect ${escapeHtml(c.shortName)}">
                   ${escapeHtml(c.shortName || c.name)} (-$${Math.round(Math.abs(c.netValue))})
                 </span>
-              `).join('') : '<span style="color: #0D9488; font-weight: 600;">✓ All 4 cards exceeding annual fee!</span>'}
+              `).join('') : '<span style="color: #0D98BA; font-weight: 600;">✓ All 4 cards exceeding annual fee!</span>'}
             </div>
           </div>
         </div>
@@ -1884,7 +1884,7 @@ function renderFinanceSubscriptions() {
                                 <td class="card-roi-td">
                                   <div class="card-roi-perk-name">
                                     <span>${escapeHtml(b.name)}</span>
-                                    ${b.status ? `<span class="card-roi-cat-pill" style="font-size: 0.6rem; color: #0D9488;">${escapeHtml(b.status)}</span>` : ''}
+                                    ${b.status ? `<span class="card-roi-cat-pill" style="font-size: 0.6rem; color: #0D98BA;">${escapeHtml(b.status)}</span>` : ''}
                                   </div>
                                   <div class="card-roi-perk-notes">${escapeHtml(b.notes || b.details || '')}</div>
                                 </td>
@@ -1979,14 +1979,14 @@ function renderFinanceSubscriptions() {
                       <tr>
                         <td colspan="4">
                           <div style="display: flex; gap: 20px; align-items: center; font-weight: 600;">
-                            <span>Total Value Redeemed: <strong style="color: #0D9488;">$${Math.round(c.cardRealized)}</strong></span>
+                            <span>Total Value Redeemed: <strong style="color: #0D98BA;">$${Math.round(c.cardRealized)}</strong></span>
                             <span>&bull;</span>
                             <span>Annual Fee: <strong>$${c.annualFee}</strong></span>
                             <span>&bull;</span>
-                            <span>Net Value: <strong style="color: ${c.netValue >= 0 ? '#0D9488' : '#64748B'};">${surplusSign}$${Math.round(c.netValue)}</strong></span>
+                            <span>Net Value: <strong style="color: ${c.netValue >= 0 ? '#0D98BA' : '#64748B'};">${surplusSign}$${Math.round(c.netValue)}</strong></span>
                           </div>
                         </td>
-                        <td style="text-align: right; font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-weight: 700; color: #0D9488; font-size: 0.95rem;">
+                        <td style="text-align: right; font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-weight: 700; color: #0D98BA; font-size: 0.95rem;">
                           $${Math.round(c.cardRealized)}
                         </td>
                         <td></td>
@@ -2153,7 +2153,7 @@ function renderFinanceQuarterlyCadenceBar() {
       num: 2,
       label: 'Tax Withholdings',
       theme: 'teal',
-      color: '#0D9488',
+      color: '#0D98BA',
       hint: 'Audit W-4 federal/state withholdings & quarterly estimates',
       action: null
     },
@@ -2216,7 +2216,7 @@ function renderFinanceQuarterlyCadenceBar() {
           return `
             <div class="finance-cadence-pill-btn pill-theme-${item.theme} ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
               <div class="cadence-pill-left">
-                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D9488' : item.color};">
+                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D98BA' : item.color};">
                   <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
                 </span>
                 <span class="cadence-pill-num" style="color: ${item.color};">${item.num}.</span>
@@ -2262,7 +2262,7 @@ function renderFinanceAnnualCadenceBar() {
       num: 3,
       label: 'Unclaimed Property',
       theme: 'teal',
-      color: '#0D9488',
+      color: '#0D98BA',
       hint: 'Search NYS / state registries for unclaimed funds',
       action: `
         <a href="https://www.osc.ny.gov/unclaimed-funds" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Search NYS Unclaimed Funds">
@@ -2284,7 +2284,7 @@ function renderFinanceAnnualCadenceBar() {
     <div class="finance-cadence-strip-card cadence-strip-annual ${allDone ? 'all-done' : ''}">
       <div class="finance-cadence-header">
         <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'shield-check'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D9488' : '#0D9488'};"></i>
+          <i data-lucide="${allDone ? 'check-check' : 'shield-check'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D98BA' : '#0D98BA'};"></i>
           <span>Annual Governance</span>
           <span class="finance-cadence-sub">&bull; ${yKey} Horizon</span>
         </div>
@@ -2298,7 +2298,7 @@ function renderFinanceAnnualCadenceBar() {
           return `
             <div class="finance-cadence-pill-btn pill-theme-${item.theme} ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
               <div class="cadence-pill-left">
-                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D9488' : item.color};">
+                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D98BA' : item.color};">
                   <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
                 </span>
                 <span class="cadence-pill-num" style="color: ${item.color};">${item.num}.</span>
@@ -2471,7 +2471,7 @@ function renderFinanceRunway() {
   const classBreakdown = {
     retirement: { name: 'Retirement (401k & IRAs)', icon: 'shield', color: '#7C3AED', total: 0, count: 0 },
     brokerage: { name: 'Taxable Brokerage & RSUs', icon: 'trending-up', color: '#4F46E5', total: 0, count: 0 },
-    realestate: { name: 'Real Estate & Vehicles', icon: 'home', color: '#0D9488', total: 0, count: 0 },
+    realestate: { name: 'Real Estate & Vehicles', icon: 'home', color: '#0D98BA', total: 0, count: 0 },
     cash: { name: 'Cash Reserves & Runway', icon: 'droplet', color: '#065F46', total: 0, count: 0 },
     education: { name: 'Education Fund (529)', icon: 'graduation-cap', color: '#64748B', total: 0, count: 0 },
     liability: { name: 'Mortgage & Liabilities', icon: 'credit-card', color: '#FF5A5F', total: 0, count: 0 }
@@ -2608,7 +2608,7 @@ function renderFinanceRunway() {
                     const slices = [
                       { name: 'Retirement', pct: parseFloat(allocPcts.retirement) || 0, color: '#7C3AED' },
                       { name: 'Brokerage', pct: parseFloat(allocPcts.brokerage) || 0, color: '#4F46E5' },
-                      { name: 'Real Estate', pct: parseFloat(allocPcts.realestate) || 0, color: '#0D9488' },
+                      { name: 'Real Estate', pct: parseFloat(allocPcts.realestate) || 0, color: '#0D98BA' },
                       { name: 'Cash', pct: parseFloat(allocPcts.cash) || 0, color: '#065F46' },
                       { name: '529 Plan', pct: parseFloat(allocPcts.education) || 0, color: '#64748B' }
                     ];
@@ -2641,7 +2641,7 @@ function renderFinanceRunway() {
                   <span class="finance-donut-legend-pct">${allocPcts.brokerage}%</span>
                 </div>
                 <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate">
-                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #0D9488;"></span>Real Estate</span>
+                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #0D98BA;"></span>Real Estate</span>
                   <span class="finance-donut-legend-pct">${allocPcts.realestate}%</span>
                 </div>
                 <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('cash')" style="cursor: pointer;" title="Filter ledger to Cash">
@@ -2698,7 +2698,7 @@ function renderFinanceRunway() {
         <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate &amp; Vehicles">
           <div class="finance-nw-class-header">
             <span class="finance-nw-class-title">
-              <i data-lucide="home" style="width: 15px; height: 15px; color: #0D9488;"></i>
+              <i data-lucide="home" style="width: 15px; height: 15px; color: #0D98BA;"></i>
               <span>Real Estate &amp; Vehicles</span>
             </span>
             <span class="finance-target-status-badge success">${allocPcts.realestate}% Share</span>
@@ -2769,7 +2769,7 @@ function renderFinanceRunway() {
             </button>
             <div>
               <h3 class="finance-section-title">
-                <i data-lucide="wallet" style="width: 18px; height: 18px; color: #0D9488;"></i>
+                <i data-lucide="wallet" style="width: 18px; height: 18px; color: #0D98BA;"></i>
                 <span>Active Accounts Ledger (${filteredAccounts.length} of ${accounts.length})</span>
               </h3>
               <span style="font-size: 0.76rem; color: var(--text-muted);">Reconciled institutional balances as of ${asOfDate}</span>
@@ -2859,7 +2859,7 @@ function renderFinanceRunway() {
       <div class="monarch-dropzone-compact" id="balances-dropzone-el" onclick="triggerBalancesFileInput()">
         <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; width: 100%;">
           <div style="display: flex; align-items: center; gap: 10px;">
-            <div class="monarch-dropzone-icon" style="width: 34px; height: 34px; margin: 0; background: var(--bg-card); color: #0D9488; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+            <div class="monarch-dropzone-icon" style="width: 34px; height: 34px; margin: 0; background: var(--bg-card); color: #0D98BA; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
               <i data-lucide="upload-cloud" style="width: 18px; height: 18px;"></i>
             </div>
             <div style="text-align: left;">
@@ -4314,30 +4314,30 @@ function renderFinanceBudget() {
 
           <div class="budget-master-foot" style="position: relative; z-index: 2;">
             <span>Day ${currentDayOfMonth} pace: <strong class="num-mono">$${livingExpectedMTD.toLocaleString()}</strong></span>
-            <strong class="num-mono" style="color: ${livingRemaining < 0 ? '#E11D48' : 'var(--fin-income, #0D9488)'}; font-size: 12.5px;">$${Math.round(livingRemaining).toLocaleString()} Left ($${livingDailyRem}/day)</strong>
+            <strong class="num-mono" style="color: ${livingRemaining < 0 ? '#E11D48' : 'var(--fin-income, #0D98BA)'}; font-size: 12.5px;">$${Math.round(livingRemaining).toLocaleString()} Left ($${livingDailyRem}/day)</strong>
           </div>
         </div>
 
         <!-- Master Wealth & Savings Envelope -->
         <div class="budget-master-card savings-theme">
-          <div class="summer-widget-watermark" style="color: #0D9488;">
+          <div class="summer-widget-watermark" style="color: #0D98BA;">
             <i data-lucide="gem"></i>
           </div>
           <div class="summer-widget-top">
             <div style="display: flex; align-items: center; gap: 10px;">
               <div class="summer-widget-pill">
-                <i data-lucide="gem" style="width: 19px; height: 19px; color: #0D9488;"></i>
+                <i data-lucide="gem" style="width: 19px; height: 19px; color: #0D98BA;"></i>
               </div>
               <div>
-                <span class="budget-master-lbl" style="display: block; color: #0F766E;">Direct Wealth Transfers</span>
-                <span style="font-size: 11px; color: #0F766E;">Capital One, Vanguard &amp; Fidelity</span>
+                <span class="budget-master-lbl" style="display: block; color: #0E7490;">Direct Wealth Transfers</span>
+                <span style="font-size: 11px; color: #0E7490;">Capital One, Vanguard &amp; Fidelity</span>
               </div>
             </div>
             <span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span>
           </div>
 
           <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
-            <div class="budget-master-val num-mono" style="color: #0F766E;">
+            <div class="budget-master-val num-mono" style="color: #0E7490;">
               $${Math.round(savingsFundedMTD).toLocaleString()}
               <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(savingsTarget).toLocaleString()} Target</span>
             </div>
@@ -4348,8 +4348,8 @@ function renderFinanceBudget() {
           </div>
 
           <div class="budget-master-foot" style="position: relative; z-index: 2;">
-            <span style="color: #0F766E;">Direct accounts (Excludes 401k)</span>
-            <strong class="num-mono" style="color: #0F766E; font-size: 12.5px;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
+            <span style="color: #0E7490;">Direct accounts (Excludes 401k)</span>
+            <strong class="num-mono" style="color: #0E7490; font-size: 12.5px;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
           </div>
         </div>
 
@@ -4382,7 +4382,7 @@ function renderFinanceBudget() {
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${grocExpected}</span>
-              <strong class="num-mono" style="color: ${grocRem < 0 ? '#E11D48' : '#0D9488'};">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: ${grocRem < 0 ? '#E11D48' : '#0D98BA'};">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4411,7 +4411,7 @@ function renderFinanceBudget() {
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${dineExpected}</span>
-              <strong class="num-mono" style="color: ${dineRem < 0 ? '#E11D48' : '#0D9488'};">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: ${dineRem < 0 ? '#E11D48' : '#0D98BA'};">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4440,20 +4440,20 @@ function renderFinanceBudget() {
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${shopExpected}</span>
-              <strong class="num-mono" style="color: ${shopRem < 0 ? '#E11D48' : '#0D9488'};">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: ${shopRem < 0 ? '#E11D48' : '#0D98BA'};">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
 
         <!-- Card 4: Clothing, Shoes & Jewelry (Seafoam Mint) -->
         <div class="summer-widget-card theme-mint">
-          <div class="summer-widget-watermark" style="color: #0D9488;">
+          <div class="summer-widget-watermark" style="color: #0D98BA;">
             <i data-lucide="shirt"></i>
           </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #0D9488;"></i>
+                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #0D98BA;"></i>
               </div>
               <span class="budget-badge ${clothPace.cls}">${clothPace.text}</span>
             </div>
@@ -4465,11 +4465,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: ${clothPace.cls === 'budget-badge-rose' ? '#E11D48' : '#0D9488'};"></div>
+              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: ${clothPace.cls === 'budget-badge-rose' ? '#E11D48' : '#0D98BA'};"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${clothExpected}</span>
-              <strong class="num-mono" style="color: ${clothRem < 0 ? '#E11D48' : '#0D9488'};">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: ${clothRem < 0 ? '#E11D48' : '#0D98BA'};">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4498,7 +4498,7 @@ function renderFinanceBudget() {
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${selfExpected}</span>
-              <strong class="num-mono" style="color: ${selfRem < 0 ? '#E11D48' : '#0D9488'};">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: ${selfRem < 0 ? '#E11D48' : '#0D98BA'};">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4507,7 +4507,7 @@ function renderFinanceBudget() {
 
       <!-- 3B. Wealth Sweep Pot (Surplus Holding Tank) -->
       <div class="wealth-sweep-pot-card">
-        <div class="summer-widget-watermark" style="color: #0D9488; opacity: 0.14;">
+        <div class="summer-widget-watermark" style="color: #0D98BA; opacity: 0.14;">
           <i data-lucide="sparkles"></i>
         </div>
 
@@ -4519,7 +4519,7 @@ function renderFinanceBudget() {
               </div>
               <div>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 14.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #0F766E;">Wealth Sweep Holding Tank</span>
+                  <span style="font-size: 14.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #0E7490;">Wealth Sweep Holding Tank</span>
                   <span class="budget-badge budget-badge-teal">Active Sweep</span>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted, #71717A);">Unspent living budget auto-swept to separate holding pot</div>
@@ -4541,10 +4541,10 @@ function renderFinanceBudget() {
           <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
             <div class="wealth-sweep-pot-statbox" style="text-align: right; min-width: 170px;">
               <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A); margin-bottom: 2px;">October Surplus</div>
-              <div class="num-mono" style="font-size: 22px; font-weight: 800; color: #0D9488; line-height: 1.1;">
+              <div class="num-mono" style="font-size: 22px; font-weight: 800; color: #0D98BA; line-height: 1.1;">
                 +$${Math.round(livingRemaining).toLocaleString()}
               </div>
-              <div style="font-size: 11px; color: #0F766E; font-weight: 600; margin-top: 3px;">Unspent living cap</div>
+              <div style="font-size: 11px; color: #0E7490; font-weight: 600; margin-top: 3px;">Unspent living cap</div>
             </div>
 
             <div class="wealth-sweep-pot-statbox" style="text-align: right; min-width: 190px;">
@@ -4589,16 +4589,16 @@ function renderFinanceBudget() {
             </thead>
             <tbody>
               <!-- Dedicated Direct Transfers Row -->
-              <tr style="background: rgba(13, 148, 136, 0.06);">
+              <tr style="background: rgba(13, 152, 186, 0.06);">
                 <td>
-                  <strong style="color: #0F766E; display: flex; align-items: center; gap: 6px;">
+                  <strong style="color: #0E7490; display: flex; align-items: center; gap: 6px;">
                     <span>💎</span>
                     <span>Direct Wealth Transfers (Capital One, Vanguard, Fidelity)</span>
                   </strong>
                 </td>
                 <td><span class="budget-badge budget-badge-teal">Direct Transfers</span></td>
                 <td style="text-align: right;" class="num-mono">$${Math.round(savingsTarget).toLocaleString()}.00</td>
-                <td style="text-align: right; color: #0F766E; font-weight: 700;" class="num-mono">$${Math.round(savingsFundedMTD).toLocaleString()}.00</td>
+                <td style="text-align: right; color: #0E7490; font-weight: 700;" class="num-mono">$${Math.round(savingsFundedMTD).toLocaleString()}.00</td>
                 <td style="text-align: center;">
                   <div class="budget-stepper-wrap">
                     <button type="button" class="budget-stepper-btn" onclick="handleStepSavingsTarget(-250)" title="Decrease -$250">−</button>
@@ -4606,7 +4606,7 @@ function renderFinanceBudget() {
                     <button type="button" class="budget-stepper-btn" onclick="handleStepSavingsTarget(250)" title="Increase +$250">+</button>
                   </div>
                 </td>
-                <td style="text-align: right; color: #0F766E; font-weight: 700;" class="num-mono">$${Math.round(savingsRemaining).toLocaleString()} to goal</td>
+                <td style="text-align: right; color: #0E7490; font-weight: 700;" class="num-mono">$${Math.round(savingsRemaining).toLocaleString()} to goal</td>
                 <td style="text-align: center;"><span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span></td>
               </tr>
 
@@ -4650,7 +4650,7 @@ function renderFinanceBudget() {
                         <button type="button" class="budget-stepper-btn" onclick="handleStepCategoryBudget('${c.id}', 50)" title="Increase +$50">+</button>
                       </div>
                     </td>
-                    <td style="text-align: right; font-weight: 700; color: ${isOver ? '#E11D48' : 'var(--fin-income, #0D9488)'};" class="num-mono">
+                    <td style="text-align: right; font-weight: 700; color: ${isOver ? '#E11D48' : 'var(--fin-income, #0D98BA)'};" class="num-mono">
                       ${isOver ? `-$${Math.abs(Math.round(remaining)).toLocaleString()}` : `$${Math.round(remaining).toLocaleString()}`}
                     </td>
                     <td style="text-align: center;"><span class="budget-badge ${badge.cls}">${badge.text}</span></td>
@@ -4666,7 +4666,7 @@ function renderFinanceBudget() {
                 <td style="text-align: center; font-size: 15px; color: #7C3AED;" class="num-mono">
                   $${Math.round(totalLivingBudget + savingsTarget).toLocaleString()} / mo
                 </td>
-                <td style="text-align: right; font-size: 14px; color: var(--fin-income, #0D9488);" class="num-mono">
+                <td style="text-align: right; font-size: 14px; color: var(--fin-income, #0D98BA);" class="num-mono">
                   $${Math.round(livingRemaining + savingsRemaining).toLocaleString()} Left
                 </td>
                 <td></td>

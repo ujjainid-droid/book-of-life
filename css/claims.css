@@ -1107,7 +1107,7 @@
   background: var(--primary);
   color: #ffffff;
   border-color: var(--primary);
-  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 1px 4px rgba(13, 152, 186, 0.25);
 }
 
 .claims-patient-chips {
@@ -1164,8 +1164,8 @@
   gap: 14px;
   padding: 12px 16px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, var(--bg-card) 100%);
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.08) 0%, var(--bg-card) 100%);
+  border: 1px solid rgba(13, 152, 186, 0.25);
   flex-wrap: wrap;
 }
 
@@ -1219,7 +1219,7 @@
 
 .claims-banner-btn:hover {
   opacity: 0.92;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 2px 6px rgba(13, 152, 186, 0.3);
 }
 
 .claims-banner-btn.btn-outline {
@@ -1257,7 +1257,7 @@
 }
 
 .claims-accordion-header:hover {
-  background: rgba(13, 148, 136, 0.04);
+  background: rgba(13, 152, 186, 0.04);
 }
 
 .claims-accordion-title-wrap {
@@ -1345,17 +1345,17 @@
   gap: 4px;
   padding: 2px 8px;
   border-radius: var(--radius-full);
-  background: rgba(13, 148, 136, 0.1);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.1);
+  color: #0D98BA;
+  border: 1px solid rgba(13, 152, 186, 0.25);
   font-size: 0.7rem;
   font-weight: 700;
 }
 
 [data-theme="dark"] .settled-badge-pill {
-  background: rgba(13, 148, 136, 0.2);
-  color: #2DD4BF;
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(13, 152, 186, 0.2);
+  color: #38BDF8;
+  border-color: rgba(13, 152, 186, 0.35);
 }
 
 /* --------------------------------------------------------------------------
@@ -1434,8 +1434,8 @@
 }
 
 .claims-widget-card.highlight {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.06) 0%, var(--bg-card) 100%);
-  border-color: rgba(13, 148, 136, 0.3);
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.06) 0%, var(--bg-card) 100%);
+  border-color: rgba(13, 152, 186, 0.3);
 }
 
 .claims-widget-card:hover {
@@ -1462,9 +1462,9 @@
   font-weight: 700;
   padding: 1px 7px;
   border-radius: var(--radius-full);
-  background: rgba(13, 148, 136, 0.1);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.1);
+  color: #0D98BA;
+  border: 1px solid rgba(13, 152, 186, 0.25);
 }
 
 .claims-widget-value {
@@ -1614,7 +1614,7 @@
 
 .claims-submit-btn:hover {
   opacity: 0.92;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 2px 6px rgba(13, 152, 186, 0.25);
 }
 
 /* Filter Tabs */
@@ -1769,13 +1769,13 @@
 }
 
 .claims-pill-btn.btn-settle {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0D9488;
-  border-color: rgba(13, 148, 136, 0.3);
+  background: rgba(13, 152, 186, 0.12);
+  color: #0D98BA;
+  border-color: rgba(13, 152, 186, 0.3);
 }
 
 .claims-pill-btn.btn-settle:hover {
-  background: #0D9488;
+  background: #0D98BA;
   color: #ffffff;
 }
 
@@ -1817,7 +1817,7 @@
 }
 
 .claims-resolved-header:hover {
-  background: rgba(13, 148, 136, 0.04);
+  background: rgba(13, 152, 186, 0.04);
 }
 
 .claims-resolved-title {
@@ -1963,7 +1963,7 @@
 }
 
 .claims-cell-table tbody tr:hover {
-  background: rgba(13, 148, 136, 0.035);
+  background: rgba(13, 152, 186, 0.035);
 }
 
 .cell-date {

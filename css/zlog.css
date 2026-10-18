@@ -156,12 +156,12 @@
 }
 
 .zlog-rate-btn.active[data-level="3"] {
-  background: rgba(13, 148, 136, 0.14);
-  border-color: rgba(13, 148, 136, 0.5);
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.18);
+  background: rgba(13, 152, 186, 0.14);
+  border-color: rgba(13, 152, 186, 0.5);
+  box-shadow: 0 2px 6px rgba(13, 152, 186, 0.18);
 }
 .zlog-rate-btn.active[data-level="3"] .rate-title {
-  color: #0D9488;
+  color: #0D98BA;
   font-weight: 700;
 }
 
@@ -1342,9 +1342,9 @@ body.dark-mode .zlog-search-input {
 }
 
 .zlog-action-stopped {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border-color: rgba(13, 152, 186, 0.35);
 }
 
 .zlog-table-select {
@@ -1467,9 +1467,9 @@ body.dark-mode .zlog-search-input {
 }
 
 .zlog-table-select.action-stopped {
-  background-color: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border-color: rgba(13, 148, 136, 0.35);
+  background-color: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border-color: rgba(13, 152, 186, 0.35);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%230F766E' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
@@ -1504,9 +1504,9 @@ body.dark-mode .zlog-search-input {
 
 [data-theme="dark"] .zlog-action-stopped,
 [data-theme="dark"] .zlog-table-select.action-stopped {
-  background-color: rgba(13, 148, 136, 0.22);
-  color: #5EEAD4;
-  border-color: rgba(13, 148, 136, 0.45);
+  background-color: rgba(13, 152, 186, 0.22);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.45);
 }
 
 .zlog-table-select.prescriber-select {
@@ -2756,8 +2756,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-era-card.is-era-b {
-  border-color: #0D9488 !important;
-  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.35);
+  border-color: #0D98BA !important;
+  box-shadow: 0 0 0 2px rgba(13, 152, 186, 0.35);
 }
 
 .zlog-era-compare-container {
@@ -3028,9 +3028,9 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-rank-badge.rank-2 {
-  background: rgba(13, 148, 136, 0.15);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.3);
+  background: rgba(13, 152, 186, 0.15);
+  color: #0D98BA;
+  border: 1px solid rgba(13, 152, 186, 0.3);
 }
 
 .zlog-rank-badge.rank-3 {
@@ -3442,8 +3442,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-cal-chip.active.chip-lvl-3 {
-  background: #0D9488;
-  border-color: #0D9488;
+  background: #0D98BA;
+  border-color: #0D98BA;
 }
 
 .zlog-cal-chip.active.chip-lvl-2 {
@@ -3536,7 +3536,7 @@ body.dark-mode .zlog-month-badge {
 
 .zlog-cal-spec-seg.seg-5 { background: #10B981; }
 .zlog-cal-spec-seg.seg-4 { background: #4E8765; }
-.zlog-cal-spec-seg.seg-3 { background: #0D9488; }
+.zlog-cal-spec-seg.seg-3 { background: #0D98BA; }
 .zlog-cal-spec-seg.seg-2 { background: #E06D53; }
 .zlog-cal-spec-seg.seg-1 { background: #EF4444; }
 .zlog-cal-spec-seg.seg-unrated { background: var(--border-strong); opacity: 0.5; }
@@ -3718,8 +3718,8 @@ body.dark-mode .zlog-month-badge {
 }
 
 .zlog-cal-rating-pill.level-3 {
-  background: rgba(13, 148, 136, 0.15);
-  color: #0D9488;
+  background: rgba(13, 152, 186, 0.15);
+  color: #0D98BA;
 }
 
 .zlog-cal-rating-pill.level-2 {
@@ -4060,21 +4060,21 @@ body.dark-mode .zlog-month-badge {
   align-items: center;
   gap: 6px;
   padding: 4px 10px;
-  background: rgba(13, 148, 136, 0.08); /* Nordic Sea Glass Teal */
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.08); /* Nordic Sea Glass Teal */
+  border: 1px solid rgba(13, 152, 186, 0.25);
   border-radius: var(--radius-sm, 6px);
   font-size: 0.76rem;
   transition: all 0.2s ease;
 }
 
 .zlog-pdf-chip:hover {
-  border-color: rgba(13, 148, 136, 0.5);
-  background: rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 152, 186, 0.5);
+  background: rgba(13, 152, 186, 0.12);
 }
 
 [data-theme=dark] .zlog-pdf-chip {
-  background: rgba(13, 148, 136, 0.15);
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(13, 152, 186, 0.15);
+  border-color: rgba(13, 152, 186, 0.35);
 }
 
 .zlog-pdf-chip-main {
@@ -4090,7 +4090,7 @@ body.dark-mode .zlog-month-badge {
 
 .zlog-pdf-chip-name {
   font-weight: 500;
-  color: #0F766E; /* Sea Glass Dark */
+  color: #0E7490; /* Sea Glass Dark */
   max-width: 180px;
   white-space: nowrap;
   overflow: hidden;
@@ -4098,7 +4098,7 @@ body.dark-mode .zlog-month-badge {
 }
 
 [data-theme=dark] .zlog-pdf-chip-name {
-  color: #2DD4BF; /* Sea Glass Light */
+  color: #38BDF8; /* Sea Glass Light */
 }
 
 .zlog-pdf-chip-size {
@@ -4111,7 +4111,7 @@ body.dark-mode .zlog-month-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  border-left: 1px solid rgba(13, 148, 136, 0.2);
+  border-left: 1px solid rgba(13, 152, 186, 0.2);
   padding-left: 6px;
   margin-left: 2px;
 }
@@ -4121,7 +4121,7 @@ body.dark-mode .zlog-month-badge {
   border: none;
   padding: 2px 4px;
   cursor: pointer;
-  color: #0F766E;
+  color: #0E7490;
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
@@ -4130,11 +4130,11 @@ body.dark-mode .zlog-month-badge {
 }
 
 [data-theme=dark] .zlog-chip-action-btn {
-  color: #2DD4BF;
+  color: #38BDF8;
 }
 
 .zlog-chip-action-btn:hover {
-  background: rgba(13, 148, 136, 0.2);
+  background: rgba(13, 152, 186, 0.2);
 }
 
 /* 4. PDF In-App Preview Modal */
@@ -5866,12 +5866,12 @@ dialog.zhub-dlg .fld select {
 
 :root[data-theme="light"] .zhub-already-logged-banner {
   background: #F0FDFB;
-  border-color: rgba(13, 148, 136, 0.3);
+  border-color: rgba(13, 152, 186, 0.3);
   color: #134E4A;
 }
 
 :root[data-theme="light"] .zhub-banner-btn {
-  background: #0D9488;
+  background: #0D98BA;
   color: #FFFFFF;
 }
 

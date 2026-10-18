@@ -272,27 +272,27 @@ button:focus-visible, textarea:focus-visible {
 }
 
 .margo-wordmark {
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 38%, #0D9488 100%);
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 38%, #0D98BA 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
 
 .margo-dot {
-  color: #0D9488;
+  color: #0D98BA;
   display: inline-block;
   margin-left: -0.5px;
   font-style: italic;
 }
 
 [data-theme="dark"] .margo-wordmark {
-  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 36%, #14B8A6 100%);
+  background: linear-gradient(135deg, #A78BFA 0%, #8B5CF6 36%, #15B5D5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 [data-theme="dark"] .margo-dot {
-  color: #14B8A6;
+  color: #15B5D5;
 }
 
 /* Unified Main Navigation Capsule (Cohesive, Non-Shifting) */
@@ -343,9 +343,9 @@ button:focus-visible, textarea:focus-visible {
 
 .nav-capsule-btn.active#nav-btn-cover,
 .nav-capsule-btn.active#nav-btn-compass {
-  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+  background: linear-gradient(135deg, #0D98BA 0%, #0E7490 100%);
   color: #ffffff;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.32);
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.32);
 }
 
 .nav-capsule-btn.active#nav-btn-zhub,
@@ -486,9 +486,9 @@ button:focus-visible, textarea:focus-visible {
 }
 
 .energy-dial-btn.active#dial-btn-maint {
-  background: #0D9488;
+  background: #0D98BA;
   color: #ffffff;
-  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 1px 4px rgba(13, 152, 186, 0.35);
 }
 
 /* Header Adulting Bunker Portal Button */

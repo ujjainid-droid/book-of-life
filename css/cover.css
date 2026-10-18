@@ -891,7 +891,7 @@
 }
 
 .pillar-badge-g {
-  background: var(--margo-g, #0D9488);
+  background: var(--margo-g, #0D98BA);
   color: #FFFFFF;
 }
 
@@ -1677,7 +1677,7 @@
 [data-theme="dark"] .reminder-pill-done {
   background: rgba(20, 184, 166, 0.16);
   border-color: rgba(20, 184, 166, 0.32);
-  color: #99F6E4;
+  color: #BAE6FD;
 }
 
 @media (max-width: 580px) {
@@ -1787,17 +1787,17 @@
   font-weight: 700;
   font-family: var(--font-sans);
   border-radius: var(--radius-full);
-  background: rgba(13, 148, 136, 0.08);
-  color: #0F766E;
-  border: 1.5px solid rgba(13, 148, 136, 0.28);
+  background: rgba(13, 152, 186, 0.08);
+  color: #0E7490;
+  border: 1.5px solid rgba(13, 152, 186, 0.28);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.06);
+  box-shadow: 0 1px 3px rgba(13, 152, 186, 0.06);
 }
 
 .btn-today-zlog:hover {
-  background: rgba(13, 148, 136, 0.16);
-  border-color: rgba(13, 148, 136, 0.48);
+  background: rgba(13, 152, 186, 0.16);
+  border-color: rgba(13, 152, 186, 0.48);
   transform: translateY(-1px);
 }
 
@@ -1830,7 +1830,7 @@
 
 [data-theme="dark"] .btn-today-zlog {
   background: rgba(20, 184, 166, 0.12);
-  color: #5EEAD4;
+  color: #67E8F9;
   border-color: rgba(20, 184, 166, 0.3);
 }
 
@@ -1993,9 +1993,9 @@
 }
 
 @keyframes pulseHighlight {
-  0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
-  50% { box-shadow: 0 0 0 6px rgba(13, 148, 136, 0.22); border-color: #0D9488; }
-  100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(13, 152, 186, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(13, 152, 186, 0.22); border-color: #0D98BA; }
+  100% { box-shadow: 0 0 0 0 rgba(13, 152, 186, 0); }
 }
 
 .section-highlight-pulse {
@@ -3870,16 +3870,16 @@
 }
 
 .cal-day-badge.badge-done {
-  background: rgba(13, 148, 136, 0.14);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.28);
+  background: rgba(13, 152, 186, 0.14);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.28);
   font-weight: 700;
 }
 
 [data-theme="dark"] .cal-day-badge.badge-done {
-  background: rgba(13, 148, 136, 0.25);
-  color: #5EEAD4;
-  border-color: rgba(13, 148, 136, 0.4);
+  background: rgba(13, 152, 186, 0.25);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.4);
 }
 
 .cal-day-badge.badge-skipped {
@@ -4026,12 +4026,12 @@
 }
 
 .pillar-card.pillar-card-g {
-  background: linear-gradient(180deg, #F0FDFA 0%, #F7FEFC 50%, #FFFFFF 100%);
+  background: linear-gradient(180deg, #F0F9FF 0%, #F7FEFC 50%, #FFFFFF 100%);
   border-color: #CCFBF1;
 }
 .pillar-card.pillar-card-g:hover {
-  border-color: #99F6E4;
-  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.12);
+  border-color: #BAE6FD;
+  box-shadow: 0 6px 18px rgba(13, 152, 186, 0.12);
 }
 
 .pillar-card.pillar-card-o {
@@ -4056,8 +4056,8 @@
   border-color: rgba(139, 92, 246, 0.28);
 }
 [data-theme="dark"] .pillar-card.pillar-card-g {
-  background: linear-gradient(180deg, rgba(13, 148, 136, 0.12) 0%, rgba(30, 41, 59, 0.7) 100%);
-  border-color: rgba(13, 148, 136, 0.28);
+  background: linear-gradient(180deg, rgba(13, 152, 186, 0.12) 0%, rgba(30, 41, 59, 0.7) 100%);
+  border-color: rgba(13, 152, 186, 0.28);
 }
 [data-theme="dark"] .pillar-card.pillar-card-o {
   background: linear-gradient(180deg, rgba(30, 27, 75, 0.18) 0%, rgba(30, 41, 59, 0.7) 100%);
@@ -4102,7 +4102,7 @@
 }
 
 .pillar-badge-g {
-  background: var(--margo-g, #0D9488);
+  background: var(--margo-g, #0D98BA);
   color: #FFFFFF;
 }
 
@@ -4286,14 +4286,14 @@
 /* 3. Next step: Nordic Sea Glass Teal with Rich Vibrant Emerald/Teal */
 .mantra-next {
   background: #CCFBF1;
-  color: #0F766E;
-  border: 1.5px solid #99F6E4;
-  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.14);
+  color: #0E7490;
+  border: 1.5px solid #BAE6FD;
+  box-shadow: 0 1px 4px rgba(13, 152, 186, 0.14);
 }
 
 [data-theme="dark"] .mantra-next {
-  background: rgba(13, 148, 136, 0.24);
-  color: #5EEAD4;
+  background: rgba(13, 152, 186, 0.24);
+  color: #67E8F9;
   border-color: rgba(45, 212, 191, 0.45);
 }
 
@@ -4505,11 +4505,11 @@
 
 /* Vibrant Distinctive Tool Pills for System Compass */
 .compass-tool-pill.tool-pill-margo {
-  background: #F0FDFA;
-  border-color: #99F6E4;
-  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.08);
+  background: #F0F9FF;
+  border-color: #BAE6FD;
+  box-shadow: 0 1px 3px rgba(13, 152, 186, 0.08);
 }
-.compass-tool-pill.tool-pill-margo .tool-name { color: #0F766E; }
+.compass-tool-pill.tool-pill-margo .tool-name { color: #0E7490; }
 
 .compass-tool-pill.tool-pill-notes {
   background: #FFF1F2;
@@ -4539,7 +4539,7 @@
 }
 .compass-tool-pill.tool-pill-gmail .tool-name { color: #BE123C; }
 
-[data-theme="dark"] .compass-tool-pill.tool-pill-margo { background: rgba(13, 148, 136, 0.18); border-color: rgba(45, 212, 191, 0.35); }
+[data-theme="dark"] .compass-tool-pill.tool-pill-margo { background: rgba(13, 152, 186, 0.18); border-color: rgba(45, 212, 191, 0.35); }
 [data-theme="dark"] .compass-tool-pill.tool-pill-notes { background: rgba(225, 29, 72, 0.18); border-color: rgba(251, 113, 133, 0.35); }
 [data-theme="dark"] .compass-tool-pill.tool-pill-things { background: rgba(124, 58, 237, 0.18); border-color: rgba(167, 139, 250, 0.35); }
 [data-theme="dark"] .compass-tool-pill.tool-pill-drive { background: rgba(2, 132, 199, 0.18); border-color: rgba(56, 189, 248, 0.35); }
@@ -5028,8 +5028,8 @@
 /* Organized topic card emphasis (School notes) */
 .topic-audit-card.is-streamlined {
   background: var(--bg-card);
-  border: 1.5px solid rgba(13, 148, 136, 0.55);
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.1);
+  border: 1.5px solid rgba(13, 152, 186, 0.55);
+  box-shadow: 0 4px 16px rgba(13, 152, 186, 0.1);
 }
 
 [data-theme="dark"] .topic-audit-card.is-streamlined {
@@ -5938,15 +5938,15 @@
 }
 
 .board-count-pill.count-later {
-  background: #F0FDFA;
-  color: #0D9488;
+  background: #F0F9FF;
+  color: #0D98BA;
   border: 1px solid #CCFBF1;
 }
 
 [data-theme="dark"] .board-count-pill.count-later {
-  background: rgba(13, 148, 136, 0.18);
+  background: rgba(13, 152, 186, 0.18);
   color: #A7F3D0;
-  border-color: rgba(13, 148, 136, 0.35);
+  border-color: rgba(13, 152, 186, 0.35);
 }
 
 .focus-tier-block {
@@ -5984,9 +5984,9 @@
 }
 
 .tier-badge-later {
-  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+  background: linear-gradient(135deg, #0D98BA 0%, #0E7490 100%);
   color: #FFFFFF;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.28);
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.28);
 }
 
 .focus-tier-heading {
@@ -6029,16 +6029,16 @@
 }
 
 .tier-later-block .btn-tier-add {
-  background: #F0FDFA;
+  background: #F0F9FF;
   border: 1px solid #CCFBF1;
-  color: #0D9488;
+  color: #0D98BA;
 }
 
 .tier-later-block .btn-tier-add:hover {
-  background: #0D9488;
+  background: #0D98BA;
   color: #FFFFFF;
-  border-color: #0D9488;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
+  border-color: #0D98BA;
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.25);
 }
 
 .focus-tier-divider {
@@ -6386,24 +6386,24 @@
 
 /* 4. Home Declutter (Sea Glass Teal) */
 .bento-campaign-card.theme-cat-home {
-  background: linear-gradient(135deg, #CCFBF1 0%, #F0FDFA 55%, #FFFFFF 100%);
-  border: 1.5px solid #5EEAD4;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08);
+  background: linear-gradient(135deg, #CCFBF1 0%, #F0F9FF 55%, #FFFFFF 100%);
+  border: 1.5px solid #67E8F9;
+  box-shadow: 0 2px 10px rgba(13, 152, 186, 0.08);
 }
 .bento-campaign-card.theme-cat-home:hover {
-  border-color: #2DD4BF;
-  box-shadow: 0 4px 18px rgba(13, 148, 136, 0.18);
+  border-color: #38BDF8;
+  box-shadow: 0 4px 18px rgba(13, 152, 186, 0.18);
 }
 .bento-campaign-card.theme-cat-home .bento-cat-tag {
   background: #CCFBF1;
-  color: #0F766E;
-  border: 1px solid #99F6E4;
+  color: #0E7490;
+  border: 1px solid #BAE6FD;
 }
 .bento-campaign-card.theme-cat-home .bento-domain-title {
-  color: #0F766E;
+  color: #0E7490;
 }
 [data-theme="dark"] .bento-campaign-card.theme-cat-home {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.16) 0%, rgba(30, 41, 59, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.16) 0%, rgba(30, 41, 59, 0.6) 100%);
   border-color: rgba(45, 212, 191, 0.38);
 }
 
@@ -6575,14 +6575,14 @@
 /* 3. Maintain - Frosted Nordic Sea Glass Teal */
 .sample-phase-pill.pill-status-maintain,
 .pill-status-maintain {
-  background: rgba(13, 148, 136, 0.10);
-  border-color: rgba(13, 148, 136, 0.28);
-  color: #0F766E;
+  background: rgba(13, 152, 186, 0.10);
+  border-color: rgba(13, 152, 186, 0.28);
+  color: #0E7490;
   box-shadow: none;
 }
 .sample-phase-pill.pill-status-maintain::before {
-  background: #0D9488;
-  box-shadow: 0 0 4px rgba(13, 148, 136, 0.5);
+  background: #0D98BA;
+  box-shadow: 0 0 4px rgba(13, 152, 186, 0.5);
 }
 
 /* 4. Done - Frosted Resonant Emerald */
@@ -6746,7 +6746,7 @@
 .tool-icon-btn.tool-btn-drive { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; }
 .tool-icon-btn.tool-btn-gmail { background: #FFF1F2; border-color: #FECDD3; color: #E11D48; }
 .tool-icon-btn.tool-btn-roadmap { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
-.tool-icon-btn.tool-btn-checkpoint { background: #F0FDFA; border-color: #99F6E4; color: #0D9488; }
+.tool-icon-btn.tool-btn-checkpoint { background: #F0F9FF; border-color: #BAE6FD; color: #0D98BA; }
 .tool-icon-btn.tool-btn-claims { background: #ECFDF5; border-color: #A7F3D0; color: #059669; }
 .tool-icon-btn.tool-btn-sheets { background: #ECFDF5; border-color: #A7F3D0; color: #047857; }
 .tool-icon-btn.tool-btn-photos { background: #FAF5FF; border-color: #DDD6FE; color: #7C3AED; }
@@ -6940,9 +6940,9 @@
 /* Category 4: Home Declutter (Color 4) - Sea Glass Teal */
 .simplified-campaign-card.theme-cat-home.tier-now,
 .simplified-campaign-card.theme-home.tier-now {
-  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
-  border-color: #99F6E4;
-  border-left: 4px solid #0D9488;
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+  border-color: #BAE6FD;
+  border-left: 4px solid #0D98BA;
 }
 .simplified-campaign-card.theme-cat-home.tier-now .sample-domain-title,
 .simplified-campaign-card.theme-home.tier-now .sample-domain-title {
@@ -6950,25 +6950,25 @@
 }
 .simplified-campaign-card.theme-cat-home.tier-now:hover,
 .simplified-campaign-card.theme-home.tier-now:hover {
-  border-color: #0D9488;
-  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.14);
+  border-color: #0D98BA;
+  box-shadow: 0 4px 14px rgba(13, 152, 186, 0.14);
 }
 
 .simplified-campaign-card.theme-cat-home.tier-later,
 .simplified-campaign-card.theme-home.tier-later {
   background: linear-gradient(135deg, #F6FEFC 0%, #FAFAFC 100%);
   border-color: #CCFBF1;
-  border-left: 3.5px solid rgba(13, 148, 136, 0.35);
+  border-left: 3.5px solid rgba(13, 152, 186, 0.35);
 }
 .simplified-campaign-card.theme-cat-home.tier-later .sample-domain-title,
 .simplified-campaign-card.theme-home.tier-later .sample-domain-title {
-  color: #0F766E;
+  color: #0E7490;
 }
 .simplified-campaign-card.theme-cat-home.tier-later:hover,
 .simplified-campaign-card.theme-home.tier-later:hover {
-  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
-  border-color: #99F6E4;
-  border-left-color: #0D9488;
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFFFFF 100%);
+  border-color: #BAE6FD;
+  border-left-color: #0D98BA;
 }
 
 /* Category 5: Food & Nutrition (Color 5) - Celadon Sage */
@@ -7124,23 +7124,23 @@ body.dark-mode .simplified-campaign-card.theme-finance.tier-later .sample-domain
 /* 4. Home Declutter (Dark) */
 body.dark-mode .simplified-campaign-card.theme-cat-home.tier-now,
 body.dark-mode .simplified-campaign-card.theme-home.tier-now {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
-  border-color: rgba(13, 148, 136, 0.45);
-  border-left: 4px solid #2DD4BF;
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%);
+  border-color: rgba(13, 152, 186, 0.45);
+  border-left: 4px solid #38BDF8;
 }
 body.dark-mode .simplified-campaign-card.theme-cat-home.tier-now .sample-domain-title,
 body.dark-mode .simplified-campaign-card.theme-home.tier-now .sample-domain-title {
-  color: #99F6E4;
+  color: #BAE6FD;
 }
 body.dark-mode .simplified-campaign-card.theme-cat-home.tier-later,
 body.dark-mode .simplified-campaign-card.theme-home.tier-later {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
-  border-color: rgba(13, 148, 136, 0.22);
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.06) 0%, rgba(30, 41, 59, 0.65) 100%);
+  border-color: rgba(13, 152, 186, 0.22);
   border-left: 3px solid rgba(45, 212, 191, 0.35);
 }
 body.dark-mode .simplified-campaign-card.theme-cat-home.tier-later .sample-domain-title,
 body.dark-mode .simplified-campaign-card.theme-home.tier-later .sample-domain-title {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 /* 5. Food & Nutrition (Dark) */
@@ -7196,12 +7196,12 @@ body.dark-mode .pill-status-maintain,
 [data-theme="dark"] .pill-status-maintain {
   background: rgba(20, 184, 166, 0.18);
   border-color: rgba(45, 212, 191, 0.35);
-  color: #5EEAD4;
+  color: #67E8F9;
   box-shadow: none;
 }
 body.dark-mode .pill-status-maintain::before,
 [data-theme="dark"] .pill-status-maintain::before {
-  background: #2DD4BF;
+  background: #38BDF8;
   box-shadow: 0 0 5px rgba(45, 212, 191, 0.7);
 }
 
@@ -7312,16 +7312,16 @@ body.dark-mode .bento-campaign-card.theme-cat-finance .bento-cat-tag {
 }
 
 body.dark-mode .bento-campaign-card.theme-cat-home {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
-  border-color: rgba(13, 148, 136, 0.45);
-  border-top-color: #2DD4BF;
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.24) 0%, rgba(30, 41, 59, 0.9) 100%);
+  border-color: rgba(13, 152, 186, 0.45);
+  border-top-color: #38BDF8;
 }
 body.dark-mode .bento-campaign-card.theme-cat-home .bento-domain-title {
-  color: #99F6E4;
+  color: #BAE6FD;
 }
 body.dark-mode .bento-campaign-card.theme-cat-home .bento-cat-tag {
-  background: rgba(13, 148, 136, 0.3);
-  color: #5EEAD4;
+  background: rgba(13, 152, 186, 0.3);
+  color: #67E8F9;
   border: 1px solid rgba(45, 212, 191, 0.35);
 }
 
@@ -8363,7 +8363,7 @@ body.dark-mode .protocol-sample-btn {
   display: inline-block;
   width: 4px;
   height: 16px;
-  background: linear-gradient(180deg, #8B5CF6 0%, #0D9488 100%);
+  background: linear-gradient(180deg, #8B5CF6 0%, #0D98BA 100%);
   border-radius: 9999px;
   flex-shrink: 0;
 }
@@ -8526,7 +8526,7 @@ body.dark-mode .protocol-sample-btn {
 .day-pacer-fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #8B5CF6 0%, #0D9488 100%);
+  background: linear-gradient(90deg, #8B5CF6 0%, #0D98BA 100%);
   transition: width 0.3s ease;
   max-width: 100%;
 }
@@ -8567,9 +8567,9 @@ body.dark-mode .protocol-sample-btn {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #0D9488;
+  background: #0D98BA;
   border: 2px solid #FFFFFF;
-  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.5);
+  box-shadow: 0 1px 4px rgba(13, 152, 186, 0.5);
   transform: translateX(-50%);
   z-index: 2;
   pointer-events: none;
@@ -8578,7 +8578,7 @@ body.dark-mode .protocol-sample-btn {
 
 [data-theme="dark"] .day-pacer-needle {
   border-color: #0F172A;
-  box-shadow: 0 0 8px rgba(13, 148, 136, 0.7);
+  box-shadow: 0 0 8px rgba(13, 152, 186, 0.7);
 }
 
 .day-pacer-quartiles-legend {
@@ -8619,14 +8619,14 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .anchor-pacer-badge.pacer-ahead {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.28);
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.28);
 }
 
 [data-theme="dark"] .anchor-pacer-badge.pacer-ahead {
-  background: rgba(13, 148, 136, 0.22);
-  color: #2DD4BF;
+  background: rgba(13, 152, 186, 0.22);
+  color: #38BDF8;
   border-color: rgba(45, 212, 191, 0.35);
 }
 
@@ -8734,7 +8734,7 @@ body.dark-mode .protocol-sample-btn {
   left: 0;
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #8B5CF6 0%, #0D9488 100%);
+  background: linear-gradient(90deg, #8B5CF6 0%, #0D98BA 100%);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
   max-width: 100%;
@@ -8881,29 +8881,29 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .mockup-seg-btn.seg-75.is-active {
-  background: linear-gradient(135deg, #CCFBF1 0%, #99F6E4 100%) !important;
-  color: #0F766E !important;
+  background: linear-gradient(135deg, #CCFBF1 0%, #BAE6FD 100%) !important;
+  color: #0E7490 !important;
   font-weight: 800 !important;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.22) !important;
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.22) !important;
 }
 
 [data-theme="dark"] .mockup-seg-btn.seg-75.is-active {
-  background: linear-gradient(135deg, #0D9488 0%, #115E59 100%) !important;
+  background: linear-gradient(135deg, #0D98BA 0%, #115E59 100%) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35) !important;
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.35) !important;
 }
 
 .mockup-seg-btn.seg-closed.is-active {
-  background: linear-gradient(135deg, #0D9488 0%, #059669 100%) !important;
+  background: linear-gradient(135deg, #0D98BA 0%, #059669 100%) !important;
   color: #FFFFFF !important;
   font-weight: 800 !important;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.32) !important;
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.32) !important;
 }
 
 [data-theme="dark"] .mockup-seg-btn.seg-closed.is-active {
-  background: linear-gradient(135deg, #0D9488 0%, #059669 100%) !important;
+  background: linear-gradient(135deg, #0D98BA 0%, #059669 100%) !important;
   color: #FFFFFF !important;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.4) !important;
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.4) !important;
 }
 
 /* Goals Column */
@@ -9109,13 +9109,13 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .choice-counter-box.counter-good {
-  background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);
-  border: 1.5px solid #99F6E4;
-  box-shadow: 0 2px 10px rgba(13, 148, 136, 0.08);
+  background: linear-gradient(135deg, #F0F9FF 0%, #CCFBF1 100%);
+  border: 1.5px solid #BAE6FD;
+  box-shadow: 0 2px 10px rgba(13, 152, 186, 0.08);
 }
 
 [data-theme="dark"] .choice-counter-box.counter-good {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.22) 0%, rgba(30, 41, 59, 0.6) 100%);
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.22) 0%, rgba(30, 41, 59, 0.6) 100%);
   border-color: rgba(45, 212, 191, 0.4);
 }
 
@@ -9144,11 +9144,11 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .counter-good .counter-box-label {
-  color: #0F766E;
+  color: #0E7490;
 }
 
 [data-theme="dark"] .counter-good .counter-box-label {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .counter-not .counter-box-label {
@@ -9167,11 +9167,11 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .counter-good .counter-box-num {
-  color: #0F766E;
+  color: #0E7490;
 }
 
 [data-theme="dark"] .counter-good .counter-box-num {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .counter-not .counter-box-num {
@@ -9230,14 +9230,14 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .counter-good .stepper-btn.stepper-plus {
-  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
+  background: linear-gradient(135deg, #0D98BA 0%, #0E7490 100%);
   color: #FFFFFF;
   border: none;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 2px 6px rgba(13, 152, 186, 0.35);
 }
 
 [data-theme="dark"] .counter-good .stepper-btn.stepper-plus {
-  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
+  background: linear-gradient(135deg, #0D98BA 0%, #15B5D5 100%);
   color: #FFFFFF;
 }
 
@@ -9289,7 +9289,7 @@ body.dark-mode .protocol-sample-btn {
 
 .ratio-bar-good {
   height: 100%;
-  background: linear-gradient(90deg, #0D9488 0%, #14B8A6 100%);
+  background: linear-gradient(90deg, #0D98BA 0%, #15B5D5 100%);
   transition: width 0.3s ease;
 }
 
@@ -9309,7 +9309,7 @@ body.dark-mode .protocol-sample-btn {
   gap: 12px;
   padding: 8px 14px;
   border-radius: var(--radius-lg, 14px);
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(13, 148, 136, 0.12) 50%, rgba(244, 114, 182, 0.09) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, rgba(13, 152, 186, 0.12) 50%, rgba(244, 114, 182, 0.09) 100%);
   border: 1.5px solid rgba(139, 92, 246, 0.28);
   box-shadow: 0 3px 12px rgba(139, 92, 246, 0.06);
   position: relative;
@@ -9323,7 +9323,7 @@ body.dark-mode .protocol-sample-btn {
 }
 
 [data-theme="dark"] .choices-momentum-ribbon {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(13, 148, 136, 0.12) 50%, rgba(244, 114, 182, 0.10) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(13, 152, 186, 0.12) 50%, rgba(244, 114, 182, 0.10) 100%);
   border-color: rgba(167, 139, 250, 0.26);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
@@ -9344,12 +9344,12 @@ body.dark-mode .protocol-sample-btn {
   justify-content: center;
   line-height: 1;
   flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.25);
   transition: transform 0.15s ease;
 }
 
 .ribbon-net-badge.is-pos {
-  background: linear-gradient(135deg, #0D9488 0%, #14B8A6 100%);
+  background: linear-gradient(135deg, #0D98BA 0%, #15B5D5 100%);
   color: #FFFFFF;
 }
 
@@ -9396,11 +9396,11 @@ body.dark-mode .protocol-sample-btn {
 
 .ribbon-ratio-text strong {
   font-weight: 700;
-  color: #0D9488;
+  color: #0D98BA;
 }
 
 [data-theme="dark"] .ribbon-ratio-text strong {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .ribbon-stats-group {
@@ -9444,11 +9444,11 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .ribbon-val-good {
-  color: #0F766E;
+  color: #0E7490;
 }
 
 [data-theme="dark"] .ribbon-val-good {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .ribbon-val-sep {
@@ -9502,11 +9502,11 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .choices-group-label.label-good {
-  color: #0F766E;
+  color: #0E7490;
 }
 
 [data-theme="dark"] .choices-group-label.label-good {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .choices-group-label.label-not {
@@ -9546,22 +9546,22 @@ body.dark-mode .protocol-sample-btn {
 
 .mockup-chip.chip-cyan {
   background: #CCFBF1;
-  color: #0F766E;
-  border: 1.5px solid #99F6E4;
+  color: #0E7490;
+  border: 1.5px solid #BAE6FD;
   font-weight: 700;
-  box-shadow: 0 1px 3px rgba(13, 148, 136, 0.1);
+  box-shadow: 0 1px 3px rgba(13, 152, 186, 0.1);
 }
 
 .mockup-chip.chip-cyan:hover {
-  background: #99F6E4;
+  background: #BAE6FD;
   color: #042F2E;
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(13, 148, 136, 0.22);
+  box-shadow: 0 3px 8px rgba(13, 152, 186, 0.22);
 }
 
 [data-theme="dark"] .mockup-chip.chip-cyan {
   background: rgba(20, 184, 166, 0.22);
-  color: #5EEAD4;
+  color: #67E8F9;
   border-color: rgba(45, 212, 191, 0.45);
 }
 
@@ -9980,15 +9980,15 @@ body.dark-mode .protocol-sample-btn {
 
 /* Z Log Badge */
 .util-badge-item.badge-zlog {
-  background: linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 100%);
-  border-color: #99F6E4;
-  color: #0F766E;
+  background: linear-gradient(135deg, #F0F9FF 0%, #CCFBF1 100%);
+  border-color: #BAE6FD;
+  color: #0E7490;
 }
 
 [data-theme="dark"] .util-badge-item.badge-zlog {
-  background: rgba(13, 148, 136, 0.15);
+  background: rgba(13, 152, 186, 0.15);
   border-color: rgba(45, 212, 191, 0.35);
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 /* Minimal Bottom Whisper Bar for Gamification & Truth Bomb */
@@ -10063,7 +10063,7 @@ body.dark-mode .protocol-sample-btn {
   padding: 12px 20px;
   margin: 0 0 6px 0;
   border-radius: var(--radius-lg, 16px);
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(13, 148, 136, 0.15) 50%, rgba(236, 72, 153, 0.12) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18) 0%, rgba(13, 152, 186, 0.15) 50%, rgba(236, 72, 153, 0.12) 100%);
   border: 1.5px solid rgba(139, 92, 246, 0.32);
   box-shadow: 0 4px 22px rgba(139, 92, 246, 0.12), 0 1px 3px rgba(15, 23, 42, 0.04);
   backdrop-filter: blur(12px);
@@ -10080,12 +10080,12 @@ body.dark-mode .protocol-sample-btn {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #8B5CF6 0%, #0D9488 50%, #EC4899 100%);
+  background: linear-gradient(90deg, #8B5CF6 0%, #0D98BA 50%, #EC4899 100%);
   opacity: 1;
 }
 
 [data-theme="dark"] .today-daily-roast-banner {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.26) 0%, rgba(13, 148, 136, 0.20) 50%, rgba(236, 72, 153, 0.18) 100%);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.26) 0%, rgba(13, 152, 186, 0.20) 50%, rgba(236, 72, 153, 0.18) 100%);
   border-color: rgba(167, 139, 250, 0.45);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 18px rgba(139, 92, 246, 0.18);
 }
@@ -10096,7 +10096,7 @@ body.dark-mode .protocol-sample-btn {
   gap: 5px;
   padding: 4px 11px;
   border-radius: 9999px;
-  background: linear-gradient(135deg, #8B5CF6 0%, #0D9488 100%);
+  background: linear-gradient(135deg, #8B5CF6 0%, #0D98BA 100%);
   color: #FFFFFF;
   font-size: 0.72rem;
   font-weight: 800;
@@ -10281,7 +10281,7 @@ body.dark-mode .protocol-sample-btn {
 }
 
 .mascot-avatar-wrapper:hover .mascot-poke-hint {
-  background: linear-gradient(135deg, #8B5CF6 0%, #0D9488 100%);
+  background: linear-gradient(135deg, #8B5CF6 0%, #0D98BA 100%);
   color: #FFFFFF;
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
 }
@@ -11007,8 +11007,8 @@ body.dark-mode .protocol-sample-btn {
 
 :root[data-theme="light"] .weight-status-pill.met {
   background: #E6F9F2;
-  color: #0F766E;
-  border-color: #99F6E4;
+  color: #0E7490;
+  border-color: #BAE6FD;
   box-shadow: 0 0 8px rgba(15, 118, 110, 0.15);
 }
 
@@ -11019,7 +11019,7 @@ body.dark-mode .protocol-sample-btn {
 }
 
 :root[data-theme="light"] .weight-status-pill.below {
-  background: #F0FDFA;
+  background: #F0F9FF;
   color: #0E7490;
   border-color: #A5F3FC;
 }
@@ -13706,8 +13706,8 @@ body.dark-mode .protocol-sample-btn {
 
 .mc-bento-vault {
   grid-column: 1 / -1;
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(13, 148, 136, 0.02) 100%);
-  border: 1.5px solid rgba(13, 148, 136, 0.22);
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.08) 0%, rgba(13, 152, 186, 0.02) 100%);
+  border: 1.5px solid rgba(13, 152, 186, 0.22);
 }
 
 .mc-bento-top-row {
@@ -13762,9 +13762,9 @@ body.dark-mode .protocol-sample-btn {
   border: 1px solid rgba(124, 58, 237, 0.3);
 }
 .mc-bento-badge.vault {
-  background: rgba(13, 148, 136, 0.15);
-  color: #5EEAD4;
-  border: 1px solid rgba(13, 148, 136, 0.3);
+  background: rgba(13, 152, 186, 0.15);
+  color: #67E8F9;
+  border: 1px solid rgba(13, 152, 186, 0.3);
 }
 
 :root[data-theme="light"] .mc-bento-badge.cmd {
@@ -13789,8 +13789,8 @@ body.dark-mode .protocol-sample-btn {
 }
 :root[data-theme="light"] .mc-bento-badge.vault {
   background: #CCFBF1;
-  color: #0F766E;
-  border-color: #99F6E4;
+  color: #0E7490;
+  border-color: #BAE6FD;
 }
 
 .mc-bento-tags {
@@ -13833,9 +13833,9 @@ body.dark-mode .protocol-sample-btn {
 }
 .mc-bento-tag.later {
   flex: 1 1 0;
-  background: rgba(13, 148, 136, 0.18);
-  color: #99F6E4;
-  border: 1px solid rgba(13, 148, 136, 0.35);
+  background: rgba(13, 152, 186, 0.18);
+  color: #BAE6FD;
+  border: 1px solid rgba(13, 152, 186, 0.35);
 }
 
 :root[data-theme="light"] .mc-bento-tag.high {
@@ -13850,8 +13850,8 @@ body.dark-mode .protocol-sample-btn {
 }
 :root[data-theme="light"] .mc-bento-tag.later {
   background: #CCFBF1;
-  color: #0F766E;
-  border-color: #5EEAD4;
+  color: #0E7490;
+  border-color: #67E8F9;
 }
 
 
@@ -14174,10 +14174,10 @@ body.dark-mode .protocol-sample-btn {
 }
 :root[data-theme="light"] .aurora-app .momentum.momentum-75-79 .label,
 :root[data-theme="light"] .aurora-app .momentum.momentum-75-79 small {
-  color: #0D9488;
+  color: #0D98BA;
 }
 :root[data-theme="light"] .aurora-app .momentum.momentum-75-79 .momentum-sep {
-  color: #14B8A6;
+  color: #15B5D5;
 }
 :root[data-theme="light"] .aurora-app .momentum.momentum-75-79 .big,
 :root[data-theme="light"] .aurora-app .momentum.momentum-75-79 .momentum-pct,
@@ -14195,7 +14195,7 @@ body.dark-mode .protocol-sample-btn {
   color: #0A7B66;
 }
 :root[data-theme="light"] .aurora-app .momentum.momentum-80-84 .momentum-sep {
-  color: #0D9488;
+  color: #0D98BA;
 }
 :root[data-theme="light"] .aurora-app .momentum.momentum-80-84 .big,
 :root[data-theme="light"] .aurora-app .momentum.momentum-80-84 .momentum-pct,

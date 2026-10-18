@@ -12366,7 +12366,7 @@ const DEFAULT_FINANCE_CARDS_ROI = [
     annualFee: 95,
     network: 'Chase / Hyatt',
     theme: 'teal',
-    color: '#0D9488',
+    color: '#0D98BA',
     renewalMonth: 'Annual',
     lastUpdated: '10/16/2026',
     benefits: [

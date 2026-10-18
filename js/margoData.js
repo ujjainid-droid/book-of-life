@@ -753,7 +753,7 @@ function renderSproutSvg(state = 'potato') {
       <svg viewBox="0 0 120 120" class="mascot-svg mascot-supreme" xmlns="http://www.w3.org/2000/svg">
         <!-- Floating Shimmer Sparkles -->
         <path class="mascot-sparkle sparkle-1" d="M22 28 Q24 24 28 22 Q24 20 22 16 Q20 20 16 22 Q20 24 22 28 Z" fill="#8B5CF6"/>
-        <path class="mascot-sparkle sparkle-2" d="M98 32 Q100 28 104 26 Q100 24 98 20 Q96 24 92 26 Q96 28 98 32 Z" fill="#0D9488"/>
+        <path class="mascot-sparkle sparkle-2" d="M98 32 Q100 28 104 26 Q100 24 98 20 Q96 24 92 26 Q96 28 98 32 Z" fill="#0D98BA"/>
         <path class="mascot-sparkle sparkle-3" d="M88 88 Q90 85 93 84 Q90 83 88 80 Q86 83 83 84 Q86 85 88 88 Z" fill="#C084FC"/>
 
         <!-- Little Legs -->
@@ -793,7 +793,7 @@ function renderSproutSvg(state = 'potato') {
         <path d="M47 25 L51 14 L60 21 L69 14 L73 25 Z" fill="#F59E0B" stroke="#B45309" stroke-width="2" stroke-linejoin="round"/>
         <circle cx="51" cy="14" r="1.5" fill="#EC4899"/>
         <circle cx="60" cy="21" r="1.5" fill="#8B5CF6"/>
-        <circle cx="69" cy="14" r="1.5" fill="#0D9488"/>
+        <circle cx="69" cy="14" r="1.5" fill="#0D98BA"/>
       </svg>
     `;
   }
@@ -803,15 +803,15 @@ function renderSproutSvg(state = 'potato') {
       <svg viewBox="0 0 120 120" class="mascot-svg mascot-momentum" xmlns="http://www.w3.org/2000/svg">
         <!-- Speed Lines -->
         <path d="M10 62 L22 62" fill="none" stroke="#8B5CF6" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
-        <path d="M6 72 L18 72" fill="none" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M6 72 L18 72" fill="none" stroke="#0D98BA" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
 
         <!-- Running Legs with Teal Sneakers -->
         <path d="M48 94 Q40 102 34 105" fill="none" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
-        <rect x="22" y="103" width="16" height="8" rx="3" fill="#0D9488" stroke="#0F766E" stroke-width="1.5"/>
+        <rect x="22" y="103" width="16" height="8" rx="3" fill="#0D98BA" stroke="#0E7490" stroke-width="1.5"/>
         <rect x="22" y="108" width="16" height="3" rx="1" fill="#FFFFFF"/>
 
         <path d="M72 94 Q80 102 88 100" fill="none" stroke="#4A3B32" stroke-width="3.5" stroke-linecap="round"/>
-        <rect x="84" y="96" width="16" height="8" rx="3" fill="#0D9488" stroke="#0F766E" stroke-width="1.5"/>
+        <rect x="84" y="96" width="16" height="8" rx="3" fill="#0D98BA" stroke="#0E7490" stroke-width="1.5"/>
         <rect x="84" y="101" width="16" height="3" rx="1" fill="#FFFFFF"/>
 
         <!-- Running Arms -->
@@ -826,9 +826,9 @@ function renderSproutSvg(state = 'potato') {
         <circle cx="74" cy="50" r="1.5" fill="#C49B6A"/>
 
         <!-- Teal Headband -->
-        <rect x="27" y="32" width="66" height="12" rx="4" fill="#0D9488" stroke="#0F766E" stroke-width="2"/>
-        <path d="M28 38 Q18 32 14 36" fill="none" stroke="#0D9488" stroke-width="3.5" stroke-linecap="round"/>
-        <path d="M28 42 Q16 42 12 48" fill="none" stroke="#0D9488" stroke-width="3.5" stroke-linecap="round"/>
+        <rect x="27" y="32" width="66" height="12" rx="4" fill="#0D98BA" stroke="#0E7490" stroke-width="2"/>
+        <path d="M28 38 Q18 32 14 36" fill="none" stroke="#0D98BA" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M28 42 Q16 42 12 48" fill="none" stroke="#0D98BA" stroke-width="3.5" stroke-linecap="round"/>
 
         <!-- Focused Eyes -->
         <circle cx="50" cy="54" r="3.5" fill="#332720"/>
@@ -867,9 +867,9 @@ function renderSproutSvg(state = 'potato') {
         <!-- Right Arm Holding Coffee -->
         <path d="M85 68 Q95 68 96 62" fill="none" stroke="#4A3B32" stroke-width="3.2" stroke-linecap="round"/>
         <!-- Coffee Mug with Steam -->
-        <rect x="90" y="56" width="16" height="18" rx="3" fill="#FFFFFF" stroke="#0D9488" stroke-width="2"/>
-        <path d="M106 60 Q112 65 106 70" fill="none" stroke="#0D9488" stroke-width="2"/>
-        <path class="mascot-steam" d="M94 52 Q97 46 95 40" fill="none" stroke="#0D9488" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <rect x="90" y="56" width="16" height="18" rx="3" fill="#FFFFFF" stroke="#0D98BA" stroke-width="2"/>
+        <path d="M106 60 Q112 65 106 70" fill="none" stroke="#0D98BA" stroke-width="2"/>
+        <path class="mascot-steam" d="M94 52 Q97 46 95 40" fill="none" stroke="#0D98BA" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
         <path class="mascot-steam" d="M100 50 Q103 44 101 38" fill="none" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
 
         <!-- Potato Body -->
@@ -895,7 +895,7 @@ function renderSproutSvg(state = 'potato') {
     return `
       <svg viewBox="0 0 120 120" class="mascot-svg mascot-maintenance" xmlns="http://www.w3.org/2000/svg">
         <!-- Shield Badge -->
-        <path d="M84 28 L94 24 L104 28 C104 38 94 44 94 44 C94 44 84 38 84 28 Z" fill="#0D9488" stroke="#0F766E" stroke-width="1.8"/>
+        <path d="M84 28 L94 24 L104 28 C104 38 94 44 94 44 C94 44 84 38 84 28 Z" fill="#0D98BA" stroke="#0E7490" stroke-width="1.8"/>
         <path d="M89 34 L93 38 L99 30" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 
         <!-- Potato Head -->
@@ -919,13 +919,13 @@ function renderSproutSvg(state = 'potato') {
         <line x1="76" y1="58" x2="76" y2="66" stroke="#DDD6FE" stroke-width="1.5"/>
 
         <!-- Teacup -->
-        <rect x="52" y="74" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#0D9488" stroke-width="1.8"/>
-        <path d="M68 77 Q74 81 68 85" fill="none" stroke="#0D9488" stroke-width="1.8"/>
+        <rect x="52" y="74" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#0D98BA" stroke-width="1.8"/>
+        <path d="M68 77 Q74 81 68 85" fill="none" stroke="#0D98BA" stroke-width="1.8"/>
         <!-- Teabag tag -->
-        <line x1="62" y1="74" x2="60" y2="82" stroke="#0D9488" stroke-width="1"/>
-        <rect x="58" y="82" width="5" height="5" fill="#0D9488" rx="1"/>
+        <line x1="62" y1="74" x2="60" y2="82" stroke="#0D98BA" stroke-width="1"/>
+        <rect x="58" y="82" width="5" height="5" fill="#0D98BA" rx="1"/>
         <!-- Warm Steam -->
-        <path class="mascot-steam" d="M57 70 Q60 64 58 58" fill="none" stroke="#0D9488" stroke-width="1.5" opacity="0.6"/>
+        <path class="mascot-steam" d="M57 70 Q60 64 58 58" fill="none" stroke="#0D98BA" stroke-width="1.5" opacity="0.6"/>
       </svg>
     `;
   }

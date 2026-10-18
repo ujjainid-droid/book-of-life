@@ -5,7 +5,7 @@
    - Surface / Card: Pure Ice (#FFFFFF) / (#F1F4F8)
    - Hero Brand Anchor: Deep Mineral Slate (#3A3A42)
    - Primary Text: Deep Mineral Slate (#3A3A42)
-   - Positive / Growth: Nordic Sea Glass Teal (#0D9488) / Text (#0F766E)
+   - Positive / Growth: Nordic Sea Glass Teal (#0D98BA) / Text (#0E7490)
    - Discretionary / Flex: Slate Indigo (#6366F1 / #4F46E5)
    - Alert / Outflow: Muted Terracotta Coral (#E05A47)
    ========================================================================== */
@@ -23,11 +23,11 @@
   --fin-primary-light: rgba(139, 92, 246, 0.08);
   --fin-primary-border: rgba(139, 92, 246, 0.22);
 
-  --fin-income: #0D9488;
-  --fin-income-text: #0F766E;
-  --fin-success: #0D9488;
-  --fin-success-bg: rgba(13, 148, 136, 0.12);
-  --fin-success-text: #0F766E;
+  --fin-income: #0D98BA;
+  --fin-income-text: #0E7490;
+  --fin-success: #0D98BA;
+  --fin-success-bg: rgba(13, 152, 186, 0.12);
+  --fin-success-text: #0E7490;
 
   --fin-flex: #7C3AED;
   --fin-flex-dark: #6D28D9;
@@ -53,9 +53,9 @@
   --fin-primary-hover: #A78BFA;
   --fin-primary-light: rgba(139, 92, 246, 0.16);
   --fin-primary-border: rgba(139, 92, 246, 0.3);
-  --fin-income: #0D9488;
-  --fin-income-text: #5EEAD4;
-  --fin-success: #0D9488;
+  --fin-income: #0D98BA;
+  --fin-income-text: #67E8F9;
+  --fin-success: #0D98BA;
   --fin-flex: #818CF8;
   --fin-flex-dark: #6366F1;
   --fin-flex-light: rgba(129, 140, 248, 0.16);
@@ -279,7 +279,7 @@ body.dark-mode .finance-page-container {
 
 .finance-kpi-card.accent-indigo::after { background: #6366F1; }
 .finance-kpi-card.accent-violet::after { background: #7C3AED; }
-.finance-kpi-card.accent-teal::after { background: #0D9488; }
+.finance-kpi-card.accent-teal::after { background: #0D98BA; }
 .finance-kpi-card.accent-rose::after { background: #E11D48; }
 .finance-kpi-card.no-bar::after { display: none; }
 
@@ -300,8 +300,8 @@ body.dark-mode .finance-page-container {
 }
 
 .finance-kpi-card.accent-teal:hover {
-  border-color: #0D9488;
-  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.15);
+  border-color: #0D98BA;
+  box-shadow: 0 6px 18px rgba(13, 152, 186, 0.15);
 }
 
 .finance-kpi-card.accent-rose:hover {
@@ -784,9 +784,9 @@ body.dark-mode .finance-page-container {
   width: 22px;
   height: 22px;
   border-radius: 7px;
-  background: #0D9488;
+  background: #0D98BA;
   color: #FFFFFF;
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 2px 6px rgba(13, 152, 186, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.3);
   flex-shrink: 0;
   transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease;
@@ -794,7 +794,7 @@ body.dark-mode .finance-page-container {
 
 .finance-sub-check-badge:hover {
   transform: scale(1.12);
-  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.5);
+  box-shadow: 0 4px 10px rgba(13, 152, 186, 0.5);
 }
 
 .finance-sub-check-badge i,
@@ -808,17 +808,17 @@ body.dark-mode .finance-page-container {
 
 [data-theme="dark"] .finance-sub-check-badge,
 body.dark-mode .finance-sub-check-badge {
-  background: #0F766E;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.5);
+  background: #0E7490;
+  box-shadow: 0 2px 8px rgba(13, 152, 186, 0.5);
   border-color: rgba(94, 234, 212, 0.4);
 }
 
 .finance-sub-reimbursed-pill {
-  color: #0F766E;
+  color: #0E7490;
   font-weight: 700;
   font-size: 0.65rem;
-  background: rgba(13, 148, 136, 0.12);
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.12);
+  border: 1px solid rgba(13, 152, 186, 0.25);
   padding: 1px 7px;
   border-radius: 4px;
   letter-spacing: 0.02em;
@@ -826,8 +826,8 @@ body.dark-mode .finance-sub-check-badge {
 
 [data-theme="dark"] .finance-sub-reimbursed-pill,
 body.dark-mode .finance-sub-reimbursed-pill {
-  color: #5EEAD4;
-  background: rgba(13, 148, 136, 0.25);
+  color: #67E8F9;
+  background: rgba(13, 152, 186, 0.25);
   border-color: rgba(94, 234, 212, 0.35);
 }
 
@@ -838,7 +838,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
    Net Worth Horizon Deck & Deconstructed Nordic Cards (Executive Summary)
    -------------------------------------------------------------------------- */
 .finance-horizon-deck {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.035) 0%, rgba(13, 148, 136, 0.045) 100%);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.035) 0%, rgba(13, 152, 186, 0.045) 100%);
   border: 1px solid rgba(139, 92, 246, 0.22);
   border-radius: var(--radius-lg, 16px);
   padding: 16px;
@@ -849,7 +849,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 [data-theme="dark"] .finance-horizon-deck {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(13, 148, 136, 0.08) 100%);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(13, 152, 186, 0.08) 100%);
   border-color: rgba(139, 92, 246, 0.3);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
@@ -1164,7 +1164,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-nw-class-card:hover {
-  border-color: rgba(13, 148, 136, 0.35);
+  border-color: rgba(13, 152, 186, 0.35);
   transform: translateY(-1px);
 }
 
@@ -1268,9 +1268,9 @@ body.dark-mode .finance-sub-reimbursed-pill {
   font-weight: 700;
   padding: 3px 8px;
   border-radius: 999px;
-  background: rgba(13, 148, 136, 0.1);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.22);
+  background: rgba(13, 152, 186, 0.1);
+  color: #0D98BA;
+  border: 1px solid rgba(13, 152, 186, 0.22);
   white-space: nowrap;
 }
 
@@ -1570,7 +1570,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 .finance-export-pill:hover {
   background: var(--fin-primary-light);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.15);
+  box-shadow: 0 2px 6px rgba(13, 152, 186, 0.15);
 }
 
 [data-theme="dark"] .finance-export-pill {
@@ -1799,9 +1799,9 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-flow-col.surplus-highlight {
-  border-color: rgba(13, 148, 136, 0.35);
-  background: rgba(13, 148, 136, 0.06);
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.06);
+  border-color: rgba(13, 152, 186, 0.35);
+  background: rgba(13, 152, 186, 0.06);
+  box-shadow: 0 4px 16px rgba(13, 152, 186, 0.06);
 }
 
 .finance-flow-col.deficit-highlight {
@@ -1818,18 +1818,18 @@ body.dark-mode .finance-sub-reimbursed-pill {
   border-radius: 999px;
   font-size: 0.70rem;
   font-weight: 700;
-  background: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.25);
   white-space: nowrap;
   flex-shrink: 0;
   margin-left: auto;
 }
 
 [data-theme="dark"] .finance-flow-badge-pos {
-  background: rgba(13, 148, 136, 0.25);
-  color: #5EEAD4;
-  border-color: rgba(13, 148, 136, 0.4);
+  background: rgba(13, 152, 186, 0.25);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.4);
 }
 
 .finance-flow-badge-neg {
@@ -2012,9 +2012,9 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 [data-theme="dark"] .finance-outlier-filter-btn.baseline {
-  background: rgba(13, 148, 136, 0.15);
+  background: rgba(13, 152, 186, 0.15);
   color: #A7F3D0;
-  border-color: rgba(13, 148, 136, 0.4);
+  border-color: rgba(13, 152, 186, 0.4);
 }
 
 [data-theme="dark"] .finance-outlier-filter-btn.reduced {
@@ -2061,8 +2061,8 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 [data-theme="dark"] .finance-outlier-card.baseline {
-  background: rgba(13, 148, 136, 0.1);
-  border-color: rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.1);
+  border-color: rgba(13, 152, 186, 0.25);
 }
 
 .finance-outlier-card.reduced {
@@ -2079,7 +2079,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
    Actionable Savings Levers Guide Box
    -------------------------------------------------------------------------- */
 .finance-levers-box {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.04) 0%, rgba(13, 148, 136, 0.04) 100%);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.04) 0%, rgba(13, 152, 186, 0.04) 100%);
   border: 1px solid var(--fin-violet-border);
   border-radius: var(--radius-lg, 14px);
   padding: 18px 22px;
@@ -2492,14 +2492,14 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-cadence-strip-card.all-done {
-  border-color: rgba(13, 148, 136, 0.35);
-  background: rgba(13, 148, 136, 0.04);
-  box-shadow: 0 4px 18px rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 152, 186, 0.35);
+  background: rgba(13, 152, 186, 0.04);
+  box-shadow: 0 4px 18px rgba(13, 152, 186, 0.1);
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.all-done {
-  border-color: rgba(13, 148, 136, 0.45);
-  background: rgba(13, 148, 136, 0.12);
+  border-color: rgba(13, 152, 186, 0.45);
+  background: rgba(13, 152, 186, 0.12);
 }
 
 /* Quarterly Cadence */
@@ -2519,13 +2519,13 @@ body.dark-mode .finance-sub-reimbursed-pill {
 .finance-cadence-strip-card.cadence-strip-annual {
   background: var(--bg-card, #FFFFFF);
   border: 1px solid rgba(139, 92, 246, 0.12);
-  border-top: 3.5px solid #0D9488;
+  border-top: 3.5px solid #0D98BA;
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.cadence-strip-annual {
   background: #1E1E24;
   border-color: rgba(255, 255, 255, 0.1);
-  border-top: 3.5px solid #0D9488;
+  border-top: 3.5px solid #0D98BA;
 }
 
 .finance-cadence-header {
@@ -2578,15 +2578,15 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-cadence-progress-pill.done {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.28);
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.28);
 }
 
 [data-theme="dark"] .finance-cadence-progress-pill.done {
-  background: rgba(13, 148, 136, 0.25);
-  color: #5EEAD4;
-  border-color: rgba(13, 148, 136, 0.4);
+  background: rgba(13, 152, 186, 0.25);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.4);
 }
 
 .finance-cadence-pills-row {
@@ -2704,18 +2704,18 @@ body.dark-mode .finance-sub-reimbursed-pill {
 
 /* Individual Pill Accent Themes */
 .finance-cadence-pill-btn.pill-theme-violet { border-left: 3.5px solid #818CF8; }
-.finance-cadence-pill-btn.pill-theme-teal { border-left: 3.5px solid #14B8A6; }
+.finance-cadence-pill-btn.pill-theme-teal { border-left: 3.5px solid #15B5D5; }
 .finance-cadence-pill-btn.pill-theme-rose { border-left: 3.5px solid #E05A47; }
-.finance-cadence-pill-btn.pill-theme-emerald { border-left: 3.5px solid #0D9488; }
+.finance-cadence-pill-btn.pill-theme-emerald { border-left: 3.5px solid #0D98BA; }
 .finance-cadence-pill-btn.pill-theme-indigo { border-left: 3.5px solid #6366F1; }
-.finance-cadence-pill-btn.pill-theme-sky { border-left: 3.5px solid #0D9488; }
+.finance-cadence-pill-btn.pill-theme-sky { border-left: 3.5px solid #0D98BA; }
 
 [data-theme="dark"] .finance-cadence-pill-btn.pill-theme-violet { border-left-color: #818CF8; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-teal { border-left-color: #14B8A6; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-teal { border-left-color: #15B5D5; }
 [data-theme="dark"] .finance-cadence-pill-btn.pill-theme-rose { border-left-color: #E05A47; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-emerald { border-left-color: #0D9488; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-emerald { border-left-color: #0D98BA; }
 [data-theme="dark"] .finance-cadence-pill-btn.pill-theme-indigo { border-left-color: #6366F1; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-sky { border-left-color: #0D9488; }
+[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-sky { border-left-color: #0D98BA; }
 
 .finance-cadence-pill-btn:hover {
   transform: translateY(-1px);
@@ -2731,13 +2731,13 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-cadence-pill-btn.done {
-  background: rgba(13, 148, 136, 0.08);
-  border-color: rgba(13, 148, 136, 0.35);
+  background: rgba(13, 152, 186, 0.08);
+  border-color: rgba(13, 152, 186, 0.35);
 }
 
 [data-theme="dark"] .finance-cadence-pill-btn.done {
-  background: rgba(13, 148, 136, 0.18);
-  border-color: rgba(13, 148, 136, 0.45);
+  background: rgba(13, 152, 186, 0.18);
+  border-color: rgba(13, 152, 186, 0.45);
 }
 
 .cadence-pill-left {
@@ -2768,8 +2768,8 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-cadence-pill-btn.done .cadence-check-icon {
-  background: #0D9488;
-  border-color: #0D9488;
+  background: #0D98BA;
+  border-color: #0D98BA;
   color: #FFFFFF;
 }
 
@@ -2783,11 +2783,11 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-cadence-pill-btn.done .cadence-pill-num {
-  color: #0F766E;
+  color: #0E7490;
 }
 
 [data-theme="dark"] .finance-cadence-pill-btn.done .cadence-pill-num {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .cadence-pill-title {
@@ -2805,7 +2805,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-cadence-pill-btn.done .cadence-pill-title {
-  color: #0F766E;
+  color: #0E7490;
   font-weight: 700;
 }
 
@@ -3082,17 +3082,17 @@ body.dark-mode .finance-sub-reimbursed-pill {
 .finance-exec-split-badge {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #0D9488;
-  background: rgba(13, 148, 136, 0.1);
+  color: #0D98BA;
+  background: rgba(13, 152, 186, 0.1);
   padding: 2px 8px;
   border-radius: 99px;
-  border: 1px solid rgba(13, 148, 136, 0.22);
+  border: 1px solid rgba(13, 152, 186, 0.22);
   white-space: nowrap;
 }
 
 [data-theme="dark"] .finance-exec-split-badge {
-  color: #5EEAD4;
-  background: rgba(13, 148, 136, 0.22);
+  color: #67E8F9;
+  background: rgba(13, 152, 186, 0.22);
   border-color: rgba(94, 234, 212, 0.35);
 }
 
@@ -3143,10 +3143,10 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-exec-split-bar .seg-save {
-  background: #0D9488;
+  background: #0D98BA;
 }
 [data-theme="dark"] .finance-exec-split-bar .seg-save {
-  background: #14B8A6;
+  background: #15B5D5;
 }
 
 .finance-exec-split-legend {
@@ -3192,10 +3192,10 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .split-legend-item .dot-save {
-  background: #0D9488;
+  background: #0D98BA;
 }
 [data-theme="dark"] .split-legend-item .dot-save {
-  background: #14B8A6;
+  background: #15B5D5;
 }
 
 .split-legend-item strong {
@@ -3285,7 +3285,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 .finance-target-header-status {
   font-size: 0.70rem;
   font-weight: 700;
-  color: #0D9488;
+  color: #0D98BA;
 }
 
 .finance-target-pills-grid {
@@ -3320,7 +3320,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-target-pill-card.pillar-fixed {
-  border-left: 3.5px solid #0D9488;
+  border-left: 3.5px solid #0D98BA;
 }
 
 .finance-target-pill-card.pillar-flex {
@@ -3328,7 +3328,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-target-pill-card.pillar-savings {
-  border-left: 3.5px solid #0D9488;
+  border-left: 3.5px solid #0D98BA;
 }
 
 .finance-target-pill-card.pillar-savings.gap-alert {
@@ -3386,9 +3386,9 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .finance-target-status-badge.success {
-  background: rgba(13, 148, 136, 0.12);
-  color: #0F766E;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.25);
 }
 
 .finance-target-status-badge.alert {
@@ -3506,7 +3506,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .card-roi-card.theme-teal {
-  border-top: 4px solid #0D9488;
+  border-top: 4px solid #0D98BA;
 }
 
 .card-roi-header {
@@ -3887,7 +3887,7 @@ body.dark-mode .finance-sub-reimbursed-pill {
   border-top: 4px solid #0284C7;
 }
 .card-roi-sheet-card.theme-teal {
-  border-top: 4px solid #0D9488;
+  border-top: 4px solid #0D98BA;
 }
 
 .card-roi-sheet-card-header {
@@ -4034,11 +4034,11 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .card-roi-row.active-benefit {
-  background: rgba(13, 148, 136, 0.02);
+  background: rgba(13, 152, 186, 0.02);
 }
 
 [data-theme="dark"] .card-roi-row.active-benefit {
-  background: rgba(13, 148, 136, 0.05);
+  background: rgba(13, 152, 186, 0.05);
 }
 
 .card-roi-td {
@@ -4861,12 +4861,12 @@ body.dark-mode .budget-master-card {
 .budget-master-card.savings-theme {
   background: #E6F8F6;
   background: linear-gradient(145deg, #EDFAF8 0%, #FFFFFF 100%);
-  border-color: rgba(13, 148, 136, 0.3);
+  border-color: rgba(13, 152, 186, 0.3);
 }
 [data-theme="dark"] .budget-master-card.savings-theme,
 body.dark-mode .budget-master-card.savings-theme {
   border-color: rgba(20, 184, 166, 0.38);
-  background: linear-gradient(145deg, rgba(13, 148, 136, 0.2) 0%, #15182D 100%);
+  background: linear-gradient(145deg, rgba(13, 152, 186, 0.2) 0%, #15182D 100%);
 }
 
 
@@ -4889,11 +4889,11 @@ body.dark-mode .budget-master-lbl {
   color: #A78BFA;
 }
 .budget-master-card.savings-theme .budget-master-lbl {
-  color: #0F766E;
+  color: #0E7490;
 }
 [data-theme="dark"] .budget-master-card.savings-theme .budget-master-lbl,
 body.dark-mode .budget-master-card.savings-theme .budget-master-lbl {
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 .budget-master-val {
@@ -4924,7 +4924,7 @@ body.dark-mode .budget-progress-wrap {
   border-radius: 999px;
   transition: width 0.35s ease;
 }
-.fill-teal { background: linear-gradient(90deg, #0D9488, #14B8A6); }
+.fill-teal { background: linear-gradient(90deg, #0D98BA, #15B5D5); }
 .fill-violet { background: linear-gradient(90deg, #6D28D9, #8B5CF6); }
 .fill-rose { background: linear-gradient(90deg, #E11D48, #F43F5E); }
 
@@ -5014,8 +5014,8 @@ body.dark-mode .summer-widget-card.theme-lavender {
 }
 [data-theme="dark"] .summer-widget-card.theme-mint,
 body.dark-mode .summer-widget-card.theme-mint {
-  background: linear-gradient(145deg, rgba(13, 148, 136, 0.25) 0%, rgba(15, 30, 32, 0.95) 100%);
-  border-color: rgba(13, 148, 136, 0.38);
+  background: linear-gradient(145deg, rgba(13, 152, 186, 0.25) 0%, rgba(15, 30, 32, 0.95) 100%);
+  border-color: rgba(13, 152, 186, 0.38);
 }
 
 /* Sunset Rose / Guava (Self care & Grooming) */
@@ -5206,13 +5206,13 @@ body.dark-mode .budget-pillar-card:hover {
 }
 
 .budget-pillar-card.savings-pillar {
-  border-color: rgba(13, 148, 136, 0.35);
-  background: linear-gradient(180deg, rgba(13, 148, 136, 0.06) 0%, var(--bg-card, #FFFFFF) 100%);
+  border-color: rgba(13, 152, 186, 0.35);
+  background: linear-gradient(180deg, rgba(13, 152, 186, 0.06) 0%, var(--bg-card, #FFFFFF) 100%);
 }
 [data-theme="dark"] .budget-pillar-card.savings-pillar,
 body.dark-mode .budget-pillar-card.savings-pillar {
   border-color: rgba(20, 184, 166, 0.4);
-  background: linear-gradient(180deg, rgba(13, 148, 136, 0.16) 0%, rgba(15, 23, 42, 0.95) 100%);
+  background: linear-gradient(180deg, rgba(13, 152, 186, 0.16) 0%, rgba(15, 23, 42, 0.95) 100%);
 }
 
 .budget-pillar-head {
@@ -5275,13 +5275,13 @@ body.dark-mode .budget-pillar-spent {
   white-space: nowrap;
 }
 .budget-badge-teal {
-  background: #0D9488;
+  background: #0D98BA;
   color: #FFFFFF !important;
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 [data-theme="dark"] .budget-badge-teal,
 body.dark-mode .budget-badge-teal {
-  background: #0F766E;
+  background: #0E7490;
   color: #FFFFFF !important;
   border: 1px solid rgba(94, 234, 212, 0.4);
 }
@@ -5326,21 +5326,21 @@ body.dark-mode .budget-badge-neutral {
 .wealth-sweep-pot-card {
   margin-bottom: 24px;
   background: linear-gradient(135deg, #E6F8F6 0%, #F5F0FF 50%, #FFEBE5 100%);
-  border: 1px solid rgba(13, 148, 136, 0.28);
+  border: 1px solid rgba(13, 152, 186, 0.28);
   border-radius: 22px;
   padding: 22px 24px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.06);
+  box-shadow: 0 4px 20px rgba(13, 152, 186, 0.06);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .wealth-sweep-pot-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(13, 148, 136, 0.12);
+  box-shadow: 0 10px 28px rgba(13, 152, 186, 0.12);
 }
 [data-theme="dark"] .wealth-sweep-pot-card,
 body.dark-mode .wealth-sweep-pot-card {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.22) 0%, rgba(139, 92, 246, 0.18) 50%, rgba(225, 29, 72, 0.12) 100%) !important;
+  background: linear-gradient(135deg, rgba(13, 152, 186, 0.22) 0%, rgba(139, 92, 246, 0.18) 50%, rgba(225, 29, 72, 0.12) 100%) !important;
   border-color: rgba(20, 184, 166, 0.4) !important;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4) !important;
 }
@@ -5371,15 +5371,15 @@ body.dark-mode .wealth-sweep-pot-statbox {
   padding: 4px 10px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(13, 148, 136, 0.2);
-  color: #0F766E;
+  border: 1px solid rgba(13, 152, 186, 0.2);
+  color: #0E7490;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 [data-theme="dark"] .wealth-sweep-chip,
 body.dark-mode .wealth-sweep-chip {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(20, 184, 166, 0.3);
-  color: #5EEAD4;
+  color: #67E8F9;
 }
 
 /* Category Ledger Table */
