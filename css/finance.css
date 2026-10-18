@@ -2520,30 +2520,155 @@ body.dark-mode .finance-sub-reimbursed-pill {
   background: rgba(13, 152, 186, 0.12);
 }
 
-/* Quarterly Cadence */
+/* Card 1: Quarterly Review Cadence Strip (Sunset Coral Theme) */
 .finance-cadence-strip-card.cadence-strip-quarterly {
   background: var(--bg-card, #FFFFFF);
-  border: 1px solid rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(224, 90, 71, 0.18);
   border-top: 3.5px solid #E05A47;
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.cadence-strip-quarterly {
   background: #1E1E24;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(224, 90, 71, 0.28);
   border-top: 3.5px solid #E05A47;
 }
 
-/* Annual Governance */
+.cadence-strip-quarterly .finance-cadence-progress-pill {
+  background: rgba(224, 90, 71, 0.08);
+  color: #E05A47;
+  border-color: rgba(224, 90, 71, 0.25);
+}
+
+[data-theme="dark"] .cadence-strip-quarterly .finance-cadence-progress-pill {
+  background: rgba(224, 90, 71, 0.18);
+  color: #FCA5A5;
+  border-color: rgba(224, 90, 71, 0.35);
+}
+
+.cadence-strip-quarterly .finance-cadence-progress-pill.done {
+  background: rgba(224, 90, 71, 0.15);
+  color: #E05A47;
+  border-color: rgba(224, 90, 71, 0.4);
+}
+
+[data-theme="dark"] .cadence-strip-quarterly .finance-cadence-progress-pill.done {
+  background: rgba(224, 90, 71, 0.25);
+  color: #FECACA;
+  border-color: rgba(224, 90, 71, 0.45);
+}
+
+.cadence-strip-quarterly .finance-cadence-pill-btn {
+  border-left: 3.5px solid #E05A47;
+}
+
+.cadence-strip-quarterly .finance-cadence-pill-btn:hover {
+  border-color: rgba(224, 90, 71, 0.35);
+  border-left-color: #E05A47;
+  box-shadow: 0 3px 8px rgba(224, 90, 71, 0.1);
+}
+
+.cadence-strip-quarterly .finance-cadence-pill-btn.done {
+  background: rgba(224, 90, 71, 0.08);
+  border-color: rgba(224, 90, 71, 0.3);
+  border-left-color: #E05A47;
+}
+
+[data-theme="dark"] .cadence-strip-quarterly .finance-cadence-pill-btn.done {
+  background: rgba(224, 90, 71, 0.16);
+  border-color: rgba(224, 90, 71, 0.4);
+  border-left-color: #E05A47;
+}
+
+.cadence-strip-quarterly .finance-cadence-pill-btn.done .cadence-check-icon {
+  background: #E05A47;
+  border-color: #E05A47;
+  color: #FFFFFF;
+}
+
+.cadence-strip-quarterly .finance-cadence-pill-btn.done .cadence-pill-num,
+.cadence-strip-quarterly .finance-cadence-pill-btn.done .cadence-pill-title {
+  color: #C53030;
+}
+
+[data-theme="dark"] .cadence-strip-quarterly .finance-cadence-pill-btn.done .cadence-pill-num,
+[data-theme="dark"] .cadence-strip-quarterly .finance-cadence-pill-btn.done .cadence-pill-title {
+  color: #FCA5A5;
+}
+
+
+/* Card 2: Annual Governance Cadence Strip (Nordic Blue-Green Theme) */
 .finance-cadence-strip-card.cadence-strip-annual {
   background: var(--bg-card, #FFFFFF);
-  border: 1px solid rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(13, 152, 186, 0.18);
   border-top: 3.5px solid #0D98BA;
 }
 
 [data-theme="dark"] .finance-cadence-strip-card.cadence-strip-annual {
   background: #1E1E24;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(13, 152, 186, 0.28);
   border-top: 3.5px solid #0D98BA;
+}
+
+.cadence-strip-annual .finance-cadence-progress-pill {
+  background: rgba(13, 152, 186, 0.08);
+  color: #0E7490;
+  border-color: rgba(13, 152, 186, 0.25);
+}
+
+[data-theme="dark"] .cadence-strip-annual .finance-cadence-progress-pill {
+  background: rgba(13, 152, 186, 0.18);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.35);
+}
+
+.cadence-strip-annual .finance-cadence-progress-pill.done {
+  background: rgba(13, 152, 186, 0.15);
+  color: #0E7490;
+  border-color: rgba(13, 152, 186, 0.4);
+}
+
+[data-theme="dark"] .cadence-strip-annual .finance-cadence-progress-pill.done {
+  background: rgba(13, 152, 186, 0.25);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.45);
+}
+
+.cadence-strip-annual .finance-cadence-pill-btn {
+  border-left: 3.5px solid #0D98BA;
+}
+
+.cadence-strip-annual .finance-cadence-pill-btn:hover {
+  border-color: rgba(13, 152, 186, 0.35);
+  border-left-color: #0D98BA;
+  box-shadow: 0 3px 8px rgba(13, 152, 186, 0.1);
+}
+
+.cadence-strip-annual .finance-cadence-pill-btn.done {
+  background: rgba(13, 152, 186, 0.08);
+  border-color: rgba(13, 152, 186, 0.3);
+  border-left-color: #0D98BA;
+}
+
+[data-theme="dark"] .cadence-strip-annual .finance-cadence-pill-btn.done {
+  background: rgba(13, 152, 186, 0.16);
+  border-color: rgba(13, 152, 186, 0.4);
+  border-left-color: #0D98BA;
+}
+
+.cadence-strip-annual .finance-cadence-pill-btn.done .cadence-check-icon {
+  background: #0D98BA;
+  border-color: #0D98BA;
+  color: #FFFFFF;
+}
+
+.cadence-strip-annual .finance-cadence-pill-btn.done .cadence-pill-num,
+.cadence-strip-annual .finance-cadence-pill-btn.done .cadence-pill-title {
+  color: #0E7490;
+}
+
+[data-theme="dark"] .cadence-strip-annual .finance-cadence-pill-btn.done .cadence-pill-num,
+[data-theme="dark"] .cadence-strip-annual .finance-cadence-pill-btn.done .cadence-pill-title {
+  color: #67E8F9;
 }
 
 .finance-cadence-header {
@@ -2720,20 +2845,6 @@ body.dark-mode .finance-sub-reimbursed-pill {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
-/* Individual Pill Accent Themes */
-.finance-cadence-pill-btn.pill-theme-violet { border-left: 3.5px solid #818CF8; }
-.finance-cadence-pill-btn.pill-theme-teal { border-left: 3.5px solid #15B5D5; }
-.finance-cadence-pill-btn.pill-theme-rose { border-left: 3.5px solid #E05A47; }
-.finance-cadence-pill-btn.pill-theme-emerald { border-left: 3.5px solid #0D98BA; }
-.finance-cadence-pill-btn.pill-theme-indigo { border-left: 3.5px solid #6366F1; }
-.finance-cadence-pill-btn.pill-theme-sky { border-left: 3.5px solid #0D98BA; }
-
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-violet { border-left-color: #818CF8; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-teal { border-left-color: #15B5D5; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-rose { border-left-color: #E05A47; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-emerald { border-left-color: #0D98BA; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-indigo { border-left-color: #6366F1; }
-[data-theme="dark"] .finance-cadence-pill-btn.pill-theme-sky { border-left-color: #0D98BA; }
 
 .finance-cadence-pill-btn:hover {
   transform: translateY(-1px);

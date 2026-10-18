@@ -2281,12 +2281,12 @@ function renderFinanceQuarterlyCadenceBar() {
         ${items.map(item => {
           const isDone = !!checklist[item.num];
           return `
-            <div class="finance-cadence-pill-btn pill-theme-${item.theme} ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
+            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
               <div class="cadence-pill-left">
-                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D98BA' : item.color};">
+                <span class="cadence-check-icon">
                   <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
                 </span>
-                <span class="cadence-pill-num" style="color: ${item.color};">${item.num}.</span>
+                <span class="cadence-pill-num">${item.num}.</span>
                 <span class="cadence-pill-title">${item.label}</span>
               </div>
               ${item.action ? item.action : ''}
@@ -2363,12 +2363,12 @@ function renderFinanceAnnualCadenceBar() {
         ${items.map(item => {
           const isDone = !!checklist[item.num];
           return `
-            <div class="finance-cadence-pill-btn pill-theme-${item.theme} ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
+            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
               <div class="cadence-pill-left">
-                <span class="cadence-check-icon" style="border-color: ${isDone ? '#0D98BA' : item.color};">
+                <span class="cadence-check-icon">
                   <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
                 </span>
-                <span class="cadence-pill-num" style="color: ${item.color};">${item.num}.</span>
+                <span class="cadence-pill-num">${item.num}.</span>
                 <span class="cadence-pill-title">${item.label}</span>
               </div>
               ${item.action ? item.action : ''}
