@@ -774,6 +774,15 @@ function renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, tota
     ? `${savingsPct}% of income saved`
     : `${Math.abs(savingsPct)}% deficit burn`;
 
+  // Safe normalized bar widths summing to 100%
+  const displayFixedPct = Math.min(100, Math.max(0, fixedPct));
+  const displayFlexPct = Math.min(100, Math.max(0, flexPct));
+  const displaySavePct = Math.min(100, Math.max(0, savingsPct));
+  const sumPcts = (displayFixedPct + displayFlexPct + displaySavePct) || 100;
+  const normFixedWidth = ((displayFixedPct / sumPcts) * 100).toFixed(1);
+  const normFlexWidth = ((displayFlexPct / sumPcts) * 100).toFixed(1);
+  const normSaveWidth = (100 - parseFloat(normFixedWidth) - parseFloat(normFlexWidth)).toFixed(1);
+
   return `
     <div class="finance-executive-card">
       <!-- Top Row: Net Cash Flow Hero + Net by Month Bar Chart -->
@@ -802,101 +811,60 @@ function renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, tota
         </div>
       </div>
 
-      <!-- Divider 1 -->
+      <!-- Divider -->
       <div class="finance-exec-divider"></div>
 
-      <!-- Middle Row: Inflow / Outflow / Saved KPIs -->
+      <!-- Unified KPI Row: Inflow | Outflow | Saved | 50/25/25 Split Graphic -->
       <div class="finance-exec-kpis">
         <div class="finance-exec-kpi-col">
           <span class="finance-exec-label">Inflow</span>
-          <div class="finance-exec-kpi-val">$${Math.round(periodInflow).toLocaleString()}</div>
+          <div class="finance-exec-kpi-val num-mono">$${Math.round(periodInflow).toLocaleString()}</div>
           <span class="finance-exec-kpi-sub">Salary and verified</span>
         </div>
 
         <div class="finance-exec-kpi-col">
           <span class="finance-exec-label">Outflow</span>
-          <div class="finance-exec-kpi-val">$${Math.round(actualOutflow).toLocaleString()}</div>
+          <div class="finance-exec-kpi-val num-mono">$${Math.round(actualOutflow).toLocaleString()}</div>
           <span class="finance-exec-kpi-sub">Fixed plus flex</span>
         </div>
 
         <div class="finance-exec-kpi-col">
           <span class="finance-exec-label">Saved</span>
-          <div class="finance-exec-kpi-val saved">${savingsPct}%</div>
+          <div class="finance-exec-kpi-val saved num-mono">${savingsPct}%</div>
           <span class="finance-exec-kpi-sub">of inflow</span>
         </div>
-      </div>
 
-      <!-- Divider 2 -->
-      <div class="finance-exec-divider"></div>
-
-      <!-- Bottom Row: 50 / 25 / 25 Split Benchmark -->
-      <div class="finance-exec-split-section">
-        <div class="finance-exec-split-header">
-          <h3 class="finance-exec-split-title">50 / 25 / 25 split</h3>
-          <span class="finance-exec-split-badge">${targetMetCount} of 3 on target</span>
-        </div>
-
-        <div class="finance-exec-split-rows">
-          <!-- Fixed Row -->
-          <div class="finance-exec-split-row">
-            <div class="finance-exec-row-label">
-              <span class="finance-exec-row-title">
-                <span class="dot dot-fixed"></span>
-                <span>Fixed</span>
-              </span>
-              <span class="finance-exec-row-target">Target &le; 50%</span>
-            </div>
-            <div class="finance-exec-bar-track">
-              <div class="finance-exec-bar-fill fill-fixed" style="width: ${Math.min(100, Math.max(0, fixedPct))}%;"></div>
-              <div class="finance-exec-tick-marker" style="left: 50%;" title="50% Target Threshold"></div>
-            </div>
-            <div class="finance-exec-row-stat">
-              <span class="finance-exec-stat-val">${fixedPct}%</span>
-              <span class="finance-exec-stat-status ${fixedIsUnderOrEqual ? 'on-target' : 'alert'}">
-                ${fixedIsUnderOrEqual ? 'On target' : 'Over target'}
-              </span>
-            </div>
+        <!-- Concise 50 / 25 / 25 Split Graphic -->
+        <div class="finance-exec-split-col">
+          <div class="finance-exec-split-top">
+            <span class="finance-exec-label">50 / 25 / 25 Split</span>
+            <span class="finance-exec-split-badge ${targetMetCount === 3 ? 'all-good' : 'alert'}">${targetMetCount} of 3 on target</span>
           </div>
 
-          <!-- Flex Row -->
-          <div class="finance-exec-split-row">
-            <div class="finance-exec-row-label">
-              <span class="finance-exec-row-title">
-                <span class="dot dot-flex"></span>
-                <span>Flex</span>
-              </span>
-              <span class="finance-exec-row-target">Target &le; 25%</span>
-            </div>
-            <div class="finance-exec-bar-track">
-              <div class="finance-exec-bar-fill fill-flex" style="width: ${Math.min(100, Math.max(0, flexPct))}%;"></div>
-              <div class="finance-exec-tick-marker" style="left: 25%;" title="25% Target Threshold"></div>
-            </div>
-            <div class="finance-exec-row-stat">
-              <span class="finance-exec-stat-val">${flexPct}%</span>
-              <span class="finance-exec-stat-status ${flexIsUnderOrEqual ? 'on-target' : 'alert'}">
-                ${flexIsUnderOrEqual ? 'On target' : 'Over target'}
-              </span>
-            </div>
+          <div class="finance-exec-split-bar" title="Fixed: ${fixedPct}% | Flex: ${flexPct}% | Save: ${savingsPct}%">
+            <div class="split-segment seg-fixed" style="width: ${normFixedWidth}%;" title="Fixed: ${fixedPct}% (Target &le; 50%)"></div>
+            <div class="split-segment seg-flex" style="width: ${normFlexWidth}%;" title="Flex: ${flexPct}% (Target &le; 25%)"></div>
+            <div class="split-segment seg-save" style="width: ${normSaveWidth}%;" title="Save: ${savingsPct}% (Target &ge; 25%)"></div>
           </div>
 
-          <!-- Save Row -->
-          <div class="finance-exec-split-row">
-            <div class="finance-exec-row-label">
-              <span class="finance-exec-row-title">
-                <span class="dot dot-save"></span>
-                <span>Save</span>
-              </span>
-              <span class="finance-exec-row-target">Target &ge; 25%</span>
+          <div class="finance-exec-split-legend">
+            <div class="split-legend-item" title="Fixed: ${fixedPct}% (Target &le; 50%) &bull; ${fixedIsUnderOrEqual ? 'On target' : 'Over target'}">
+              <span class="dot dot-fixed"></span>
+              <span>Fixed</span>
+              <strong>${fixedPct}%</strong>
+              <small>(&le;50%)</small>
             </div>
-            <div class="finance-exec-bar-track">
-              <div class="finance-exec-bar-fill fill-save" style="width: ${Math.min(100, Math.max(0, savingsPct))}%;"></div>
-              <div class="finance-exec-tick-marker" style="left: 25%;" title="25% Target Threshold"></div>
+            <div class="split-legend-item" title="Flex: ${flexPct}% (Target &le; 25%) &bull; ${flexIsUnderOrEqual ? 'On target' : 'Over target'}">
+              <span class="dot dot-flex"></span>
+              <span>Flex</span>
+              <strong>${flexPct}%</strong>
+              <small>(&le;25%)</small>
             </div>
-            <div class="finance-exec-row-stat">
-              <span class="finance-exec-stat-val">${savingsPct}%</span>
-              <span class="finance-exec-stat-status ${savingsIsMetOrExceeded ? 'on-target' : 'alert'}">
-                ${savingsIsMetOrExceeded ? 'On target' : 'Under target'}
-              </span>
+            <div class="split-legend-item" title="Save: ${savingsPct}% (Target &ge; 25%) &bull; ${savingsIsMetOrExceeded ? 'On target' : 'Under target'}">
+              <span class="dot dot-save"></span>
+              <span>Save</span>
+              <strong>${savingsPct}%</strong>
+              <small>(&ge;25%)</small>
             </div>
           </div>
         </div>
