@@ -12173,11 +12173,11 @@ const DEFAULT_FINANCE_CARDS_ROI = [
         name: 'Global Entry / TSA PreCheck (4-yr cycle)',
         maxVal: 120,
         cadence: '4 years',
-        notes: 'Once per 4 years',
+        notes: 'Once per 4 years (Claimed Jan 2026, valid thru Jan 2030)',
         trackType: 'multi-year',
-        periods: { claim: false },
-        realized: false,
-        realizedValue: 0,
+        periods: { claim: true },
+        realized: true,
+        realizedValue: 120,
         matchKeywords: ['global entry', 'tsa precheck', 'nexus'],
         redemptions: []
       }

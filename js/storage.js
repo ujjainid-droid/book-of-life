@@ -3375,6 +3375,19 @@ class StorageManager {
         return [];
       }
     }
+    // Sync amex-ge with verified 2026 reimbursement if currently unclaimed in cache
+    if (Array.isArray(fin.cardsROI)) {
+      const amex = fin.cardsROI.find(c => c.id === 'amex-plat');
+      if (amex && Array.isArray(amex.benefits)) {
+        const ge = amex.benefits.find(b => b.id === 'amex-ge');
+        if (ge && !ge.realized && ge.periods && !ge.periods.claim) {
+          ge.periods.claim = true;
+          ge.realized = true;
+          ge.realizedValue = 120;
+          try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
+        }
+      }
+    }
     return fin.cardsROI;
   }
 
