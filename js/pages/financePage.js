@@ -659,15 +659,15 @@ function renderFinanceRecurringCommitmentsSection() {
           const cost = parseFloat(s.cost) || 0;
           const cadenceText = (s.cadence || 'monthly').toLowerCase().includes('annual') || (s.cadence || '').toLowerCase().includes('year') ? 'Annual' : 'Monthly';
           return `
-            <div class="finance-sub-card" style="padding: 10px 14px; gap: 6px; border-radius: 10px;">
+            <div class="finance-sub-card" style="padding: 10px 14px; gap: 6px;">
               <!-- Top Row: Name + Reimbursed Icon -->
               <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
                 <strong style="font-size: 0.85rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(s.name)}">
                   ${escapeHtml(s.name)}
                 </strong>
                 ${isOffset ? `
-                  <span title="100% Reimbursed: ${escapeHtml(s.cardPerk)}" style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 5px; background: rgba(13, 148, 136, 0.12); color: #0D9488; flex-shrink: 0;">
-                    <i data-lucide="check-check" style="width: 12px; height: 12px;"></i>
+                  <span class="finance-sub-check-badge" title="100% Reimbursed: ${escapeHtml(s.cardPerk)}">
+                    <i data-lucide="check-check"></i>
                   </span>
                 ` : ''}
               </div>
@@ -685,7 +685,7 @@ function renderFinanceRecurringCommitmentsSection() {
               <!-- Bottom Row: Renewal Date -->
               <div style="font-size: 0.68rem; color: var(--text-muted); border-top: 1px dashed var(--border-color, #E2E8F0); padding-top: 4px; display: flex; justify-content: space-between; align-items: center;">
                 <span>Renews: <strong style="color: var(--text-secondary);">${escapeHtml(s.nextRenewal || 'Monthly')}</strong></span>
-                ${isOffset ? `<span style="color: #0D9488; font-weight: 600; font-size: 0.65rem;">Reimbursed</span>` : ''}
+                ${isOffset ? `<span class="finance-sub-reimbursed-pill">Reimbursed</span>` : ''}
               </div>
             </div>
           `;
