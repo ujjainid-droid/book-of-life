@@ -6636,8 +6636,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Paid $300 via U CSP ...8373 on 2026-10-13."
+    "nextAction": "Submitted to Anthem with Receipt #006190 — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement (Receipt #006190 attached)."
   },
   {
     "id": "claim-ms-2026-10-14",
@@ -6654,8 +6654,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Therapy session. Paid $225 via U CSP ...8373 on 2026-10-14."
+    "nextAction": "Submitted to Anthem — in review ($157.50 expected)",
+    "notes": "Therapy session. Paid $225 via U CSP ...8373 on 2026-10-14. Submitted directly to Anthem for reimbursement."
   },
   {
     "id": "claim-barness-2026-09-15",
@@ -6672,8 +6672,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Submitted to Anthem with Receipt #005834 — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement (Receipt #005834 attached)."
   },
   {
     "id": "claim-barness-2026-08-21",
@@ -6690,8 +6690,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
     "id": "claim-barness-2026-07-08",
@@ -6703,13 +6703,13 @@ const DEFAULT_REAL_CLAIMS = [
     "reimbursedAmount": 0.0,
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
-    "superbillStatus": "have",
-    "stage": "with_included_health",
-    "inPortal": true,
+    "superbillStatus": "need_superbill",
+    "stage": "ready_to_send",
+    "inPortal": false,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Waiting for copy of invoice from Dr. Barness to submit to Anthem ($210.00 recovery)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Waiting for copy of invoice so claim can be submitted to Anthem."
   },
   {
     "id": "claim-barness-2026-06-01",
@@ -6726,8 +6726,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
     "id": "claim-barness-2026-05-04",
@@ -6744,8 +6744,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
     "id": "claim-barness-2026-03-13",
@@ -6762,8 +6762,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
     "id": "claim-barness-2026-03-02",
@@ -6780,8 +6780,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Included Health \u2014 in review",
-    "notes": "Medication Management (CPT 99214, Dx F90.0). Submitted to Included Health on Oct 11."
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
     "id": "claim-neuro-2025-10-15",
@@ -6800,8 +6800,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inBank": false,
     "claimNumber": "20253272A0969",
     "eobPlanPaid": 1457.76,
-    "nextAction": "Reissue requested from Anthem ($1,457.76) \u2014 awaiting check arrival in mail",
-    "notes": "Evaluation. Billed $5,000, Plan Paid $1,457.76. Check reissue requested from Anthem on Oct 11; awaiting delivery."
+    "nextAction": "Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969",
+    "notes": "Evaluation. Billed $5,000, Plan Paid $1,457.76. Filled out Anthem form re missing check ($1,457.76). Claim Tracking ID: 20253272A0969."
   },
   {
     "id": "claim-barness-2026-02-02",
@@ -6820,8 +6820,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inBank": false,
     "claimNumber": "20260462A0745",
     "eobPlanPaid": 210.0,
-    "nextAction": "Message sent to Anthem ($210.00) \u2014 awaiting trace/reissue response",
-    "notes": "Approved by Anthem for $210.00 on Feb 2 session. Message sent to Anthem to trace and reissue missing payment."
+    "nextAction": "Anthem inquiry active re missing check ($210.00) — Claim #20260462A0745",
+    "notes": "Missing Reimbursement Check/Payment — Claim #20260462A0745. Subscriber: Ujjaini Dasgupta, Patient: Xavier Healy, Provider: Michael Barness, MD (Mindful Medicine). Date of Service: February 2, 2026. Billed $300.00, Plan Paid $210.00 according to EOB (processed in late February with $210.00 approved to subscriber). Inquiry filed with Anthem re missing check."
   },
   {
     "id": "claim-ms-2026-01-28",
@@ -6840,8 +6840,8 @@ const DEFAULT_REAL_CLAIMS = [
     "inBank": false,
     "claimNumber": "2026036ML5580",
     "eobPlanPaid": 70.0,
-    "nextAction": "Reissue requested from Anthem ($70.00) \u2014 awaiting check arrival in mail",
-    "notes": "Partial adjustment of $70 approved to meet $800 deductible cap. Check reissue requested from Anthem on Oct 11; awaiting delivery."
+    "nextAction": "Anthem form submitted for missing check ($70.00) — Claim Tracking ID: 2026036ML5580",
+    "notes": "Partial adjustment of $70 approved to meet $800 deductible cap. Filled out Anthem form re missing check ($70.00). Claim Tracking ID: 2026036ML5580."
   },
   {
     "id": "claim-ms-2026-10-07",

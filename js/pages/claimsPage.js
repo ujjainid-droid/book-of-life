@@ -79,13 +79,13 @@ function renderClaimsPage(targetContainer) {
           <p class="claims-subtitle">Track out-of-pocket visits from receipt to bank deposit.</p>
         </div>
         <div style="display:flex; gap:8px;">
-          <button class="claims-copy-btn" onclick="openIncludedHealthExportModal()" title="Copy formatted summary of unfiled visits for Included Health">
+          <button class="claims-copy-btn" onclick="openIncludedHealthExportModal()" title="Copy formatted summary of visits for Anthem claim filing">
             <i data-lucide="copy" style="width:13px;height:13px;"></i>
-            <span>Copy for Included Health</span>
+            <span>Copy Claims Summary</span>
           </button>
           <button class="claims-copy-btn" onclick="storage.exportClaimsCSV();showToast('CSV downloaded!')" title="Export claims CSV">
             <i data-lucide="download" style="width:13px;height:13px;"></i>
-            <span>Export</span>
+            <span>Export CSV</span>
           </button>
         </div>
       </div>
@@ -339,9 +339,9 @@ function quickAdvanceClaim(claimId) {
   storage.updateClaim(claimId, {
     stage: 'with_included_health',
     inPortal: true,
-    nextAction: 'Submitted to Included Health — in review'
+    nextAction: 'Submitted to Anthem — in review'
   });
-  if (typeof showToast === 'function') showToast('✓ Marked as submitted to Included Health');
+  if (typeof showToast === 'function') showToast('✓ Marked as submitted to Anthem');
   renderClaimsPage();
 }
 
@@ -384,7 +384,7 @@ function handleQuickAddClaim(e) {
   const stage = (submissionType === 'provider') ? 'with_included_health' : 'ready_to_send';
   const nextAction = (submissionType === 'provider')
     ? 'Provider filing claim — check portal'
-    : 'Upload superbill to Included Health app';
+    : 'Upload superbill to Anthem portal';
 
   storage.addClaim({
     date,
@@ -425,7 +425,7 @@ function openIncludedHealthExportModal() {
     body.innerHTML = `
       <div style="display:flex;flex-direction:column;gap:12px;">
         <p style="font-size:0.82rem;color:var(--text-secondary);margin:0;">
-          Copy and paste this formatted summary directly into your Included Health care team chat:
+          Copy and paste this formatted summary directly into your Anthem portal claim filing or message:
         </p>
         <textarea class="export-text-preview" id="export-claims-textarea" readonly style="min-height:220px;font-size:0.8rem;line-height:1.45;">${escapeHtml(formattedText)}</textarea>
         <div style="display:flex;justify-content:flex-end;gap:10px;">
@@ -451,8 +451,9 @@ function generateIncludedHealthSummary(claimsList) {
     totalExpected += (c.expectedRecovery !== undefined ? c.expectedRecovery : (c.amountPaid * 0.7));
   });
 
-  let text = `Hi Included Health Team,\n\n`;
-  text += `Here is the list of unfiled out-of-network sessions ready for claim submission:\n\n`;
+  let text = `Out-of-Network Medical Claims Filing Summary\n`;
+  text += `Subscriber: Ujjaini Dasgupta | Patient: Xavier Healy | Insurer: Anthem\n\n`;
+  text += `Here is the list of out-of-network sessions for claim filing and reimbursement tracking:\n\n`;
 
   claimsList.forEach((c, idx) => {
     const dStr = formatDateShort(c.date);
@@ -465,7 +466,7 @@ function generateIncludedHealthSummary(claimsList) {
 
   text += `Total Out-of-Pocket: $${totalBilled.toFixed(2)}\n`;
   text += `Expected Reimbursement: $${totalExpected.toFixed(2)}\n\n`;
-  text += `Please confirm receipt and let me know if you need any additional records. Thank you!`;
+  text += `Please let me know if any additional records or invoices are needed. Thank you!`;
 
   return text;
 }

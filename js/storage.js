@@ -43,12 +43,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V12';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V13';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
           this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
-          this.data.claimsSeedVersion = 12;
+          this.data.claimsSeedVersion = 13;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -2140,9 +2140,9 @@ class StorageManager {
       return false;
     });
 
-    // Sync seed updates for requested reissued checks and submitted Included Health claims
+    // Sync seed updates for requested reissued checks and submitted Anthem claims
     const barnessSubmittedIds = new Set([
-      'claim-barness-2026-09-15', 'claim-barness-2026-08-21', 'claim-barness-2026-07-08',
+      'claim-barness-2026-10-13', 'claim-barness-2026-09-15', 'claim-barness-2026-08-21',
       'claim-barness-2026-06-01', 'claim-barness-2026-05-04', 'claim-barness-2026-03-13',
       'claim-barness-2026-03-02'
     ]);
@@ -2152,20 +2152,29 @@ class StorageManager {
         if (c.stage === 'ready_to_send') {
           c.stage = 'with_included_health';
           c.inPortal = true;
-          c.nextAction = 'Submitted to Included Health — in review';
+          c.nextAction = 'Submitted to Anthem — in review';
         }
       }
-      if (c.id === 'claim-eval-2025-11' || c.id === 'claim-ms-2026-01-28') {
+      if (c.id === 'claim-eval-2025-11') {
         if (!c.reissueRequested) {
           c.reissueRequested = true;
           c.nextAction = `Reissue requested from Anthem ($${(c.eobPlanPaid || c.expectedRecovery || 0).toFixed(2)}) — awaiting check arrival in mail`;
         }
       }
+      if (c.id === 'claim-neuro-2025-10-15') {
+        c.claimNumber = c.claimNumber || '20253272A0969';
+        c.reissueRequested = true;
+        c.nextAction = 'Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969';
+      }
+      if (c.id === 'claim-ms-2026-01-28') {
+        c.claimNumber = c.claimNumber || '2026036ML5580';
+        c.reissueRequested = true;
+        c.nextAction = 'Anthem form submitted for missing check ($70.00) — Claim Tracking ID: 2026036ML5580';
+      }
       if (c.id === 'claim-barness-2026-02-02') {
-        if (!c.reissueRequested) {
-          c.reissueRequested = true;
-          c.nextAction = 'Message sent to Anthem ($210.00) — awaiting trace/reissue response';
-        }
+        c.claimNumber = c.claimNumber || '20260462A0745';
+        c.reissueRequested = true;
+        c.nextAction = 'Anthem inquiry active re missing check ($210.00) — Claim #20260462A0745';
       }
     });
 
