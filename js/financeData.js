@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 10,
+  "seedVersion": 11,
   "monthlyTarget": 22350,
   "savingsTarget": 5000,
   "alertSpendRatio": 0.85,
@@ -19,7 +19,7 @@ const DEFAULT_FINANCE_DATA = {
     "Credit Card + Financial Fees": 764.17,
     "Eating out": 1404.63,
     "Entertainment & Recreation": 17.33,
-    "Fitness": 316.33,
+    "Fitness": 128.0,
     "Gas & Electric": 1000.0,
     "Groceries": 1519.34,
     "Home Improvement": 158.77,
@@ -420,7 +420,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-home-maintenance",
       "name": "Home maintenance",
-      "budget": 1640,
+      "budget": 1600,
       "baseline": 1639.88,
       "classification": "Discretionary",
       "icon": "wrench"
@@ -468,7 +468,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-child-activities",
       "name": "Child Activities",
-      "budget": 958,
+      "budget": 950,
       "baseline": 958.14,
       "classification": "Enrichment",
       "icon": "book-open"
@@ -540,7 +540,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-self-care---grooming",
       "name": "Self care + Grooming",
-      "budget": 330,
+      "budget": 300,
       "baseline": 329.58,
       "classification": "Self Care",
       "icon": "sparkles"
@@ -548,8 +548,8 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-fitness",
       "name": "Fitness",
-      "budget": 316,
-      "baseline": 316.33,
+      "budget": 130,
+      "baseline": 128.0,
       "classification": "Self Care",
       "icon": "activity"
     },
@@ -580,7 +580,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-school-stuff---education",
       "name": "School stuff + Education",
-      "budget": 189,
+      "budget": 175,
       "baseline": 189.28,
       "classification": "Fixed Baseline",
       "icon": "graduation-cap"

@@ -3028,9 +3028,9 @@ class StorageManager {
       }
     }
 
-    // Seed v10 migration: update category baselines and category budgets to agreed numbers
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 10)) {
-      this.data.finance.seedVersion = 10;
+    // Seed v11 migration: update category baselines and category budgets to agreed numbers
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 11)) {
+      this.data.finance.seedVersion = 11;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
         if (DEFAULT_FINANCE_DATA.categoryBaselines) {
           this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
