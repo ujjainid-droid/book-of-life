@@ -1275,7 +1275,6 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
                   title="Jump to ${escapeHtml(it.fullName)}">
             <span class="whisper-chip-indicator" aria-hidden="true">${it.isComplete ? '✓' : '○'}</span>
             <span class="whisper-chip-name">${escapeHtml(it.name)}</span>
-            ${it.statusText ? `<span class="whisper-chip-meta">· ${escapeHtml(it.statusText)}</span>` : ''}
           </button>
         `).join('')}
       </div>

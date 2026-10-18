@@ -10612,10 +10612,10 @@ body.dark-mode .protocol-sample-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  height: 32px;
-  min-height: 32px;
-  max-height: 32px;
+  padding: 5px 12px;
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.05);
   border: none !important;
@@ -10651,29 +10651,21 @@ body.dark-mode .protocol-sample-btn {
 
 .whisper-chip-name {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1;
   color: inherit;
 }
 
-.whisper-chip-meta {
-  font-size: 11px;
-  font-weight: 500;
-  opacity: 0.9;
-  line-height: 1;
-  color: inherit;
-}
-
-/* Completed State: Green Text! */
+/* Completed State: Dark Mode */
 .whisper-chip.is-complete {
-  background: rgba(46, 191, 145, 0.12) !important;
-  color: #2EBF91 !important;
+  background: rgba(222, 244, 235, 0.15) !important;
+  color: #def4eb !important;
 }
 
 .whisper-chip.is-complete .whisper-chip-indicator,
-.whisper-chip.is-complete .whisper-chip-name,
-.whisper-chip.is-complete .whisper-chip-meta {
-  color: #2EBF91 !important;
+.whisper-chip.is-complete .whisper-chip-name {
+  color: #def4eb !important;
+  font-weight: 700;
 }
 
 /* Light Mode Overrides for Whisper Tracker */
@@ -10698,15 +10690,16 @@ body.dark-mode .protocol-sample-btn {
   color: #64748B;
 }
 
+/* Exact match to user sample: bg #def4eb, text #0e6b47 */
 :root[data-theme="light"] .whisper-chip.is-complete {
-  background: rgba(5, 150, 105, 0.1) !important;
-  color: #059669 !important;
+  background: #def4eb !important;
+  color: #0e6b47 !important;
 }
 
 :root[data-theme="light"] .whisper-chip.is-complete .whisper-chip-indicator,
-:root[data-theme="light"] .whisper-chip.is-complete .whisper-chip-name,
-:root[data-theme="light"] .whisper-chip.is-complete .whisper-chip-meta {
-  color: #059669 !important;
+:root[data-theme="light"] .whisper-chip.is-complete .whisper-chip-name {
+  color: #0e6b47 !important;
+  font-weight: 700;
 }
 
 /* 1-Tap Widget Focus Smooth Pulse */
