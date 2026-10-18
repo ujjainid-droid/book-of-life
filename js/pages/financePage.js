@@ -27,6 +27,19 @@ function getInitialFinanceSubTab() {
 }
 
 let activeFinanceSubTab = getInitialFinanceSubTab();
+
+function formatFinanceMonthLabel(mIso) {
+  if (!mIso || typeof mIso !== 'string') return '';
+  const parts = mIso.split('-');
+  if (parts.length < 2) return mIso;
+  const y = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10);
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const monthName = months[m - 1] || parts[1];
+  return `${monthName} ${y}`;
+}
+window.formatFinanceMonthLabel = formatFinanceMonthLabel;
+
 let selectedFinanceMonth = '2026-10';
 let financeTxSearchQuery = '';
 let financeTxCategoryFilter = 'all';

@@ -103,8 +103,9 @@ function switchAppView(viewName, subViewName) {
     if (!subViewName) subViewName = parts[1];
   }
 
-  if (viewName === 'claims' || viewName === 'finance') {
+  if (viewName === 'claims' || viewName === 'finance' || viewName === 'budget') {
     currentView = 'finance';
+    if (viewName === 'budget' && !subViewName) subViewName = 'budget';
   } else if (viewName === 'zlog' || viewName === 'zhub' || viewName === 'bunker') {
     currentView = 'zlog';
   } else if (viewName === 'podcasts') {
@@ -169,6 +170,7 @@ function switchAppView(viewName, subViewName) {
   const hobbyBtn = document.getElementById('nav-btn-hobby');
   const zhubBtn = document.getElementById('nav-btn-zhub');
   const financeBtn = document.getElementById('nav-btn-finance');
+  const budgetBtn = document.getElementById('nav-btn-budget');
 
   // Update unified nav active states (stable across all pages)
   const updateNavBtn = (btn, isActive) => {
@@ -181,11 +183,13 @@ function switchAppView(viewName, subViewName) {
       btn.removeAttribute('aria-current');
     }
   };
+  const isBudgetActive = currentView === 'finance' && (subViewName === 'budget' || (typeof activeFinanceSubTab !== 'undefined' && activeFinanceSubTab === 'budget'));
   updateNavBtn(todayBtn, currentView === 'sanctuary');
   updateNavBtn(coverBtn, currentView === 'cover');
   updateNavBtn(hobbyBtn, currentView === 'hobby');
   updateNavBtn(zhubBtn, currentView === 'zlog');
-  updateNavBtn(financeBtn, currentView === 'finance');
+  updateNavBtn(budgetBtn, isBudgetActive);
+  updateNavBtn(financeBtn, currentView === 'finance' && !isBudgetActive);
 
   // Also support old element IDs if referenced
   const domainBtnSanctuary = document.getElementById('domain-btn-sanctuary');
