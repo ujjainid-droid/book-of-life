@@ -3,9 +3,10 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 12,
+  "seedVersion": 13,
   "monthlyTarget": 18200,
-  "savingsTarget": 5000,
+  "savingsTarget": 3000,
+  "wealthSweepPot": 4258.30,
   "alertSpendRatio": 0.85,
   "categoryBaselines": {
     "C'mas, Bday, India gifts 🎄 🎂 🇮🇳": 370.83,

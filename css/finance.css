@@ -4785,6 +4785,12 @@ body.dark-mode .budget-master-card.savings-theme {
   background: linear-gradient(180deg, rgba(13, 148, 136, 0.16) 0%, #15182D 100%);
 }
 
+[data-theme="dark"] .wealth-sweep-pot-card,
+body.dark-mode .wealth-sweep-pot-card {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.16) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+  border-color: rgba(20, 184, 166, 0.4) !important;
+}
+
 .budget-master-card::before {
   content: '';
   position: absolute;

@@ -3028,9 +3028,9 @@ class StorageManager {
       }
     }
 
-    // Seed v12 migration: update category baselines and category budgets to agreed numbers
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 12)) {
-      this.data.finance.seedVersion = 12;
+    // Seed v13 migration: Direct transfers target ($3k Oct, $3.5k Nov) and Wealth Sweep Pot
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 13)) {
+      this.data.finance.seedVersion = 13;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
         if (DEFAULT_FINANCE_DATA.categoryBaselines) {
           this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
@@ -3039,6 +3039,10 @@ class StorageManager {
           this.data.finance.categories = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categories));
         }
         this.data.finance.monthlyTarget = 18200;
+        this.data.finance.savingsTarget = 3000;
+        if (this.data.finance.wealthSweepPot === undefined) {
+          this.data.finance.wealthSweepPot = 4258.30;
+        }
       }
       try {
         localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
@@ -3272,6 +3276,16 @@ class StorageManager {
     fin.categoryBaselines[catName] = parseFloat(newBaseline) || 0;
     this.saveData();
     return fin.categoryBaselines;
+  }
+
+  updateFinanceWealthSweepPot(newAmount) {
+    const fin = this.getFinanceData();
+    fin.wealthSweepPot = Math.max(0, parseFloat(newAmount) || 0);
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return fin.wealthSweepPot;
   }
 
   addFinanceSubscription(sub) {

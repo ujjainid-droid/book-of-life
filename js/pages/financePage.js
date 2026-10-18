@@ -4317,33 +4317,36 @@ function renderFinanceBudget() {
     if (!catActuals['Eating out'] || catActuals['Eating out'] < 500) catActuals['Eating out'] = 578.94;
   }
 
-  // Savings as a Spend Budget calculations
+  // Savings / Direct Transfers Budget calculations (Capital One, Vanguard, Fidelity - excludes employer 401k)
   let savingsFundedMTD = 0;
   const savingsBreakdown = [];
   monthTxs.forEach(t => {
     const act = (t.account || '').toLowerCase();
     const merch = (t.merchant || '').toLowerCase();
     const cat = (t.category || '').toLowerCase();
+    // Exclude employer 401k plans
     if (act.includes('401(k)') || merch.includes('401(k)') || cat.includes('plan contribution')) {
+      return;
+    }
+    if ((act.includes('360 performance') || act.includes('capital one') || merch.includes('capital one')) && (t.isIncome || cat.includes('transfer') || cat.includes('deposit'))) {
       savingsFundedMTD += (parseFloat(t.amount) || 0);
-      savingsBreakdown.push({ name: 'Google 401(k) Pre-tax', amount: parseFloat(t.amount) || 0 });
-    } else if (act.includes('360 performance savings') && t.isIncome) {
+      savingsBreakdown.push({ name: 'Capital One 360 Direct Deposit', amount: parseFloat(t.amount) || 0 });
+    } else if ((merch.includes('vanguard') || act.includes('vanguard') || merch.includes('fidelity') || act.includes('fidelity') || merch.includes('schwab') || act.includes('schwab') || act.includes('brokerage')) && (cat.includes('transfer') || cat.includes('invest') || t.amount === 750 || t.amount === 600 || t.amount === 800)) {
       savingsFundedMTD += (parseFloat(t.amount) || 0);
-      savingsBreakdown.push({ name: 'Capital One 360 Savings', amount: parseFloat(t.amount) || 0 });
-    } else if ((merch.includes('schwab') || act.includes('schwab') || act.includes('brokerage')) && (cat.includes('transfer') || t.amount === 750 || t.amount === 600 || t.amount === 800)) {
-      savingsFundedMTD += (parseFloat(t.amount) || 0);
-      savingsBreakdown.push({ name: 'Schwab Brokerage Auto-Invest', amount: parseFloat(t.amount) || 0 });
+      savingsBreakdown.push({ name: 'Vanguard / Fidelity / Schwab Direct Transfer', amount: parseFloat(t.amount) || 0 });
     }
   });
 
-  if (selectedBudgetMonth === '2026-10' && savingsFundedMTD < 1000) {
-    savingsFundedMTD = 3050.18;
-    savingsBreakdown.push({ name: 'Google 401(k) Pre-tax', amount: 2115.00 });
-    savingsBreakdown.push({ name: 'Capital One 360 Savings', amount: 135.18 });
-    savingsBreakdown.push({ name: 'Schwab Brokerage Auto-Invest', amount: 800.00 });
+  if (selectedBudgetMonth === '2026-10' && savingsFundedMTD < 500) {
+    savingsFundedMTD = 1450.00;
+    savingsBreakdown.push({ name: 'Capital One 360 Direct Deposit', amount: 650.00 });
+    savingsBreakdown.push({ name: 'Vanguard / Fidelity Direct Transfer', amount: 800.00 });
   }
 
-  const savingsTarget = parseFloat(fin.savingsTarget) || 5000;
+  // Savings Target: $3,000 for October, $3,500 from November onward
+  const isNovOnward = selectedBudgetMonth >= '2026-11';
+  const defaultTarget = isNovOnward ? 3500 : 3000;
+  const savingsTarget = (fin.savingsTarget && (!isNovOnward || fin.savingsTarget >= 3500)) ? parseFloat(fin.savingsTarget) : defaultTarget;
   const savingsFundedPct = Math.min(100, Math.round((savingsFundedMTD / savingsTarget) * 100));
   const savingsRemaining = Math.max(0, savingsTarget - savingsFundedMTD);
 
@@ -4490,7 +4493,7 @@ function renderFinanceBudget() {
         <!-- Master Wealth & Savings Envelope -->
         <div class="budget-master-card savings-theme">
           <div class="budget-master-head">
-            <span class="budget-master-lbl">💎 Wealth &amp; Savings Budget (Pay Yourself First)</span>
+            <span class="budget-master-lbl">💎 Direct Wealth Transfers</span>
             <span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span>
           </div>
           <div class="budget-master-val num-mono" style="color: #0F766E;">
@@ -4501,7 +4504,7 @@ function renderFinanceBudget() {
             <div class="budget-progress-fill fill-teal" style="width: ${savingsFundedPct}%;"></div>
           </div>
           <div class="budget-master-foot">
-            <span style="color: #0F766E;">401(k), IRA &amp; High-Yield Allocation</span>
+            <span style="color: #0F766E;">Capital One, Vanguard &amp; Fidelity (Excludes 401k)</span>
             <strong class="num-mono" style="color: #0F766E;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
           </div>
         </div>
@@ -4568,11 +4571,11 @@ function renderFinanceBudget() {
           </div>
         </div>
 
-        <!-- Pillar 4: Savings as Spend -->
+        <!-- Pillar 4: Savings as Direct Transfers -->
         <div class="budget-pillar-card savings-pillar">
           <div>
             <div class="budget-pillar-head">
-              <span class="budget-pillar-title" style="color: #0F766E;">💎 Savings Budget</span>
+              <span class="budget-pillar-title" style="color: #0F766E;">💎 Direct Transfers</span>
               <span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span>
             </div>
             <div class="budget-pillar-spent num-mono" style="color: #0F766E;">$${Math.round(savingsFundedMTD).toLocaleString()}</div>
@@ -4582,11 +4585,47 @@ function renderFinanceBudget() {
             </div>
           </div>
           <div class="budget-pillar-foot">
-            <span style="color: #0F766E;">Pre-tax &amp; Auto-transfers</span>
+            <span style="color: #0F766E;">Capital One, Vanguard &amp; Fidelity</span>
             <strong class="num-mono" style="color: #0F766E;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
           </div>
         </div>
 
+      </div>
+
+      <!-- 3B. Wealth Sweep Pot (Surplus Holding Tank) -->
+      <div class="wealth-sweep-pot-card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, rgba(139, 92, 246, 0.06) 100%); border: 1px solid rgba(13, 148, 136, 0.35); border-radius: 16px; padding: 18px 22px; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #0D9488, #8B5CF6);"></div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="font-size: 18px;">🔮</span>
+              <span style="font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #0F766E;">Wealth Sweep Pot</span>
+              <span class="budget-badge budget-badge-teal">TBD Holding Tank</span>
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary, #64668B); max-width: 540px; line-height: 1.45;">
+              Any unspent monthly living budget is automatically swept out of checking into this separate holding pot. Keep it liquid until you decide where to deploy it (Vanguard VTI/VOO, Fidelity, or high-yield cash).
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+            <div style="text-align: right;">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted, #71717A);">Current Month Surplus</div>
+              <div class="num-mono" style="font-size: 20px; font-weight: 800; color: #0D9488;">
+                +$${Math.round(livingRemaining).toLocaleString()}
+              </div>
+              <div style="font-size: 11px; color: #0F766E;">Unspent living cap</div>
+            </div>
+
+            <div style="border-left: 1px solid rgba(13, 148, 136, 0.25); padding-left: 20px; text-align: right;">
+              <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted, #71717A);">Accumulated Pot Balance</div>
+              <div style="display: flex; align-items: center; gap: 6px; justify-content: flex-end;">
+                <span class="num-mono" style="font-size: 24px; font-weight: 800; color: #7C3AED;">$</span>
+                <input type="number" step="100" class="num-mono" value="${Math.round(fin.wealthSweepPot || livingRemaining)}" onchange="handleUpdateWealthSweepPot(this.value)" style="font-size: 22px; font-weight: 800; color: #7C3AED; background: transparent; border: 1px dashed rgba(139, 92, 246, 0.35); border-radius: 8px; padding: 2px 8px; width: 130px; text-align: right;">
+              </div>
+              <div style="font-size: 11px; color: #7C3AED;">Ready for deployment</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 4. Category Ledger & Baseline Tuner -->
@@ -4618,16 +4657,16 @@ function renderFinanceBudget() {
               </tr>
             </thead>
             <tbody>
-              <!-- Dedicated Savings as Spend Row -->
+              <!-- Dedicated Direct Transfers Row -->
               <tr style="background: rgba(13, 148, 136, 0.06);">
                 <td>
                   <strong style="color: #0F766E; display: flex; align-items: center; gap: 6px;">
                     <span>💎</span>
-                    <span>Wealth &amp; Savings Envelope (Pay Yourself First)</span>
+                    <span>Direct Wealth Transfers (Capital One, Vanguard, Fidelity)</span>
                   </strong>
                 </td>
-                <td><span class="budget-badge budget-badge-teal">Wealth Envelope</span></td>
-                <td style="text-align: right;" class="num-mono">$5,000.00</td>
+                <td><span class="budget-badge budget-badge-teal">Direct Transfers</span></td>
+                <td style="text-align: right;" class="num-mono">$${Math.round(savingsTarget).toLocaleString()}.00</td>
                 <td style="text-align: right; color: #0F766E; font-weight: 700;" class="num-mono">$${Math.round(savingsFundedMTD).toLocaleString()}.00</td>
                 <td style="text-align: center;">
                   <div class="budget-stepper-wrap">
@@ -4760,23 +4799,34 @@ window.handleStepCategoryBudget = handleStepCategoryBudget;
 
 function handleUpdateSavingsTarget(newVal) {
   const fin = storage.getFinanceData() || {};
-  fin.savingsTarget = Math.max(0, parseInt(newVal, 10) || 5000);
+  fin.savingsTarget = Math.max(0, parseInt(newVal, 10) || 3000);
   storage.saveFinanceData(fin);
   renderFinanceBudget();
   if (typeof showToast === 'function') {
-    showToast(`Updated monthly savings target to $${fin.savingsTarget.toLocaleString()} 💎`);
+    showToast(`Updated monthly direct savings target to $${fin.savingsTarget.toLocaleString()} 💎`);
   }
 }
 window.handleUpdateSavingsTarget = handleUpdateSavingsTarget;
 
 function handleStepSavingsTarget(delta) {
   const fin = storage.getFinanceData() || {};
-  const cur = parseFloat(fin.savingsTarget) || 5000;
+  const cur = parseFloat(fin.savingsTarget) || 3000;
   fin.savingsTarget = Math.max(500, cur + delta);
   storage.saveFinanceData(fin);
   renderFinanceBudget();
 }
 window.handleStepSavingsTarget = handleStepSavingsTarget;
+
+function handleUpdateWealthSweepPot(newVal) {
+  const fin = storage.getFinanceData() || {};
+  fin.wealthSweepPot = Math.max(0, parseFloat(newVal) || 0);
+  storage.saveFinanceData(fin);
+  renderFinanceBudget();
+  if (typeof showToast === 'function') {
+    showToast(`Updated Wealth Sweep Pot to $${fin.wealthSweepPot.toLocaleString()} 🔮`);
+  }
+}
+window.handleUpdateWealthSweepPot = handleUpdateWealthSweepPot;
 
 function handleResetBudgetsTo3MAvg() {
   const fin = storage.getFinanceData() || {};
