@@ -248,26 +248,6 @@ function renderClaimsPage(targetContainer) {
 
       </div>
 
-      <!-- 3. Fast Log Visit Form -->
-      <div class="claims-log-card">
-        <div class="claims-log-header">
-          <span class="claims-log-label">Log Future Visit</span>
-          <div class="claims-quick-chips">
-            <button type="button" class="quick-chip" onclick="quickFillVisit('Dr. Michael Barness', 300, 'self')">Dr. Barness ($300)</button>
-            <button type="button" class="quick-chip" onclick="quickFillVisit('Mindsoother Therapy', 225, 'provider')">Mindsoother ($225)</button>
-          </div>
-        </div>
-        <form class="claims-log-form" id="quick-add-claim-form" onsubmit="handleQuickAddClaim(event)">
-          <input type="date" id="claim-date-input" value="${todayIso}" required>
-          <input type="text" id="claim-provider-input" placeholder="Provider (e.g. Dr. Michael Barness)" required>
-          <input type="number" step="0.01" min="0" id="claim-amount-input" placeholder="Amount ($)" required>
-          <button type="submit" class="claims-submit-btn">
-            <i data-lucide="plus" style="width:14px;height:14px;"></i>
-            <span>Log Visit</span>
-          </button>
-        </form>
-      </div>
-
       <!-- 4. Two-Tier Filter Controls: Provider Filter & Payment Status Filter -->
       <div class="claims-controls-card">
         
