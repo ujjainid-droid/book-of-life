@@ -541,9 +541,20 @@ function renderZLogPage(targetSubTab) {
         <dialog id="dlg" class="zhub-dlg" aria-labelledby="dT">
           <form id="form" onsubmit="submitZLogEntryModal(event)" novalidate>
             <h2 id="dT">Log day</h2>
-            <div class="fld">
-              <label for="fDate">Date</label>
-              <input type="date" id="fDate" name="fDate" required>
+            <div class="fld zhub-modal-date-fld">
+              <div class="between" style="align-items:center;margin-bottom:4px;">
+                <label for="fDate" style="margin:0;">Date</label>
+                <span id="zlog-date-status-badge" class="zhub-date-status-badge"></span>
+              </div>
+              <div class="zhub-modal-date-picker-row">
+                <input type="date" id="fDate" name="fDate" class="zhub-modal-date-input" required onchange="onZLogModalDateChange(this.value)">
+                <div class="zhub-modal-date-presets" role="group" aria-label="Quick date options">
+                  <button type="button" class="zhub-date-preset-btn" id="zlog-preset-today" onclick="setZLogModalDate('today')">Today</button>
+                  <button type="button" class="zhub-date-preset-btn" id="zlog-preset-yesterday" onclick="setZLogModalDate('yesterday')">Yesterday</button>
+                  <button type="button" class="zhub-date-preset-btn" id="zlog-preset-picker" onclick="triggerZLogDatePicker()" title="Choose any date from calendar">Choose Date 📅</button>
+                </div>
+              </div>
+              <div id="zlog-already-logged-banner" class="zhub-already-logged-banner" style="display:none;"></div>
             </div>
             <div class="fld">
               <span class="l">How did the day feel?</span>
@@ -2071,10 +2082,16 @@ function selectZHubDialogRating(rKey) {
   });
 }
 
-function openZLogEntryModal(targetDate = null) {
+function loadZLogModalForDate(dateStr) {
   const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-15';
-  const dateStr = targetDate || (typeof activeTrackingDate !== 'undefined' && activeTrackingDate) || todayIso;
-  zhubEditingDate = targetDate || null;
+  if (!dateStr) dateStr = todayIso;
+  zhubEditingDate = dateStr;
+
+  const dateInput = document.getElementById('fDate') || document.getElementById('zlog-modal-date');
+  if (dateInput) {
+    dateInput.value = dateStr;
+    dateInput.disabled = false; // Always allow changing date!
+  }
 
   const entry = storage.getZLogEntry(dateStr);
   const meds = entry.meds || {};
@@ -2084,23 +2101,47 @@ function openZLogEntryModal(targetDate = null) {
   currentModalAttachments = Array.isArray(entry.attachments) ? [...entry.attachments] : [];
   zhubDialogRating = isExistingEntry ? getEntryCareRatingKey(entry) : 'great';
 
-  let dialogEl = document.getElementById('dlg') || document.getElementById('zhub-dlg');
-  if (!dialogEl) {
-    renderZLogPage();
-    dialogEl = document.getElementById('dlg') || document.getElementById('zhub-dlg');
-  }
-  if (!dialogEl) return;
-
   const titleEl = document.getElementById('dT');
   if (titleEl) {
-    titleEl.textContent = isExistingEntry ? `Edit ${formatCareDayLabel(dateStr)}` : 'Log day';
+    titleEl.textContent = isExistingEntry ? `Edit ${formatCareDayLabel(dateStr)}` : `Log day · ${formatCareDayLabel(dateStr)}`;
   }
 
-  const dateInput = document.getElementById('fDate') || document.getElementById('zlog-modal-date');
-  if (dateInput) {
-    dateInput.value = dateStr;
-    dateInput.disabled = !!(targetDate && isExistingEntry);
+  const badgeEl = document.getElementById('zlog-date-status-badge');
+  if (badgeEl) {
+    badgeEl.textContent = isExistingEntry ? 'Existing Entry · Editing' : '+ New Date Entry';
+    badgeEl.className = 'zhub-date-status-badge ' + (isExistingEntry ? 'is-existing' : 'is-new');
   }
+
+  const bannerEl = document.getElementById('zlog-already-logged-banner');
+  if (bannerEl) {
+    if (dateStr === todayIso && isExistingEntry) {
+      const yesterdayD = new Date();
+      yesterdayD.setDate(yesterdayD.getDate() - 1);
+      const yesterdayIso = (typeof formatDateIso === 'function') ? formatDateIso(yesterdayD) : '2026-10-16';
+      bannerEl.innerHTML = `
+        <div class="zhub-banner-inner">
+          <span>Today is already logged. Tap to log another date:</span>
+          <div class="zhub-banner-actions">
+            <button type="button" class="zhub-banner-btn" onclick="setZLogModalDate('yesterday')">Log Yesterday</button>
+            <button type="button" class="zhub-banner-btn" onclick="triggerZLogDatePicker()">Choose Date 📅</button>
+          </div>
+        </div>
+      `;
+      bannerEl.style.display = 'block';
+    } else {
+      bannerEl.style.display = 'none';
+      bannerEl.innerHTML = '';
+    }
+  }
+
+  // Update preset buttons active state
+  const btnToday = document.getElementById('zlog-preset-today');
+  const btnYest = document.getElementById('zlog-preset-yesterday');
+  const yesterdayD = new Date();
+  yesterdayD.setDate(yesterdayD.getDate() - 1);
+  const yesterdayIso = (typeof formatDateIso === 'function') ? formatDateIso(yesterdayD) : '2026-10-16';
+  if (btnToday) btnToday.classList.toggle('active', dateStr === todayIso);
+  if (btnYest) btnYest.classList.toggle('active', dateStr === yesterdayIso);
 
   const rmBtn = document.getElementById('rmBtn');
   if (rmBtn) {
@@ -2116,33 +2157,87 @@ function openZLogEntryModal(targetDate = null) {
       if (isExistingEntry) {
         chk.checked = !!meds[m.key];
       } else {
-        chk.checked = (m.key !== 'ris');
+        chk.checked = (m.key !== 'ris'); // default daily active meds
       }
     }
     if (doseIn) {
       if (m.key === 'rit') {
-        doseIn.value = String(meds.ritDose || (typeof meds.rit === 'string' && meds.rit ? meds.rit : m.defaultDose));
+        doseIn.value = isExistingEntry ? String(meds.ritDose || (typeof meds.rit === 'string' && meds.rit ? meds.rit : m.defaultDose)) : m.defaultDose;
       } else {
-        doseIn.value = String(meds[m.key + 'Dose'] || m.defaultDose);
+        doseIn.value = isExistingEntry ? String(meds[m.key + 'Dose'] || m.defaultDose) : m.defaultDose;
       }
     }
   });
 
   const notesArea = document.getElementById('fNotes') || document.getElementById('zlog-modal-notes');
   if (notesArea) {
-    const events = getEntryEventsList(entry);
-    notesArea.value = events.length > 0 ? events.join('\n') : (entry.notes || '');
+    if (isExistingEntry) {
+      const events = getEntryEventsList(entry);
+      notesArea.value = events.length > 0 ? events.join('\n') : (entry.notes || '');
+    } else {
+      notesArea.value = '';
+    }
   }
 
   renderModalAttachmentsList();
+}
+window.loadZLogModalForDate = loadZLogModalForDate;
+
+function onZLogModalDateChange(newDateStr) {
+  if (!newDateStr) return;
+  loadZLogModalForDate(newDateStr);
+}
+window.onZLogModalDateChange = onZLogModalDateChange;
+
+function setZLogModalDate(preset) {
+  const todayD = new Date();
+  let targetIso;
+  if (preset === 'yesterday') {
+    todayD.setDate(todayD.getDate() - 1);
+    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(todayD) : '2026-10-16';
+  } else {
+    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(todayD) : '2026-10-17';
+  }
+  loadZLogModalForDate(targetIso);
+}
+window.setZLogModalDate = setZLogModalDate;
+
+function triggerZLogDatePicker() {
+  const input = document.getElementById('fDate');
+  if (!input) return;
+  if (typeof input.showPicker === 'function') {
+    try {
+      input.showPicker();
+      return;
+    } catch (e) {}
+  }
+  input.focus();
+}
+window.triggerZLogDatePicker = triggerZLogDatePicker;
+
+function openZLogEntryModal(targetDate = null) {
+  let dialogEl = document.getElementById('dlg') || document.getElementById('zhub-dlg');
+  if (!dialogEl) {
+    renderZLogPage();
+    dialogEl = document.getElementById('dlg') || document.getElementById('zhub-dlg');
+  }
+  if (!dialogEl) return;
+
+  const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-15';
+  let dateStr = targetDate || (typeof activeTrackingDate !== 'undefined' && activeTrackingDate) || todayIso;
+
+  loadZLogModalForDate(dateStr);
 
   if (typeof dialogEl.showModal === 'function') {
     if (!dialogEl.open) dialogEl.showModal();
   } else {
     dialogEl.setAttribute('open', '');
   }
+
+  const notesArea = document.getElementById('fNotes') || document.getElementById('zlog-modal-notes');
   if (notesArea) notesArea.focus();
 }
+window.openZLogEntryModal = openZLogEntryModal;
 
 function closeZLogModal() {
   const dlg = document.getElementById('dlg') || document.getElementById('zhub-dlg');
