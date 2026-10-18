@@ -2030,5 +2030,286 @@
   white-space: nowrap;
 }
 
+/* Enhanced Claims Layout: Money Summary & Filter Controls */
+.claims-widgets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .claims-widgets-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.claims-widget-card.card-paid {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, var(--bg-card) 100%);
+  border-color: rgba(13, 148, 136, 0.28);
+  cursor: pointer;
+}
+
+.claims-widget-card.card-paid:hover {
+  border-color: #0D9488;
+  transform: translateY(-1px);
+}
+
+.claims-widget-card.card-paid .claims-widget-value {
+  color: #0D9488;
+}
+
+.claims-widget-card.card-pending {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, var(--bg-card) 100%);
+  border-color: rgba(139, 92, 246, 0.28);
+  cursor: pointer;
+}
+
+.claims-widget-card.card-pending:hover {
+  border-color: #7C3AED;
+  transform: translateY(-1px);
+}
+
+.claims-widget-card.card-pending .claims-widget-value {
+  color: #7C3AED;
+}
+
+.claims-widget-card.card-total {
+  cursor: pointer;
+}
+
+.claims-widget-card.card-total:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+/* Two-Tier Filter Controls Card */
+.claims-controls-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.claims-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.filter-row-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  min-width: 82px;
+  flex-shrink: 0;
+}
+
+.claims-filter-pills-scroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0;
+}
+
+.claims-filter-pills-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.claims-provider-pill,
+.claims-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.claims-provider-pill:hover,
+.claims-status-pill:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-border);
+}
+
+.claims-provider-pill.active {
+  background: #7C3AED;
+  color: #FFFFFF;
+  border-color: #7C3AED;
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.25);
+  font-weight: 700;
+}
+
+.claims-provider-pill.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.claims-status-pill.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.25);
+  font-weight: 700;
+}
+
+.claims-status-pill.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.claims-status-pill.pill-pending.active {
+  background: #7C3AED;
+  border-color: #7C3AED;
+  color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.25);
+}
+
+.claims-status-pill.pill-pending.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.claims-status-pill.pill-settled.active {
+  background: #0D9488;
+  border-color: #0D9488;
+  color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.25);
+}
+
+.claims-status-pill.pill-settled.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.claims-status-pill.pill-alert.active {
+  background: #E11D48;
+  border-color: #E11D48;
+  color: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(225, 29, 72, 0.25);
+}
+
+.claims-status-pill.pill-alert.active .pill-badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+.pill-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .pill-badge {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Summary Banner Strip */
+.claims-summary-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summary-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-banner-title {
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.summary-banner-dot {
+  opacity: 0.4;
+}
+
+.summary-banner-sub {
+  color: var(--text-muted);
+}
+
+.summary-banner-metrics {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-item {
+  color: var(--text-secondary);
+}
+
+.metric-item.teal {
+  color: #0D9488;
+}
+
+.metric-item.violet {
+  color: #7C3AED;
+}
+
+.metric-sep {
+  opacity: 0.35;
+}
+
+.reimburse-type {
+  display: block;
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-top: 1px;
+}
+
+.reimburse-type.deposited {
+  color: #0D9488;
+}
+
+.reimburse-type.pending {
+  color: #7C3AED;
+}
+
+.reimburse-type.missing {
+  color: #E11D48;
+}
+
+.claims-row-settled {
+  opacity: 0.85;
+}
+
+.claims-row-settled:hover {
+  opacity: 1;
+}
+
 
 
