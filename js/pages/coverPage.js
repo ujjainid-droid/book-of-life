@@ -792,6 +792,11 @@ function renderAuroraPeriodGoalsWidget(dateStr = activeTrackingDate) {
   const goal = storage.getPeriodGoal(activePeriodGoalId);
   if (!goal) return '';
 
+  // Automatically remove October 10k steps goal after Oct 31
+  if ((goal.id === 'pg-oct-steps' || (goal.endDate && goal.endDate <= '2026-10-31')) && dateStr > '2026-10-31') {
+    return '';
+  }
+
   const stats = storage.getPeriodGoalStats(goal, dateStr);
   const todayIso = formatDateIso(new Date());
   const dObj = parseDateIso(dateStr);
@@ -1035,6 +1040,271 @@ function renderPeriodGoalModalContent() {
 }
 window.renderPeriodGoalModalContent = renderPeriodGoalModalContent;
 
+/**
+ * Smooth 1-Tap Jump to Daily Widget with Serene Target Pulse Highlight
+ */
+function scrollToDailyWidget(targetId, modalFnName) {
+  if (modalFnName && typeof window[modalFnName] === 'function') {
+    window[modalFnName](activeTrackingDate);
+    return;
+  }
+  const el = document.getElementById(targetId);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.remove('widget-focus-highlight');
+    void el.offsetWidth; // trigger reflow for animation restart
+    el.classList.add('widget-focus-highlight');
+    setTimeout(() => {
+      el.classList.remove('widget-focus-highlight');
+    }, 1800);
+
+    // If target is the journal check-in, focus textarea
+    if (targetId === 'section-sanctuary-journal') {
+      const ta = document.getElementById('journal');
+      if (ta) ta.focus();
+    }
+  }
+}
+window.scrollToDailyWidget = scrollToDailyWidget;
+
+/**
+ * Aurora Daily Whisper Tracker — Realtime status ribbon of all daily widgets
+ */
+function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
+  if (typeof storage === 'undefined') return '';
+
+  const isOctActive = (dateStr <= '2026-10-31');
+
+  // 1. Move
+  const auroraState = (typeof storage.getAuroraDayState === 'function') ? storage.getAuroraDayState(dateStr) : {};
+  const moveVal = Math.max(0, Math.min(300, Number(auroraState.moveCal) || 0));
+  const moveAnchIdx = (auroraState.anch && typeof auroraState.anch.move === 'number') ? auroraState.anch.move : 0;
+  const isMovePopulated = (moveVal > 0 || moveAnchIdx > 0);
+  const isMoveComplete = (moveVal >= 300 || moveAnchIdx === 4);
+  const moveStatusText = isMoveComplete 
+    ? '300 cal ✓' 
+    : (isMovePopulated ? `${moveVal}/300 cal` : '0/300 cal');
+
+  // 2. Stand
+  const hoursArr = auroraState.hours || [];
+  const standVal = hoursArr.filter(Boolean).length;
+  const standAnchIdx = (auroraState.anch && typeof auroraState.anch.stand === 'number') ? auroraState.anch.stand : 0;
+  const isStandPopulated = (standVal > 0 || standAnchIdx > 0);
+  const isStandComplete = (standVal >= 12 || standAnchIdx === 4);
+  const standStatusText = isStandComplete 
+    ? '12 hrs ✓' 
+    : (isStandPopulated ? `${standVal}/12 hrs` : '0/12 hrs');
+
+  // 3. Good choice / Not so good choice
+  const dateChoices = (typeof storage.getChoices === 'function') ? storage.getChoices(dateStr) : { good: 0, not: 0 };
+  const activeChips = auroraState.chips || [];
+  const goodCount = dateChoices.good || 0;
+  const notCount = dateChoices.not || 0;
+  const isChoicesPopulated = (goodCount > 0 || notCount > 0 || activeChips.length > 0);
+  const isChoicesComplete = isChoicesPopulated;
+  const choicesStatusText = isChoicesPopulated 
+    ? `+${goodCount} / -${notCount}` 
+    : 'Unlogged';
+
+  // 4. Let's do this
+  const dummyTexts = new Set([
+    'morning mobility',
+    'stretch session',
+    'post-dinner walk',
+    'take breaks',
+    'stand and stretch',
+    'desk stand offs'
+  ]);
+  const storedGoals = (typeof storage.getDayGoals === 'function') ? (storage.getDayGoals(dateStr) || []) : [];
+  const customHabits = storedGoals.filter(g => g && !dummyTexts.has((g.text || '').toLowerCase().trim()));
+  const customHabitsDone = customHabits.filter(g => g.completed).length;
+  const isLetsDoPopulated = (customHabits.length > 0);
+  const isLetsDoComplete = (customHabits.length > 0 && customHabitsDone === customHabits.length);
+  const letsDoStatusText = customHabits.length > 0 
+    ? `${customHabitsDone}/${customHabits.length} done` 
+    : 'No items';
+
+  // 5. 10k Steps Oct (remove after Oct 31)
+  let octStepsItem = null;
+  if (isOctActive) {
+    const octGoal = (typeof storage.getPeriodGoal === 'function') 
+      ? storage.getPeriodGoal('pg-oct-steps') 
+      : null;
+    const octLogs = (octGoal && octGoal.logs) ? octGoal.logs : {};
+    const daySteps = (octLogs[dateStr] !== undefined && octLogs[dateStr] !== null) 
+      ? Number(octLogs[dateStr]) 
+      : null;
+    const isStepsPopulated = (daySteps !== null && daySteps > 0);
+    const targetSteps = (octGoal && octGoal.targetAvg) ? octGoal.targetAvg : 10000;
+    const isStepsComplete = (daySteps !== null && daySteps >= targetSteps);
+    const stepsStatusText = isStepsPopulated 
+      ? `${daySteps >= 1000 ? (daySteps / 1000).toFixed(1) + 'k' : daySteps} steps` 
+      : 'Unlogged';
+
+    octStepsItem = {
+      id: 'oct-steps',
+      name: '10k Steps Oct',
+      fullName: '10k Steps Oct (Daily Average Target)',
+      targetId: 'section-period-goal',
+      isPopulated: isStepsPopulated,
+      isComplete: isStepsComplete,
+      statusText: stepsStatusText
+    };
+  }
+
+  // 6. Haircare
+  const hairCareState = (typeof storage.getHairCareState === 'function')
+    ? storage.getHairCareState(dateStr)
+    : {};
+  const isHairDone = !!(hairCareState.completed || hairCareState.skipped);
+  const hairStatusText = hairCareState.completed 
+    ? 'Done ✓' 
+    : (hairCareState.skipped ? 'Skipped ⏭️' : 'Pending');
+
+  // 7. Journal
+  const journalEntry = (typeof storage.getJournal === 'function')
+    ? storage.getJournal(dateStr)
+    : null;
+  const journalText = journalEntry ? journalEntry.text : '';
+  const healthLevel = (typeof storage.getHealthLevel === 'function') ? storage.getHealthLevel(dateStr) : null;
+  const isJournalPopulated = !!((journalText && journalText.trim().length > 0) || healthLevel);
+  const isJournalComplete = !!(journalText && journalText.trim().length > 0);
+  const journalStatusText = isJournalComplete 
+    ? 'Written ✓' 
+    : (healthLevel ? 'Mood logged' : 'Unwritten');
+
+  // 8. Z Log
+  const todayZLog = (typeof storage.getZLogEntry === 'function')
+    ? storage.getZLogEntry(dateStr)
+    : null;
+  const isZLogPopulated = !!(todayZLog && (
+    (todayZLog.rating !== null && todayZLog.rating !== undefined) ||
+    (todayZLog.notes && todayZLog.notes.trim().length > 0) ||
+    (todayZLog.aggression) ||
+    (todayZLog.updatedAt && todayZLog.meds && (todayZLog.meds.z || todayZLog.meds.g || todayZLog.meds.rit || todayZLog.meds.mag || todayZLog.meds.mel || todayZLog.meds.ris))
+  ));
+  const zlogRatingObj = (todayZLog && todayZLog.rating && typeof ZLOG_RATINGS !== 'undefined')
+    ? ZLOG_RATINGS[todayZLog.rating]
+    : null;
+  const zlogStatusText = isZLogPopulated 
+    ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged ✓') 
+    : 'Log entry';
+
+  const items = [
+    {
+      id: 'move',
+      name: 'Move',
+      fullName: 'Move Goal (300 cal)',
+      targetId: 'section-move-anchor',
+      isPopulated: isMovePopulated,
+      isComplete: isMoveComplete,
+      statusText: moveStatusText
+    },
+    {
+      id: 'stand',
+      name: 'Stand',
+      fullName: 'Stand Ring (12 hrs)',
+      targetId: 'section-stand-anchor',
+      isPopulated: isStandPopulated,
+      isComplete: isStandComplete,
+      statusText: standStatusText
+    },
+    {
+      id: 'choices',
+      name: 'Good / Not so good',
+      fullName: 'Good Choice / Not So Good Choice',
+      targetId: 'section-good-choices',
+      isPopulated: isChoicesPopulated,
+      isComplete: isChoicesComplete,
+      statusText: choicesStatusText
+    },
+    {
+      id: 'letsdo',
+      name: "Let's do this",
+      fullName: "Let's do this (Daily Intentions)",
+      targetId: 'section-custom-habits',
+      isPopulated: isLetsDoPopulated,
+      isComplete: isLetsDoComplete,
+      statusText: letsDoStatusText
+    }
+  ];
+
+  if (octStepsItem) {
+    items.push(octStepsItem);
+  }
+
+  items.push(
+    {
+      id: 'haircare',
+      name: 'Haircare',
+      fullName: 'AY Haircare Daily Routine',
+      targetId: 'hair',
+      modalFn: 'openHairCareLogModal',
+      isPopulated: isHairDone,
+      isComplete: isHairDone,
+      statusText: hairStatusText
+    },
+    {
+      id: 'journal',
+      name: 'Journal',
+      fullName: 'Evening Check-in & Daily Reflection',
+      targetId: 'section-sanctuary-journal',
+      isPopulated: isJournalPopulated,
+      isComplete: isJournalComplete,
+      statusText: journalStatusText
+    },
+    {
+      id: 'zlog',
+      name: 'Z Log',
+      fullName: 'Z Hub Daily Care & Mood Log',
+      targetId: 'zhub',
+      modalFn: 'openZLogEntryModal',
+      isPopulated: isZLogPopulated,
+      isComplete: isZLogPopulated,
+      statusText: zlogStatusText
+    }
+  );
+
+  const populatedCount = items.filter(it => it.isPopulated).length;
+  const totalCount = items.length;
+  const pct = Math.round((populatedCount / totalCount) * 100);
+  const allComplete = (populatedCount === totalCount);
+
+  return `
+    <section class="card span2 whisper-tracker-card" id="section-whisper-tracker" aria-label="Daily Whisper Tracker">
+      <div class="whisper-tracker-header">
+        <div class="whisper-tracker-title-box">
+          <span class="whisper-tracker-label">WHISPER TRACKER</span>
+          <span class="whisper-tracker-sub">${populatedCount} of ${totalCount} populated</span>
+        </div>
+        <div class="whisper-tracker-metric-box">
+          <div class="whisper-tracker-bar-bg" title="${pct}% of daily widgets populated">
+            <div class="whisper-tracker-bar-fill ${allComplete ? 'all-done' : ''}" style="width: ${pct}%"></div>
+          </div>
+          <span class="whisper-tracker-pct ${allComplete ? 'all-done' : ''}">${pct}%</span>
+        </div>
+      </div>
+
+      <div class="whisper-tracker-grid">
+        ${items.map(it => `
+          <button type="button"
+                  class="whisper-chip ${it.isPopulated ? 'is-populated' : 'is-pending'} ${it.isComplete ? 'is-complete' : ''}"
+                  onclick="scrollToDailyWidget('${it.targetId}', ${it.modalFn ? `'${it.modalFn}'` : 'null'})"
+                  title="Jump to ${escapeHtml(it.fullName)}"
+                  aria-label="${escapeHtml(it.fullName)}: ${escapeHtml(it.statusText)}">
+            <span class="whisper-chip-indicator" aria-hidden="true">${it.isComplete ? '✓' : (it.isPopulated ? '●' : '○')}</span>
+            <div class="whisper-chip-text">
+              <span class="whisper-chip-name">${escapeHtml(it.name)}</span>
+              <span class="whisper-chip-meta">${escapeHtml(it.statusText)}</span>
+            </div>
+          </button>
+        `).join('')}
+      </div>
+    </section>
+  `;
+}
+window.renderAuroraWhisperTracker = renderAuroraWhisperTracker;
+
 function renderDailySheet() {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
@@ -1227,6 +1497,8 @@ function renderDailySheet() {
           <span class="today-top-bar-sub">day streak</span>
         </div>
       </header>
+
+      ${renderAuroraWhisperTracker(activeTrackingDate)}
 
       <div class="col a">
         <section class="mascot" aria-label="Bed Potato">
