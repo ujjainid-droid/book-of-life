@@ -2157,6 +2157,17 @@ class StorageManager {
       return true;
     });
 
+    // Deduplicate Dr. Barness Feb 2, 2026 visit (remove older $220 unverified draft in favor of verified $300 claim #20260462A0745)
+    this.data.claims = this.data.claims.filter(c => {
+      const p = (c.provider || '').toLowerCase();
+      if ((p.includes('barness') || p.includes('mindful medicine')) && c.date === '2026-02-02') {
+        if (c.id !== 'claim-barness-2026-02-02' || Math.abs((c.amountPaid || 0) - 220) < 1) {
+          return false;
+        }
+      }
+      return true;
+    });
+
     // Sync seed updates for requested reissued checks and submitted Anthem claims
     const barnessSubmittedIds = new Set([
       'claim-barness-2026-10-13', 'claim-barness-2026-09-15', 'claim-barness-2026-08-21',
