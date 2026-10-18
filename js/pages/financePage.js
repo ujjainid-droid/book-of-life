@@ -4372,34 +4372,48 @@ function renderFinanceBudget() {
     livingStatusText = 'On Track (Moderate)';
   }
 
-  // Core 3 Living Categories
-  const grocCat = categories.find(c => c.name === 'Groceries') || { id: 'cat-groceries', name: 'Groceries', budget: 1519, baseline: 1519.34 };
-  const shopCat = categories.find(c => c.name === 'Shopping') || { id: 'cat-shopping', name: 'Shopping', budget: 1812, baseline: 1812.11 };
-  const dineCat = categories.find(c => c.name === 'Eating out') || { id: 'cat-eating-out', name: 'Eating out', budget: 1405, baseline: 1404.63 };
+  // Key 5 Living Categories (Groceries, Dining, Shopping, Clothing, Self Care)
+  const grocCat = categories.find(c => c.name === 'Groceries') || { id: 'cat-groceries', name: 'Groceries', budget: 800, baseline: 1519.34 };
+  const dineCat = categories.find(c => c.name === 'Eating out') || { id: 'cat-eating-out', name: 'Eating out', budget: 800, baseline: 1404.63 };
+  const shopCat = categories.find(c => c.name === 'Shopping') || { id: 'cat-shopping', name: 'Shopping', budget: 600, baseline: 1812.11 };
+  const clothCat = categories.find(c => c.name === 'Clothing, Shoes, Jewelry') || { id: 'cat-clothing--shoes--jewelry', name: 'Clothing, Shoes, Jewelry', budget: 400, baseline: 477.56 };
+  const selfCat = categories.find(c => c.name === 'Self care + Grooming') || { id: 'cat-self-care---grooming', name: 'Self care + Grooming', budget: 300, baseline: 329.58 };
 
   const grocSpent = catActuals['Groceries'] || 0;
-  const shopSpent = catActuals['Shopping'] || 0;
   const dineSpent = catActuals['Eating out'] || 0;
+  const shopSpent = catActuals['Shopping'] || 0;
+  const clothSpent = catActuals['Clothing, Shoes, Jewelry'] || 0;
+  const selfSpent = catActuals['Self care + Grooming'] || 0;
 
-  const grocBudget = parseFloat(grocCat.budget) || 1519;
-  const shopBudget = parseFloat(shopCat.budget) || 1812;
-  const dineBudget = parseFloat(dineCat.budget) || 1405;
+  const grocBudget = parseFloat(grocCat.budget) || 800;
+  const dineBudget = parseFloat(dineCat.budget) || 800;
+  const shopBudget = parseFloat(shopCat.budget) || 600;
+  const clothBudget = parseFloat(clothCat.budget) || 400;
+  const selfBudget = parseFloat(selfCat.budget) || 300;
 
   const grocExpected = Math.round(grocBudget * monthFraction);
-  const shopExpected = Math.round(shopBudget * monthFraction);
   const dineExpected = Math.round(dineBudget * monthFraction);
+  const shopExpected = Math.round(shopBudget * monthFraction);
+  const clothExpected = Math.round(clothBudget * monthFraction);
+  const selfExpected = Math.round(selfBudget * monthFraction);
 
-  const grocRem = Math.max(0, grocBudget - grocSpent);
-  const shopRem = Math.max(0, shopBudget - shopSpent);
-  const dineRem = Math.max(0, dineBudget - dineSpent);
+  const grocRem = grocBudget - grocSpent;
+  const dineRem = dineBudget - dineSpent;
+  const shopRem = shopBudget - shopSpent;
+  const clothRem = clothBudget - clothSpent;
+  const selfRem = selfBudget - selfSpent;
 
-  const grocDaily = Math.round(grocRem / daysRemaining);
-  const shopDaily = Math.round(shopRem / daysRemaining);
-  const dineDaily = Math.round(dineRem / daysRemaining);
+  const grocDaily = Math.round(Math.max(0, grocRem) / daysRemaining);
+  const dineDaily = Math.round(Math.max(0, dineRem) / daysRemaining);
+  const shopDaily = Math.round(Math.max(0, shopRem) / daysRemaining);
+  const clothDaily = Math.round(Math.max(0, clothRem) / daysRemaining);
+  const selfDaily = Math.round(Math.max(0, selfRem) / daysRemaining);
 
   const grocPct = Math.min(100, Math.round((grocSpent / grocBudget) * 100));
-  const shopPct = Math.min(100, Math.round((shopSpent / shopBudget) * 100));
   const dinePct = Math.min(100, Math.round((dineSpent / dineBudget) * 100));
+  const shopPct = Math.min(100, Math.round((shopSpent / shopBudget) * 100));
+  const clothPct = Math.min(100, Math.round((clothSpent / clothBudget) * 100));
+  const selfPct = Math.min(100, Math.round((selfSpent / selfBudget) * 100));
 
   function getPaceStatus(spent, expected, budget) {
     if (spent > budget) return { text: 'Over Budget', cls: 'budget-badge-rose', barCls: 'fill-rose' };
@@ -4408,8 +4422,10 @@ function renderFinanceBudget() {
   }
 
   const grocPace = getPaceStatus(grocSpent, grocExpected, grocBudget);
-  const shopPace = getPaceStatus(shopSpent, shopExpected, shopBudget);
   const dinePace = getPaceStatus(dineSpent, dineExpected, dineBudget);
+  const shopPace = getPaceStatus(shopSpent, shopExpected, shopBudget);
+  const clothPace = getPaceStatus(clothSpent, clothExpected, clothBudget);
+  const selfPace = getPaceStatus(selfSpent, selfExpected, selfBudget);
 
   // Month select options
   const monthOptionsHtml = monthlySummaries.map(s => {
@@ -4419,15 +4435,16 @@ function renderFinanceBudget() {
 
   // Category Ledger Filtering
   const query = budgetSearchQuery.toLowerCase().trim();
+  const isCore = (catName) => ['Groceries', 'Shopping', 'Eating out', 'Clothing, Shoes, Jewelry', 'Self care + Grooming'].includes(catName);
   const filteredCategories = categories.filter(c => {
     if (!c || !c.name) return false;
     if (query && !c.name.toLowerCase().includes(query)) return false;
 
     const isFixed = c.classification === 'Fixed Baseline' || ['Mortgage', 'Gas & Electric', 'Internet & Cable', 'Home Security', 'Water', 'Child Care', 'Subscriptions', 'Mocha', 'Transportation', 'Insurance', 'Cell Phone'].includes(c.name);
 
-    if (budgetCategoryFilter === 'core4') return isCore;
+    if (budgetCategoryFilter === 'core4') return isCore(c.name);
     if (budgetCategoryFilter === 'fixed') return isFixed;
-    if (budgetCategoryFilter === 'discretionary') return !isFixed && !isCore;
+    if (budgetCategoryFilter === 'discretionary') return !isFixed && !isCore(c.name);
     return true;
   });
 
@@ -4505,82 +4522,151 @@ function renderFinanceBudget() {
 
       </div>
 
-      <!-- 3. The Core 4 Pillars Grid (Groceries, Shopping, Dining + Savings) -->
-      <div class="budget-core4-grid">
+      <!-- 3. Key Living Categories - Cheery Summer Pillars Grid -->
+      <div class="budget-pillars-summer-grid">
         
-        <!-- Pillar 1: Groceries -->
-        <div class="budget-pillar-card">
+        <!-- Card 1: Groceries (Peach Coral) -->
+        <div class="summer-widget-card theme-coral">
+          <div class="summer-widget-watermark" style="color: #EA580C;">
+            <i data-lucide="shopping-cart"></i>
+          </div>
           <div>
-            <div class="budget-pillar-head">
-              <span class="budget-pillar-title">🛒 Groceries</span>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="shopping-cart" style="width: 19px; height: 19px; color: #EA580C;"></i>
+              </div>
               <span class="budget-badge ${grocPace.cls}">${grocPace.text}</span>
             </div>
-            <div class="budget-pillar-spent num-mono">$${Math.round(grocSpent).toLocaleString()}</div>
-            <div class="budget-pillar-target num-mono">Target: $${Math.round(grocBudget).toLocaleString()} (3M Avg)</div>
-            <div class="budget-progress-wrap">
-              <div class="budget-progress-fill ${grocPace.barCls}" style="width: ${grocPct}%;"></div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono">$${Math.round(grocSpent).toLocaleString()}</div>
+              <div class="summer-widget-title">Groceries</div>
+              <div class="summer-widget-sub">Target: $${Math.round(grocBudget).toLocaleString()} / mo</div>
             </div>
           </div>
-          <div class="budget-pillar-foot">
-            <span>Day ${currentDayOfMonth} target: $${grocExpected}</span>
-            <strong class="num-mono" style="color: var(--fin-income, #0D9488);">$${Math.round(grocRem).toLocaleString()} Left ($${grocDaily}/d)</strong>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${grocPct}%; background: ${grocPace.cls === 'budget-badge-rose' ? '#E11D48' : '#EA580C'};"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Day ${currentDayOfMonth} target: $${grocExpected}</span>
+              <strong class="num-mono" style="color: ${grocRem < 0 ? '#E11D48' : '#0D9488'};">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
+            </div>
           </div>
         </div>
 
-        <!-- Pillar 2: Shopping -->
-        <div class="budget-pillar-card">
-          <div>
-            <div class="budget-pillar-head">
-              <span class="budget-pillar-title">🛍️ Shopping</span>
-              <span class="budget-badge ${shopPace.cls}">${shopPace.text}</span>
-            </div>
-            <div class="budget-pillar-spent num-mono">$${Math.round(shopSpent).toLocaleString()}</div>
-            <div class="budget-pillar-target num-mono">Target: $${Math.round(shopBudget).toLocaleString()} (3M Avg)</div>
-            <div class="budget-progress-wrap">
-              <div class="budget-progress-fill ${shopPace.barCls}" style="width: ${shopPct}%;"></div>
-            </div>
+        <!-- Card 2: Eating Out (Ocean Sky Blue) -->
+        <div class="summer-widget-card theme-sky">
+          <div class="summer-widget-watermark" style="color: #0284C7;">
+            <i data-lucide="utensils"></i>
           </div>
-          <div class="budget-pillar-foot">
-            <span>Day ${currentDayOfMonth} target: $${shopExpected}</span>
-            <strong class="num-mono" style="color: var(--fin-income, #0D9488);">$${Math.round(shopRem).toLocaleString()} Left ($${shopDaily}/d)</strong>
-          </div>
-        </div>
-
-        <!-- Pillar 3: Eating Out -->
-        <div class="budget-pillar-card">
           <div>
-            <div class="budget-pillar-head">
-              <span class="budget-pillar-title">🍽️ Eating Out</span>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="utensils" style="width: 19px; height: 19px; color: #0284C7;"></i>
+              </div>
               <span class="budget-badge ${dinePace.cls}">${dinePace.text}</span>
             </div>
-            <div class="budget-pillar-spent num-mono">$${Math.round(dineSpent).toLocaleString()}</div>
-            <div class="budget-pillar-target num-mono">Target: $${Math.round(dineBudget).toLocaleString()} (3M Avg)</div>
-            <div class="budget-progress-wrap">
-              <div class="budget-progress-fill ${dinePace.barCls}" style="width: ${dinePct}%;"></div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono">$${Math.round(dineSpent).toLocaleString()}</div>
+              <div class="summer-widget-title">Eating Out</div>
+              <div class="summer-widget-sub">Target: $${Math.round(dineBudget).toLocaleString()} / mo</div>
             </div>
           </div>
-          <div class="budget-pillar-foot">
-            <span>Day ${currentDayOfMonth} target: $${dineExpected}</span>
-            <strong class="num-mono" style="color: var(--fin-income, #0D9488);">$${Math.round(dineRem).toLocaleString()} Left ($${dineDaily}/d)</strong>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${dinePct}%; background: ${dinePace.cls === 'budget-badge-rose' ? '#E11D48' : '#0284C7'};"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Day ${currentDayOfMonth} target: $${dineExpected}</span>
+              <strong class="num-mono" style="color: ${dineRem < 0 ? '#E11D48' : '#0D9488'};">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
+            </div>
           </div>
         </div>
 
-        <!-- Pillar 4: Savings as Direct Transfers -->
-        <div class="budget-pillar-card savings-pillar">
+        <!-- Card 3: Shopping (Lavender Sorbet) -->
+        <div class="summer-widget-card theme-lavender">
+          <div class="summer-widget-watermark" style="color: #7C3AED;">
+            <i data-lucide="shopping-bag"></i>
+          </div>
           <div>
-            <div class="budget-pillar-head">
-              <span class="budget-pillar-title" style="color: #0F766E;">💎 Direct Transfers</span>
-              <span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="shopping-bag" style="width: 19px; height: 19px; color: #7C3AED;"></i>
+              </div>
+              <span class="budget-badge ${shopPace.cls}">${shopPace.text}</span>
             </div>
-            <div class="budget-pillar-spent num-mono" style="color: #0F766E;">$${Math.round(savingsFundedMTD).toLocaleString()}</div>
-            <div class="budget-pillar-target num-mono" style="color: #0D9488;">Target: $${Math.round(savingsTarget).toLocaleString()} / mo</div>
-            <div class="budget-progress-wrap">
-              <div class="budget-progress-fill fill-teal" style="width: ${savingsFundedPct}%;"></div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono">$${Math.round(shopSpent).toLocaleString()}</div>
+              <div class="summer-widget-title">Shopping</div>
+              <div class="summer-widget-sub">Target: $${Math.round(shopBudget).toLocaleString()} / mo</div>
             </div>
           </div>
-          <div class="budget-pillar-foot">
-            <span style="color: #0F766E;">Capital One, Vanguard &amp; Fidelity</span>
-            <strong class="num-mono" style="color: #0F766E;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${shopPct}%; background: ${shopPace.cls === 'budget-badge-rose' ? '#E11D48' : '#7C3AED'};"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Day ${currentDayOfMonth} target: $${shopExpected}</span>
+              <strong class="num-mono" style="color: ${shopRem < 0 ? '#E11D48' : '#0D9488'};">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Clothing, Shoes & Jewelry (Seafoam Mint) -->
+        <div class="summer-widget-card theme-mint">
+          <div class="summer-widget-watermark" style="color: #0D9488;">
+            <i data-lucide="shirt"></i>
+          </div>
+          <div>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #0D9488;"></i>
+              </div>
+              <span class="budget-badge ${clothPace.cls}">${clothPace.text}</span>
+            </div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono">$${Math.round(clothSpent).toLocaleString()}</div>
+              <div class="summer-widget-title">Clothing &amp; Jewelry</div>
+              <div class="summer-widget-sub">Target: $${Math.round(clothBudget).toLocaleString()} / mo</div>
+            </div>
+          </div>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: ${clothPace.cls === 'budget-badge-rose' ? '#E11D48' : '#0D9488'};"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Day ${currentDayOfMonth} target: $${clothExpected}</span>
+              <strong class="num-mono" style="color: ${clothRem < 0 ? '#E11D48' : '#0D9488'};">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Self care & Grooming (Sunset Rose Guava) -->
+        <div class="summer-widget-card theme-rose">
+          <div class="summer-widget-watermark" style="color: #E11D48;">
+            <i data-lucide="sparkles"></i>
+          </div>
+          <div>
+            <div class="summer-widget-top">
+              <div class="summer-widget-pill">
+                <i data-lucide="sparkles" style="width: 19px; height: 19px; color: #E11D48;"></i>
+              </div>
+              <span class="budget-badge ${selfPace.cls}">${selfPace.text}</span>
+            </div>
+            <div class="summer-widget-body">
+              <div class="summer-widget-spent num-mono">$${Math.round(selfSpent).toLocaleString()}</div>
+              <div class="summer-widget-title">Self Care &amp; Grooming</div>
+              <div class="summer-widget-sub">Target: $${Math.round(selfBudget).toLocaleString()} / mo</div>
+            </div>
+          </div>
+          <div class="summer-widget-foot">
+            <div class="summer-widget-bar-wrap">
+              <div class="summer-widget-bar-fill" style="width: ${selfPct}%; background: ${selfPace.cls === 'budget-badge-rose' ? '#E11D48' : '#E11D48'};"></div>
+            </div>
+            <div class="summer-widget-meta">
+              <span>Day ${currentDayOfMonth} target: $${selfExpected}</span>
+              <strong class="num-mono" style="color: ${selfRem < 0 ? '#E11D48' : '#0D9488'};">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
+            </div>
           </div>
         </div>
 
