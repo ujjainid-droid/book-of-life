@@ -38,13 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
       const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
       return { view: 'zlog', subView: sub };
     }
-    if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money')) {
+    if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money') || rawHash.startsWith('budget')) {
       const parts = rawHash.split(/[\/\-_?]/);
-      let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn'));
+      let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')));
       if (sub === 'cash') sub = 'burn';
       else if (sub === 'cards') sub = 'subscriptions';
       else if (sub === 'worth') sub = 'runway';
       else if (sub === 'med') sub = 'claims';
+      else if (sub === 'plan') sub = 'budget';
       return { view: 'finance', subView: sub };
     }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
@@ -125,9 +126,9 @@ function switchAppView(viewName, subViewName) {
       if (typeof activeZLogSubTab !== 'undefined') activeZLogSubTab = subViewName;
     }
   } else if (currentView === 'finance') {
-    const validTabs = ['burn', 'subscriptions', 'runway', 'claims', 'cash', 'cards', 'worth', 'med'];
+    const validTabs = ['burn', 'budget', 'subscriptions', 'runway', 'claims', 'cash', 'cards', 'worth', 'med', 'plan'];
     if (subViewName && validTabs.includes(subViewName)) {
-      const normalized = (subViewName === 'cash' ? 'burn' : (subViewName === 'cards' ? 'subscriptions' : (subViewName === 'worth' ? 'runway' : (subViewName === 'med' ? 'claims' : subViewName))));
+      const normalized = (subViewName === 'cash' ? 'burn' : (subViewName === 'cards' ? 'subscriptions' : (subViewName === 'worth' ? 'runway' : (subViewName === 'med' ? 'claims' : (subViewName === 'plan' ? 'budget' : subViewName)))));
       try { localStorage.setItem('BOL_FINANCE_ACTIVE_SUBTAB', normalized); } catch (e) {}
       if (typeof activeFinanceSubTab !== 'undefined') activeFinanceSubTab = normalized;
     }

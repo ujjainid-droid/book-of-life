@@ -5,6 +5,7 @@
 const DEFAULT_FINANCE_DATA = {
   "seedVersion": 8,
   "monthlyTarget": 22350,
+  "savingsTarget": 5000,
   "alertSpendRatio": 0.85,
   "categoryBaselines": {
     "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3": 370.83,
