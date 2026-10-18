@@ -189,7 +189,7 @@ function switchAppView(viewName, subViewName) {
   updateNavBtn(hobbyBtn, currentView === 'hobby');
   updateNavBtn(zhubBtn, currentView === 'zlog');
   updateNavBtn(budgetBtn, isBudgetActive);
-  updateNavBtn(financeBtn, currentView === 'finance' && !isBudgetActive);
+  updateNavBtn(financeBtn, currentView === 'finance');
 
   // Also support old element IDs if referenced
   const domainBtnSanctuary = document.getElementById('domain-btn-sanctuary');
