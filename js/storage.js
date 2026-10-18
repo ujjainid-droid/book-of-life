@@ -3028,9 +3028,9 @@ class StorageManager {
       }
     }
 
-    // Seed v11 migration: update category baselines and category budgets to agreed numbers
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 11)) {
-      this.data.finance.seedVersion = 11;
+    // Seed v12 migration: update category baselines and category budgets to agreed numbers
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 12)) {
+      this.data.finance.seedVersion = 12;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
         if (DEFAULT_FINANCE_DATA.categoryBaselines) {
           this.data.finance.categoryBaselines = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categoryBaselines));
@@ -3038,6 +3038,7 @@ class StorageManager {
         if (Array.isArray(DEFAULT_FINANCE_DATA.categories)) {
           this.data.finance.categories = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.categories));
         }
+        this.data.finance.monthlyTarget = 18200;
       }
       try {
         localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));

@@ -3,8 +3,8 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 11,
-  "monthlyTarget": 22350,
+  "seedVersion": 12,
+  "monthlyTarget": 18200,
   "savingsTarget": 5000,
   "alertSpendRatio": 0.85,
   "categoryBaselines": {
@@ -436,7 +436,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-travel---vacation",
       "name": "Travel & Vacation",
-      "budget": 1450,
+      "budget": 750,
       "baseline": 1450.02,
       "classification": "Discretionary",
       "icon": "plane"
@@ -476,7 +476,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-credit-card---financial-fees",
       "name": "Credit Card + Financial Fees",
-      "budget": 764,
+      "budget": 0,
       "baseline": 764.17,
       "classification": "Discretionary",
       "icon": "tag"
@@ -516,7 +516,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-camp",
       "name": "Camp",
-      "budget": 379,
+      "budget": 350,
       "baseline": 379.38,
       "classification": "Enrichment",
       "icon": "sun"
@@ -524,7 +524,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-c-mas--bday--india-gifts",
       "name": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
-      "budget": 371,
+      "budget": 350,
       "baseline": 370.83,
       "classification": "Discretionary",
       "icon": "gift"
@@ -572,7 +572,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-cash---atm",
       "name": "Cash & ATM",
-      "budget": 267,
+      "budget": 200,
       "baseline": 266.94,
       "classification": "Discretionary",
       "icon": "tag"
@@ -588,7 +588,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-home-improvement",
       "name": "Home Improvement",
-      "budget": 159,
+      "budget": 150,
       "baseline": 158.77,
       "classification": "Discretionary",
       "icon": "home"
@@ -604,7 +604,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-charity",
       "name": "Charity",
-      "budget": 68,
+      "budget": 50,
       "baseline": 68.0,
       "classification": "Discretionary",
       "icon": "heart"
@@ -628,7 +628,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-entertainment---recreation",
       "name": "Entertainment & Recreation",
-      "budget": 17,
+      "budget": 50,
       "baseline": 17.33,
       "classification": "Discretionary",
       "icon": "film"
