@@ -551,7 +551,8 @@ function renderZLogPage(targetSubTab) {
                 <div class="zhub-modal-date-presets" role="group" aria-label="Quick date options">
                   <button type="button" class="zhub-date-preset-btn" id="zlog-preset-today" onclick="setZLogModalDate('today')">Today</button>
                   <button type="button" class="zhub-date-preset-btn" id="zlog-preset-yesterday" onclick="setZLogModalDate('yesterday')">Yesterday</button>
-                  <button type="button" class="zhub-date-preset-btn" id="zlog-preset-picker" onclick="triggerZLogDatePicker()" title="Choose any date from calendar">Choose Date 📅</button>
+                  <button type="button" class="zhub-date-preset-btn" id="zlog-preset-2days" onclick="setZLogModalDate('2days')">2d ago</button>
+                  <button type="button" class="zhub-date-preset-btn" id="zlog-preset-picker" onclick="triggerZLogDatePicker()" title="Choose any date from calendar">Pick Date 📅</button>
                 </div>
               </div>
               <div id="zlog-already-logged-banner" class="zhub-already-logged-banner" style="display:none;"></div>
@@ -2137,11 +2138,17 @@ function loadZLogModalForDate(dateStr) {
   // Update preset buttons active state
   const btnToday = document.getElementById('zlog-preset-today');
   const btnYest = document.getElementById('zlog-preset-yesterday');
+  const btn2Days = document.getElementById('zlog-preset-2days');
   const yesterdayD = new Date();
   yesterdayD.setDate(yesterdayD.getDate() - 1);
   const yesterdayIso = (typeof formatDateIso === 'function') ? formatDateIso(yesterdayD) : '2026-10-16';
+  const twoDaysD = new Date();
+  twoDaysD.setDate(twoDaysD.getDate() - 2);
+  const twoDaysIso = (typeof formatDateIso === 'function') ? formatDateIso(twoDaysD) : '2026-10-15';
+
   if (btnToday) btnToday.classList.toggle('active', dateStr === todayIso);
   if (btnYest) btnYest.classList.toggle('active', dateStr === yesterdayIso);
+  if (btn2Days) btn2Days.classList.toggle('active', dateStr === twoDaysIso);
 
   const rmBtn = document.getElementById('rmBtn');
   if (rmBtn) {
@@ -2190,13 +2197,16 @@ function onZLogModalDateChange(newDateStr) {
 window.onZLogModalDateChange = onZLogModalDateChange;
 
 function setZLogModalDate(preset) {
-  const todayD = new Date();
+  const d = new Date();
   let targetIso;
   if (preset === 'yesterday') {
-    todayD.setDate(todayD.getDate() - 1);
-    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(todayD) : '2026-10-16';
+    d.setDate(d.getDate() - 1);
+    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(d) : '2026-10-16';
+  } else if (preset === '2days') {
+    d.setDate(d.getDate() - 2);
+    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(d) : '2026-10-15';
   } else {
-    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(todayD) : '2026-10-17';
+    targetIso = (typeof formatDateIso === 'function') ? formatDateIso(d) : '2026-10-17';
   }
   loadZLogModalForDate(targetIso);
 }
@@ -2223,8 +2233,26 @@ function openZLogEntryModal(targetDate = null) {
   }
   if (!dialogEl) return;
 
-  const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-15';
-  let dateStr = targetDate || (typeof activeTrackingDate !== 'undefined' && activeTrackingDate) || todayIso;
+  const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-17';
+  let dateStr = targetDate;
+
+  // If user clicked "+ Log day" without specifying a date:
+  if (!dateStr) {
+    const todayEntry = (typeof storage !== 'undefined' && typeof storage.getZLogEntry === 'function')
+      ? storage.getZLogEntry(todayIso)
+      : null;
+    const isTodayLogged = !!(todayEntry && (todayEntry.rating || (todayEntry.notes && todayEntry.notes.trim()) || (todayEntry.meds && Object.values(todayEntry.meds).some(Boolean))));
+
+    if (isTodayLogged) {
+      // Today is already logged! Look for the most recent unlogged day (starting with yesterday)
+      const d = new Date();
+      d.setDate(d.getDate() - 1);
+      const yesterdayIso = (typeof formatDateIso === 'function') ? formatDateIso(d) : '2026-10-16';
+      dateStr = yesterdayIso;
+    } else {
+      dateStr = (typeof activeTrackingDate !== 'undefined' && activeTrackingDate) || todayIso;
+    }
+  }
 
   loadZLogModalForDate(dateStr);
 
