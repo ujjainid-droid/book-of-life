@@ -1196,41 +1196,44 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
       name: 'Move',
       fullName: 'Move Goal (300 cal)',
       targetId: 'section-move-anchor',
-      isPopulated: isMovePopulated,
-      isComplete: isMoveComplete,
-      statusText: moveStatusText
+      isComplete: isMovePopulated,
+      statusText: isMovePopulated ? (isMoveComplete ? '300 cal' : `${moveVal} cal`) : ''
     },
     {
       id: 'stand',
       name: 'Stand',
       fullName: 'Stand Ring (12 hrs)',
       targetId: 'section-stand-anchor',
-      isPopulated: isStandPopulated,
-      isComplete: isStandComplete,
-      statusText: standStatusText
+      isComplete: isStandPopulated,
+      statusText: isStandPopulated ? `${standVal} hrs` : ''
     },
     {
       id: 'choices',
-      name: 'Good / Not so good',
-      fullName: 'Good Choice / Not So Good Choice',
+      name: 'Good choice / Not so good choice',
+      fullName: 'Good choice / Not so good choice',
       targetId: 'section-good-choices',
-      isPopulated: isChoicesPopulated,
-      isComplete: isChoicesComplete,
-      statusText: choicesStatusText
+      isComplete: isChoicesPopulated,
+      statusText: isChoicesPopulated ? `+${goodCount} / -${notCount}` : ''
     },
     {
       id: 'letsdo',
       name: "Let's do this",
       fullName: "Let's do this (Daily Intentions)",
       targetId: 'section-custom-habits',
-      isPopulated: isLetsDoPopulated,
-      isComplete: isLetsDoComplete,
-      statusText: letsDoStatusText
+      isComplete: isLetsDoPopulated && (customHabitsDone > 0 || customHabitsDone === customHabits.length),
+      statusText: customHabits.length > 0 ? `${customHabitsDone}/${customHabits.length}` : ''
     }
   ];
 
   if (octStepsItem) {
-    items.push(octStepsItem);
+    items.push({
+      id: 'oct-steps',
+      name: '10k Steps Oct',
+      fullName: '10k Steps Oct (Daily Average Target)',
+      targetId: 'section-period-goal',
+      isComplete: octStepsItem.isPopulated,
+      statusText: octStepsItem.isPopulated ? octStepsItem.statusText : ''
+    });
   }
 
   items.push(
@@ -1240,67 +1243,43 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
       fullName: 'AY Haircare Daily Routine',
       targetId: 'hair',
       modalFn: 'openHairCareLogModal',
-      isPopulated: isHairDone,
       isComplete: isHairDone,
-      statusText: hairStatusText
+      statusText: hairCareState.completed ? 'Done' : (hairCareState.skipped ? 'Skipped' : '')
     },
     {
       id: 'journal',
       name: 'Journal',
       fullName: 'Evening Check-in & Daily Reflection',
       targetId: 'section-sanctuary-journal',
-      isPopulated: isJournalPopulated,
-      isComplete: isJournalComplete,
-      statusText: journalStatusText
+      isComplete: isJournalPopulated,
+      statusText: isJournalComplete ? 'Written' : (healthLevel ? 'Mood' : '')
     },
     {
       id: 'zlog',
-      name: 'Z Log',
+      name: 'Z log',
       fullName: 'Z Hub Daily Care & Mood Log',
       targetId: 'zhub',
       modalFn: 'openZLogEntryModal',
-      isPopulated: isZLogPopulated,
       isComplete: isZLogPopulated,
-      statusText: zlogStatusText
+      statusText: isZLogPopulated ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged') : ''
     }
   );
 
-  const populatedCount = items.filter(it => it.isPopulated).length;
-  const totalCount = items.length;
-  const pct = Math.round((populatedCount / totalCount) * 100);
-  const allComplete = (populatedCount === totalCount);
-
   return `
-    <section class="card span2 whisper-tracker-card" id="section-whisper-tracker" aria-label="Daily Whisper Tracker">
-      <div class="whisper-tracker-header">
-        <div class="whisper-tracker-title-box">
-          <span class="whisper-tracker-label">WHISPER TRACKER</span>
-          <span class="whisper-tracker-sub">${populatedCount} of ${totalCount} populated</span>
-        </div>
-        <div class="whisper-tracker-metric-box">
-          <div class="whisper-tracker-bar-bg" title="${pct}% of daily widgets populated">
-            <div class="whisper-tracker-bar-fill ${allComplete ? 'all-done' : ''}" style="width: ${pct}%"></div>
-          </div>
-          <span class="whisper-tracker-pct ${allComplete ? 'all-done' : ''}">${pct}%</span>
-        </div>
-      </div>
-
-      <div class="whisper-tracker-grid">
+    <div class="whisper-tracker-row span2" id="section-whisper-tracker" aria-label="Daily Whisper Tracker">
+      <div class="whisper-tracker-track">
         ${items.map(it => `
           <button type="button"
-                  class="whisper-chip ${it.isPopulated ? 'is-populated' : 'is-pending'} ${it.isComplete ? 'is-complete' : ''}"
+                  class="whisper-chip ${it.isComplete ? 'is-complete' : 'is-pending'}"
                   onclick="scrollToDailyWidget('${it.targetId}', ${it.modalFn ? `'${it.modalFn}'` : 'null'})"
-                  title="Jump to ${escapeHtml(it.fullName)}"
-                  aria-label="${escapeHtml(it.fullName)}: ${escapeHtml(it.statusText)}">
-            <span class="whisper-chip-indicator" aria-hidden="true">${it.isComplete ? '✓' : (it.isPopulated ? '●' : '○')}</span>
-            <div class="whisper-chip-text">
-              <span class="whisper-chip-name">${escapeHtml(it.name)}</span>
-              <span class="whisper-chip-meta">${escapeHtml(it.statusText)}</span>
-            </div>
+                  title="Jump to ${escapeHtml(it.fullName)}">
+            <span class="whisper-chip-indicator" aria-hidden="true">${it.isComplete ? '✓' : '○'}</span>
+            <span class="whisper-chip-name">${escapeHtml(it.name)}</span>
+            ${it.statusText ? `<span class="whisper-chip-meta">· ${escapeHtml(it.statusText)}</span>` : ''}
           </button>
         `).join('')}
       </div>
-    </section>
+    </div>
   `;
 }
 window.renderAuroraWhisperTracker = renderAuroraWhisperTracker;
