@@ -3480,6 +3480,61 @@ body.dark-mode .finance-sub-reimbursed-pill {
   box-shadow: 0 2px 6px rgba(255, 90, 95, 0.3);
 }
 
+.card-roi-filter-btn .card-roi-pill-stat {
+  margin-left: 4px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  transition: all 0.15s ease;
+}
+
+.card-roi-filter-btn .card-roi-pill-stat.surplus {
+  color: #0E7490;
+  background: rgba(13, 152, 186, 0.12);
+  border: 1px solid rgba(13, 152, 186, 0.22);
+}
+
+.card-roi-filter-btn .card-roi-pill-stat.deficit {
+  color: #E11D48;
+  background: rgba(225, 29, 72, 0.10);
+  border: 1px solid rgba(225, 29, 72, 0.22);
+}
+
+/* Active Filter Pill: Crisp white text with high-contrast capsule */
+.card-roi-filter-btn.active .card-roi-pill-stat,
+.card-roi-filter-btn.active .card-roi-pill-stat.surplus,
+.card-roi-filter-btn.active .card-roi-pill-stat.deficit {
+  color: #FFFFFF !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .card-roi-filter-btn .card-roi-pill-stat.surplus {
+  color: #67E8F9;
+  background: rgba(13, 152, 186, 0.25);
+  border-color: rgba(13, 152, 186, 0.4);
+}
+
+[data-theme="dark"] .card-roi-filter-btn .card-roi-pill-stat.deficit {
+  color: #FDA4AF;
+  background: rgba(225, 29, 72, 0.25);
+  border-color: rgba(225, 29, 72, 0.4);
+}
+
+[data-theme="dark"] .card-roi-filter-btn.active .card-roi-pill-stat,
+[data-theme="dark"] .card-roi-filter-btn.active .card-roi-pill-stat.surplus,
+[data-theme="dark"] .card-roi-filter-btn.active .card-roi-pill-stat.deficit {
+  color: #FFFFFF !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
 .card-roi-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));

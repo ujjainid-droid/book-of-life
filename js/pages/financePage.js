@@ -1829,18 +1829,17 @@ function renderFinanceSubscriptions() {
 
           <!-- Card Filter Pills with Live Surplus/Deficit Indicators -->
           <div class="card-roi-filter-pills">
-            <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'amex-plat' ? 'active' : ''}" onclick="setCardRoiFilter('amex-plat')">
-              <span>Amex Plat ($895) <strong style="color: #065F46; margin-left: 2px;">+$92</strong></span>
-            </button>
-            <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'csp-u' ? 'active' : ''}" onclick="setCardRoiFilter('csp-u')">
-              <span>CSP (U) ($95) <strong style="color: #FF5A5F; margin-left: 2px;">-$95</strong></span>
-            </button>
-            <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'csp-t' ? 'active' : ''}" onclick="setCardRoiFilter('csp-t')">
-              <span>CSP (T) ($95) <strong style="color: #065F46; margin-left: 2px;">+$125</strong></span>
-            </button>
-            <button class="card-roi-filter-btn ${selectedCardRoiFilter === 'hyatt-card' ? 'active' : ''}" onclick="setCardRoiFilter('hyatt-card')">
-              <span>Hyatt ($95) <strong style="color: #FF5A5F; margin-left: 2px;">-$95</strong></span>
-            </button>
+            ${cardStats.map(c => {
+              const surplusSign = c.netValue >= 0 ? '+' : '-';
+              const statCls = c.netValue >= 0 ? 'surplus' : 'deficit';
+              const statText = `${surplusSign}$${Math.round(Math.abs(c.netValue))}`;
+              const label = `${c.shortName || c.name} ($${c.annualFee})`;
+              return `
+                <button class="card-roi-filter-btn ${selectedCardRoiFilter === c.id ? 'active' : ''}" onclick="setCardRoiFilter('${c.id}')">
+                  <span>${escapeHtml(label)} <strong class="card-roi-pill-stat ${statCls}">${statText}</strong></span>
+                </button>
+              `;
+            }).join('')}
           </div>
         </div>
 
