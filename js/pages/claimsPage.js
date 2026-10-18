@@ -214,7 +214,7 @@ function renderClaimsPage(targetContainer) {
         <div class="claims-widget-card card-paid" onclick="setClaimsFilter('settled')" title="Click to view all paid & deposited visits">
           <div class="claims-widget-header">
             <span class="claims-widget-label">Received in Bank</span>
-            <span class="claims-widget-badge" style="background:rgba(13, 148, 136, 0.1); color:#0D9488; border-color:rgba(13, 148, 136, 0.3);">
+            <span class="claims-widget-badge badge-paid">
               ${settledCount} Settled
             </span>
           </div>
@@ -226,7 +226,7 @@ function renderClaimsPage(targetContainer) {
         <div class="claims-widget-card card-pending" onclick="setClaimsFilter('pending')" title="Click to view visits pending insurer payout">
           <div class="claims-widget-header">
             <span class="claims-widget-label">Pending Payment</span>
-            <span class="claims-widget-badge" style="background:rgba(139, 92, 246, 0.12); color:#7C3AED; border-color:rgba(139, 92, 246, 0.3);">
+            <span class="claims-widget-badge badge-pending">
               ${pendingCount} Open
             </span>
           </div>
@@ -238,11 +238,11 @@ function renderClaimsPage(targetContainer) {
         <div class="claims-widget-card card-total" onclick="setClaimsFilter('all')" title="Click to view all visits">
           <div class="claims-widget-header">
             <span class="claims-widget-label">Total Billed Spend</span>
-            <span class="claims-widget-badge" style="background:rgba(100, 116, 139, 0.1); color:var(--text-secondary); border-color:var(--border-subtle);">
+            <span class="claims-widget-badge badge-total">
               ${providerClaims.length} Visits
             </span>
           </div>
-          <div class="claims-widget-value" style="color:var(--text-primary);">$${totalBilled.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+          <div class="claims-widget-value">$${totalBilled.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           <div class="claims-widget-sub">${activeProviderFilter === 'all' ? 'All historical out-of-pocket charges' : activeProviderName}</div>
         </div>
 
@@ -294,7 +294,7 @@ function renderClaimsPage(targetContainer) {
               </button>
             ` : ''}
             ${readyCount > 0 ? `
-              <button type="button" class="claims-status-pill ${activeClaimsFilter === 'ready_to_send' ? 'active' : ''}" onclick="setClaimsFilter('ready_to_send')" title="Visits awaiting invoice / ready to file">
+              <button type="button" class="claims-status-pill pill-tofile ${activeClaimsFilter === 'ready_to_send' ? 'active' : ''}" onclick="setClaimsFilter('ready_to_send')" title="Visits awaiting invoice / ready to file">
                 <span>📤 To File</span>
                 <span class="pill-badge">${readyCount}</span>
               </button>
@@ -320,9 +320,9 @@ function renderClaimsPage(targetContainer) {
         <div class="summary-banner-metrics">
           <span class="metric-item"><strong>$${filterBilled.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> billed</span>
           <span class="metric-sep">&bull;</span>
-          <span class="metric-item teal"><strong>+$${filterDeposited.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> deposited</span>
+          <span class="metric-item wine"><strong>+$${filterDeposited.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> deposited</span>
           <span class="metric-sep">&bull;</span>
-          <span class="metric-item violet"><strong>+$${filterPending.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> pending</span>
+          <span class="metric-item sunset"><strong>+$${filterPending.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong> pending</span>
         </div>
       </div>
 
@@ -381,7 +381,7 @@ function renderClaimRowCellHtml(claim) {
 
   if (isSettled) {
     statusBadgeHtml = `<span class="status-pill status-settled"><i data-lucide="check-circle-2" style="width:11px;height:11px;"></i> Paid &bull; Deposited</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:#0D9488;">+$${depositedAmt}</div><span class="reimburse-type deposited">Deposited</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--mulled-wine, #4C4561);">+$${depositedAmt}</div><span class="reimburse-type deposited">Deposited</span>`;
     actionBtnHtml = `
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
         <i data-lucide="edit-3" style="width:12px;height:12px;"></i>
@@ -389,7 +389,7 @@ function renderClaimRowCellHtml(claim) {
     `;
   } else if (isReady) {
     statusBadgeHtml = `<span class="status-pill status-ready" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="file-text" style="width:11px;height:11px;"></i> To File &bull; Need Invoice</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:#7C3AED;">+$${expRec}</div><span class="reimburse-type pending">Est. Recovery</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--quicksand-deep, #7A4F54);">+$${expRec}</div><span class="reimburse-type tofile">Est. Recovery</span>`;
     actionBtnHtml = `
       <button class="claims-pill-btn" onclick="quickAdvanceClaim('${claim.id}')">Mark Filed</button>
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
@@ -399,7 +399,7 @@ function renderClaimRowCellHtml(claim) {
   } else if (isMissingDeposit) {
     const badgeText = claim.claimNumber ? `Check Missing #${claim.claimNumber}` : 'Check Missing';
     statusBadgeHtml = `<span class="status-pill status-check" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="alert-circle" style="width:11px;height:11px;"></i> ${escapeHtml(badgeText)}</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:#E11D48;">+$${expRec}</div><span class="reimburse-type missing">Approved Check</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--red-damask, #DF5C4B);">+$${expRec}</div><span class="reimburse-type missing">Approved Check</span>`;
     actionBtnHtml = `
       <button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
@@ -409,7 +409,7 @@ function renderClaimRowCellHtml(claim) {
   } else {
     // In Review / In Flight with Anthem
     statusBadgeHtml = `<span class="status-pill status-inflight" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="clock" style="width:11px;height:11px;"></i> In Review &bull; Anthem</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:#7C3AED;">+$${expRec}</div><span class="reimburse-type pending">Pending Payout</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--sunset-deep, #D86E2E);">+$${expRec}</div><span class="reimburse-type pending">Pending Payout</span>`;
     actionBtnHtml = `
       <button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">

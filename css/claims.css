@@ -3,34 +3,50 @@
    Theme: Nordic Emerald Green (Matching Personal Finance Hub)
    ========================================================================== */
 
-/* Scoped Nordic Emerald Palette for Claims & Claims Modals */
+/* Scoped Sunset Sky Palette for Claims & Claims Modals */
 .claims-container,
 #modal-export-claims,
 #modal-edit-claim {
-  --primary: #059669;
-  --primary-hover: #047857;
-  --primary-light: #ECFDF5;
-  --primary-border: #A7F3D0;
-  --primary-glow: rgba(5, 150, 105, 0.2);
-  --margo-m-light: #ECFDF5;
-  --border-light: rgba(5, 150, 105, 0.16);
-  --border-subtle: rgba(5, 150, 105, 0.08);
-  --border-strong: rgba(5, 150, 105, 0.28);
-  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(5, 150, 105, 0.04);
+  --bunting: #11223D;
+  --mulled-wine: #4C4561;
+  --red-damask: #DF5C4B;
+  --sunset: #F89F66;
+  --quicksand: #BF969A;
+  --quicksand-deep: #7A4F54;
+  --sunset-deep: #D86E2E;
+
+  --primary: #4C4561;
+  --primary-hover: #11223D;
+  --primary-light: rgba(191, 150, 154, 0.16);
+  --primary-border: rgba(191, 150, 154, 0.35);
+  --primary-glow: rgba(76, 69, 97, 0.2);
+  --margo-m-light: rgba(191, 150, 154, 0.12);
+  --border-light: rgba(76, 69, 97, 0.16);
+  --border-subtle: rgba(76, 69, 97, 0.08);
+  --border-strong: rgba(76, 69, 97, 0.32);
+  --shadow-card: 0 1px 3px rgba(17, 34, 61, 0.05), 0 1px 2px rgba(76, 69, 97, 0.05);
 }
 
 [data-theme="dark"] .claims-container,
 [data-theme="dark"] #modal-export-claims,
 [data-theme="dark"] #modal-edit-claim {
-  --primary: #10B981;
-  --primary-hover: #34D399;
-  --primary-light: rgba(16, 185, 129, 0.15);
-  --primary-border: rgba(16, 185, 129, 0.3);
-  --primary-glow: rgba(16, 185, 129, 0.25);
-  --margo-m-light: rgba(16, 185, 129, 0.12);
-  --border-light: rgba(16, 185, 129, 0.2);
-  --border-subtle: rgba(16, 185, 129, 0.1);
-  --border-strong: rgba(16, 185, 129, 0.35);
+  --bunting: #F1F5F9;
+  --mulled-wine: #D4BAC0;
+  --red-damask: #DF5C4B;
+  --sunset: #F89F66;
+  --quicksand: #BF969A;
+  --quicksand-deep: #E0C0C3;
+  --sunset-deep: #F89F66;
+
+  --primary: #BF969A;
+  --primary-hover: #F89F66;
+  --primary-light: rgba(76, 69, 97, 0.35);
+  --primary-border: rgba(191, 150, 154, 0.35);
+  --primary-glow: rgba(248, 159, 102, 0.25);
+  --margo-m-light: rgba(76, 69, 97, 0.25);
+  --border-light: rgba(191, 150, 154, 0.22);
+  --border-subtle: rgba(191, 150, 154, 0.12);
+  --border-strong: rgba(248, 159, 102, 0.35);
 }
 
 /* Header Navigation Pills */
@@ -1983,27 +1999,39 @@
 }
 
 .status-pill.status-ready {
-  background: var(--primary-light);
-  color: var(--primary);
-  border: 1px solid var(--primary-border);
+  background: rgba(191, 150, 154, 0.16);
+  color: #6F464A;
+  border: 1px solid rgba(191, 150, 154, 0.35);
+}
+
+[data-theme="dark"] .status-pill.status-ready {
+  color: #E0C0C3;
 }
 
 .status-pill.status-check {
-  background: rgba(225, 29, 72, 0.08);
-  color: #E11D48;
-  border: 1px solid rgba(225, 29, 72, 0.25);
+  background: rgba(223, 92, 75, 0.12);
+  color: #DF5C4B;
+  border: 1px solid rgba(223, 92, 75, 0.35);
 }
 
 .status-pill.status-inflight {
-  background: var(--bg-surface);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-light);
+  background: rgba(248, 159, 102, 0.14);
+  color: #B95418;
+  border: 1px solid rgba(248, 159, 102, 0.35);
+}
+
+[data-theme="dark"] .status-pill.status-inflight {
+  color: #F89F66;
 }
 
 .status-pill.status-settled {
-  background: rgba(13, 148, 136, 0.1);
-  color: #0D9488;
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  background: rgba(76, 69, 97, 0.1);
+  color: #4C4561;
+  border: 1px solid rgba(76, 69, 97, 0.25);
+}
+
+[data-theme="dark"] .status-pill.status-settled {
+  color: #D4BAC0;
 }
 
 .cell-amount-mono {
@@ -2044,42 +2072,111 @@
 }
 
 .claims-widget-card.card-paid {
-  background: linear-gradient(135deg, rgba(13, 148, 136, 0.08) 0%, var(--bg-card) 100%);
-  border-color: rgba(13, 148, 136, 0.28);
+  background: linear-gradient(135deg, rgba(76, 69, 97, 0.06) 0%, rgba(191, 150, 154, 0.1) 100%);
+  border-color: rgba(76, 69, 97, 0.25);
   cursor: pointer;
 }
 
+[data-theme="dark"] .claims-widget-card.card-paid {
+  background: linear-gradient(135deg, rgba(76, 69, 97, 0.25) 0%, rgba(191, 150, 154, 0.1) 100%);
+  border-color: rgba(191, 150, 154, 0.3);
+}
+
 .claims-widget-card.card-paid:hover {
-  border-color: #0D9488;
+  border-color: #4C4561;
   transform: translateY(-1px);
 }
 
 .claims-widget-card.card-paid .claims-widget-value {
-  color: #0D9488;
+  color: #4C4561;
+}
+
+[data-theme="dark"] .claims-widget-card.card-paid .claims-widget-value {
+  color: #D4BAC0;
+}
+
+.badge-paid {
+  background: rgba(76, 69, 97, 0.12) !important;
+  color: #4C4561 !important;
+  border: 1px solid rgba(76, 69, 97, 0.25) !important;
+}
+
+[data-theme="dark"] .badge-paid {
+  background: rgba(191, 150, 154, 0.2) !important;
+  color: #D4BAC0 !important;
+  border-color: rgba(191, 150, 154, 0.35) !important;
 }
 
 .claims-widget-card.card-pending {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, var(--bg-card) 100%);
-  border-color: rgba(139, 92, 246, 0.28);
+  background: linear-gradient(135deg, rgba(248, 159, 102, 0.1) 0%, rgba(223, 92, 75, 0.05) 100%);
+  border-color: rgba(248, 159, 102, 0.35);
   cursor: pointer;
 }
 
+[data-theme="dark"] .claims-widget-card.card-pending {
+  background: linear-gradient(135deg, rgba(248, 159, 102, 0.16) 0%, rgba(223, 92, 75, 0.08) 100%);
+  border-color: rgba(248, 159, 102, 0.4);
+}
+
 .claims-widget-card.card-pending:hover {
-  border-color: #7C3AED;
+  border-color: #F89F66;
   transform: translateY(-1px);
 }
 
 .claims-widget-card.card-pending .claims-widget-value {
-  color: #7C3AED;
+  color: #D86E2E;
+}
+
+[data-theme="dark"] .claims-widget-card.card-pending .claims-widget-value {
+  color: #F89F66;
+}
+
+.badge-pending {
+  background: rgba(248, 159, 102, 0.16) !important;
+  color: #B95418 !important;
+  border: 1px solid rgba(248, 159, 102, 0.35) !important;
+}
+
+[data-theme="dark"] .badge-pending {
+  background: rgba(248, 159, 102, 0.2) !important;
+  color: #F89F66 !important;
+  border-color: rgba(248, 159, 102, 0.4) !important;
 }
 
 .claims-widget-card.card-total {
+  background: linear-gradient(135deg, rgba(17, 34, 61, 0.04) 0%, var(--bg-card) 100%);
+  border-color: rgba(17, 34, 61, 0.18);
   cursor: pointer;
 }
 
+[data-theme="dark"] .claims-widget-card.card-total {
+  background: linear-gradient(135deg, rgba(76, 69, 97, 0.18) 0%, var(--bg-card) 100%);
+  border-color: rgba(191, 150, 154, 0.25);
+}
+
 .claims-widget-card.card-total:hover {
-  border-color: var(--border-strong);
+  border-color: #11223D;
   transform: translateY(-1px);
+}
+
+.claims-widget-card.card-total .claims-widget-value {
+  color: #11223D;
+}
+
+[data-theme="dark"] .claims-widget-card.card-total .claims-widget-value {
+  color: #F1F5F9;
+}
+
+.badge-total {
+  background: rgba(17, 34, 61, 0.08) !important;
+  color: #11223D !important;
+  border: 1px solid rgba(17, 34, 61, 0.2) !important;
+}
+
+[data-theme="dark"] .badge-total {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #E2E8F0 !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* Two-Tier Filter Controls Card */
@@ -2146,17 +2243,31 @@
 
 .claims-provider-pill:hover,
 .claims-status-pill:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary-border);
+  background: rgba(191, 150, 154, 0.14);
+  color: #4C4561;
+  border-color: rgba(191, 150, 154, 0.35);
+}
+
+[data-theme="dark"] .claims-provider-pill:hover,
+[data-theme="dark"] .claims-status-pill:hover {
+  background: rgba(76, 69, 97, 0.3);
+  color: #F89F66;
+  border-color: rgba(248, 159, 102, 0.35);
 }
 
 .claims-provider-pill.active {
-  background: #7C3AED;
+  background: #4C4561;
   color: #FFFFFF;
-  border-color: #7C3AED;
-  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.25);
+  border-color: #4C4561;
+  box-shadow: 0 2px 6px rgba(76, 69, 97, 0.35);
   font-weight: 700;
+}
+
+[data-theme="dark"] .claims-provider-pill.active {
+  background: #BF969A;
+  color: #11223D;
+  border-color: #BF969A;
+  box-shadow: 0 2px 6px rgba(191, 150, 154, 0.3);
 }
 
 .claims-provider-pill.active .pill-badge {
@@ -2164,12 +2275,24 @@
   color: #FFFFFF;
 }
 
+[data-theme="dark"] .claims-provider-pill.active .pill-badge {
+  background: rgba(17, 34, 61, 0.2);
+  color: #11223D;
+}
+
 .claims-status-pill.active {
-  background: var(--primary);
+  background: #11223D;
   color: #FFFFFF;
-  border-color: var(--primary);
-  box-shadow: 0 1px 4px rgba(5, 150, 105, 0.25);
+  border-color: #11223D;
+  box-shadow: 0 2px 6px rgba(17, 34, 61, 0.35);
   font-weight: 700;
+}
+
+[data-theme="dark"] .claims-status-pill.active {
+  background: #4C4561;
+  color: #FFFFFF;
+  border-color: #4C4561;
+  box-shadow: 0 2px 6px rgba(76, 69, 97, 0.35);
 }
 
 .claims-status-pill.active .pill-badge {
@@ -2178,22 +2301,29 @@
 }
 
 .claims-status-pill.pill-pending.active {
-  background: #7C3AED;
-  border-color: #7C3AED;
-  color: #FFFFFF;
-  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.25);
+  background: #F89F66;
+  border-color: #F89F66;
+  color: #11223D;
+  box-shadow: 0 2px 6px rgba(248, 159, 102, 0.35);
+  font-weight: 700;
 }
 
 .claims-status-pill.pill-pending.active .pill-badge {
-  background: rgba(255, 255, 255, 0.25);
-  color: #FFFFFF;
+  background: rgba(17, 34, 61, 0.18);
+  color: #11223D;
 }
 
 .claims-status-pill.pill-settled.active {
-  background: #0D9488;
-  border-color: #0D9488;
+  background: #4C4561;
+  border-color: #4C4561;
   color: #FFFFFF;
-  box-shadow: 0 1px 4px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 2px 6px rgba(76, 69, 97, 0.35);
+}
+
+[data-theme="dark"] .claims-status-pill.pill-settled.active {
+  background: #BF969A;
+  border-color: #BF969A;
+  color: #11223D;
 }
 
 .claims-status-pill.pill-settled.active .pill-badge {
@@ -2201,16 +2331,34 @@
   color: #FFFFFF;
 }
 
+[data-theme="dark"] .claims-status-pill.pill-settled.active .pill-badge {
+  background: rgba(17, 34, 61, 0.2);
+  color: #11223D;
+}
+
 .claims-status-pill.pill-alert.active {
-  background: #E11D48;
-  border-color: #E11D48;
+  background: #DF5C4B;
+  border-color: #DF5C4B;
   color: #FFFFFF;
-  box-shadow: 0 1px 4px rgba(225, 29, 72, 0.25);
+  box-shadow: 0 2px 6px rgba(223, 92, 75, 0.35);
 }
 
 .claims-status-pill.pill-alert.active .pill-badge {
   background: rgba(255, 255, 255, 0.25);
   color: #FFFFFF;
+}
+
+.claims-status-pill.pill-tofile.active {
+  background: #BF969A;
+  border-color: #BF969A;
+  color: #11223D;
+  box-shadow: 0 2px 6px rgba(191, 150, 154, 0.35);
+  font-weight: 700;
+}
+
+.claims-status-pill.pill-tofile.active .pill-badge {
+  background: rgba(17, 34, 61, 0.18);
+  color: #11223D;
 }
 
 .pill-badge {
@@ -2248,7 +2396,11 @@
 
 .summary-banner-title {
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--bunting);
+}
+
+[data-theme="dark"] .summary-banner-title {
+  color: #F1F5F9;
 }
 
 .summary-banner-dot {
@@ -2270,12 +2422,24 @@
   color: var(--text-secondary);
 }
 
-.metric-item.teal {
-  color: #0D9488;
+.metric-item.wine,
+.metric-item.settled {
+  color: #4C4561;
 }
 
-.metric-item.violet {
-  color: #7C3AED;
+[data-theme="dark"] .metric-item.wine,
+[data-theme="dark"] .metric-item.settled {
+  color: #D4BAC0;
+}
+
+.metric-item.sunset,
+.metric-item.pending {
+  color: #D86E2E;
+}
+
+[data-theme="dark"] .metric-item.sunset,
+[data-theme="dark"] .metric-item.pending {
+  color: #F89F66;
 }
 
 .metric-sep {
@@ -2292,15 +2456,31 @@
 }
 
 .reimburse-type.deposited {
-  color: #0D9488;
+  color: #4C4561;
+}
+
+[data-theme="dark"] .reimburse-type.deposited {
+  color: #D4BAC0;
 }
 
 .reimburse-type.pending {
-  color: #7C3AED;
+  color: #D86E2E;
+}
+
+[data-theme="dark"] .reimburse-type.pending {
+  color: #F89F66;
+}
+
+.reimburse-type.tofile {
+  color: #7A4F54;
+}
+
+[data-theme="dark"] .reimburse-type.tofile {
+  color: #BF969A;
 }
 
 .reimburse-type.missing {
-  color: #E11D48;
+  color: #DF5C4B;
 }
 
 .claims-row-settled {
@@ -2309,6 +2489,35 @@
 
 .claims-row-settled:hover {
   opacity: 1;
+}
+
+.claims-pill-btn.btn-settle {
+  background: #4C4561;
+  color: #FFFFFF;
+  border: none;
+}
+
+.claims-pill-btn.btn-settle:hover {
+  background: #11223D;
+  box-shadow: 0 2px 5px rgba(76, 69, 97, 0.3);
+}
+
+.claims-copy-btn {
+  background: rgba(76, 69, 97, 0.08);
+  border: 1px solid rgba(76, 69, 97, 0.2);
+  color: #4C4561;
+}
+
+[data-theme="dark"] .claims-copy-btn {
+  background: rgba(76, 69, 97, 0.3);
+  border-color: rgba(191, 150, 154, 0.25);
+  color: #D4BAC0;
+}
+
+.claims-copy-btn:hover {
+  background: #4C4561;
+  color: #FFFFFF;
+  border-color: #4C4561;
 }
 
 
