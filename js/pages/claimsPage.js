@@ -26,7 +26,7 @@ function getProviderKey(provider) {
   const p = (provider || '').toLowerCase();
   if (p.includes('barness') || p.includes('mindful medicine')) return 'barness';
   if (p.includes('mindsoother')) return 'mindsoother';
-  if (p.includes('neuro')) return 'neuropsych';
+  if (p.includes('neuro') || p.includes('koffman')) return 'neuropsych';
   if (p.includes('roseland') || p.includes('bock')) return 'roseland';
   return p.replace(/[^a-z0-9]/g, '-');
 }
@@ -35,7 +35,7 @@ function getProviderDisplayName(raw) {
   const p = (raw || '').toLowerCase();
   if (p.includes('barness') || p.includes('mindful medicine')) return 'Dr. Michael Barness';
   if (p.includes('mindsoother')) return 'Mindsoother Therapy';
-  if (p.includes('neuro')) return 'North Jersey Neuropsychology';
+  if (p.includes('neuro') || p.includes('koffman')) return 'Dr. Koffman (North Jersey Neuropsychology)';
   if (p.includes('roseland') || p.includes('bock')) return 'Roseland Psychotherapy';
   return raw;
 }

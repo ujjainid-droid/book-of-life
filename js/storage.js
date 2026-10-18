@@ -43,12 +43,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V13';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V14';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
           this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
-          this.data.claimsSeedVersion = 13;
+          this.data.claimsSeedVersion = 14;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -2138,6 +2138,23 @@ class StorageManager {
       if (realIds.has(c.id)) return true;
       if (/^claim-\d{13,}-/.test(c.id)) return true;
       return false;
+    });
+
+    // Normalize and deduplicate Dr. Koffman / North Jersey Neuropsychology evaluation claims
+    const seenNeuroDates = new Set();
+    this.data.claims = this.data.claims.filter(c => {
+      const p = (c.provider || '').toLowerCase();
+      if (p.includes('neuro') || p.includes('koffman')) {
+        c.provider = 'Dr. Koffman (North Jersey Neuropsychology)';
+        if (c.date === '2025-10-15' || Math.abs((c.amountPaid || 0) - 2375) < 1) {
+          if (seenNeuroDates.has('2025-10-15')) return false;
+          seenNeuroDates.add('2025-10-15');
+          c.claimNumber = c.claimNumber || '20253272A0969';
+          c.reissueRequested = true;
+          c.nextAction = 'Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969';
+        }
+      }
+      return true;
     });
 
     // Sync seed updates for requested reissued checks and submitted Anthem claims

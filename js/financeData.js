@@ -6786,7 +6786,7 @@ const DEFAULT_REAL_CLAIMS = [
   {
     "id": "claim-neuro-2025-10-15",
     "date": "2025-10-15",
-    "provider": "North Jersey Neuropsychology",
+    "provider": "Dr. Koffman (North Jersey Neuropsychology)",
     "patient": "Xavier Healy",
     "amountPaid": 2375.0,
     "expectedRecovery": 1457.76,
