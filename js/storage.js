@@ -839,7 +839,10 @@ class StorageManager {
               : (merged.finance.accounts || []),
             weeklySundayUpdates: (s.finance.weeklySundayUpdates && typeof s.finance.weeklySundayUpdates === 'object')
               ? { ...(merged.finance.weeklySundayUpdates || {}), ...s.finance.weeklySundayUpdates }
-              : (merged.finance.weeklySundayUpdates || {})
+              : (merged.finance.weeklySundayUpdates || {}),
+            weeklyChecklists: (s.finance.weeklyChecklists && typeof s.finance.weeklyChecklists === 'object')
+              ? { ...(merged.finance.weeklyChecklists || {}), ...s.finance.weeklyChecklists }
+              : (merged.finance.weeklyChecklists || {})
           };
         }
       }
@@ -851,6 +854,16 @@ class StorageManager {
           const parsedFin = JSON.parse(dedicatedFinance);
           if (parsedFin && typeof parsedFin === 'object') {
             merged.finance = { ...(merged.finance || {}), ...parsedFin };
+          }
+        }
+        const savedWeeklyLists = localStorage.getItem('BOL_FINANCE_WEEKLY_CHECKLISTS');
+        if (savedWeeklyLists && merged.finance) {
+          const parsedLists = JSON.parse(savedWeeklyLists);
+          if (parsedLists && typeof parsedLists === 'object') {
+            merged.finance.weeklyChecklists = {
+              ...(merged.finance.weeklyChecklists || {}),
+              ...parsedLists
+            };
           }
         }
       } catch (e) {}
@@ -3134,12 +3147,24 @@ class StorageManager {
     if (!fin.weeklyChecklists || typeof fin.weeklyChecklists !== 'object') {
       fin.weeklyChecklists = {};
     }
+
+    // Check dedicated resilient backup if empty
+    if (Object.keys(fin.weeklyChecklists).length === 0) {
+      try {
+        const raw = localStorage.getItem('BOL_FINANCE_WEEKLY_CHECKLISTS');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            fin.weeklyChecklists = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+
     const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
     if (!fin.weeklyChecklists[iso] || typeof fin.weeklyChecklists[iso] !== 'object') {
       const wasDone = !!(fin.weeklySundayUpdates && fin.weeklySundayUpdates[iso]);
-      fin.weeklyChecklists[iso] = { 1: wasDone, 2: wasDone, 3: wasDone, 4: wasDone, 5: wasDone, 6: wasDone };
-    } else if (fin.weeklyChecklists[iso][6] === undefined) {
-      fin.weeklyChecklists[iso][6] = false;
+      fin.weeklyChecklists[iso] = { 1: wasDone, 2: wasDone, 3: wasDone, 4: wasDone, 5: wasDone };
     }
     return fin.weeklyChecklists[iso];
   }
@@ -3150,15 +3175,16 @@ class StorageManager {
       fin.weeklyChecklists = {};
     }
     const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
-    if (!fin.weeklyChecklists[iso]) {
-      fin.weeklyChecklists[iso] = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false };
+    if (!fin.weeklyChecklists[iso] || typeof fin.weeklyChecklists[iso] !== 'object') {
+      fin.weeklyChecklists[iso] = { 1: false, 2: false, 3: false, 4: false, 5: false };
     }
     fin.weeklyChecklists[iso][itemNum] = !!isDone;
 
-    const allDone = [1, 2, 3, 4, 5, 6].every(num => !!fin.weeklyChecklists[iso][num]);
+    const allDone = [1, 2, 3, 4, 5].every(num => !!fin.weeklyChecklists[iso][num]);
     this.setFinanceSundayUpdated(iso, allDone);
 
     try {
+      localStorage.setItem('BOL_FINANCE_WEEKLY_CHECKLISTS', JSON.stringify(fin.weeklyChecklists));
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
     this.saveData();

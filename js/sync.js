@@ -543,10 +543,27 @@ class SyncManager {
     }
     const mergedPeriodGoals = Array.from(pgMap.values());
 
+    // 11d. Finance State: 2-way merge preserving local weeklyChecklists & seed
+    const locFin = storage.data.finance || {};
+    const incFin = incoming.finance || {};
+    const mergedFinance = {
+      ...incFin,
+      ...locFin,
+      weeklyChecklists: {
+        ...(incFin.weeklyChecklists || {}),
+        ...(locFin.weeklyChecklists || {})
+      },
+      weeklySundayUpdates: {
+        ...(incFin.weeklySundayUpdates || {}),
+        ...(locFin.weeklySundayUpdates || {})
+      }
+    };
+
     // Apply consolidated data
     storage.data = {
       ...storage.data,
       ...incoming,
+      finance: mergedFinance,
       coverTopMind: mergedTopMind,
       coverTopicAudits: mergedTopicAudits,
       coverCampaigns: mergedCampaigns,

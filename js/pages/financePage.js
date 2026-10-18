@@ -289,6 +289,8 @@ function scrollToFinanceOutliers() {
     setTimeout(() => { el.style.boxShadow = ''; }, 1200);
   }
 }
+window.toggleFinanceChecklistItem = toggleFinanceChecklistItem;
+window.scrollToFinanceOutliers = scrollToFinanceOutliers;
 
 function renderFinanceWeeklyCadenceBar() {
   const sundayIso = getCurrentWeekSundayIso();
