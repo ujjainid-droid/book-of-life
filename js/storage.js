@@ -2171,6 +2171,18 @@ class StorageManager {
       return true;
     });
 
+    // Normalize Mindsoother Jan 7, 14, 21 sessions (fix billed amount from 70% rate $157.50 to actual $225.00, est recovery to $157.50)
+    this.data.claims.forEach(c => {
+      const p = (c.provider || '').toLowerCase();
+      if ((p.includes('mindsoother') || p.includes('mindsoothers')) && ['2026-01-07', '2026-01-14', '2026-01-21'].includes(c.date)) {
+        c.provider = 'Mindsoother Therapy';
+        if (Math.abs((c.amountPaid || 0) - 157.5) < 1) {
+          c.amountPaid = 225.0;
+          c.expectedRecovery = 157.5;
+        }
+      }
+    });
+
     // Deduplicate Dr. Barness Feb 2, 2026 visit (remove older $220 unverified draft in favor of verified $300 claim #20260462A0745)
     this.data.claims = this.data.claims.filter(c => {
       const p = (c.provider || '').toLowerCase();
