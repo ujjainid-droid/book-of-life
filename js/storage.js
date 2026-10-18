@@ -2924,7 +2924,7 @@ class StorageManager {
   getFinanceData() {
     const isLegacy = this.data.finance && (
       !this.data.finance.seedVersion ||
-      this.data.finance.seedVersion < 7 ||
+      this.data.finance.seedVersion < 8 ||
       (Array.isArray(this.data.finance.categories) && this.data.finance.categories.some(c => c && c.name === 'Housing & Rent / Mortgage'))
     );
 
@@ -2935,7 +2935,7 @@ class StorageManager {
           const backup = localStorage.getItem('BOL_FINANCE_DATA_V2');
           if (backup) {
             const parsed = JSON.parse(backup);
-            if (parsed && typeof parsed === 'object' && parsed.seedVersion >= 7) {
+            if (parsed && typeof parsed === 'object' && parsed.seedVersion >= 8) {
               this.data.finance = parsed;
               return this.data.finance;
             }
