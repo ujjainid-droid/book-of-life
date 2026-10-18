@@ -1439,6 +1439,7 @@ function renderDailySheet() {
     weightBarWidth = Math.max(4, Math.min(100, Math.round(((currentWeight - 105) / 10) * 100)));
   }
 
+  const latestWeightEntry = weightStats.latest;
   let weightStatusPillText = 'TARGET 110';
   let weightStatusPillClass = 'idle';
   let weightStatusNote = 'Tap − / + or type to log';
@@ -1457,6 +1458,8 @@ function renderDailySheet() {
       weightStatusPillClass = 'below';
       weightStatusNote = `${weightDiff.toFixed(1)} lbs under 110 target`;
     }
+  } else if (latestWeightEntry && latestWeightEntry.weight) {
+    weightStatusNote = `Last: ${latestWeightEntry.weight.toFixed(1)} lbs · Tap − / + to log today`;
   }
 
   container.innerHTML = `
@@ -1508,7 +1511,7 @@ function renderDailySheet() {
           <div class="weight-main-row">
             <button type="button" class="w-step-btn minus" onclick="auroraStepWeight(-0.2, '${activeTrackingDate}')" title="Subtract 0.2 lbs" aria-label="Decrease weight by 0.2 lbs">−</button>
             <div class="w-val-display" title="Click to edit weight directly">
-              <input type="number" step="0.1" id="weight-input-${activeTrackingDate}" class="w-val-input" value="${isWeightLogged ? currentWeight.toFixed(1) : ''}" placeholder="${isWeightLogged ? currentWeight.toFixed(1) : '110.0'}" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" aria-label="Weight in pounds">
+              <input type="number" step="0.1" id="weight-input-${activeTrackingDate}" class="w-val-input ${!isWeightLogged ? 'unlogged' : ''}" value="${isWeightLogged ? currentWeight.toFixed(1) : ''}" placeholder="${isWeightLogged ? currentWeight.toFixed(1) : (latestWeightEntry && latestWeightEntry.weight ? latestWeightEntry.weight.toFixed(1) : '--.-')}" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" aria-label="Weight in pounds">
               <span class="w-val-unit">lbs</span>
             </div>
             <button type="button" class="w-step-btn plus" onclick="auroraStepWeight(0.2, '${activeTrackingDate}')" title="Add 0.2 lbs" aria-label="Increase weight by 0.2 lbs">+</button>
