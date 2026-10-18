@@ -2141,17 +2141,31 @@ class StorageManager {
     });
 
     // Normalize and deduplicate Dr. Koffman / North Jersey Neuropsychology evaluation claims
-    const seenNeuroDates = new Set();
     this.data.claims = this.data.claims.filter(c => {
       const p = (c.provider || '').toLowerCase();
       if (p.includes('neuro') || p.includes('koffman')) {
         c.provider = 'Dr. Koffman (North Jersey Neuropsychology)';
-        if (c.date === '2025-10-15' || Math.abs((c.amountPaid || 0) - 2375) < 1) {
-          if (seenNeuroDates.has('2025-10-15')) return false;
-          seenNeuroDates.add('2025-10-15');
+        // Purge obsolete draft entries (e.g. Oct 14 placeholder with $1457.76 billed amount)
+        if (c.id !== 'claim-neuro-2025-10-15') {
+          if (c.date === '2025-10-14' || c.date === '2025-10-15' || Math.abs((c.amountPaid || 0) - 1457.76) < 1 || Math.abs((c.amountPaid || 0) - 2375) < 1) {
+            return false;
+          }
+        }
+        if (c.id === 'claim-neuro-2025-10-15') {
           c.claimNumber = c.claimNumber || '20253272A0969';
           c.reissueRequested = true;
           c.nextAction = 'Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969';
+        }
+      }
+      return true;
+    });
+
+    // Deduplicate Mindsoothers Jan 28, 2026 visit (remove older $157.50 unfiled draft in favor of verified $225 claim #2026036ML5580)
+    this.data.claims = this.data.claims.filter(c => {
+      const p = (c.provider || '').toLowerCase();
+      if ((p.includes('mindsoother') || p.includes('mindsoothers')) && c.date === '2026-01-28') {
+        if (c.id !== 'claim-ms-2026-01-28' || Math.abs((c.amountPaid || 0) - 157.5) < 1) {
+          return false;
         }
       }
       return true;
