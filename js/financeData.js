@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 9,
+  "seedVersion": 10,
   "monthlyTarget": 22350,
   "savingsTarget": 5000,
   "alertSpendRatio": 0.85,
@@ -412,7 +412,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-shopping",
       "name": "Shopping",
-      "budget": 1812,
+      "budget": 600,
       "baseline": 1812.11,
       "classification": "Discretionary",
       "icon": "shopping-bag"
@@ -428,7 +428,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-groceries",
       "name": "Groceries",
-      "budget": 1519,
+      "budget": 800,
       "baseline": 1519.34,
       "classification": "Essential",
       "icon": "shopping-cart"
@@ -444,7 +444,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-eating-out",
       "name": "Eating out",
-      "budget": 1405,
+      "budget": 800,
       "baseline": 1404.63,
       "classification": "Discretionary",
       "icon": "utensils"
@@ -492,7 +492,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "cat-clothing--shoes--jewelry",
       "name": "Clothing, Shoes, Jewelry",
-      "budget": 478,
+      "budget": 400,
       "baseline": 477.56,
       "classification": "Discretionary",
       "icon": "tag"
