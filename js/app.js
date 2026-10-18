@@ -6,6 +6,69 @@ let editingHabitId = null;
 let currentView = 'sanctuary'; // 'sanctuary' | 'cover' | 'zlog' | 'finance' | 'podcasts'
 
 /* --------------------------------------------------------------------------
+   App Mode (Full Personal Sanctuary vs Family / Partner Mode)
+   -------------------------------------------------------------------------- */
+function getAppMode() {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const modeParam = urlParams.get('mode');
+    if (modeParam === 'family' || modeParam === 'partner') {
+      localStorage.setItem('BOL_APP_MODE', 'family');
+      return 'family';
+    } else if (modeParam === 'all' || modeParam === 'full' || modeParam === 'personal') {
+      localStorage.setItem('BOL_APP_MODE', 'full');
+      return 'full';
+    }
+    return localStorage.getItem('BOL_APP_MODE') || 'full';
+  } catch (e) {
+    return 'full';
+  }
+}
+window.getAppMode = getAppMode;
+
+function applyAppModeUI() {
+  const isFamily = (getAppMode() === 'family');
+  const navCapsule = document.getElementById('main-nav-capsule');
+  if (navCapsule) {
+    if (isFamily) {
+      if (!navCapsule.classList.contains('family-mode-nav')) {
+        navCapsule.classList.add('family-mode-nav');
+        navCapsule.innerHTML = `
+          <a href="#zhub" id="nav-btn-zhub" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior & Insights">
+            <i data-lucide="shield" style="width:14px;height:14px;"></i>
+            <span>Z Hub</span>
+          </a>
+          <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance')" title="Money: Burn, Budget & Reimbursements">
+            <i data-lucide="dollar-sign" style="width:14px;height:14px;"></i>
+            <span>Money</span>
+          </a>
+        `;
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      }
+    } else {
+      if (navCapsule.classList.contains('family-mode-nav')) {
+        navCapsule.classList.remove('family-mode-nav');
+        navCapsule.innerHTML = `
+          <a href="#today" id="nav-btn-today" class="aurora-nav-link on active" onclick="event.preventDefault(); switchAppView('sanctuary')" aria-current="page" title="Today: Daily Habits, Momentum & Reflections">Today</a>
+          <a href="#compass" id="nav-btn-cover" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('cover')" title="Compass: System Architecture, Life Focus & Long-term Index">Compass</a>
+          <a href="#hobby" id="nav-btn-hobby" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('hobby')" title="Hobby: Tasting Menu & Somatic Exploration">Hobby</a>
+          <a href="#zhub" id="nav-btn-zhub" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior & Insights">Z Hub</a>
+          <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance')" title="Money: Burn, Subscriptions & Reimbursements">
+            <span>Money</span>
+          </a>
+        `;
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      }
+    }
+  }
+}
+window.applyAppModeUI = applyAppModeUI;
+
+/* --------------------------------------------------------------------------
    Boot
    -------------------------------------------------------------------------- */
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,9 +82,32 @@ document.addEventListener('DOMContentLoaded', () => {
   } catch (e) {}
   setTheme(initialTheme, false);
 
+  // Apply navigation UI for app mode
+  applyAppModeUI();
+
   // Restore saved view (or URL hash)
   function parseHashRoute() {
+    const isFamilyMode = (getAppMode() === 'family');
     const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+
+    // Guard: Family Mode strictly permits only Z Hub and Money
+    if (isFamilyMode) {
+      if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money') || rawHash.startsWith('budget')) {
+        const parts = rawHash.split(/[\/\-_?]/);
+        let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')));
+        if (sub === 'cash') sub = 'burn';
+        else if (sub === 'cards') sub = 'subscriptions';
+        else if (sub === 'worth') sub = 'runway';
+        else if (sub === 'med') sub = 'claims';
+        else if (sub === 'plan') sub = 'budget';
+        return { view: 'finance', subView: sub };
+      }
+      // Any other route (including empty, #today, #compass, #hobby) routes strictly to Z Hub
+      const parts = rawHash.split(/[\/\-_?]/);
+      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
+      return { view: 'zlog', subView: sub };
+    }
+
     if (!rawHash) {
       const saved = localStorage.getItem('BOL_ACTIVE_VIEW') || 'sanctuary';
       let sub = null;
@@ -103,6 +189,15 @@ function switchAppView(viewName, subViewName) {
     if (!subViewName) subViewName = parts[1];
   }
 
+  // Route Guard: Family Mode strictly permits only Z Hub and Finance
+  const isFamilyMode = (getAppMode() === 'family');
+  if (isFamilyMode) {
+    if (viewName !== 'zlog' && viewName !== 'finance' && viewName !== 'claims' && viewName !== 'budget') {
+      viewName = 'zlog';
+      if (!subViewName) subViewName = localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline';
+    }
+  }
+
   if (viewName === 'claims' || viewName === 'finance' || viewName === 'budget') {
     currentView = 'finance';
     if (viewName === 'budget' && !subViewName) subViewName = 'budget';
@@ -164,6 +259,8 @@ function switchAppView(viewName, subViewName) {
       }
     }
   } catch (e) {}
+
+  applyAppModeUI();
 
   const todayBtn = document.getElementById('nav-btn-today');
   const coverBtn = document.getElementById('nav-btn-cover');
@@ -502,6 +599,91 @@ function openSettingsModal() {
   if (!body) return;
 
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const isFamily = (getAppMode() === 'family');
+
+  if (isFamily) {
+    body.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <!-- Family Mode Header -->
+        <div class="settings-card" style="border: 1px solid var(--accent, #5CE1F0); background: rgba(92, 225, 240, 0.05);">
+          <div class="settings-card-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <i data-lucide="shield-check" style="color:var(--accent, #5CE1F0);width:18px;height:18px;"></i>
+              <h3>Family Co-Parenting &amp; Finances</h3>
+            </div>
+            <span class="badge" style="background:rgba(92, 225, 240, 0.2);color:var(--accent, #5CE1F0);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:12px;">Full Edit Active</span>
+          </div>
+          <p class="settings-desc">
+            You are viewing the shared family portal for Z Hub care management and household finances. All edits sync live with the household.
+          </p>
+        </div>
+
+        <!-- Appearance -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i data-lucide="palette" style="color:var(--margo-a);width:18px;height:18px;"></i>
+            <h3>Appearance</h3>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn ${!isDark ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="setTheme('light');renderSettingsModalBody()">
+              <i data-lucide="sun" style="width:14px;height:14px;"></i> Light
+            </button>
+            <button class="btn ${isDark ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="setTheme('dark');renderSettingsModalBody()">
+              <i data-lucide="moon" style="width:14px;height:14px;"></i> Dark
+            </button>
+          </div>
+        </div>
+
+        <!-- Instant Cloud Sync Status -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <i data-lucide="cloud-lightning" style="color:var(--primary);width:18px;height:18px;"></i>
+              <h3>Cloud Sync Status</h3>
+            </div>
+            <span id="sync-status-indicator" class="sync-status-badge ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'connected' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'connecting' : 'offline')}">
+              <span class="status-dot ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'green' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'yellow' : 'grey')}"></span>
+              ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'Live Sync Active' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'Connecting...' : 'Offline')}
+            </span>
+          </div>
+          <p class="settings-desc">
+            Changes to medication logs, school notes, or medical claims sync across family devices in real-time.
+          </p>
+          <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="if(typeof syncManager !== 'undefined') syncManager.pullFromCloud(); showToast('Syncing now...')">
+            <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sync Now
+          </button>
+        </div>
+
+        <!-- App Cache & Reload -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i data-lucide="refresh-cw" style="color:var(--primary);width:18px;height:18px;"></i>
+            <h3>App Cache &amp; Updates</h3>
+          </div>
+          <p class="settings-desc">Force refresh the latest updates from the cloud.</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="forceReloadFresh()">
+            <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Force Refresh App
+          </button>
+        </div>
+
+        <!-- Unlock Full Personal Space -->
+        <div class="settings-card">
+          <div class="settings-card-header">
+            <i data-lucide="lock" style="color:var(--text-muted);width:18px;height:18px;"></i>
+            <h3>Personal Sanctuary</h3>
+          </div>
+          <p class="settings-desc">Switch back to the full personal dashboard (PIN required).</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top:10px;" onclick="unlockPersonalSpace()">
+            <i data-lucide="key" style="width:14px;height:14px;"></i> Unlock Personal Space
+          </button>
+        </div>
+
+      </div>
+    `;
+    openModal('modal-settings');
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
 
   body.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:20px;">
@@ -519,6 +701,31 @@ function openSettingsModal() {
           <button class="btn ${isDark ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="setTheme('dark');renderSettingsModalBody()">
             <i data-lucide="moon" style="width:14px;height:14px;"></i> Dark
           </button>
+        </div>
+      </div>
+
+      <!-- Share with Partner / Family -->
+      <div class="settings-card" style="border: 1px solid var(--accent, #5CE1F0); background: rgba(92, 225, 240, 0.04);">
+        <div class="settings-card-header">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-lucide="users" style="color:var(--accent, #5CE1F0);width:18px;height:18px;"></i>
+            <h3>Share with Husband (Z Hub &amp; Money)</h3>
+          </div>
+          <span class="badge" style="background:rgba(92, 225, 240, 0.15);color:var(--accent, #5CE1F0);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Full Edit Access</span>
+        </div>
+        <p class="settings-desc">
+          Share a dedicated link with your husband that provides full access to edit and view <strong>Z Hub</strong> (care, meds, school notes, doctor briefs) and <strong>Money</strong> (burn, budget, medical claims). Your personal sanctuary, habits, weight tracker, and journals remain completely hidden on his device.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;">
+          <button class="btn btn-primary btn-sm" onclick="copyFamilyShareLink()">
+            <i data-lucide="copy" style="width:14px;height:14px;"></i> Copy Family Link
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="openFamilyPairingModal()">
+            <i data-lucide="qr-code" style="width:14px;height:14px;"></i> Show QR Code
+          </button>
+          <a href="${typeof syncManager !== 'undefined' ? syncManager.getFamilyPairingUrl() : '?mode=family#zhub'}" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:4px;">
+            <i data-lucide="external-link" style="width:14px;height:14px;"></i> Preview Family View
+          </a>
         </div>
       </div>
 
@@ -924,4 +1131,74 @@ function openPairingModal() {
   modal.classList.add('active');
   if (window.lucide) lucide.createIcons();
 }
+
+function openFamilyPairingModal() {
+  const familyUrl = (typeof syncManager !== 'undefined' && typeof syncManager.getFamilyPairingUrl === 'function')
+    ? syncManager.getFamilyPairingUrl()
+    : `${window.location.origin}${window.location.pathname}?mode=family#zhub`;
+
+  const modal = document.getElementById('modal-family-share');
+  const body = document.getElementById('family-share-modal-body');
+  if (!modal || !body) return;
+
+  const qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(familyUrl)}`;
+
+  body.innerHTML = `
+    <div style="background: white; padding: 12px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: inline-block;">
+      <img src="${qrSrc}" alt="Family Share QR Code" width="200" height="200" style="display: block;">
+    </div>
+    <div style="font-size: 0.84rem; color: var(--text-secondary); max-width: 360px; line-height: 1.45; text-align: center;">
+      <strong>Point phone camera at this QR code</strong> to open the Family Hub on your husband's phone. He will have full edit access to <strong>Z Hub</strong> and <strong>Money</strong>. Your personal sanctuary, habits, weight, and journal remain completely hidden.
+    </div>
+    <div style="display: flex; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap;">
+      <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${familyUrl.replace(/'/g, "\\'")}'); showToast('📋 Family link copied!')">
+        <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy Family Link
+      </button>
+      <a href="${familyUrl}" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:4px;">
+        <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> Preview Mode
+      </a>
+      <button class="btn btn-primary btn-sm" onclick="closeAllModals()">
+        Done
+      </button>
+    </div>
+  `;
+
+  modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+window.openFamilyPairingModal = openFamilyPairingModal;
+
+function copyFamilyShareLink() {
+  const familyUrl = (typeof syncManager !== 'undefined' && typeof syncManager.getFamilyPairingUrl === 'function')
+    ? syncManager.getFamilyPairingUrl()
+    : `${window.location.origin}${window.location.pathname}?mode=family#zhub`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(familyUrl).then(() => {
+      showToast('📋 Family link copied to clipboard!');
+    }).catch(() => {
+      prompt('Copy this link to share with your husband:', familyUrl);
+    });
+  } else {
+    prompt('Copy this link to share with your husband:', familyUrl);
+  }
+}
+window.copyFamilyShareLink = copyFamilyShareLink;
+
+function unlockPersonalSpace() {
+  const pin = prompt('Enter PIN to unlock personal sanctuary (default: 1234):');
+  if (pin === null) return;
+  const storedPin = localStorage.getItem('BOL_SANCTUARY_PIN') || '1234';
+  if (pin.trim() === storedPin) {
+    localStorage.setItem('BOL_APP_MODE', 'full');
+    showToast('🔓 Personal sanctuary unlocked!');
+    setTimeout(() => {
+      window.location.href = window.location.pathname + '#today';
+      window.location.reload();
+    }, 300);
+  } else {
+    alert('Incorrect PIN. Personal sanctuary remains locked.');
+  }
+}
+window.unlockPersonalSpace = unlockPersonalSpace;
 

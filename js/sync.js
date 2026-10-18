@@ -55,12 +55,21 @@ class SyncManager {
       const urlParams = new URLSearchParams(window.location.search);
       const paramUrl = urlParams.get('sync_url');
       const paramKey = urlParams.get('sync_key');
+      const modeParam = urlParams.get('mode');
+
+      if (modeParam === 'family' || modeParam === 'partner') {
+        localStorage.setItem('BOL_APP_MODE', 'family');
+      } else if (modeParam === 'all' || modeParam === 'full' || modeParam === 'personal') {
+        localStorage.setItem('BOL_APP_MODE', 'full');
+      }
+
       if (paramUrl && paramKey) {
         this.dbUrl = decodeURIComponent(paramUrl);
         this.passphrase = decodeURIComponent(paramKey);
         localStorage.setItem('BOL_SYNC_DB_URL', this.dbUrl);
         localStorage.setItem('BOL_SYNC_PASSPHRASE', this.passphrase);
-        window.history.replaceState({}, document.title, window.location.pathname);
+        const cleanSearch = (modeParam === 'family' || modeParam === 'partner') ? '?mode=family' : '';
+        window.history.replaceState({}, document.title, window.location.pathname + cleanSearch + window.location.hash);
         showToast('⚡ Instant Cloud Sync paired successfully!');
       }
     } catch (e) {}
@@ -722,6 +731,14 @@ class SyncManager {
     if (!this.isConfigured()) return null;
     const base = window.location.origin + window.location.pathname;
     return `${base}?sync_url=${encodeURIComponent(this.dbUrl)}&sync_key=${encodeURIComponent(this.passphrase)}`;
+  }
+
+  getFamilyPairingUrl() {
+    const base = window.location.origin + window.location.pathname;
+    if (this.isConfigured()) {
+      return `${base}?mode=family&sync_url=${encodeURIComponent(this.dbUrl)}&sync_key=${encodeURIComponent(this.passphrase)}#zhub`;
+    }
+    return `${base}?mode=family#zhub`;
   }
 
   updateStatusBadge() {

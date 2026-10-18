@@ -67,6 +67,11 @@ button:focus-visible, textarea:focus-visible {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
 }
 
+.aurora-nav-pill.family-mode-nav {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  max-width: 300px !important;
+}
+
 .aurora-nav-link {
   min-height: 42px;
   display: flex;
