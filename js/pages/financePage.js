@@ -4337,12 +4337,6 @@ function renderFinanceBudget() {
     }
   });
 
-  if (selectedBudgetMonth === '2026-10' && savingsFundedMTD < 500) {
-    savingsFundedMTD = 1450.00;
-    savingsBreakdown.push({ name: 'Capital One 360 Direct Deposit', amount: 650.00 });
-    savingsBreakdown.push({ name: 'Vanguard / Fidelity Direct Transfer', amount: 800.00 });
-  }
-
   // Savings Target: $3,000 for October, $3,500 from November onward
   const isNovOnward = selectedBudgetMonth >= '2026-11';
   const defaultTarget = isNovOnward ? 3500 : 3000;
