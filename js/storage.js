@@ -2180,6 +2180,10 @@ class StorageManager {
           c.amountPaid = 225.0;
           c.expectedRecovery = 157.5;
         }
+        c.nextAction = 'Emailed Mindsoother requesting claim resubmission to Anthem — awaiting claim tracking IDs';
+        if (!c.notes || c.notes.includes('Demo')) {
+          c.notes = 'Therapy session ($225.00). Emailed Mindsoother requesting they resubmit claim to Anthem.';
+        }
       }
     });
 
