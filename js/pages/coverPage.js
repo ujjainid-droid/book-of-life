@@ -381,12 +381,15 @@ const AURORA_GOOD_CHIPS = [
   '🏋️ Worked Out',
   '🍎 Fruits',
   '🥦 Vegetables',
-  '😴 Slept Well'
+  '😴 Slept Well',
+  '🛏️ Bed on Time (10p Wk / 12a Wknd)',
+  '🍽️ Didn\'t Eat Out'
 ];
 const AURORA_BAD_CHIPS = [
   '🍟 Junk Food',
   '🍭 Too Much Sugar',
-  '📱 Doomscrolled'
+  '📱 Doomscrolled',
+  '🍩 Late-Night Snacking'
 ];
 /* --------------------------------------------------------------------------
    Bed Potato Daily Roasts Catalog & Day-to-Day Midnight Rotation Engine
