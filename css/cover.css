@@ -13253,23 +13253,24 @@ body.dark-mode .protocol-sample-btn {
   grid-template-columns: 1fr;
   gap: 14px;
 }
-.mc-fc {
-  border-radius: 22px;
-  padding: 18px 20px 16px;
+.mc-fc,
+.mc-fc.summer-widget-card {
+  border-radius: 20px;
+  padding: 13px 16px !important;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 148px;
+  min-height: 0 !important;
   gap: 10px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 .mc-fc:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
 }
 .mc-fc.ED, .mc-fc.theme-lavender {
   background: linear-gradient(145deg, rgba(124, 58, 237, 0.25) 0%, rgba(28, 18, 42, 0.95) 100%);
@@ -13292,12 +13293,33 @@ body.dark-mode .protocol-sample-btn {
   border-color: rgba(234, 88, 12, 0.38);
 }
 
+.mc-fc .summer-widget-watermark {
+  top: 6px;
+  right: 10px;
+}
+.mc-fc .summer-widget-watermark svg,
+.mc-fc .summer-widget-watermark i {
+  width: 60px !important;
+  height: 60px !important;
+}
+.mc-fc .summer-widget-pill {
+  width: 32px;
+  height: 32px;
+}
 .mc-fc .summer-widget-top {
-  margin-bottom: 4px;
+  margin-bottom: 0 !important;
+  gap: 8px;
+}
+.mc-fc-head-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
 }
 .mc-fc .summer-widget-title {
-  margin: 0 0 2px 0;
-  font-size: 20px;
+  margin: 0 !important;
+  font-size: 17px;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -13305,26 +13327,19 @@ body.dark-mode .protocol-sample-btn {
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.mc-fc .summer-widget-sub {
-  font-size: 11px;
-  font-weight: 700;
-  color: #94A3B8;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
 .mc-fc .bot {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 8px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 0 !important;
+  padding-top: 0;
+  border-top: none;
 }
 .mc-tools {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 .mc-app.simple .mc-tools {

@@ -579,21 +579,18 @@ function renderUnifiedCampaignCard(camp, tier) {
         <i data-lucide="${catMeta.icon}"></i>
       </div>
       <div class="summer-widget-top">
-        <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="mc-fc-head-left">
           <div class="summer-widget-pill">
-            <i data-lucide="${catMeta.icon}" style="width: 19px; height: 19px; color: ${catMeta.accentColor};"></i>
+            <i data-lucide="${catMeta.icon}" style="width: 16px; height: 16px; color: ${catMeta.accentColor};"></i>
           </div>
           <span class="budget-badge ${catMeta.badgeClass}">${catMeta.tag}</span>
+          <h3 class="summer-widget-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
         </div>
         <div class="mc-top-actions">
           ${statusBtnHtml}
           <span class="mc-sep" aria-hidden="true"></span>
           <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to later" onclick="moveCampaignAction('${camp.id}', 'now', 'later')">🧊 Later →</button>
         </div>
-      </div>
-      <div class="summer-widget-body">
-        <h3 class="summer-widget-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
-        <div class="summer-widget-sub">${escapeHtml(catMeta.name)}</div>
       </div>
       <div class="bot summer-widget-foot">
         <div class="mc-tools">${toolBadges.join('')}</div>
