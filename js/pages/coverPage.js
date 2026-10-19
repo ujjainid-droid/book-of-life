@@ -823,7 +823,7 @@ function renderAuroraPeriodGoalsWidget(dateStr = activeTrackingDate) {
 
   return `
     <section class="card panel span2 aurora-period-card" aria-labelledby="pgT" id="section-period-goal">
-      <div class="between" style="gap:8px">
+      <div class="between" style="gap:8px;flex-wrap:wrap">
         <div class="aurora-pg-title-row">
           <span class="ttl" id="pgT" style="color:var(--accent)">${escapeHtml(goal.title.toUpperCase())}</span>
           ${goals.length > 1 ? `
@@ -844,7 +844,7 @@ function renderAuroraPeriodGoalsWidget(dateStr = activeTrackingDate) {
         <div class="aurora-pg-bar-fill" style="width:${Math.max(stats.loggedDaysCount > 0 ? 4 : 0, stats.avgProgressPct)}%;background:${barColor}"></div>
       </div>
 
-      <div class="between muted" style="font-size:12px">
+      <div class="between muted" style="font-size:12px;flex-wrap:wrap;gap:4px">
         <span><strong style="color:var(--text)">${stats.daysLeft}d left</strong> · ${stats.loggedDaysCount}/${stats.totalDays} logged</span>
         <span>Balance avg needed: <strong style="color:${stats.neededAvgForBalance <= stats.targetAvg ? 'var(--good-text, #8FE9CB)' : 'var(--accent, #5CE1F0)'}">${stats.daysLeft > 0 ? stats.neededAvgForBalance.toLocaleString() : '0'}</strong>/${escapeHtml(goal.unit === 'steps' ? 'day' : 'd')}</span>
       </div>
@@ -1644,6 +1644,8 @@ function renderDailySheet() {
             </div>
           </form>
         </section>
+
+        ${renderAuroraPeriodGoalsWidget(activeTrackingDate)}
       </div>
 
       <div class="col b">
@@ -1729,8 +1731,6 @@ function renderDailySheet() {
           </div>
           <span class="muted" id="stepsPace">${escapeHtml(stepsPaceText)}</span>
         </section>
-
-        ${renderAuroraPeriodGoalsWidget(activeTrackingDate)}
 
         <button type="button" class="tile2 hair" id="hair" aria-pressed="${isHairDone ? 'true' : 'false'}" onclick="openHairCareLogModal('${activeTrackingDate}')">
           <span class="label">HAIRCARE · ${escapeHtml(hairRoutine.badge)}</span>
