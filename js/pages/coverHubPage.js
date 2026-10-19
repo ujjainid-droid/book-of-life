@@ -311,24 +311,87 @@ window.getDomainThemeClass = getDomainThemeClass;
 function getCampaignCategoryMeta(camp) {
   const t = (camp.title || camp.id || '').toLowerCase();
   if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor')) {
-    return { tag: 'ED', name: 'School & IEP', theme: 'ED', dotColor: '#B5ABFF' };
+    return {
+      tag: 'ED',
+      name: 'School & IEP',
+      theme: 'ED',
+      dotColor: '#B5ABFF',
+      summerTheme: 'theme-lavender',
+      accentColor: '#7C3AED',
+      icon: 'graduation-cap',
+      badgeClass: 'budget-badge-violet'
+    };
   }
   if (t.includes('surgery') || t.includes('health') || t.includes('doctor') || t.includes('clinic')) {
-    return { tag: 'HEALTH', name: 'Health & Surgery', theme: 'HEALTH', dotColor: '#7DB8FF' };
+    return {
+      tag: 'HEALTH',
+      name: 'Health & Surgery',
+      theme: 'HEALTH',
+      dotColor: '#7DB8FF',
+      summerTheme: 'theme-sky',
+      accentColor: '#0284C7',
+      icon: 'heart-pulse',
+      badgeClass: 'budget-badge-sky'
+    };
   }
   if (t.includes('oon') || t.includes('reimb') || t.includes('claim') || t.includes('superbill') || t.includes('finan') || t.includes('money') || t.includes('tax') || t.includes('budget')) {
-    return { tag: 'FIN', name: 'Finance & Claims', theme: 'FIN', dotColor: '#62D6B3' };
+    return {
+      tag: 'FIN',
+      name: 'Finance & Claims',
+      theme: 'FIN',
+      dotColor: '#62D6B3',
+      summerTheme: 'theme-mint',
+      accentColor: '#0D98BA',
+      icon: 'receipt',
+      badgeClass: 'budget-badge-teal'
+    };
   }
   if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
-    return { tag: 'HOME', name: 'Home Declutter', theme: 'HOME', dotColor: '#62D6B3' };
+    return {
+      tag: 'HOME',
+      name: 'Home Declutter',
+      theme: 'HOME',
+      dotColor: '#62D6B3',
+      summerTheme: 'theme-mint',
+      accentColor: '#0D98BA',
+      icon: 'home',
+      badgeClass: 'budget-badge-teal'
+    };
   }
   if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook') || t.includes('grow')) {
-    return { tag: 'GROW', name: 'Growth & Nutrition', theme: 'GROW', dotColor: '#B5ABFF' };
+    return {
+      tag: 'GROW',
+      name: 'Growth & Nutrition',
+      theme: 'GROW',
+      dotColor: '#B5ABFF',
+      summerTheme: 'theme-coral',
+      accentColor: '#EA580C',
+      icon: 'sprout',
+      badgeClass: 'budget-badge-violet'
+    };
   }
   if (camp.cat && ['ED', 'HEALTH', 'FIN', 'HOME', 'CARE', 'GROW'].includes(camp.cat)) {
-    return { tag: camp.cat, name: camp.cat, theme: camp.cat, dotColor: '#FF8FD0' };
+    const catMap = {
+      ED: { name: 'Education & IEP', summerTheme: 'theme-lavender', accentColor: '#7C3AED', icon: 'graduation-cap', badgeClass: 'budget-badge-violet', dotColor: '#B5ABFF' },
+      HEALTH: { name: 'Health & Wellness', summerTheme: 'theme-sky', accentColor: '#0284C7', icon: 'heart-pulse', badgeClass: 'budget-badge-sky', dotColor: '#7DB8FF' },
+      FIN: { name: 'Finance & Claims', summerTheme: 'theme-mint', accentColor: '#0D98BA', icon: 'receipt', badgeClass: 'budget-badge-teal', dotColor: '#62D6B3' },
+      HOME: { name: 'Home & Space', summerTheme: 'theme-mint', accentColor: '#0D98BA', icon: 'home', badgeClass: 'budget-badge-teal', dotColor: '#62D6B3' },
+      GROW: { name: 'Growth & Learning', summerTheme: 'theme-coral', accentColor: '#EA580C', icon: 'sprout', badgeClass: 'budget-badge-violet', dotColor: '#B5ABFF' },
+      CARE: { name: 'Self Care & Routine', summerTheme: 'theme-rose', accentColor: '#E11D48', icon: 'sparkles', badgeClass: 'budget-badge-rose', dotColor: '#FF8FD0' }
+    };
+    const m = catMap[camp.cat] || catMap.CARE;
+    return { tag: camp.cat, theme: camp.cat, ...m };
   }
-  return { tag: 'CARE', name: 'Aesthetics', theme: 'CARE', dotColor: '#FF8FD0' };
+  return {
+    tag: 'CARE',
+    name: 'Self Care & Routine',
+    theme: 'CARE',
+    dotColor: '#FF8FD0',
+    summerTheme: 'theme-rose',
+    accentColor: '#E11D48',
+    icon: 'sparkles',
+    badgeClass: 'budget-badge-rose'
+  };
 }
 window.getCampaignCategoryMeta = getCampaignCategoryMeta;
 
@@ -511,17 +574,28 @@ function renderUnifiedCampaignCard(camp, tier) {
   }
 
   return `
-    <article class="mc-fc ${catMeta.tag}">
-      <div class="top">
-        <span class="mc-tag">${catMeta.tag}</span>
-        <h3 onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
+    <article class="mc-fc summer-widget-card ${catMeta.tag} ${catMeta.summerTheme}">
+      <div class="summer-widget-watermark" style="color: ${catMeta.accentColor};">
+        <i data-lucide="${catMeta.icon}"></i>
+      </div>
+      <div class="summer-widget-top">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="summer-widget-pill">
+            <i data-lucide="${catMeta.icon}" style="width: 19px; height: 19px; color: ${catMeta.accentColor};"></i>
+          </div>
+          <span class="budget-badge ${catMeta.badgeClass}">${catMeta.tag}</span>
+        </div>
         <div class="mc-top-actions">
           ${statusBtnHtml}
           <span class="mc-sep" aria-hidden="true"></span>
           <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to later" onclick="moveCampaignAction('${camp.id}', 'now', 'later')">🧊 Later →</button>
         </div>
       </div>
-      <div class="bot">
+      <div class="summer-widget-body">
+        <h3 class="summer-widget-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
+        <div class="summer-widget-sub">${escapeHtml(catMeta.name)}</div>
+      </div>
+      <div class="bot summer-widget-foot">
         <div class="mc-tools">${toolBadges.join('')}</div>
       </div>
     </article>

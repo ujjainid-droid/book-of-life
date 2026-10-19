@@ -13251,47 +13251,66 @@ body.dark-mode .protocol-sample-btn {
 .mc-focus-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
+  gap: 14px;
 }
 .mc-fc {
-  --c: var(--violet);
-  --cb: var(--violet-bg);
-  background: var(--cb);
-  border: 1px solid var(--c);
-  border-radius: 20px;
-  padding: 14px;
+  border-radius: 22px;
+  padding: 18px 20px 16px;
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-.mc-fc.ED { --c: #B5ABFF; --cb: #231F55; }
-.mc-fc.HEALTH { --c: #7DB8FF; --cb: #0F2F5E; }
-.mc-fc.FIN, .mc-fc.HOME { --c: #62D6B3; --cb: #0F3B33; }
-.mc-fc.CARE { --c: #FF8FD0; --cb: #4A1840; }
-.mc-fc.GROW { --c: #B5ABFF; --cb: #231F55; }
-
-.mc-fc .top {
-  display: flex;
-  align-items: center;
+  justify-content: space-between;
+  min-height: 148px;
   gap: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
-.mc-tag {
-  font-size: 11px;
+.mc-fc:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+.mc-fc.ED, .mc-fc.theme-lavender {
+  background: linear-gradient(145deg, rgba(124, 58, 237, 0.25) 0%, rgba(28, 18, 42, 0.95) 100%);
+  border-color: rgba(124, 58, 237, 0.38);
+}
+.mc-fc.HEALTH, .mc-fc.theme-sky {
+  background: linear-gradient(145deg, rgba(2, 132, 199, 0.25) 0%, rgba(15, 25, 45, 0.95) 100%);
+  border-color: rgba(2, 132, 199, 0.38);
+}
+.mc-fc.FIN, .mc-fc.HOME, .mc-fc.theme-mint {
+  background: linear-gradient(145deg, rgba(13, 152, 186, 0.25) 0%, rgba(15, 30, 32, 0.95) 100%);
+  border-color: rgba(13, 152, 186, 0.38);
+}
+.mc-fc.CARE, .mc-fc.theme-rose {
+  background: linear-gradient(145deg, rgba(225, 29, 72, 0.25) 0%, rgba(36, 16, 26, 0.95) 100%);
+  border-color: rgba(225, 29, 72, 0.38);
+}
+.mc-fc.GROW, .mc-fc.theme-coral {
+  background: linear-gradient(145deg, rgba(234, 88, 12, 0.25) 0%, rgba(36, 22, 28, 0.95) 100%);
+  border-color: rgba(234, 88, 12, 0.38);
+}
+
+.mc-fc .summer-widget-top {
+  margin-bottom: 4px;
+}
+.mc-fc .summer-widget-title {
+  margin: 0 0 2px 0;
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 0.08em;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: var(--c);
-  color: #0F1020;
-}
-.mc-fc h3 {
-  margin: 0;
-  font-size: 17px;
-  font-weight: 700;
-  flex: 1;
-  min-width: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: #F8FAFC;
+  white-space: normal;
   overflow-wrap: anywhere;
-  color: var(--text);
+}
+.mc-fc .summer-widget-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .mc-fc .bot {
   display: flex;
@@ -13299,28 +13318,37 @@ body.dark-mode .protocol-sample-btn {
   justify-content: space-between;
   gap: 8px;
   flex-wrap: wrap;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 .mc-tools {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 .mc-app.simple .mc-tools {
   display: none;
 }
 .mc-tb {
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
   padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 800;
-  background: #fff;
+  background: #FFFFFF;
   color: #1B1B2F;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.mc-tb:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
 }
 .mc-tb.m {
   color: #6D4BDB;
@@ -14588,41 +14616,60 @@ body.dark-mode .protocol-sample-btn {
   background: var(--line);
 }
 
-/* Compass: Focus Cards */
+/* Compass: Focus Cards (Budget Page Summer Widget Aesthetic) */
+:root[data-theme="light"] .mc-fc {
+  border-color: rgba(255, 255, 255, 0.75);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+:root[data-theme="light"] .mc-fc:hover {
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
 :root[data-theme="light"] .mc-fc.ED,
+:root[data-theme="light"] .mc-fc.theme-lavender,
 :root[data-theme="light"] .fc.ED {
-  --c: #6552D6;
-  --cb: #ECE8FF;
+  background: #F3E8FF;
+  border-color: rgba(124, 58, 237, 0.18);
 }
 :root[data-theme="light"] .mc-fc.HEALTH,
+:root[data-theme="light"] .mc-fc.theme-sky,
 :root[data-theme="light"] .fc.HEALTH {
-  --c: #2F6FD0;
-  --cb: #E1EDFF;
+  background: #E1F4FE;
+  border-color: rgba(2, 132, 199, 0.18);
 }
 :root[data-theme="light"] .mc-fc.FIN,
 :root[data-theme="light"] .mc-fc.HOME,
+:root[data-theme="light"] .mc-fc.theme-mint,
 :root[data-theme="light"] .fc.FIN,
 :root[data-theme="light"] .fc.HOME {
-  --c: #17935F;
-  --cb: #DDF5EC;
+  background: #DDF5F2;
+  border-color: rgba(13, 152, 186, 0.18);
 }
 :root[data-theme="light"] .mc-fc.CARE,
+:root[data-theme="light"] .mc-fc.theme-rose,
 :root[data-theme="light"] .fc.CARE {
-  --c: #C92B86;
-  --cb: #FFE3F3;
+  background: #FFE5EA;
+  border-color: rgba(225, 29, 72, 0.18);
 }
 :root[data-theme="light"] .mc-fc.GROW,
+:root[data-theme="light"] .mc-fc.theme-coral,
 :root[data-theme="light"] .fc.GROW {
-  --c: #4C4AD9;
-  --cb: #E4E3FF;
+  background: #FFEBE5;
+  border-color: rgba(234, 88, 12, 0.18);
 }
 :root[data-theme="light"] .mc-tag,
 :root[data-theme="light"] .tag {
   color: #FFFFFF;
 }
+:root[data-theme="light"] .mc-fc .summer-widget-title,
 :root[data-theme="light"] .mc-fc h3,
 :root[data-theme="light"] .fc h3 {
-  color: var(--text);
+  color: #1E293B;
+}
+:root[data-theme="light"] .mc-fc .summer-widget-sub {
+  color: #64748B;
+}
+:root[data-theme="light"] .mc-fc .bot {
+  border-top-color: rgba(0, 0, 0, 0.06);
 }
 :root[data-theme="light"] .mc-status,
 :root[data-theme="light"] .status {
@@ -14661,7 +14708,8 @@ body.dark-mode .protocol-sample-btn {
 }
 :root[data-theme="light"] .mc-tb,
 :root[data-theme="light"] .tb {
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 /* Compass: Later Row */
