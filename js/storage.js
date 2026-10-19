@@ -477,6 +477,7 @@ class StorageManager {
           }
         ]
       },
+      coverCampaignsSeedVersion: 9,
       // Cover Page: Top of Mind Scratchpad (legacy preserved)
       coverTopMind: {
         now: [
@@ -736,6 +737,33 @@ class StorageManager {
         if (Array.isArray(s.activeTerrorizing) && s.activeTerrorizing.length > 0) {
           merged.activeTerrorizing = Array.from(new Set([...(merged.activeTerrorizing || []), ...s.activeTerrorizing]));
         }
+        if (s.theme === 'light' || s.theme === 'dark') merged.theme = s.theme;
+        if (s.pacerSchedule && typeof s.pacerSchedule === 'object') {
+          merged.pacerSchedule = { ...(merged.pacerSchedule || {}), ...s.pacerSchedule };
+        }
+        if (s.habitsUpdatedAt && typeof s.habitsUpdatedAt === 'object') {
+          merged.habitsUpdatedAt = { ...(merged.habitsUpdatedAt || {}), ...s.habitsUpdatedAt };
+        }
+        if (s.dayGoalsUpdatedAt && typeof s.dayGoalsUpdatedAt === 'object') {
+          merged.dayGoalsUpdatedAt = { ...(merged.dayGoalsUpdatedAt || {}), ...s.dayGoalsUpdatedAt };
+        }
+        if (s.coverCampaigns && typeof s.coverCampaigns === 'object' && (Array.isArray(s.coverCampaigns.now) || Array.isArray(s.coverCampaigns.later))) {
+          const snapCoverTime = Number(s.coverUpdatedAt) || 0;
+          const curCoverTime = Number(merged.coverUpdatedAt) || 0;
+          if (snap.key === STORAGE_KEY || snapCoverTime >= curCoverTime || !merged._hasLoadedCoverCampaigns) {
+            merged.coverCampaigns = {
+              now: Array.isArray(s.coverCampaigns.now) ? s.coverCampaigns.now : [],
+              later: Array.isArray(s.coverCampaigns.later) ? s.coverCampaigns.later : []
+            };
+            merged._hasLoadedCoverCampaigns = true;
+          }
+        }
+        if (s.coverCampaignsSeedVersion) {
+          merged.coverCampaignsSeedVersion = Math.max(Number(merged.coverCampaignsSeedVersion) || 0, Number(s.coverCampaignsSeedVersion) || 0);
+        }
+        if (s.coverUpdatedAt) {
+          merged.coverUpdatedAt = Math.max(Number(merged.coverUpdatedAt) || 0, Number(s.coverUpdatedAt) || 0);
+        }
         if (s.coverTopMind && typeof s.coverTopMind === 'object') {
           merged.coverTopMind = {
             now: Array.isArray(s.coverTopMind.now) ? s.coverTopMind.now : (defaults.coverTopMind.now || []),
@@ -744,6 +772,26 @@ class StorageManager {
         }
         if (s.coverTopicAudits && Array.isArray(s.coverTopicAudits) && s.coverTopicAudits.length > 0) {
           merged.coverTopicAudits = s.coverTopicAudits;
+        }
+        if (Array.isArray(s.hobbies) && s.hobbies.length > 0) {
+          const snapHobTime = Number(s.hobbiesUpdatedAt) || 0;
+          const curHobTime = Number(merged.hobbiesUpdatedAt) || 0;
+          if (snap.key === STORAGE_KEY || snapHobTime >= curHobTime) {
+            merged.hobbies = s.hobbies;
+          }
+        }
+        if (Array.isArray(s.hobbyShortlist)) {
+          const snapHobTime = Number(s.hobbiesUpdatedAt) || 0;
+          const curHobTime = Number(merged.hobbiesUpdatedAt) || 0;
+          if (snap.key === STORAGE_KEY || snapHobTime >= curHobTime) {
+            merged.hobbyShortlist = s.hobbyShortlist;
+          }
+        }
+        if (s.hobbiesUpdatedAt) {
+          merged.hobbiesUpdatedAt = Math.max(Number(merged.hobbiesUpdatedAt) || 0, Number(s.hobbiesUpdatedAt) || 0);
+        }
+        if (s.hobbiesSeedVersion) {
+          merged.hobbiesSeedVersion = Math.max(Number(merged.hobbiesSeedVersion) || 0, Number(s.hobbiesSeedVersion) || 0);
         }
 
         // 11. HairCareState: Two-way merge preserving local completions and skips
@@ -806,6 +854,9 @@ class StorageManager {
         if (s.weightTarget !== undefined && !isNaN(Number(s.weightTarget)) && Number(s.weightTarget) > 0) {
           merged.weightTarget = Math.round(Number(s.weightTarget) * 10) / 10;
         }
+        if (s.weightUpdatedAt) {
+          merged.weightUpdatedAt = Math.max(Number(merged.weightUpdatedAt) || 0, Number(s.weightUpdatedAt) || 0);
+        }
 
         // 12. Finance Hub State (Monarch summaries, categories, baselines, and transactions)
         if (s.finance && typeof s.finance === 'object') {
@@ -840,6 +891,27 @@ class StorageManager {
           };
         }
       }
+      delete merged._hasLoadedCoverCampaigns;
+
+      // Check dedicated resilient Cover Campaigns backup
+      try {
+        const dedicatedCover = localStorage.getItem('BOL_COVER_CAMPAIGNS_V2');
+        if (dedicatedCover) {
+          const parsedCover = JSON.parse(dedicatedCover);
+          if (parsedCover && parsedCover.coverCampaigns && typeof parsedCover.coverCampaigns === 'object') {
+            const dedTime = Number(parsedCover.coverUpdatedAt) || 0;
+            const curTime = Number(merged.coverUpdatedAt) || 0;
+            if (dedTime >= curTime && (Array.isArray(parsedCover.coverCampaigns.now) || Array.isArray(parsedCover.coverCampaigns.later))) {
+              merged.coverCampaigns = {
+                now: Array.isArray(parsedCover.coverCampaigns.now) ? parsedCover.coverCampaigns.now : [],
+                later: Array.isArray(parsedCover.coverCampaigns.later) ? parsedCover.coverCampaigns.later : []
+              };
+              merged.coverUpdatedAt = Math.max(curTime, dedTime);
+              merged.coverCampaignsSeedVersion = Math.max(Number(merged.coverCampaignsSeedVersion) || 0, Number(parsedCover.coverCampaignsSeedVersion) || 0, 9);
+            }
+          }
+        }
+      } catch (e) {}
 
       // Check dedicated resilient Finance backup
       try {
@@ -1045,7 +1117,7 @@ class StorageManager {
         if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns[tierKey])) {
           merged.coverCampaigns[tierKey].forEach(c => {
             if (c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare')) {
-              c.status = 'Maintain';
+              if (!['IP', 'NS', 'Maintain', 'Done'].includes(c.status)) c.status = 'Maintain';
               c.tools = {
                 margo: { label: 'Haircare Checkpoint', action: 'haircare' },
                 apple: { noteQuery: '# BEAUTY 02_HAIR' }
@@ -1071,13 +1143,6 @@ class StorageManager {
           });
         }
       });
-      if (merged.coverCampaigns && Array.isArray(merged.coverCampaigns.now)) {
-        const hIdx = merged.coverCampaigns.now.findIndex(c => c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare'));
-        if (hIdx !== -1 && hIdx < 3 && merged.coverCampaigns.now.length >= 4) {
-          const [haircareCamp] = merged.coverCampaigns.now.splice(hIdx, 1);
-          merged.coverCampaigns.now.push(haircareCamp);
-        }
-      }
       if (!merged.coverTopMind || !Array.isArray(merged.coverTopMind.now)) {
         merged.coverTopMind = JSON.parse(JSON.stringify(defaults.coverTopMind));
       }
@@ -1089,6 +1154,13 @@ class StorageManager {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
         localStorage.setItem('BOOK_OF_LIFE_DATA_BACKUP', JSON.stringify(merged));
+        if (merged.coverCampaigns) {
+          localStorage.setItem('BOL_COVER_CAMPAIGNS_V2', JSON.stringify({
+            coverCampaigns: merged.coverCampaigns,
+            coverUpdatedAt: merged.coverUpdatedAt || 0,
+            coverCampaignsSeedVersion: merged.coverCampaignsSeedVersion || 9
+          }));
+        }
       } catch (e) {}
 
       return merged;
@@ -1103,6 +1175,13 @@ class StorageManager {
       const serialized = JSON.stringify(this.data);
       localStorage.setItem(STORAGE_KEY, serialized);
       localStorage.setItem('BOOK_OF_LIFE_DATA_BACKUP', serialized);
+      if (this.data && this.data.coverCampaigns) {
+        localStorage.setItem('BOL_COVER_CAMPAIGNS_V2', JSON.stringify({
+          coverCampaigns: this.data.coverCampaigns,
+          coverUpdatedAt: this.data.coverUpdatedAt || 0,
+          coverCampaignsSeedVersion: this.data.coverCampaignsSeedVersion || 9
+        }));
+      }
       if (typeof syncManager !== 'undefined' && syncManager.isConfigured()) {
         syncManager.pushToCloud();
       }

@@ -483,11 +483,29 @@ class SyncManager {
     }
 
     // 11. Cover Page: Top of Mind, Topic Audits & Campaigns (respecting coverUpdatedAt)
-    const locCoverTime = Number(storage.data.coverUpdatedAt) || 0;
+    let locCoverTime = Number(storage.data.coverUpdatedAt) || 0;
+    let locCoverCampaigns = storage.data.coverCampaigns;
+    try {
+      const dedicatedCover = localStorage.getItem('BOL_COVER_CAMPAIGNS_V2');
+      if (dedicatedCover) {
+        const parsedCover = JSON.parse(dedicatedCover);
+        if (parsedCover && parsedCover.coverCampaigns && typeof parsedCover.coverCampaigns === 'object') {
+          const dedTime = Number(parsedCover.coverUpdatedAt) || 0;
+          if (dedTime >= locCoverTime) {
+            locCoverTime = dedTime;
+            locCoverCampaigns = {
+              now: Array.isArray(parsedCover.coverCampaigns.now) ? parsedCover.coverCampaigns.now : [],
+              later: Array.isArray(parsedCover.coverCampaigns.later) ? parsedCover.coverCampaigns.later : []
+            };
+          }
+        }
+      }
+    } catch (e) {}
+
     const incCoverTime = Number(incoming.coverUpdatedAt) || 0;
     const mergedCoverUpdatedAt = Math.max(locCoverTime, incCoverTime);
 
-    let mergedTopMind = (locCoverTime > incCoverTime && storage.data.coverTopMind)
+    let mergedTopMind = (locCoverTime >= incCoverTime && storage.data.coverTopMind)
       ? storage.data.coverTopMind
       : incoming.coverTopMind;
     if (!mergedTopMind || (!Array.isArray(mergedTopMind.now) && !Array.isArray(mergedTopMind.later))) {
@@ -495,7 +513,7 @@ class SyncManager {
       if (storage.data.coverTopMind) localWasRicher = true;
     }
 
-    let mergedTopicAudits = (locCoverTime > incCoverTime && Array.isArray(storage.data.coverTopicAudits) && storage.data.coverTopicAudits.length > 0)
+    let mergedTopicAudits = (locCoverTime >= incCoverTime && Array.isArray(storage.data.coverTopicAudits) && storage.data.coverTopicAudits.length > 0)
       ? storage.data.coverTopicAudits
       : incoming.coverTopicAudits;
     if (!Array.isArray(mergedTopicAudits) || mergedTopicAudits.length === 0) {
@@ -508,21 +526,31 @@ class SyncManager {
     }
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
-    let mergedCampaigns = (locCoverTime > incCoverTime && storage.data.coverCampaigns)
-      ? storage.data.coverCampaigns
-      : incoming.coverCampaigns;
+    const normalizedIncomingCampaigns = (incoming.coverCampaigns && typeof incoming.coverCampaigns === 'object')
+      ? {
+          now: Array.isArray(incoming.coverCampaigns.now) ? incoming.coverCampaigns.now : [],
+          later: Array.isArray(incoming.coverCampaigns.later) ? incoming.coverCampaigns.later : []
+        }
+      : null;
+
+    let mergedCampaigns = (locCoverTime >= incCoverTime && locCoverCampaigns)
+      ? locCoverCampaigns
+      : (normalizedIncomingCampaigns || locCoverCampaigns);
     if (locCoverTime > incCoverTime) {
       localWasRicher = true;
     }
     let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 9);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 9 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 9 && locCoverTime >= incCoverTime)) {
+    if (!mergedCampaigns || (!Array.isArray(mergedCampaigns.now) && !Array.isArray(mergedCampaigns.later))) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
-      mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 9)
-        ? storage.data.coverCampaigns
-        : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : (incoming.coverCampaigns || { now: [], later: [] }));
+      mergedCampaigns = locCoverCampaigns
+        ? locCoverCampaigns
+        : (defaults ? JSON.parse(JSON.stringify(defaults.coverCampaigns)) : { now: [], later: [] });
       mergedCampVersion = 9;
       localWasRicher = true;
     }
+    if (!Array.isArray(mergedCampaigns.now)) mergedCampaigns.now = [];
+    if (!Array.isArray(mergedCampaigns.later)) mergedCampaigns.later = [];
+
     // Ensure Chin hair is present in later if not already in now or later
     const hasChinHair = [...(mergedCampaigns.now || []), ...(mergedCampaigns.later || [])].some(c =>
       c && (c.id === 'camp-chinhair' || (c.title || '').toLowerCase().trim() === 'chin hair')
@@ -555,7 +583,7 @@ class SyncManager {
       if (mergedCampaigns && Array.isArray(mergedCampaigns[tierKey])) {
         mergedCampaigns[tierKey].forEach(c => {
           if (c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare')) {
-            c.status = 'Maintain';
+            if (!['IP', 'NS', 'Maintain', 'Done'].includes(c.status)) c.status = 'Maintain';
             c.tools = {
               margo: { label: 'Haircare Checkpoint', action: 'haircare' },
               apple: { noteQuery: '# BEAUTY 02_HAIR' }
@@ -565,13 +593,6 @@ class SyncManager {
         });
       }
     });
-    if (mergedCampaigns && Array.isArray(mergedCampaigns.now)) {
-      const hIdx = mergedCampaigns.now.findIndex(c => c && (c.id === 'camp-haircare' || (c.title || '').toLowerCase().trim() === 'haircare'));
-      if (hIdx !== -1 && hIdx < 3 && mergedCampaigns.now.length >= 4) {
-        const [haircareCamp] = mergedCampaigns.now.splice(hIdx, 1);
-        mergedCampaigns.now.push(haircareCamp);
-      }
-    }
 
     // 7c. AuroraDailyState: Two-way merge by updatedAt
     const mergedAuroraDailyState = { ...(storage.data.auroraDailyState || {}) };
@@ -755,6 +776,13 @@ class SyncManager {
     try {
       localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data));
       localStorage.setItem('BOOK_OF_LIFE_DATA_BACKUP', JSON.stringify(storage.data));
+      if (storage.data.coverCampaigns) {
+        localStorage.setItem('BOL_COVER_CAMPAIGNS_V2', JSON.stringify({
+          coverCampaigns: storage.data.coverCampaigns,
+          coverUpdatedAt: storage.data.coverUpdatedAt || 0,
+          coverCampaignsSeedVersion: storage.data.coverCampaignsSeedVersion || 9
+        }));
+      }
     } catch (e) {}
 
     storage.recalculateAllStreaks();

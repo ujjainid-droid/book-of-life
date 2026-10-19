@@ -663,6 +663,7 @@ function undoCompassRemove() {
   const campaigns = storage.getCoverCampaigns();
   if (!campaigns[tier]) campaigns[tier] = [];
   campaigns[tier].splice(Math.min(index, campaigns[tier].length), 0, item);
+  storage.data.coverUpdatedAt = Date.now();
   storage.saveData();
   compassUndoState = null;
   clearTimeout(compassToastTimer);
@@ -692,6 +693,7 @@ function promptEditCampaignTitle(campId, currentTitle) {
     let camp = campaigns.now.find(x => x.id === campId) || campaigns.later.find(x => x.id === campId);
     if (camp) {
       camp.title = newTitle.trim();
+      storage.data.coverUpdatedAt = Date.now();
       storage.saveData();
       renderCoverHubPage();
     }

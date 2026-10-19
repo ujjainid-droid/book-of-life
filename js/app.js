@@ -327,6 +327,31 @@ function switchAppView(viewName, subViewName) {
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 
+function renderCurrentView() {
+  if (currentView === 'zlog') {
+    const sub = (typeof activeZLogSubTab !== 'undefined' && activeZLogSubTab) || localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline';
+    if (typeof renderZLogPage === 'function') renderZLogPage(sub);
+  } else if (currentView === 'finance') {
+    const sub = (typeof activeFinanceSubTab !== 'undefined' && activeFinanceSubTab) || localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn';
+    if (typeof renderFinancePage === 'function') {
+      renderFinancePage(sub);
+    } else if (typeof renderClaimsPage === 'function') {
+      renderClaimsPage();
+    }
+  } else if (currentView === 'podcasts') {
+    if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
+  } else if (currentView === 'cover') {
+    if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
+  } else if (currentView === 'hobby') {
+    if (typeof renderHobbyPage === 'function') renderHobbyPage();
+  } else {
+    if (typeof renderDailySheet === 'function') renderDailySheet();
+  }
+  refreshAppBadges();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.renderCurrentView = renderCurrentView;
+
 // Backward compatibility alias
 function toggleAdultingBunker() {
   if (currentView === 'sanctuary' || currentView === 'cover') {
