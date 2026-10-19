@@ -137,12 +137,31 @@ function renderCoverHubPage() {
           </div>
           <button type="button" class="mc-add" id="addNow" onclick="promptAddCampaignItem('now')">+ Add focus</button>
         </div>
-        <div class="mc-focus-grid" id="nowList">
-          ${campaignsData.now.length > 0
-            ? campaignsData.now.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')
-            : `<div class="mc-empty">Nothing active. Pull something in from Later.</div>`
+        ${(() => {
+          const isMaintainItem = (camp) => {
+            if (!camp) return false;
+            const isHc = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
+            const raw = String(camp.status || (isHc ? 'Maintain' : 'IP')).trim().toLowerCase();
+            return raw === 'maintain' || raw === 'review';
+          };
+          const nowPrimary = campaignsData.now.filter(c => !isMaintainItem(c));
+          const nowMaintain = campaignsData.now.filter(c => isMaintainItem(c));
+          if (campaignsData.now.length === 0) {
+            return `<div class="mc-focus-grid" id="nowList"><div class="mc-empty">Nothing active. Pull something in from Later.</div></div>`;
           }
-        </div>
+          return `
+            ${nowPrimary.length > 0 ? `
+              <div class="mc-focus-grid" id="nowList">
+                ${nowPrimary.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+              </div>
+            ` : ''}
+            ${nowMaintain.length > 0 ? `
+              <div class="mc-focus-grid mc-maintain-row" id="nowMaintainList">
+                ${nowMaintain.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+              </div>
+            ` : ''}
+          `;
+        })()}
 
         <div class="mc-divider"></div>
 
@@ -153,12 +172,31 @@ function renderCoverHubPage() {
           </div>
           <button type="button" class="mc-add" id="addLater" onclick="promptAddCampaignItem('later')">+ Add to later</button>
         </div>
-        <div class="mc-later-grid" id="laterList">
-          ${campaignsData.later.length > 0
-            ? campaignsData.later.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')
-            : `<div class="mc-empty">Parking lot is empty.</div>`
+        ${(() => {
+          const isMaintainItem = (camp) => {
+            if (!camp) return false;
+            const isHc = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
+            const raw = String(camp.status || (isHc ? 'Maintain' : 'NS')).trim().toLowerCase();
+            return raw === 'maintain' || raw === 'review';
+          };
+          const laterPrimary = campaignsData.later.filter(c => !isMaintainItem(c));
+          const laterMaintain = campaignsData.later.filter(c => isMaintainItem(c));
+          if (campaignsData.later.length === 0) {
+            return `<div class="mc-later-grid" id="laterList"><div class="mc-empty">Parking lot is empty.</div></div>`;
           }
-        </div>
+          return `
+            ${laterPrimary.length > 0 ? `
+              <div class="mc-later-grid" id="laterList">
+                ${laterPrimary.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
+              </div>
+            ` : ''}
+            ${laterMaintain.length > 0 ? `
+              <div class="mc-later-grid mc-maintain-row" id="laterMaintainList">
+                ${laterMaintain.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
+              </div>
+            ` : ''}
+          `;
+        })()}
       </section>
 
       <div class="mc-side">
