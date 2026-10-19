@@ -1466,9 +1466,11 @@ function renderDailySheet() {
     <div class="aurora-app">
 
       <header class="card head span2 today-top-bar" id="today-top-bar">
-        <div class="today-top-bar-left" onclick="triggerHeaderDatePicker()" style="cursor:pointer" title="Tap to pick date">
+        <div class="today-top-bar-left">
           <span class="today-top-bar-date">
-            ${escapeHtml(formattedDateHeader)}
+            <button type="button" class="date-step-btn" onclick="event.stopPropagation();navigateDate(-1)" title="Previous day" aria-label="Previous day">‹</button>
+            <span class="date-picker-trigger" onclick="triggerHeaderDatePicker()" style="cursor:pointer" title="Tap to pick any date">${escapeHtml(formattedDateHeader)}</span>
+            <button type="button" class="date-step-btn" onclick="event.stopPropagation();navigateDate(1)" title="Next day" aria-label="Next day">›</button>
             ${!isToday ? `<button type="button" class="today-return-btn" onclick="event.stopPropagation();resetToToday()" title="Return to today">Today</button>` : ''}
           </span>
           <h1 class="today-top-bar-title aurora-wordmark" aria-label="margo"><span class="today-m-mark aurora-m-mark">m</span><span class="today-argo aurora-argo">argo</span></h1>
@@ -2392,16 +2394,20 @@ function submitAddDayGoalInline(event, dateStr = activeTrackingDate, inputId = '
 }
 
 function resetToToday() {
-  activeTrackingDate = formatDateIso(new Date());
-  renderDailySheet();
+  jumpToTrackingDate(formatDateIso(new Date()));
 }
 
 function navigateDate(offset) {
   const d = parseDateIso(activeTrackingDate);
   d.setDate(d.getDate() + offset);
-  activeTrackingDate = formatDateIso(d);
-  renderDailySheet();
+  jumpToTrackingDate(formatDateIso(d));
 }
+
+window.jumpToTrackingDate = jumpToTrackingDate;
+window.triggerHeaderDatePicker = triggerHeaderDatePicker;
+window.onHeaderDatePicked = onHeaderDatePicked;
+window.resetToToday = resetToToday;
+window.navigateDate = navigateDate;
 
 /* --------------------------------------------------------------------------
    Gamification Points Quick Adjuster & Historical Audit
