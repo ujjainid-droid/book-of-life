@@ -1301,15 +1301,11 @@ function renderDailySheet() {
     });
   }
 
-  let maxStreak = 0;
   let moveStreak = (storage.data.habitStreaks && storage.data.habitStreaks[moveId]) || 0;
   let standStreak = (storage.data.habitStreaks && storage.data.habitStreaks[standId]) || 0;
-  habits.forEach(h => {
-    const s = (storage.data.habitStreaks && storage.data.habitStreaks[h.id]) || 0;
-    if (s > maxStreak) maxStreak = s;
-  });
-  const overallStreak = (typeof storage.getOverallStreak === 'function') ? storage.getOverallStreak() : 0;
-  const currentStreak = Math.max(0, moveStreak, standStreak, maxStreak, overallStreak);
+  const currentStreak = (typeof storage.getOverallStreak === 'function')
+    ? storage.getOverallStreak()
+    : Math.max(0, Math.min(moveStreak, standStreak));
 
   // Aurora granular state for activeTrackingDate
   const auroraState = storage.getAuroraDayState(activeTrackingDate);

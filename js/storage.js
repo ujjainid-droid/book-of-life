@@ -1518,78 +1518,40 @@ class StorageManager {
     };
   }
 
-  isDayActive(dStr) {
+  isMove100Completed(dStr) {
     if (!dStr || !this.data) return false;
-
-    // 1. Aurora granular Move, Stand hours, Anchor chips, or Quick Log chips
     const auroraDay = this.data.auroraDailyState && this.data.auroraDailyState[dStr];
     if (auroraDay) {
-      if ((Number(auroraDay.moveCal) || 0) > 0) return true;
-      if (auroraDay.anch && (Number(auroraDay.anch.move) > 0 || Number(auroraDay.anch.stand) > 0)) return true;
-      if (Array.isArray(auroraDay.hours) && auroraDay.hours.some(Boolean)) return true;
-      if (Array.isArray(auroraDay.chips) && auroraDay.chips.length > 0) return true;
+      const moveCal = Number(auroraDay.moveCal) || 0;
+      const moveAnch = (auroraDay.anch && typeof auroraDay.anch.move === 'number') ? auroraDay.anch.move : 0;
+      return moveCal >= 300 || moveAnch === 4;
     }
-
-    // 2. Habits state (Move, Stand, or custom habits)
     const dayHabits = this.data.habitsState && this.data.habitsState[dStr];
-    if (dayHabits && Object.values(dayHabits).some(v => v === true || (typeof v === 'number' && v > 0))) {
-      return true;
+    if (dayHabits) {
+      const rawMove = dayHabits['h-move'];
+      return rawMove === 1 || rawMove === true;
     }
-
-    // 3. Good / Not-so-good choices
-    const c = this.data.choicesState && this.data.choicesState[dStr];
-    if (c && ((Number(c.good) || 0) > 0 || (Number(c.not) || 0) > 0)) {
-      if (!(c.good === 3 && c.not === 0 && !c.updatedAt)) {
-        return true;
-      }
-    }
-
-    // 4. Period goals (e.g. 10k Steps · October)
-    if (Array.isArray(this.data.periodGoals)) {
-      const hasPeriodLog = this.data.periodGoals.some(pg =>
-        pg && pg.logs && pg.logs[dStr] !== undefined && pg.logs[dStr] !== null && Number(pg.logs[dStr]) > 0
-      );
-      if (hasPeriodLog) return true;
-    }
-
-    // 5. Weight tracker
-    if (this.data.weightLogs && this.data.weightLogs[dStr] !== undefined && this.data.weightLogs[dStr] !== null && Number(this.data.weightLogs[dStr]) > 0) {
-      return true;
-    }
-
-    // 6. Let's do this (dayGoals)
-    const dayGoals = this.data.dayGoals && this.data.dayGoals[dStr];
-    if (Array.isArray(dayGoals) && dayGoals.length > 0) {
-      const dummyTexts = new Set([
-        'morning mobility', 'stretch session', 'post-dinner walk',
-        'take breaks', 'stand and stretch', 'desk stand offs'
-      ]);
-      const hasRealGoal = dayGoals.some(g => g && !dummyTexts.has((g.text || '').toLowerCase().trim()) && (g.completed || g.id));
-      if (hasRealGoal) return true;
-    }
-
-    // 7. Haircare routine
-    const hair = this.data.hairCareState && this.data.hairCareState[dStr];
-    if (hair && (hair.completed || hair.skipped)) {
-      return true;
-    }
-
-    // 8. Evening check-in (Mood / Vitality or Journal)
-    if (this.getHealthLevel(dStr) !== null) {
-      return true;
-    }
-    const journal = this.data.sanctuaryJournals && this.data.sanctuaryJournals[dStr];
-    if (journal && journal.text && journal.text.trim().length > 0) {
-      return true;
-    }
-
-    // 9. Z Hub user-logged entry
-    const zEntry = this.data.zlogEntries && this.data.zlogEntries[dStr];
-    if (zEntry && zEntry.updatedAt) {
-      return true;
-    }
-
     return false;
+  }
+
+  isStand100Completed(dStr) {
+    if (!dStr || !this.data) return false;
+    const auroraDay = this.data.auroraDailyState && this.data.auroraDailyState[dStr];
+    if (auroraDay) {
+      const standHours = Array.isArray(auroraDay.hours) ? auroraDay.hours.filter(Boolean).length : 0;
+      const standAnch = (auroraDay.anch && typeof auroraDay.anch.stand === 'number') ? auroraDay.anch.stand : 0;
+      return standHours >= 12 || standAnch === 4;
+    }
+    const dayHabits = this.data.habitsState && this.data.habitsState[dStr];
+    if (dayHabits) {
+      const rawStand = dayHabits['h-stand'];
+      return rawStand === 1 || rawStand === true;
+    }
+    return false;
+  }
+
+  isDayActive(dStr) {
+    return this.isMove100Completed(dStr) && this.isStand100Completed(dStr);
   }
 
   getOverallStreak() {
@@ -1598,10 +1560,10 @@ class StorageManager {
     for (let i = 0; i < 365; i++) {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
       const dStr = formatDateIso(d);
-      if (this.isDayActive(dStr)) {
+      if (this.isMove100Completed(dStr) && this.isStand100Completed(dStr)) {
         streak++;
       } else {
-        // If today is not logged yet, don't break the streak from yesterday
+        // If today is not 100% completed yet, don't break the streak from yesterday
         if (i === 0) continue;
         break;
       }
@@ -1622,24 +1584,22 @@ class StorageManager {
     const now = new Date();
     const hName = (habit.name || '').toLowerCase().trim();
     
-    // Check consecutive days backward from today
+    // Check consecutive days backward from today (requires 100% completion for daily habits)
     for (let i = 0; i < 365; i++) {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
       const dStr = formatDateIso(d);
-      const dayState = (this.data.habitsState && this.data.habitsState[dStr]) || {};
-      const val = dayState[habitId];
-      const auroraDay = (this.data.auroraDailyState && this.data.auroraDailyState[dStr]) || null;
 
-      let isCompleted = habit.cadence === 'weekly' 
-        ? (Number(val || 0) > 0 || !!val)
-        : !!val;
-
-      if (!isCompleted && auroraDay) {
-        if (habitId === 'h-move' || hName === 'move') {
-          isCompleted = (Number(auroraDay.moveCal) || 0) > 0 || !!(auroraDay.anch && auroraDay.anch.move > 0);
-        } else if (habitId === 'h-stand' || hName === 'stand' || hName === 'stand ring') {
-          isCompleted = (Array.isArray(auroraDay.hours) && auroraDay.hours.some(Boolean)) || !!(auroraDay.anch && auroraDay.anch.stand > 0);
-        }
+      let isCompleted = false;
+      if (habitId === 'h-move' || hName === 'move') {
+        isCompleted = this.isMove100Completed(dStr);
+      } else if (habitId === 'h-stand' || hName === 'stand' || hName === 'stand ring') {
+        isCompleted = this.isStand100Completed(dStr);
+      } else {
+        const dayState = (this.data.habitsState && this.data.habitsState[dStr]) || {};
+        const val = dayState[habitId];
+        isCompleted = habit.cadence === 'weekly'
+          ? (Number(val || 0) > 0 || val === true)
+          : (val === 1 || val === true);
       }
 
       if (isCompleted) {
