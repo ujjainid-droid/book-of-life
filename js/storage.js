@@ -118,14 +118,14 @@ class StorageManager {
     const resetMarker = 'BOL_ZERO_RESET_APPLIED_V7';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(resetMarker)) {
-        // Set today's choices explicitly to 0
+        // Set today's choices explicitly to 0 (with updatedAt: 0 so cloud sync can override on new devices)
         if (!this.data.choicesState) this.data.choicesState = {};
-        this.data.choicesState[todayStr] = { good: 0, not: 0, updatedAt: Date.now() };
+        this.data.choicesState[todayStr] = { good: 0, not: 0, updatedAt: 0 };
 
         // Clean out any stale hardcoded { good: 3, not: 0 } from any date
         Object.entries(this.data.choicesState).forEach(([dStr, c]) => {
           if (c && c.good === 3 && c.not === 0) {
-            this.data.choicesState[dStr] = { good: 0, not: 0, updatedAt: Date.now() };
+            this.data.choicesState[dStr] = { good: 0, not: 0, updatedAt: 0 };
           }
         });
 
@@ -136,7 +136,7 @@ class StorageManager {
         this.data.habitsState[todayStr]['h-stand'] = false;
 
         if (!this.data.habitsUpdatedAt) this.data.habitsUpdatedAt = {};
-        this.data.habitsUpdatedAt[todayStr] = Date.now();
+        this.data.habitsUpdatedAt[todayStr] = 0;
 
         if (!this.data.habitStreaks) this.data.habitStreaks = {};
         this.data.habitStreaks['h-move'] = 0;
@@ -156,7 +156,7 @@ class StorageManager {
           });
         }
         if (!this.data.dayGoalsUpdatedAt) this.data.dayGoalsUpdatedAt = {};
-        this.data.dayGoalsUpdatedAt[todayStr] = Date.now();
+        this.data.dayGoalsUpdatedAt[todayStr] = 0;
 
         // Permanently remove duplicate "Stand ring" habit (Anchor #2 is already Stand)
         if (Array.isArray(this.data.habits)) {
@@ -649,7 +649,7 @@ class StorageManager {
                 merged.choicesState[dateStr] = {
                   good: Math.max(0, parseInt(cObj.good, 10) || 0),
                   not: Math.max(0, parseInt(cObj.not, 10) || 0),
-                  updatedAt: cObj.updatedAt || Date.now()
+                  updatedAt: cObj.updatedAt || 0
                 };
               } else if (!merged.choicesState[dateStr]) {
                 merged.choicesState[dateStr] = {
@@ -1481,6 +1481,7 @@ class StorageManager {
     const num = Number(target);
     if (!isNaN(num) && num > 0) {
       this.data.weightTarget = Math.round(num * 10) / 10;
+      this.data.weightUpdatedAt = Date.now();
       this.saveData();
     }
     return this.getWeightTarget();
@@ -1934,7 +1935,11 @@ class StorageManager {
     if (!this.data.hairCareState[dateStr]) this.data.hairCareState[dateStr] = {};
     const current = !!this.data.hairCareState[dateStr][stepId];
     this.data.hairCareState[dateStr][stepId] = !current;
+    this.data.hairCareState[dateStr].updatedAt = Date.now();
     this.addPoints(!current ? 5 : -5);
+    try {
+      localStorage.setItem('HAIR_CARE_STATE_BACKUP', JSON.stringify(this.data.hairCareState));
+    } catch (e) {}
     this.saveData();
     return !current;
   }
@@ -2805,6 +2810,7 @@ class StorageManager {
       ])
     };
     campaigns[listKey].push(newCamp);
+    this.data.coverUpdatedAt = Date.now();
     this.saveData();
     return newCamp;
   }
@@ -2822,6 +2828,7 @@ class StorageManager {
         item.status = 'NS';
       }
       campaigns[toList].unshift(item);
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
       return item;
     }
@@ -2834,6 +2841,7 @@ class StorageManager {
     const idx = arr.findIndex(x => x.id === id);
     if (idx !== -1) {
       arr.splice(idx, 1);
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
   }
@@ -2844,6 +2852,7 @@ class StorageManager {
     if (!found) found = campaigns.later.find(x => x.id === id);
     if (found) {
       found.status = newStatus;
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
     return found;
@@ -2879,6 +2888,7 @@ class StorageManager {
     };
     if (item.text) {
       topMind[listKey].unshift(item);
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
     return item;
@@ -2892,6 +2902,7 @@ class StorageManager {
       const [item] = fromArr.splice(idx, 1);
       if (!topMind[toList]) topMind[toList] = [];
       topMind[toList].unshift(item);
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
   }
@@ -2902,6 +2913,7 @@ class StorageManager {
     const idx = arr.findIndex(x => x.id === id);
     if (idx !== -1) {
       arr.splice(idx, 1);
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
   }
@@ -2912,6 +2924,7 @@ class StorageManager {
     const item = arr.find(x => x.id === id);
     if (item) {
       item.text = (newText || '').trim();
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
   }
@@ -2970,6 +2983,7 @@ class StorageManager {
       breakdown: audit.breakdown || []
     };
     audits.push(newAudit);
+    this.data.coverUpdatedAt = Date.now();
     this.saveData();
     return newAudit;
   }
@@ -2983,6 +2997,7 @@ class StorageManager {
       if (updates.status !== undefined) item.status = updates.status;
       if (updates.goal !== undefined) item.goal = updates.goal.trim();
       if (updates.breakdown !== undefined) item.breakdown = updates.breakdown;
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
     return item;
@@ -2993,6 +3008,7 @@ class StorageManager {
     const idx = audits.findIndex(x => x.id === id);
     if (idx !== -1) {
       audits.splice(idx, 1);
+      this.data.coverUpdatedAt = Date.now();
       this.saveData();
     }
   }
@@ -3112,6 +3128,7 @@ class StorageManager {
   }
 
   saveFinanceData(data) {
+    if (data && typeof data === 'object') data.updatedAt = Date.now();
     this.data.finance = data;
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(data));
@@ -3136,6 +3153,7 @@ class StorageManager {
     }
     const iso = sundayIso || (typeof getSundayOfWeek === 'function' ? formatDateIso(getSundayOfWeek(new Date())) : 'current');
     fin.weeklySundayUpdates[iso] = !!isDone;
+    fin.updatedAt = Date.now();
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
@@ -3180,6 +3198,7 @@ class StorageManager {
       fin.weeklyChecklists[iso] = { 1: false, 2: false, 3: false, 4: false, 5: false };
     }
     fin.weeklyChecklists[iso][itemNum] = !!isDone;
+    fin.updatedAt = Date.now();
 
     const allDone = [1, 2, 3, 4, 5].every(num => !!fin.weeklyChecklists[iso][num]);
     this.setFinanceSundayUpdated(iso, allDone);
@@ -3214,6 +3233,7 @@ class StorageManager {
       fin.quarterlyChecklists[qKey] = { 1: false, 2: false, 3: false, 4: false, 5: false };
     }
     fin.quarterlyChecklists[qKey][itemNum] = !!isDone;
+    fin.updatedAt = Date.now();
     const allDone = [1, 2, 3, 4, 5].every(num => !!fin.quarterlyChecklists[qKey][num]);
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
@@ -3244,6 +3264,7 @@ class StorageManager {
       fin.annualChecklists[yKey] = { 1: false, 2: false, 3: false, 4: false };
     }
     fin.annualChecklists[yKey][itemNum] = !!isDone;
+    fin.updatedAt = Date.now();
     const allDone = [1, 2, 3, 4].every(num => !!fin.annualChecklists[yKey][num]);
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
@@ -3255,6 +3276,7 @@ class StorageManager {
   saveFinanceNetWorth(data) {
     const fin = this.getFinanceData();
     fin.netWorth = data;
+    fin.updatedAt = Date.now();
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
@@ -3272,6 +3294,7 @@ class StorageManager {
     } else {
       fin.monthlySummaries.unshift(summary);
     }
+    fin.updatedAt = Date.now();
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
@@ -3283,6 +3306,7 @@ class StorageManager {
     const fin = this.getFinanceData();
     // Keep up to 500 recent transactions to protect localStorage limits
     fin.transactions = Array.isArray(transactions) ? transactions.slice(0, 500) : [];
+    fin.updatedAt = Date.now();
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
@@ -3296,6 +3320,7 @@ class StorageManager {
       const cat = fin.categories.find(c => c.id === catId);
       if (cat) {
         cat.budget = parseFloat(newBudget) || 0;
+        fin.updatedAt = Date.now();
         this.saveData();
         return cat;
       }
@@ -3307,6 +3332,7 @@ class StorageManager {
     const fin = this.getFinanceData();
     if (!fin.categoryBaselines) fin.categoryBaselines = {};
     fin.categoryBaselines[catName] = parseFloat(newBaseline) || 0;
+    fin.updatedAt = Date.now();
     this.saveData();
     return fin.categoryBaselines;
   }
@@ -3314,6 +3340,7 @@ class StorageManager {
   updateFinanceWealthSweepPot(newAmount) {
     const fin = this.getFinanceData();
     fin.wealthSweepPot = Math.max(0, parseFloat(newAmount) || 0);
+    fin.updatedAt = Date.now();
     try {
       localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
     } catch (e) {}
@@ -3336,6 +3363,7 @@ class StorageManager {
       notes: (sub.notes || '').trim()
     };
     fin.subscriptions.push(newSub);
+    fin.updatedAt = Date.now();
     this.saveData();
     return newSub;
   }
@@ -3346,6 +3374,7 @@ class StorageManager {
       const sub = fin.subscriptions.find(s => s.id === id);
       if (sub) {
         Object.assign(sub, updates);
+        fin.updatedAt = Date.now();
         this.saveData();
         return sub;
       }
@@ -3357,6 +3386,7 @@ class StorageManager {
     const fin = this.getFinanceData();
     if (Array.isArray(fin.subscriptions)) {
       fin.subscriptions = fin.subscriptions.filter(s => s.id !== id);
+      fin.updatedAt = Date.now();
       this.saveData();
     }
   }
@@ -3411,6 +3441,7 @@ class StorageManager {
         Object.keys(b.periods).forEach(k => b.periods[k] = false);
       }
     }
+    fin.updatedAt = Date.now();
     try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
     this.saveData();
     return b;
@@ -3473,6 +3504,7 @@ class StorageManager {
 
     b.realizedValue = Math.round(calculated * 100) / 100;
     b.realized = b.realizedValue > 0;
+    fin.updatedAt = Date.now();
 
     try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
     this.saveData();
@@ -3509,6 +3541,7 @@ class StorageManager {
     // Update realized value
     b.realizedValue = (parseFloat(b.realizedValue) || 0) + newRedemption.amount;
     b.realized = true;
+    fin.updatedAt = Date.now();
 
     try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
     this.saveData();
@@ -3530,6 +3563,7 @@ class StorageManager {
       b.realizedValue = Math.max(0, (parseFloat(b.realizedValue) || 0) - (parseFloat(removed.amount) || 0));
       b.realized = b.realizedValue > 0;
     }
+    fin.updatedAt = Date.now();
 
     try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
     this.saveData();
@@ -3546,6 +3580,7 @@ class StorageManager {
     const val = Math.max(0, parseFloat(value) || 0);
     b.realizedValue = val;
     b.realized = val > 0;
+    fin.updatedAt = Date.now();
     try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
     this.saveData();
     return b;
@@ -3555,6 +3590,7 @@ class StorageManager {
     const fin = this.getFinanceData();
     if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
       fin.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
+      fin.updatedAt = Date.now();
       try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
       this.saveData();
       return fin.cardsROI;
@@ -3584,6 +3620,7 @@ class StorageManager {
       if (acc) {
         Object.assign(acc, updates);
         acc.updated = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0];
+        fin.updatedAt = Date.now();
         this.saveData();
         return acc;
       }
@@ -3620,6 +3657,7 @@ class StorageManager {
       if (!hobby.maxDays) hobby.maxDays = 30;
       hobby.trialStartedAt = Date.now();
     }
+    this.data.hobbiesUpdatedAt = Date.now();
     this.saveData();
     return hobby;
   }
@@ -3642,6 +3680,7 @@ class StorageManager {
     if (sessionData.notes) {
       hobby.notes = sessionData.notes;
     }
+    this.data.hobbiesUpdatedAt = Date.now();
     this.saveData();
     return { hobby, entry, completedTarget: (hobby.sessionsLogged >= (hobby.targetSessions || 4)) };
   }
@@ -3670,6 +3709,7 @@ class StorageManager {
       hobbies.unshift(newHobby);
       existing = newHobby;
     }
+    this.data.hobbiesUpdatedAt = Date.now();
     this.saveData();
     return existing;
   }
@@ -3679,6 +3719,7 @@ class StorageManager {
     const idx = hobbies.findIndex(h => h.id === hobbyId);
     if (idx !== -1) {
       hobbies.splice(idx, 1);
+      this.data.hobbiesUpdatedAt = Date.now();
       this.saveData();
       return true;
     }
@@ -3705,6 +3746,7 @@ class StorageManager {
       }
       list.push(hobbyName);
     }
+    this.data.hobbiesUpdatedAt = Date.now();
     this.saveData();
     return list;
   }
@@ -3714,6 +3756,7 @@ class StorageManager {
     const idx = list.indexOf(hobbyName);
     if (idx !== -1) {
       list.splice(idx, 1);
+      this.data.hobbiesUpdatedAt = Date.now();
       this.saveData();
     }
     return list;

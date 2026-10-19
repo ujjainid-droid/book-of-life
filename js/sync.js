@@ -53,9 +53,18 @@ class SyncManager {
   checkUrlParams() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
-      const paramUrl = urlParams.get('sync_url');
-      const paramKey = urlParams.get('sync_key');
-      const modeParam = urlParams.get('mode');
+      let paramUrl = urlParams.get('sync_url');
+      let paramKey = urlParams.get('sync_key');
+      let modeParam = urlParams.get('mode');
+
+      // Also support query params embedded inside location.hash (e.g. #today?sync_url=...)
+      if ((!paramUrl || !paramKey) && window.location.hash && window.location.hash.includes('?')) {
+        const hashQuery = window.location.hash.split('?')[1];
+        const hashParams = new URLSearchParams(hashQuery);
+        paramUrl = paramUrl || hashParams.get('sync_url');
+        paramKey = paramKey || hashParams.get('sync_key');
+        modeParam = modeParam || hashParams.get('mode');
+      }
 
       if (modeParam === 'family' || modeParam === 'partner') {
         localStorage.setItem('BOL_APP_MODE', 'family');
@@ -69,8 +78,11 @@ class SyncManager {
         localStorage.setItem('BOL_SYNC_DB_URL', this.dbUrl);
         localStorage.setItem('BOL_SYNC_PASSPHRASE', this.passphrase);
         const cleanSearch = (modeParam === 'family' || modeParam === 'partner') ? '?mode=family' : '';
-        window.history.replaceState({}, document.title, window.location.pathname + cleanSearch + window.location.hash);
-        showToast('⚡ Instant Cloud Sync paired successfully!');
+        const cleanHash = (window.location.hash || '').split('?')[0];
+        window.history.replaceState({}, document.title, window.location.pathname + cleanSearch + cleanHash);
+        if (typeof showToast === 'function') {
+          showToast('⚡ Instant Cloud Sync paired successfully!');
+        }
       }
     } catch (e) {}
   }
@@ -116,27 +128,48 @@ class SyncManager {
       localWasRicher = true;
     }
 
-    // 3. HabitsState: Respect local modifications
+    // 3. HabitsState: Respect latest timestamp per date; when timestamps are both 0, prefer completed/higher stage
     const mergedHabitsState = { ...(storage.data.habitsState || {}) };
+    const mergedHabitsUpdatedAt = { ...(storage.data.habitsUpdatedAt || {}), ...(incoming.habitsUpdatedAt || {}) };
     if (incoming.habitsState && typeof incoming.habitsState === 'object') {
       Object.entries(incoming.habitsState).forEach(([dStr, dObj]) => {
+        const localDay = (storage.data.habitsState && storage.data.habitsState[dStr]) || null;
         const localTime = (storage.data.habitsUpdatedAt && storage.data.habitsUpdatedAt[dStr]) || 0;
         const cloudTime = (incoming.habitsUpdatedAt && incoming.habitsUpdatedAt[dStr]) || 0;
-        if (storage.data.habitsState && storage.data.habitsState[dStr] !== undefined && localTime >= cloudTime) {
-          // Local is authoritative for this date (e.g. user toggled/unchecked habits today)
-          mergedHabitsState[dStr] = { ...storage.data.habitsState[dStr] };
-          if (JSON.stringify(dObj) !== JSON.stringify(storage.data.habitsState[dStr])) {
+
+        if (!localDay) {
+          mergedHabitsState[dStr] = { ...dObj };
+          mergedHabitsUpdatedAt[dStr] = cloudTime;
+        } else if (cloudTime > localTime) {
+          // Cloud is strictly newer -> cloud wins!
+          mergedHabitsState[dStr] = { ...localDay, ...dObj };
+          mergedHabitsUpdatedAt[dStr] = cloudTime;
+        } else if (localTime > cloudTime) {
+          // Local is strictly newer -> local wins!
+          mergedHabitsState[dStr] = { ...dObj, ...localDay };
+          mergedHabitsUpdatedAt[dStr] = localTime;
+          if (JSON.stringify(dObj) !== JSON.stringify(mergedHabitsState[dStr])) {
             localWasRicher = true;
           }
-        } else if (!mergedHabitsState[dStr]) {
-          mergedHabitsState[dStr] = { ...dObj };
         } else {
-          mergedHabitsState[dStr] = { ...dObj, ...mergedHabitsState[dStr] };
+          // Equal timestamps (e.g. 0 on initial boot): union keys preferring non-false / higher progress
+          const combined = { ...dObj, ...localDay };
+          Object.keys(dObj || {}).forEach(k => {
+            const cVal = dObj[k];
+            const lVal = localDay[k];
+            if (cVal && (!lVal || (typeof cVal === 'number' && typeof lVal === 'number' && cVal > lVal))) {
+              combined[k] = cVal;
+            }
+          });
+          mergedHabitsState[dStr] = combined;
+          if (JSON.stringify(dObj) !== JSON.stringify(combined)) {
+            localWasRicher = true;
+          }
         }
       });
     }
 
-    // 4. ChoicesState: Compare timestamps so explicit zeroing is saved and pushes to cloud
+    // 4. ChoicesState: Compare timestamps so explicit updates win; when both 0, take higher count
     const mergedChoices = { ...(storage.data.choicesState || {}) };
     if (incoming.choicesState && typeof incoming.choicesState === 'object') {
       Object.entries(incoming.choicesState).forEach(([dStr, cObj]) => {
@@ -156,10 +189,21 @@ class SyncManager {
               not: Math.max(0, parseInt(cObj.not, 10) || 0),
               updatedAt: cloudTime
             };
-          } else {
-            // Local is newer or equal -> local wins!
+          } else if (localTime > cloudTime) {
             mergedChoices[dStr] = localObj;
             if (cObj.good !== localObj.good || cObj.not !== localObj.not) {
+              localWasRicher = true;
+            }
+          } else {
+            // Both timestamps are equal (e.g. 0): take max so un-timestamped 0 doesn't wipe logged choices
+            const maxGood = Math.max(0, parseInt(cObj.good, 10) || 0, parseInt(localObj.good, 10) || 0);
+            const maxNot = Math.max(0, parseInt(cObj.not, 10) || 0, parseInt(localObj.not, 10) || 0);
+            mergedChoices[dStr] = {
+              good: maxGood,
+              not: maxNot,
+              updatedAt: cloudTime || localTime || 0
+            };
+            if (maxGood !== (parseInt(cObj.good, 10) || 0) || maxNot !== (parseInt(cObj.not, 10) || 0)) {
               localWasRicher = true;
             }
           }
@@ -182,8 +226,9 @@ class SyncManager {
       });
     }
 
-    // 6. DayGoals: Purge 12,000 steps seed and respect local deletions
+    // 6. DayGoals: Purge 12,000 steps seed and respect latest timestamp
     const mergedDayGoals = { ...(storage.data.dayGoals || {}) };
+    const mergedDayGoalsUpdatedAt = { ...(storage.data.dayGoalsUpdatedAt || {}), ...(incoming.dayGoalsUpdatedAt || {}) };
     Object.keys(mergedDayGoals).forEach(dStr => {
       if (Array.isArray(mergedDayGoals[dStr])) {
         mergedDayGoals[dStr] = mergedDayGoals[dStr].filter(g => g && g.id !== 'dg-1' && !(g.text && (g.text.includes('12,000') || g.text.includes('12000'))));
@@ -205,17 +250,23 @@ class SyncManager {
 
           const localTime = (storage.data.dayGoalsUpdatedAt && storage.data.dayGoalsUpdatedAt[dStr]) || 0;
           const cloudTime = (incoming.dayGoalsUpdatedAt && incoming.dayGoalsUpdatedAt[dStr]) || 0;
+          const localList = Array.isArray(mergedDayGoals[dStr]) ? mergedDayGoals[dStr] : null;
 
-          if (storage.data.dayGoals && storage.data.dayGoals[dStr] !== undefined && localTime >= cloudTime) {
-            // Local is newer or equal -> local authoritatively wins (keeps deletions)
-            mergedDayGoals[dStr] = [...(storage.data.dayGoals[dStr] || [])].filter(g => g && g.id !== 'dg-1' && !(g.text && (g.text.includes('12,000') || g.text.includes('12000'))));
+          if (cloudTime > localTime || !localList) {
+            mergedDayGoals[dStr] = cleanIncoming;
+            mergedDayGoalsUpdatedAt[dStr] = cloudTime;
+          } else if (localTime > cloudTime) {
+            mergedDayGoals[dStr] = localList;
+            mergedDayGoalsUpdatedAt[dStr] = localTime;
+            if (JSON.stringify(cleanIncoming) !== JSON.stringify(localList)) {
+              localWasRicher = true;
+            }
+          } else {
+            // Both 0: prefer non-empty list
+            mergedDayGoals[dStr] = (localList.length >= cleanIncoming.length) ? localList : cleanIncoming;
             if (JSON.stringify(cleanIncoming) !== JSON.stringify(mergedDayGoals[dStr])) {
               localWasRicher = true;
             }
-          } else if (!mergedDayGoals[dStr]) {
-            mergedDayGoals[dStr] = cleanIncoming;
-          } else {
-            mergedDayGoals[dStr] = cleanIncoming;
           }
         }
       });
@@ -237,18 +288,20 @@ class SyncManager {
       });
     }
 
-    // 7b. HairCareState: Two-way merge strictly preserving local checkoffs & skips
+    // 7b. HairCareState: Two-way merge by updatedAt
     const mergedHairCareState = { ...(storage.data.hairCareState || {}) };
-    // Check dedicated resilient backup
     try {
       const hairBackup = localStorage.getItem('HAIR_CARE_STATE_BACKUP');
       if (hairBackup) {
         const bObj = JSON.parse(hairBackup);
         if (bObj && typeof bObj === 'object') {
           Object.entries(bObj).forEach(([dStr, hObj]) => {
-            if (hObj && (hObj.completed || hObj.skipped)) {
-              mergedHairCareState[dStr] = { ...(mergedHairCareState[dStr] || {}), ...hObj };
-              localWasRicher = true;
+            if (hObj && (hObj.completed || hObj.skipped || hObj.updatedAt)) {
+              const curT = (mergedHairCareState[dStr] && mergedHairCareState[dStr].updatedAt) || 0;
+              const bakT = hObj.updatedAt || 0;
+              if (!mergedHairCareState[dStr] || bakT >= curT) {
+                mergedHairCareState[dStr] = { ...(mergedHairCareState[dStr] || {}), ...hObj };
+              }
             }
           });
         }
@@ -258,23 +311,30 @@ class SyncManager {
     if (incoming.hairCareState && typeof incoming.hairCareState === 'object') {
       Object.entries(incoming.hairCareState).forEach(([dStr, hObj]) => {
         const localDay = mergedHairCareState[dStr];
-        if (!localDay) {
+        if (!localDay || Object.keys(localDay).length === 0) {
           mergedHairCareState[dStr] = { ...hObj };
         } else {
           const localTime = (localDay && localDay.updatedAt) || 0;
           const cloudTime = (hObj && hObj.updatedAt) || 0;
-          if (cloudTime > localTime && (hObj.completed || hObj.skipped)) {
-            mergedHairCareState[dStr] = { ...hObj };
-          } else {
-            // Local checkoff authoritatively preserved
+          if (cloudTime > localTime) {
+            mergedHairCareState[dStr] = { ...localDay, ...hObj };
+          } else if (localTime > cloudTime) {
             mergedHairCareState[dStr] = { ...hObj, ...localDay };
             if (JSON.stringify(hObj) !== JSON.stringify(mergedHairCareState[dStr])) {
               localWasRicher = true;
+            }
+          } else {
+            mergedHairCareState[dStr] = { ...hObj, ...localDay };
+            if (hObj.completed || hObj.skipped) {
+              mergedHairCareState[dStr] = { ...localDay, ...hObj };
             }
           }
         }
       });
     }
+    try {
+      localStorage.setItem('HAIR_CARE_STATE_BACKUP', JSON.stringify(mergedHairCareState));
+    } catch (e) {}
 
     // 8. QuickThoughts: Union by id & text
     const thoughtMap = new Map();
@@ -315,7 +375,14 @@ class SyncManager {
     (Array.isArray(incoming.claims) ? incoming.claims : []).forEach(c => {
       if (c && c.id && !isSyntheticClaim(c.id)) {
         const ex = claimsMap.get(c.id);
-        claimsMap.set(c.id, { ...(ex || {}), ...c });
+        const exTime = (ex && ex.updatedAt) ? new Date(ex.updatedAt).getTime() : 0;
+        const incTime = c.updatedAt ? new Date(c.updatedAt).getTime() : 0;
+        if (!ex || incTime >= exTime) {
+          claimsMap.set(c.id, { ...(ex || {}), ...c });
+        } else {
+          claimsMap.set(c.id, { ...c, ...ex });
+          localWasRicher = true;
+        }
       }
     });
 
@@ -372,20 +439,16 @@ class SyncManager {
 
         // Determine winner
         if ((locHasNotes && !incHasNotes) || (locHasRating && !incHasRating)) {
-          // Local has user data that cloud is missing -> local wins!
           entry = { ...entry, ...inc, ...loc, attachments: mergedAtts };
           localWasRicher = true;
         } else if ((incHasNotes && !locHasNotes) || (incHasRating && !locHasRating)) {
-          // Cloud has user data that local is missing -> cloud wins
           entry = { ...entry, ...loc, ...inc, attachments: mergedAtts };
-        } else if (locTime >= incTime) {
-          // Local is newer or equal -> local wins
+        } else if (locTime > incTime) {
           entry = { ...entry, ...inc, ...loc, attachments: mergedAtts };
           if (JSON.stringify(inc) !== JSON.stringify(entry)) {
             localWasRicher = true;
           }
         } else {
-          // Cloud is strictly newer
           entry = { ...entry, ...loc, ...inc, attachments: mergedAtts };
         }
       }
@@ -409,7 +472,7 @@ class SyncManager {
       mergedZLog[dStr] = entry;
     });
 
-    const mergedZLogVersion = Math.max(Number(incoming.zlogSeedVersion) || 0, Number(storage.data.zlogSeedVersion) || 0, 14);
+    const mergedZLogVersion = Math.max(Number(incoming.zlogSeedVersion) || 0, Number(storage.data.zlogSeedVersion) || 0, 16);
 
     let mergedTitration = incoming.titrationHistory;
     let mergedTitVersion = Math.max(Number(incoming.titrationSeedVersion) || 0, Number(storage.data.titrationSeedVersion) || 0, 7);
@@ -419,13 +482,22 @@ class SyncManager {
       localWasRicher = true;
     }
 
-    // 11. Cover Page: Top of Mind & Topic Audits
-    let mergedTopMind = incoming.coverTopMind;
+    // 11. Cover Page: Top of Mind, Topic Audits & Campaigns (respecting coverUpdatedAt)
+    const locCoverTime = Number(storage.data.coverUpdatedAt) || 0;
+    const incCoverTime = Number(incoming.coverUpdatedAt) || 0;
+    const mergedCoverUpdatedAt = Math.max(locCoverTime, incCoverTime);
+
+    let mergedTopMind = (locCoverTime > incCoverTime && storage.data.coverTopMind)
+      ? storage.data.coverTopMind
+      : incoming.coverTopMind;
     if (!mergedTopMind || (!Array.isArray(mergedTopMind.now) && !Array.isArray(mergedTopMind.later))) {
       mergedTopMind = storage.data.coverTopMind || { now: [], later: [] };
       if (storage.data.coverTopMind) localWasRicher = true;
     }
-    let mergedTopicAudits = incoming.coverTopicAudits;
+
+    let mergedTopicAudits = (locCoverTime > incCoverTime && Array.isArray(storage.data.coverTopicAudits) && storage.data.coverTopicAudits.length > 0)
+      ? storage.data.coverTopicAudits
+      : incoming.coverTopicAudits;
     if (!Array.isArray(mergedTopicAudits) || mergedTopicAudits.length === 0) {
       if (Array.isArray(storage.data.coverTopicAudits) && storage.data.coverTopicAudits.length > 0) {
         mergedTopicAudits = storage.data.coverTopicAudits;
@@ -436,9 +508,14 @@ class SyncManager {
     }
 
     // 12. Cover Page: Life Architecture & Focus Board (Now vs. Later)
-    let mergedCampaigns = incoming.coverCampaigns;
+    let mergedCampaigns = (locCoverTime > incCoverTime && storage.data.coverCampaigns)
+      ? storage.data.coverCampaigns
+      : incoming.coverCampaigns;
+    if (locCoverTime > incCoverTime) {
+      localWasRicher = true;
+    }
     let mergedCampVersion = Math.max(Number(incoming.coverCampaignsSeedVersion) || 0, Number(storage.data.coverCampaignsSeedVersion) || 0, 9);
-    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 9 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 9)) {
+    if (!mergedCampaigns || !Array.isArray(mergedCampaigns.now) || mergedCampVersion < 9 || (incoming.coverCampaignsSeedVersion && incoming.coverCampaignsSeedVersion < 9 && locCoverTime >= incCoverTime)) {
       const defaults = (typeof storage !== 'undefined' && storage.getDefaultState) ? storage.getDefaultState() : null;
       mergedCampaigns = (storage.data.coverCampaigns && storage.data.coverCampaignsSeedVersion >= 9)
         ? storage.data.coverCampaigns
@@ -508,8 +585,17 @@ class SyncManager {
           const incTime = (aObj && aObj.updatedAt) || 0;
           if (incTime > locTime) {
             mergedAuroraDailyState[dStr] = { ...aObj };
-          } else if (JSON.stringify(aObj) !== JSON.stringify(loc)) {
+          } else if (locTime > incTime && JSON.stringify(aObj) !== JSON.stringify(loc)) {
             localWasRicher = true;
+          } else if (incTime === 0 && locTime === 0) {
+            // Prefer whichever has higher moveCal or stand hours
+            const incMove = Number(aObj && aObj.moveCal) || 0;
+            const locMove = Number(loc && loc.moveCal) || 0;
+            const incStand = Array.isArray(aObj && aObj.hours) ? aObj.hours.filter(Boolean).length : 0;
+            const locStand = Array.isArray(loc && loc.hours) ? loc.hours.filter(Boolean).length : 0;
+            if (incMove > locMove || incStand > locStand) {
+              mergedAuroraDailyState[dStr] = { ...aObj };
+            }
           }
         }
       });
@@ -537,27 +623,98 @@ class SyncManager {
               ...(incTime >= locTime ? pg : loc),
               logs: mergedLogs
             });
+            if (locTime > incTime) localWasRicher = true;
           }
         }
       });
     }
     const mergedPeriodGoals = Array.from(pgMap.values());
 
-    // 11d. Finance State: 2-way merge preserving local weeklyChecklists & seed
+    // 11d. Weight Logs & Target: 2-way merge by weightUpdatedAt
+    const locWeightTime = Number(storage.data.weightUpdatedAt) || 0;
+    const incWeightTime = Number(incoming.weightUpdatedAt) || 0;
+    const mergedWeightUpdatedAt = Math.max(locWeightTime, incWeightTime);
+    const mergedWeightLogs = incWeightTime >= locWeightTime
+      ? { ...(storage.data.weightLogs || {}), ...(incoming.weightLogs || {}) }
+      : { ...(incoming.weightLogs || {}), ...(storage.data.weightLogs || {}) };
+    const mergedWeightTarget = (incWeightTime >= locWeightTime && incoming.weightTarget)
+      ? incoming.weightTarget
+      : (storage.data.weightTarget || incoming.weightTarget || 110);
+    if (locWeightTime > incWeightTime) {
+      localWasRicher = true;
+    }
+
+    // 11e. Hobbies & Hobby Shortlist: 2-way merge by hobbiesUpdatedAt
+    const locHobTime = Number(storage.data.hobbiesUpdatedAt) || 0;
+    const incHobTime = Number(incoming.hobbiesUpdatedAt) || 0;
+    const mergedHobbiesUpdatedAt = Math.max(locHobTime, incHobTime);
+    let mergedHobbies = (incHobTime >= locHobTime && Array.isArray(incoming.hobbies) && incoming.hobbies.length > 0)
+      ? incoming.hobbies
+      : (Array.isArray(storage.data.hobbies) && storage.data.hobbies.length > 0 ? storage.data.hobbies : (incoming.hobbies || []));
+    let mergedHobbyShortlist = (incHobTime >= locHobTime && Array.isArray(incoming.hobbyShortlist))
+      ? incoming.hobbyShortlist
+      : (Array.isArray(storage.data.hobbyShortlist) ? storage.data.hobbyShortlist : (incoming.hobbyShortlist || []));
+    if (locHobTime > incHobTime) {
+      localWasRicher = true;
+    }
+
+    // 11f. Finance State: 2-way merge by updatedAt preserving checklists across devices
     const locFin = storage.data.finance || {};
     const incFin = incoming.finance || {};
-    const mergedFinance = {
-      ...incFin,
-      ...locFin,
-      weeklyChecklists: {
-        ...(incFin.weeklyChecklists || {}),
-        ...(locFin.weeklyChecklists || {})
-      },
-      weeklySundayUpdates: {
-        ...(incFin.weeklySundayUpdates || {}),
-        ...(locFin.weeklySundayUpdates || {})
-      }
+    const locFinTime = Number(locFin.updatedAt) || 0;
+    const incFinTime = Number(incFin.updatedAt) || 0;
+
+    const mergeChecklistMaps = (incMap = {}, locMap = {}) => {
+      const result = {};
+      const allKeys = new Set([...Object.keys(incMap || {}), ...Object.keys(locMap || {})]);
+      allKeys.forEach(k => {
+        const incItem = incMap[k];
+        const locItem = locMap[k];
+        if (incItem && !locItem) {
+          result[k] = typeof incItem === 'object' ? { ...incItem } : incItem;
+        } else if (locItem && !incItem) {
+          result[k] = typeof locItem === 'object' ? { ...locItem } : locItem;
+        } else if (typeof incItem === 'object' && typeof locItem === 'object') {
+          if (incFinTime > locFinTime) {
+            result[k] = { ...locItem, ...incItem };
+          } else if (locFinTime > incFinTime) {
+            result[k] = { ...incItem, ...locItem };
+          } else {
+            // Equal/zero timestamps: merge item-by-item preferring true over default false
+            const combined = { ...incItem, ...locItem };
+            Object.keys({ ...incItem, ...locItem }).forEach(stepKey => {
+              combined[stepKey] = Boolean(incItem[stepKey] || locItem[stepKey]);
+            });
+            result[k] = combined;
+          }
+        } else {
+          result[k] = (incFinTime > locFinTime) ? incItem : ((locFinTime > incFinTime) ? locItem : Boolean(incItem || locItem));
+        }
+      });
+      return result;
     };
+
+    const mergedWeeklyChecklists = mergeChecklistMaps(incFin.weeklyChecklists, locFin.weeklyChecklists);
+    const mergedQuarterlyChecklists = mergeChecklistMaps(incFin.quarterlyChecklists, locFin.quarterlyChecklists);
+    const mergedAnnualChecklists = mergeChecklistMaps(incFin.annualChecklists, locFin.annualChecklists);
+    const mergedWeeklySundayUpdates = mergeChecklistMaps(incFin.weeklySundayUpdates, locFin.weeklySundayUpdates);
+
+    const mergedFinance = {
+      ...(incFinTime >= locFinTime ? locFin : incFin),
+      ...(incFinTime >= locFinTime ? incFin : locFin),
+      weeklyChecklists: mergedWeeklyChecklists,
+      quarterlyChecklists: mergedQuarterlyChecklists,
+      annualChecklists: mergedAnnualChecklists,
+      weeklySundayUpdates: mergedWeeklySundayUpdates,
+      updatedAt: Math.max(locFinTime, incFinTime)
+    };
+    if (locFinTime > incFinTime) {
+      localWasRicher = true;
+    }
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(mergedFinance));
+      localStorage.setItem('BOL_FINANCE_WEEKLY_CHECKLISTS', JSON.stringify(mergedWeeklyChecklists));
+    } catch (e) {}
 
     // Apply consolidated data
     storage.data = {
@@ -568,14 +725,23 @@ class SyncManager {
       coverTopicAudits: mergedTopicAudits,
       coverCampaigns: mergedCampaigns,
       coverCampaignsSeedVersion: mergedCampVersion,
+      coverUpdatedAt: mergedCoverUpdatedAt,
       points: mergedPoints,
       habits: mergedHabits,
       habitsState: mergedHabitsState,
+      habitsUpdatedAt: mergedHabitsUpdatedAt,
       auroraDailyState: mergedAuroraDailyState,
       periodGoals: mergedPeriodGoals.length > 0 ? mergedPeriodGoals : storage.getPeriodGoals(),
+      weightLogs: mergedWeightLogs,
+      weightTarget: mergedWeightTarget,
+      weightUpdatedAt: mergedWeightUpdatedAt,
+      hobbies: mergedHobbies,
+      hobbyShortlist: mergedHobbyShortlist,
+      hobbiesUpdatedAt: mergedHobbiesUpdatedAt,
       choicesState: mergedChoices,
       healthState: mergedHealth,
       dayGoals: mergedDayGoals,
+      dayGoalsUpdatedAt: mergedDayGoalsUpdatedAt,
       sanctuaryJournals: mergedJournals,
       hairCareState: mergedHairCareState,
       quickThoughts: mergedThoughts,
@@ -605,7 +771,10 @@ class SyncManager {
     if (!this.isConfigured() || this.isSyncing) return;
     try {
       this.isSyncing = true;
-      const res = await fetch(this.getEndpoint());
+      const separator = this.getEndpoint().includes('?') ? '&' : '?';
+      const res = await fetch(`${this.getEndpoint()}${separator}_t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (!res.ok) throw new Error('HTTP ' + res.status);
       const cloudData = await res.json();
 
@@ -630,7 +799,7 @@ class SyncManager {
         this.updateStatusBadge();
       } else if (cloudData === null) {
         // Cloud has no data yet, push local data to seed it
-        await this.pushToCloud();
+        this.pendingPush = true;
       }
     } catch (err) {
       console.warn('Cloud pull error:', err);
@@ -726,16 +895,16 @@ class SyncManager {
     }
   }
 
-  saveConfig(dbUrl, passphrase) {
+  async saveConfig(dbUrl, passphrase) {
     this.dbUrl = (dbUrl || '').trim();
     this.passphrase = (passphrase || '').trim();
     localStorage.setItem('BOL_SYNC_DB_URL', this.dbUrl);
     localStorage.setItem('BOL_SYNC_PASSPHRASE', this.passphrase);
 
     if (this.isConfigured()) {
-      this.init();
-      this.pushToCloud();
       showToast('⚡ Cloud Sync configured! Syncing now...');
+      await this.init();
+      await this.pushToCloud();
     } else {
       if (this.eventSource) this.eventSource.close();
       this.isConnected = false;
@@ -744,14 +913,22 @@ class SyncManager {
     }
   }
 
+  getMobileBaseUrl() {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'https://ujjainid-droid.github.io/book-of-life/';
+    }
+    return window.location.origin + window.location.pathname;
+  }
+
   getPairingUrl() {
     if (!this.isConfigured()) return null;
-    const base = window.location.origin + window.location.pathname;
+    const base = this.getMobileBaseUrl();
     return `${base}?sync_url=${encodeURIComponent(this.dbUrl)}&sync_key=${encodeURIComponent(this.passphrase)}`;
   }
 
   getFamilyPairingUrl() {
-    const base = window.location.origin + window.location.pathname;
+    const base = this.getMobileBaseUrl();
     if (this.isConfigured()) {
       return `${base}?mode=family&sync_url=${encodeURIComponent(this.dbUrl)}&sync_key=${encodeURIComponent(this.passphrase)}#zhub`;
     }
@@ -766,7 +943,7 @@ class SyncManager {
         badge.innerHTML = '<span class="status-dot green"></span> Live Instant Sync (Connected)';
       } else if (this.isConfigured()) {
         badge.className = 'sync-status-badge connecting';
-        badge.innerHTML = '<span class="status-dot yellow"></span> Connecting...';
+        badge.innerHTML = '<span class="status-dot teal"></span> Connecting...';
       } else {
         badge.className = 'sync-status-badge offline';
         badge.innerHTML = '<span class="status-dot grey"></span> Offline (Local Only)';
@@ -777,9 +954,29 @@ class SyncManager {
 
 const syncManager = new SyncManager();
 
-// Only reconnect realtime listener on focus if connection was dropped
-window.addEventListener('focus', () => {
-  if (syncManager.isConfigured() && !syncManager.isConnected) {
-    syncManager.startRealtimeListener();
+// Re-sync and reconnect when switching back to Mobile Chrome or Desktop Chrome tab
+function handleAppWakeSync() {
+  if (syncManager.isConfigured()) {
+    syncManager.pullFromCloud();
+    if (!syncManager.isConnected || !syncManager.eventSource || syncManager.eventSource.readyState === 2) {
+      syncManager.startRealtimeListener();
+    }
+  }
+}
+
+window.addEventListener('focus', handleAppWakeSync);
+window.addEventListener('pageshow', handleAppWakeSync);
+window.addEventListener('online', handleAppWakeSync);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') {
+    handleAppWakeSync();
   }
 });
+
+// Lightweight background poll while visible to guard against Mobile Chrome dropping SSE streams silently
+setInterval(() => {
+  if (document.visibilityState === 'visible' && syncManager.isConfigured() && !syncManager.isSyncing) {
+    syncManager.pullFromCloud();
+  }
+}, 12000);
+

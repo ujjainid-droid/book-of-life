@@ -642,7 +642,7 @@ function openSettingsModal() {
               <h3>Cloud Sync Status</h3>
             </div>
             <span id="sync-status-indicator" class="sync-status-badge ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'connected' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'connecting' : 'offline')}">
-              <span class="status-dot ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'green' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'yellow' : 'grey')}"></span>
+              <span class="status-dot ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'green' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'teal' : 'grey')}"></span>
               ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'Live Sync Active' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'Connecting...' : 'Offline')}
             </span>
           </div>
@@ -748,12 +748,12 @@ function openSettingsModal() {
             <h3>Instant Cloud Sync</h3>
           </div>
           <span id="sync-status-indicator" class="sync-status-badge ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'connected' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'connecting' : 'offline')}">
-            <span class="status-dot ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'green' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'yellow' : 'grey')}"></span>
+            <span class="status-dot ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'green' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'teal' : 'grey')}"></span>
             ${typeof syncManager !== 'undefined' && syncManager.isConnected ? 'Live Sync Active' : (typeof syncManager !== 'undefined' && syncManager.isConfigured() ? 'Connecting...' : 'Offline (Local Only)')}
           </span>
         </div>
         <p class="settings-desc">
-          Instant 2-way real-time sync between your Mac and iPhone using your free Firebase Realtime Database. Changes appear in milliseconds.
+          Instant 2-way real-time sync between Desktop Chrome and Mobile Chrome using your free Firebase Realtime Database. Changes appear in milliseconds.
         </p>
 
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:12px;">
@@ -777,7 +777,10 @@ function openSettingsModal() {
             </button>
             ${typeof syncManager !== 'undefined' && syncManager.isConfigured() ? `
               <button class="btn btn-secondary btn-sm" onclick="openPairingModal()">
-                <i data-lucide="smartphone" style="width:14px;height:14px;"></i> 📱 Pair with iPhone (QR Code)
+                <i data-lucide="smartphone" style="width:14px;height:14px;"></i> 📱 Pair Mobile (QR / Link)
+              </button>
+              <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(syncManager.getPairingUrl());showToast('📋 Pairing link copied! Paste into Mobile Chrome.')">
+                <i data-lucide="copy" style="width:14px;height:14px;"></i> Copy Pairing Link
               </button>
               <button class="btn btn-secondary btn-sm" onclick="syncManager.pullFromCloud();showToast('Syncing now...')">
                 <i data-lucide="refresh-cw" style="width:14px;height:14px;"></i> Sync Now
@@ -1079,7 +1082,7 @@ function triggerConfetti() {
 /* --------------------------------------------------------------------------
    Cloud Sync Settings & Pairing Handlers
    -------------------------------------------------------------------------- */
-function saveSyncSettings() {
+async function saveSyncSettings() {
   const dbUrl = (document.getElementById('sync-db-url-input')?.value || '').trim();
   const passphrase = (document.getElementById('sync-passphrase-input')?.value || '').trim();
 
@@ -1093,7 +1096,7 @@ function saveSyncSettings() {
   }
 
   if (typeof syncManager !== 'undefined') {
-    syncManager.saveConfig(dbUrl, passphrase);
+    await syncManager.saveConfig(dbUrl, passphrase);
     openSettingsModal();
   }
 }
@@ -1115,11 +1118,11 @@ function openPairingModal() {
     <div style="background: white; padding: 12px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: inline-block;">
       <img src="${qrSrc}" alt="Sync Pairing QR Code" width="200" height="200" style="display: block;">
     </div>
-    <div style="font-size: 0.84rem; color: var(--text-secondary); max-width: 360px; line-height: 1.45; text-align: center;">
-      <strong>Point your iPhone camera</strong> at this QR code to automatically connect your phone to this database. No typing required!
+    <div style="font-size: 0.84rem; color: var(--text-secondary); max-width: 380px; line-height: 1.45; text-align: center;">
+      <strong>Using Mobile Chrome?</strong> Copy the pairing link below and paste it into <strong>Chrome on your phone</strong> (scanning a QR code with the iOS Camera opens Safari by default, which has separate storage from Chrome).
     </div>
     <div style="display: flex; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap;">
-      <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${pairUrl.replace(/'/g, "\\'")}'); showToast('📋 Pairing link copied!')">
+      <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${pairUrl.replace(/'/g, "\\'")}'); showToast('📋 Pairing link copied! Paste into Mobile Chrome.')">
         <i data-lucide="copy" style="width: 14px; height: 14px;"></i> Copy Pairing Link
       </button>
       <button class="btn btn-primary btn-sm" onclick="closeAllModals()">
