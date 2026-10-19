@@ -460,20 +460,21 @@ function getAuroraDayProgress() {
 }
 
 function getAuroraPaceText(kind, val, anchIdx) {
-  const max = kind === 'move' ? 300 : 12;
-  const unit = kind === 'move' ? 'cal' : 'hrs';
+  const max = kind === 'move' ? 300 : (kind === 'steps' ? 10000 : 12);
+  const unit = kind === 'move' ? 'cal' : (kind === 'steps' ? 'steps' : 'hrs');
+  const fmt = (n) => (kind === 'steps' ? Number(n).toLocaleString() : n);
   const TIMES = { 25: '10:30 AM', 50: '2:00 PM', 75: '5:30 PM', 100: '9:00 PM' };
   if (!anchIdx) {
-    return `No anchor set · floor ${max / 2} ${unit} by 2:00 PM`;
+    return `No anchor set · floor ${fmt(max / 2)} ${unit} by 2:00 PM`;
   }
   const pct = [0, 25, 50, 75, 100][anchIdx] || 50;
   const target = (max * pct) / 100;
   const pr = getAuroraDayProgress();
   if (val >= max && pct === 100) {
-    return `Closed ✨ · 100% goal (${max} ${unit}) achieved!`;
+    return `Closed ✨ · 100% goal (${fmt(max)} ${unit}) achieved!`;
   }
   const status = val >= target ? 'Hit' : (val >= max * pr ? 'On pace' : 'Behind pace');
-  return `${status} · ${pct}% milestone (${target} ${unit}) by ${TIMES[pct] || '9:00 PM'}`;
+  return `${status} · ${pct}% milestone (${fmt(target)} ${unit}) by ${TIMES[pct] || '9:00 PM'}`;
 }
 
 function auroraStepMoveCal(delta, dateStr = activeTrackingDate) {
@@ -484,9 +485,17 @@ function auroraStepMoveCal(delta, dateStr = activeTrackingDate) {
 }
 window.auroraStepMoveCal = auroraStepMoveCal;
 
+function auroraStepSteps(delta, dateStr = activeTrackingDate) {
+  const s = storage.getAuroraDayState(dateStr);
+  const nextSteps = Math.max(0, (Number(s.steps) || 0) + delta);
+  storage.saveAuroraDayState(dateStr, { steps: nextSteps });
+  renderDailySheet();
+}
+window.auroraStepSteps = auroraStepSteps;
+
 function auroraSetAnchorChip(kind, idx, dateStr = activeTrackingDate) {
   const s = storage.getAuroraDayState(dateStr);
-  const nextAnch = { ...(s.anch || { move: 0, stand: 0 }), [kind]: idx };
+  const nextAnch = { ...(s.anch || { move: 0, stand: 0, steps: 0 }), [kind]: idx };
   const patch = { anch: nextAnch };
   // Quick-setting Move calories
   if (kind === 'move' && idx > 0) {
@@ -502,6 +511,14 @@ function auroraSetAnchorChip(kind, idx, dateStr = activeTrackingDate) {
     patch.hours = Array.from({ length: 12 }, (_, i) => i < targetHours);
   } else if (kind === 'stand' && idx === 0) {
     patch.hours = Array.from({ length: 12 }, () => false);
+  }
+
+  // Quick-setting 10K Steps
+  if (kind === 'steps' && idx > 0) {
+    const targetSteps = [0, 2500, 5000, 7500, 10000][idx] || 0;
+    patch.steps = targetSteps;
+  } else if (kind === 'steps' && idx === 0) {
+    patch.steps = 0;
   }
 
   storage.saveAuroraDayState(dateStr, patch);
@@ -1090,6 +1107,12 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
     ? '12 hrs ✓' 
     : (isStandPopulated ? `${standVal}/12 hrs` : '0/12 hrs');
 
+  // 2b. 10K Steps (Daily Tracker)
+  const stepsVal = Math.max(0, Number(auroraState.steps) || 0);
+  const stepsAnchIdx = (auroraState.anch && typeof auroraState.anch.steps === 'number') ? auroraState.anch.steps : 0;
+  const isDailyStepsPopulated = (stepsVal > 0 || stepsAnchIdx > 0);
+  const isDailyStepsComplete = (stepsVal >= 10000 || stepsAnchIdx === 4);
+
   // 3. Good choice / Not so good choice
   const dateChoices = (typeof storage.getChoices === 'function') ? storage.getChoices(dateStr) : { good: 0, not: 0 };
   const activeChips = auroraState.chips || [];
@@ -1203,6 +1226,14 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
       statusText: isStandPopulated ? `${standVal} hrs` : ''
     },
     {
+      id: 'steps',
+      name: '10K Steps',
+      fullName: '10K Steps (Daily Goal)',
+      targetId: 'section-steps-anchor',
+      isComplete: isDailyStepsPopulated,
+      statusText: isDailyStepsPopulated ? (isDailyStepsComplete ? '10k steps' : `${stepsVal.toLocaleString()} steps`) : ''
+    },
+    {
       id: 'choices',
       name: 'Good choice / Not so good choice',
       fullName: 'Good choice / Not so good choice',
@@ -1289,8 +1320,10 @@ function renderDailySheet() {
   const habits = storage.getHabits();
   const moveHabit = habits.find(h => h && (h.id === 'h-move' || h.name.toLowerCase().trim() === 'move'));
   const standHabit = habits.find(h => h && (h.id === 'h-stand' || h.name.toLowerCase().trim() === 'stand' || h.name.toLowerCase().trim() === 'stand ring'));
+  const stepsHabit = habits.find(h => h && (h.id === 'h-steps' || h.name.toLowerCase().trim() === '10k steps' || h.name.toLowerCase().trim() === 'steps'));
   const moveId = moveHabit ? moveHabit.id : 'h-move';
   const standId = standHabit ? standHabit.id : 'h-stand';
+  const stepsId = stepsHabit ? stepsHabit.id : 'h-steps';
 
   // Ensure all live streaks are freshly computed from logged habit states
   if (typeof storage.recalculateAllStreaks === 'function') {
@@ -1303,17 +1336,20 @@ function renderDailySheet() {
 
   let moveStreak = (storage.data.habitStreaks && storage.data.habitStreaks[moveId]) || 0;
   let standStreak = (storage.data.habitStreaks && storage.data.habitStreaks[standId]) || 0;
+  let stepsStreak = (storage.data.habitStreaks && storage.data.habitStreaks[stepsId]) || 0;
   const currentStreak = (typeof storage.getOverallStreak === 'function')
     ? storage.getOverallStreak()
-    : Math.max(0, Math.min(moveStreak, standStreak));
+    : Math.max(0, Math.min(moveStreak, standStreak, stepsStreak));
 
   // Aurora granular state for activeTrackingDate
   const auroraState = storage.getAuroraDayState(activeTrackingDate);
   const moveVal = Math.max(0, Math.min(300, Number(auroraState.moveCal) || 0));
   const hoursArr = auroraState.hours || [];
   const standVal = hoursArr.filter(Boolean).length;
+  const stepsVal = Math.max(0, Number(auroraState.steps) || 0);
   const moveAnchIdx = (auroraState.anch && typeof auroraState.anch.move === 'number') ? auroraState.anch.move : 0;
   const standAnchIdx = (auroraState.anch && typeof auroraState.anch.stand === 'number') ? auroraState.anch.stand : 0;
+  const stepsAnchIdx = (auroraState.anch && typeof auroraState.anch.steps === 'number') ? auroraState.anch.steps : 0;
   const activeChips = auroraState.chips || [];
 
   // Choices & All-Time Momentum
@@ -1404,9 +1440,16 @@ function renderDailySheet() {
     return Math.round(w * 100);
   });
 
+  // 4-Segment 10K Steps widths (2,500 per segment)
+  const stepsSegWidths = [0, 1, 2, 3].map(i => {
+    const w = Math.max(0, Math.min(1, (stepsVal - i * 2500) / 2500));
+    return Math.round(w * 100);
+  });
+
   const standNoteText = standVal >= 6 ? 'Floor reached' : `${6 - standVal} to floor by 2 PM`;
   const mvPaceText = getAuroraPaceText('move', moveVal, moveAnchIdx);
   const stPaceText = getAuroraPaceText('stand', standVal, standAnchIdx);
+  const stepsPaceText = getAuroraPaceText('steps', stepsVal, stepsAnchIdx);
   const currentQuote = getBedPotatoRoast(activeTrackingDate, potatoPokeOffset);
   const dailyRoastObj = (typeof getDailyAffirmation === 'function')
     ? getDailyAffirmation(activeTrackingDate, typeof customAffirmationOffset === 'number' ? customAffirmationOffset : 0)
@@ -1658,6 +1701,33 @@ function renderDailySheet() {
             <button type="button" aria-pressed="${standAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 4, '${activeTrackingDate}')">100%</button>
           </div>
           <span class="muted" id="stPace">${escapeHtml(stPaceText)}</span>
+        </section>
+
+        <section class="card panel span2" aria-labelledby="stepsT" id="section-steps-anchor">
+          <div class="between">
+            <span class="ttl" id="stepsT" style="color:var(--stand)">10K STEPS</span>
+            <div class="row"><span class="num" id="stepsVal">${stepsVal.toLocaleString()}</span><span class="unit">/ 10,000 steps</span></div>
+          </div>
+          <div class="segs" id="stepsSegs">
+            <div class="seg"><b style="width:${stepsSegWidths[0]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
+            <div class="seg floor"><b style="width:${stepsSegWidths[1]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
+            <div class="seg"><b style="width:${stepsSegWidths[2]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
+            <div class="seg"><b style="width:${stepsSegWidths[3]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
+          </div>
+          <div class="seglabels"><span>2.5k</span><span class="fl">5k floor</span><span>7.5k</span><span>10k</span></div>
+          <div class="step">
+            <button type="button" id="stepsMinus" aria-label="Remove 1,000 steps" onclick="auroraStepSteps(-1000, '${activeTrackingDate}')">-1k</button>
+            <button type="button" id="stepsPlus" class="add" aria-label="Add 1,000 steps" onclick="auroraStepSteps(1000, '${activeTrackingDate}')">+1k steps</button>
+            <span class="muted">Log your daily steps</span>
+          </div>
+          <div class="chips s" id="stepsAnch" role="group" aria-label="10K Steps progress">
+            <button type="button" aria-pressed="${stepsAnchIdx === 0 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 0, '${activeTrackingDate}')">Off</button>
+            <button type="button" aria-pressed="${stepsAnchIdx === 1 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 1, '${activeTrackingDate}')">25%</button>
+            <button type="button" aria-pressed="${stepsAnchIdx === 2 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 2, '${activeTrackingDate}')">50%</button>
+            <button type="button" aria-pressed="${stepsAnchIdx === 3 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 3, '${activeTrackingDate}')">75%</button>
+            <button type="button" aria-pressed="${stepsAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 4, '${activeTrackingDate}')">100%</button>
+          </div>
+          <span class="muted" id="stepsPace">${escapeHtml(stepsPaceText)}</span>
         </section>
 
         ${renderAuroraPeriodGoalsWidget(activeTrackingDate)}

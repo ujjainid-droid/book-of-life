@@ -1218,15 +1218,29 @@ class StorageManager {
 
   getAuroraDayState(dateStr = formatDateIso(new Date())) {
     if (!this.data.auroraDailyState) this.data.auroraDailyState = {};
+    const octGoal = Array.isArray(this.data.periodGoals)
+      ? this.data.periodGoals.find(g => g && g.id === 'pg-oct-steps')
+      : null;
+    const octLoggedSteps = (octGoal && octGoal.logs && octGoal.logs[dateStr] !== undefined && octGoal.logs[dateStr] !== null && octGoal.logs[dateStr] !== '')
+      ? Number(octGoal.logs[dateStr])
+      : null;
+
     if (!this.data.auroraDailyState[dateStr]) {
       const dayHabits = (this.data.habitsState && this.data.habitsState[dateStr]) || {};
       const rawMove = dayHabits['h-move'];
       const moveStage = (rawMove === 1 || rawMove === true) ? 1 : (rawMove === 0.75 ? 0.75 : (rawMove === 0.5 ? 0.5 : (rawMove === 0.25 ? 0.25 : 0)));
       const rawStand = dayHabits['h-stand'];
       const standStage = (rawStand === 1 || rawStand === true) ? 1 : (rawStand === 0.75 ? 0.75 : (rawStand === 0.5 ? 0.5 : (rawStand === 0.25 ? 0.25 : 0)));
+      const rawSteps = dayHabits['h-steps'];
+      const stepsStageFromHabit = (rawSteps === 1 || rawSteps === true) ? 1 : (rawSteps === 0.75 ? 0.75 : (rawSteps === 0.5 ? 0.5 : (rawSteps === 0.25 ? 0.25 : 0)));
 
       const initialMoveCal = Math.round(moveStage * 300);
       const initialStandCount = Math.round(standStage * 12);
+      const initialSteps = (octLoggedSteps !== null && !isNaN(octLoggedSteps))
+        ? Math.max(0, octLoggedSteps)
+        : Math.round(stepsStageFromHabit * 10000);
+      const stepsStage = initialSteps >= 10000 ? 1 : (initialSteps >= 7500 ? 0.75 : (initialSteps >= 5000 ? 0.5 : (initialSteps >= 2500 ? 0.25 : stepsStageFromHabit)));
+
       const hours = [];
       for (let i = 0; i < 12; i++) {
         hours.push(i < initialStandCount);
@@ -1236,9 +1250,11 @@ class StorageManager {
       this.data.auroraDailyState[dateStr] = {
         moveCal: initialMoveCal,
         hours,
+        steps: initialSteps,
         anch: {
           move: stageToAnchIdx(moveStage),
-          stand: stageToAnchIdx(standStage)
+          stand: stageToAnchIdx(standStage),
+          steps: stageToAnchIdx(stepsStage)
         },
         chips: []
       };
@@ -1249,7 +1265,20 @@ class StorageManager {
         for (let i = 0; i < 12; i++) hrs.push(!!(s.hours && s.hours[i]));
         s.hours = hrs;
       }
-      if (!s.anch) s.anch = { move: 0, stand: 0 };
+      if (!s.anch) s.anch = { move: 0, stand: 0, steps: 0 };
+      if (typeof s.anch.steps !== 'number') {
+        if (octLoggedSteps !== null && !isNaN(octLoggedSteps)) {
+          s.steps = octLoggedSteps;
+          s.anch.steps = octLoggedSteps >= 10000 ? 4 : (octLoggedSteps >= 7500 ? 3 : (octLoggedSteps >= 5000 ? 2 : (octLoggedSteps >= 2500 ? 1 : 0)));
+        } else {
+          s.anch.steps = 0;
+        }
+      }
+      if (typeof s.steps !== 'number') {
+        s.steps = (octLoggedSteps !== null && !isNaN(octLoggedSteps))
+          ? octLoggedSteps
+          : ([0, 2500, 5000, 7500, 10000][s.anch.steps] || 0);
+      }
       if (!Array.isArray(s.chips)) s.chips = [];
       if (typeof s.moveCal !== 'number') s.moveCal = 0;
     }
@@ -1261,7 +1290,7 @@ class StorageManager {
     Object.assign(cur, patch);
     cur.updatedAt = Date.now();
 
-    // Sync Move & Stand back to habitsState for streaks and XP
+    // Sync Move, Stand & 10K Steps back to habitsState for streaks and XP
     const moveCal = Math.max(0, Math.min(300, Number(cur.moveCal) || 0));
     cur.moveCal = moveCal;
     const moveAnch = (cur.anch && typeof cur.anch.move === 'number') ? cur.anch.move : 0;
@@ -1277,17 +1306,43 @@ class StorageManager {
       : ((standCount >= 6 || standAnch === 2) ? 0.5
       : ((standCount >= 3 || standAnch === 1 || standCount > 0) ? 0.25 : 0)));
 
+    const stepsCount = Math.max(0, Number(cur.steps) || 0);
+    cur.steps = stepsCount;
+    const stepsAnch = (cur.anch && typeof cur.anch.steps === 'number') ? cur.anch.steps : 0;
+    const stepsStage = (stepsCount >= 10000 || stepsAnch === 4) ? 1
+      : ((stepsCount >= 7500 || stepsAnch === 3) ? 0.75
+      : ((stepsCount >= 5000 || stepsAnch === 2) ? 0.5
+      : ((stepsCount >= 2500 || stepsAnch === 1 || stepsCount > 0) ? 0.25 : 0)));
+
     if ('moveCal' in patch || 'anch' in patch || moveStage > 0) {
       this.setAnchorStage('h-move', moveStage, dateStr);
     }
     if ('hours' in patch || 'anch' in patch || standStage > 0) {
       this.setAnchorStage('h-stand', standStage, dateStr);
     }
+    if ('steps' in patch || 'anch' in patch || stepsStage > 0) {
+      this.setAnchorStage('h-steps', stepsStage, dateStr);
+    }
 
     const stageToAnchIdx = (s) => (s >= 1 ? 4 : (s >= 0.75 ? 3 : (s >= 0.5 ? 2 : (s >= 0.25 ? 1 : 0))));
-    if (!cur.anch) cur.anch = { move: 0, stand: 0 };
+    if (!cur.anch) cur.anch = { move: 0, stand: 0, steps: 0 };
     cur.anch.move = stageToAnchIdx(moveStage);
     cur.anch.stand = stageToAnchIdx(standStage);
+    cur.anch.steps = stageToAnchIdx(stepsStage);
+
+    // Also sync steps with October 10k steps period goal if applicable
+    if (('steps' in patch || (patch.anch && typeof patch.anch.steps === 'number')) && dateStr >= '2026-10-01' && dateStr <= '2026-10-31') {
+      const octGoal = this.getPeriodGoal('pg-oct-steps');
+      if (octGoal && octGoal.id === 'pg-oct-steps') {
+        if (!octGoal.logs) octGoal.logs = {};
+        if (stepsCount > 0) {
+          octGoal.logs[dateStr] = stepsCount;
+        } else {
+          delete octGoal.logs[dateStr];
+        }
+        octGoal.updatedAt = Date.now();
+      }
+    }
 
     this.saveData();
     return cur;
@@ -1323,13 +1378,26 @@ class StorageManager {
     if (!goal) return null;
     if (!goal.logs || typeof goal.logs !== 'object') goal.logs = {};
 
+    let num = 0;
     if (rawVal === null || rawVal === undefined || String(rawVal).trim() === '') {
       delete goal.logs[dateStr];
     } else {
-      const num = Math.max(0, Number(rawVal) || 0);
+      num = Math.max(0, Number(rawVal) || 0);
       goal.logs[dateStr] = num;
     }
     goal.updatedAt = Date.now();
+
+    // Sync with daily 10K Steps tracker if this is the steps goal
+    if (goal.id === 'pg-oct-steps' || (goal.unit || '').toLowerCase() === 'steps') {
+      const cur = this.getAuroraDayState(dateStr);
+      cur.steps = num;
+      const stepsStage = num >= 10000 ? 1 : (num >= 7500 ? 0.75 : (num >= 5000 ? 0.5 : (num >= 2500 ? 0.25 : 0)));
+      if (!cur.anch) cur.anch = { move: 0, stand: 0, steps: 0 };
+      cur.anch.steps = stepsStage >= 1 ? 4 : (stepsStage >= 0.75 ? 3 : (stepsStage >= 0.5 ? 2 : (stepsStage >= 0.25 ? 1 : 0)));
+      cur.updatedAt = Date.now();
+      this.setAnchorStage('h-steps', stepsStage, dateStr);
+    }
+
     this.saveData();
     return goal;
   }
@@ -1550,8 +1618,31 @@ class StorageManager {
     return false;
   }
 
+  isSteps100Completed(dStr) {
+    if (!dStr || !this.data) return false;
+    const auroraDay = this.data.auroraDailyState && this.data.auroraDailyState[dStr];
+    if (auroraDay) {
+      const stepsCount = Number(auroraDay.steps) || 0;
+      const stepsAnch = (auroraDay.anch && typeof auroraDay.anch.steps === 'number') ? auroraDay.anch.steps : 0;
+      if (stepsCount >= 10000 || stepsAnch === 4) return true;
+    }
+    const dayHabits = this.data.habitsState && this.data.habitsState[dStr];
+    if (dayHabits) {
+      const rawSteps = dayHabits['h-steps'];
+      if (rawSteps === 1 || rawSteps === true) return true;
+    }
+    const octGoal = Array.isArray(this.data.periodGoals)
+      ? this.data.periodGoals.find(g => g && g.id === 'pg-oct-steps')
+      : null;
+    if (octGoal && octGoal.logs && octGoal.logs[dStr] !== undefined && octGoal.logs[dStr] !== null && octGoal.logs[dStr] !== '') {
+      const target = Number(octGoal.targetAvg) || 10000;
+      if (Number(octGoal.logs[dStr]) >= target) return true;
+    }
+    return false;
+  }
+
   isDayActive(dStr) {
-    return this.isMove100Completed(dStr) && this.isStand100Completed(dStr);
+    return this.isMove100Completed(dStr) && this.isStand100Completed(dStr) && this.isSteps100Completed(dStr);
   }
 
   getOverallStreak() {
@@ -1560,7 +1651,7 @@ class StorageManager {
     for (let i = 0; i < 365; i++) {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
       const dStr = formatDateIso(d);
-      if (this.isMove100Completed(dStr) && this.isStand100Completed(dStr)) {
+      if (this.isMove100Completed(dStr) && this.isStand100Completed(dStr) && this.isSteps100Completed(dStr)) {
         streak++;
       } else {
         // If today is not 100% completed yet, don't break the streak from yesterday
@@ -1576,7 +1667,8 @@ class StorageManager {
 
     const habit = this.getHabit(habitId) || (
       habitId === 'h-move' ? { id: 'h-move', name: 'Move', cadence: 'daily' } :
-      (habitId === 'h-stand' ? { id: 'h-stand', name: 'Stand', cadence: 'daily' } : null)
+      (habitId === 'h-stand' ? { id: 'h-stand', name: 'Stand', cadence: 'daily' } :
+      (habitId === 'h-steps' ? { id: 'h-steps', name: '10K Steps', cadence: 'daily' } : null))
     );
     if (!habit) return;
 
@@ -1594,6 +1686,8 @@ class StorageManager {
         isCompleted = this.isMove100Completed(dStr);
       } else if (habitId === 'h-stand' || hName === 'stand' || hName === 'stand ring') {
         isCompleted = this.isStand100Completed(dStr);
+      } else if (habitId === 'h-steps' || hName === '10k steps' || hName === 'steps') {
+        isCompleted = this.isSteps100Completed(dStr);
       } else {
         const dayState = (this.data.habitsState && this.data.habitsState[dStr]) || {};
         const val = dayState[habitId];
@@ -1622,6 +1716,7 @@ class StorageManager {
     });
     this.recalculateStreak('h-move');
     this.recalculateStreak('h-stand');
+    this.recalculateStreak('h-steps');
     this.data.overallStreak = this.getOverallStreak();
     return this.data.habitStreaks;
   }
