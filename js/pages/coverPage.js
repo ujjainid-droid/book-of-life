@@ -491,9 +491,7 @@ function auroraSetAnchorChip(kind, idx, dateStr = activeTrackingDate) {
   // Quick-setting Move calories
   if (kind === 'move' && idx > 0) {
     const milestoneCal = [0, 75, 150, 225, 300][idx] || 0;
-    if ((s.moveCal || 0) < milestoneCal || idx === 4) {
-      patch.moveCal = milestoneCal;
-    }
+    patch.moveCal = milestoneCal;
   } else if (kind === 'move' && idx === 0) {
     patch.moveCal = 0;
   }
@@ -501,10 +499,7 @@ function auroraSetAnchorChip(kind, idx, dateStr = activeTrackingDate) {
   // Quick-setting Stand hours
   if (kind === 'stand' && idx > 0) {
     const targetHours = [0, 3, 6, 9, 12][idx] || 0;
-    const currentCount = (s.hours || []).filter(Boolean).length;
-    if (currentCount < targetHours || idx === 4) {
-      patch.hours = Array.from({ length: 12 }, (_, i) => i < targetHours);
-    }
+    patch.hours = Array.from({ length: 12 }, (_, i) => i < targetHours);
   } else if (kind === 'stand' && idx === 0) {
     patch.hours = Array.from({ length: 12 }, () => false);
   }
@@ -1313,7 +1308,8 @@ function renderDailySheet() {
     const s = (storage.data.habitStreaks && storage.data.habitStreaks[h.id]) || 0;
     if (s > maxStreak) maxStreak = s;
   });
-  const currentStreak = Math.max(0, moveStreak, standStreak, maxStreak);
+  const overallStreak = (typeof storage.getOverallStreak === 'function') ? storage.getOverallStreak() : 0;
+  const currentStreak = Math.max(0, moveStreak, standStreak, maxStreak, overallStreak);
 
   // Aurora granular state for activeTrackingDate
   const auroraState = storage.getAuroraDayState(activeTrackingDate);
