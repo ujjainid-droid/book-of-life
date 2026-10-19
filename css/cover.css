@@ -13253,6 +13253,10 @@ body.dark-mode .protocol-sample-btn {
   grid-template-columns: 1fr;
   gap: 14px;
 }
+.mc-maintain-row {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
 .mc-fc,
 .mc-fc.summer-widget-card {
   border-radius: 20px;
