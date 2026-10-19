@@ -2214,7 +2214,7 @@ class StorageManager {
     return this.data.points;
   }
 
-  recalculatePointsFromHistory() {
+  recalculatePointsFromHistory(skipSave = false) {
     let pts = 185; // Baseline floor: Functional Menace
     if (this.data.habitsState) {
       Object.values(this.data.habitsState).forEach(day => {
@@ -2251,7 +2251,9 @@ class StorageManager {
       pts += Object.keys(this.data.sanctuaryJournals).length * 10;
     }
     this.data.points = Math.max(pts, Number(this.data.points) || 185, 185);
-    this.saveData();
+    if (!skipSave) {
+      this.saveData();
+    }
     return this.data.points;
   }
 

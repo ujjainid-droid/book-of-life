@@ -2,15 +2,23 @@
    Book of Life / Life OS - Instant Cloud Sync Manager (Realtime Engine)
    ========================================================================== */
 
+const DEFAULT_SYNC_DB_URL = 'https://book-of-life-11904-default-rtdb.firebaseio.com';
+const DEFAULT_SYNC_PASSPHRASE = 'm-a-r-g-o';
+
 class SyncManager {
   constructor() {
-    this.dbUrl = localStorage.getItem('BOL_SYNC_DB_URL') || '';
-    this.passphrase = localStorage.getItem('BOL_SYNC_PASSPHRASE') || '';
+    this.dbUrl = localStorage.getItem('BOL_SYNC_DB_URL') || DEFAULT_SYNC_DB_URL;
+    this.passphrase = localStorage.getItem('BOL_SYNC_PASSPHRASE') || DEFAULT_SYNC_PASSPHRASE;
     this.eventSource = null;
     this.isConnected = false;
     this.isSyncing = false;
     this.pendingPush = false;
     this.lastSyncTime = null;
+
+    try {
+      if (!localStorage.getItem('BOL_SYNC_DB_URL')) localStorage.setItem('BOL_SYNC_DB_URL', this.dbUrl);
+      if (!localStorage.getItem('BOL_SYNC_PASSPHRASE')) localStorage.setItem('BOL_SYNC_PASSPHRASE', this.passphrase);
+    } catch (e) {}
 
     // Check URL parameters for 1-tap quick pairing: ?sync_url=...&sync_key=...
     this.checkUrlParams();
@@ -18,6 +26,50 @@ class SyncManager {
     if (this.isConfigured()) {
       this.init();
     }
+  }
+
+  encodeFirebaseKeys(val) {
+    if (Array.isArray(val)) {
+      return val.map(item => this.encodeFirebaseKeys(item));
+    }
+    if (val !== null && typeof val === 'object') {
+      const out = {};
+      Object.entries(val).forEach(([k, v]) => {
+        if (v === undefined) return;
+        const safeKey = String(k || '__EMPTY__')
+          .replace(/\$/g, '__DLR__')
+          .replace(/\./g, '__DOT__')
+          .replace(/#/g, '__HSH__')
+          .replace(/\//g, '__SLS__')
+          .replace(/\[/g, '__LBK__')
+          .replace(/\]/g, '__RBK__');
+        out[safeKey] = this.encodeFirebaseKeys(v);
+      });
+      return out;
+    }
+    return val;
+  }
+
+  decodeFirebaseKeys(val) {
+    if (Array.isArray(val)) {
+      return val.map(item => this.decodeFirebaseKeys(item));
+    }
+    if (val !== null && typeof val === 'object') {
+      const out = {};
+      Object.entries(val).forEach(([k, v]) => {
+        const origKey = String(k)
+          .replace(/__DLR__/g, '$')
+          .replace(/__DOT__/g, '.')
+          .replace(/__HSH__/g, '#')
+          .replace(/__SLS__/g, '/')
+          .replace(/__LBK__/g, '[')
+          .replace(/__RBK__/g, ']')
+          .replace(/^__EMPTY__$/, '');
+        out[origKey] = this.decodeFirebaseKeys(v);
+      });
+      return out;
+    }
+    return val;
   }
 
   isConfigured() {
@@ -609,17 +661,24 @@ class SyncManager {
           } else if (locTime > incTime && JSON.stringify(aObj) !== JSON.stringify(loc)) {
             localWasRicher = true;
           } else if (incTime === 0 && locTime === 0) {
-            // Prefer whichever has higher moveCal or stand hours
+            // Prefer whichever has higher moveCal, stand hours, or steps
             const incMove = Number(aObj && aObj.moveCal) || 0;
             const locMove = Number(loc && loc.moveCal) || 0;
             const incStand = Array.isArray(aObj && aObj.hours) ? aObj.hours.filter(Boolean).length : 0;
             const locStand = Array.isArray(loc && loc.hours) ? loc.hours.filter(Boolean).length : 0;
-            if (incMove > locMove || incStand > locStand) {
+            const incSteps = Number(aObj && aObj.steps) || 0;
+            const locSteps = Number(loc && loc.steps) || 0;
+            if (incMove > locMove || incStand > locStand || incSteps > locSteps) {
               mergedAuroraDailyState[dStr] = { ...aObj };
+            } else if (locMove > incMove || locStand > incStand || locSteps > incSteps) {
+              localWasRicher = true;
             }
           }
         }
       });
+    }
+    if (Object.keys(mergedAuroraDailyState).length > Object.keys(incoming.auroraDailyState || {}).length) {
+      localWasRicher = true;
     }
 
     // 11c. PeriodGoals: 2-way merge preserving daily logs
@@ -642,14 +701,38 @@ class SyncManager {
             pgMap.set(pg.id, {
               ...(incTime >= locTime ? loc : pg),
               ...(incTime >= locTime ? pg : loc),
-              logs: mergedLogs
+              logs: mergedLogs,
+              updatedAt: Math.max(locTime, incTime)
             });
-            if (locTime > incTime) localWasRicher = true;
+            if (locTime > incTime || JSON.stringify(mergedLogs) !== JSON.stringify(pg.logs || {})) {
+              localWasRicher = true;
+            }
           }
         }
       });
     }
     const mergedPeriodGoals = Array.from(pgMap.values());
+
+    // Keep mergedHabitsState consistent with mergedAuroraDailyState and mergedPeriodGoals for accurate streaks
+    Object.entries(mergedAuroraDailyState).forEach(([dStr, aObj]) => {
+      if (!aObj || typeof aObj !== 'object') return;
+      if (!mergedHabitsState[dStr]) mergedHabitsState[dStr] = {};
+      const moveCal = Number(aObj.moveCal) || 0;
+      const moveAnch = (aObj.anch && typeof aObj.anch.move === 'number') ? aObj.anch.move : 0;
+      if (moveCal >= 300 || moveAnch === 4) {
+        mergedHabitsState[dStr]['h-move'] = 1;
+      }
+      const standHours = Array.isArray(aObj.hours) ? aObj.hours.filter(Boolean).length : 0;
+      const standAnch = (aObj.anch && typeof aObj.anch.stand === 'number') ? aObj.anch.stand : 0;
+      if (standHours >= 12 || standAnch === 4) {
+        mergedHabitsState[dStr]['h-stand'] = 1;
+      }
+      const stepsCount = Number(aObj.steps) || 0;
+      const stepsAnch = (aObj.anch && typeof aObj.anch.steps === 'number') ? aObj.anch.steps : 0;
+      if (stepsCount >= 10000 || stepsAnch === 4) {
+        mergedHabitsState[dStr]['h-steps'] = 1;
+      }
+    });
 
     // 11d. Weight Logs & Target: 2-way merge by weightUpdatedAt
     const locWeightTime = Number(storage.data.weightUpdatedAt) || 0;
@@ -661,7 +744,7 @@ class SyncManager {
     const mergedWeightTarget = (incWeightTime >= locWeightTime && incoming.weightTarget)
       ? incoming.weightTarget
       : (storage.data.weightTarget || incoming.weightTarget || 110);
-    if (locWeightTime > incWeightTime) {
+    if (locWeightTime > incWeightTime || JSON.stringify(mergedWeightLogs) !== JSON.stringify(incoming.weightLogs || {})) {
       localWasRicher = true;
     }
 
@@ -773,6 +856,9 @@ class SyncManager {
       titrationSeedVersion: mergedTitVersion
     };
 
+    storage.recalculateAllStreaks();
+    storage.recalculatePointsFromHistory(true);
+
     try {
       localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data));
       localStorage.setItem('BOOK_OF_LIFE_DATA_BACKUP', JSON.stringify(storage.data));
@@ -784,9 +870,6 @@ class SyncManager {
         }));
       }
     } catch (e) {}
-
-    storage.recalculateAllStreaks();
-    storage.recalculatePointsFromHistory();
 
     if (localWasRicher) {
       this.pendingPush = true;
@@ -804,7 +887,8 @@ class SyncManager {
         cache: 'no-store'
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      const cloudData = await res.json();
+      const rawCloudData = await res.json();
+      const cloudData = this.decodeFirebaseKeys(rawCloudData);
 
       if (cloudData && typeof cloudData === 'object' && cloudData.version) {
         const hasChanges = this.mergeIncomingData(cloudData);
@@ -849,7 +933,8 @@ class SyncManager {
     try {
       this.isSyncing = true;
       this.pendingPush = false;
-      const payload = JSON.stringify(storage.data);
+      const safeData = this.encodeFirebaseKeys(storage.data);
+      const payload = JSON.stringify(safeData);
       const res = await fetch(this.getEndpoint(), {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -859,6 +944,8 @@ class SyncManager {
         this.lastSyncTime = new Date();
         this.isConnected = true;
         this.updateStatusBadge();
+      } else {
+        console.warn('Cloud push HTTP error:', res.status);
       }
     } catch (err) {
       console.warn('Cloud push error:', err);
@@ -885,7 +972,7 @@ class SyncManager {
         try {
           const parsed = JSON.parse(e.data);
           if (parsed && parsed.data && typeof parsed.data === 'object' && parsed.path === '/') {
-            const incoming = parsed.data;
+            const incoming = this.decodeFirebaseKeys(parsed.data);
             if (incoming.version) {
               const hasChanges = this.mergeIncomingData(incoming);
               if (hasChanges) {
