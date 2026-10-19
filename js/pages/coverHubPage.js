@@ -539,7 +539,7 @@ function renderUnifiedCampaignCard(camp, tier) {
 
   if (!isNow) {
     return `
-      <div class="mc-lr ${catMeta.tag}">
+      <div class="mc-lr ${catMeta.tag} ${statusKey === 'Maintain' ? 'is-maintain' : ''}">
         <span class="mc-dot" aria-hidden="true"></span>
         <span class="mc-nm" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</span>
         ${statusBtnHtml}
@@ -612,7 +612,7 @@ function renderUnifiedCampaignCard(camp, tier) {
   }
 
   return `
-    <article class="mc-fc summer-widget-card ${catMeta.tag} ${catMeta.summerTheme}">
+    <article class="mc-fc summer-widget-card ${catMeta.tag} ${catMeta.summerTheme} ${statusKey === 'Maintain' ? 'is-maintain' : ''}">
       <div class="summer-widget-watermark" style="color: ${catMeta.accentColor};">
         <i data-lucide="${catMeta.icon}"></i>
       </div>

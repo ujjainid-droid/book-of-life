@@ -13297,6 +13297,49 @@ body.dark-mode .protocol-sample-btn {
   border-color: rgba(234, 88, 12, 0.38);
 }
 
+/* Lighter hue for Maintain widgets for clear visual separation */
+.mc-maintain-row .mc-fc.ED,
+.mc-maintain-row .mc-fc.theme-lavender,
+.mc-fc.is-maintain.ED,
+.mc-fc.is-maintain.theme-lavender {
+  background: linear-gradient(145deg, rgba(196, 181, 253, 0.22) 0%, rgba(56, 46, 86, 0.72) 100%);
+  border-color: rgba(196, 181, 253, 0.28);
+}
+.mc-maintain-row .mc-fc.HEALTH,
+.mc-maintain-row .mc-fc.theme-sky,
+.mc-fc.is-maintain.HEALTH,
+.mc-fc.is-maintain.theme-sky {
+  background: linear-gradient(145deg, rgba(186, 230, 253, 0.22) 0%, rgba(36, 54, 82, 0.72) 100%);
+  border-color: rgba(186, 230, 253, 0.28);
+}
+.mc-maintain-row .mc-fc.FIN,
+.mc-maintain-row .mc-fc.HOME,
+.mc-maintain-row .mc-fc.theme-mint,
+.mc-fc.is-maintain.FIN,
+.mc-fc.is-maintain.HOME,
+.mc-fc.is-maintain.theme-mint {
+  background: linear-gradient(145deg, rgba(165, 243, 252, 0.22) 0%, rgba(32, 58, 64, 0.72) 100%);
+  border-color: rgba(165, 243, 252, 0.28);
+}
+.mc-maintain-row .mc-fc.CARE,
+.mc-maintain-row .mc-fc.theme-rose,
+.mc-fc.is-maintain.CARE,
+.mc-fc.is-maintain.theme-rose {
+  background: linear-gradient(145deg, rgba(254, 205, 211, 0.22) 0%, rgba(68, 40, 56, 0.72) 100%);
+  border-color: rgba(254, 205, 211, 0.28);
+}
+.mc-maintain-row .mc-fc.GROW,
+.mc-maintain-row .mc-fc.theme-coral,
+.mc-fc.is-maintain.GROW,
+.mc-fc.is-maintain.theme-coral {
+  background: linear-gradient(145deg, rgba(254, 215, 170, 0.22) 0%, rgba(68, 46, 54, 0.72) 100%);
+  border-color: rgba(254, 215, 170, 0.28);
+}
+.mc-maintain-row .mc-fc .summer-widget-watermark,
+.mc-fc.is-maintain .summer-widget-watermark {
+  opacity: 0.05;
+}
+
 .mc-fc .summer-widget-watermark {
   top: 6px;
   right: 10px;
@@ -14674,6 +14717,49 @@ body.dark-mode .protocol-sample-btn {
 :root[data-theme="light"] .fc.GROW {
   background: #FFEBE5;
   border-color: rgba(234, 88, 12, 0.18);
+}
+
+/* Lighter pastel hues for Maintain widgets in Light Mode */
+:root[data-theme="light"] .mc-maintain-row .mc-fc.ED,
+:root[data-theme="light"] .mc-maintain-row .mc-fc.theme-lavender,
+:root[data-theme="light"] .mc-fc.is-maintain.ED,
+:root[data-theme="light"] .mc-fc.is-maintain.theme-lavender {
+  background: #FAF6FF;
+  border-color: rgba(124, 58, 237, 0.12);
+}
+:root[data-theme="light"] .mc-maintain-row .mc-fc.HEALTH,
+:root[data-theme="light"] .mc-maintain-row .mc-fc.theme-sky,
+:root[data-theme="light"] .mc-fc.is-maintain.HEALTH,
+:root[data-theme="light"] .mc-fc.is-maintain.theme-sky {
+  background: #F4FAFF;
+  border-color: rgba(2, 132, 199, 0.12);
+}
+:root[data-theme="light"] .mc-maintain-row .mc-fc.FIN,
+:root[data-theme="light"] .mc-maintain-row .mc-fc.HOME,
+:root[data-theme="light"] .mc-maintain-row .mc-fc.theme-mint,
+:root[data-theme="light"] .mc-fc.is-maintain.FIN,
+:root[data-theme="light"] .mc-fc.is-maintain.HOME,
+:root[data-theme="light"] .mc-fc.is-maintain.theme-mint {
+  background: #F2FBF9;
+  border-color: rgba(13, 152, 186, 0.12);
+}
+:root[data-theme="light"] .mc-maintain-row .mc-fc.CARE,
+:root[data-theme="light"] .mc-maintain-row .mc-fc.theme-rose,
+:root[data-theme="light"] .mc-fc.is-maintain.CARE,
+:root[data-theme="light"] .mc-fc.is-maintain.theme-rose {
+  background: #FFF6F8;
+  border-color: rgba(225, 29, 72, 0.12);
+}
+:root[data-theme="light"] .mc-maintain-row .mc-fc.GROW,
+:root[data-theme="light"] .mc-maintain-row .mc-fc.theme-coral,
+:root[data-theme="light"] .mc-fc.is-maintain.GROW,
+:root[data-theme="light"] .mc-fc.is-maintain.theme-coral {
+  background: #FFF8F5;
+  border-color: rgba(234, 88, 12, 0.12);
+}
+:root[data-theme="light"] .mc-maintain-row .mc-fc .summer-widget-watermark,
+:root[data-theme="light"] .mc-fc.is-maintain .summer-widget-watermark {
+  opacity: 0.04;
 }
 :root[data-theme="light"] .mc-tag,
 :root[data-theme="light"] .tag {
