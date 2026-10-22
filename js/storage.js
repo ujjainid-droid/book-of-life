@@ -247,6 +247,10 @@ class StorageManager {
       dayGoalsUpdatedAt: {},
       // Abbey Yung Hair Care Routine State: { [dateStr]: { [stepId]: boolean } }
       hairCareState: {},
+      // Skincare Routine & Tracker State: { [dateStr]: { completed: boolean, skipped: boolean, am: boolean, pm: boolean, insteadNote: string, updatedAt: number } }
+      skinCareState: {},
+      // Skincare Shopping List: { [itemId]: boolean }
+      skincareShoppingList: {},
       // Sassy Gamification Points & Status (Baseline: 185 XP Functional Menace)
       points: 185,
       claimedRewards: [],
@@ -804,6 +808,24 @@ class StorageManager {
               merged.hairCareState[dStr] = { ...hObj, ...merged.hairCareState[dStr] };
             }
           });
+        }
+
+        // 11c. SkinCareState: Two-way merge preserving local completions and skips
+        if (s.skinCareState && typeof s.skinCareState === 'object') {
+          if (!merged.skinCareState) merged.skinCareState = {};
+          Object.entries(s.skinCareState).forEach(([dStr, sObj]) => {
+            if (!merged.skinCareState[dStr]) {
+              merged.skinCareState[dStr] = { ...sObj };
+            } else {
+              merged.skinCareState[dStr] = { ...sObj, ...merged.skinCareState[dStr] };
+            }
+          });
+        }
+
+        // 11d. SkincareShoppingList
+        if (s.skincareShoppingList && typeof s.skincareShoppingList === 'object') {
+          if (!merged.skincareShoppingList) merged.skincareShoppingList = {};
+          merged.skincareShoppingList = { ...merged.skincareShoppingList, ...s.skincareShoppingList };
         }
 
         // 11b. AuroraDailyState: Preserve granular Move calories, Stand hours & Quick chips
@@ -2191,6 +2213,154 @@ class StorageManager {
     return !current;
   }
 
+  // --- Skincare Routine & Tracker Methods ---
+
+  getSkinCareState(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    if (!this.data.skinCareState[dateStr]) this.data.skinCareState[dateStr] = {};
+    return this.data.skinCareState[dateStr];
+  }
+
+  isSkinCareDayDone(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    const day = this.data.skinCareState[dateStr] || {};
+    if (day.completed) return true;
+    if (day.skipped) return true;
+    if (day.am && day.pm) return true;
+    return false;
+  }
+
+  toggleSkinCareDay(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    if (!this.data.skinCareState[dateStr]) this.data.skinCareState[dateStr] = {};
+    const day = this.data.skinCareState[dateStr];
+    const isCompleted = !!day.completed;
+    const nextVal = !isCompleted;
+    day.completed = nextVal;
+    if (nextVal) {
+      day.skipped = false;
+      day.am = true;
+      day.pm = true;
+    } else {
+      day.am = false;
+      day.pm = false;
+    }
+    day.updatedAt = Date.now();
+
+    if (typeof getSkinCareRoutineForDate === 'function') {
+      const routine = getSkinCareRoutineForDate(dateStr);
+      if (routine && routine.steps) {
+        routine.steps.forEach(s => {
+          day[s.id] = nextVal;
+        });
+      }
+    }
+
+    this.addPoints(nextVal ? 10 : -10);
+    try {
+      localStorage.setItem('SKIN_CARE_STATE_BACKUP', JSON.stringify(this.data.skinCareState));
+    } catch (e) {}
+    this.saveData();
+    return nextVal;
+  }
+
+  toggleSkinCareSubStep(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), subKey = 'am') {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    if (!this.data.skinCareState[dateStr]) this.data.skinCareState[dateStr] = {};
+    const day = this.data.skinCareState[dateStr];
+    const currentVal = !!day[subKey];
+    const nextVal = !currentVal;
+    day[subKey] = nextVal;
+    day.updatedAt = Date.now();
+
+    // If both AM and PM are checked, mark day completed
+    const wasCompleted = !!day.completed;
+    if (day.am && day.pm) {
+      day.completed = true;
+      day.skipped = false;
+      if (!wasCompleted) {
+        this.addPoints(10);
+      }
+    } else if (wasCompleted && (!day.am || !day.pm)) {
+      day.completed = false;
+      this.addPoints(-10);
+    } else {
+      // Partial credit for single sub-step (+5 XP)
+      this.addPoints(nextVal ? 5 : -5);
+    }
+
+    try {
+      localStorage.setItem('SKIN_CARE_STATE_BACKUP', JSON.stringify(this.data.skinCareState));
+    } catch (e) {}
+    this.saveData();
+    return day;
+  }
+
+  recordSkinCareSkip(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), note = '') {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    if (!this.data.skinCareState[dateStr]) this.data.skinCareState[dateStr] = {};
+    const day = this.data.skinCareState[dateStr];
+    const wasAlreadyHandled = day.completed || day.skipped;
+    day.skipped = true;
+    day.completed = false;
+    day.insteadNote = (note || '').trim();
+    day.skippedAt = new Date().toISOString();
+    day.updatedAt = Date.now();
+
+    if (!wasAlreadyHandled) {
+      this.addPoints(5);
+    }
+    try {
+      localStorage.setItem('SKIN_CARE_STATE_BACKUP', JSON.stringify(this.data.skinCareState));
+    } catch (e) {}
+    this.saveData();
+    return day;
+  }
+
+  undoSkinCareSkip(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0])) {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    if (!this.data.skinCareState[dateStr]) return;
+    const day = this.data.skinCareState[dateStr];
+    if (day.skipped) {
+      day.skipped = false;
+      day.insteadNote = '';
+      delete day.skippedAt;
+      day.updatedAt = Date.now();
+      this.addPoints(-5);
+      try {
+        localStorage.setItem('SKIN_CARE_STATE_BACKUP', JSON.stringify(this.data.skinCareState));
+      } catch (e) {}
+      this.saveData();
+    }
+  }
+
+  toggleSkinCareStep(dateStr = (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]), stepId) {
+    if (!this.data.skinCareState) this.data.skinCareState = {};
+    if (!this.data.skinCareState[dateStr]) this.data.skinCareState[dateStr] = {};
+    const current = !!this.data.skinCareState[dateStr][stepId];
+    this.data.skinCareState[dateStr][stepId] = !current;
+    this.data.skinCareState[dateStr].updatedAt = Date.now();
+    this.addPoints(!current ? 2 : -2);
+    try {
+      localStorage.setItem('SKIN_CARE_STATE_BACKUP', JSON.stringify(this.data.skinCareState));
+    } catch (e) {}
+    this.saveData();
+    return !current;
+  }
+
+  getSkinCareShoppingList() {
+    if (!this.data.skincareShoppingList) this.data.skincareShoppingList = {};
+    return this.data.skincareShoppingList;
+  }
+
+  toggleSkinCareShoppingItem(itemId) {
+    if (!this.data.skincareShoppingList) this.data.skincareShoppingList = {};
+    const current = !!this.data.skincareShoppingList[itemId];
+    this.data.skincareShoppingList[itemId] = !current;
+    this.saveData();
+    return !current;
+  }
+
   // --- Gamification Points & Sassy Status Methods ---
 
   addPoints(amount) {
@@ -2498,8 +2668,16 @@ class StorageManager {
       }
       if (c.id === 'claim-barness-2026-02-02') {
         c.claimNumber = c.claimNumber || '20260462A0745';
-        c.reissueRequested = true;
-        c.nextAction = 'Anthem inquiry active re missing check ($210.00) — Claim #20260462A0745';
+        c.stage = 'settled';
+        c.reimbursedAmount = 210.0;
+        c.eobPlanPaid = 210.0;
+        c.inBank = true;
+        c.inPortal = true;
+        c.reissueRequested = false;
+        c.nextAction = 'Reconciled in bank ($210.00 ACH deposited on 2026-03-05)';
+        if (c.notes && c.notes.includes('Missing Reimbursement Check')) {
+          c.notes = 'Medication Management (CPT: 99214). Billed $300.00, Plan Paid $210.00 (Claim #20260462A0745). Reconciled against ACH direct deposit on 03/05/2026 (EFT Trace #3406481483).';
+        }
       }
     });
 

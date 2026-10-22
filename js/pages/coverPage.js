@@ -1182,6 +1182,15 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
     ? 'Done ✓' 
     : (hairCareState.skipped ? 'Skipped ⏭️' : 'Pending');
 
+  // 6b. Skincare
+  const skinCareState = (typeof storage.getSkinCareState === 'function')
+    ? storage.getSkinCareState(dateStr)
+    : {};
+  const isSkinDone = !!(skinCareState.completed || skinCareState.skipped || (skinCareState.am && skinCareState.pm));
+  const skinStatusText = skinCareState.completed 
+    ? 'Done ✓' 
+    : (skinCareState.skipped ? 'Skipped ⏭️' : (skinCareState.am && !skinCareState.pm ? 'AM Done' : (!skinCareState.am && skinCareState.pm ? 'PM Done' : 'Pending')));
+
   // 7. Journal
   const journalEntry = (typeof storage.getJournal === 'function')
     ? storage.getJournal(dateStr)
@@ -1274,6 +1283,15 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
       modalFn: 'openHairCareLogModal',
       isComplete: isHairDone,
       statusText: hairCareState.completed ? 'Done' : (hairCareState.skipped ? 'Skipped' : '')
+    },
+    {
+      id: 'skincare',
+      name: 'Skincare',
+      fullName: 'Skincare Routine & Daily Tracker',
+      targetId: 'skincareTile',
+      modalFn: 'openSkinCareLogModal',
+      isComplete: isSkinDone,
+      statusText: skinCareState.completed ? 'Done' : (skinCareState.skipped ? 'Skipped' : (skinCareState.am && !skinCareState.pm ? 'AM' : (!skinCareState.am && skinCareState.pm ? 'PM' : '')))
     },
     {
       id: 'journal',
@@ -1392,6 +1410,15 @@ function renderDailySheet() {
     : {};
   const isHairDone = !!(hairCareState.completed || hairCareState.skipped);
   const hairRoutine = getHairCareRoutineForDate(activeTrackingDate);
+
+  // Skincare
+  const skinCareState = (typeof storage !== 'undefined' && typeof storage.getSkinCareState === 'function')
+    ? storage.getSkinCareState(activeTrackingDate)
+    : {};
+  const isSkinDone = !!(skinCareState.completed || skinCareState.skipped || (skinCareState.am && skinCareState.pm));
+  const skinRoutine = (typeof getSkinCareRoutineForDate === 'function')
+    ? getSkinCareRoutineForDate(activeTrackingDate)
+    : { badge: '🌙 Routine' };
 
   // Z Hub status
   const todayZLog = (typeof storage !== 'undefined' && typeof storage.getZLogEntry === 'function')
@@ -1740,6 +1767,11 @@ function renderDailySheet() {
           <span class="v" id="hairV">${hairCareState.completed ? 'Done ✓' : (hairCareState.skipped ? 'Skipped ⏭️' : 'Pending · View Log')}</span>
         </button>
 
+        <button type="button" class="tile2 skin" id="skincareTile" aria-pressed="${isSkinDone ? 'true' : 'false'}" onclick="openSkinCareLogModal('${activeTrackingDate}')">
+          <span class="label">SKINCARE · ${escapeHtml(skinRoutine.badge)}</span>
+          <span class="v" id="skinV">${skinCareState.completed ? 'Done ✓' : (skinCareState.skipped ? 'Skipped ⏭️' : (skinCareState.am && !skinCareState.pm ? 'AM Done 🌅' : (!skinCareState.am && skinCareState.pm ? 'PM Done 🌙' : 'Pending · View Log')))}</span>
+        </button>
+
         <button type="button" class="tile2 zhub" id="zhub" onclick="openZLogEntryModal('${activeTrackingDate}')">
           <span class="label">Z HUB</span>
           <span class="v" id="zV">${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged ✓') : 'Log'}</span>
@@ -1834,6 +1866,11 @@ function renderDailySheet() {
   const hairModal = document.getElementById('modal-haircare-log');
   if (hairModal && hairModal.classList.contains('active') && typeof renderHairCareModalContent === 'function') {
     renderHairCareModalContent(activeTrackingDate);
+  }
+
+  const skinModal = document.getElementById('modal-skincare-log');
+  if (skinModal && skinModal.classList.contains('active') && typeof renderSkinCareModalContent === 'function') {
+    renderSkinCareModalContent(activeTrackingDate);
   }
 
   const archiveModal = document.getElementById('modal-journal-archive');
@@ -3096,6 +3133,904 @@ function openHairCareLogModal(dateStr = activeTrackingDate) {
   }
 }
 window.openHairCareLogModal = openHairCareLogModal;
+
+/* ==========================================================================
+   Skincare Routine & Daily Tracker (Morning & Evening Schedule + Notes)
+   ========================================================================== */
+
+let skinCalendarCollapsed = true;
+let activeSkinSkipDate = null;
+let activeSkinCareTab = 'evening'; // 'evening' | 'morning' | 'rules' | 'shopping'
+
+const SKIN_CARE_SCHEDULE_MAP = {
+  1: { // Monday
+    type: 'retinoid',
+    badge: '🌙 Retinoid Night',
+    badgeClass: 'badge-retinoid',
+    title: 'Retinoid Night (Anti-Aging)',
+    subtitle: 'Cell turnover & collagen stimulation · Naturium Retinaldehyde 0.05%',
+    guardrails: [
+      'Wait 2–3 mins until skin is 100% dry before applying Retinaldehyde (Rule 2).',
+      'No Thayers Witch Hazel Toner on Retinoid nights (Rule 3).'
+    ],
+    prepSteps: [
+      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil', desc: 'Massage onto dry skin for 30s, then rinse with lukewarm water.' },
+      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash and rinse clean to complete double cleanse.' },
+      { id: 'prep-2', icon: '💧', label: '2. Hydrate (On Damp Skin)', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone BEFORE applying actives to protect delicate under-eye skin.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '🌙', label: '4. Active Treatment (Wait 2–3 Mins until 100% Dry)', product: 'Naturium Retinaldehyde Cream Serum 0.05%', desc: 'Apply 1–2 pumps (pea-sized amount) to dry face and neck. Never apply to damp skin.' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream to lock in moisture.' }
+    ]
+  },
+  2: { // Tuesday
+    type: 'exfoliation',
+    badge: '✨ Exfoliation & Glow',
+    badgeClass: 'badge-exfoliation',
+    title: 'Exfoliation & Glow Night (Dullness)',
+    subtitle: 'Smoothing texture, dullness & redness soothing · Anua Azelaic Acid 10%',
+    guardrails: [
+      'Swipe dry face with Thayers Toner, then apply Snail Mucin and let dry.',
+      'Never mix with Peptides (Rule 1: acids break down peptide bonds).'
+    ],
+    prepSteps: [
+      { id: 'prep-1', icon: '🫧', label: '1. Double Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil + Vanicream Gentle Cleanser', desc: 'Massage oil cleanse for 30s, rinse, then follow with gentle water cleanse.' },
+      { id: 'prep-2', icon: '🌿', label: '2. Toner & Hydration', product: 'Thayers Witch Hazel Toner + COSRX Snail Mucin', desc: 'Swipe dry face with Thayers on cotton pad, then press in COSRX Snail Mucin and let dry.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone to buffer eye area.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '✨', label: '4. Active Treatment', product: 'Anua Azelaic Acid 10 Hyaluron Redness Soothing Serum', desc: 'Apply 3–4 drops evenly over face to calm redness and clear dullness.' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with ceramide cream.' }
+    ]
+  },
+  3: { // Wednesday
+    type: 'recovery',
+    badge: '🛡️ Barrier & Peptide Recovery',
+    badgeClass: 'badge-recovery',
+    title: 'Peptide & Barrier Recovery Night',
+    subtitle: 'Deep hydration replenishment & lipid barrier restoration',
+    guardrails: [
+      'Apply Multi-Peptide + HA while skin is still slightly dewy.',
+      'No Vitamin C or acids tonight (Rule 1).'
+    ],
+    prepSteps: [
+      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil', desc: 'Massage onto dry skin for 30s, then rinse clean.' },
+      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash and rinse clean.' },
+      { id: 'prep-2', icon: '💧', label: '2. Hydrate (On Damp Skin)', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap along orbital bone.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '🧬', label: '4. Peptide Infusion (On Dewy Skin)', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'While skin is still slightly dewy, apply 3–4 drops for plump collagen support.' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon (optional: dab Vanicream Moisturizing Cream tub on extra dry spots).' }
+    ]
+  },
+  4: { // Thursday
+    type: 'retinoid',
+    badge: '🌙 Retinoid Night',
+    badgeClass: 'badge-retinoid',
+    title: 'Retinoid Night (Anti-Aging)',
+    subtitle: 'Cell turnover & collagen stimulation · Naturium Retinaldehyde 0.05%',
+    guardrails: [
+      'Wait 2–3 mins until skin is 100% dry before applying Retinaldehyde (Rule 2).',
+      'No Thayers Witch Hazel Toner on Retinoid nights (Rule 3).'
+    ],
+    prepSteps: [
+      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil', desc: 'Massage onto dry skin for 30s, rinse clean.' },
+      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash and rinse clean.' },
+      { id: 'prep-2', icon: '💧', label: '2. Hydrate (On Damp Skin)', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps on damp skin.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '🌙', label: '4. Active Treatment (Wait 2–3 Mins until 100% Dry)', product: 'Naturium Retinaldehyde Cream Serum 0.05%', desc: 'Apply 1–2 pumps (pea-sized amount) to dry face and neck.' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream.' }
+    ]
+  },
+  5: { // Friday
+    type: 'brightening',
+    badge: '💠 Brightening & Tone Reset',
+    badgeClass: 'badge-brightening',
+    title: 'Brightening & Tone Reset Night',
+    subtitle: 'Tone evening & soothing · Anua Azelaic Acid calm',
+    guardrails: [
+      'Wait for Snail Mucin to dry before applying Azelaic Acid.',
+      'No peptides in this routine (Rule 1).'
+    ],
+    prepSteps: [
+      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil', desc: 'Massage onto dry skin for 30s, rinse clean.' },
+      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse', product: 'Vanicream Gentle Facial Cleanser', desc: 'Gentle water cleanse.' },
+      { id: 'prep-2', icon: '💧', label: '2. Hydrate (On Damp Skin)', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '💠', label: '4. Brightening Active (Wait for Snail Mucin to Dry)', product: 'Anua Azelaic Acid 10 Hyaluron Redness Soothing Serum', desc: 'Apply 3–4 drops evenly over face once snail mucin has absorbed.' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide cream.' }
+    ]
+  },
+  6: { // Saturday
+    type: 'retinoid',
+    badge: '🌙 Retinoid Night',
+    badgeClass: 'badge-retinoid',
+    title: 'Retinoid Night (Anti-Aging)',
+    subtitle: 'Cell turnover · Acclimation note: Peptides W1–2, Retinal W3+',
+    rampUpNote: '⚠️ 2-Week Ramp-Up (Rule 4): For Weeks 1–2, swap Step 4 to The Ordinary Multi-Peptide + HA Serum while skin acclimates. Start Retinaldehyde on Saturdays in Week 3.',
+    guardrails: [
+      'Weeks 1–2: Use Multi-Peptide + HA Serum tonight.',
+      'Week 3+: Apply Retinaldehyde 0.05% on 100% dry skin.',
+      'No Thayers Witch Hazel Toner on Retinoid nights (Rule 3).'
+    ],
+    prepSteps: [
+      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil', desc: 'Massage onto dry skin for 30s, rinse clean.' },
+      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash and rinse clean.' },
+      { id: 'prep-2', icon: '💧', label: '2. Hydrate (On Damp Skin)', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps on damp skin.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '🌙', label: '4. Active Treatment (Wait 2–3 Mins until 100% Dry)', product: 'Naturium Retinaldehyde 0.05% (or Peptides for Weeks 1–2)', desc: 'Apply 1–2 pumps (pea-sized amount) to dry face and neck. (Weeks 1–2: apply The Ordinary Multi-Peptide instead).' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal and protect.' }
+    ]
+  },
+  0: { // Sunday
+    type: 'glass-skin',
+    badge: '🫧 Deep Glass-Skin Reset',
+    badgeClass: 'badge-glass-skin',
+    title: 'Deep Glass-Skin Reset Night',
+    subtitle: 'Nourishment cushion · Peach & Lily + Multi-Peptide cocktail',
+    guardrails: [
+      'Apply Peach & Lily to damp skin, then layer Multi-Peptide + HA.',
+      'Seal with a generous layer of Illiyoon Ceramide Cream.'
+    ],
+    prepSteps: [
+      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse', product: 'Prequel Pre-Gleanse Cleansing Oil', desc: 'Massage onto dry skin for 30s, rinse with lukewarm water.' },
+      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse', product: 'Vanicream Gentle Facial Cleanser', desc: 'Gentle water cleanse.' },
+      { id: 'prep-2', icon: '💧', label: '2. Hydrate (On Damp Skin)', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin.' },
+      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
+    ],
+    treatmentSteps: [
+      { id: 'treat-4', icon: '🫧', label: '4. Deep Glass-Skin Layering', product: 'Peach & Lily Glass Skin Serum + The Ordinary Multi-Peptide', desc: 'Layer 1–2 pumps of Peach & Lily + 3–4 drops of Multi-Peptide + HA Serum together for ultimate bounce.' },
+      { id: 'treat-5', icon: '🛡️', label: '5. Thick Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with a thick, nourishing layer of Illiyoon Ceramide cream.' }
+    ]
+  }
+};
+
+const SKIN_CARE_MORNING_ROUTINE = [
+  {
+    num: 1,
+    icon: '🌿',
+    title: 'Prep (Skip Sink Cleanser)',
+    product: 'Thayers Classic Witch Hazel Toner + Light Water Mist',
+    desc: 'Swipe face with Thayers Classic Witch Hazel Toner on a cotton pad (skip sink cleanser), then splash or mist lightly with water so skin is slightly damp.',
+    hack: 'Extra Puffy Eye Hack: Soak 2 cotton rounds in cold water + a few drops of Thayers Classic Witch Hazel Toner, press over closed eyes for 60 seconds, rinse eye area with cool water, and pat dry.'
+  },
+  {
+    num: 2,
+    icon: '🧪',
+    title: 'Vitamin C (On Dry Skin)',
+    product: 'Naturium Vitamin C Complex Serum (or Vichy LiftActiv)',
+    desc: 'Apply 1–2 pumps of Naturium Vitamin C Complex Serum (or 4 drops of Vichy LiftActiv Brightening Skin Corrector until finished — do not use both at once!). Wait 60 seconds.'
+  },
+  {
+    num: 3,
+    icon: '✨',
+    title: 'Glow & Hydrate',
+    product: 'Peach & Lily Glass Skin Refining Serum',
+    desc: 'Apply 1–2 pumps of Peach & Lily Glass Skin Refining Serum across face and neck for bouncy glass-skin finish.'
+  },
+  {
+    num: 4,
+    icon: '👁️',
+    title: 'Eyes',
+    product: 'NIA24 Eye Repair Complex',
+    desc: 'Tap a rice-grain amount of NIA24 Eye Repair Complex along the orbital bone under each eye.'
+  },
+  {
+    num: 5,
+    icon: '🛡️',
+    title: 'Moisturize + SPF',
+    product: 'Vanicream Facial Moisturizer Broad Spectrum SPF 30',
+    desc: 'Apply a generous 1/4 tsp layer of Vanicream Facial Moisturizer Broad Spectrum SPF 30.'
+  },
+  {
+    num: 6,
+    icon: '🪞',
+    title: 'Tint (Optional)',
+    product: 'Laura Mercier Tinted Moisturizer Natural Skin Perfector SPF 30',
+    desc: 'Smooth Laura Mercier Tinted Moisturizer Natural Skin Perfector SPF 30 on top for sheer dewy coverage.'
+  }
+];
+
+const SKIN_CARE_RULES = [
+  {
+    num: 1,
+    icon: '🚫',
+    title: 'No Peptides + Acids / Vitamin C',
+    rule: 'Never use The Ordinary Multi-Peptide + HA Serum in the same routine as Naturium Vitamin C Complex Serum, Vichy LiftActiv, or Anua Azelaic Acid.',
+    why: 'Direct acids and acidic L-ascorbic acid break down delicate peptide bonds, rendering them completely ineffective.'
+  },
+  {
+    num: 2,
+    icon: '💧',
+    title: 'Damp vs. Dry Skin Protocol',
+    rule: 'Apply COSRX Snail Mucin and Peach & Lily to damp skin. Always wait 2–3 minutes for skin to dry 100% before applying Naturium Retinaldehyde.',
+    why: 'Applying retinoids to damp skin drastically increases penetration depth and speed, triggering stinging, peeling, and barrier damage.'
+  },
+  {
+    num: 3,
+    icon: '🌿',
+    title: 'Thayers Guardrail',
+    rule: 'Only use Thayers Classic Witch Hazel Toner in the morning, post-workout, or on Tuesday night before Anua Azelaic Acid. Never use it on Retinoid nights (Mon / Thu / Sat).',
+    why: 'Astringent witch hazel combined with active retinoids can over-dry the skin barrier.'
+  },
+  {
+    num: 4,
+    icon: '⏳',
+    title: '2-Week Ramp-Up Guardrail',
+    rule: 'For the first 2 weeks, only use Naturium Retinaldehyde Cream Serum 0.05% on Monday and Thursday nights (swap Saturday to The Ordinary Multi-Peptide).',
+    why: 'Allows gentle retinization without flaking or barrier irritation. Advance to 3x/week (adding Saturday) starting in Week 3.'
+  },
+  {
+    num: 5,
+    icon: '🧪',
+    title: 'Vichy Oxidation Check',
+    rule: 'Test a drop of Vichy LiftActiv Vitamin C Brightening Skin Corrector on a white tissue. If clear or pale, finish it first before opening the Naturium Vitamin C. If dark orange/amber, toss it immediately.',
+    why: 'Oxidized Vitamin C turns into dehydroascorbic acid and erythrulose, causing free-radical stress and clogging pores.'
+  }
+];
+
+const SKIN_CARE_SHOPPING_ITEMS = [
+  {
+    id: 'prequel-oil',
+    name: 'Prequel Pre-Gleanse Cleansing Oil',
+    role: 'Nightly Double Cleanse (Step 1A)',
+    desc: 'Breaks down SPF, tinted moisturizer, and sebum without stripping the barrier.'
+  },
+  {
+    id: 'naturium-retinal',
+    name: 'Naturium Retinaldehyde Cream Serum 0.05%',
+    role: 'Anti-Aging Active (Mon / Thu / Sat)',
+    desc: '1 step closer to retinoic acid than standard retinol; potent collagen support with low irritation.'
+  },
+  {
+    id: 'anua-azelaic',
+    name: 'Anua Azelaic Acid 10 Hyaluron Redness Soothing Serum',
+    role: 'Exfoliation & Redness Soothing (Tue / Fri)',
+    desc: '10% azelaic acid plus hyaluronic acid to clear dullness, soothe redness, and even skin tone.'
+  }
+];
+
+const FOUR_WEEK_SKIN_SCHEDULE_DATA = [
+  { week: 'Week 1 (Sep 28 – Oct 4)', days: [
+    { date: '2026-09-28', dayName: 'Mon', num: '28', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-09-29', dayName: 'Tue', num: '29', type: 'exfoliation', badge: 'Azelaic Glow' },
+    { date: '2026-09-30', dayName: 'Wed', num: '30', type: 'recovery', badge: 'Barrier' },
+    { date: '2026-10-01', dayName: 'Thu', num: '1', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-02', dayName: 'Fri', num: '2', type: 'brightening', badge: 'Tone Reset' },
+    { date: '2026-10-03', dayName: 'Sat', num: '3', type: 'retinoid', badge: 'Peptide Ramp' },
+    { date: '2026-10-04', dayName: 'Sun', num: '4', type: 'glass-skin', badge: 'Glass Reset' }
+  ]},
+  { week: 'Week 2 (Oct 5 – Oct 11)', days: [
+    { date: '2026-10-05', dayName: 'Mon', num: '5', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-06', dayName: 'Tue', num: '6', type: 'exfoliation', badge: 'Azelaic Glow' },
+    { date: '2026-10-07', dayName: 'Wed', num: '7', type: 'recovery', badge: 'Barrier' },
+    { date: '2026-10-08', dayName: 'Thu', num: '8', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-09', dayName: 'Fri', num: '9', type: 'brightening', badge: 'Tone Reset' },
+    { date: '2026-10-10', dayName: 'Sat', num: '10', type: 'retinoid', badge: 'Peptide Ramp' },
+    { date: '2026-10-11', dayName: 'Sun', num: '11', type: 'glass-skin', badge: 'Glass Reset' }
+  ]},
+  { week: 'Week 3 (Oct 12 – Oct 18)', days: [
+    { date: '2026-10-12', dayName: 'Mon', num: '12', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-13', dayName: 'Tue', num: '13', type: 'exfoliation', badge: 'Azelaic Glow' },
+    { date: '2026-10-14', dayName: 'Wed', num: '14', type: 'recovery', badge: 'Barrier' },
+    { date: '2026-10-15', dayName: 'Thu', num: '15', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-16', dayName: 'Fri', num: '16', type: 'brightening', badge: 'Tone Reset' },
+    { date: '2026-10-17', dayName: 'Sat', num: '17', type: 'retinoid', badge: 'Retinoid 3x' },
+    { date: '2026-10-18', dayName: 'Sun', num: '18', type: 'glass-skin', badge: 'Glass Reset' }
+  ]},
+  { week: 'Week 4 (Oct 19 – Oct 25)', days: [
+    { date: '2026-10-19', dayName: 'Mon', num: '19', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-20', dayName: 'Tue', num: '20', type: 'exfoliation', badge: 'Azelaic Glow' },
+    { date: '2026-10-21', dayName: 'Wed', num: '21', type: 'recovery', badge: 'Barrier' },
+    { date: '2026-10-22', dayName: 'Thu', num: '22', type: 'retinoid', badge: 'Retinoid' },
+    { date: '2026-10-23', dayName: 'Fri', num: '23', type: 'brightening', badge: 'Tone Reset' },
+    { date: '2026-10-24', dayName: 'Sat', num: '24', type: 'retinoid', badge: 'Retinoid 3x' },
+    { date: '2026-10-25', dayName: 'Sun', num: '25', type: 'glass-skin', badge: 'Glass Reset' }
+  ]}
+];
+
+function getSkinCareRoutineForDate(dateStr) {
+  const dObj = parseDateIso(dateStr);
+  const dayOfWeek = dObj.getDay();
+  return SKIN_CARE_SCHEDULE_MAP[dayOfWeek] || SKIN_CARE_SCHEDULE_MAP[1];
+}
+
+function setSkinCareTab(tabId) {
+  activeSkinCareTab = tabId;
+  const modal = document.getElementById('modal-skincare-log');
+  if (modal && modal.classList.contains('active')) {
+    renderSkinCareModalContent(activeTrackingDate);
+  } else {
+    renderDailySheet();
+  }
+}
+window.setSkinCareTab = setSkinCareTab;
+
+function toggleSkinCalendarCollapse() {
+  skinCalendarCollapsed = !skinCalendarCollapsed;
+  const drawer = document.getElementById('skin-calendar-drawer');
+  const text = document.getElementById('skin-calendar-toggle-text');
+  if (drawer) {
+    drawer.style.display = skinCalendarCollapsed ? 'none' : 'block';
+  }
+  if (text) {
+    text.textContent = skinCalendarCollapsed ? '▾ View Full Calendar' : '▴ Hide Calendar';
+  }
+}
+window.toggleSkinCalendarCollapse = toggleSkinCalendarCollapse;
+
+function openSkinSkipEditor(dateStr) {
+  activeSkinSkipDate = dateStr;
+  const modal = document.getElementById('modal-skincare-log');
+  if (modal && modal.classList.contains('active')) {
+    renderSkinCareModalContent(dateStr);
+  } else {
+    renderDailySheet();
+  }
+  setTimeout(() => {
+    const input = document.getElementById('skin-skip-note-input');
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }, 60);
+}
+window.openSkinSkipEditor = openSkinSkipEditor;
+
+function closeSkinSkipEditor() {
+  activeSkinSkipDate = null;
+  const modal = document.getElementById('modal-skincare-log');
+  if (modal && modal.classList.contains('active')) {
+    renderSkinCareModalContent(activeTrackingDate);
+  } else {
+    renderDailySheet();
+  }
+}
+window.closeSkinSkipEditor = closeSkinSkipEditor;
+
+function setSkinSkipPreset(presetText) {
+  const input = document.getElementById('skin-skip-note-input');
+  if (input) {
+    input.value = presetText;
+    input.focus();
+  }
+}
+window.setSkinSkipPreset = setSkinSkipPreset;
+
+function submitSkinCareSkipAction(dateStr) {
+  const input = document.getElementById('skin-skip-note-input');
+  const note = input ? input.value.trim() : '';
+  if (typeof storage !== 'undefined' && typeof storage.recordSkinCareSkip === 'function') {
+    storage.recordSkinCareSkip(dateStr, note);
+    if (typeof showToast === 'function') {
+      showToast(`⏭️ Skincare recorded: "${note || 'Alternative routine'}" (+5 XP Floor)`);
+    }
+  }
+  activeSkinSkipDate = null;
+  renderDailySheet();
+}
+window.submitSkinCareSkipAction = submitSkinCareSkipAction;
+
+function undoSkinCareSkipAction(dateStr) {
+  if (typeof storage !== 'undefined' && typeof storage.undoSkinCareSkip === 'function') {
+    storage.undoSkinCareSkip(dateStr);
+    if (typeof showToast === 'function') {
+      showToast('Skincare skip removed · pending status restored');
+    }
+  }
+  activeSkinSkipDate = null;
+  renderDailySheet();
+}
+window.undoSkinCareSkipAction = undoSkinCareSkipAction;
+
+function toggleSkinCareDayAction(dateStr) {
+  if (typeof storage !== 'undefined' && typeof storage.toggleSkinCareDay === 'function') {
+    const nextVal = storage.toggleSkinCareDay(dateStr);
+    if (nextVal) {
+      if (typeof triggerConfetti === 'function') triggerConfetti();
+      if (typeof showToast === 'function') showToast('🫧 Skincare routine completed for today! (+10 XP)');
+    } else {
+      if (typeof showToast === 'function') showToast('Skincare routine marked pending');
+    }
+  }
+  activeSkinSkipDate = null;
+  renderDailySheet();
+}
+window.toggleSkinCareDayAction = toggleSkinCareDayAction;
+
+function toggleSkinCareSubAction(dateStr, subKey) {
+  if (typeof storage !== 'undefined' && typeof storage.toggleSkinCareSubStep === 'function') {
+    const updated = storage.toggleSkinCareSubStep(dateStr, subKey);
+    const label = subKey === 'am' ? 'Morning Routine' : 'Evening Routine';
+    const isDone = !!updated[subKey];
+    if (isDone) {
+      if (typeof showToast === 'function') {
+        showToast(`✨ ${label} completed!`);
+      }
+      if (updated.completed && typeof triggerConfetti === 'function') {
+        triggerConfetti();
+      }
+    } else {
+      if (typeof showToast === 'function') {
+        showToast(`${label} marked pending`);
+      }
+    }
+  }
+  renderDailySheet();
+}
+window.toggleSkinCareSubAction = toggleSkinCareSubAction;
+
+function toggleSkinShoppingAction(itemId) {
+  if (typeof storage !== 'undefined' && typeof storage.toggleSkinCareShoppingItem === 'function') {
+    const isBought = storage.toggleSkinCareShoppingItem(itemId);
+    const item = SKIN_CARE_SHOPPING_ITEMS.find(i => i.id === itemId);
+    const name = item ? item.name : 'Item';
+    if (typeof showToast === 'function') {
+      showToast(isBought ? `🛍️ Checked off: ${name}` : `Restored to shopping list: ${name}`);
+    }
+  }
+  const modal = document.getElementById('modal-skincare-log');
+  if (modal && modal.classList.contains('active')) {
+    renderSkinCareModalContent(activeTrackingDate);
+  }
+}
+window.toggleSkinShoppingAction = toggleSkinShoppingAction;
+
+function renderSkinCareCard(dateStr, isToday) {
+  const routine = getSkinCareRoutineForDate(dateStr);
+  const skinCareState = (typeof storage !== 'undefined' && typeof storage.getSkinCareState === 'function')
+    ? storage.getSkinCareState(dateStr)
+    : {};
+  const isCompleted = !!skinCareState.completed;
+  const isSkipped = !!skinCareState.skipped;
+  const isAmDone = !!skinCareState.am;
+  const isPmDone = !!skinCareState.pm;
+  const isEditorOpen = (activeSkinSkipDate === dateStr);
+  const todayIso = formatDateIso(new Date());
+
+  const dateObj = parseDateIso(dateStr);
+  const formattedDay = isToday 
+    ? 'Today' 
+    : dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+
+  // Shopping list counts
+  const shoppingState = (typeof storage !== 'undefined' && typeof storage.getSkinCareShoppingList === 'function')
+    ? storage.getSkinCareShoppingList()
+    : {};
+  const boughtCount = SKIN_CARE_SHOPPING_ITEMS.filter(it => !!shoppingState[it.id]).length;
+
+  // Header status pill
+  let headerProgressPill = '1 Checkbox';
+  let headerPillClass = '';
+  if (isCompleted) {
+    headerProgressPill = '🎉 Skincare Done (+10 XP)';
+    headerPillClass = 'all-done';
+  } else if (isSkipped) {
+    headerProgressPill = '⏭️ Skipped (+5 XP Floor)';
+    headerPillClass = 'floor-done';
+  } else if (isAmDone && !isPmDone) {
+    headerProgressPill = '🌅 AM Done · PM Pending';
+    headerPillClass = 'half-done';
+  } else if (!isAmDone && isPmDone) {
+    headerProgressPill = '🌙 PM Done · AM Pending';
+    headerPillClass = 'half-done';
+  }
+
+  // Calendar Grid Html
+  const calendarGridHtml = `
+    <div class="hair-calendar-grid">
+      ${FOUR_WEEK_SKIN_SCHEDULE_DATA.map(w => `
+        <div class="hair-cal-week-row">
+          <span class="hair-cal-week-title">${w.week}</span>
+          <div class="hair-cal-days-strip">
+            ${w.days.map(d => {
+              const isSelected = (d.date === dateStr);
+              const isTodayCell = (d.date === todayIso);
+              const cellRoutine = getSkinCareRoutineForDate(d.date);
+              const cellState = (typeof storage !== 'undefined' && typeof storage.getSkinCareState === 'function')
+                ? storage.getSkinCareState(d.date)
+                : {};
+              const cellCompleted = !!cellState.completed;
+              const cellSkipped = !!cellState.skipped;
+
+              let badgeText = d.badge;
+              let badgeStyleClass = cellRoutine.badgeClass;
+              let cellTitle = `${d.dayName}, ${d.date}: ${cellRoutine.title}`;
+
+              if (cellCompleted) {
+                badgeText = '✓ Done';
+                badgeStyleClass = 'badge-done';
+                cellTitle += ' (Completed +10 XP)';
+              } else if (cellSkipped) {
+                badgeText = '⏭️ Skipped';
+                badgeStyleClass = 'badge-skipped';
+                cellTitle += ` (Skipped: ${cellState.insteadNote || 'Alternative'} +5 XP)`;
+              }
+
+              return `
+                <div class="hair-cal-day-cell ${isSelected ? 'is-selected' : ''} ${isTodayCell ? 'is-today' : ''} ${cellSkipped ? 'is-skipped' : ''}" 
+                     onclick="jumpToTrackingDate('${d.date}')"
+                     title="${escapeHtml(cellTitle)} (Click to jump to this day)">
+                  <span class="cal-day-name">${d.dayName}</span>
+                  <span class="cal-day-num">${d.num}</span>
+                  <span class="cal-day-badge ${badgeStyleClass}">
+                    ${badgeText}
+                  </span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // Tab Content Switcher
+  let tabContentHtml = '';
+
+  if (activeSkinCareTab === 'evening') {
+    tabContentHtml = `
+      <!-- Daily Tracker: Master 1 Checkbox + AM/PM Sub-Toggles + Skip / Alternative + Concise Routine -->
+      <div class="hair-daily-tracker-box ${isCompleted ? 'is-done' : (isSkipped ? 'is-skipped' : '')}">
+        <!-- Master 1-Tap Checkbox Row -->
+        <div class="hair-tracker-check-row" onclick="toggleSkinCareDayAction('${dateStr}')">
+          <div class="custom-checkbox ${isCompleted ? 'checked' : ''}">
+            ${isCompleted ? '✓' : ''}
+          </div>
+          <div class="hair-tracker-check-info">
+            <span class="hair-tracker-check-title">${isCompleted ? 'Daily Skincare Completed' : (isSkipped ? 'Mark Completed Instead' : 'Complete Today’s Skincare Routine')}</span>
+            <span class="hair-tracker-check-desc">${routine.badge} · 1 tap to check off full AM &amp; PM routine (+10 XP)</span>
+          </div>
+          <span class="hair-tracker-check-pill ${isCompleted ? 'done' : (isSkipped ? 'skipped' : '')}">
+            ${isCompleted ? '✓ Done' : (isSkipped ? '⏭️ Skipped' : 'Pending')}
+          </span>
+        </div>
+
+        <!-- AM / PM Sub-Checkboxes Strip -->
+        <div class="skin-subtoggles-row">
+          <button type="button" class="skin-subtoggle-btn ${isAmDone ? 'is-done' : ''}" onclick="toggleSkinCareSubAction('${dateStr}', 'am')">
+            <span class="subtoggle-ic">${isAmDone ? '✓' : '🌅'}</span>
+            <span class="subtoggle-txt">Morning Routine: <strong>${isAmDone ? 'Done' : 'Pending'}</strong></span>
+          </button>
+          <button type="button" class="skin-subtoggle-btn ${isPmDone ? 'is-done' : ''}" onclick="toggleSkinCareSubAction('${dateStr}', 'pm')">
+            <span class="subtoggle-ic">${isPmDone ? '✓' : '🌙'}</span>
+            <span class="subtoggle-txt">Evening Routine: <strong>${isPmDone ? 'Done' : 'Pending'}</strong></span>
+          </button>
+        </div>
+
+        <!-- Recorded Alternative Banner (Visible when skipped) -->
+        ${isSkipped ? `
+          <div class="hair-skip-recorded-banner">
+            <div class="hair-skip-recorded-left">
+              <span class="hair-skip-badge">⏭️ Routine Skipped</span>
+              <div class="hair-skip-note-text">
+                <span class="hair-skip-note-label">Instead:</span>
+                <span class="hair-skip-note-val">“${escapeHtml(skinCareState.insteadNote || 'Took alternative path')}”</span>
+              </div>
+            </div>
+            <div class="hair-skip-recorded-actions">
+              <button type="button" class="hair-skip-action-btn edit-btn" onclick="openSkinSkipEditor('${dateStr}')" title="Edit recorded alternative">✏️ Edit</button>
+              <button type="button" class="hair-skip-action-btn undo-btn" onclick="undoSkinCareSkipAction('${dateStr}')" title="Undo skip and restore pending status">↺ Undo</button>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Skip Prompt Row (Visible when not completed and editor not open and not skipped) -->
+        ${(!isCompleted && !isSkipped && !isEditorOpen) ? `
+          <div class="hair-skip-prompt-row">
+            <button type="button" class="hair-skip-btn" onclick="openSkinSkipEditor('${dateStr}')">
+              <span class="hair-skip-icon">⏭️</span>
+              <span class="hair-skip-text">Low energy or did something else today? <strong>Record what you did instead →</strong></span>
+            </button>
+          </div>
+        ` : ''}
+
+        <!-- Inline Skip Drawer / Editor -->
+        ${isEditorOpen ? `
+          <div class="hair-skip-editor-drawer" id="skin-skip-editor-drawer">
+            <div class="hair-skip-editor-header">
+              <span class="hair-skip-editor-title">⏭️ Record Alternative for ${formattedDay}</span>
+              <span class="hair-skip-editor-hint">+5 XP Floor streak protection</span>
+            </div>
+            <div class="hair-skip-quick-chips">
+              <span class="hair-chips-label">Quick select:</span>
+              <button type="button" class="hair-quick-chip" onclick="setSkinSkipPreset('Gentle wash & moisturizer only')">Gentle wash &amp; moisturizer only</button>
+              <button type="button" class="hair-quick-chip" onclick="setSkinSkipPreset('Skipped actives / barrier break')">Skipped actives / barrier break</button>
+              <button type="button" class="hair-quick-chip" onclick="setSkinSkipPreset('AM routine only')">AM routine only</button>
+              <button type="button" class="hair-quick-chip" onclick="setSkinSkipPreset('PM routine only')">PM routine only</button>
+              <button type="button" class="hair-quick-chip" onclick="setSkinSkipPreset('Travel / minimal routine')">Travel / minimal routine</button>
+            </div>
+            <div class="hair-skip-input-group">
+              <input type="text" id="skin-skip-note-input" class="hair-skip-note-input" placeholder="What did you do instead? (e.g. Gentle wash & moisturizer only...)" value="${escapeHtml(skinCareState.insteadNote || '')}" onkeydown="if(event.key === 'Enter') submitSkinCareSkipAction('${dateStr}')" />
+              <div class="hair-skip-actions">
+                <button type="button" class="hair-skip-save-btn" onclick="submitSkinCareSkipAction('${dateStr}')">Save Note (+5 XP)</button>
+                <button type="button" class="hair-skip-cancel-btn" onclick="closeSkinSkipEditor()">Cancel</button>
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- Day-Specific Guardrail Alert Banners -->
+        ${routine.rampUpNote ? `
+          <div class="skin-guardrail-banner ramp-up">
+            <div class="guardrail-icon">⏳</div>
+            <div class="guardrail-body">
+              <strong>2-Week Ramp-Up Guardrail (Rule 4)</strong>
+              <span>${routine.rampUpNote}</span>
+            </div>
+          </div>
+        ` : ''}
+
+        ${routine.guardrails && routine.guardrails.length > 0 ? `
+          <div class="skin-guardrails-pill-strip">
+            ${routine.guardrails.map(g => `<span class="skin-guardrail-chip">ℹ️ ${escapeHtml(g)}</span>`).join('')}
+          </div>
+        ` : ''}
+
+        <!-- Concise Evening Sequence Tray -->
+        <div class="hair-concise-routine-tray">
+          <!-- Nightly Prep (Steps 1-3) -->
+          <div class="hair-concise-tray-header" style="margin-top: 4px;">
+            <span class="hair-concise-tray-title">Part 1: Nightly Prep (Every Night)</span>
+            <span class="hair-concise-step-badge">${routine.prepSteps.length} steps</span>
+          </div>
+          <ul class="hair-concise-steps-list">
+            ${routine.prepSteps.map((s, idx) => `
+              <li class="hair-concise-step-item">
+                <span class="step-num">${idx + 1}</span>
+                <span class="step-bullet">${s.icon}</span>
+                <div class="step-text">
+                  <span class="step-label"><strong>${escapeHtml(s.label)}:</strong></span>
+                  <span class="step-product">${escapeHtml(s.product)}</span>
+                  <span class="step-desc">— ${escapeHtml(s.desc)}</span>
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+
+          <div class="skin-tray-divider"></div>
+
+          <!-- Nightly Treatment (Steps 4-5) -->
+          <div class="hair-concise-tray-header">
+            <span class="hair-concise-tray-title">Part 2: Nightly Treatment (${formattedDay})</span>
+            <span class="hair-concise-step-badge" style="color: #6D28D9; background: rgba(139, 92, 246, 0.15);">${routine.treatmentSteps.length} steps</span>
+          </div>
+          <ul class="hair-concise-steps-list">
+            ${routine.treatmentSteps.map((s, idx) => `
+              <li class="hair-concise-step-item">
+                <span class="step-num" style="color: #6D28D9; background: rgba(139, 92, 246, 0.15);">${idx + 4}</span>
+                <span class="step-bullet">${s.icon}</span>
+                <div class="step-text">
+                  <span class="step-label"><strong>${escapeHtml(s.label)}:</strong></span>
+                  <span class="step-product" style="color: #6D28D9;">${escapeHtml(s.product)}</span>
+                  <span class="step-desc">— ${escapeHtml(s.desc)}</span>
+                </div>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      </div>
+
+      <!-- Collapsible Full 4-Week Schedule Drawer Toggle -->
+      <button type="button" class="hair-calendar-toggle-btn" onclick="toggleSkinCalendarCollapse()">
+        <span class="toggle-btn-left">
+          <i data-lucide="calendar" style="width: 14px; height: 14px; color: var(--margo-a);"></i>
+          <span>Full 4-Week Evening Schedule (Sep 28 – Oct 25)</span>
+        </span>
+        <span class="toggle-btn-right" id="skin-calendar-toggle-text">
+          ${skinCalendarCollapsed ? '▾ View Full Calendar' : '▴ Hide Calendar'}
+        </span>
+      </button>
+
+      <!-- Collapsible Calendar Drawer -->
+      <div class="hair-calendar-drawer" id="skin-calendar-drawer" style="display: ${skinCalendarCollapsed ? 'none' : 'block'};">
+        ${calendarGridHtml}
+      </div>
+    `;
+  } else if (activeSkinCareTab === 'morning') {
+    tabContentHtml = `
+      <div class="skin-morning-container">
+        <div class="skin-morning-banner">
+          <div class="skin-morning-banner-left">
+            <span class="skin-morning-tag">Daily Rhythm</span>
+            <h4>Morning Routine (Every Day: Monday – Sunday)</h4>
+            <p>Antioxidant protection, peptide glow, hydration cushion &amp; SPF 30 broad-spectrum defense</p>
+          </div>
+          <button type="button" class="skin-quick-action-btn ${isAmDone ? 'is-done' : ''}" onclick="toggleSkinCareSubAction('${dateStr}', 'am')">
+            ${isAmDone ? '✓ Morning Done (+5 XP)' : '+ Mark Morning Done (+5 XP)'}
+          </button>
+        </div>
+
+        <ul class="skin-morning-steps-list">
+          ${SKIN_CARE_MORNING_ROUTINE.map(s => `
+            <li class="skin-morning-step-card">
+              <div class="morning-step-header">
+                <span class="morning-step-num">${s.num}</span>
+                <span class="morning-step-icon">${s.icon}</span>
+                <div class="morning-step-headings">
+                  <h5 class="morning-step-title">${escapeHtml(s.title)}</h5>
+                  <span class="morning-step-product">${escapeHtml(s.product)}</span>
+                </div>
+              </div>
+              <p class="morning-step-desc">${escapeHtml(s.desc)}</p>
+              ${s.hack ? `
+                <div class="skin-hack-box">
+                  <div class="hack-badge">💠 Extra Puffy Eye Hack</div>
+                  <div class="hack-desc">${escapeHtml(s.hack.replace('Extra Puffy Eye Hack: ', ''))}</div>
+                </div>
+              ` : ''}
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  } else if (activeSkinCareTab === 'rules') {
+    tabContentHtml = `
+      <div class="skin-rules-container">
+        <div class="skin-rules-header">
+          <h4>5 Important Rules &amp; Guardrails</h4>
+          <p>Scientific guidelines to prevent barrier irritation, peptide degradation, and product conflicts</p>
+        </div>
+        <div class="skin-rules-grid">
+          ${SKIN_CARE_RULES.map(r => `
+            <div class="skin-rule-card">
+              <div class="rule-card-top">
+                <span class="rule-badge">Rule ${r.num}</span>
+                <span class="rule-icon">${r.icon}</span>
+              </div>
+              <h5 class="rule-title">${escapeHtml(r.title)}</h5>
+              <p class="rule-text"><strong>Guideline:</strong> ${escapeHtml(r.rule)}</p>
+              <div class="rule-why">
+                <span class="why-label">Why:</span>
+                <span class="why-text">${escapeHtml(r.why)}</span>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else if (activeSkinCareTab === 'shopping') {
+    tabContentHtml = `
+      <div class="skin-shopping-container">
+        <div class="skin-shopping-header">
+          <div class="shopping-header-left">
+            <span class="skin-shopping-tag">Procurement</span>
+            <h4>Shopping List (3 New Items to Buy)</h4>
+            <p>Targeted core actives to complete the revitalizing weekly schedule</p>
+          </div>
+          <div class="shopping-status-badge ${boughtCount === SKIN_CARE_SHOPPING_ITEMS.length ? 'all-bought' : ''}">
+            ${boughtCount} / ${SKIN_CARE_SHOPPING_ITEMS.length} Bought
+          </div>
+        </div>
+
+        <div class="skin-shopping-list">
+          ${SKIN_CARE_SHOPPING_ITEMS.map(item => {
+            const isBought = !!shoppingState[item.id];
+            return `
+              <div class="skin-shopping-item ${isBought ? 'is-bought' : ''}" onclick="toggleSkinShoppingAction('${item.id}')">
+                <div class="custom-checkbox ${isBought ? 'checked' : ''}">
+                  ${isBought ? '✓' : ''}
+                </div>
+                <div class="shopping-item-content">
+                  <div class="shopping-item-top">
+                    <span class="shopping-item-name">${escapeHtml(item.name)}</span>
+                    <span class="shopping-item-role">${escapeHtml(item.role)}</span>
+                  </div>
+                  <p class="shopping-item-desc">${escapeHtml(item.desc)}</p>
+                </div>
+                <span class="shopping-item-pill ${isBought ? 'bought' : ''}">
+                  ${isBought ? 'Acquired ✓' : 'To Buy'}
+                </span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <!-- Skincare Routine Card -->
+    <div class="cover-card skin-care-card" id="section-skin-care">
+      <div class="card-title-row">
+        <div class="hair-care-title-left">
+          <div class="hair-care-title-badge-row">
+            <span class="margo-tag margo-tag-a">A — Aesthetic</span>
+            <span class="hair-type-tag ${routine.badgeClass}">${routine.badge}</span>
+            <span style="font-size: 0.76rem; color: var(--text-muted); font-weight: 500;">(${formattedDay})</span>
+          </div>
+          <h3 class="hair-care-heading" style="display: flex; align-items: center; gap: 8px; font-size: 1.15rem; font-weight: 700; margin-top: 4px;">
+            <i data-lucide="sparkles" style="color: var(--margo-a); width: 17px; height: 17px;"></i>
+            Skincare Routine &amp; Tracker
+          </h3>
+          <span class="card-sub-muted">${routine.subtitle}</span>
+        </div>
+        <div class="hair-care-header-right">
+          <span class="hair-progress-pill ${headerPillClass}">
+            ${headerProgressPill}
+          </span>
+        </div>
+      </div>
+
+      <!-- Tab Navigation Strip -->
+      <div class="skin-tab-nav" role="tablist" aria-label="Skincare Views">
+        <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'evening' ? 'active' : ''}" onclick="setSkinCareTab('evening')" aria-selected="${activeSkinCareTab === 'evening'}">
+          <span class="tab-icon">🌙</span>
+          <span>Evening Routine</span>
+        </button>
+        <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'morning' ? 'active' : ''}" onclick="setSkinCareTab('morning')" aria-selected="${activeSkinCareTab === 'morning'}">
+          <span class="tab-icon">🌅</span>
+          <span>Morning Routine</span>
+        </button>
+        <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'rules' ? 'active' : ''}" onclick="setSkinCareTab('rules')" aria-selected="${activeSkinCareTab === 'rules'}">
+          <span class="tab-icon">🛡️</span>
+          <span>5 Golden Rules</span>
+        </button>
+        <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'shopping' ? 'active' : ''}" onclick="setSkinCareTab('shopping')" aria-selected="${activeSkinCareTab === 'shopping'}">
+          <span class="tab-icon">🛍️</span>
+          <span>Shopping (${boughtCount}/3)</span>
+        </button>
+      </div>
+
+      <!-- Tab Body -->
+      <div class="skin-tab-body">
+        ${tabContentHtml}
+      </div>
+    </div>
+  `;
+}
+window.renderSkinCareCard = renderSkinCareCard;
+
+function renderSkinCareModalContent(dateStr = activeTrackingDate) {
+  const body = document.getElementById('skincare-modal-body');
+  if (!body) return;
+  const todayIso = formatDateIso(new Date());
+  const isToday = (dateStr === todayIso);
+  const dateObj = parseDateIso(dateStr);
+  const fullFormattedDate = dateObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric'
+  });
+
+  body.innerHTML = `
+    <div class="aurora-hair-modal-nav">
+      <button type="button" class="aurora-hair-nav-btn" onclick="navigateDate(-1)">‹ Prev Day</button>
+      <div class="aurora-hair-nav-date">
+        <strong>${escapeHtml(fullFormattedDate)}</strong>
+        ${!isToday ? `<button type="button" class="aurora-hair-today-btn" onclick="resetToToday()">Jump to Today</button>` : `<span class="aurora-hair-today-tag">Today</span>`}
+      </div>
+      <button type="button" class="aurora-hair-nav-btn" onclick="navigateDate(1)">Next Day ›</button>
+    </div>
+    ${renderSkinCareCard(dateStr, isToday)}
+  `;
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+window.renderSkinCareModalContent = renderSkinCareModalContent;
+
+function openSkinCareLogModal(dateStr = activeTrackingDate) {
+  if (dateStr) {
+    activeTrackingDate = dateStr;
+  }
+  skinCalendarCollapsed = false;
+  renderSkinCareModalContent(activeTrackingDate);
+  const modal = document.getElementById('modal-skincare-log');
+  if (modal) {
+    modal.classList.add('active');
+  }
+}
+window.openSkinCareLogModal = openSkinCareLogModal;
 
 /* ==========================================================================
    MARGO Framework 5-Bucket Collapsible Widget

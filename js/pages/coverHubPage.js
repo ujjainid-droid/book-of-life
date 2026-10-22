@@ -979,7 +979,8 @@ function jumpToHaircareCheckpoint() {
   setTimeout(() => {
     const el = document.getElementById('checkpoint-haircare') || 
                document.querySelector('[data-checkpoint="haircare"]') || 
-               document.getElementById('section-haircare');
+               document.getElementById('section-haircare') ||
+               document.getElementById('hair');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (typeof showToast === 'function') {
@@ -988,6 +989,25 @@ function jumpToHaircareCheckpoint() {
   }, 120);
 }
 window.jumpToHaircareCheckpoint = jumpToHaircareCheckpoint;
+
+function jumpToSkinCareCheckpoint() {
+  if (typeof switchAppView === 'function') {
+    switchAppView('sanctuary');
+  }
+  setTimeout(() => {
+    const el = document.getElementById('checkpoint-skincare') || 
+               document.querySelector('[data-checkpoint="skincare"]') || 
+               document.getElementById('section-skincare') ||
+               document.getElementById('skincareTile');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    if (typeof openSkinCareLogModal === 'function') {
+      openSkinCareLogModal();
+    }
+  }, 120);
+}
+window.jumpToSkinCareCheckpoint = jumpToSkinCareCheckpoint;
 
 function jumpToSanctuaryCheckpoint(checkpointKey) {
   if (typeof switchAppView === 'function') {
@@ -1010,6 +1030,8 @@ function handleMargoToolClick(campId, action, title) {
     openSchoolBattlePlanModal();
   } else if (action === 'haircare' || lower.includes('hair')) {
     jumpToHaircareCheckpoint();
+  } else if (action === 'skincare' || lower.includes('skin')) {
+    jumpToSkinCareCheckpoint();
   } else if (action === 'vitality' || lower.includes('surg')) {
     jumpToSanctuaryCheckpoint('vitality');
   } else if (action === 'claims' || lower.includes('reimb') || lower.includes('claim')) {

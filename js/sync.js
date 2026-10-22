@@ -388,6 +388,60 @@ class SyncManager {
       localStorage.setItem('HAIR_CARE_STATE_BACKUP', JSON.stringify(mergedHairCareState));
     } catch (e) {}
 
+    // 7c. SkinCareState: Two-way merge by updatedAt
+    const mergedSkinCareState = { ...(storage.data.skinCareState || {}) };
+    try {
+      const skinBackup = localStorage.getItem('SKIN_CARE_STATE_BACKUP');
+      if (skinBackup) {
+        const bObj = JSON.parse(skinBackup);
+        if (bObj && typeof bObj === 'object') {
+          Object.entries(bObj).forEach(([dStr, sObj]) => {
+            if (sObj && (sObj.completed || sObj.skipped || sObj.updatedAt)) {
+              const curT = (mergedSkinCareState[dStr] && mergedSkinCareState[dStr].updatedAt) || 0;
+              const bakT = sObj.updatedAt || 0;
+              if (!mergedSkinCareState[dStr] || bakT >= curT) {
+                mergedSkinCareState[dStr] = { ...(mergedSkinCareState[dStr] || {}), ...sObj };
+              }
+            }
+          });
+        }
+      }
+    } catch (e) {}
+
+    if (incoming.skinCareState && typeof incoming.skinCareState === 'object') {
+      Object.entries(incoming.skinCareState).forEach(([dStr, sObj]) => {
+        const localDay = mergedSkinCareState[dStr];
+        if (!localDay || Object.keys(localDay).length === 0) {
+          mergedSkinCareState[dStr] = { ...sObj };
+        } else {
+          const localTime = (localDay && localDay.updatedAt) || 0;
+          const cloudTime = (sObj && sObj.updatedAt) || 0;
+          if (cloudTime > localTime) {
+            mergedSkinCareState[dStr] = { ...localDay, ...sObj };
+          } else if (localTime > cloudTime) {
+            mergedSkinCareState[dStr] = { ...sObj, ...localDay };
+            if (JSON.stringify(sObj) !== JSON.stringify(mergedSkinCareState[dStr])) {
+              localWasRicher = true;
+            }
+          } else {
+            mergedSkinCareState[dStr] = { ...sObj, ...localDay };
+            if (sObj.completed || sObj.skipped) {
+              mergedSkinCareState[dStr] = { ...localDay, ...sObj };
+            }
+          }
+        }
+      });
+    }
+    try {
+      localStorage.setItem('SKIN_CARE_STATE_BACKUP', JSON.stringify(mergedSkinCareState));
+    } catch (e) {}
+
+    // 7d. SkincareShoppingList
+    const mergedSkinShopping = {
+      ...(storage.data.skincareShoppingList || {}),
+      ...(incoming.skincareShoppingList || {})
+    };
+
     // 8. QuickThoughts: Union by id & text
     const thoughtMap = new Map();
     (Array.isArray(storage.data.quickThoughts) ? storage.data.quickThoughts : []).forEach(t => {
@@ -848,6 +902,8 @@ class SyncManager {
       dayGoalsUpdatedAt: mergedDayGoalsUpdatedAt,
       sanctuaryJournals: mergedJournals,
       hairCareState: mergedHairCareState,
+      skinCareState: mergedSkinCareState,
+      skincareShoppingList: mergedSkinShopping,
       quickThoughts: mergedThoughts,
       claims: mergedClaims,
       zlogEntries: mergedZLog,

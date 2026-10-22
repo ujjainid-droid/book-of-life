@@ -23,17 +23,17 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.1.90">
-  <link rel="stylesheet" href="css/layout.css?v=9.1.90">
-  <link rel="stylesheet" href="css/cover.css?v=9.1.90">
-  <link rel="stylesheet" href="css/habits.css?v=9.1.90">
-  <link rel="stylesheet" href="css/tasks.css?v=9.1.90">
-  <link rel="stylesheet" href="css/settings.css?v=9.1.90">
-  <link rel="stylesheet" href="css/claims.css?v=9.1.90">
-  <link rel="stylesheet" href="css/zlog.css?v=9.1.90">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.1.90">
-  <link rel="stylesheet" href="css/finance.css?v=9.1.90">
-  <link rel="stylesheet" href="css/hobby.css?v=9.1.90">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.2.1">
+  <link rel="stylesheet" href="css/layout.css?v=9.2.1">
+  <link rel="stylesheet" href="css/cover.css?v=9.2.1">
+  <link rel="stylesheet" href="css/habits.css?v=9.2.1">
+  <link rel="stylesheet" href="css/tasks.css?v=9.2.1">
+  <link rel="stylesheet" href="css/settings.css?v=9.2.1">
+  <link rel="stylesheet" href="css/claims.css?v=9.2.1">
+  <link rel="stylesheet" href="css/zlog.css?v=9.2.1">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.2.1">
+  <link rel="stylesheet" href="css/finance.css?v=9.2.1">
+  <link rel="stylesheet" href="css/hobby.css?v=9.2.1">
 </head>
 <body>
 
@@ -370,6 +370,20 @@
     </div>
   </div>
 
+  <!-- Modal: Skincare Routine & Tracker -->
+  <div class="modal-overlay" id="modal-skincare-log" onclick="if(event.target === this) closeAllModals()">
+    <div class="modal-card modal-card-wide aurora-hair-modal-card aurora-skin-modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 1.15rem;">🫧</span>
+          <h3>Skincare Routine &amp; Daily Tracker</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <div id="skincare-modal-body" class="aurora-hair-modal-body aurora-skin-modal-body"></div>
+    </div>
+  </div>
+
   <!-- Modal: Custom Period Goal Daily Log & Configuration -->
   <div class="modal-overlay" id="modal-period-goal" onclick="if(event.target === this) closeAllModals()">
     <div class="modal-card modal-card-wide aurora-hair-modal-card">
@@ -478,20 +492,20 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.1.90"></script>
-  <script src="js/zlogData.js?v=9.1.90"></script>
-  <script src="js/financeData.js?v=9.1.90"></script>
-  <script src="js/podcastData.js?v=9.1.90"></script>
-  <script src="js/pdfStore.js?v=9.1.90"></script>
-  <script src="js/storage.js?v=9.1.90"></script>
-  <script src="js/sync.js?v=9.1.90"></script>
-  <script src="js/pages/coverPage.js?v=9.1.90"></script>
-  <script src="js/pages/coverHubPage.js?v=9.1.90"></script>
-  <script src="js/pages/claimsPage.js?v=9.1.90"></script>
-  <script src="js/pages/zlogPage.js?v=9.1.90"></script>
-  <script src="js/pages/financePage.js?v=9.1.90"></script>
-  <script src="js/pages/hobbyPage.js?v=9.1.90"></script>
-  <script src="js/podcastAgent.js?v=9.1.90"></script>
-  <script src="js/app.js?v=9.1.90"></script>
+  <script src="js/margoData.js?v=9.2.1"></script>
+  <script src="js/zlogData.js?v=9.2.1"></script>
+  <script src="js/financeData.js?v=9.2.1"></script>
+  <script src="js/podcastData.js?v=9.2.1"></script>
+  <script src="js/pdfStore.js?v=9.2.1"></script>
+  <script src="js/storage.js?v=9.2.1"></script>
+  <script src="js/sync.js?v=9.2.1"></script>
+  <script src="js/pages/coverPage.js?v=9.2.1"></script>
+  <script src="js/pages/coverHubPage.js?v=9.2.1"></script>
+  <script src="js/pages/claimsPage.js?v=9.2.1"></script>
+  <script src="js/pages/zlogPage.js?v=9.2.1"></script>
+  <script src="js/pages/financePage.js?v=9.2.1"></script>
+  <script src="js/pages/hobbyPage.js?v=9.2.1"></script>
+  <script src="js/podcastAgent.js?v=9.2.1"></script>
+  <script src="js/app.js?v=9.2.1"></script>
 </body>
 </html>
