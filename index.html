@@ -23,18 +23,18 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.4.3">
-  <link rel="stylesheet" href="css/layout.css?v=9.4.3">
-  <link rel="stylesheet" href="css/cover.css?v=9.4.3">
-  <link rel="stylesheet" href="css/habits.css?v=9.4.3">
-  <link rel="stylesheet" href="css/tasks.css?v=9.4.3">
-  <link rel="stylesheet" href="css/settings.css?v=9.4.3">
-  <link rel="stylesheet" href="css/claims.css?v=9.4.3">
-  <link rel="stylesheet" href="css/zlog.css?v=9.4.3">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.4.3">
-  <link rel="stylesheet" href="css/finance.css?v=9.4.3">
-  <link rel="stylesheet" href="css/hobby.css?v=9.4.3">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.4.3">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.4.4">
+  <link rel="stylesheet" href="css/layout.css?v=9.4.4">
+  <link rel="stylesheet" href="css/cover.css?v=9.4.4">
+  <link rel="stylesheet" href="css/habits.css?v=9.4.4">
+  <link rel="stylesheet" href="css/tasks.css?v=9.4.4">
+  <link rel="stylesheet" href="css/settings.css?v=9.4.4">
+  <link rel="stylesheet" href="css/claims.css?v=9.4.4">
+  <link rel="stylesheet" href="css/zlog.css?v=9.4.4">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.4.4">
+  <link rel="stylesheet" href="css/finance.css?v=9.4.4">
+  <link rel="stylesheet" href="css/hobby.css?v=9.4.4">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.4.4">
 </head>
 <body>
 
@@ -525,31 +525,14 @@
             <input type="text" class="k-clean-input" id="k-modal-custom-name" name="k_modal_dish_name" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Dish name...">
             <input type="url" class="k-clean-input" id="k-modal-custom-url" name="k_modal_dish_url" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Recipe URL (optional)...">
 
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:2px;">
-              <div>
-                <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Food Icon:</label>
-                <select id="k-modal-custom-icon" class="k-clean-input" style="margin-top:3px; width:100%;">
-                  <option value="salmon">🐟 Salmon / Fish</option>
-                  <option value="taco">🌮 Taco Bowl</option>
-                  <option value="risotto">🍲 Risotto / Stew</option>
-                  <option value="chicken">🍗 Skillet Chicken</option>
-                  <option value="pasta">🍝 Pasta / Noodles</option>
-                  <option value="dumplings">🥟 Dumpling Basket</option>
-                  <option value="takeout">🥡 Takeout Box</option>
-                  <option value="pizza">🍕 Pizza</option>
-                  <option value="bistro">🍷 Dining Out</option>
-                  <option value="salad">🥗 Salad</option>
-                </select>
-              </div>
-              <div>
-                <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Source:</label>
-                <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px; width:100%;">
-                  <option value="pantry" selected>🥫 Pantry Stash</option>
-                  <option value="freezer">🧊 Freezer Stash</option>
-                  <option value="fresh">🛒 Fresh Grocery</option>
-                  <option value="out">🥡 Takeout / Eat Out</option>
-                </select>
-              </div>
+            <div style="margin-top:2px;">
+              <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Source:</label>
+              <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px; width:100%;">
+                <option value="pantry" selected>🥫 Pantry Stash</option>
+                <option value="freezer">🧊 Freezer Stash</option>
+                <option value="fresh">🛒 Fresh Grocery</option>
+                <option value="out">🥡 Takeout / Eat Out</option>
+              </select>
             </div>
 
             <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitCustomMeal()">
@@ -616,21 +599,21 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.4.3"></script>
-  <script src="js/zlogData.js?v=9.4.3"></script>
-  <script src="js/financeData.js?v=9.4.3"></script>
-  <script src="js/podcastData.js?v=9.4.3"></script>
-  <script src="js/pdfStore.js?v=9.4.3"></script>
-  <script src="js/storage.js?v=9.4.3"></script>
-  <script src="js/sync.js?v=9.4.3"></script>
-  <script src="js/pages/coverPage.js?v=9.4.3"></script>
-  <script src="js/pages/coverHubPage.js?v=9.4.3"></script>
-  <script src="js/pages/claimsPage.js?v=9.4.3"></script>
-  <script src="js/pages/zlogPage.js?v=9.4.3"></script>
-  <script src="js/pages/financePage.js?v=9.4.3"></script>
-  <script src="js/pages/hobbyPage.js?v=9.4.3"></script>
-  <script src="js/pages/kitchenPage.js?v=9.4.3"></script>
-  <script src="js/podcastAgent.js?v=9.4.3"></script>
-  <script src="js/app.js?v=9.4.3"></script>
+  <script src="js/margoData.js?v=9.4.4"></script>
+  <script src="js/zlogData.js?v=9.4.4"></script>
+  <script src="js/financeData.js?v=9.4.4"></script>
+  <script src="js/podcastData.js?v=9.4.4"></script>
+  <script src="js/pdfStore.js?v=9.4.4"></script>
+  <script src="js/storage.js?v=9.4.4"></script>
+  <script src="js/sync.js?v=9.4.4"></script>
+  <script src="js/pages/coverPage.js?v=9.4.4"></script>
+  <script src="js/pages/coverHubPage.js?v=9.4.4"></script>
+  <script src="js/pages/claimsPage.js?v=9.4.4"></script>
+  <script src="js/pages/zlogPage.js?v=9.4.4"></script>
+  <script src="js/pages/financePage.js?v=9.4.4"></script>
+  <script src="js/pages/hobbyPage.js?v=9.4.4"></script>
+  <script src="js/pages/kitchenPage.js?v=9.4.4"></script>
+  <script src="js/podcastAgent.js?v=9.4.4"></script>
+  <script src="js/app.js?v=9.4.4"></script>
 </body>
 </html>

@@ -498,7 +498,6 @@ function kAssignStashDirect(name, type) {
   kOpenMealPicker(0);
   document.getElementById('k-modal-custom-name').value = name;
   document.getElementById('k-modal-custom-source').value = type;
-  document.getElementById('k-modal-custom-icon').value = (type === 'freezer' ? 'salmon' : 'pasta');
 }
 
 function kCycleDaySource(dayIdx) {
@@ -606,8 +605,6 @@ function kOpenMealPicker(dayIdx) {
   if (nameEl) nameEl.value = d.meal || '';
   const urlEl = document.getElementById('k-modal-custom-url');
   if (urlEl) urlEl.value = d.recipeUrl || '';
-  const iconEl = document.getElementById('k-modal-custom-icon');
-  if (iconEl) iconEl.value = d.icon || (d.source === 'out' ? 'takeout' : 'chicken');
   const sourceEl = document.getElementById('k-modal-custom-source');
   if (sourceEl) sourceEl.value = d.source || 'pantry';
 
@@ -650,7 +647,6 @@ function kSubmitCustomMeal() {
   if (activeKitchenEditIdx === null) return;
   const name = document.getElementById('k-modal-custom-name').value.trim();
   const url = document.getElementById('k-modal-custom-url').value.trim();
-  const icon = document.getElementById('k-modal-custom-icon').value;
   const source = document.getElementById('k-modal-custom-source').value;
 
   const data = storage.getKitchenData();
@@ -659,10 +655,12 @@ function kSubmitCustomMeal() {
     if (!Array.isArray(data.weekSchedule)) data.weekSchedule = [];
     while (data.weekSchedule.length < 7) {
       const idx = data.weekSchedule.length;
-      data.weekSchedule.push({ day: dayNames[idx], date: '', meal: '', source: 'fresh', icon: 'chicken' });
+      data.weekSchedule.push({ day: dayNames[idx], date: '', meal: '', source: 'pantry', icon: 'pasta' });
     }
   }
   const d = data.weekSchedule[activeKitchenEditIdx];
+  const icon = source === 'out' ? (d.day === 'Sat' ? 'bistro' : 'takeout') : detectRecipeIcon(name);
+
   d.meal = name;
   d.recipeUrl = url;
   d.icon = icon;
