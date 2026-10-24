@@ -738,7 +738,7 @@ function renderKitchenPage() {
                     ${(r.course || 'main').toUpperCase()}
                   </span>
                   <button type="button" class="k-btn-move-vault" onclick="kMoveNewRecipeToVault('${r.id}')" title="Love this recipe? Move it to your Household Favorites Vault!">
-                    <span>+ Vault 💜</span>
+                    <span>Vault 💜</span>
                   </button>
                   <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'new')" title="Assign recipe to a day and meal slot">
                     <span>Assign 🗓️</span>

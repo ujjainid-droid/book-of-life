@@ -618,18 +618,30 @@ body.dark .k-source-pill.fresh { color: #60A5FA; }
 /* STEP 3: HOUSEHOLD FAVORITES VAULT */
 .k-favs-shelf {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .k-favs-shelf {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 400px) {
+  .k-favs-shelf {
+    grid-template-columns: 1fr;
+  }
 }
 .k-fav-card {
   background: var(--bg-surface, #F4F6F8);
   border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.08));
-  border-radius: 8px;
-  padding: 6px 8px;
+  border-radius: 9px;
+  padding: 7px 9px;
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 3.5px;
   transition: all 0.15s ease;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 .k-fav-card:hover {
   transform: translateY(-1px);
@@ -640,7 +652,7 @@ body.dark .k-source-pill.fresh { color: #60A5FA; }
 .k-fav-top {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 .k-avatar-icon-fav {
   width: 20px;
@@ -655,14 +667,15 @@ body.dark .k-source-pill.fresh { color: #60A5FA; }
   height: 100%;
 }
 .k-fav-title {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-primary, #1F2A44);
-  line-height: 1.2;
+  line-height: 1.25;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  word-break: break-word;
 }
 .k-fav-ingredients {
   font-size: 9.5px;
@@ -679,10 +692,10 @@ body.dark .k-source-pill.fresh { color: #60A5FA; }
   border: none;
   outline: none;
   color: var(--text-muted, #64748B);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1;
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -707,9 +720,9 @@ body.dark .k-fav-del-btn:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   margin-top: auto;
-  padding-top: 4px;
+  padding-top: 5px;
   border-top: 1px dashed var(--border-subtle, rgba(31, 42, 68, 0.08));
 }
 .k-assign-select {
