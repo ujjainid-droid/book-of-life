@@ -4303,6 +4303,33 @@ class StorageManager {
         });
       }
 
+      // Migrate broccoli, aracula/arugula, strawberry, blueberry to fridge
+      if (Array.isArray(kd.stashItems)) {
+        const fridgeTargets = new Set(['broccoli', 'aracula', 'arugula', 'strawberry', 'strawberries', 'blueberry', 'blueberries']);
+        let foundBlueberry = false;
+        kd.stashItems.forEach(item => {
+          const n = (item.name || '').toLowerCase().trim();
+          if (fridgeTargets.has(n)) {
+            item.type = 'fridge';
+            item.badge = 'Fridge';
+          }
+          if (n === 'blueberry' || n === 'blueberries') {
+            foundBlueberry = true;
+          }
+        });
+        if (!foundBlueberry && !this.data.kitchenBlueberryAdded) {
+          kd.stashItems.push({
+            id: 's-' + Date.now(),
+            type: 'fridge',
+            name: 'blueberry',
+            badge: 'Fridge',
+            used: false
+          });
+          this.data.kitchenBlueberryAdded = true;
+          this.saveData();
+        }
+      }
+
       // Purge any legacy sample/placeholder records if still present in storage
       if (!this.data.kitchenSampleClearedV3) {
         const sampleStashIds = new Set(['s1', 's2', 's3', 's4', 's5', 's6']);

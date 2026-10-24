@@ -325,7 +325,7 @@ function renderKitchenPage() {
             <div class="k-stash-chip ${item.used ? 'is-used' : ''}">
               <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
               <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
-              <span class="k-stash-tag-badge ${item.type}">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
+              <span class="k-stash-tag-badge ${item.type}" onclick="kCycleStashType('${item.id}', event)" title="Click to cycle (Pantry, Fridge, Freezer)" style="cursor:pointer;">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
               <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
             </div>
           `).join('') : `
@@ -834,6 +834,24 @@ function kAddStashWithSource(sourceType = 'pantry') {
   renderKitchenPage();
   if (typeof showToast === 'function') showToast(`Added "${val}" to ${badgeName}!`);
 }
+
+function kCycleStashType(id, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  const item = (data.stashItems || []).find(i => i.id === id);
+  if (!item) return;
+
+  const cycle = ['pantry', 'fridge', 'freezer'];
+  const curIdx = cycle.indexOf(item.type);
+  const nextType = cycle[(curIdx + 1) % cycle.length];
+  item.type = nextType;
+  item.badge = nextType === 'freezer' ? 'Freezer' : (nextType === 'fridge' ? 'Fridge' : 'Pantry');
+
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Updated "${item.name}" to ${item.badge}`);
+}
+window.kCycleStashType = kCycleStashType;
 
 function kAssignStashDirect(name, type) {
   kOpenMealPicker(0, 'dinner');
