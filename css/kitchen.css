@@ -244,6 +244,35 @@ body.dark .k-stash-chip.is-used .k-stash-check {
 body.dark .k-stash-tag-badge.freezer { color: var(--pal-seafoam); }
 body.dark .k-stash-tag-badge.pantry { color: var(--pal-peach); }
 
+.kitchen-stash-del-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-muted, #64748B);
+  font-size: 14px;
+  line-height: 1;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0 0 0 2px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: all 0.15s ease;
+}
+.kitchen-stash-del-btn:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.12);
+  color: #DC2626;
+}
+body.dark .kitchen-stash-del-btn:hover {
+  background: rgba(248, 124, 113, 0.2);
+  color: var(--pal-coral);
+}
+
 /* 2 BUTTONS: FREEZER & PANTRY (Replaces dropdown) */
 .k-stash-quick-bar {
   display: flex;
@@ -547,9 +576,35 @@ body.dark .k-source-pill.fresh { color: #60A5FA; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 4px;
-  padding-top: 6px;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
   border-top: 1px dashed var(--border-subtle, rgba(31, 42, 68, 0.08));
+}
+.k-assign-select {
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border-card, rgba(31, 42, 68, 0.14));
+  border-radius: 7px;
+  padding: 3px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary, #475569);
+  max-width: 105px;
+  width: auto;
+  flex: none;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+.k-assign-select:hover,
+.k-assign-select:focus {
+  border-color: var(--pal-azure);
+  color: var(--text-primary);
+}
+body.dark .k-assign-select {
+  background: var(--bg-surface, #1E1F3B);
+  border-color: var(--border-subtle, rgba(255, 255, 255, 0.1));
+  color: var(--text-secondary);
 }
 
 /* STEP 4: VISIBLE GROCERY LIST & THINGS 3 EXPORTER */

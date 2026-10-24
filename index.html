@@ -23,18 +23,18 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.3.7">
-  <link rel="stylesheet" href="css/layout.css?v=9.3.7">
-  <link rel="stylesheet" href="css/cover.css?v=9.3.7">
-  <link rel="stylesheet" href="css/habits.css?v=9.3.7">
-  <link rel="stylesheet" href="css/tasks.css?v=9.3.7">
-  <link rel="stylesheet" href="css/settings.css?v=9.3.7">
-  <link rel="stylesheet" href="css/claims.css?v=9.3.7">
-  <link rel="stylesheet" href="css/zlog.css?v=9.3.7">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.3.7">
-  <link rel="stylesheet" href="css/finance.css?v=9.3.7">
-  <link rel="stylesheet" href="css/hobby.css?v=9.3.7">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.3.7">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.3.8">
+  <link rel="stylesheet" href="css/layout.css?v=9.3.8">
+  <link rel="stylesheet" href="css/cover.css?v=9.3.8">
+  <link rel="stylesheet" href="css/habits.css?v=9.3.8">
+  <link rel="stylesheet" href="css/tasks.css?v=9.3.8">
+  <link rel="stylesheet" href="css/settings.css?v=9.3.8">
+  <link rel="stylesheet" href="css/claims.css?v=9.3.8">
+  <link rel="stylesheet" href="css/zlog.css?v=9.3.8">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.3.8">
+  <link rel="stylesheet" href="css/finance.css?v=9.3.8">
+  <link rel="stylesheet" href="css/hobby.css?v=9.3.8">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.3.8">
 </head>
 <body>
 
@@ -504,25 +504,129 @@
     </div>
   </div>
 
+  <!-- Modal: Fast Dinner Entry (Kitchen) -->
+  <div class="modal-overlay" id="k-fast-meal-modal" onclick="if(event.target===this) kCloseModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="k-fast-modal-title">Enter Dinner</h3>
+        <button class="icon-btn modal-close" onclick="kCloseModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+            Dish Name &amp; Link:
+          </label>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+            <input type="text" class="k-clean-input" id="k-modal-custom-name" placeholder="Dish name (e.g. Lemon Garlic Butter Shrimp Pasta)...">
+            <input type="url" class="k-clean-input" id="k-modal-custom-url" placeholder="Recipe URL (e.g. NYT Cooking or Paprika link)...">
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:2px;">
+              <div>
+                <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Food Icon:</label>
+                <select id="k-modal-custom-icon" class="k-clean-input" style="margin-top:3px; width:100%;">
+                  <option value="salmon">🐟 Salmon / Fish</option>
+                  <option value="taco">🌮 Taco Bowl</option>
+                  <option value="risotto">🍲 Risotto / Stew</option>
+                  <option value="chicken">🍗 Skillet Chicken</option>
+                  <option value="pasta">🍝 Pasta / Noodles</option>
+                  <option value="dumplings">🥟 Dumpling Basket</option>
+                  <option value="takeout">🥡 Takeout Box</option>
+                  <option value="pizza">🍕 Pizza</option>
+                  <option value="bistro">🍷 Dining Out</option>
+                  <option value="salad">🥗 Salad</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Source:</label>
+                <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px; width:100%;">
+                  <option value="fresh">🛒 Fresh Grocery</option>
+                  <option value="freezer">🧊 Freezer Stash</option>
+                  <option value="pantry">🥫 Pantry Stash</option>
+                  <option value="out">🥡 Takeout / Eat Out</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitCustomMeal()">
+              Save Dinner
+            </button>
+          </div>
+        </div>
+
+        <div id="k-modal-stash-picker-wrap" style="border-top:1px solid var(--border-light, #2E3060); padding-top:12px;">
+          <label style="font-size:11px; font-weight:700; color:#8B7FD6; text-transform:uppercase; letter-spacing:0.04em;">
+            🧊 Or 1-Tap from Stash:
+          </label>
+          <div class="k-modal-pick-list" id="k-modal-stash-list" style="margin-top:6px;"></div>
+        </div>
+
+        <div id="k-modal-favs-picker-wrap" style="border-top:1px solid var(--border-light, #2E3060); padding-top:12px;">
+          <label style="font-size:11px; font-weight:700; color:#E75480; text-transform:uppercase; letter-spacing:0.04em;">
+            💜 Or 1-Tap from Favorites:
+          </label>
+          <div class="k-modal-pick-list" id="k-modal-favs-list" style="margin-top:6px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Recipe to Favorites Vault (Kitchen) -->
+  <div class="modal-overlay" id="k-add-fav-modal" onclick="if(event.target===this) kCloseAddFavModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <h3 class="modal-title">Add Recipe</h3>
+        <button class="icon-btn modal-close" onclick="kCloseAddFavModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div>
+          <label class="form-label" style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
+            Recipe URL
+          </label>
+          <input type="url" class="k-clean-input" id="k-new-fav-url" placeholder="https://cooking.nytimes.com/... or paste recipe link" style="margin-top:4px; width:100%;" oninput="kOnRecipeUrlInput(this.value)">
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
+            Title <span id="k-title-hint" style="text-transform:none; font-weight:400; color:var(--text-muted);">(auto-filled from URL, or type if no link)</span>
+          </label>
+          <input type="text" class="k-clean-input" id="k-new-fav-title" placeholder="Recipe Title" style="margin-top:4px; width:100%;">
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
+            Notes
+          </label>
+          <textarea class="k-clean-input" id="k-new-fav-ingredients" rows="3" placeholder="Ingredients, quick notes, serving ideas..." style="margin-top:4px; width:100%; resize:vertical;"></textarea>
+        </div>
+
+        <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitNewFavorite()">
+          Save Recipe to Vault
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.3.7"></script>
-  <script src="js/zlogData.js?v=9.3.7"></script>
-  <script src="js/financeData.js?v=9.3.7"></script>
-  <script src="js/podcastData.js?v=9.3.7"></script>
-  <script src="js/pdfStore.js?v=9.3.7"></script>
-  <script src="js/storage.js?v=9.3.7"></script>
-  <script src="js/sync.js?v=9.3.7"></script>
-  <script src="js/pages/coverPage.js?v=9.3.7"></script>
-  <script src="js/pages/coverHubPage.js?v=9.3.7"></script>
-  <script src="js/pages/claimsPage.js?v=9.3.7"></script>
-  <script src="js/pages/zlogPage.js?v=9.3.7"></script>
-  <script src="js/pages/financePage.js?v=9.3.7"></script>
-  <script src="js/pages/hobbyPage.js?v=9.3.7"></script>
-  <script src="js/pages/kitchenPage.js?v=9.3.7"></script>
-  <script src="js/podcastAgent.js?v=9.3.7"></script>
-  <script src="js/app.js?v=9.3.7"></script>
+  <script src="js/margoData.js?v=9.3.8"></script>
+  <script src="js/zlogData.js?v=9.3.8"></script>
+  <script src="js/financeData.js?v=9.3.8"></script>
+  <script src="js/podcastData.js?v=9.3.8"></script>
+  <script src="js/pdfStore.js?v=9.3.8"></script>
+  <script src="js/storage.js?v=9.3.8"></script>
+  <script src="js/sync.js?v=9.3.8"></script>
+  <script src="js/pages/coverPage.js?v=9.3.8"></script>
+  <script src="js/pages/coverHubPage.js?v=9.3.8"></script>
+  <script src="js/pages/claimsPage.js?v=9.3.8"></script>
+  <script src="js/pages/zlogPage.js?v=9.3.8"></script>
+  <script src="js/pages/financePage.js?v=9.3.8"></script>
+  <script src="js/pages/hobbyPage.js?v=9.3.8"></script>
+  <script src="js/pages/kitchenPage.js?v=9.3.8"></script>
+  <script src="js/podcastAgent.js?v=9.3.8"></script>
+  <script src="js/app.js?v=9.3.8"></script>
 </body>
 </html>

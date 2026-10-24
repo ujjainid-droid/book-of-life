@@ -949,12 +949,13 @@ class SyncManager {
       if (cloudData && typeof cloudData === 'object' && cloudData.version) {
         const hasChanges = this.mergeIncomingData(cloudData);
         if (hasChanges) {
-          // Only re-render if user is NOT actively typing
+          // Only re-render if user is NOT actively typing and NO modal is open
           const isUserTyping = document.activeElement && (
             document.activeElement.tagName === 'INPUT' || 
             document.activeElement.tagName === 'TEXTAREA'
           );
-          if (!isUserTyping) {
+          const isModalActive = Boolean(document.querySelector('.modal-overlay.active'));
+          if (!isUserTyping && !isModalActive) {
             if (typeof renderCurrentView === 'function') {
               renderCurrentView();
             } else if (typeof renderDailySheet === 'function') {
@@ -1036,7 +1037,8 @@ class SyncManager {
                   document.activeElement.tagName === 'INPUT' || 
                   document.activeElement.tagName === 'TEXTAREA'
                 );
-                if (!isUserTyping) {
+                const isModalActive = Boolean(document.querySelector('.modal-overlay.active'));
+                if (!isUserTyping && !isModalActive) {
                   if (typeof renderCurrentView === 'function') {
                     renderCurrentView();
                   } else if (typeof renderDailySheet === 'function') {

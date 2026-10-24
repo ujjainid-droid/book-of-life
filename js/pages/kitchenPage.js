@@ -324,7 +324,7 @@ function renderKitchenPage() {
                   </a>
                 ` : `<span></span>`}
 
-                <select class="k-clean-input" style="padding:2px 6px; font-size:11px; width:auto;" onchange="kAssignFavToDay('${r.id}', this.value); this.value='';">
+                <select class="k-assign-select" onchange="kAssignFavToDay('${r.id}', this.value); this.value='';">
                   <option value="">Assign to...</option>
                   <option value="0">Sun</option>
                   <option value="1">Mon</option>
@@ -463,142 +463,6 @@ function renderKitchenPage() {
       </section>
 
     </div>
-
-    <!-- MODAL: FAST 1-TAP DINNER ENTRY -->
-    <div class="modal-overlay" id="k-fast-meal-modal" onclick="if(event.target===this) kCloseModal()">
-      <div class="modal-card" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
-        <div class="modal-header">
-          <h3 class="modal-title" id="k-fast-modal-title">Enter Dinner</h3>
-          <button class="icon-btn modal-close" onclick="kCloseModal()"><i data-lucide="x"></i></button>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:14px;">
-          <!-- 1. Type or Edit Custom Dish Directly -->
-          <div>
-            <label style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
-              Dish Name &amp; Link:
-            </label>
-            <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
-              <input type="text" class="k-clean-input" id="k-modal-custom-name" placeholder="Dish name (e.g. Lemon Garlic Butter Shrimp Pasta)...">
-              <input type="url" class="k-clean-input" id="k-modal-custom-url" placeholder="Recipe URL (e.g. NYT Cooking or Paprika link)...">
-
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:2px;">
-                <div>
-                  <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Food Icon:</label>
-                  <select id="k-modal-custom-icon" class="k-clean-input" style="margin-top:3px; width:100%;">
-                    <option value="salmon">🐟 Salmon / Fish</option>
-                    <option value="taco">🌮 Taco Bowl</option>
-                    <option value="risotto">🍲 Risotto / Stew</option>
-                    <option value="chicken">🍗 Skillet Chicken</option>
-                    <option value="pasta">🍝 Pasta / Noodles</option>
-                    <option value="dumplings">🥟 Dumpling Basket</option>
-                    <option value="takeout">🥡 Takeout Box</option>
-                    <option value="pizza">🍕 Pizza</option>
-                    <option value="bistro">🍷 Dining Out</option>
-                    <option value="salad">🥗 Salad</option>
-                  </select>
-                </div>
-                <div>
-                  <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Source:</label>
-                  <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px; width:100%;">
-                    <option value="fresh">🛒 Fresh Grocery</option>
-                    <option value="freezer">🧊 Freezer Stash</option>
-                    <option value="pantry">🥫 Pantry Stash</option>
-                    <option value="out">🥡 Takeout / Eat Out</option>
-                  </select>
-                </div>
-              </div>
-
-              <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitCustomMeal()">
-                Save Dinner
-              </button>
-            </div>
-          </div>
-
-          <!-- 2. Pick from Stash -->
-          <div style="border-top:1px solid var(--border-light, #2E3060); padding-top:12px;">
-            <label style="font-size:11px; font-weight:700; color:#8B7FD6; text-transform:uppercase; letter-spacing:0.04em;">
-              🧊 Or 1-Tap from Stash:
-            </label>
-            <div class="k-modal-pick-list" style="margin-top:6px;">
-              ${stashItems.filter(i => !i.used).map(i => `
-                <div class="k-modal-pick-item" onclick="kSelectStashForMeal('${escapeHtml(i.name)}', '${i.type}')">
-                  <div style="font-weight:600; color:var(--text-primary);">${escapeHtml(i.name)}</div>
-                  <span class="k-stash-tag-badge ${i.type}">${i.type === 'freezer' ? 'Freezer' : 'Pantry'}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-
-          <!-- 3. Pick from Favorites -->
-          <div style="border-top:1px solid var(--border-light, #2E3060); padding-top:12px;">
-            <label style="font-size:11px; font-weight:700; color:#E75480; text-transform:uppercase; letter-spacing:0.04em;">
-              💜 Or 1-Tap from Favorites:
-            </label>
-            <div class="k-modal-pick-list" style="margin-top:6px;">
-              ${favoriteRecipes.map(r => `
-                <div class="k-modal-pick-item" onclick="kSelectFavForMeal('${r.id}')">
-                  <div style="font-weight:600; color:var(--text-primary);">${escapeHtml(r.title)}</div>
-                  <span style="font-size:11px; color:var(--text-muted);">${escapeHtml((r.tags || []).join(' · '))}</span>
-                </div>
-              `).join('')}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- MODAL: ADD TO FAVORITES VAULT -->
-    <div class="modal-overlay" id="k-add-fav-modal" onclick="if(event.target===this) kCloseAddFavModal()">
-      <div class="modal-card" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
-        <div class="modal-header">
-          <h3 class="modal-title">Add to Favorites Vault</h3>
-          <button class="icon-btn modal-close" onclick="kCloseAddFavModal()"><i data-lucide="x"></i></button>
-        </div>
-
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div>
-            <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Recipe Title:</label>
-            <input type="text" class="k-clean-input" id="k-new-fav-title" placeholder="e.g. Crispy Honey Garlic Salmon" style="margin-top:4px; width:100%;">
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-            <div>
-              <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Food Icon:</label>
-              <select id="k-new-fav-icon" class="k-clean-input" style="margin-top:4px; width:100%;">
-                <option value="salmon">🐟 Salmon / Fish</option>
-                <option value="taco">🌮 Taco Bowl</option>
-                <option value="chicken">🍗 Chicken</option>
-                <option value="pasta">🍝 Pasta</option>
-                <option value="risotto">🍲 Risotto</option>
-                <option value="dumplings">🥟 Dumplings</option>
-                <option value="pizza">🍕 Pizza</option>
-                <option value="takeout">🥡 Takeout</option>
-                <option value="salad">🥗 Salad</option>
-              </select>
-            </div>
-            <div>
-              <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Tags:</label>
-              <input type="text" class="k-clean-input" id="k-new-fav-tags" placeholder="e.g. ⚡ 20m, 🧊 Freezer" style="margin-top:4px; width:100%;">
-            </div>
-          </div>
-
-          <div>
-            <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Ingredients / Notes:</label>
-            <input type="text" class="k-clean-input" id="k-new-fav-ingredients" placeholder="Salmon, garlic, honey, soy sauce, greens" style="margin-top:4px; width:100%;">
-          </div>
-
-          <div>
-            <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Recipe URL (NYT / Paprika web link):</label>
-            <input type="url" class="k-clean-input" id="k-new-fav-url" placeholder="https://..." style="margin-top:4px; width:100%;">
-          </div>
-
-          <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitNewFavorite()">
-            Save to Favorites Vault
-          </button>
-        </div>
-      </div>
-    </div>
   `;
 
   if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -688,18 +552,123 @@ function kCycleDaySource(dayIdx) {
   renderKitchenPage();
 }
 
+function extractRecipeTitleFromUrl(urlStr) {
+  if (!urlStr || typeof urlStr !== 'string') return '';
+  try {
+    var clean = urlStr.trim();
+    var path = clean.replace(/^[a-zA-Z]+:\/\/[^\/]+/, '');
+    path = path.replace(/^[^\/]+\.[a-zA-Z]{2,}\//, '');
+    path = path.split('?')[0].split('#')[0];
+    path = path.replace(/\/+$/, '');
+    var segments = path.split('/').filter(Boolean);
+    if (!segments.length) return '';
+
+    var slug = segments[segments.length - 1];
+    if (/^\d+$/.test(slug) || /^(recipe|recipes|index|view|post)$/i.test(slug)) {
+      if (segments.length > 1) slug = segments[segments.length - 2];
+    }
+
+    slug = slug.replace(/\.(html?|php|aspx)$/i, '');
+    slug = slug.replace(/^\d+[-_]/, '');
+    slug = slug.replace(/[-_]\d+$/, '');
+    slug = slug.replace(/[-_]recipe$/i, '');
+
+    var words;
+    try {
+      words = decodeURIComponent(slug).replace(/[-_+]/g, ' ').split(/\s+/).filter(Boolean);
+    } catch (e) {
+      words = slug.replace(/[-_+]/g, ' ').split(/\s+/).filter(Boolean);
+    }
+    if (!words.length) return '';
+
+    var minorWords = { 'and':1, 'with':1, 'in':1, 'on':1, 'at':1, 'to':1, 'for':1, 'a':1, 'an':1, 'the':1, 'of':1, 'or':1, 'de':1 };
+    return words.map(function(w, idx) {
+      var lower = w.toLowerCase();
+      if (idx > 0 && minorWords[lower]) return lower;
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }).join(' ');
+  } catch (e) {
+    return '';
+  }
+}
+
+function detectRecipeIcon(title) {
+  const t = (title || '').toLowerCase();
+  if (t.includes('salmon') || t.includes('fish') || t.includes('shrimp') || t.includes('tuna') || t.includes('cod') || t.includes('seafood') || t.includes('halibut') || t.includes('trout')) return 'salmon';
+  if (t.includes('taco') || t.includes('burrito') || t.includes('fajita') || t.includes('mexican') || t.includes('enchilada') || t.includes('quesadilla')) return 'taco';
+  if (t.includes('chicken') || t.includes('turkey') || t.includes('poultry') || t.includes('wing') || t.includes('thigh') || t.includes('roast chicken')) return 'chicken';
+  if (t.includes('pasta') || t.includes('noodle') || t.includes('spaghetti') || t.includes('penne') || t.includes('ramen') || t.includes('lasagna') || t.includes('fettuccine') || t.includes('orzo')) return 'pasta';
+  if (t.includes('risotto') || t.includes('stew') || t.includes('soup') || t.includes('chili') || t.includes('curry') || t.includes('dal') || t.includes('chowder')) return 'risotto';
+  if (t.includes('dumpling') || t.includes('gyoza') || t.includes('wonton') || t.includes('potsticker') || t.includes('bao')) return 'dumplings';
+  if (t.includes('pizza') || t.includes('flatbread')) return 'pizza';
+  if (t.includes('salad') || t.includes('greens') || t.includes('slaw') || t.includes('caesar')) return 'salad';
+  if (t.includes('takeout') || t.includes('thai') || t.includes('chinese') || t.includes('sushi') || t.includes('bento')) return 'takeout';
+  return 'chicken';
+}
+
+function kOnRecipeUrlInput(val) {
+  const titleInput = document.getElementById('k-new-fav-title');
+  const hintEl = document.getElementById('k-title-hint');
+  if (!titleInput) return;
+
+  const extracted = extractRecipeTitleFromUrl(val);
+  if (extracted) {
+    titleInput.value = extracted;
+    if (hintEl) hintEl.textContent = '(auto-pulled from URL ✨)';
+  } else if (!val.trim()) {
+    if (hintEl) hintEl.textContent = '(only for recipes without URL - otherwise auto-pulled)';
+  }
+}
+window.kOnRecipeUrlInput = kOnRecipeUrlInput;
+
 function kOpenMealPicker(dayIdx) {
   activeKitchenEditIdx = dayIdx;
   const data = storage.getKitchenData();
   const d = data.weekSchedule[dayIdx];
 
-  document.getElementById('k-fast-modal-title').textContent = `Enter Dinner · ${d.day} (${d.date})`;
-  document.getElementById('k-modal-custom-name').value = d.meal;
-  document.getElementById('k-modal-custom-url').value = d.recipeUrl || '';
-  document.getElementById('k-modal-custom-icon').value = d.icon || (d.source === 'out' ? 'takeout' : 'salmon');
-  document.getElementById('k-modal-custom-source').value = d.source || 'fresh';
+  const titleEl = document.getElementById('k-fast-modal-title');
+  if (titleEl) titleEl.textContent = `Enter Dinner · ${d.day} (${d.date})`;
+  const nameEl = document.getElementById('k-modal-custom-name');
+  if (nameEl) nameEl.value = d.meal;
+  const urlEl = document.getElementById('k-modal-custom-url');
+  if (urlEl) urlEl.value = d.recipeUrl || '';
+  const iconEl = document.getElementById('k-modal-custom-icon');
+  if (iconEl) iconEl.value = d.icon || (d.source === 'out' ? 'takeout' : 'salmon');
+  const sourceEl = document.getElementById('k-modal-custom-source');
+  if (sourceEl) sourceEl.value = d.source || 'fresh';
 
-  document.getElementById('k-fast-meal-modal').classList.add('active');
+  const stashContainer = document.getElementById('k-modal-stash-list');
+  if (stashContainer) {
+    const stashItems = (data.stashItems || []).filter(i => !i.used);
+    if (stashItems.length > 0) {
+      stashContainer.innerHTML = stashItems.map(i => `
+        <div class="k-modal-pick-item" onclick="kSelectStashForMeal('${escapeHtml(i.name)}', '${i.type}')">
+          <div style="font-weight:600; color:var(--text-primary);">${escapeHtml(i.name)}</div>
+          <span class="k-stash-tag-badge ${i.type}">${i.type === 'freezer' ? 'Freezer' : 'Pantry'}</span>
+        </div>
+      `).join('');
+    } else {
+      stashContainer.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:6px 0;">No active stash items available.</div>`;
+    }
+  }
+
+  const favsContainer = document.getElementById('k-modal-favs-list');
+  if (favsContainer) {
+    const favs = data.favoriteRecipes || [];
+    if (favs.length > 0) {
+      favsContainer.innerHTML = favs.map(r => `
+        <div class="k-modal-pick-item" onclick="kSelectFavForMeal('${r.id}')">
+          <div style="font-weight:600; color:var(--text-primary);">${escapeHtml(r.title)}</div>
+          <span style="font-size:11px; color:var(--text-muted);">${escapeHtml((r.tags || []).join(' · '))}</span>
+        </div>
+      `).join('');
+    } else {
+      favsContainer.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:6px 0;">No saved favorites yet.</div>`;
+    }
+  }
+
+  const modal = document.getElementById('k-fast-meal-modal');
+  if (modal) modal.classList.add('active');
   if (window.lucide) lucide.createIcons();
 }
 
@@ -783,7 +752,7 @@ function kToggleFavoriteDayMeal(dayIdx) {
     renderKitchenPage();
     if (typeof showToast === 'function') showToast(`Saved "${meal.meal}" to Favorites Vault! 💜`);
     if (typeof confetti === 'function') {
-      confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#1D71B8', '#A9D1D1', '#F87C71', '#FFD7A7'] });
+      confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
     }
   }
 }
@@ -808,31 +777,62 @@ function kAssignFavToDay(favId, dayIdxStr) {
 }
 
 function kOpenAddFavModal() {
-  document.getElementById('k-new-fav-title').value = '';
-  document.getElementById('k-new-fav-tags').value = '⚡ 20m, 🛒 Fresh';
-  document.getElementById('k-new-fav-ingredients').value = '';
-  document.getElementById('k-new-fav-url').value = '';
-  document.getElementById('k-add-fav-modal').classList.add('active');
+  const urlEl = document.getElementById('k-new-fav-url');
+  const titleEl = document.getElementById('k-new-fav-title');
+  const notesEl = document.getElementById('k-new-fav-ingredients');
+  const hintEl = document.getElementById('k-title-hint');
+
+  if (urlEl) urlEl.value = '';
+  if (titleEl) titleEl.value = '';
+  if (notesEl) notesEl.value = '';
+  if (hintEl) hintEl.textContent = '(only for recipes without URL - otherwise auto-pulled)';
+
+  const modal = document.getElementById('k-add-fav-modal');
+  if (modal) modal.classList.add('active');
   if (window.lucide) lucide.createIcons();
 }
 
 function kSubmitNewFavorite() {
-  const title = document.getElementById('k-new-fav-title').value.trim();
-  if (!title) return;
-  const icon = document.getElementById('k-new-fav-icon').value;
-  const tagsStr = document.getElementById('k-new-fav-tags').value.trim();
-  const ings = document.getElementById('k-new-fav-ingredients').value.trim();
-  const url = document.getElementById('k-new-fav-url').value.trim();
+  const urlEl = document.getElementById('k-new-fav-url');
+  const titleEl = document.getElementById('k-new-fav-title');
+  const notesEl = document.getElementById('k-new-fav-ingredients');
 
+  const url = urlEl ? urlEl.value.trim() : '';
+  let title = titleEl ? titleEl.value.trim() : '';
+  const notes = notesEl ? notesEl.value.trim() : '';
+
+  if (!title && url) {
+    title = extractRecipeTitleFromUrl(url);
+  }
+
+  if (!title && !url) {
+    if (typeof showToast === 'function') showToast('Please enter a recipe URL or Title');
+    if (titleEl) titleEl.focus();
+    return;
+  }
+
+  if (!title) {
+    try {
+      let clean = url;
+      if (!/^https?:\/\//i.test(clean)) clean = 'https://' + clean;
+      const u = new URL(clean);
+      title = 'Recipe from ' + u.hostname.replace(/^www\./, '');
+    } catch (e) {
+      title = 'Saved Recipe';
+    }
+  }
+
+  const icon = detectRecipeIcon(title);
   const data = storage.getKitchenData();
   if (!data.favoriteRecipes) data.favoriteRecipes = [];
+
   data.favoriteRecipes.push({
     id: 'r-' + Date.now(),
     title: title,
     icon: icon,
-    tags: tagsStr ? tagsStr.split(',').map(s => s.trim()) : ['Favorite'],
+    tags: ['Favorite'],
     recipeUrl: url,
-    ingredients: ings || 'Custom recipe',
+    ingredients: notes || 'Favorite recipe',
     stashMatch: null
   });
 
@@ -840,6 +840,9 @@ function kSubmitNewFavorite() {
   kCloseAddFavModal();
   renderKitchenPage();
   if (typeof showToast === 'function') showToast(`Added "${title}" to Favorites Vault! 💜`);
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
+  }
 }
 
 function kCloseModal() {
@@ -903,7 +906,7 @@ Eat Out: ${data.eatOutTarget || 2}x target`;
   navigator.clipboard.writeText(text).then(() => {
     if (typeof showToast === 'function') showToast(`✓ Copied ${items.length} verified grocery items for Things 3!`);
     if (typeof confetti === 'function') {
-      confetti({ particleCount: 45, spread: 60, origin: { y: 0.8 }, colors: ['#1D71B8', '#A9D1D1', '#F87C71', '#FFD7A7'] });
+      confetti({ particleCount: 45, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
     }
   }).catch(() => {
     if (typeof showToast === 'function') showToast('✓ Ready for Things 3');
