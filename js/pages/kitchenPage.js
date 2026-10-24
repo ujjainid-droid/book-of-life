@@ -129,28 +129,51 @@ function renderKitchenPage() {
   const stashItems = data.stashItems || [];
   const weekSchedule = data.weekSchedule || [];
   const favoriteRecipes = data.favoriteRecipes || [];
-  const groceryItems = data.groceries || [
-    { id: 'g1', dept: 'produce', text: 'Broccoli florets & sweet potatoes', checked: false },
-    { id: 'g2', dept: 'produce', text: 'Fresh cilantro & 3 limes', checked: false },
-    { id: 'g3', dept: 'produce', text: 'Baby spinach (1 tub)', checked: false },
-    { id: 'g4', dept: 'produce', text: 'Avocados (3 ripe)', checked: false },
-    { id: 'g5', dept: 'dairy', text: 'Greek yogurt (plain 32oz)', checked: false },
-    { id: 'g6', dept: 'dairy', text: 'Grated parmesan wedge', checked: false },
-    { id: 'g7', dept: 'dry', text: 'Corn tortillas (1 pack)', checked: false }
-  ];
+  const groceryItems = data.groceries || [];
 
   const todayIso = getTodayIso();
 
-  // Ensure dates are attached to days
-  // Standard week: Sunday Oct 18 - Saturday Oct 24 (or active week)
-  const dayDates = ['2026-10-18', '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22', '2026-10-23', '2026-10-24'];
+  // Dynamic current week dates (Sun - Sat)
+  const now = new Date();
+  const dayOfWeek = now.getDay(); // 0 = Sun
+  const weekDates = [];
+  const sunDate = new Date(now);
+  sunDate.setDate(now.getDate() - dayOfWeek);
 
-  const outCount = weekSchedule.filter(d => d.source === 'out').length;
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(sunDate);
+    d.setDate(sunDate.getDate() + i);
+    const yr = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const da = String(d.getDate()).padStart(2, '0');
+    weekDates.push({
+      iso: `${yr}-${mo}-${da}`,
+      day: d.toLocaleDateString('en-US', { weekday: 'short' }),
+      dateLabel: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    });
+  }
+
+  const weekRangeLabel = `${weekDates[0].dateLabel} – ${weekDates[6].dateLabel}`;
+
+  // Ensure full week has 7 days aligned with active week
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const fullWeekSchedule = dayNames.map((dayName, idx) => {
+    const existing = weekSchedule.find(s => s.day === dayName) || {};
+    return {
+      day: dayName,
+      date: weekDates[idx].dateLabel,
+      iso: weekDates[idx].iso,
+      meal: existing.meal || '',
+      source: existing.source || (dayName === 'Fri' || dayName === 'Sat' ? 'out' : 'fresh'),
+      icon: existing.icon || (dayName === 'Fri' ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken')),
+      recipeUrl: existing.recipeUrl || '',
+      favoriteId: existing.favoriteId || null
+    };
+  });
+
+  const outCount = fullWeekSchedule.filter(d => d.source === 'out' && d.meal).length;
   const target = data.eatOutTarget || 2;
   const withinTarget = outCount <= target;
-
-  const stashMealCount = weekSchedule.filter(d => d.source === 'freezer' || d.source === 'pantry').length;
-  const freshMealCount = weekSchedule.filter(d => d.source === 'fresh').length;
 
   container.innerHTML = `
     <div class="kitchen-workflow-wrap">
@@ -160,12 +183,12 @@ function renderKitchenPage() {
         <div class="k-header-titles">
           <div class="k-header-main-row">
             <h2 class="k-header-title">Kitchen Sanctuary</h2>
-            <span class="k-header-week-tag">Sun Oct 18 – Sat Oct 24</span>
+            <span class="k-header-week-tag">${escapeHtml(weekRangeLabel)}</span>
           </div>
           <span style="font-size:12px; color:var(--text-muted);">Shop your stash first, dinner on autopilot.</span>
         </div>
 
-        <div class="k-eatout-summary-pill" title="Friday takeout + weekend dining out">
+        <div class="k-eatout-summary-pill" title="Target for dining out / takeout nights">
           <span>🥡 Eat-Out Nights:</span>
           <span class="k-eatout-badge">${outCount}x</span>
           <span style="font-size:11px; color:${withinTarget ? '#3B6B35' : 'var(--pal-coral)'}; font-weight:700;">
@@ -186,19 +209,21 @@ function renderKitchenPage() {
 
         <!-- Stash Chips -->
         <div class="k-stash-chips-row">
-          ${stashItems.map(item => `
+          ${stashItems.length > 0 ? stashItems.map(item => `
             <div class="k-stash-chip ${item.used ? 'is-used' : ''}">
               <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
               <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
               <span class="k-stash-tag-badge ${item.type}">${item.type === 'freezer' ? 'Freezer' : 'Pantry'}</span>
               <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
             </div>
-          `).join('')}
+          `).join('') : `
+            <span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:4px 0;">No stash items saved yet. Use the buttons below to log what's in your freezer or pantry.</span>
+          `}
         </div>
 
         <!-- 2 Separate Buttons (Freezer & Pantry) instead of dropdown -->
         <div class="k-stash-quick-bar">
-          <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up (e.g. Salmon, Ground Turkey, Rice)..." onkeydown="if(event.key==='Enter') kAddStashWithSource('freezer')">
+          <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('freezer')">
           <button type="button" class="k-btn-stash-add freezer" onclick="kAddStashWithSource('freezer')" title="Add directly to Freezer">
             🧊 + Freezer
           </button>
@@ -219,15 +244,14 @@ function renderKitchenPage() {
         </div>
 
         <div class="k-week-list">
-          ${weekSchedule.map((d, idx) => {
-            const iso = d.iso || dayDates[idx] || '2026-10-24';
-            const isPast = iso < todayIso;
-            const isToday = iso === todayIso;
+          ${fullWeekSchedule.map((d, idx) => {
+            const isPast = d.iso < todayIso;
+            const isToday = d.iso === todayIso;
 
             const isFri = (d.day === 'Fri');
             const isOut = (d.source === 'out');
-            const iconSvg = KITCHEN_ICONS[d.icon] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.salmon);
-            const isFav = favoriteRecipes.some(r => r.title.toLowerCase() === d.meal.toLowerCase());
+            const iconSvg = KITCHEN_ICONS[d.icon] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.chicken);
+            const isFav = d.meal && favoriteRecipes.some(r => r.title.toLowerCase() === d.meal.toLowerCase());
 
             let pillLabel = 'Fresh 🛒';
             if (d.source === 'freezer') pillLabel = 'Freezer 🧊';
@@ -245,16 +269,16 @@ function renderKitchenPage() {
                   </div>
                 </div>
 
-                <div class="k-avatar-icon" onclick="kOpenMealPicker(${idx})" title="Click to edit dinner">
+                <div class="k-avatar-icon" onclick="kOpenMealPicker(${idx})" title="Click to enter/edit dinner">
                   ${iconSvg}
                 </div>
 
                 <div class="k-meal-center">
                   <div class="k-meal-name-row">
                     <span class="k-meal-title-text" onclick="kOpenMealPicker(${idx})" title="Click to enter/edit dinner">
-                      ${escapeHtml(d.meal)}
+                      ${d.meal ? escapeHtml(d.meal) : `<span style="color:var(--text-muted); font-style:italic; font-size:12.5px; font-weight:400;">+ Add dinner...</span>`}
                     </span>
-                    <button type="button" class="k-source-pill ${d.source}" onclick="kCycleDaySource(${idx})" title="Click to flip (Takeout, Freezer, Pantry, Fresh)">
+                    <button type="button" class="k-source-pill ${d.source}" onclick="kCycleDaySource(${idx})" title="Click to flip (Fresh, Freezer, Pantry, Takeout)">
                       ${pillLabel}
                     </button>
                   </div>
@@ -273,7 +297,7 @@ function renderKitchenPage() {
                   <button type="button" class="k-btn-edit-dinner" onclick="kOpenMealPicker(${idx})" title="Enter or change dinner for ${d.day}">
                     <span>✏️ Edit</span>
                   </button>
-                  <button type="button" class="k-icon-btn ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Save dish to Favorites Vault'}" onclick="kToggleFavoriteDayMeal(${idx})">
+                  <button type="button" class="k-icon-btn ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Save dish to Favorites Vault'}" onclick="${d.meal ? `kToggleFavoriteDayMeal(${idx})` : `kOpenMealPicker(${idx})`}">
                     <i data-lucide="heart" style="width:13px; height:13px;"></i>
                   </button>
                 </div>
@@ -298,11 +322,11 @@ function renderKitchenPage() {
         </div>
 
         <div class="k-favs-shelf">
-          ${favoriteRecipes.map(r => `
+          ${favoriteRecipes.length > 0 ? favoriteRecipes.map(r => `
             <div class="k-fav-card">
               <div class="k-fav-top">
                 <div class="k-avatar-icon" style="width:32px; height:32px;">
-                  ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.salmon}
+                  ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.chicken}
                 </div>
                 <div style="flex:1; min-width:0;">
                   <div class="k-fav-title">${escapeHtml(r.title)}</div>
@@ -336,7 +360,11 @@ function renderKitchenPage() {
                 </select>
               </div>
             </div>
-          `).join('')}
+          `).join('') : `
+            <div style="grid-column: 1 / -1; padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
+              No recipes in your vault yet. Tap <strong>+ Add Recipe</strong> above to save a favorite! 💜
+            </div>
+          `}
         </div>
       </section>
 
@@ -347,9 +375,10 @@ function renderKitchenPage() {
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="k-step-indicator" style="background:var(--pal-sage-soft); color:#3B6B35;">STEP 3</span>
               <span style="font-size:16px; font-weight:700; color:var(--text-primary);">Verify Grocery List</span>
+              <span style="font-size:12px; font-weight:700; color:var(--text-muted);">(${groceryItems.filter(g => !g.checked).length} items needed)</span>
             </div>
             <span style="font-size:12px; color:var(--text-muted); margin-top:2px; display:block;">
-              Check items you already have to exclude them before copying to Things 3.
+              Check items you already have to exclude them before opening Things 3.
             </span>
           </div>
 
@@ -365,102 +394,36 @@ function renderKitchenPage() {
           </div>
         </div>
 
-        <div class="k-grocery-sections-grid">
-          <!-- Produce -->
-          <div class="k-dept-box">
-            <div class="k-dept-head">
-              <span>🥦 Produce &amp; Fresh</span>
-              <span>4</span>
+        <div class="k-grocery-items-list" id="k-grocery-items-wrap" style="margin-top:10px;">
+          ${groceryItems.length > 0 ? groceryItems.map(item => `
+            <div class="k-grocery-row ${item.checked ? 'checked' : ''}" onclick="kToggleGroceryItemPersist('${item.id}')">
+              <div style="display:flex; align-items:center;">
+                <span class="k-grocery-check">${item.checked ? '✓' : ''}</span>
+                <span>${escapeHtml(item.text)}</span>
+              </div>
+              <button class="k-grocery-del-btn" onclick="event.stopPropagation(); kDeleteGroceryItem('${item.id}')">×</button>
             </div>
-            <div class="k-grocery-items-list" id="k-grocery-produce-list">
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Broccoli florets &amp; sweet potatoes</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Fresh cilantro &amp; 3 limes</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Baby spinach (1 tub)</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Avocados (3 ripe)</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
+          `).join('') : `
+            <div style="padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
+              🛒 Your grocery list is empty. Add grocery items below to start your list!
             </div>
-          </div>
+          `}
+        </div>
 
-          <!-- Dairy & Refrigerated -->
-          <div class="k-dept-box">
-            <div class="k-dept-head">
-              <span>🧀 Dairy &amp; Refrigerated</span>
-              <span>2</span>
-            </div>
-            <div class="k-grocery-items-list" id="k-grocery-dairy-list">
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Greek yogurt (plain 32oz)</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Grated parmesan wedge</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bakery & Dry Essentials -->
-          <div class="k-dept-box">
-            <div class="k-dept-head">
-              <span>🌾 Bakery &amp; Pantry Dry</span>
-              <span>1</span>
-            </div>
-            <div class="k-grocery-items-list" id="k-grocery-dry-list">
-              <div class="k-grocery-row" onclick="kToggleGroceryItem(this)">
-                <div style="display:flex; align-items:center;">
-                  <span class="k-grocery-check">✓</span>
-                  <span>Corn tortillas (1 pack)</span>
-                </div>
-                <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Stash Items Saved (Zero Cost) -->
-          <div class="k-dept-box" style="background:var(--pal-seafoam-soft); border-color:var(--pal-seafoam);">
+        ${stashItems.filter(i => i.used).length > 0 ? `
+          <div class="k-dept-box" style="background:var(--pal-seafoam-soft); border-color:var(--pal-seafoam); margin-top:10px;">
             <div class="k-dept-head" style="color:var(--pal-azure);">
               <span>✨ Stash Items Skipped (Saved $)</span>
             </div>
             <div style="font-size:12px; color:var(--text-secondary); line-height:1.5;">
-              • Salmon fillets (already in freezer)<br>
-              • Ground turkey (already in freezer)<br>
-              • Black beans &amp; risotto rice (already in pantry)
+              ${stashItems.filter(i => i.used).map(i => `• ${escapeHtml(i.name)} (${i.type === 'freezer' ? 'freezer' : 'pantry'})`).join('<br>')}
             </div>
           </div>
-        </div>
+        ` : ''}
 
         <!-- Add Custom Grocery Item Field -->
-        <div style="display:flex; gap:8px; margin-top:4px; align-items:center;">
-          <input type="text" class="k-clean-input" id="k-add-extra-grocery" placeholder="+ Add another grocery item (e.g. Oat milk, Coffee beans)..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
+        <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
+          <input type="text" class="k-clean-input" id="k-add-extra-grocery" placeholder="+ Add a grocery item (e.g. Oat milk, Lemons, Coffee beans)..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
           <button type="button" class="k-btn-action" onclick="kAddExtraGroceryItem()">
             <i data-lucide="plus" style="width:13px; height:13px;"></i>
             <span>Add Item</span>
@@ -543,8 +506,8 @@ function kCycleDaySource(dayIdx) {
   d.source = nextSource;
   if (nextSource === 'out') {
     d.icon = d.day === 'Fri' ? 'takeout' : 'bistro';
-    if (!d.meal.toLowerCase().includes('takeout') && !d.meal.toLowerCase().includes('out')) {
-      d.meal = d.day === 'Fri' ? 'Friday Night Takeout (Pizza / Thai)' : 'Dinner Out / Takeout';
+    if (!d.meal) {
+      d.meal = d.day === 'Fri' ? 'Takeout' : 'Dinner Out';
     }
   } else if (nextSource === 'freezer') {
     d.icon = 'salmon';
@@ -630,16 +593,16 @@ window.kOnRecipeUrlInput = kOnRecipeUrlInput;
 function kOpenMealPicker(dayIdx) {
   activeKitchenEditIdx = dayIdx;
   const data = storage.getKitchenData();
-  const d = data.weekSchedule[dayIdx];
+  const d = (data.weekSchedule && data.weekSchedule[dayIdx]) ? data.weekSchedule[dayIdx] : { day: 'Dinner', date: '', meal: '', source: 'fresh', icon: 'chicken' };
 
   const titleEl = document.getElementById('k-fast-modal-title');
-  if (titleEl) titleEl.textContent = `Enter Dinner · ${d.day} (${d.date})`;
+  if (titleEl) titleEl.textContent = `Enter Dinner · ${d.day}${d.date ? ` (${d.date})` : ''}`;
   const nameEl = document.getElementById('k-modal-custom-name');
-  if (nameEl) nameEl.value = d.meal;
+  if (nameEl) nameEl.value = d.meal || '';
   const urlEl = document.getElementById('k-modal-custom-url');
   if (urlEl) urlEl.value = d.recipeUrl || '';
   const iconEl = document.getElementById('k-modal-custom-icon');
-  if (iconEl) iconEl.value = d.icon || (d.source === 'out' ? 'takeout' : 'salmon');
+  if (iconEl) iconEl.value = d.icon || (d.source === 'out' ? 'takeout' : 'chicken');
   const sourceEl = document.getElementById('k-modal-custom-source');
   if (sourceEl) sourceEl.value = d.source || 'fresh';
 
@@ -681,12 +644,19 @@ function kOpenMealPicker(dayIdx) {
 function kSubmitCustomMeal() {
   if (activeKitchenEditIdx === null) return;
   const name = document.getElementById('k-modal-custom-name').value.trim();
-  if (!name) return;
   const url = document.getElementById('k-modal-custom-url').value.trim();
   const icon = document.getElementById('k-modal-custom-icon').value;
   const source = document.getElementById('k-modal-custom-source').value;
 
   const data = storage.getKitchenData();
+  if (!Array.isArray(data.weekSchedule) || !data.weekSchedule[activeKitchenEditIdx]) {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (!Array.isArray(data.weekSchedule)) data.weekSchedule = [];
+    while (data.weekSchedule.length < 7) {
+      const idx = data.weekSchedule.length;
+      data.weekSchedule.push({ day: dayNames[idx], date: '', meal: '', source: 'fresh', icon: 'chicken' });
+    }
+  }
   const d = data.weekSchedule[activeKitchenEditIdx];
   d.meal = name;
   d.recipeUrl = url;
@@ -696,7 +666,7 @@ function kSubmitCustomMeal() {
   storage.saveKitchenData(data);
   kCloseModal();
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(`Updated ${d.day} dinner! ✨`);
+  if (typeof showToast === 'function') showToast(name ? `Updated ${d.day} dinner! ✨` : `Cleared ${d.day} dinner`);
 }
 
 function kSelectStashForMeal(name, type) {
@@ -735,7 +705,11 @@ function kSelectFavForMeal(favId) {
 
 function kToggleFavoriteDayMeal(dayIdx) {
   const data = storage.getKitchenData();
-  const meal = data.weekSchedule[dayIdx];
+  const meal = (data.weekSchedule && data.weekSchedule[dayIdx]) ? data.weekSchedule[dayIdx] : null;
+  if (!meal || !meal.meal) {
+    kOpenMealPicker(dayIdx);
+    return;
+  }
   const favIdx = (data.favoriteRecipes || []).findIndex(r => r.title.toLowerCase() === meal.meal.toLowerCase());
 
   if (favIdx !== -1) {
@@ -769,6 +743,15 @@ function kAssignFavToDay(favId, dayIdxStr) {
   const data = storage.getKitchenData();
   const fav = (data.favoriteRecipes || []).find(r => r.id === favId);
   if (!fav) return;
+
+  if (!Array.isArray(data.weekSchedule) || !data.weekSchedule[dayIdx]) {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    if (!Array.isArray(data.weekSchedule)) data.weekSchedule = [];
+    while (data.weekSchedule.length < 7) {
+      const idx = data.weekSchedule.length;
+      data.weekSchedule.push({ day: dayNames[idx], date: '', meal: '', source: 'fresh', icon: 'chicken' });
+    }
+  }
 
   const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : (fav.tags || []).some(t => t.includes('Pantry')) ? 'pantry' : 'fresh');
 
@@ -870,41 +853,59 @@ function kAddExtraGroceryItem() {
   const input = document.getElementById('k-add-extra-grocery');
   if (!input) return;
   const val = input.value.trim();
-  if (!val) return;
-
-  const list = document.getElementById('k-grocery-produce-list');
-  if (list) {
-    const row = document.createElement('div');
-    row.className = 'k-grocery-row';
-    row.onclick = function() { kToggleGroceryItem(row); };
-    row.innerHTML = `
-      <div style="display:flex; align-items:center;">
-        <span class="k-grocery-check">✓</span>
-        <span>${escapeHtml(val)}</span>
-      </div>
-      <button class="k-grocery-del-btn" onclick="event.stopPropagation(); this.parentElement.remove();">×</button>
-    `;
-    list.appendChild(row);
-    input.value = '';
-    if (typeof showToast === 'function') showToast(`Added "${val}" to grocery list`);
+  if (!val) {
+    input.focus();
+    return;
   }
+
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.groceries)) data.groceries = [];
+  data.groceries.push({
+    id: 'g-' + Date.now(),
+    text: val,
+    checked: false
+  });
+  storage.saveKitchenData(data);
+  input.value = '';
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Added "${val}" to grocery list`);
 }
+window.kAddExtraGroceryItem = kAddExtraGroceryItem;
+
+function kToggleGroceryItemPersist(id) {
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.groceries)) return;
+  const item = data.groceries.find(g => g.id === id);
+  if (!item) return;
+  item.checked = !item.checked;
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+}
+window.kToggleGroceryItemPersist = kToggleGroceryItemPersist;
+
+function kDeleteGroceryItem(id) {
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.groceries)) return;
+  data.groceries = data.groceries.filter(g => g.id !== id);
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast('Removed grocery item');
+}
+window.kDeleteGroceryItem = kDeleteGroceryItem;
 
 // 1-Tap Native Things 3 URL Scheme Integration
 function kOpenThings3() {
   const data = storage.getKitchenData();
-  const rows = document.querySelectorAll('.k-grocery-row:not(.checked)');
-  const rawItems = Array.from(rows).map(r => {
-    return (r.querySelector('span:not(.k-grocery-check)')?.textContent || '').trim();
-  }).filter(Boolean);
+  const groceries = (data.groceries || []).filter(g => !g.checked);
+  const rawItems = groceries.map(g => g.text).filter(Boolean);
 
-  const meals = (data.weekSchedule || []).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
-  const notes = `Planned in margo:\n${meals}\n\nEat Out Target: ${data.eatOutTarget || 2}x`;
+  const meals = (data.weekSchedule || []).filter(d => d.meal).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
+  const notes = `Planned in margo:\n${meals || '(None)'}\n\nEat Out Target: ${data.eatOutTarget || 2}x`;
 
   const thingsUrl = `things:///add-project?title=${encodeURIComponent('Weekly Groceries')}&to-dos=${encodeURIComponent(rawItems.join('\n'))}&notes=${encodeURIComponent(notes)}`;
 
   // Also copy to clipboard as convenience backup
-  const clipboardText = `Weekly Groceries\n${rawItems.map(i => `[ ] ${i}`).join('\n')}\n\n${notes}`;
+  const clipboardText = `Weekly Groceries\n${rawItems.length ? rawItems.map(i => `[ ] ${i}`).join('\n') : '(No grocery items entered)'}\n\n${notes}`;
   navigator.clipboard.writeText(clipboardText).catch(() => {});
 
   // Trigger Things 3 via deep link
@@ -922,19 +923,16 @@ window.kOpenThings3 = kOpenThings3;
 // Copy ONLY active, verified (unchecked) grocery items to clipboard
 function kExportVerifiedThings3() {
   const data = storage.getKitchenData();
-  const rows = document.querySelectorAll('.k-grocery-row:not(.checked)');
-  const items = Array.from(rows).map(r => {
-    const txt = r.querySelector('span:not(.k-grocery-check)')?.textContent || '';
-    return `[ ] ${txt.trim()}`;
-  }).filter(Boolean);
+  const groceries = (data.groceries || []).filter(g => !g.checked);
+  const items = groceries.map(g => `[ ] ${g.text}`).filter(Boolean);
 
-  const meals = (data.weekSchedule || []).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
+  const meals = (data.weekSchedule || []).filter(d => d.meal).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
 
-  const text = `Weekly Groceries (Oct 18 - 24)
-${items.join('\n')}
+  const text = `Weekly Groceries
+${items.length ? items.join('\n') : '(No groceries entered)'}
 
 Dinners Planned in margo:
-${meals}
+${meals || '(No dinners planned)'}
 
 Eat Out: ${data.eatOutTarget || 2}x target`;
 

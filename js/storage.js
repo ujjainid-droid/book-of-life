@@ -4194,34 +4194,20 @@ class StorageManager {
      ========================================================================== */
   getDefaultKitchenData() {
     return {
-      stashItems: [
-        { id: 's1', type: 'freezer', name: 'Salmon fillets (2 portions)', badge: 'Use Soon', used: false },
-        { id: 's2', type: 'freezer', name: 'Ground Turkey (1 lb)', badge: 'Use Soon', used: false },
-        { id: 's3', type: 'freezer', name: 'Edamame & dumplings', badge: 'Backup', used: true },
-        { id: 's4', type: 'pantry', name: 'Black beans & salsa', badge: 'Staple', used: false },
-        { id: 's5', type: 'pantry', name: 'Arborio risotto rice', badge: 'Staple', used: false },
-        { id: 's6', type: 'pantry', name: 'Rao\'s Marinara & Penne', badge: 'Quick', used: false }
-      ],
+      stashItems: [],
       eatOutTarget: 2,
-      selectedHopperIngredients: ['Salmon fillets', 'Ground Turkey', 'Arborio risotto rice'],
+      selectedHopperIngredients: [],
       weekSchedule: [
-        { day: 'Sun', date: 'Oct 24', meal: 'Roasted Salmon with Sweet Potatoes & Broccoli', source: 'freezer', icon: 'salmon', recipeUrl: 'https://cooking.nytimes.com/recipes/1020083-sheet-pan-salmon', favoriteId: 'r1' },
-        { day: 'Mon', date: 'Oct 25', meal: 'Ground Turkey & Black Bean Taco Bowls', source: 'freezer', icon: 'taco', recipeUrl: 'https://pinchofyum.com/turkey-taco-bowls', favoriteId: 'r2' },
-        { day: 'Tue', date: 'Oct 26', meal: 'Creamy Mushroom & Parmesan Risotto', source: 'pantry', icon: 'risotto', recipeUrl: 'https://www.seriouseats.com/pressure-cooker-mushroom-risotto-recipe', favoriteId: 'r3' },
-        { day: 'Wed', date: 'Oct 27', meal: 'Sheet Pan Lemon Herb Chicken & Veggies', source: 'fresh', icon: 'chicken', recipeUrl: 'https://www.eatwell101.com/sheet-pan-lemon-herb-chicken', favoriteId: 'r4' },
-        { day: 'Thu', date: 'Oct 28', meal: 'Rao\'s Penne Pasta with Spinach & Ricotta', source: 'pantry', icon: 'pasta', recipeUrl: 'https://raos.com/blogs/recipes/penne-alla-vodka', favoriteId: 'r5' },
-        { day: 'Fri', date: 'Oct 29', meal: 'Friday Night Takeout (Wood-Fired Pizza / Thai)', source: 'out', icon: 'takeout', recipeUrl: '', favoriteId: 'r7' },
-        { day: 'Sat', date: 'Oct 30', meal: 'Neighborhood Bistro or Date Night Out', source: 'out', icon: 'bistro', recipeUrl: '', favoriteId: null }
+        { day: 'Sun', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
+        { day: 'Mon', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
+        { day: 'Tue', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
+        { day: 'Wed', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
+        { day: 'Thu', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
+        { day: 'Fri', date: '', meal: '', source: 'out', icon: 'takeout', recipeUrl: '', favoriteId: null },
+        { day: 'Sat', date: '', meal: '', source: 'out', icon: 'bistro', recipeUrl: '', favoriteId: null }
       ],
-      favoriteRecipes: [
-        { id: 'r1', title: 'Roasted Salmon with Broccoli', icon: 'salmon', tags: ['🧊 Freezer', '⚡ 25m'], recipeUrl: 'https://cooking.nytimes.com/recipes/1020083-sheet-pan-salmon', ingredients: 'Salmon fillets, broccoli, sweet potatoes, olive oil, lemon', stashMatch: 'Salmon fillets' },
-        { id: 'r2', title: 'Turkey & Black Bean Taco Bowls', icon: 'taco', tags: ['🧊 Freezer', '🥗 High-Protein'], recipeUrl: 'https://pinchofyum.com/turkey-taco-bowls', ingredients: 'Ground turkey, black beans, salsa, tortillas, avocado, cilantro', stashMatch: 'Ground Turkey' },
-        { id: 'r3', title: 'Creamy Parmesan Risotto', icon: 'risotto', tags: ['🥫 Pantry', '🍲 Comfort'], recipeUrl: 'https://www.seriouseats.com/pressure-cooker-mushroom-risotto-recipe', ingredients: 'Arborio rice, bone broth, parmesan wedge, baby spinach', stashMatch: 'Arborio risotto rice' },
-        { id: 'r4', title: 'Sheet Pan Herb Chicken', icon: 'chicken', tags: ['🛒 Fresh', '🥦 Low Carb'], recipeUrl: 'https://www.eatwell101.com/sheet-pan-lemon-herb-chicken', ingredients: 'Chicken breasts, bell peppers, zucchini, lemon, oregano', stashMatch: null },
-        { id: 'r5', title: 'Rao\'s Penne with Spinach', icon: 'pasta', tags: ['🥫 Pantry', '⚡ 15m'], recipeUrl: 'https://raos.com/blogs/recipes/penne-alla-vodka', ingredients: 'Penne pasta, Rao\'s marinara, baby spinach, parmesan', stashMatch: 'Rao\'s Marinara & Penne' },
-        { id: 'r7', title: 'Friday Night Pizza / Takeout', icon: 'pizza', tags: ['🥡 Friday Ritual', '🍕 Takeout'], recipeUrl: '', ingredients: 'Local pizzeria or favorite takeout Thai / Ramen', stashMatch: null }
-      ],
-      groceryChecked: {}
+      favoriteRecipes: [],
+      groceries: []
     };
   }
 
@@ -4229,6 +4215,42 @@ class StorageManager {
     if (!this.data.kitchenData || typeof this.data.kitchenData !== 'object') {
       this.data.kitchenData = this.getDefaultKitchenData();
       this.saveData();
+    } else {
+      // Purge any legacy sample/placeholder records if still present in storage
+      if (!this.data.kitchenSampleCleared) {
+        const kd = this.data.kitchenData;
+        const sampleStashIds = new Set(['s1', 's2', 's3', 's4', 's5', 's6']);
+        const sampleFavIds = new Set(['r1', 'r2', 'r3', 'r4', 'r5', 'r7']);
+        const sampleMeals = new Set([
+          'roasted salmon with sweet potatoes & broccoli',
+          'ground turkey & black bean taco bowls',
+          'creamy mushroom & parmesan risotto',
+          'sheet pan lemon herb chicken & veggies',
+          'rao\'s penne pasta with spinach & ricotta',
+          'friday night takeout (wood-fired pizza / thai)',
+          'neighborhood bistro or date night out'
+        ]);
+
+        if (Array.isArray(kd.stashItems)) {
+          kd.stashItems = kd.stashItems.filter(i => !sampleStashIds.has(i.id) && !i.name.toLowerCase().includes('salmon fillets (2 portions)'));
+        }
+        if (Array.isArray(kd.favoriteRecipes)) {
+          kd.favoriteRecipes = kd.favoriteRecipes.filter(r => !sampleFavIds.has(r.id) && !r.title.toLowerCase().includes('roasted salmon with broccoli'));
+        }
+        if (Array.isArray(kd.weekSchedule)) {
+          kd.weekSchedule.forEach(d => {
+            if (sampleMeals.has((d.meal || '').toLowerCase().trim()) || sampleFavIds.has(d.favoriteId)) {
+              d.meal = '';
+              d.recipeUrl = '';
+              d.favoriteId = null;
+            }
+          });
+        }
+        kd.selectedHopperIngredients = [];
+        if (!Array.isArray(kd.groceries)) kd.groceries = [];
+        this.data.kitchenSampleCleared = true;
+        this.saveData();
+      }
     }
     return this.data.kitchenData;
   }
