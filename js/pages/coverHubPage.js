@@ -548,89 +548,18 @@ function renderUnifiedCampaignCard(camp, tier) {
     `;
   }
 
-  // Resolve tool badges: m, N, G, T3, mail
-  const { margoAction, margoLabel, noteQuery, driveFolder, thingsQuery, emailQuery } = resolveCampaignTools(camp);
-
-  let showMargo = true;
-  let showApple = true;
-  let showGoogle = true;
-  let showThings = true;
-  let showEmail = true;
-
-  if (Array.isArray(camp.visibleTools)) {
-    showMargo = camp.visibleTools.includes('margo') || camp.visibleTools.includes('m');
-    showApple = camp.visibleTools.includes('apple') || camp.visibleTools.includes('N');
-    showGoogle = camp.visibleTools.includes('google') || camp.visibleTools.includes('g') || camp.visibleTools.includes('G');
-    showThings = camp.visibleTools.includes('things') || camp.visibleTools.includes('things3') || camp.visibleTools.includes('t3') || camp.visibleTools.includes('T3');
-    showEmail = camp.visibleTools.includes('email') || camp.visibleTools.includes('gmail') || camp.visibleTools.includes('mail');
-  } else if (camp.tools && typeof camp.tools === 'object' && !Array.isArray(camp.tools)) {
-    showMargo = camp.tools.margo !== undefined ? Boolean(camp.tools.margo) : true;
-    showApple = camp.tools.apple !== undefined ? Boolean(camp.tools.apple) : true;
-    showGoogle = camp.tools.google !== undefined ? Boolean(camp.tools.google) : true;
-    showThings = camp.tools.things !== undefined ? Boolean(camp.tools.things) : true;
-    showEmail = camp.tools.email !== undefined ? Boolean(camp.tools.email) : true;
-  }
-
-  if (isHaircare) {
-    showMargo = true;
-    showApple = true;
-    showGoogle = false;
-    showThings = false;
-    showEmail = false;
-  }
-  if (isSurgery) {
-    showMargo = false;
-    showApple = true;
-    showGoogle = false;
-    showThings = true;
-    showEmail = false;
-  }
-  if (isOon) {
-    showMargo = true;
-    showApple = false;
-    showGoogle = true;
-    showThings = true;
-    showEmail = true;
-  }
-
-  const toolBadges = [];
-  if (showMargo) {
-    toolBadges.push(`<button type="button" class="mc-tb m" title="margo: ${escapeHtml(margoLabel)}" aria-label="margo" onclick="handleMargoToolClick('${camp.id}', '${margoAction}', '${escapedTitleForJs}')">m</button>`);
-  }
-  if (showApple) {
-    toolBadges.push(`<button type="button" class="mc-tb N" title="Apple Notes: ${escapeHtml(noteQuery)}" aria-label="Apple Notes" onclick="copyAppleNoteLauncher('${escapeHtml(noteQuery.replace(/'/g, "\\'"))}')">N</button>`);
-  }
-  if (showGoogle) {
-    toolBadges.push(`<button type="button" class="mc-tb G" title="Google Drive: ${escapeHtml(driveFolder)}" aria-label="Google Drive" onclick="openDriveFolder('${escapeHtml(driveFolder.replace(/'/g, "\\'"))}')">G</button>`);
-  }
-  if (showThings) {
-    toolBadges.push(`<button type="button" class="mc-tb T3" title="Things 3: ${escapeHtml(thingsQuery)}" aria-label="Things 3" onclick="openThings3Query('${escapeHtml(thingsQuery.replace(/'/g, "\\'"))}')">T3</button>`);
-  }
-  if (showEmail) {
-    toolBadges.push(`<button type="button" class="mc-tb mail" title="Gmail: ${escapeHtml(emailQuery)}" aria-label="Gmail" onclick="openGmailLabel('${escapeHtml(emailQuery.replace(/'/g, "\\'"))}')">${COMPASS_MAIL_SVG}</button>`);
-  }
-
   return `
-    <article class="mc-fc summer-widget-card ${catMeta.tag} ${catMeta.summerTheme} ${statusKey === 'Maintain' ? 'is-maintain' : ''}">
-      <div class="summer-widget-watermark" style="color: ${catMeta.accentColor};">
-        <i data-lucide="${catMeta.icon}"></i>
-      </div>
-      <div class="summer-widget-top">
+    <article class="mc-fc ${catMeta.tag} ${catMeta.summerTheme} ${statusKey === 'Maintain' ? 'is-maintain' : ''}">
+      <div class="mc-fc-top">
         <div class="mc-fc-head-left">
-          <div class="summer-widget-pill">
-            <i data-lucide="${catMeta.icon}" style="width: 16px; height: 16px; color: ${catMeta.accentColor};"></i>
-          </div>
           <span class="budget-badge ${catMeta.badgeClass}">${catMeta.tag}</span>
-          <h3 class="summer-widget-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
+          <h3 class="mc-fc-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
         </div>
         <div class="mc-top-actions">
           ${statusBtnHtml}
           <span class="mc-sep" aria-hidden="true"></span>
-          <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to later" onclick="moveCampaignAction('${camp.id}', 'now', 'later')">🧊 Later →</button>
+          <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to later" onclick="moveCampaignAction('${camp.id}', 'now', 'later')">Later →</button>
         </div>
-      </div>
-      <div class="bot summer-widget-foot">
-        <div class="mc-tools">${toolBadges.join('')}</div>
       </div>
     </article>
   `;

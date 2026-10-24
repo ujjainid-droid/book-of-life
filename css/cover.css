@@ -14001,22 +14001,22 @@ body.dark-mode .protocol-sample-btn {
 }
 .mc-fc,
 .mc-fc.summer-widget-card {
-  border-radius: 20px;
-  padding: 14px 16px !important;
+  border-radius: 14px;
+  padding: 10px 14px !important;
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 0 !important;
-  gap: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  justify-content: center;
+  min-height: 48px !important;
+  gap: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
   border: 1px solid rgba(255, 255, 255, 0.14);
 }
 .mc-fc:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.24);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
 .mc-fc.ED, .mc-fc.theme-lavender {
   background: linear-gradient(145deg, rgba(108, 46, 123, 0.32) 0%, rgba(24, 16, 36, 0.95) 100%);
@@ -14077,27 +14077,15 @@ body.dark-mode .protocol-sample-btn {
   background: linear-gradient(145deg, rgba(255, 138, 91, 0.22) 0%, rgba(44, 24, 26, 0.85) 100%);
   border-color: rgba(255, 138, 91, 0.35);
 }
-.mc-maintain-row .mc-fc .summer-widget-watermark,
-.mc-fc.is-maintain .summer-widget-watermark {
-  opacity: 0.05;
-}
 
-.mc-fc .summer-widget-watermark {
-  top: 6px;
-  right: 10px;
-}
-.mc-fc .summer-widget-watermark svg,
-.mc-fc .summer-widget-watermark i {
-  width: 60px !important;
-  height: 60px !important;
-}
-.mc-fc .summer-widget-pill {
-  width: 32px;
-  height: 32px;
-}
+.mc-fc-top,
 .mc-fc .summer-widget-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
   margin-bottom: 0 !important;
-  gap: 8px;
 }
 .mc-fc-head-left {
   display: flex;
@@ -14106,30 +14094,24 @@ body.dark-mode .protocol-sample-btn {
   min-width: 0;
   flex: 1;
 }
+.mc-fc-title,
 .mc-fc .summer-widget-title {
   margin: 0 !important;
-  font-size: 17px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
   color: #F8FAFC;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.mc-fc .bot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-top: 0 !important;
-  padding-top: 0;
-  border-top: none;
-}
-.mc-tools {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+.mc-fc .summer-widget-watermark,
+.mc-fc .summer-widget-pill,
+.mc-fc .bot,
+.mc-fc .summer-widget-foot,
+.mc-fc .mc-tools {
+  display: none !important;
 }
 .mc-app.simple .mc-tools {
   display: none;
@@ -14204,12 +14186,12 @@ body.dark-mode .protocol-sample-btn {
 
 .mc-mv {
   min-height: auto;
-  padding: 4px 8px;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text, #EDEEFF);
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: none;
@@ -14217,11 +14199,12 @@ body.dark-mode .protocol-sample-btn {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition: all 0.15s ease;
 }
 .mc-mv:hover {
-  color: var(--text);
-  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Focus Card Header Micro-Actions */
