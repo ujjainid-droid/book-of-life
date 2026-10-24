@@ -330,13 +330,14 @@ function renderKitchenPage() {
 
   const favMainCount = favoriteRecipes.filter(r => (r.course || 'main') === 'main').length;
   const favSideCount = favoriteRecipes.filter(r => r.course === 'side').length;
+  const favBrunchCount = favoriteRecipes.filter(r => r.course === 'brunch').length;
   const favDessertCount = favoriteRecipes.filter(r => r.course === 'dessert').length;
 
   const filteredFavs = favoriteRecipes.filter(r => {
     if (vaultFilter === 'all') return true;
     return (r.course || 'main') === vaultFilter;
   });
-  const courseOrder = { main: 1, side: 2, dessert: 3 };
+  const courseOrder = { main: 1, side: 2, brunch: 3, dessert: 4 };
   filteredFavs.sort((a, b) => {
     const ca = courseOrder[a.course || 'main'] || 9;
     const cb = courseOrder[b.course || 'main'] || 9;
@@ -600,7 +601,7 @@ function renderKitchenPage() {
           </button>
         </div>
 
-        <!-- Tags filter bar for Main, Side, Dessert -->
+        <!-- Tags filter bar for Main, Side, Brunch, Dessert -->
         <div class="k-vault-filter-bar">
           <button type="button" class="k-vault-filter-chip ${vaultFilter === 'all' ? 'active' : ''}" onclick="kSetVaultFilter('all')">
             All (${favoriteRecipes.length})
@@ -610,6 +611,9 @@ function renderKitchenPage() {
           </button>
           <button type="button" class="k-vault-filter-chip ${vaultFilter === 'side' ? 'active' : ''}" onclick="kSetVaultFilter('side')">
             🥗 Side (${favSideCount})
+          </button>
+          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'brunch' ? 'active' : ''}" onclick="kSetVaultFilter('brunch')">
+            ☕ Brunch (${favBrunchCount})
           </button>
           <button type="button" class="k-vault-filter-chip ${vaultFilter === 'dessert' ? 'active' : ''}" onclick="kSetVaultFilter('dessert')">
             🍨 Dessert (${favDessertCount})
@@ -626,11 +630,11 @@ function renderKitchenPage() {
                 <div style="flex:1; min-width:0;">
                   <div class="k-fav-title">${escapeHtml(r.title)}</div>
                   <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:3px;">
-                    <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Dessert)">
+                    <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
                       ${(r.course || 'main').toUpperCase()}
                     </span>
                     ${(() => {
-                      const ignored = ['favorite', 'main', 'side', 'dessert'];
+                      const ignored = ['favorite', 'main', 'side', 'brunch', 'dessert'];
                       const extraTags = (r.tags || []).filter(t => !ignored.includes(String(t).toLowerCase()));
                       return extraTags.map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('');
                     })()}
@@ -653,9 +657,9 @@ function renderKitchenPage() {
                   </a>
                 ` : `<span></span>`}
 
-                <select class="k-assign-select" onchange="kAssignFavToMeal('${r.id}', this.value); this.value='';">
-                  ${kRenderAssignSelectOptions()}
-                </select>
+                <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'vault')" title="Assign recipe to a day and meal slot">
+                  <span>Assign to... 🗓️</span>
+                </button>
               </div>
             </div>
           `).join('') : `
@@ -722,9 +726,9 @@ function renderKitchenPage() {
                     <span>Move to Vault 💜</span>
                   </button>
 
-                  <select class="k-assign-select" onchange="kAssignNewRecipeToMeal('${r.id}', this.value); this.value='';">
-                    ${kRenderAssignSelectOptions()}
-                  </select>
+                  <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'new')" title="Assign recipe to a day and meal slot">
+                    <span>Assign to... 🗓️</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1368,7 +1372,7 @@ window.kSetVaultFilter = kSetVaultFilter;
 function kSetRecipeCourse(course) {
   const hiddenEl = document.getElementById('k-new-recipe-course');
   if (hiddenEl) hiddenEl.value = course;
-  ['main', 'side', 'dessert'].forEach(c => {
+  ['main', 'side', 'brunch', 'dessert'].forEach(c => {
     const btn = document.getElementById(`k-rcourse-${c}`);
     if (btn) {
       if (c === course) btn.classList.add('active');
@@ -1449,7 +1453,7 @@ function kSubmitNewFavorite() {
     }
   }
 
-  const icon = detectRecipeIcon(title, course === 'dessert' ? 'dessert' : 'dinner');
+  const icon = detectRecipeIcon(title, course === 'dessert' ? 'dessert' : (course === 'brunch' ? 'brunch' : 'dinner'));
   const data = storage.getKitchenData();
 
   const newEntry = {
@@ -1575,17 +1579,17 @@ function kCycleRecipeCourse(id, collection, event) {
   const r = list.find(item => item.id === id);
   if (!r) return;
 
-  const cycle = ['main', 'side', 'dessert'];
+  const cycle = ['main', 'side', 'brunch', 'dessert'];
   const curIdx = cycle.indexOf(r.course || 'main');
   r.course = cycle[(curIdx + 1) % cycle.length];
 
   if (Array.isArray(r.tags)) {
-    r.tags = r.tags.filter(t => !['main', 'side', 'dessert', 'favorite'].includes(String(t).toLowerCase()));
+    r.tags = r.tags.filter(t => !['main', 'side', 'brunch', 'dessert', 'favorite'].includes(String(t).toLowerCase()));
   }
 
   storage.saveKitchenData(data);
   renderKitchenPage();
-  const labels = { main: 'Main 🍲', side: 'Side 🥗', dessert: 'Dessert 🍨' };
+  const labels = { main: 'Main 🍲', side: 'Side 🥗', brunch: 'Brunch ☕', dessert: 'Dessert 🍨' };
   if (typeof showToast === 'function') showToast(`Updated "${r.title}" to ${labels[r.course]}`);
 }
 window.kCycleRecipeCourse = kCycleRecipeCourse;
@@ -1599,6 +1603,142 @@ function kCloseAddFavModal() {
   const m = document.getElementById('k-add-fav-modal');
   if (m) m.classList.remove('active');
 }
+
+/* ==========================================================================
+   Quick Assign Recipe Modal Controller (Interactive 1-Tap Scheduling)
+   ========================================================================== */
+let assignModalRecipeId = null;
+let assignModalCollection = 'vault';
+let assignModalWeekOffset = 0;
+let assignModalMealType = 'dinner';
+
+function kOpenAssignModal(recipeId, collection = 'vault') {
+  assignModalRecipeId = recipeId;
+  assignModalCollection = collection;
+
+  const data = storage.getKitchenData();
+  assignModalWeekOffset = data.activeWeekOffset || 0;
+
+  const list = collection === 'new' ? (data.newRecipes || []) : (data.favoriteRecipes || []);
+  const recipe = list.find(r => r.id === recipeId);
+  if (!recipe) return;
+
+  // Auto-pick appropriate meal type based on recipe course
+  if (recipe.course === 'dessert') {
+    assignModalMealType = 'dessert';
+  } else if (recipe.course === 'brunch') {
+    assignModalMealType = 'brunch';
+  } else if (recipe.course === 'side') {
+    assignModalMealType = 'dinner';
+  } else {
+    assignModalMealType = 'dinner';
+  }
+
+  const titleEl = document.getElementById('k-assign-modal-title');
+  if (titleEl) titleEl.textContent = `Assign "${recipe.title}"`;
+
+  const subEl = document.getElementById('k-assign-modal-subtitle');
+  if (subEl) subEl.textContent = `Choose week & meal slot, then tap a day`;
+
+  kSyncAssignModalToggles();
+  kRenderAssignModalDays();
+
+  const modal = document.getElementById('k-assign-recipe-modal');
+  if (modal) modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+window.kOpenAssignModal = kOpenAssignModal;
+
+function kCloseAssignModal() {
+  const modal = document.getElementById('k-assign-recipe-modal');
+  if (modal) modal.classList.remove('active');
+  assignModalRecipeId = null;
+}
+window.kCloseAssignModal = kCloseAssignModal;
+
+function kSetAssignModalWeek(offset) {
+  assignModalWeekOffset = offset;
+  kSyncAssignModalToggles();
+  kRenderAssignModalDays();
+}
+window.kSetAssignModalWeek = kSetAssignModalWeek;
+
+function kSetAssignModalMealType(type) {
+  assignModalMealType = type;
+  kSyncAssignModalToggles();
+  kRenderAssignModalDays();
+}
+window.kSetAssignModalMealType = kSetAssignModalMealType;
+
+function kSyncAssignModalToggles() {
+  [0, 1].forEach(w => {
+    const btn = document.getElementById(`k-assign-week-${w}`);
+    if (btn) {
+      if (w === assignModalWeekOffset) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+
+  ['dinner', 'lunch', 'brunch', 'dessert'].forEach(t => {
+    const btn = document.getElementById(`k-assign-mtype-${t}`);
+    if (btn) {
+      if (t === assignModalMealType) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+}
+
+function kRenderAssignModalDays() {
+  const container = document.getElementById('k-assign-days-grid');
+  if (!container) return;
+
+  const data = storage.getKitchenData();
+  const schedule = assignModalWeekOffset === 1 ? (data.followingWeekSchedule || []) : (data.weekSchedule || []);
+
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const baseSun = new Date(now);
+  baseSun.setDate(now.getDate() - dayOfWeek);
+  const targetSun = new Date(baseSun);
+  targetSun.setDate(baseSun.getDate() + (assignModalWeekOffset * 7));
+
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const cardsHtml = dayNames.map((name, idx) => {
+    const d = new Date(targetSun);
+    d.setDate(targetSun.getDate() + idx);
+    const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    const dayObj = schedule.find(s => s.day === name) || schedule[idx] || {};
+    const slot = (dayObj.meals && dayObj.meals[assignModalMealType]) ? dayObj.meals[assignModalMealType] : null;
+    const hasMeal = slot && slot.meal;
+
+    return `
+      <button type="button" class="k-assign-day-card" onclick="kConfirmAssignFromModal(${idx})">
+        <div class="day-head">
+          <span class="day-name">${name}</span>
+          <span class="day-date">${dateLabel}</span>
+        </div>
+        <div class="day-current ${hasMeal ? '' : 'empty'}">
+          ${hasMeal ? escapeHtml(slot.meal) : '+ Open slot'}
+        </div>
+      </button>
+    `;
+  }).join('');
+
+  container.innerHTML = cardsHtml;
+}
+
+function kConfirmAssignFromModal(dayIdx) {
+  if (!assignModalRecipeId) return;
+  const targetStr = `${assignModalWeekOffset}:${dayIdx}:${assignModalMealType}`;
+  if (assignModalCollection === 'new') {
+    kAssignNewRecipeToMeal(assignModalRecipeId, targetStr);
+  } else {
+    kAssignFavToMeal(assignModalRecipeId, targetStr);
+  }
+  kCloseAssignModal();
+}
+window.kConfirmAssignFromModal = kConfirmAssignFromModal;
 
 // Grocery List Item Toggle (Checked items will be excluded from Things 3 export)
 function kToggleGroceryItem(el) {

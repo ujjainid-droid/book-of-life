@@ -4283,10 +4283,11 @@ class StorageManager {
         this.saveData();
       }
 
-      // Ensure recipes have course property (main, side, dessert) and clean duplicate course tags
+      // Ensure recipes have course property (main, side, brunch, dessert) and clean duplicate course tags
       const detectCourse = (r) => {
         if (r.course) return r.course;
         const text = `${r.title || ''} ${(r.tags || []).join(' ')} ${r.ingredients || ''}`.toLowerCase();
+        if (text.includes('brunch') || text.includes('pancake') || text.includes('waffle') || text.includes('omelet') || text.includes('crepe') || text.includes('french toast') || text.includes('scramble') || text.includes('quiche')) return 'brunch';
         if (text.includes('dessert') || text.includes('cake') || text.includes('cookie') || text.includes('pie') || text.includes('ice cream') || text.includes('tart') || text.includes('brownie') || text.includes('sweet') || text.includes('parfait')) return 'dessert';
         if (text.includes('side') || text.includes('salad') || text.includes('slaw') || text.includes('rice') || text.includes('potato') || text.includes('greens') || text.includes('veggie') || text.includes('dip')) return 'side';
         return 'main';
@@ -4294,7 +4295,7 @@ class StorageManager {
 
       const cleanCourseTags = (r) => {
         if (Array.isArray(r.tags)) {
-          r.tags = r.tags.filter(t => !['main', 'side', 'dessert', 'favorite'].includes(t.toLowerCase()));
+          r.tags = r.tags.filter(t => !['main', 'side', 'brunch', 'dessert', 'favorite'].includes(t.toLowerCase()));
         }
       };
 
@@ -4311,13 +4312,13 @@ class StorageManager {
         });
       }
 
-      // Migrate broccoli, aracula/arugula, strawberry, blueberry to fridge
+      // Migrate aracula/arugula, strawberry, blueberry to fridge (one-time preserved)
       if (Array.isArray(kd.stashItems)) {
-        const fridgeTargets = new Set(['broccoli', 'aracula', 'arugula', 'strawberry', 'strawberries', 'blueberry', 'blueberries']);
+        const fridgeTargets = new Set(['aracula', 'arugula', 'strawberry', 'strawberries', 'blueberry', 'blueberries']);
         let foundBlueberry = false;
         kd.stashItems.forEach(item => {
           const n = (item.name || '').toLowerCase().trim();
-          if (fridgeTargets.has(n)) {
+          if (fridgeTargets.has(n) && !item.manuallySet) {
             item.type = 'fridge';
             item.badge = 'Fridge';
           }
@@ -4334,6 +4335,26 @@ class StorageManager {
             used: false
           });
           this.data.kitchenBlueberryAdded = true;
+          this.saveData();
+        }
+
+        // Move the second broccoli to freezer while keeping first in fridge
+        if (!this.data.kitchenSecondBroccoliFreezerV1) {
+          let broccoliIdx = 0;
+          kd.stashItems.forEach(item => {
+            const n = (item.name || '').toLowerCase().trim();
+            if (n === 'broccoli') {
+              broccoliIdx++;
+              if (broccoliIdx >= 2) {
+                item.type = 'freezer';
+                item.badge = 'Freezer';
+              } else {
+                item.type = 'fridge';
+                item.badge = 'Fridge';
+              }
+            }
+          });
+          this.data.kitchenSecondBroccoliFreezerV1 = true;
           this.saveData();
         }
       }

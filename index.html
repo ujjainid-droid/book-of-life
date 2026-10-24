@@ -23,18 +23,18 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.5.4">
-  <link rel="stylesheet" href="css/layout.css?v=9.5.4">
-  <link rel="stylesheet" href="css/cover.css?v=9.5.4">
-  <link rel="stylesheet" href="css/habits.css?v=9.5.4">
-  <link rel="stylesheet" href="css/tasks.css?v=9.5.4">
-  <link rel="stylesheet" href="css/settings.css?v=9.5.4">
-  <link rel="stylesheet" href="css/claims.css?v=9.5.4">
-  <link rel="stylesheet" href="css/zlog.css?v=9.5.4">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.5.4">
-  <link rel="stylesheet" href="css/finance.css?v=9.5.4">
-  <link rel="stylesheet" href="css/hobby.css?v=9.5.4">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.5.4">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.5.5">
+  <link rel="stylesheet" href="css/layout.css?v=9.5.5">
+  <link rel="stylesheet" href="css/cover.css?v=9.5.5">
+  <link rel="stylesheet" href="css/habits.css?v=9.5.5">
+  <link rel="stylesheet" href="css/tasks.css?v=9.5.5">
+  <link rel="stylesheet" href="css/settings.css?v=9.5.5">
+  <link rel="stylesheet" href="css/claims.css?v=9.5.5">
+  <link rel="stylesheet" href="css/zlog.css?v=9.5.5">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.5.5">
+  <link rel="stylesheet" href="css/finance.css?v=9.5.5">
+  <link rel="stylesheet" href="css/hobby.css?v=9.5.5">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.5.5">
 </head>
 <body>
 
@@ -611,9 +611,10 @@
           <label class="form-label" style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
             Course:
           </label>
-          <div class="k-modal-mealtype-row" style="margin-top:4px; grid-template-columns: repeat(3, 1fr);">
+          <div class="k-modal-mealtype-row" style="margin-top:4px; grid-template-columns: repeat(4, 1fr);">
             <button type="button" class="k-modal-type-btn active" id="k-rcourse-main" onclick="kSetRecipeCourse('main')">🍲 Main</button>
             <button type="button" class="k-modal-type-btn" id="k-rcourse-side" onclick="kSetRecipeCourse('side')">🥗 Side</button>
+            <button type="button" class="k-modal-type-btn" id="k-rcourse-brunch" onclick="kSetRecipeCourse('brunch')">☕ Brunch</button>
             <button type="button" class="k-modal-type-btn" id="k-rcourse-dessert" onclick="kSetRecipeCourse('dessert')">🍨 Dessert</button>
           </div>
           <input type="hidden" id="k-new-recipe-course" value="main">
@@ -637,25 +638,78 @@
     </div>
   </div>
 
+  <!-- Modal: Quick Assign Recipe to Meal Slot (Kitchen) -->
+  <div class="modal-overlay" id="k-assign-recipe-modal" onclick="if(event.target===this) kCloseAssignModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="k-assign-modal-title">Assign Recipe</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0;" id="k-assign-modal-subtitle">Pick a day to schedule</p>
+        </div>
+        <button class="icon-btn modal-close" onclick="kCloseAssignModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px;">
+        <!-- Week Switcher -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary);">
+            Target Week
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top: 4px; grid-template-columns: 1fr 1fr;">
+            <button type="button" class="k-modal-type-btn active" id="k-assign-week-0" onclick="kSetAssignModalWeek(0)">
+              📅 This Week
+            </button>
+            <button type="button" class="k-modal-type-btn" id="k-assign-week-1" onclick="kSetAssignModalWeek(1)">
+              ⏩ Following Week
+            </button>
+          </div>
+        </div>
+
+        <!-- Meal Type Switcher -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary);">
+            Meal Slot
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top: 4px; grid-template-columns: repeat(4, 1fr);">
+            <button type="button" class="k-modal-type-btn active" id="k-assign-mtype-dinner" onclick="kSetAssignModalMealType('dinner')">🍲 Dinner</button>
+            <button type="button" class="k-modal-type-btn" id="k-assign-mtype-lunch" onclick="kSetAssignModalMealType('lunch')">🥗 Lunch</button>
+            <button type="button" class="k-modal-type-btn" id="k-assign-mtype-brunch" onclick="kSetAssignModalMealType('brunch')">☕ Brunch</button>
+            <button type="button" class="k-modal-type-btn" id="k-assign-mtype-dessert" onclick="kSetAssignModalMealType('dessert')">🍨 Dessert</button>
+          </div>
+        </div>
+
+        <!-- Days Grid (1-tap assignment) -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 6px; display: block;">
+            Tap a Day to Assign Instantly
+          </label>
+          <div class="k-assign-days-grid" id="k-assign-days-grid">
+            <!-- 7 dynamic day cards rendered here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.5.4"></script>
-  <script src="js/zlogData.js?v=9.5.4"></script>
-  <script src="js/financeData.js?v=9.5.4"></script>
-  <script src="js/podcastData.js?v=9.5.4"></script>
-  <script src="js/pdfStore.js?v=9.5.4"></script>
-  <script src="js/storage.js?v=9.5.4"></script>
-  <script src="js/sync.js?v=9.5.4"></script>
-  <script src="js/pages/coverPage.js?v=9.5.4"></script>
-  <script src="js/pages/coverHubPage.js?v=9.5.4"></script>
-  <script src="js/pages/claimsPage.js?v=9.5.4"></script>
-  <script src="js/pages/zlogPage.js?v=9.5.4"></script>
-  <script src="js/pages/financePage.js?v=9.5.4"></script>
-  <script src="js/pages/hobbyPage.js?v=9.5.4"></script>
-  <script src="js/pages/kitchenPage.js?v=9.5.4"></script>
-  <script src="js/podcastAgent.js?v=9.5.4"></script>
-  <script src="js/app.js?v=9.5.4"></script>
+  <script src="js/margoData.js?v=9.5.5"></script>
+  <script src="js/zlogData.js?v=9.5.5"></script>
+  <script src="js/financeData.js?v=9.5.5"></script>
+  <script src="js/podcastData.js?v=9.5.5"></script>
+  <script src="js/pdfStore.js?v=9.5.5"></script>
+  <script src="js/storage.js?v=9.5.5"></script>
+  <script src="js/sync.js?v=9.5.5"></script>
+  <script src="js/pages/coverPage.js?v=9.5.5"></script>
+  <script src="js/pages/coverHubPage.js?v=9.5.5"></script>
+  <script src="js/pages/claimsPage.js?v=9.5.5"></script>
+  <script src="js/pages/zlogPage.js?v=9.5.5"></script>
+  <script src="js/pages/financePage.js?v=9.5.5"></script>
+  <script src="js/pages/hobbyPage.js?v=9.5.5"></script>
+  <script src="js/pages/kitchenPage.js?v=9.5.5"></script>
+  <script src="js/podcastAgent.js?v=9.5.5"></script>
+  <script src="js/app.js?v=9.5.5"></script>
 </body>
 </html>

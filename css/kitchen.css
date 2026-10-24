@@ -1248,6 +1248,11 @@ body.dark .k-modal-type-btn.active {
   color: #2D6A4F;
   border: 1px solid rgba(45, 106, 79, 0.2);
 }
+.k-course-badge.brunch {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid rgba(126, 34, 206, 0.2);
+}
 .k-course-badge.dessert {
   background: #FCE7F3;
   color: #BE185D;
@@ -1262,6 +1267,11 @@ body.dark .k-course-badge.side {
   background: rgba(45, 106, 79, 0.25);
   color: #74C69D;
   border-color: rgba(116, 198, 157, 0.3);
+}
+body.dark .k-course-badge.brunch {
+  background: rgba(168, 85, 247, 0.2);
+  color: #D8B4FE;
+  border-color: rgba(192, 132, 252, 0.3);
 }
 body.dark .k-course-badge.dessert {
   background: rgba(244, 114, 182, 0.2);
@@ -1339,4 +1349,98 @@ body.dark .k-btn-move-vault {
 body.dark .k-btn-move-vault:hover {
   background: #8B5CF6;
   color: #fff;
+}
+
+/* Quick Assign to... Button & Sheet */
+.k-btn-assign-modal {
+  background: var(--pal-azure-soft, rgba(13, 152, 186, 0.08));
+  border: 1px solid var(--border-card, rgba(31, 42, 68, 0.14));
+  border-radius: 7px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pal-azure, #0E7490);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  outline: none;
+}
+.k-btn-assign-modal:hover {
+  background: var(--pal-azure, #0E7490);
+  color: #fff;
+  border-color: var(--pal-azure, #0E7490);
+  transform: translateY(-1px);
+}
+body.dark .k-btn-assign-modal {
+  background: rgba(14, 116, 144, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #38BDF8;
+}
+body.dark .k-btn-assign-modal:hover {
+  background: #0284C7;
+  border-color: #0284C7;
+  color: #fff;
+}
+
+.k-assign-days-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+.k-assign-day-card {
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border-card, rgba(31, 42, 68, 0.12));
+  border-radius: 9px;
+  padding: 9px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  outline: none;
+}
+.k-assign-day-card:hover {
+  border-color: var(--pal-azure, #0D98BA);
+  background: var(--pal-azure-soft, rgba(13, 152, 186, 0.08));
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+}
+.k-assign-day-card .day-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.k-assign-day-card .day-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.k-assign-day-card .day-date {
+  font-size: 10.5px;
+  color: var(--text-muted);
+}
+.k-assign-day-card .day-current {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+.k-assign-day-card .day-current.empty {
+  color: var(--pal-azure, #0D98BA);
+  font-style: italic;
+  font-weight: 500;
+}
+body.dark .k-assign-day-card {
+  background: var(--bg-surface, #1E1F3B);
+  border-color: var(--border-subtle, rgba(255, 255, 255, 0.1));
+}
+body.dark .k-assign-day-card:hover {
+  background: rgba(14, 116, 144, 0.2);
+  border-color: #38BDF8;
 }
