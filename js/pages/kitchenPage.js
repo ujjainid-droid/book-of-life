@@ -161,13 +161,13 @@ function getTodayIso() {
 
 function getSourcePillLabel(source, dayName, mealType) {
   if (source === 'freezer') return 'Freezer 🧊';
-  if (source === 'pantry') return 'Pantry 🥫';
+  if (source === 'fridge') return 'Fridge 🥬';
   if (source === 'out') {
     if (dayName === 'Fri' && mealType === 'dinner') return 'Friday Takeout 🥡';
     if (dayName === 'Sat') return 'Dining Out 🍷';
     return 'Takeout / Out 🥡';
   }
-  return 'Fresh 🛒';
+  return '';
 }
 
 function kRenderAssignSelectOptions() {
@@ -382,16 +382,21 @@ function renderKitchenPage() {
             <span class="k-step-indicator">STEP 1</span>
             <span class="k-sec-title">Shop Your Stash First</span>
           </div>
-          <span class="k-sec-hint">Tap checkbox when used · Tap name to assign to meal</span>
+          <span class="k-sec-hint">Tap checkbox when used · Tap "+ Plan" to mark planned · Tap badge to flip location</span>
         </div>
 
         <!-- Stash Chips -->
         <div class="k-stash-chips-row">
           ${stashItems.length > 0 ? stashItems.map(item => `
-            <div class="k-stash-chip ${item.used ? 'is-used' : ''}">
+            <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
               <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
               <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
               <span class="k-stash-tag-badge ${item.type}" onclick="kCycleStashType('${item.id}', event)" title="Click to cycle (Pantry, Fridge, Freezer)" style="cursor:pointer;">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
+              ${item.planned ? `
+                <span class="k-stash-planned-badge" onclick="kToggleStashPlanned('${item.id}', event)" title="Earmarked for this week's plan! Tap to unmark">PLANNED 📌</span>
+              ` : `
+                <span class="k-stash-plan-btn" onclick="kToggleStashPlanned('${item.id}', event)" title="Tap to mark planned for this week">+ Plan</span>
+              `}
               <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
             </div>
           `).join('') : `
@@ -881,12 +886,36 @@ function kCycleStashType(id, event) {
 }
 window.kCycleStashType = kCycleStashType;
 
+function kToggleStashPlanned(id, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.stashItems)) return;
+  const item = data.stashItems.find(i => i.id === id);
+  if (!item) return;
+
+  item.planned = !item.planned;
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') {
+    showToast(item.planned ? `Marked "${item.name}" as Planned! 📌` : `Unmarked "${item.name}" from Planned`);
+  }
+}
+window.kToggleStashPlanned = kToggleStashPlanned;
+
 function kAssignStashDirect(name, type) {
+  const data = storage.getKitchenData();
+  if (Array.isArray(data.stashItems)) {
+    const item = data.stashItems.find(i => i.name.toLowerCase() === name.toLowerCase());
+    if (item && !item.planned) {
+      item.planned = true;
+      storage.saveKitchenData(data);
+    }
+  }
   kOpenMealPicker(0, 'dinner');
   const nameEl = document.getElementById('k-modal-custom-name');
   if (nameEl) nameEl.value = name;
   const sourceEl = document.getElementById('k-modal-custom-source');
-  if (sourceEl) sourceEl.value = type;
+  if (sourceEl) sourceEl.value = type === 'freezer' ? 'freezer' : (type === 'fridge' ? 'fridge' : 'fresh');
 }
 
 function kCycleDaySource(dayIdx) {
@@ -1014,7 +1043,7 @@ function kSetModalMealType(newType, reFocus = true) {
   if (urlEl) urlEl.value = slot ? (slot.recipeUrl || '') : '';
 
   const sourceEl = document.getElementById('k-modal-custom-source');
-  if (sourceEl) sourceEl.value = slot ? (slot.source || 'pantry') : 'pantry';
+  if (sourceEl) sourceEl.value = slot ? (slot.source || 'fresh') : 'fresh';
 
   const submitBtn = document.getElementById('k-modal-submit-btn');
   if (submitBtn) submitBtn.textContent = `Save ${label}`;
@@ -1077,7 +1106,7 @@ function kSubmitCustomMeal() {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     while (schedule.length < 7) {
       const idx = schedule.length;
-      schedule.push({ day: dayNames[idx], date: '', meal: '', source: 'pantry', icon: 'pasta', meals: { brunch: null, lunch: null, dinner: null, dessert: null } });
+      schedule.push({ day: dayNames[idx], date: '', meal: '', source: 'fresh', icon: 'pasta', meals: { brunch: null, lunch: null, dinner: null, dessert: null } });
     }
   }
   const d = schedule[activeKitchenEditIdx];
@@ -1151,20 +1180,29 @@ function kSelectStashForMeal(name, type) {
   const weekOffset = data.activeWeekOffset || 0;
   const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
   const d = schedule[activeKitchenEditIdx];
+  if (!d) return;
   if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
 
   const icon = type === 'freezer' ? 'salmon' : 'risotto';
+  const effectiveSource = (type === 'freezer' || type === 'fridge') ? type : 'fresh';
   d.meals[mealType] = {
     meal: name,
-    source: type,
+    source: effectiveSource,
     icon: icon,
     recipeUrl: '',
     favoriteId: null
   };
 
+  if (Array.isArray(data.stashItems)) {
+    const sItem = data.stashItems.find(i => i.name.toLowerCase() === name.toLowerCase());
+    if (sItem && !sItem.planned) {
+      sItem.planned = true;
+    }
+  }
+
   if (mealType === 'dinner') {
     d.meal = name;
-    d.source = type;
+    d.source = effectiveSource;
     d.icon = icon;
     d.recipeUrl = '';
   }
@@ -1189,7 +1227,7 @@ function kSelectFavForMeal(favId) {
   const d = schedule[activeKitchenEditIdx];
   if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
 
-  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : (fav.tags || []).some(t => t.includes('Pantry')) ? 'pantry' : 'fresh');
+  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : 'fresh');
 
   d.meals[mealType] = {
     meal: fav.title,
@@ -1223,7 +1261,7 @@ function kCycleSlotSource(dayIdx, mealType, event) {
   if (!d || !d.meals || !d.meals[mealType]) return;
 
   const slot = d.meals[mealType];
-  const cycle = ['pantry', 'fridge', 'freezer', 'fresh', 'out'];
+  const cycle = ['fresh', 'fridge', 'freezer', 'out'];
   const curIdx = cycle.indexOf(slot.source);
   const nextSource = cycle[(curIdx + 1) % cycle.length];
   slot.source = nextSource;
@@ -1317,7 +1355,7 @@ function kAssignFavToMeal(favId, targetStr) {
   if (!d) return;
   if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
 
-  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : (fav.tags || []).some(t => t.includes('Pantry')) ? 'pantry' : 'fresh');
+  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : 'fresh');
 
   d.meals[mealType] = {
     meal: fav.title,

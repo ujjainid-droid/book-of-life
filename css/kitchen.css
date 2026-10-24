@@ -204,6 +204,64 @@
   text-decoration: line-through;
   color: var(--text-muted, #64748B);
 }
+.k-stash-chip.is-planned {
+  border-color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.05);
+}
+.k-stash-planned-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid rgba(109, 40, 217, 0.25);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+.k-stash-planned-badge:hover {
+  background: #DDD6FE;
+  transform: scale(1.05);
+}
+.k-stash-plan-btn {
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-card, rgba(31, 42, 68, 0.2));
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s ease;
+}
+.k-stash-plan-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  color: #6D28D9;
+  border-color: #8B5CF6;
+}
+body.dark .k-stash-chip.is-planned {
+  border-color: rgba(168, 85, 247, 0.4);
+  background: rgba(139, 92, 246, 0.12);
+}
+body.dark .k-stash-planned-badge {
+  background: rgba(139, 92, 246, 0.25);
+  color: #D8B4FE;
+  border-color: rgba(192, 132, 252, 0.35);
+}
+body.dark .k-stash-plan-btn {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--text-muted);
+}
+body.dark .k-stash-plan-btn:hover {
+  color: #C084FC;
+  border-color: #A855F7;
+}
 .k-stash-check {
   width: 17px;
   height: 17px;
@@ -489,13 +547,13 @@ body.dark .k-btn-stash-add.fridge:hover {
   transition: all 0.15s;
 }
 .k-source-pill.freezer { background: var(--pal-seafoam-soft); color: #0E7490; border: 1px solid var(--pal-seafoam); }
-.k-source-pill.pantry { background: var(--pal-peach-soft); color: #92400E; border: 1px solid var(--pal-peach); }
+.k-source-pill.pantry { display: none !important; }
 .k-source-pill.fridge { background: var(--pal-sage-soft, #EDF7ED); color: #2D6A4F; border: 1px solid #A3D9A5; }
 .k-source-pill.fresh { background: var(--pal-azure-soft); color: var(--pal-azure); border: 1px solid rgba(29,113,184,0.3); }
 .k-source-pill.out { background: var(--pal-coral-soft); color: var(--pal-coral); border: 1px solid var(--pal-coral); font-weight: 800; }
 
 body.dark .k-source-pill.freezer { color: var(--pal-seafoam); }
-body.dark .k-source-pill.pantry { color: var(--pal-peach); }
+body.dark .k-source-pill.pantry { display: none !important; }
 body.dark .k-source-pill.fridge { background: rgba(45, 106, 79, 0.25); color: #74C69D; border-color: rgba(116, 198, 157, 0.4); }
 body.dark .k-source-pill.fresh { color: #60A5FA; }
 

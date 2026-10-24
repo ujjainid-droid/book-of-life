@@ -4359,6 +4359,23 @@ class StorageManager {
         }
       }
 
+      // Sanitize meals: remove legacy pantry source tag from meals (e.g. Leftovers)
+      const sanitizeMealSources = (schedule) => {
+        if (!Array.isArray(schedule)) return;
+        schedule.forEach(d => {
+          if (d.source === 'pantry') d.source = 'fresh';
+          if (d.meals) {
+            ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
+              if (d.meals[t] && d.meals[t].source === 'pantry') {
+                d.meals[t].source = 'fresh';
+              }
+            });
+          }
+        });
+      };
+      sanitizeMealSources(kd.weekSchedule);
+      sanitizeMealSources(kd.followingWeekSchedule);
+
       // Purge any legacy sample/placeholder records if still present in storage
       if (!this.data.kitchenSampleClearedV3) {
         const sampleStashIds = new Set(['s1', 's2', 's3', 's4', 's5', 's6']);
