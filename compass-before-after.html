@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margo · Compass: Original Design + Cleanups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --bg: #0F1020;
+      --card: #181A33;
+      --card2: #1C1D3A;
+      --line: #2E3060;
+      --chip: #3A3C6A;
+      --text: #EDEEFF;
+      --muted: #9496BC;
+      --orchid: #6C2E7B;
+      --coral: #E75480;
+      --tangerine: #FF8A5B;
+      --ocean: #0D3B66;
+      --moonlit: #8B7FD6;
+      --shell: #FFD8C7;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+    .mc-tb {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      background: #FFFFFF;
+      color: #1A1B3A;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .mc-tb:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .mc-tb.m { color: var(--orchid); font-style: italic; font-family: Georgia, serif; }
+    .mc-tb.T3 { color: var(--ocean); }
+    .mc-tb.N { color: var(--coral); }
+    .mc-tb.G { color: var(--ocean); }
+    .mc-tb.mail { color: var(--tangerine); }
+
+    .later-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(28, 29, 58, 0.7);
+      border: 1px solid rgba(46, 48, 96, 0.7);
+      transition: all 0.15s ease;
+    }
+    .later-row:hover {
+      border-color: rgba(139, 127, 214, 0.4);
+      background: rgba(28, 29, 58, 0.95);
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <!-- Header Banner -->
+  <div class="max-w-6xl mx-auto mb-6">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#181A33] p-4 md:p-5 rounded-2xl border border-[#2E3060]">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-[#FFD8C7] bg-[#6C2E7B] px-2.5 py-0.5 rounded-full">Refined Compass</span>
+          <span class="text-xs text-[#9496BC] font-medium">Original Layout Preserved · New Palette · Slim Later Shelf</span>
+        </div>
+        <h1 class="text-lg md:text-xl font-bold text-[#EDEEFF]">Compass: Spacing, Color &amp; Hierarchy Refinements</h1>
+      </div>
+      <div class="text-xs text-[#9496BC]">
+        Zero Teal · Zero Yellow/Amber · Original Features Active
+      </div>
+    </div>
+  </div>
+
+  <!-- App Wrapper Simulation -->
+  <div class="max-w-6xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- LEFT & CENTER (8 cols): Life Architecture & Focus Board -->
+      <div class="lg:col-span-8 space-y-6">
+
+        <!-- 1. Top Lens Bar (New Colors: Ocean, Moonlit, Tangerine, Coral) -->
+        <div class="flex gap-2 overflow-x-auto pb-1">
+          <button class="px-5 py-2 rounded-full text-xs font-bold transition-all border bg-[#0D3B66]/30 border-[#0D3B66] text-[#7DB8FF] hover:bg-[#0D3B66]/50">
+            simple
+          </button>
+          <button class="px-5 py-2 rounded-full text-xs font-bold transition-all border bg-[#8B7FD6] border-[#8B7FD6] text-[#0F1020] shadow-sm font-black">
+            visible ✓
+          </button>
+          <button class="px-5 py-2 rounded-full text-xs font-bold transition-all border bg-[#FF8A5B]/20 border-[#FF8A5B]/60 text-[#FF8A5B] hover:bg-[#FF8A5B]/30">
+            next step
+          </button>
+          <button class="px-5 py-2 rounded-full text-xs font-bold transition-all border bg-[#E75480]/20 border-[#E75480]/60 text-[#E75480] hover:bg-[#E75480]/30">
+            done
+          </button>
+        </div>
+
+        <!-- 2. Season Focus Banner with Mascot -->
+        <div class="bg-[#1C1D3A] rounded-2xl border border-[#2E3060] p-5 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <!-- Top subtle accent gradient bar -->
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#6C2E7B] via-[#8B7FD6] to-[#E75480]"></div>
+          
+          <div class="flex items-center gap-4">
+            <!-- Bed Potato Mascot -->
+            <svg width="56" height="62" viewBox="0 0 104 112" role="img" class="flex-none cursor-pointer hover:scale-105 transition-transform" title="Bed Potato Mascot">
+              <ellipse cx="50" cy="48" rx="34" ry="30" fill="#E0AE70"/>
+              <path d="M36 46 q6 6 12 0 M56 46 q6 6 12 0" stroke="#5a3b17" stroke-width="3" fill="none" stroke-linecap="round"/>
+              <circle cx="34" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
+              <circle cx="66" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
+              <rect x="14" y="68" width="72" height="34" rx="10" fill="#6C2E7B"/>
+            </svg>
+            <div>
+              <div class="text-[10px] font-bold text-[#9496BC] uppercase tracking-wider">Season Focus (Tap to edit)</div>
+              <p class="text-base md:text-lg font-bold text-[#EDEEFF] mt-0.5 leading-snug">“Calm Mastery, Health Baseline &amp; Vitality”</p>
+            </div>
+          </div>
+
+          <!-- 3 Stats -->
+          <div class="grid grid-cols-3 gap-2.5 flex-none w-full md:w-auto">
+            <div class="bg-[#181A33] border border-[#2E3060] rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+              <b class="text-base font-black text-[#8B7FD6]">4</b>
+              <span class="block text-[10px] text-[#9496BC] font-medium">Active</span>
+            </div>
+            <div class="bg-[#181A33] border border-[#2E3060] rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+              <b class="text-base font-black text-[#E75480]">6</b>
+              <span class="block text-[10px] text-[#9496BC] font-medium">On deck</span>
+            </div>
+            <div class="bg-[#181A33] border border-[#2E3060] rounded-xl px-3.5 py-2 text-center min-w-[70px]">
+              <b class="text-base font-black text-[#FF8A5B]">5</b>
+              <span class="block text-[10px] text-[#9496BC] font-medium">Pillars</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Life Architecture Board -->
+        <div class="space-y-4">
+          
+          <!-- Lane Header: NOW -->
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xs font-black px-2.5 py-1 rounded-md bg-[#6C2E7B] text-[#FFD8C7] uppercase tracking-wider">
+                🐾 NOW
+              </span>
+              <span class="text-xs text-[#9496BC] font-medium">Active focus · in flight or tracked</span>
+            </div>
+            <button class="text-xs font-bold text-[#8B7FD6] hover:text-[#FFD8C7] bg-[#1C1D3A] border border-[#2E3060] px-3 py-1.5 rounded-full transition-colors">
+              + Add focus
+            </button>
+          </div>
+
+          <!-- NOW Grid Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+
+            <!-- Card 1: School (ED - Moonlit Lilac / Orchid) -->
+            <div class="rounded-2xl p-4 bg-gradient-to-br from-[#6C2E7B]/25 via-[#181A33] to-[#1C1D3A] border border-[#6C2E7B]/40 shadow-sm space-y-3 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#6C2E7B]/40 text-[#8B7FD6] border border-[#6C2E7B]/60">ED</span>
+                  <h3 class="text-sm font-bold text-[#EDEEFF] truncate">Z school &amp; IEP</h3>
+                </div>
+                <div class="flex items-center gap-1.5 flex-none">
+                  <span class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 px-2 py-0.5 rounded-md cursor-pointer hover:bg-[#8B7FD6]/25">
+                    ● In progress
+                  </span>
+                  <button class="text-[10px] text-[#9496BC] hover:text-[#EDEEFF] px-1.5 py-0.5 rounded">🧊</button>
+                </div>
+              </div>
+              <!-- Tool Badges -->
+              <div class="flex items-center gap-1.5 pt-1">
+                <span class="mc-tb m" title="margo: Battle Plan">m</span>
+                <span class="mc-tb N" title="Apple Notes: Battle Plan">N</span>
+                <span class="mc-tb G" title="Google Drive: Z Records">G</span>
+                <span class="mc-tb T3" title="Things 3: Z School IEP">T3</span>
+                <span class="mc-tb mail" title="Gmail: OOD-Placement">✉️</span>
+              </div>
+            </div>
+
+            <!-- Card 2: Surgery (HEALTH - Ocean Abyss) -->
+            <div class="rounded-2xl p-4 bg-gradient-to-br from-[#0D3B66]/35 via-[#181A33] to-[#1C1D3A] border border-[#0D3B66]/60 shadow-sm space-y-3 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#0D3B66]/60 text-[#7DB8FF] border border-[#0D3B66]">HEALTH</span>
+                  <h3 class="text-sm font-bold text-[#EDEEFF] truncate">Surgery</h3>
+                </div>
+                <div class="flex items-center gap-1.5 flex-none">
+                  <span class="text-[11px] font-bold text-[#7DB8FF] bg-[#0D3B66]/30 px-2 py-0.5 rounded-md cursor-pointer hover:bg-[#0D3B66]/50">
+                    ● In progress
+                  </span>
+                  <button class="text-[10px] text-[#9496BC] hover:text-[#EDEEFF] px-1.5 py-0.5 rounded">🧊</button>
+                </div>
+              </div>
+              <!-- Tool Badges -->
+              <div class="flex items-center gap-1.5 pt-1">
+                <span class="mc-tb N" title="Apple Notes">N</span>
+                <span class="mc-tb T3" title="Things 3">T3</span>
+              </div>
+            </div>
+
+            <!-- Card 3: OON Reimbursement (FIN - Coral Kiss) -->
+            <div class="rounded-2xl p-4 bg-gradient-to-br from-[#E75480]/20 via-[#181A33] to-[#1C1D3A] border border-[#E75480]/40 shadow-sm space-y-3 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E75480]/30 text-[#E75480] border border-[#E75480]/50">FIN</span>
+                  <h3 class="text-sm font-bold text-[#EDEEFF] truncate">oon reimbursement</h3>
+                </div>
+                <div class="flex items-center gap-1.5 flex-none">
+                  <span class="text-[11px] font-bold text-[#E75480] bg-[#E75480]/15 px-2 py-0.5 rounded-md cursor-pointer hover:bg-[#E75480]/25">
+                    ● In progress
+                  </span>
+                  <button class="text-[10px] text-[#9496BC] hover:text-[#EDEEFF] px-1.5 py-0.5 rounded">🧊</button>
+                </div>
+              </div>
+              <!-- Tool Badges -->
+              <div class="flex items-center gap-1.5 pt-1">
+                <span class="mc-tb m" title="margo">m</span>
+                <span class="mc-tb G" title="Google Drive">G</span>
+                <span class="mc-tb T3" title="Things 3">T3</span>
+                <span class="mc-tb mail" title="Gmail">✉️</span>
+              </div>
+            </div>
+
+            <!-- Card 4: Haircare (CARE - Moonlit Lilac Maintain) -->
+            <div class="rounded-2xl p-4 bg-gradient-to-br from-[#8B7FD6]/20 via-[#181A33] to-[#1C1D3A] border border-[#8B7FD6]/40 shadow-sm space-y-3 relative overflow-hidden group">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#8B7FD6]/30 text-[#FFD8C7] border border-[#8B7FD6]/50">CARE</span>
+                  <h3 class="text-sm font-bold text-[#EDEEFF] truncate">Haircare</h3>
+                </div>
+                <div class="flex items-center gap-1.5 flex-none">
+                  <span class="text-[11px] font-bold text-[#FFD8C7] bg-[#6C2E7B]/40 px-2 py-0.5 rounded-md cursor-pointer hover:bg-[#6C2E7B]/60">
+                    ✓ Maintain
+                  </span>
+                  <button class="text-[10px] text-[#9496BC] hover:text-[#EDEEFF] px-1.5 py-0.5 rounded">🧊</button>
+                </div>
+              </div>
+              <!-- Tool Badges -->
+              <div class="flex items-center gap-1.5 pt-1">
+                <span class="mc-tb m" title="margo">m</span>
+                <span class="mc-tb N" title="Apple Notes">N</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="h-px bg-[#2E3060]/70 my-4"></div>
+
+          <!-- Lane Header: LATER (Simplified Visual!) -->
+          <div class="flex items-center justify-between pt-1">
+            <div class="flex items-center gap-2.5">
+              <span class="text-xs font-black px-2.5 py-1 rounded-md bg-[#1C1D3A] text-[#8B7FD6] border border-[#2E3060] uppercase tracking-wider">
+                🧊 LATER
+              </span>
+              <span class="text-xs text-[#9496BC] font-medium">On deck &amp; parking lot · ready when bandwidth opens</span>
+            </div>
+            <button class="text-xs font-bold text-[#8B7FD6] hover:text-[#FFD8C7] bg-[#1C1D3A] border border-[#2E3060] px-3 py-1.5 rounded-full transition-colors">
+              + Add to later
+            </button>
+          </div>
+
+          <!-- SIMPLIFIED LATER SHELF: Slim, quiet, clear scan -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+
+            <!-- Item 1: Skincare -->
+            <div class="later-row">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#E75480] flex-none"></span>
+                <span class="text-xs font-semibold text-[#EDEEFF] truncate cursor-pointer hover:text-[#8B7FD6]">Skincare</span>
+              </div>
+              <div class="flex items-center gap-2 flex-none">
+                <button class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 hover:bg-[#8B7FD6]/30 px-2 py-0.5 rounded-md transition-colors">
+                  + Now
+                </button>
+                <button class="text-xs text-[#9496BC] hover:text-red-400 px-1">×</button>
+              </div>
+            </div>
+
+            <!-- Item 2: Foot care -->
+            <div class="later-row">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#E75480] flex-none"></span>
+                <span class="text-xs font-semibold text-[#EDEEFF] truncate cursor-pointer hover:text-[#8B7FD6]">Foot care</span>
+              </div>
+              <div class="flex items-center gap-2 flex-none">
+                <button class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 hover:bg-[#8B7FD6]/30 px-2 py-0.5 rounded-md transition-colors">
+                  + Now
+                </button>
+                <button class="text-xs text-[#9496BC] hover:text-red-400 px-1">×</button>
+              </div>
+            </div>
+
+            <!-- Item 3: Chin hair -->
+            <div class="later-row">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#FF8A5B] flex-none"></span>
+                <span class="text-xs font-semibold text-[#EDEEFF] truncate cursor-pointer hover:text-[#8B7FD6]">Chin hair</span>
+              </div>
+              <div class="flex items-center gap-2 flex-none">
+                <button class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 hover:bg-[#8B7FD6]/30 px-2 py-0.5 rounded-md transition-colors">
+                  + Now
+                </button>
+                <button class="text-xs text-[#9496BC] hover:text-red-400 px-1">×</button>
+              </div>
+            </div>
+
+            <!-- Item 4: Shoes -->
+            <div class="later-row">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#8B7FD6] flex-none"></span>
+                <span class="text-xs font-semibold text-[#EDEEFF] truncate cursor-pointer hover:text-[#8B7FD6]">Shoes</span>
+              </div>
+              <div class="flex items-center gap-2 flex-none">
+                <button class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 hover:bg-[#8B7FD6]/30 px-2 py-0.5 rounded-md transition-colors">
+                  + Now
+                </button>
+                <button class="text-xs text-[#9496BC] hover:text-red-400 px-1">×</button>
+              </div>
+            </div>
+
+            <!-- Item 5: Capsule Wardrobe -->
+            <div class="later-row">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#0D3B66] flex-none"></span>
+                <span class="text-xs font-semibold text-[#EDEEFF] truncate cursor-pointer hover:text-[#8B7FD6]">Capsule wardrobe reset</span>
+              </div>
+              <div class="flex items-center gap-2 flex-none">
+                <button class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 hover:bg-[#8B7FD6]/30 px-2 py-0.5 rounded-md transition-colors">
+                  + Now
+                </button>
+                <button class="text-xs text-[#9496BC] hover:text-red-400 px-1">×</button>
+              </div>
+            </div>
+
+            <!-- Item 6: Summer Vacation -->
+            <div class="later-row">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="w-2 h-2 rounded-full bg-[#E75480] flex-none"></span>
+                <span class="text-xs font-semibold text-[#EDEEFF] truncate cursor-pointer hover:text-[#8B7FD6]">Summer vacation 2027</span>
+              </div>
+              <div class="flex items-center gap-2 flex-none">
+                <button class="text-[11px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 hover:bg-[#8B7FD6]/30 px-2 py-0.5 rounded-md transition-colors">
+                  + Now
+                </button>
+                <button class="text-xs text-[#9496BC] hover:text-red-400 px-1">×</button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- RIGHT COLUMN (4 cols): System Bento & Side Panels -->
+      <div class="lg:col-span-4 space-y-5">
+
+        <!-- 1. System Compass Bento Box -->
+        <div class="bg-[#181A33] rounded-2xl border border-[#2E3060] p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-[#EDEEFF] tracking-tight">System compass</h2>
+            <span class="text-[11px] text-[#9496BC]">Connected Tools</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <!-- margo -->
+            <div class="col-span-2 bg-gradient-to-r from-[#6C2E7B]/30 to-[#1C1D3A] border border-[#6C2E7B]/50 rounded-xl p-3 cursor-pointer hover:border-[#6C2E7B] transition-all flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="mc-tb m">m</span>
+                <div>
+                  <div class="text-xs font-bold text-[#EDEEFF]">margo</div>
+                  <div class="text-[10px] text-[#9496BC]">Personal identity &amp; momentum</div>
+                </div>
+              </div>
+              <span class="text-[9px] font-black uppercase tracking-wider text-[#FFD8C7] bg-[#6C2E7B] px-2 py-0.5 rounded">COMMAND</span>
+            </div>
+
+            <!-- Things 3 -->
+            <div class="col-span-2 bg-[#1C1D3A] border border-[#0D3B66]/60 rounded-xl p-3 cursor-pointer hover:border-[#0D3B66] transition-all space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="mc-tb T3">T3</span>
+                  <div class="text-xs font-bold text-[#EDEEFF]">Things 3</div>
+                </div>
+                <span class="text-[9px] font-black uppercase tracking-wider text-[#7DB8FF] bg-[#0D3B66]/60 px-2 py-0.5 rounded">EXECUTION</span>
+              </div>
+              <div class="flex gap-1.5 flex-wrap pt-0.5">
+                <span class="text-[10px] font-bold text-[#E75480] bg-[#E75480]/15 px-2 py-0.5 rounded cursor-pointer hover:bg-[#E75480]/25">🌶️ #high priority</span>
+                <span class="text-[10px] font-bold text-[#8B7FD6] bg-[#8B7FD6]/15 px-2 py-0.5 rounded cursor-pointer hover:bg-[#8B7FD6]/25">🐾 #active</span>
+                <span class="text-[10px] font-bold text-[#9496BC] bg-[#2E3060]/40 px-2 py-0.5 rounded cursor-pointer hover:bg-[#2E3060]/70">🧊 #later</span>
+              </div>
+            </div>
+
+            <!-- Gmail -->
+            <div class="bg-[#1C1D3A] border border-[#2E3060] rounded-xl p-2.5 cursor-pointer hover:border-[#8B7FD6] transition-all flex items-center gap-2">
+              <span class="mc-tb mail">✉️</span>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-[#EDEEFF] truncate">Gmail</div>
+                <div class="text-[9px] text-[#9496BC]">Inflow</div>
+              </div>
+            </div>
+
+            <!-- Apple Notes -->
+            <div class="bg-[#1C1D3A] border border-[#2E3060] rounded-xl p-2.5 cursor-pointer hover:border-[#8B7FD6] transition-all flex items-center gap-2">
+              <span class="mc-tb N">N</span>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-[#EDEEFF] truncate">Notes</div>
+                <div class="text-[9px] text-[#9496BC]">Master</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. MARGO Framework -->
+        <div class="bg-[#181A33] rounded-2xl border border-[#2E3060] p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-sm font-bold text-[#EDEEFF] tracking-tight">MARGO framework</h2>
+              <span class="text-[10px] text-[#9496BC]">Intentional design pillars</span>
+            </div>
+            <button class="text-xs text-[#8B7FD6] font-bold">Collapse</button>
+          </div>
+
+          <div class="grid grid-cols-1 gap-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-[#1C1D3A] border border-[#2E3060] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-[#FF8A5B] text-[#0F1020] font-black flex items-center justify-center text-[10px]">M</span>
+                <span class="font-bold text-[#EDEEFF]">Move</span>
+              </div>
+              <span class="text-[10.5px] text-[#9496BC]">10k steps · Close rings</span>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-[#1C1D3A] border border-[#2E3060] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-[#E75480] text-white font-black flex items-center justify-center text-[10px]">A</span>
+                <span class="font-bold text-[#EDEEFF]">Aesthetic</span>
+              </div>
+              <span class="text-[10.5px] text-[#9496BC]">Skincare · Hair · Outfits</span>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-[#1C1D3A] border border-[#2E3060] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-[#8B7FD6] text-[#0F1020] font-black flex items-center justify-center text-[10px]">R</span>
+                <span class="font-bold text-[#EDEEFF]">Reflect</span>
+              </div>
+              <span class="text-[10.5px] text-[#9496BC]">Meditate · Journal</span>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-[#1C1D3A] border border-[#2E3060] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-[#FF8A5B] text-[#0F1020] font-black flex items-center justify-center text-[10px]">G</span>
+                <span class="font-bold text-[#EDEEFF]">Grow</span>
+              </div>
+              <span class="text-[10.5px] text-[#9496BC]">Hobbies · Learning</span>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-[#1C1D3A] border border-[#2E3060] flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-md bg-[#0D3B66] text-[#7DB8FF] font-black flex items-center justify-center text-[10px]">O</span>
+                <span class="font-bold text-[#EDEEFF]">Organize</span>
+              </div>
+              <span class="text-[10.5px] text-[#9496BC]">Home · Finance · Travel</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Habit Presets -->
+        <div class="bg-[#181A33] rounded-2xl border border-[#2E3060] p-4 space-y-2.5">
+          <div>
+            <h2 class="text-sm font-bold text-[#EDEEFF] tracking-tight">Habit presets</h2>
+            <span class="text-[10px] text-[#9496BC]">Tap to add to daily tracking stack</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <span class="text-[11px] font-bold text-[#FFD8C7] bg-[#6C2E7B]/50 border border-[#6C2E7B] px-2.5 py-1 rounded-full cursor-pointer">✓ 10k steps</span>
+            <span class="text-[11px] font-bold text-[#FFD8C7] bg-[#6C2E7B]/50 border border-[#6C2E7B] px-2.5 py-1 rounded-full cursor-pointer">✓ Move ring</span>
+            <span class="text-[11px] font-bold text-[#FFD8C7] bg-[#6C2E7B]/50 border border-[#6C2E7B] px-2.5 py-1 rounded-full cursor-pointer">✓ Stand ring</span>
+            <span class="text-[11px] font-bold text-[#8B7FD6] bg-[#1C1D3A] border border-[#2E3060] px-2.5 py-1 rounded-full cursor-pointer hover:border-[#8B7FD6]">+ Calorie deficit</span>
+            <span class="text-[11px] font-bold text-[#8B7FD6] bg-[#1C1D3A] border border-[#2E3060] px-2.5 py-1 rounded-full cursor-pointer hover:border-[#8B7FD6]">+ Cardio</span>
+            <span class="text-[11px] font-bold text-[#8B7FD6] bg-[#1C1D3A] border border-[#2E3060] px-2.5 py-1 rounded-full cursor-pointer hover:border-[#8B7FD6]">+ Yoga</span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

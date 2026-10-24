@@ -112,7 +112,7 @@ function renderCoverHubPage() {
             <path d="M36 46 q6 6 12 0 M56 46 q6 6 12 0" stroke="#5a3b17" stroke-width="3" fill="none" stroke-linecap="round"/>
             <circle cx="34" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
             <circle cx="66" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
-            <rect x="14" y="68" width="72" height="34" rx="10" fill="#7B6CFF"/>
+            <rect x="14" y="68" width="72" height="34" rx="10" fill="#6C2E7B"/>
           </svg>
           <div class="mc-txt">
             <p class="mc-quote" id="cover-season-focus-text" onclick="promptEditSeasonFocus()" style="cursor:pointer" title="Tap to edit season focus">“${escapeHtml(seasonTheme)}”</p>
@@ -353,9 +353,9 @@ function getCampaignCategoryMeta(camp) {
       tag: 'ED',
       name: 'School & IEP',
       theme: 'ED',
-      dotColor: '#B5ABFF',
+      dotColor: '#8B7FD6',
       summerTheme: 'theme-lavender',
-      accentColor: '#7C3AED',
+      accentColor: '#6C2E7B',
       icon: 'graduation-cap',
       badgeClass: 'budget-badge-violet'
     };
@@ -367,7 +367,7 @@ function getCampaignCategoryMeta(camp) {
       theme: 'HEALTH',
       dotColor: '#7DB8FF',
       summerTheme: 'theme-sky',
-      accentColor: '#0284C7',
+      accentColor: '#0D3B66',
       icon: 'heart-pulse',
       badgeClass: 'budget-badge-sky'
     };
@@ -377,11 +377,11 @@ function getCampaignCategoryMeta(camp) {
       tag: 'FIN',
       name: 'Finance & Claims',
       theme: 'FIN',
-      dotColor: '#62D6B3',
-      summerTheme: 'theme-mint',
-      accentColor: '#0D98BA',
+      dotColor: '#E75480',
+      summerTheme: 'theme-rose',
+      accentColor: '#E75480',
       icon: 'receipt',
-      badgeClass: 'budget-badge-teal'
+      badgeClass: 'budget-badge-rose'
     };
   }
   if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('closet')) {
@@ -389,11 +389,11 @@ function getCampaignCategoryMeta(camp) {
       tag: 'HOME',
       name: 'Home Declutter',
       theme: 'HOME',
-      dotColor: '#62D6B3',
-      summerTheme: 'theme-mint',
-      accentColor: '#0D98BA',
+      dotColor: '#FF8A5B',
+      summerTheme: 'theme-coral',
+      accentColor: '#FF8A5B',
       icon: 'home',
-      badgeClass: 'budget-badge-teal'
+      badgeClass: 'budget-badge-coral'
     };
   }
   if (t.includes('food') || t.includes('nutri') || t.includes('meal') || t.includes('diet') || t.includes('cook') || t.includes('grow')) {
@@ -401,21 +401,21 @@ function getCampaignCategoryMeta(camp) {
       tag: 'GROW',
       name: 'Growth & Nutrition',
       theme: 'GROW',
-      dotColor: '#B5ABFF',
+      dotColor: '#FF8A5B',
       summerTheme: 'theme-coral',
-      accentColor: '#EA580C',
+      accentColor: '#FF8A5B',
       icon: 'sprout',
-      badgeClass: 'budget-badge-violet'
+      badgeClass: 'budget-badge-coral'
     };
   }
   if (camp.cat && ['ED', 'HEALTH', 'FIN', 'HOME', 'CARE', 'GROW'].includes(camp.cat)) {
     const catMap = {
-      ED: { name: 'Education & IEP', summerTheme: 'theme-lavender', accentColor: '#7C3AED', icon: 'graduation-cap', badgeClass: 'budget-badge-violet', dotColor: '#B5ABFF' },
-      HEALTH: { name: 'Health & Wellness', summerTheme: 'theme-sky', accentColor: '#0284C7', icon: 'heart-pulse', badgeClass: 'budget-badge-sky', dotColor: '#7DB8FF' },
-      FIN: { name: 'Finance & Claims', summerTheme: 'theme-mint', accentColor: '#0D98BA', icon: 'receipt', badgeClass: 'budget-badge-teal', dotColor: '#62D6B3' },
-      HOME: { name: 'Home & Space', summerTheme: 'theme-mint', accentColor: '#0D98BA', icon: 'home', badgeClass: 'budget-badge-teal', dotColor: '#62D6B3' },
-      GROW: { name: 'Growth & Learning', summerTheme: 'theme-coral', accentColor: '#EA580C', icon: 'sprout', badgeClass: 'budget-badge-violet', dotColor: '#B5ABFF' },
-      CARE: { name: 'Self Care & Routine', summerTheme: 'theme-rose', accentColor: '#E11D48', icon: 'sparkles', badgeClass: 'budget-badge-rose', dotColor: '#FF8FD0' }
+      ED: { name: 'Education & IEP', summerTheme: 'theme-lavender', accentColor: '#6C2E7B', icon: 'graduation-cap', badgeClass: 'budget-badge-violet', dotColor: '#8B7FD6' },
+      HEALTH: { name: 'Health & Wellness', summerTheme: 'theme-sky', accentColor: '#0D3B66', icon: 'heart-pulse', badgeClass: 'budget-badge-sky', dotColor: '#7DB8FF' },
+      FIN: { name: 'Finance & Claims', summerTheme: 'theme-rose', accentColor: '#E75480', icon: 'receipt', badgeClass: 'budget-badge-rose', dotColor: '#E75480' },
+      HOME: { name: 'Home & Space', summerTheme: 'theme-coral', accentColor: '#FF8A5B', icon: 'home', badgeClass: 'budget-badge-coral', dotColor: '#FF8A5B' },
+      GROW: { name: 'Growth & Learning', summerTheme: 'theme-coral', accentColor: '#FF8A5B', icon: 'sprout', badgeClass: 'budget-badge-coral', dotColor: '#FF8A5B' },
+      CARE: { name: 'Self Care & Routine', summerTheme: 'theme-rose', accentColor: '#E75480', icon: 'sparkles', badgeClass: 'budget-badge-rose', dotColor: '#E75480' }
     };
     const m = catMap[camp.cat] || catMap.CARE;
     return { tag: camp.cat, theme: camp.cat, ...m };
@@ -424,9 +424,9 @@ function getCampaignCategoryMeta(camp) {
     tag: 'CARE',
     name: 'Self Care & Routine',
     theme: 'CARE',
-    dotColor: '#FF8FD0',
+    dotColor: '#E75480',
     summerTheme: 'theme-rose',
-    accentColor: '#E11D48',
+    accentColor: '#E75480',
     icon: 'sparkles',
     badgeClass: 'budget-badge-rose'
   };
@@ -540,10 +540,9 @@ function renderUnifiedCampaignCard(camp, tier) {
   if (!isNow) {
     return `
       <div class="mc-lr ${catMeta.tag} ${statusKey === 'Maintain' ? 'is-maintain' : ''}">
-        <span class="mc-dot" aria-hidden="true"></span>
+        <span class="mc-dot" aria-hidden="true" style="background: ${catMeta.dotColor || '#E75480'}"></span>
         <span class="mc-nm" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</span>
-        ${statusBtnHtml}
-        <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to now" onclick="moveCampaignAction('${camp.id}', 'later', 'now')">← 🐾 Now</button>
+        <button type="button" class="mc-mv" aria-label="Move ${escapeHtml(displayTitle)} to now" onclick="moveCampaignAction('${camp.id}', 'later', 'now')">+ Now</button>
         ${xBtnHtml}
       </div>
     `;
