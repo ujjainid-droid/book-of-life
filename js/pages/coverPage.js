@@ -1330,6 +1330,32 @@ function renderAuroraWhisperTracker(dateStr = activeTrackingDate) {
 }
 window.renderAuroraWhisperTracker = renderAuroraWhisperTracker;
 
+function submitSanctuaryChallengeSteps(goalId, dateStr = activeTrackingDate) {
+  const input = document.getElementById('sanctuary-challenge-steps-input');
+  if (!input) return;
+  const raw = input.value.trim();
+  const updatedGoal = storage.logPeriodGoalDay(goalId, dateStr, raw);
+  if (updatedGoal && typeof showToast === 'function') {
+    if (raw) showToast(`✓ Logged ${Number(raw).toLocaleString()} steps for today`);
+    else showToast('Cleared steps entry');
+  }
+  renderDailySheet();
+}
+window.submitSanctuaryChallengeSteps = submitSanctuaryChallengeSteps;
+
+function submitQuickTodayGoal(event, dateStr = activeTrackingDate) {
+  if (event) event.preventDefault();
+  const input = document.getElementById('s-quick-goal-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  storage.addDayGoal(dateStr, val);
+  input.value = '';
+  if (typeof showToast === 'function') showToast('Added focus item for today');
+  renderDailySheet();
+}
+window.submitQuickTodayGoal = submitQuickTodayGoal;
+
 function renderDailySheet() {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
@@ -1527,346 +1553,296 @@ function renderDailySheet() {
     weightStatusNote = `Last: ${latestWeightEntry.weight.toFixed(1)} lbs · Tap − / + to log today`;
   }
 
-  container.innerHTML = `
-    <div class="aurora-app">
+  // Kitchen Dinner Tonight
+  const kData = (typeof storage.getKitchenData === 'function') ? storage.getKitchenData() : null;
+  let tonightMeal = 'Plan Week ➔';
+  let tonightSource = 'Kitchen';
+  if (kData && Array.isArray(kData.weekSchedule)) {
+    const dObj = parseDateIso(activeTrackingDate);
+    const dayNameShort = dObj.toLocaleDateString('en-US', { weekday: 'short' });
+    const dayMatch = kData.weekSchedule.find(s => s.day === dayNameShort);
+    if (dayMatch && dayMatch.meal) {
+      tonightMeal = dayMatch.meal;
+      if (dayMatch.source === 'freezer') tonightSource = 'Freezer Stash 🧊';
+      else if (dayMatch.source === 'pantry') tonightSource = 'Pantry Stash 🥫';
+      else if (dayMatch.source === 'out') tonightSource = 'Dining Out 🍷';
+      else tonightSource = 'Fresh Grocery 🛒';
+    }
+  }
 
-      <header class="card head span2 today-top-bar" id="today-top-bar">
-        <div class="today-top-bar-left">
-          <span class="today-top-bar-date">
-            <button type="button" class="date-step-btn" onclick="event.stopPropagation();navigateDate(-1)" title="Previous day" aria-label="Previous day">‹</button>
-            <span class="date-picker-trigger" onclick="triggerHeaderDatePicker()" style="cursor:pointer" title="Tap to pick any date">${escapeHtml(formattedDateHeader)}</span>
-            <button type="button" class="date-step-btn" onclick="event.stopPropagation();navigateDate(1)" title="Next day" aria-label="Next day">›</button>
-            ${!isToday ? `<button type="button" class="today-return-btn" onclick="event.stopPropagation();resetToToday()" title="Return to today">Today</button>` : ''}
-          </span>
-          <h1 class="today-top-bar-title aurora-wordmark" aria-label="margo"><span class="today-m-mark aurora-m-mark">m</span><span class="today-argo aurora-argo">argo</span></h1>
+  // Active Challenge (Oct 10K Steps or Current Period Goal)
+  const activeChallengeGoal = (typeof storage.getPeriodGoal === 'function')
+    ? (storage.getPeriodGoal('pg-oct-steps') || (storage.getPeriodGoals() || [])[0])
+    : null;
+  const activeChallengeStats = (activeChallengeGoal && typeof storage.getPeriodGoalStats === 'function')
+    ? storage.getPeriodGoalStats(activeChallengeGoal, activeTrackingDate)
+    : null;
+  const todayChallengeLogVal = (activeChallengeGoal && activeChallengeGoal.logs)
+    ? (activeChallengeGoal.logs[activeTrackingDate] || '')
+    : '';
+
+  container.innerHTML = `
+    <div class="sanctuary-stream-wrap">
+
+      <!-- TOP BAR: DATE & STREAK -->
+      <header class="s-top-card">
+        <div class="s-top-left">
+          <div class="s-date-controls">
+            <button type="button" class="s-date-btn" onclick="event.stopPropagation();navigateDate(-1)" title="Previous day" aria-label="Previous day">‹</button>
+            <span class="s-date-label" onclick="triggerHeaderDatePicker()" title="Tap to pick any date">${escapeHtml(formattedDateHeader)}</span>
+            <button type="button" class="s-date-btn" onclick="event.stopPropagation();navigateDate(1)" title="Next day" aria-label="Next day">›</button>
+            ${!isToday ? `<button type="button" class="today-return-btn" style="margin-left:6px;" onclick="event.stopPropagation();resetToToday()" title="Return to today">Today</button>` : ''}
+          </div>
+          <h1 class="aurora-wordmark" aria-label="margo" style="margin:0; font-size:18px;"><span class="today-m-mark aurora-m-mark">m</span><span class="today-argo aurora-argo">argo</span></h1>
         </div>
-        <div class="today-top-bar-right">
-          <span class="today-top-bar-streak">${currentStreak}</span>
-          <span class="today-top-bar-sub">day streak</span>
+        <div class="s-streak-badge" title="${currentStreak} day streak">
+          <span>🔥 ${currentStreak}</span>
+          <span style="font-size:11px; opacity:0.85;">day streak</span>
         </div>
       </header>
 
-      ${renderAuroraWhisperTracker(activeTrackingDate)}
-
-      <div class="col a">
-        <section class="mascot" aria-label="Bed Potato">
-          <span class="label">BED POTATO</span>
-          <svg width="96" height="104" viewBox="0 0 104 112" role="img" aria-label="Sleeping potato mascot">
-            <ellipse cx="50" cy="48" rx="34" ry="30" fill="#E0AE70"/>
-            <path d="M36 46 q6 6 12 0 M56 46 q6 6 12 0" stroke="#5a3b17" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <circle cx="34" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
-            <circle cx="66" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
-            <rect x="14" y="68" width="72" height="34" rx="10" fill="#7B6CFF"/>
-          </svg>
-          <p id="quote">${escapeHtml(currentQuote)}</p>
-          <button type="button" class="poke" id="poke" onclick="auroraPokeMascot()">Poke me</button>
-        </section>
-
-        <section class="card" id="section-day-clock">
-          <div class="label">DAY CLOCK</div>
-          <div class="big" id="dayPct" style="margin-top:8px">${dayPctNum}%</div>
-          <div class="bar"><i id="dayFill" style="width:${dayFillWidth}%"></i><u></u></div>
-          <div class="muted" style="margin-top:8px">Floor at 2:00 PM</div>
-        </section>
-
-        <section class="card weight-tracker-card" id="section-weight-tracker">
-          <div class="between">
-            <span class="label">WEIGHT</span>
-            <span class="weight-status-pill ${weightStatusPillClass}">${weightStatusPillText}</span>
+      <!-- WIDGET 1: PHYSICAL MOMENTUM (Move & Stand) -->
+      <section class="s-widget-card" id="section-core-anchors">
+        <div class="s-widget-head">
+          <div class="s-widget-title-group">
+            <span class="s-step-num">1</span>
+            <span class="s-widget-title">Core Momentum Anchors</span>
           </div>
+          <span class="s-widget-hint">Floor protects streak</span>
+        </div>
 
-          <div class="weight-main-row">
-            <button type="button" class="w-step-btn minus" onclick="auroraStepWeight(-0.2, '${activeTrackingDate}')" title="Subtract 0.2 lbs" aria-label="Decrease weight by 0.2 lbs">−</button>
-            <div class="w-val-display" title="Click to edit weight directly">
-              <input type="number" step="0.1" id="weight-input-${activeTrackingDate}" class="w-val-input ${!isWeightLogged ? 'unlogged' : ''}" value="${isWeightLogged ? currentWeight.toFixed(1) : ''}" placeholder="${isWeightLogged ? currentWeight.toFixed(1) : (latestWeightEntry && latestWeightEntry.weight ? latestWeightEntry.weight.toFixed(1) : '--.-')}" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" aria-label="Weight in pounds">
-              <span class="w-val-unit">lbs</span>
+        <div class="s-anchors-grid">
+          <!-- Move Anchor -->
+          <div class="s-anchor-box">
+            <div class="s-anchor-meta">
+              <span class="s-anchor-name">🏃‍♀️ Move (${moveVal}/300 cal)</span>
+              <span class="s-anchor-floor-note move">Floor: 150</span>
             </div>
-            <button type="button" class="w-step-btn plus" onclick="auroraStepWeight(0.2, '${activeTrackingDate}')" title="Add 0.2 lbs" aria-label="Increase weight by 0.2 lbs">+</button>
+            <div class="s-seg-track">
+              <button type="button" class="s-seg-btn ${moveAnchIdx === 0 ? 'is-active-move' : ''}" onclick="auroraSetAnchorChip('move', 0, '${activeTrackingDate}')">Off</button>
+              <button type="button" class="s-seg-btn ${moveAnchIdx === 2 ? 'is-active-move' : ''}" onclick="auroraSetAnchorChip('move', 2, '${activeTrackingDate}')">Floor 50%</button>
+              <button type="button" class="s-seg-btn ${moveAnchIdx === 4 ? 'is-active-move' : ''}" onclick="auroraSetAnchorChip('move', 4, '${activeTrackingDate}')">100%</button>
+            </div>
           </div>
 
-          <div class="bar weight-bar ${isWeightAtTarget ? 'met' : (isWeightLogged ? (weightDiff > 0 ? 'above' : 'below') : '')}">
-            <i style="width:${weightBarWidth}%"></i>
-            <u title="Target: 110 lbs"></u>
+          <!-- Stand Anchor -->
+          <div class="s-anchor-box">
+            <div class="s-anchor-meta">
+              <span class="s-anchor-name">🧍‍♀️ Stand (${standVal}/12 hrs)</span>
+              <span class="s-anchor-floor-note stand">Floor: 6 hrs</span>
+            </div>
+            <div class="s-seg-track">
+              <button type="button" class="s-seg-btn ${standAnchIdx === 0 ? 'is-active-stand' : ''}" onclick="auroraSetAnchorChip('stand', 0, '${activeTrackingDate}')">Off</button>
+              <button type="button" class="s-seg-btn ${standAnchIdx === 2 ? 'is-active-stand' : ''}" onclick="auroraSetAnchorChip('stand', 2, '${activeTrackingDate}')">Floor 50%</button>
+              <button type="button" class="s-seg-btn ${standAnchIdx === 4 ? 'is-active-stand' : ''}" onclick="auroraSetAnchorChip('stand', 4, '${activeTrackingDate}')">100%</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WIDGET 2: ACTIVE CHALLENGE (10K Steps · October) -->
+      ${activeChallengeGoal ? `
+        <section class="s-widget-card s-challenge-card" id="section-active-challenge">
+          <div class="s-widget-head">
+            <div class="s-widget-title-group">
+              <span class="s-step-num c-challenge">2</span>
+              <span class="s-widget-title" style="color:#312E81;">Active Challenge · ${escapeHtml(activeChallengeGoal.title || '10K Steps (October)')}</span>
+            </div>
+            <span class="s-widget-hint" style="color:#4338CA;">${activeChallengeStats ? `${activeChallengeStats.daysLeft}d left · ${activeChallengeStats.loggedDays}/${activeChallengeStats.totalDays} logged` : 'Monthly'}</span>
           </div>
 
-          <div class="between weight-footer" style="margin-top:8px">
-            <span class="muted">${weightStatusNote}</span>
-            ${isWeightLogged ? `
-              <button type="button" class="w-reset-link" onclick="auroraClearWeight('${activeTrackingDate}')" title="Clear weight log for this day">Reset</button>
+          <div class="s-challenge-stats-row">
+            <div class="s-challenge-avg">
+              <span>${activeChallengeStats ? activeChallengeStats.currentAvg.toLocaleString() : '0'}</span>
+              <span style="font-size:12px; font-weight:600; color:var(--text-muted);">/ ${(activeChallengeGoal.targetAvg || 10000).toLocaleString()} ${activeChallengeGoal.unit || 'steps'} avg</span>
+            </div>
+            ${activeChallengeStats && activeChallengeStats.daysLeft > 0 ? `
+              <span class="s-challenge-needed">Needed: ${activeChallengeStats.neededAvgForBalance.toLocaleString()}/d</span>
             ` : ''}
           </div>
+
+          <div class="s-challenge-progress-bar">
+            <div class="s-challenge-fill" style="width: ${activeChallengeStats ? Math.min(100, activeChallengeStats.overallPercent) : 0}%;"></div>
+          </div>
+
+          <div class="s-challenge-input-row">
+            <span style="font-size:11.5px; font-weight:700; color:var(--text-secondary);">Today:</span>
+            <input type="number" id="sanctuary-challenge-steps-input" value="${todayChallengeLogVal}" placeholder="Enter steps (e.g. 10250)..." class="s-clean-input" onkeydown="if(event.key==='Enter') submitSanctuaryChallengeSteps('${activeChallengeGoal.id}', '${activeTrackingDate}')">
+            <button type="button" class="s-btn-action" onclick="submitSanctuaryChallengeSteps('${activeChallengeGoal.id}', '${activeTrackingDate}')">Log</button>
+          </div>
         </section>
+      ` : ''}
 
-        <section class="card custom-habits-card lets-do-card" id="section-custom-habits">
-          <div class="between">
-            <span class="label">LET'S DO THIS</span>
-            <span class="custom-habits-badge" id="customHabitsBadge">${customHabitsDone}/${customHabits.length}</span>
+      <!-- WIDGET 3: DAILY CHOICES & MOMENTUM -->
+      <section class="s-widget-card" id="section-daily-choices">
+        <div class="s-widget-head">
+          <div class="s-widget-title-group">
+            <span class="s-step-num c-choices">3</span>
+            <span class="s-widget-title">Daily Choices</span>
           </div>
+          <span style="font-size:11px; font-weight:800; color:#047857; background:rgba(16,185,129,0.12); padding:3px 9px; border-radius:9999px;">
+            ${netMomentum >= 0 ? `+${netMomentum}` : netMomentum} Net (${posPct}% Good)
+          </span>
+        </div>
 
-          <div class="custom-habits-list" id="customHabitsList">
-            ${customHabits.length === 0 ? `
-              <div class="custom-habits-empty-hint">No items for ${escapeHtml(shortDayName)} yet. Let's do this!</div>
-            ` : customHabits.map(g => `
-              <div class="custom-habit-row ${g.completed ? 'done' : ''}">
-                <button type="button" class="custom-habit-check" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.completed ? 'Mark incomplete' : 'Complete (+15 XP)'}">
-                  ${g.completed ? '✓' : ''}
-                </button>
-                <div class="custom-habit-content" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                  <span class="custom-habit-text">${escapeHtml(g.text)}</span>
-                  ${g.rangeLabel ? `<span class="custom-habit-range-tag">📅 ${escapeHtml(g.rangeLabel)}</span>` : ''}
-                </div>
-                <button type="button" class="custom-habit-del" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')" title="${g.rangeId ? 'Delete for date range' : 'Delete'}">×</button>
-              </div>
-            `).join('')}
-          </div>
-
-          <form class="custom-habit-add-form lets-do-form" onsubmit="submitInlineCustomHabit(event, '${activeTrackingDate}')">
-            <!-- Scope Selector: Today vs Date Range -->
-            <div class="lets-do-scope-row">
-              <div class="lets-do-scope-tabs" role="tablist">
-                <button type="button"
-                        class="lets-do-scope-btn ${letsDoScope === 'today' ? 'active' : ''}"
-                        id="scope-btn-today"
-                        onclick="switchLetsDoScope('today')">
-                  Today
-                </button>
-                <button type="button"
-                        class="lets-do-scope-btn ${letsDoScope === 'range' ? 'active' : ''}"
-                        id="scope-btn-range"
-                        onclick="switchLetsDoScope('range')">
-                  Date Range
-                </button>
-              </div>
+        <div class="s-choices-grid">
+          <!-- Good Choices -->
+          <div class="s-choice-box good">
+            <div class="s-choice-label-val">
+              <span class="s-choice-label">Good:</span>
+              <span class="s-choice-val good">${dateChoices.good || 0}</span>
             </div>
-
-            <!-- Date Range Selector (expanded when Date Range is selected) -->
-            <div class="lets-do-range-row" id="lets-do-range-row" style="display: ${letsDoScope === 'range' ? 'flex' : 'none'};">
-              <div class="lets-do-range-pickers">
-                <div class="lets-do-date-field">
-                  <span class="lets-do-date-label">From</span>
-                  <input type="date" id="lets-do-start-date" class="lets-do-date-input" value="${letsDoStartDate || activeTrackingDate}" onchange="updateLetsDoDates()">
-                </div>
-                <span class="lets-do-arrow">→</span>
-                <div class="lets-do-date-field">
-                  <span class="lets-do-date-label">To</span>
-                  <input type="date" id="lets-do-end-date" class="lets-do-date-input" value="${letsDoEndDate || defaultEndIso}" onchange="updateLetsDoDates()">
-                </div>
-              </div>
-              <div class="lets-do-quick-presets">
-                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(3)">+3d</button>
-                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(7)">+7d</button>
-                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(14)">+14d</button>
-                <button type="button" class="lets-do-preset-chip" onclick="applyLetsDoPreset(30)">+30d</button>
-              </div>
+            <div class="s-choice-step-btns">
+              <button type="button" class="s-choice-step-btn" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">−</button>
+              <button type="button" class="s-choice-step-btn plus-good" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">+1</button>
             </div>
+          </div>
 
-            <!-- Space to enter custom text -->
-            <div class="lets-do-input-area">
-              <textarea id="inline-custom-habit-input"
-                        class="custom-habit-textarea"
-                        rows="2"
-                        placeholder="Do something fun!"
-                        onkeydown="handleLetsDoKeydown(event, '${activeTrackingDate}')"
-                        required></textarea>
-              <button type="submit" class="lets-do-add-btn" id="lets-do-add-btn" title="Add to Let's do this">
-                <span>+</span>
-              </button>
+          <!-- Not So Good Choices -->
+          <div class="s-choice-box bad">
+            <div class="s-choice-label-val">
+              <span class="s-choice-label">Not so good:</span>
+              <span class="s-choice-val bad">${dateChoices.not || 0}</span>
             </div>
-          </form>
-        </section>
-
-        ${renderAuroraPeriodGoalsWidget(activeTrackingDate)}
-      </div>
-
-      <div class="col b">
-
-        <section class="card panel span2" aria-labelledby="mvT" id="section-move-anchor">
-          <div class="between">
-            <span class="ttl" id="mvT" style="color:var(--move)">MOVE</span>
-            <div class="row"><span class="num" id="moveVal">${moveVal}</span><span class="unit">/ 300 cal</span></div>
-          </div>
-          <div class="segs" id="segs">
-            <div class="seg"><b style="width:${segWidths[0]}%"></b></div>
-            <div class="seg floor"><b style="width:${segWidths[1]}%"></b></div>
-            <div class="seg"><b style="width:${segWidths[2]}%"></b></div>
-            <div class="seg"><b style="width:${segWidths[3]}%"></b></div>
-          </div>
-          <div class="seglabels"><span>75</span><span class="fl">150 floor</span><span>225</span><span>300</span></div>
-          <div class="step">
-            <button type="button" id="mvMinus" aria-label="Remove 25 calories" onclick="auroraStepMoveCal(-25, '${activeTrackingDate}')">-25</button>
-            <button type="button" id="mvPlus" class="add" aria-label="Add 25 calories" onclick="auroraStepMoveCal(25, '${activeTrackingDate}')">+25 cal</button>
-            <span class="muted">Log as you move</span>
-          </div>
-          <div class="chips m" id="mvAnch" role="group" aria-label="Move anchor">
-            <button type="button" aria-pressed="${moveAnchIdx === 0 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 0, '${activeTrackingDate}')">Off</button>
-            <button type="button" aria-pressed="${moveAnchIdx === 1 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 1, '${activeTrackingDate}')">25%</button>
-            <button type="button" aria-pressed="${moveAnchIdx === 2 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 2, '${activeTrackingDate}')">50%</button>
-            <button type="button" aria-pressed="${moveAnchIdx === 3 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 3, '${activeTrackingDate}')">75%</button>
-            <button type="button" aria-pressed="${moveAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('move', 4, '${activeTrackingDate}')">100%</button>
-          </div>
-          <span class="muted" id="mvPace">${escapeHtml(mvPaceText)}</span>
-        </section>
-
-        <section class="card panel span2" aria-labelledby="stT" id="section-stand-anchor">
-          <div class="between">
-            <span class="ttl" id="stT" style="color:var(--stand)">STAND</span>
-            <div class="row"><span class="num" id="standVal">${standVal}</span><span class="unit">/ 12 hrs</span></div>
-          </div>
-          <div class="tiles" id="tiles">
-            ${Array.from({ length: 12 }, (_, h) => `
-              <button type="button"
-                      class="${h === 5 ? 'floor' : ''}"
-                      aria-label="Stand hour ${h + 1}"
-                      aria-pressed="${hoursArr[h] ? 'true' : 'false'}"
-                      onclick="auroraToggleStandHour(${h}, '${activeTrackingDate}')">${h + 1}</button>
-            `).join('')}
-          </div>
-          <div class="between muted">
-            <span>Tap each hour you stand</span>
-            <span id="standNote" style="color:var(--text);font-weight:700">${escapeHtml(standNoteText)}</span>
-          </div>
-          <div class="chips s" id="stAnch" role="group" aria-label="Stand anchor">
-            <button type="button" aria-pressed="${standAnchIdx === 0 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 0, '${activeTrackingDate}')">Off</button>
-            <button type="button" aria-pressed="${standAnchIdx === 1 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 1, '${activeTrackingDate}')">25%</button>
-            <button type="button" aria-pressed="${standAnchIdx === 2 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 2, '${activeTrackingDate}')">50%</button>
-            <button type="button" aria-pressed="${standAnchIdx === 3 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 3, '${activeTrackingDate}')">75%</button>
-            <button type="button" aria-pressed="${standAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('stand', 4, '${activeTrackingDate}')">100%</button>
-          </div>
-          <span class="muted" id="stPace">${escapeHtml(stPaceText)}</span>
-        </section>
-
-        <section class="card panel span2" aria-labelledby="stepsT" id="section-steps-anchor">
-          <div class="between">
-            <span class="ttl" id="stepsT" style="color:var(--stand)">10K STEPS</span>
-            <div class="row"><span class="num" id="stepsVal">${stepsVal.toLocaleString()}</span><span class="unit">/ 10,000 steps</span></div>
-          </div>
-          <div class="segs" id="stepsSegs">
-            <div class="seg"><b style="width:${stepsSegWidths[0]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
-            <div class="seg floor"><b style="width:${stepsSegWidths[1]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
-            <div class="seg"><b style="width:${stepsSegWidths[2]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
-            <div class="seg"><b style="width:${stepsSegWidths[3]}%;background:linear-gradient(90deg,var(--stand-soft,rgba(92,225,240,.35)),var(--stand,#5CE1F0))"></b></div>
-          </div>
-          <div class="seglabels"><span>2.5k</span><span class="fl">5k floor</span><span>7.5k</span><span>10k</span></div>
-          <div class="step">
-            <button type="button" id="stepsMinus" aria-label="Remove 1,000 steps" onclick="auroraStepSteps(-1000, '${activeTrackingDate}')">-1k</button>
-            <button type="button" id="stepsPlus" class="add" aria-label="Add 1,000 steps" onclick="auroraStepSteps(1000, '${activeTrackingDate}')">+1k steps</button>
-            <span class="muted">Log your daily steps</span>
-          </div>
-          <div class="chips s" id="stepsAnch" role="group" aria-label="10K Steps progress">
-            <button type="button" aria-pressed="${stepsAnchIdx === 0 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 0, '${activeTrackingDate}')">Off</button>
-            <button type="button" aria-pressed="${stepsAnchIdx === 1 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 1, '${activeTrackingDate}')">25%</button>
-            <button type="button" aria-pressed="${stepsAnchIdx === 2 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 2, '${activeTrackingDate}')">50%</button>
-            <button type="button" aria-pressed="${stepsAnchIdx === 3 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 3, '${activeTrackingDate}')">75%</button>
-            <button type="button" aria-pressed="${stepsAnchIdx === 4 ? 'true' : 'false'}" onclick="auroraSetAnchorChip('steps', 4, '${activeTrackingDate}')">100%</button>
-          </div>
-          <span class="muted" id="stepsPace">${escapeHtml(stepsPaceText)}</span>
-        </section>
-
-        <button type="button" class="tile2 hair" id="hair" aria-pressed="${isHairDone ? 'true' : 'false'}" onclick="openHairCareLogModal('${activeTrackingDate}')">
-          <span class="label">HAIRCARE · ${escapeHtml(hairRoutine.badge)}</span>
-          <span class="v" id="hairV">${hairCareState.completed ? 'Done ✓' : (hairCareState.skipped ? 'Skipped ⏭️' : 'Pending · View Log')}</span>
-        </button>
-
-        <button type="button" class="tile2 skin" id="skincareTile" aria-pressed="${isSkinDone ? 'true' : 'false'}" onclick="openSkinCareLogModal('${activeTrackingDate}')">
-          <span class="label">SKINCARE · ${escapeHtml(skinRoutine.badge)}</span>
-          <span class="v" id="skinV">${skinCareState.completed ? 'Done ✓' : (skinCareState.skipped ? 'Skipped ⏭️' : (skinCareState.am && !skinCareState.pm ? 'AM Done 🌅' : (!skinCareState.am && skinCareState.pm ? 'PM Done 🌙' : 'Pending · View Log')))}</span>
-        </button>
-
-        <button type="button" class="tile2 zhub" id="zhub" onclick="openZLogEntryModal('${activeTrackingDate}')">
-          <span class="label">Z HUB</span>
-          <span class="v" id="zV">${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged ✓') : 'Log'}</span>
-        </button>
-
-        <button type="button" class="tile2 kitchen" id="kitchenTile" onclick="switchAppView('kitchen')" title="Kitchen: Stash, Saturday Meal Ritual & Grocery">
-          <span class="label">KITCHEN · MEAL RITUAL</span>
-          <span class="v" id="kitchenV">Plan Week ➔</span>
-        </button>
-
-      </div>
-
-      <div class="col c">
-
-        <div class="choice g" role="group" aria-label="Good choices" id="section-good-choices">
-          <span class="t">Good choices</span>
-          <div class="between">
-            <span class="n" id="goodN">${dateChoices.good || 0}</span>
-            <div class="step">
-              <button type="button" style="color:#04201A;border-color:#04201A" id="gMinus" aria-label="Remove good choice" onclick="recordChoiceAction('good', -1, '${activeTrackingDate}')">-</button>
-              <button type="button" style="background:#04201A;color:#fff;border-color:#04201A" id="gPlus" aria-label="Add good choice" onclick="recordChoiceAction('good', 1, '${activeTrackingDate}')">+</button>
+            <div class="s-choice-step-btns">
+              <button type="button" class="s-choice-step-btn" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">−</button>
+              <button type="button" class="s-choice-step-btn plus-bad" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">+1</button>
             </div>
           </div>
         </div>
 
-        <div class="choice b" role="group" aria-label="Not so good choices">
-          <span class="t">Not so good</span>
-          <div class="between">
-            <span class="n" id="badN">${dateChoices.not || 0}</span>
-            <div class="step">
-              <button type="button" style="color:#2A0603;border-color:#2A0603" id="bMinus" aria-label="Remove not so good choice" onclick="recordChoiceAction('not', -1, '${activeTrackingDate}')">-</button>
-              <button type="button" style="background:#2A0603;color:#fff;border-color:#2A0603" id="bPlus" aria-label="Add not so good choice" onclick="recordChoiceAction('not', 1, '${activeTrackingDate}')">+</button>
-            </div>
-          </div>
-        </div>
-
-        <section class="card span2" style="display:flex;flex-direction:column;gap:10px">
-          <span class="label">QUICK LOG</span>
-          <div class="quick" id="quick">
-            ${AURORA_GOOD_CHIPS.map(n => `
-              <button type="button"
-                      class="g"
-                      data-name="${escapeHtml(n)}"
-                      aria-pressed="${activeChips.includes(n) ? 'true' : 'false'}"
-                      onclick="auroraToggleQuickChip('${n.replace(/'/g, "\\'")}', 'g', '${activeTrackingDate}')">${escapeHtml(n)}</button>
-            `).join('')}
-            ${AURORA_BAD_CHIPS.map(n => `
-              <button type="button"
-                      class="b"
-                      data-name="${escapeHtml(n)}"
-                      aria-pressed="${activeChips.includes(n) ? 'true' : 'false'}"
-                      onclick="auroraToggleQuickChip('${n.replace(/'/g, "\\'")}', 'b', '${activeTrackingDate}')">${escapeHtml(n)}</button>
-            `).join('')}
-          </div>
-        </section>
-
-        <section class="card momentum span2 ${momentumTierClass}" id="section-momentum">
-          <div class="momentum-strip-left">
-            <span class="label">MOMENTUM</span>
-            <span class="big" id="net">${netMomentum >= 0 ? `+${netMomentum}` : netMomentum}</span>
-          </div>
-          <div class="momentum-strip-right">
-            <span class="momentum-pct" id="pos">${posPct}% positive</span>
-            <span class="momentum-sep">·</span>
-            <small id="allTime">${totalGoodAllTime} good / ${totalBadAllTime} not so good</small>
-          </div>
-        </section>
-
-        <section class="card checkin span2" aria-labelledby="ciT" id="section-sanctuary-journal">
-          <div class="between" style="align-items: center; margin-bottom: 2px;">
-            <h2 id="ciT" style="margin: 0;">Evening check-in</h2>
-            <button type="button" class="journal-archive-btn" onclick="openJournalArchiveModal()" title="View past reflections & archived journals">
-              <span>Archive</span>
-              ${allJournals.length > 0 ? `<span class="journal-archive-badge">${allJournals.length}</span>` : ''}
+        <div class="s-quick-chips-row">
+          <span style="font-size:10.5px; font-weight:700; color:var(--text-muted); margin-right:2px;">Quick:</span>
+          ${['Water', 'Protein', 'Walk'].map(c => `
+            <button type="button" class="s-quick-chip good ${activeChips.includes(c) ? 'is-active' : ''}" onclick="auroraToggleQuickChip('${c}', 'g', '${activeTrackingDate}')">
+              + ${c === 'Water' ? '💧 Water' : (c === 'Protein' ? '🍳 Protein' : '👟 Walk')}
             </button>
-          </div>
-          <div class="moods" id="moods" role="group" aria-label="How healthy do I feel">
-            ${MOOD_LABELS.map((lbl, idx) => `
-              <button type="button"
-                      aria-pressed="${activeMoodIdx === idx ? 'true' : 'false'}"
-                      onclick="auroraToggleMood(${idx}, '${activeTrackingDate}')">${lbl}</button>
-            `).join('')}
-          </div>
-          <label for="journal" class="muted" style="font-size:13px">How did your day feel?</label>
-          <textarea id="journal" class="aurora-journal" placeholder="Reflections, wins, or a brain dump" oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)">${escapeHtml(journalText)}</textarea>
-          <div class="between">
-            <span class="muted" id="saved">${journalText ? 'Saved' : 'Auto-saves as you type'}</span>
-          </div>
-          <button type="button" class="save" id="save" onclick="saveMockupJournalAction('${activeTrackingDate}')">Save journal</button>
-        </section>
+          `).join('')}
+          ${['Sugar', 'Late Screen'].map(c => `
+            <button type="button" class="s-quick-chip bad ${activeChips.includes(c) ? 'is-active' : ''}" onclick="auroraToggleQuickChip('${c}', 'b', '${activeTrackingDate}')">
+              + ${c === 'Sugar' ? '🍫 Sugar' : '📱 Screen'}
+            </button>
+          `).join('')}
+        </div>
+      </section>
 
-      </div>
+      <!-- WIDGET 4: TODAY'S FOCUS (Max 3 actions) -->
+      <section class="s-widget-card" id="section-todays-focus">
+        <div class="s-widget-head">
+          <div class="s-widget-title-group">
+            <span class="s-step-num c-focus">4</span>
+            <span class="s-widget-title">Today's Focus (Max 3)</span>
+          </div>
+          <span class="s-widget-hint">${customHabitsDone}/${customHabits.length} done</span>
+        </div>
+
+        <div class="s-focus-list">
+          ${customHabits.length === 0 ? `
+            <div style="font-size:12px; color:var(--text-muted); padding:4px 0;">No focus actions set for today. Add one below!</div>
+          ` : customHabits.map(g => `
+            <div class="s-focus-item">
+              <label class="s-focus-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                <input type="checkbox" class="s-focus-check" ${g.completed ? 'checked' : ''} onchange="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                <span class="s-focus-text ${g.completed ? 'is-done' : ''}">${escapeHtml(g.text)}</span>
+              </label>
+              <button type="button" class="s-focus-del-btn" title="Delete" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">×</button>
+            </div>
+          `).join('')}
+        </div>
+
+        <form onsubmit="submitQuickTodayGoal(event, '${activeTrackingDate}')" class="s-quick-goal-form">
+          <input type="text" id="s-quick-goal-input" placeholder="+ Add today's action (Press Enter)..." class="s-clean-input" required>
+          <button type="submit" class="s-btn-action" style="background:#6D28D9;">+</button>
+        </form>
+      </section>
+
+      <!-- WIDGET 5: VITALITY CHECKPOINTS -->
+      <section class="s-widget-card" id="section-vitality-checkpoints">
+        <div class="s-widget-head">
+          <div class="s-widget-title-group">
+            <span class="s-step-num c-vitality">5</span>
+            <span class="s-widget-title">Vitality Checkpoints</span>
+          </div>
+          <span class="s-widget-hint">Tap to edit or view</span>
+        </div>
+
+        <div class="s-vitality-grid">
+          <!-- Weight (Fillable on tap) -->
+          <div class="s-checkpoint-box" onclick="const inp=document.getElementById('s-weight-inline-input'); if(inp){inp.focus();}">
+            <div class="s-cp-head">
+              <span class="s-cp-label">Weight</span>
+              <span class="s-cp-view-link">Edit ✎</span>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:3px;">
+              <input type="number" step="0.1" id="s-weight-inline-input" value="${currentWeight !== null ? currentWeight.toFixed(1) : ''}" placeholder="${latestWeightEntry && latestWeightEntry.weight ? latestWeightEntry.weight.toFixed(1) : '--.-'}" class="s-clean-input" style="padding:2px 4px; width:52px; font-weight:800; font-size:12px; border:none; border-bottom:1px solid rgba(139,92,246,0.3); border-radius:0; background:transparent;" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" onclick="event.stopPropagation();">
+              <span style="font-size:11px; font-weight:700; color:var(--text-secondary);">lbs</span>
+            </div>
+            <div class="s-cp-sub" style="color:${isWeightAtTarget ? '#047857' : (weightDiff > 0 ? '#BE123C' : 'var(--text-muted)')}; font-weight:700;">
+              ${isWeightLogged ? (isWeightAtTarget ? '✓ On Target (110.0)' : (weightDiff > 0 ? `+${weightDiff.toFixed(1)} lbs` : `${weightDiff.toFixed(1)} lbs`)) : 'Target: 110.0'}
+            </div>
+          </div>
+
+          <!-- Hair & Skin (Pops up on tap) -->
+          <div class="s-checkpoint-box" onclick="openHairCareLogModal('${activeTrackingDate}')" title="Tap to view Hair & Skin routine schedule">
+            <div class="s-cp-head">
+              <span class="s-cp-label">Hair &amp; Skin</span>
+              <span class="s-cp-view-link">View ↗</span>
+            </div>
+            <div class="s-cp-val">${escapeHtml(hairRoutine ? hairRoutine.badge : 'Rest Day')} · ${isSkinDone ? 'Done ✓' : (skinCareState.am ? 'AM Done ✓' : 'Pending')}</div>
+            <div class="s-cp-sub">${escapeHtml(skinRoutine ? skinRoutine.badge : 'PM Routine Tonight')}</div>
+          </div>
+
+          <!-- Z Hub -->
+          <div class="s-checkpoint-box" onclick="openZLogEntryModal('${activeTrackingDate}')" title="Tap to open Z Hub log">
+            <div class="s-cp-head">
+              <span class="s-cp-label">Z Hub</span>
+              <span class="s-cp-view-link">Log ↗</span>
+            </div>
+            <div class="s-cp-val" style="color:var(--stand);">${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged ✓') : 'Daily Log'}</div>
+            <div class="s-cp-sub">${todayZLog && todayZLog.meds ? 'Meds Logged ✓' : 'Pending'}</div>
+          </div>
+
+          <!-- Dinner Tonight -->
+          <div class="s-checkpoint-box" onclick="switchAppView('kitchen')" title="Tap to open Kitchen Meal Ritual">
+            <div class="s-cp-head">
+              <span class="s-cp-label">Dinner Tonight</span>
+              <span class="s-cp-view-link">Menu ➔</span>
+            </div>
+            <div class="s-cp-val" title="${escapeHtml(tonightMeal)}">${escapeHtml(tonightMeal)}</div>
+            <div class="s-cp-sub" style="color:#6D28D9;">${escapeHtml(tonightSource)}</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WIDGET 6: EVENING REFLECTION (5 Original Options) -->
+      <section class="s-widget-card" id="section-evening-reflection">
+        <div class="s-widget-head">
+          <div class="s-widget-title-group">
+            <span class="s-step-num c-reflection">6</span>
+            <span class="s-widget-title">Evening Reflection</span>
+          </div>
+          <button type="button" class="journal-archive-btn" onclick="openJournalArchiveModal()" style="font-size:11px; font-weight:700; color:var(--primary); background:transparent; border:none; cursor:pointer;">
+            Archive (${allJournals.length})
+          </button>
+        </div>
+
+        <!-- 5 ORIGINAL MOOD BUTTONS -->
+        <div class="s-moods-row" role="group" aria-label="Vitality Level">
+          ${MOOD_LABELS.map((lbl, idx) => `
+            <button type="button" class="s-mood-btn ${activeMoodIdx === idx ? 'is-active' : ''}" onclick="auroraToggleMood(${idx}, '${activeTrackingDate}')">
+              ${lbl}
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="s-reflection-input-row">
+          <input type="text" value="${escapeHtml(journalText)}" placeholder="One win, insight, or how your day felt..." class="s-clean-input" oninput="handleSanctuaryJournalInput('${activeTrackingDate}', this.value)">
+        </div>
+      </section>
 
     </div>
   `;
+
 
   const hairModal = document.getElementById('modal-haircare-log');
   if (hairModal && hairModal.classList.contains('active') && typeof renderHairCareModalContent === 'function') {

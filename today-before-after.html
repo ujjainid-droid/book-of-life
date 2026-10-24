@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Margo · Today Tab: Numbered Workflow Architecture</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    :root {
+      --violet-primary: #8B5CF6;
+      --violet-deep: #6D28D9;
+      --teal-accent: #0D98BA;
+      --teal-soft: rgba(13, 152, 186, 0.12);
+      --coral-accent: #F87C71;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #F8FAFC;
+      color: #0F172A;
+      margin: 0;
+      padding: 0;
+    }
+    .view-card {
+      border-radius: 20px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      background: #FFFFFF;
+      box-shadow: 0 10px 30px -8px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+    .pill-btn {
+      transition: all 0.15s ease;
+    }
+    .tag-callout {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-good {
+      background: #EDE9FE;
+      color: #6D28D9;
+      border: 1px solid #DDD6FE;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: #6D28D9;
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .step-badge-challenge {
+      background: #4338CA;
+    }
+    .step-badge-choices {
+      background: #047857;
+    }
+    .step-badge-vitality {
+      background: #0369A1;
+    }
+    .modal-backdrop {
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body class="p-4 md:p-8">
+
+  <!-- Top Controller Bar -->
+  <div class="max-w-7xl mx-auto mb-8">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">Numbered Workflow</span>
+          <span class="text-xs text-slate-500 font-medium">Steps 1 through 6 clearly sequential</span>
+        </div>
+        <h1 class="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Today Tab: Numbered 6-Widget Ritual</h1>
+      </div>
+
+      <!-- Mode Switcher -->
+      <div class="flex items-center bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs font-bold gap-1 self-start md:self-auto">
+        <button id="btn-side" onclick="setViewMode('side')" class="pill-btn px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900">
+          ⚖️ Side-by-Side
+        </button>
+        <button id="btn-before" onclick="setViewMode('before')" class="pill-btn px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900">
+          🔴 Current (18 Widgets)
+        </button>
+        <button id="btn-after" onclick="setViewMode('after')" class="pill-btn px-4 py-2 rounded-lg bg-white text-slate-900 shadow-sm font-bold">
+          ✨ Numbered Layout (1 to 6)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Grid -->
+  <div class="max-w-7xl mx-auto">
+    <div id="views-container" class="max-w-2xl mx-auto">
+
+      <!-- =========================================================================
+           BEFORE VIEW (CURRENT REALITY)
+           ========================================================================= -->
+      <div id="before-column" class="view-card flex flex-col border-red-200" style="display:none;">
+        <div class="bg-red-50/80 border-b border-red-200 p-4 px-6 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-500"></span>
+              <span class="text-xs font-black uppercase tracking-wider text-red-900">CURRENT · 3 Columns</span>
+            </div>
+            <p class="text-xs text-red-700 mt-0.5 font-medium">18+ competing widgets · Multi-day date pickers · Dual steppers</p>
+          </div>
+          <span class="text-xs bg-red-100 text-red-800 font-bold px-2.5 py-1 rounded-lg">4,086 Lines JS</span>
+        </div>
+
+        <div class="p-6 space-y-4 bg-slate-50/50">
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <div class="text-xs font-bold text-slate-800">Bed Potato Mascot & Day Clock</div>
+            <div class="text-[11px] text-slate-500">Poke button, 2:00 PM floor percentage, quotes</div>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <div class="text-xs font-bold text-slate-800">Custom Habits with Date Ranges</div>
+            <div class="text-[11px] text-slate-500">Scope toggle, From/To date pickers, +3d, +7d, +14d chips</div>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <div class="text-xs font-bold text-slate-800">Redundant 10K Step Widgets</div>
+            <div class="text-[11px] text-slate-500">October campaign widget + duplicate 10K anchor in Col B</div>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-slate-200 space-y-1">
+            <div class="text-xs font-bold text-slate-800">Choices & 16 Quick Chips</div>
+            <div class="text-[11px] text-slate-500">Green & red counters, 16 individual chips, all-time math</div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- =========================================================================
+           AFTER VIEW (NUMBERED WIDGETS 1 THROUGH 6)
+           ========================================================================= -->
+      <div id="after-column" class="view-card flex flex-col border-purple-200 ring-2 ring-purple-100">
+        <!-- After Header Strip -->
+        <div class="bg-purple-50/80 border-b border-purple-200 p-4 px-6 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-purple-600 animate-pulse"></span>
+              <span class="text-xs font-black uppercase tracking-wider text-purple-950">TODAY · SANCTUARY</span>
+            </div>
+            <p class="text-xs text-purple-700 mt-0.5 font-medium">Simple. Visible. Next step. Done.</p>
+          </div>
+          <span class="text-xs bg-purple-100 text-purple-800 font-bold px-2.5 py-1 rounded-lg">6 Clear Steps</span>
+        </div>
+
+        <div class="p-5 md:p-6 space-y-4 bg-white">
+
+          <!-- TOP BAR: DATE & STREAK -->
+          <div class="bg-gradient-to-r from-purple-50 via-white to-cyan-50 p-4 rounded-xl border border-purple-100 shadow-xs flex items-center justify-between">
+            <div>
+              <div class="text-xs font-bold text-slate-500 uppercase tracking-wider">Saturday · Oct 24</div>
+              <div class="text-lg font-black text-slate-900">Daily Sanctuary</div>
+            </div>
+            <div class="text-right">
+              <div class="text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full inline-block">
+                🔥 142 Day Streak
+              </div>
+              <div class="text-[11px] text-slate-500 mt-1 font-semibold">Protected today</div>
+            </div>
+          </div>
+
+          <!-- WIDGET 1: PHYSICAL MOMENTUM (Core Anchors: Move & Stand) -->
+          <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="step-badge">1</span>
+                <span class="text-xs font-black text-slate-800 tracking-wide uppercase">Core Momentum Anchors</span>
+              </div>
+              <span class="text-[11px] text-slate-500 font-medium">Floor protects streak</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <!-- Move -->
+              <div class="bg-white p-2.5 px-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-slate-800">🏃‍♀️ Move</div>
+                  <div class="text-[10.5px] text-pink-600 font-semibold">150 cal floor / 300 target</div>
+                </div>
+                <!-- 3-Segmented Pill -->
+                <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 gap-0.5 text-xs font-bold">
+                  <button class="px-2 py-1 rounded text-slate-500">Off</button>
+                  <button class="px-2 py-1 rounded bg-pink-500 text-white shadow-xs">Floor</button>
+                  <button class="px-2 py-1 rounded text-slate-500">100%</button>
+                </div>
+              </div>
+
+              <!-- Stand -->
+              <div class="bg-white p-2.5 px-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-bold text-slate-800">🧍‍♀️ Stand</div>
+                  <div class="text-[10.5px] text-cyan-600 font-semibold">6 hr floor / 12 hr target</div>
+                </div>
+                <!-- 3-Segmented Pill -->
+                <div class="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200 gap-0.5 text-xs font-bold">
+                  <button class="px-2 py-1 rounded text-slate-500">Off</button>
+                  <button class="px-2 py-1 rounded text-slate-500">Floor</button>
+                  <button class="px-2 py-1 rounded bg-cyan-600 text-white shadow-xs">100%</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WIDGET 2: ACTIVE CHALLENGE (10K Steps · October) -->
+          <div class="bg-gradient-to-r from-indigo-50/70 via-white to-purple-50/70 p-3.5 rounded-xl border border-indigo-200/90 shadow-xs space-y-2">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="step-badge step-badge-challenge">2</span>
+                <span class="text-xs font-black text-indigo-900 tracking-wide">ACTIVE CHALLENGE · 10K STEPS (OCTOBER)</span>
+              </div>
+              <span class="text-[11px] font-bold text-slate-500">8d left · 23/31 logged</span>
+            </div>
+
+            <!-- Stats & Progress in 1 Slim Line -->
+            <div class="flex items-center justify-between text-xs">
+              <div class="flex items-baseline gap-1.5">
+                <span class="text-base font-black text-slate-900">9,438</span>
+                <span class="text-[11px] text-slate-500 font-medium">/ 10,000 avg</span>
+              </div>
+              <span class="text-[11px] text-indigo-700 font-bold">Needed: 11,618/d</span>
+            </div>
+
+            <div class="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-indigo-600 rounded-full w-[82%]"></div>
+            </div>
+
+            <!-- Slim Quick-Log Bar -->
+            <div class="flex items-center gap-2 pt-0.5">
+              <span class="text-[11px] font-bold text-slate-500">Today:</span>
+              <input type="number" placeholder="Enter steps (e.g. 10250)..." class="flex-1 text-xs p-1.5 px-2.5 rounded-lg border border-slate-200 bg-white focus:outline-none focus:border-indigo-500">
+              <button class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold px-3.5 py-1.5 rounded-lg shadow-xs">Log</button>
+            </div>
+          </div>
+
+          <!-- WIDGET 3: DAILY CHOICES & MOMENTUM (Slim Widget) -->
+          <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="step-badge step-badge-choices">3</span>
+                <span class="text-xs font-black text-slate-800 tracking-wide uppercase">Daily Choices</span>
+              </div>
+              <span class="text-xs font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">+8 Net (82% Good)</span>
+            </div>
+
+            <!-- Slim Side-by-Side Bar -->
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <!-- Good Choices Pill -->
+              <div class="bg-white p-2 px-2.5 rounded-lg border border-emerald-200 flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-emerald-800">Good:</span>
+                  <span class="font-black text-emerald-700 text-sm">7</span>
+                </div>
+                <div class="flex gap-1">
+                  <button class="w-6 h-6 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold hover:bg-emerald-100">−1</button>
+                  <button class="w-6 h-6 rounded bg-emerald-600 text-white font-bold hover:bg-emerald-700 shadow-xs">+1</button>
+                </div>
+              </div>
+
+              <!-- Not So Good Choices Pill -->
+              <div class="bg-white p-2 px-2.5 rounded-lg border border-rose-200 flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <span class="font-bold text-rose-800">Not so good:</span>
+                  <span class="font-black text-rose-700 text-sm">1</span>
+                </div>
+                <div class="flex gap-1">
+                  <button class="w-6 h-6 rounded bg-rose-50 text-rose-800 border border-rose-200 font-bold hover:bg-rose-100">−1</button>
+                  <button class="w-6 h-6 rounded bg-rose-600 text-white font-bold hover:bg-rose-700 shadow-xs">+1</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slim Quick Chips Row -->
+            <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+              <span class="text-[10.5px] font-bold text-slate-400 mr-1">Quick:</span>
+              <button class="text-[10.5px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold hover:bg-emerald-100">+ 💧 Water</button>
+              <button class="text-[10.5px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold hover:bg-emerald-100">+ 🍳 Protein</button>
+              <button class="text-[10.5px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 rounded-md font-semibold hover:bg-emerald-100">+ 👟 Walk</button>
+              <button class="text-[10.5px] bg-rose-50 text-rose-800 border border-rose-200 px-2 py-0.5 rounded-md font-semibold hover:bg-rose-100">+ 🍫 Sugar</button>
+              <button class="text-[10.5px] bg-rose-50 text-rose-800 border border-rose-200 px-2 py-0.5 rounded-md font-semibold hover:bg-rose-100">+ 📱 Screen</button>
+            </div>
+          </div>
+
+          <!-- WIDGET 4: TODAY'S FOCUS (Max 3 actions) -->
+          <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="step-badge">4</span>
+                <span class="text-xs font-black text-slate-800 tracking-wide uppercase">Today's Focus (Max 3)</span>
+              </div>
+              <span class="tag-callout tag-good">Next Step Only</span>
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="bg-white p-2 px-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 text-xs text-slate-700">
+                  <input type="checkbox" checked class="w-4 h-4 rounded text-purple-600 accent-purple-600">
+                  <span class="line-through text-slate-400 font-medium">Saturday grocery haul at Trader Joe's</span>
+                </div>
+                <span class="text-[11px] text-slate-400">Done ✓</span>
+              </div>
+
+              <div class="bg-white p-2 px-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 text-xs text-slate-700">
+                  <input type="checkbox" class="w-4 h-4 rounded text-purple-600 accent-purple-600">
+                  <span class="font-semibold text-slate-800">Pick up pottery clay starter set</span>
+                </div>
+                <span class="text-[10px] bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-bold">Hobby Tasting</span>
+              </div>
+
+              <div class="bg-white p-2 px-3 rounded-lg border border-slate-200 flex items-center justify-between">
+                <div class="flex items-center gap-2.5 text-xs text-slate-700">
+                  <input type="checkbox" class="w-4 h-4 rounded text-purple-600 accent-purple-600">
+                  <span class="font-semibold text-slate-800">Evening 20-min somatic stretch</span>
+                </div>
+                <span class="text-[10px] bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded font-bold">Vitality</span>
+              </div>
+            </div>
+
+            <input type="text" placeholder="+ Add today's action (Press Enter)..." class="w-full text-xs p-2 px-3 rounded-lg border border-slate-200 bg-white placeholder-slate-400 focus:outline-none focus:border-purple-500">
+          </div>
+
+          <!-- WIDGET 5: VITALITY CHECKPOINTS -->
+          <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="step-badge step-badge-vitality">5</span>
+                <span class="text-xs font-black text-slate-800 tracking-wide uppercase">Vitality Checkpoints</span>
+              </div>
+              <span class="text-[11px] text-slate-500 font-medium">Tap to edit or view</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+
+              <!-- WEIGHT: FILLABLE FIELD ON TAP -->
+              <div class="bg-white p-2.5 rounded-lg border border-slate-200 hover:border-purple-400 transition-all cursor-pointer" onclick="document.getElementById('weight-inline-input').focus()">
+                <div class="text-[10px] font-bold text-slate-400 uppercase">Weight</div>
+                <div class="flex items-center gap-1 mt-1">
+                  <input type="number" step="0.1" id="weight-inline-input" value="110.2" class="w-14 text-xs font-black text-slate-900 border-b border-purple-300 bg-transparent focus:outline-none focus:border-purple-600 py-0.5">
+                  <span class="text-[11px] font-bold text-slate-500">lbs</span>
+                </div>
+                <div class="text-[9.5px] text-emerald-600 font-semibold mt-1">✓ On Target (110.0)</div>
+              </div>
+
+              <!-- HAIR & SKIN: POPS UP ON TAP -->
+              <button type="button" class="bg-white p-2.5 rounded-lg border border-slate-200 hover:border-purple-400 text-left transition-all group" onclick="openHairSkinModal()">
+                <div class="flex items-center justify-between">
+                  <div class="text-[10px] font-bold text-slate-400 uppercase">Hair &amp; Skin</div>
+                  <span class="text-[9.5px] text-purple-600 font-bold group-hover:underline">View ↗</span>
+                </div>
+                <div class="text-xs font-black text-purple-700 mt-1 truncate">Rest · AM Done ✓</div>
+                <div class="text-[9.5px] text-slate-500 font-medium mt-1">PM Retinol Tonight</div>
+              </button>
+
+              <!-- Z HUB: 1-TAP POPUP -->
+              <button type="button" class="bg-white p-2.5 rounded-lg border border-slate-200 hover:border-purple-400 text-left transition-all">
+                <div class="text-[10px] font-bold text-slate-400 uppercase">Z Hub</div>
+                <div class="text-xs font-black text-cyan-700 mt-1">Calm 🌿</div>
+                <div class="text-[9.5px] text-emerald-600 font-semibold mt-1">Meds Logged ✓</div>
+              </button>
+
+              <!-- DINNER TONIGHT: 1-TAP TO KITCHEN -->
+              <button type="button" class="bg-white p-2.5 rounded-lg border border-slate-200 hover:border-purple-400 text-left transition-all">
+                <div class="text-[10px] font-bold text-slate-400 uppercase">Dinner Tonight</div>
+                <div class="text-xs font-black text-slate-800 mt-1 truncate">Garlic Salmon</div>
+                <div class="text-[9.5px] text-purple-700 font-semibold mt-1">Freezer Stash 🧊</div>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- WIDGET 6: EVENING REFLECTION (Original 5 Options) -->
+          <div class="p-3.5 rounded-xl border border-purple-100 bg-purple-50/40 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="step-badge">6</span>
+                <span class="text-xs font-black text-slate-800 uppercase tracking-wide">Evening Reflection</span>
+              </div>
+              <button class="text-[11px] text-purple-700 font-bold hover:underline">Archive (14)</button>
+            </div>
+
+            <!-- ORIGINAL 5 OPTIONS -->
+            <div class="grid grid-cols-5 gap-1.5 text-center">
+              <button class="py-1.5 px-1 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-purple-300">
+                Thriving
+              </button>
+              <button class="py-1.5 px-1 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-xs">
+                Solid
+              </button>
+              <button class="py-1.5 px-1 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-purple-300">
+                Surviving
+              </button>
+              <button class="py-1.5 px-1 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-purple-300">
+                Dragging
+              </button>
+              <button class="py-1.5 px-1 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:border-purple-300">
+                Zombie
+              </button>
+            </div>
+
+            <!-- Single line prompt -->
+            <input type="text" placeholder="One win, insight, or note from today..." class="w-full text-xs p-2 px-3 rounded-lg border border-slate-200 bg-white placeholder-slate-400 focus:outline-none focus:border-purple-500">
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- POPUP MODAL: HAIR & SKIN CARE ROUTINES (Triggered on tap of widget) -->
+  <div id="hair-skin-modal" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4" style="display:none;" onclick="if(event.target===this) closeHairSkinModal()">
+    <div class="bg-white rounded-2xl max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden animate-scaleIn">
+      <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-purple-50/60">
+        <div class="flex items-center gap-2">
+          <span class="text-base">✨</span>
+          <h3 class="text-sm font-black text-slate-900">Today's Hair &amp; Skincare Routines</h3>
+        </div>
+        <button onclick="closeHairSkinModal()" class="w-7 h-7 rounded-full bg-white text-slate-500 hover:text-slate-800 font-bold border border-slate-200 flex items-center justify-center">×</button>
+      </div>
+
+      <div class="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
+        <!-- Hair Section -->
+        <div class="p-3.5 bg-purple-50/40 rounded-xl border border-purple-100 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-purple-900 uppercase tracking-wider">💇‍♀️ Today's Hair Schedule</span>
+            <span class="text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded">Rest Day</span>
+          </div>
+          <p class="text-xs text-slate-700">No wash today. Scalp oil massage tonight if desired.</p>
+          <div class="text-[11px] text-slate-500 pt-1 border-t border-purple-100/80">
+            <strong>Upcoming:</strong> Sunday is Regular Wash · Wednesday is Bond Repair.
+          </div>
+        </div>
+
+        <!-- Skin Morning Section -->
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">🌅 Morning Skincare</span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Completed ✓</span>
+          </div>
+          <ol class="list-decimal list-inside text-xs text-slate-600 space-y-1">
+            <li>Gentle hydrating cleanser</li>
+            <li>Vitamin C serum (antioxidant shield)</li>
+            <li>Ceramide moisturizer + Mineral SPF 50</li>
+          </ol>
+        </div>
+
+        <!-- Skin Evening Section -->
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">🌙 Evening Skincare</span>
+            <span class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded">Pending Tonight</span>
+          </div>
+          <ol class="list-decimal list-inside text-xs text-slate-600 space-y-1">
+            <li>Double cleanse (Oil cleanser + Gentle foam)</li>
+            <li>Encapsulated Retinal (pea-sized amount)</li>
+            <li>Barrier repair night cream</li>
+          </ol>
+          <div class="pt-2">
+            <button class="w-full py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold shadow-xs">
+              Mark PM Routine Done (+10 XP)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function setViewMode(mode) {
+      const container = document.getElementById('views-container');
+      const beforeCol = document.getElementById('before-column');
+      const afterCol = document.getElementById('after-column');
+
+      const btnSide = document.getElementById('btn-side');
+      const btnBefore = document.getElementById('btn-before');
+      const btnAfter = document.getElementById('btn-after');
+
+      [btnSide, btnBefore, btnAfter].forEach(b => {
+        b.className = 'pill-btn px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900';
+      });
+
+      if (mode === 'side') {
+        btnSide.className = 'pill-btn px-4 py-2 rounded-lg bg-white text-slate-900 shadow-sm font-bold';
+        container.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8 items-start max-w-7xl mx-auto';
+        beforeCol.style.display = 'flex';
+        afterCol.style.display = 'flex';
+      } else if (mode === 'before') {
+        btnBefore.className = 'pill-btn px-4 py-2 rounded-lg bg-white text-slate-900 shadow-sm font-bold';
+        container.className = 'max-w-2xl mx-auto';
+        beforeCol.style.display = 'flex';
+        afterCol.style.display = 'none';
+      } else if (mode === 'after') {
+        btnAfter.className = 'pill-btn px-4 py-2 rounded-lg bg-white text-slate-900 shadow-sm font-bold';
+        container.className = 'max-w-2xl mx-auto';
+        beforeCol.style.display = 'none';
+        afterCol.style.display = 'flex';
+      }
+    }
+
+    function openHairSkinModal() {
+      document.getElementById('hair-skin-modal').style.display = 'flex';
+    }
+
+    function closeHairSkinModal() {
+      document.getElementById('hair-skin-modal').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
