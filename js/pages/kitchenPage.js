@@ -629,7 +629,11 @@ function renderKitchenPage() {
                     <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Dessert)">
                       ${(r.course || 'main').toUpperCase()}
                     </span>
-                    ${(r.tags && r.tags.length > 0 && !r.tags.every(t => t === 'Favorite')) ? r.tags.filter(t => t !== 'Favorite').map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('') : ''}
+                    ${(() => {
+                      const ignored = ['favorite', 'main', 'side', 'dessert'];
+                      const extraTags = (r.tags || []).filter(t => !ignored.includes(String(t).toLowerCase()));
+                      return extraTags.map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('');
+                    })()}
                   </div>
                 </div>
                 <button class="k-fav-del-btn" onclick="kDeleteFavorite('${r.id}', event)" title="Remove recipe from vault">×</button>
@@ -689,6 +693,11 @@ function renderKitchenPage() {
                     <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'new', event)" title="Click to cycle course (Main, Side, Dessert)">
                       ${(r.course || 'main').toUpperCase()}
                     </span>
+                    ${(() => {
+                      const ignored = ['favorite', 'main', 'side', 'dessert'];
+                      const extraTags = (r.tags || []).filter(t => !ignored.includes(String(t).toLowerCase()));
+                      return extraTags.map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('');
+                    })()}
                   </div>
                 </div>
                 <button class="k-fav-del-btn" onclick="kDeleteNewRecipe('${r.id}', event)" title="Delete recipe from queue">×</button>
@@ -1033,7 +1042,11 @@ function kSetModalMealType(newType, reFocus = true) {
       favsContainer.innerHTML = favs.map(r => `
         <div class="k-modal-pick-item" onclick="kSelectFavForMeal('${r.id}')">
           <div style="font-weight:600; color:var(--text-primary);">${escapeHtml(r.title)}</div>
-          <span style="font-size:11px; color:var(--text-muted);">${escapeHtml((r.tags || []).join(' · '))}</span>
+          <span style="font-size:11px; color:var(--text-muted);">${escapeHtml((() => {
+            const courseLabel = { main: 'Main 🍲', side: 'Side 🥗', dessert: 'Dessert 🍨' }[r.course || 'main'] || 'Main';
+            const extra = (r.tags || []).filter(t => !['main', 'side', 'dessert', 'favorite'].includes(String(t).toLowerCase()));
+            return [courseLabel, ...extra].join(' · ');
+          })())}</span>
         </div>
       `).join('');
     } else {
@@ -1444,7 +1457,7 @@ function kSubmitNewFavorite() {
     title: title,
     icon: icon,
     course: course,
-    tags: [course.charAt(0).toUpperCase() + course.slice(1)],
+    tags: [],
     recipeUrl: url,
     ingredients: notes,
     stashMatch: null
@@ -1565,6 +1578,10 @@ function kCycleRecipeCourse(id, collection, event) {
   const cycle = ['main', 'side', 'dessert'];
   const curIdx = cycle.indexOf(r.course || 'main');
   r.course = cycle[(curIdx + 1) % cycle.length];
+
+  if (Array.isArray(r.tags)) {
+    r.tags = r.tags.filter(t => !['main', 'side', 'dessert', 'favorite'].includes(String(t).toLowerCase()));
+  }
 
   storage.saveKitchenData(data);
   renderKitchenPage();

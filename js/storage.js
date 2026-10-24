@@ -4283,23 +4283,31 @@ class StorageManager {
         this.saveData();
       }
 
-      // Ensure recipes have course property (main, side, dessert)
+      // Ensure recipes have course property (main, side, dessert) and clean duplicate course tags
       const detectCourse = (r) => {
         if (r.course) return r.course;
         const text = `${r.title || ''} ${(r.tags || []).join(' ')} ${r.ingredients || ''}`.toLowerCase();
-        if (text.includes('dessert') || text.includes('cake') || text.includes('cookie') || text.includes('pie') || text.includes('ice cream') || text.includes('tart') || text.includes('brownie') || text.includes('sweet')) return 'dessert';
+        if (text.includes('dessert') || text.includes('cake') || text.includes('cookie') || text.includes('pie') || text.includes('ice cream') || text.includes('tart') || text.includes('brownie') || text.includes('sweet') || text.includes('parfait')) return 'dessert';
         if (text.includes('side') || text.includes('salad') || text.includes('slaw') || text.includes('rice') || text.includes('potato') || text.includes('greens') || text.includes('veggie') || text.includes('dip')) return 'side';
         return 'main';
+      };
+
+      const cleanCourseTags = (r) => {
+        if (Array.isArray(r.tags)) {
+          r.tags = r.tags.filter(t => !['main', 'side', 'dessert', 'favorite'].includes(t.toLowerCase()));
+        }
       };
 
       if (Array.isArray(kd.favoriteRecipes)) {
         kd.favoriteRecipes.forEach(r => {
           if (!r.course) r.course = detectCourse(r);
+          cleanCourseTags(r);
         });
       }
       if (Array.isArray(kd.newRecipes)) {
         kd.newRecipes.forEach(r => {
           if (!r.course) r.course = detectCourse(r);
+          cleanCourseTags(r);
         });
       }
 
