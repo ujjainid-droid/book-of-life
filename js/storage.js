@@ -4195,6 +4195,13 @@ class StorageManager {
   normalizeKitchenWeekDays(weekList) {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const list = Array.isArray(weekList) ? [...weekList] : [];
+    const toArr = (slot) => {
+      if (!slot) return [];
+      if (Array.isArray(slot)) return slot.filter(i => i && i.meal);
+      if (slot.meal) return [slot];
+      return [];
+    };
+
     while (list.length < 7) {
       const idx = list.length;
       const dayName = dayNames[idx];
@@ -4206,29 +4213,37 @@ class StorageManager {
         icon: (dayName === 'Fri') ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken'),
         recipeUrl: '',
         favoriteId: null,
-        meals: { brunch: null, lunch: null, dinner: null, dessert: null }
+        meals: { brunch: [], lunch: [], dinner: [], dessert: [] }
       });
     }
-    list.forEach(d => {
-      if (!d.meals || typeof d.meals !== 'object') {
-        d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
-      }
+
+    list.forEach((d, idx) => {
+      if (!d.day) d.day = dayNames[idx] || 'Day';
+      const meals = (d.meals && typeof d.meals === 'object') ? d.meals : {};
+      const dinnerArr = toArr(meals.dinner);
       // Migrate legacy single meal to dinner slot if dinner is empty
-      if (d.meal && !d.meals.dinner) {
-        d.meals.dinner = {
+      if (dinnerArr.length === 0 && d.meal) {
+        dinnerArr.push({
           meal: d.meal,
           source: d.source || 'fresh',
           icon: d.icon || 'chicken',
           recipeUrl: d.recipeUrl || '',
           favoriteId: d.favoriteId || null
-        };
+        });
       }
-      // Keep legacy fields in sync with dinner for external fallback readers
-      if (d.meals.dinner && d.meals.dinner.meal) {
-        d.meal = d.meals.dinner.meal;
-        d.source = d.meals.dinner.source || d.source || 'fresh';
-        d.icon = d.meals.dinner.icon || d.icon || 'chicken';
-        d.recipeUrl = d.meals.dinner.recipeUrl || '';
+      d.meals = {
+        brunch: toArr(meals.brunch),
+        lunch: toArr(meals.lunch),
+        dinner: dinnerArr,
+        dessert: toArr(meals.dessert)
+      };
+
+      // Keep legacy fields in sync with primary dinner entry
+      if (dinnerArr.length > 0) {
+        d.meal = dinnerArr[0].meal;
+        d.source = dinnerArr[0].source || 'fresh';
+        d.icon = dinnerArr[0].icon || 'chicken';
+        d.recipeUrl = dinnerArr[0].recipeUrl || '';
       }
     });
     return list;
@@ -4366,7 +4381,11 @@ class StorageManager {
           if (d.source === 'pantry') d.source = 'fresh';
           if (d.meals) {
             ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
-              if (d.meals[t] && d.meals[t].source === 'pantry') {
+              if (Array.isArray(d.meals[t])) {
+                d.meals[t].forEach(item => {
+                  if (item && item.source === 'pantry') item.source = 'fresh';
+                });
+              } else if (d.meals[t] && d.meals[t].source === 'pantry') {
                 d.meals[t].source = 'fresh';
               }
             });
