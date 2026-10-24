@@ -330,15 +330,20 @@ function renderKitchenPage() {
                 </div>
                 <div style="flex:1; min-width:0;">
                   <div class="k-fav-title">${escapeHtml(r.title)}</div>
-                  <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:2px;">
-                    ${(r.tags || []).map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('')}
-                  </div>
+                  ${(r.tags && r.tags.length > 0 && !r.tags.every(t => t === 'Favorite')) ? `
+                    <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:2px;">
+                      ${r.tags.map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('')}
+                    </div>
+                  ` : ''}
                 </div>
+                <button class="k-fav-del-btn" onclick="kDeleteFavorite('${r.id}', event)" title="Remove recipe from vault">×</button>
               </div>
 
-              <div class="k-fav-ingredients">
-                ${escapeHtml(r.ingredients || '')}
-              </div>
+              ${(r.ingredients && r.ingredients !== 'Custom recipe' && r.ingredients !== 'Favorite recipe') ? `
+                <div class="k-fav-ingredients">
+                  ${escapeHtml(r.ingredients)}
+                </div>
+              ` : ''}
 
               <div class="k-fav-footer">
                 ${r.recipeUrl ? `
@@ -765,6 +770,18 @@ function kAssignFavToDay(favId, dayIdxStr) {
   if (typeof showToast === 'function') showToast(`Assigned "${fav.title}" to ${data.weekSchedule[dayIdx].day} dinner! ✨`);
 }
 
+function kDeleteFavorite(favId, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  const fav = (data.favoriteRecipes || []).find(r => r.id === favId);
+  const title = fav ? fav.title : 'recipe';
+  data.favoriteRecipes = (data.favoriteRecipes || []).filter(r => r.id !== favId);
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Removed "${title}" from Favorites`);
+}
+window.kDeleteFavorite = kDeleteFavorite;
+
 function kOpenAddFavModal() {
   const urlEl = document.getElementById('k-new-fav-url');
   const titleEl = document.getElementById('k-new-fav-title');
@@ -819,9 +836,9 @@ function kSubmitNewFavorite() {
     id: 'r-' + Date.now(),
     title: title,
     icon: icon,
-    tags: ['Favorite'],
+    tags: [],
     recipeUrl: url,
-    ingredients: notes || 'Favorite recipe',
+    ingredients: notes,
     stashMatch: null
   });
 

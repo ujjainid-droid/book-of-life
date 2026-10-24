@@ -4217,7 +4217,7 @@ class StorageManager {
       this.saveData();
     } else {
       // Purge any legacy sample/placeholder records if still present in storage
-      if (!this.data.kitchenSampleCleared) {
+      if (!this.data.kitchenSampleClearedV2) {
         const kd = this.data.kitchenData;
         const sampleStashIds = new Set(['s1', 's2', 's3', 's4', 's5', 's6']);
         const sampleFavIds = new Set(['r1', 'r2', 'r3', 'r4', 'r5', 'r7']);
@@ -4235,7 +4235,10 @@ class StorageManager {
           kd.stashItems = kd.stashItems.filter(i => !sampleStashIds.has(i.id) && !i.name.toLowerCase().includes('salmon fillets (2 portions)'));
         }
         if (Array.isArray(kd.favoriteRecipes)) {
-          kd.favoriteRecipes = kd.favoriteRecipes.filter(r => !sampleFavIds.has(r.id) && !r.title.toLowerCase().includes('roasted salmon with broccoli'));
+          kd.favoriteRecipes = kd.favoriteRecipes.filter(r => {
+            const t = (r.title || '').toLowerCase().trim();
+            return !sampleFavIds.has(r.id) && t !== 'noodles' && !t.includes('roasted salmon with broccoli');
+          });
         }
         if (Array.isArray(kd.weekSchedule)) {
           kd.weekSchedule.forEach(d => {
@@ -4248,7 +4251,7 @@ class StorageManager {
         }
         kd.selectedHopperIngredients = [];
         if (!Array.isArray(kd.groceries)) kd.groceries = [];
-        this.data.kitchenSampleCleared = true;
+        this.data.kitchenSampleClearedV2 = true;
         this.saveData();
       }
     }
