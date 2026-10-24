@@ -680,27 +680,134 @@ body.dark .k-grocery-row.checked .k-grocery-check {
 }
 .k-grocery-del-btn:hover { color: var(--pal-coral); }
 
-/* Modals */
+/* Action Buttons */
+.k-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(139, 127, 214, 0.16);
+  color: #8B7FD6;
+  border: 1px solid rgba(139, 127, 214, 0.35);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  line-height: 1.2;
+  font-family: inherit;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+.k-btn-action:hover {
+  background: #8B7FD6;
+  color: #0F1020;
+  border-color: #8B7FD6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 127, 214, 0.28);
+}
+.k-btn-action:active {
+  transform: translateY(0);
+}
+.k-btn-action.k-btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, #6C2E7B 0%, #8B7FD6 100%);
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 11px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  border-radius: 10px;
+  margin-top: 6px;
+  box-shadow: 0 4px 14px rgba(108, 46, 123, 0.35);
+}
+.k-btn-action.k-btn-submit:hover {
+  background: linear-gradient(135deg, #7E3690 0%, #9A8FF0 100%);
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(108, 46, 123, 0.45);
+}
+
+/* Modals & Popups */
+.modal-content {
+  background: var(--bg-card, #181A33);
+  border-radius: 20px;
+  border: 1px solid var(--border-light, #2E3060);
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 22px 24px;
+  animation: modalScale 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--text-primary, #EDEEFF);
+}
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #9496BC);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+.modal-close:hover {
+  color: var(--text-primary, #EDEEFF);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.k-clean-input {
+  background: var(--bg-surface, #1C1D3A);
+  border: 1px solid var(--border-light, #2E3060);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-size: 13px;
+  color: var(--text-primary, #EDEEFF);
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.k-clean-input:focus {
+  border-color: #8B7FD6;
+  box-shadow: 0 0 0 3px rgba(139, 127, 214, 0.2);
+}
+.k-clean-input::placeholder {
+  color: var(--text-muted, #9496BC);
+  opacity: 0.7;
+}
+select.k-clean-input option {
+  background: #181A33;
+  color: #EDEEFF;
+}
+
 .k-modal-pick-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 200px;
+  max-height: 180px;
   overflow-y: auto;
+  padding-right: 4px;
 }
 .k-modal-pick-item {
-  background: var(--bg-surface, #F4F6F8);
-  border: 1px solid var(--border-card, rgba(31, 42, 68, 0.12));
-  border-radius: 8px;
-  padding: 8px 10px;
+  background: var(--bg-surface, #1C1D3A);
+  border: 1px solid var(--border-light, #2E3060);
+  border-radius: 10px;
+  padding: 9px 12px;
   font-size: 12.5px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease;
 }
 .k-modal-pick-item:hover {
-  border-color: var(--pal-azure);
-  background: var(--bg-card, #fff);
+  border-color: #8B7FD6;
+  background: rgba(139, 127, 214, 0.12);
+  transform: translateY(-1px);
 }

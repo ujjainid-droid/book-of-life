@@ -453,9 +453,12 @@ function renderKitchenPage() {
         </div>
 
         <!-- Add Custom Grocery Item Field -->
-        <div style="display:flex; gap:8px; margin-top:4px;">
+        <div style="display:flex; gap:8px; margin-top:4px; align-items:center;">
           <input type="text" class="k-clean-input" id="k-add-extra-grocery" placeholder="+ Add another grocery item (e.g. Oat milk, Coffee beans)..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
-          <button type="button" class="k-btn-action" onclick="kAddExtraGroceryItem()">+ Add Item</button>
+          <button type="button" class="k-btn-action" onclick="kAddExtraGroceryItem()">
+            <i data-lucide="plus" style="width:13px; height:13px;"></i>
+            <span>Add Item</span>
+          </button>
         </div>
       </section>
 
@@ -463,26 +466,26 @@ function renderKitchenPage() {
 
     <!-- MODAL: FAST 1-TAP DINNER ENTRY -->
     <div class="modal-overlay" id="k-fast-meal-modal" onclick="if(event.target===this) kCloseModal()">
-      <div class="modal-content">
+      <div class="modal-card" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
         <div class="modal-header">
           <h3 class="modal-title" id="k-fast-modal-title">Enter Dinner</h3>
-          <button class="modal-close" onclick="kCloseModal()">×</button>
+          <button class="icon-btn modal-close" onclick="kCloseModal()"><i data-lucide="x"></i></button>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; flex-direction:column; gap:14px;">
           <!-- 1. Type or Edit Custom Dish Directly -->
           <div>
-            <label style="font-size:11.5px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
-              ✏️ Dish Name &amp; Link:
+            <label style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+              Dish Name &amp; Link:
             </label>
-            <div style="display:flex; flex-direction:column; gap:6px; margin-top:6px;">
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
               <input type="text" class="k-clean-input" id="k-modal-custom-name" placeholder="Dish name (e.g. Lemon Garlic Butter Shrimp Pasta)...">
               <input type="url" class="k-clean-input" id="k-modal-custom-url" placeholder="Recipe URL (e.g. NYT Cooking or Paprika link)...">
 
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:2px;">
                 <div>
-                  <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Cartoon Food Icon:</label>
-                  <select id="k-modal-custom-icon" class="k-clean-input" style="margin-top:3px;">
+                  <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Food Icon:</label>
+                  <select id="k-modal-custom-icon" class="k-clean-input" style="margin-top:3px; width:100%;">
                     <option value="salmon">🐟 Salmon / Fish</option>
                     <option value="taco">🌮 Taco Bowl</option>
                     <option value="risotto">🍲 Risotto / Stew</option>
@@ -497,7 +500,7 @@ function renderKitchenPage() {
                 </div>
                 <div>
                   <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Source:</label>
-                  <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px;">
+                  <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px; width:100%;">
                     <option value="fresh">🛒 Fresh Grocery</option>
                     <option value="freezer">🧊 Freezer Stash</option>
                     <option value="pantry">🥫 Pantry Stash</option>
@@ -506,15 +509,15 @@ function renderKitchenPage() {
                 </div>
               </div>
 
-              <button type="button" class="k-btn-action" style="justify-content:center; padding:9px; margin-top:4px;" onclick="kSubmitCustomMeal()">
+              <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitCustomMeal()">
                 Save Dinner
               </button>
             </div>
           </div>
 
           <!-- 2. Pick from Stash -->
-          <div style="border-top:1px solid var(--border-card); padding-top:10px;">
-            <label style="font-size:11.5px; font-weight:700; color:var(--pal-azure); text-transform:uppercase; letter-spacing:0.04em;">
+          <div style="border-top:1px solid var(--border-light, #2E3060); padding-top:12px;">
+            <label style="font-size:11px; font-weight:700; color:#8B7FD6; text-transform:uppercase; letter-spacing:0.04em;">
               🧊 Or 1-Tap from Stash:
             </label>
             <div class="k-modal-pick-list" style="margin-top:6px;">
@@ -528,8 +531,8 @@ function renderKitchenPage() {
           </div>
 
           <!-- 3. Pick from Favorites -->
-          <div style="border-top:1px solid var(--border-card); padding-top:10px;">
-            <label style="font-size:11.5px; font-weight:700; color:var(--pal-coral); text-transform:uppercase; letter-spacing:0.04em;">
+          <div style="border-top:1px solid var(--border-light, #2E3060); padding-top:12px;">
+            <label style="font-size:11px; font-weight:700; color:#E75480; text-transform:uppercase; letter-spacing:0.04em;">
               💜 Or 1-Tap from Favorites:
             </label>
             <div class="k-modal-pick-list" style="margin-top:6px;">
@@ -547,22 +550,22 @@ function renderKitchenPage() {
 
     <!-- MODAL: ADD TO FAVORITES VAULT -->
     <div class="modal-overlay" id="k-add-fav-modal" onclick="if(event.target===this) kCloseAddFavModal()">
-      <div class="modal-content">
+      <div class="modal-card" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
         <div class="modal-header">
           <h3 class="modal-title">Add to Favorites Vault</h3>
-          <button class="modal-close" onclick="kCloseAddFavModal()">×</button>
+          <button class="icon-btn modal-close" onclick="kCloseAddFavModal()"><i data-lucide="x"></i></button>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; flex-direction:column; gap:12px;">
           <div>
-            <label style="font-size:11.5px; font-weight:600; color:var(--text-muted);">Recipe Title:</label>
-            <input type="text" class="k-clean-input" id="k-new-fav-title" placeholder="e.g. Crispy Honey Garlic Salmon" style="margin-top:3px;">
+            <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Recipe Title:</label>
+            <input type="text" class="k-clean-input" id="k-new-fav-title" placeholder="e.g. Crispy Honey Garlic Salmon" style="margin-top:4px; width:100%;">
           </div>
 
           <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
             <div>
-              <label style="font-size:11.5px; font-weight:600; color:var(--text-muted);">Cartoon Food Icon:</label>
-              <select id="k-new-fav-icon" class="k-clean-input" style="margin-top:3px;">
+              <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Food Icon:</label>
+              <select id="k-new-fav-icon" class="k-clean-input" style="margin-top:4px; width:100%;">
                 <option value="salmon">🐟 Salmon / Fish</option>
                 <option value="taco">🌮 Taco Bowl</option>
                 <option value="chicken">🍗 Chicken</option>
@@ -575,22 +578,22 @@ function renderKitchenPage() {
               </select>
             </div>
             <div>
-              <label style="font-size:11.5px; font-weight:600; color:var(--text-muted);">Tags:</label>
-              <input type="text" class="k-clean-input" id="k-new-fav-tags" placeholder="e.g. ⚡ 20m, 🧊 Freezer" style="margin-top:3px;">
+              <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Tags:</label>
+              <input type="text" class="k-clean-input" id="k-new-fav-tags" placeholder="e.g. ⚡ 20m, 🧊 Freezer" style="margin-top:4px; width:100%;">
             </div>
           </div>
 
           <div>
-            <label style="font-size:11.5px; font-weight:600; color:var(--text-muted);">Ingredients / Notes:</label>
-            <input type="text" class="k-clean-input" id="k-new-fav-ingredients" placeholder="Salmon, garlic, honey, soy sauce, greens" style="margin-top:3px;">
+            <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Ingredients / Notes:</label>
+            <input type="text" class="k-clean-input" id="k-new-fav-ingredients" placeholder="Salmon, garlic, honey, soy sauce, greens" style="margin-top:4px; width:100%;">
           </div>
 
           <div>
-            <label style="font-size:11.5px; font-weight:600; color:var(--text-muted);">Recipe URL (NYT / Paprika web link):</label>
-            <input type="url" class="k-clean-input" id="k-new-fav-url" placeholder="https://..." style="margin-top:3px;">
+            <label style="font-size:11px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em;">Recipe URL (NYT / Paprika web link):</label>
+            <input type="url" class="k-clean-input" id="k-new-fav-url" placeholder="https://..." style="margin-top:4px; width:100%;">
           </div>
 
-          <button type="button" class="k-btn-action" style="justify-content:center; padding:10px; margin-top:4px;" onclick="kSubmitNewFavorite()">
+          <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitNewFavorite()">
             Save to Favorites Vault
           </button>
         </div>
@@ -697,6 +700,7 @@ function kOpenMealPicker(dayIdx) {
   document.getElementById('k-modal-custom-source').value = d.source || 'fresh';
 
   document.getElementById('k-fast-meal-modal').classList.add('active');
+  if (window.lucide) lucide.createIcons();
 }
 
 function kSubmitCustomMeal() {
@@ -809,6 +813,7 @@ function kOpenAddFavModal() {
   document.getElementById('k-new-fav-ingredients').value = '';
   document.getElementById('k-new-fav-url').value = '';
   document.getElementById('k-add-fav-modal').classList.add('active');
+  if (window.lucide) lucide.createIcons();
 }
 
 function kSubmitNewFavorite() {
