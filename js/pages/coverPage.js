@@ -3140,7 +3140,7 @@ window.openHairCareLogModal = openHairCareLogModal;
 
 let skinCalendarCollapsed = true;
 let activeSkinSkipDate = null;
-let activeSkinCareTab = 'evening'; // 'evening' | 'morning' | 'rules' | 'shopping'
+let activeSkinCareTab = 'evening'; // 'evening' | 'morning' | 'rules'
 
 const SKIN_CARE_SCHEDULE_MAP = {
   1: { // Monday
@@ -3603,12 +3603,6 @@ function renderSkinCareCard(dateStr, isToday) {
     ? 'Today' 
     : dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
-  // Shopping list counts
-  const shoppingState = (typeof storage !== 'undefined' && typeof storage.getSkinCareShoppingList === 'function')
-    ? storage.getSkinCareShoppingList()
-    : {};
-  const boughtCount = SKIN_CARE_SHOPPING_ITEMS.filter(it => !!shoppingState[it.id]).length;
-
   // Header status pill
   let headerProgressPill = '1 Checkbox';
   let headerPillClass = '';
@@ -3899,44 +3893,6 @@ function renderSkinCareCard(dateStr, isToday) {
         </div>
       </div>
     `;
-  } else if (activeSkinCareTab === 'shopping') {
-    tabContentHtml = `
-      <div class="skin-shopping-container">
-        <div class="skin-shopping-header">
-          <div class="shopping-header-left">
-            <span class="skin-shopping-tag">Procurement</span>
-            <h4>Shopping List (3 New Items to Buy)</h4>
-            <p>Targeted core actives to complete the revitalizing weekly schedule</p>
-          </div>
-          <div class="shopping-status-badge ${boughtCount === SKIN_CARE_SHOPPING_ITEMS.length ? 'all-bought' : ''}">
-            ${boughtCount} / ${SKIN_CARE_SHOPPING_ITEMS.length} Bought
-          </div>
-        </div>
-
-        <div class="skin-shopping-list">
-          ${SKIN_CARE_SHOPPING_ITEMS.map(item => {
-            const isBought = !!shoppingState[item.id];
-            return `
-              <div class="skin-shopping-item ${isBought ? 'is-bought' : ''}" onclick="toggleSkinShoppingAction('${item.id}')">
-                <div class="custom-checkbox ${isBought ? 'checked' : ''}">
-                  ${isBought ? '✓' : ''}
-                </div>
-                <div class="shopping-item-content">
-                  <div class="shopping-item-top">
-                    <span class="shopping-item-name">${escapeHtml(item.name)}</span>
-                    <span class="shopping-item-role">${escapeHtml(item.role)}</span>
-                  </div>
-                  <p class="shopping-item-desc">${escapeHtml(item.desc)}</p>
-                </div>
-                <span class="shopping-item-pill ${isBought ? 'bought' : ''}">
-                  ${isBought ? 'Acquired ✓' : 'To Buy'}
-                </span>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-    `;
   }
 
   return `
@@ -3975,10 +3931,6 @@ function renderSkinCareCard(dateStr, isToday) {
         <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'rules' ? 'active' : ''}" onclick="setSkinCareTab('rules')" aria-selected="${activeSkinCareTab === 'rules'}">
           <span class="tab-icon">🛡️</span>
           <span>5 Golden Rules</span>
-        </button>
-        <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'shopping' ? 'active' : ''}" onclick="setSkinCareTab('shopping')" aria-selected="${activeSkinCareTab === 'shopping'}">
-          <span class="tab-icon">🛍️</span>
-          <span>Shopping (${boughtCount}/3)</span>
         </button>
       </div>
 
