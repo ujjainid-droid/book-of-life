@@ -23,18 +23,18 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.5.0">
-  <link rel="stylesheet" href="css/layout.css?v=9.5.0">
-  <link rel="stylesheet" href="css/cover.css?v=9.5.0">
-  <link rel="stylesheet" href="css/habits.css?v=9.5.0">
-  <link rel="stylesheet" href="css/tasks.css?v=9.5.0">
-  <link rel="stylesheet" href="css/settings.css?v=9.5.0">
-  <link rel="stylesheet" href="css/claims.css?v=9.5.0">
-  <link rel="stylesheet" href="css/zlog.css?v=9.5.0">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.5.0">
-  <link rel="stylesheet" href="css/finance.css?v=9.5.0">
-  <link rel="stylesheet" href="css/hobby.css?v=9.5.0">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.5.0">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.5.1">
+  <link rel="stylesheet" href="css/layout.css?v=9.5.1">
+  <link rel="stylesheet" href="css/cover.css?v=9.5.1">
+  <link rel="stylesheet" href="css/habits.css?v=9.5.1">
+  <link rel="stylesheet" href="css/tasks.css?v=9.5.1">
+  <link rel="stylesheet" href="css/settings.css?v=9.5.1">
+  <link rel="stylesheet" href="css/claims.css?v=9.5.1">
+  <link rel="stylesheet" href="css/zlog.css?v=9.5.1">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.5.1">
+  <link rel="stylesheet" href="css/finance.css?v=9.5.1">
+  <link rel="stylesheet" href="css/hobby.css?v=9.5.1">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.5.1">
 </head>
 <body>
 
@@ -542,6 +542,7 @@
               <label style="font-size:10.5px; font-weight:600; color:var(--text-muted);">Source:</label>
               <select id="k-modal-custom-source" class="k-clean-input" style="margin-top:3px; width:100%;">
                 <option value="pantry" selected>🥫 Pantry Stash</option>
+                <option value="fridge">🥬 Fridge Stash</option>
                 <option value="freezer">🧊 Freezer Stash</option>
                 <option value="fresh">🛒 Fresh Grocery</option>
                 <option value="out">🥡 Takeout / Eat Out</option>
@@ -606,7 +607,30 @@
           <textarea class="k-clean-input" id="k-new-fav-ingredients" rows="3" placeholder="Ingredients, quick notes, serving ideas..." style="margin-top:4px; width:100%; resize:vertical;"></textarea>
         </div>
 
-        <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitNewFavorite()">
+        <div>
+          <label class="form-label" style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
+            Course:
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top:4px; grid-template-columns: repeat(3, 1fr);">
+            <button type="button" class="k-modal-type-btn active" id="k-rcourse-main" onclick="kSetRecipeCourse('main')">🍲 Main</button>
+            <button type="button" class="k-modal-type-btn" id="k-rcourse-side" onclick="kSetRecipeCourse('side')">🥗 Side</button>
+            <button type="button" class="k-modal-type-btn" id="k-rcourse-dessert" onclick="kSetRecipeCourse('dessert')">🍨 Dessert</button>
+          </div>
+          <input type="hidden" id="k-new-recipe-course" value="main">
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
+            Save To:
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top:4px; grid-template-columns: 1fr 1fr;">
+            <button type="button" class="k-modal-type-btn active" id="k-rdest-vault" onclick="kSetRecipeDest('vault')">💜 Favorites Vault</button>
+            <button type="button" class="k-modal-type-btn" id="k-rdest-new" onclick="kSetRecipeDest('new')">🧪 New Recipes Queue</button>
+          </div>
+          <input type="hidden" id="k-new-recipe-dest" value="vault">
+        </div>
+
+        <button type="button" class="k-btn-action k-btn-submit" id="k-add-recipe-submit-btn" onclick="kSubmitNewFavorite()">
           Save Recipe to Vault
         </button>
       </div>
@@ -617,21 +641,21 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.5.0"></script>
-  <script src="js/zlogData.js?v=9.5.0"></script>
-  <script src="js/financeData.js?v=9.5.0"></script>
-  <script src="js/podcastData.js?v=9.5.0"></script>
-  <script src="js/pdfStore.js?v=9.5.0"></script>
-  <script src="js/storage.js?v=9.5.0"></script>
-  <script src="js/sync.js?v=9.5.0"></script>
-  <script src="js/pages/coverPage.js?v=9.5.0"></script>
-  <script src="js/pages/coverHubPage.js?v=9.5.0"></script>
-  <script src="js/pages/claimsPage.js?v=9.5.0"></script>
-  <script src="js/pages/zlogPage.js?v=9.5.0"></script>
-  <script src="js/pages/financePage.js?v=9.5.0"></script>
-  <script src="js/pages/hobbyPage.js?v=9.5.0"></script>
-  <script src="js/pages/kitchenPage.js?v=9.5.0"></script>
-  <script src="js/podcastAgent.js?v=9.5.0"></script>
-  <script src="js/app.js?v=9.5.0"></script>
+  <script src="js/margoData.js?v=9.5.1"></script>
+  <script src="js/zlogData.js?v=9.5.1"></script>
+  <script src="js/financeData.js?v=9.5.1"></script>
+  <script src="js/podcastData.js?v=9.5.1"></script>
+  <script src="js/pdfStore.js?v=9.5.1"></script>
+  <script src="js/storage.js?v=9.5.1"></script>
+  <script src="js/sync.js?v=9.5.1"></script>
+  <script src="js/pages/coverPage.js?v=9.5.1"></script>
+  <script src="js/pages/coverHubPage.js?v=9.5.1"></script>
+  <script src="js/pages/claimsPage.js?v=9.5.1"></script>
+  <script src="js/pages/zlogPage.js?v=9.5.1"></script>
+  <script src="js/pages/financePage.js?v=9.5.1"></script>
+  <script src="js/pages/hobbyPage.js?v=9.5.1"></script>
+  <script src="js/pages/kitchenPage.js?v=9.5.1"></script>
+  <script src="js/podcastAgent.js?v=9.5.1"></script>
+  <script src="js/app.js?v=9.5.1"></script>
 </body>
 </html>

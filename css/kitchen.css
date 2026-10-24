@@ -241,8 +241,10 @@ body.dark .k-stash-chip.is-used .k-stash-check {
 }
 .k-stash-tag-badge.freezer { background: var(--pal-seafoam-soft); color: #0E7490; }
 .k-stash-tag-badge.pantry { background: var(--pal-peach-soft); color: #92400E; }
+.k-stash-tag-badge.fridge { background: var(--pal-sage-soft, #EDF7ED); color: #2D6A4F; }
 body.dark .k-stash-tag-badge.freezer { color: var(--pal-seafoam); }
 body.dark .k-stash-tag-badge.pantry { color: var(--pal-peach); }
+body.dark .k-stash-tag-badge.fridge { background: rgba(45, 106, 79, 0.25); color: #74C69D; }
 
 .kitchen-stash-del-btn {
   background: transparent;
@@ -331,6 +333,25 @@ body.dark .k-btn-stash-add.freezer:hover { color: var(--pal-navy); }
 }
 body.dark .k-btn-stash-add.pantry { color: var(--pal-peach); }
 body.dark .k-btn-stash-add.pantry:hover { color: #1F2A44; }
+
+.k-btn-stash-add.fridge {
+  background: var(--pal-sage-soft, #EDF7ED);
+  border-color: #A3D9A5;
+  color: #2D6A4F;
+}
+.k-btn-stash-add.fridge:hover {
+  background: #D8F3DC;
+  color: #1B4332;
+}
+body.dark .k-btn-stash-add.fridge {
+  background: rgba(45, 106, 79, 0.25);
+  border-color: rgba(116, 198, 157, 0.4);
+  color: #74C69D;
+}
+body.dark .k-btn-stash-add.fridge:hover {
+  color: #fff;
+  background: rgba(45, 106, 79, 0.45);
+}
 
 /* STEP 2: 7-NIGHT DINNER CADENCE */
 .k-week-list {
@@ -469,11 +490,13 @@ body.dark .k-btn-stash-add.pantry:hover { color: #1F2A44; }
 }
 .k-source-pill.freezer { background: var(--pal-seafoam-soft); color: #0E7490; border: 1px solid var(--pal-seafoam); }
 .k-source-pill.pantry { background: var(--pal-peach-soft); color: #92400E; border: 1px solid var(--pal-peach); }
+.k-source-pill.fridge { background: var(--pal-sage-soft, #EDF7ED); color: #2D6A4F; border: 1px solid #A3D9A5; }
 .k-source-pill.fresh { background: var(--pal-azure-soft); color: var(--pal-azure); border: 1px solid rgba(29,113,184,0.3); }
 .k-source-pill.out { background: var(--pal-coral-soft); color: var(--pal-coral); border: 1px solid var(--pal-coral); font-weight: 800; }
 
 body.dark .k-source-pill.freezer { color: var(--pal-seafoam); }
 body.dark .k-source-pill.pantry { color: var(--pal-peach); }
+body.dark .k-source-pill.fridge { background: rgba(45, 106, 79, 0.25); color: #74C69D; border-color: rgba(116, 198, 157, 0.4); }
 body.dark .k-source-pill.fresh { color: #60A5FA; }
 
 .k-recipe-web-link {
@@ -1196,5 +1219,124 @@ body.dark .k-modal-type-btn {
 body.dark .k-modal-type-btn.active {
   background: #1D71B8;
   border-color: #60A5FA;
+  color: #fff;
+}
+
+/* Course badges (Main, Side, Dessert) */
+.k-course-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 5px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.k-course-badge:hover {
+  transform: scale(1.05);
+}
+.k-course-badge.main {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid rgba(29, 78, 216, 0.2);
+}
+.k-course-badge.side {
+  background: var(--pal-sage-soft, #EDF7ED);
+  color: #2D6A4F;
+  border: 1px solid rgba(45, 106, 79, 0.2);
+}
+.k-course-badge.dessert {
+  background: #FCE7F3;
+  color: #BE185D;
+  border: 1px solid rgba(190, 24, 93, 0.2);
+}
+body.dark .k-course-badge.main {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93C5FD;
+  border-color: rgba(96, 165, 250, 0.3);
+}
+body.dark .k-course-badge.side {
+  background: rgba(45, 106, 79, 0.25);
+  color: #74C69D;
+  border-color: rgba(116, 198, 157, 0.3);
+}
+body.dark .k-course-badge.dessert {
+  background: rgba(244, 114, 182, 0.2);
+  color: #F472B6;
+  border-color: rgba(244, 114, 182, 0.3);
+}
+
+/* Vault filter & sort bar */
+.k-vault-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.k-vault-filter-chip {
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.1));
+  background: var(--bg-surface, #F4F6F8);
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.k-vault-filter-chip:hover {
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+}
+.k-vault-filter-chip.active {
+  background: var(--pal-azure-soft);
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+  font-weight: 700;
+}
+body.dark .k-vault-filter-chip {
+  background: var(--bg-surface, #1C1D3A);
+  border-color: var(--border-light, #2E3060);
+  color: var(--text-muted, #9496BC);
+}
+body.dark .k-vault-filter-chip.active {
+  background: rgba(29, 113, 184, 0.25);
+  border-color: #60A5FA;
+  color: #93C5FD;
+}
+
+/* Move to Vault button */
+.k-btn-move-vault {
+  background: #EDE9FE;
+  border: 1px solid #DDD6FE;
+  color: #6D28D9;
+  border-radius: 7px;
+  padding: 4px 9px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+.k-btn-move-vault:hover {
+  background: #8B5CF6;
+  border-color: #8B5CF6;
+  color: #fff;
+}
+body.dark .k-btn-move-vault {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: #C084FC;
+}
+body.dark .k-btn-move-vault:hover {
+  background: #8B5CF6;
   color: #fff;
 }

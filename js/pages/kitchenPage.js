@@ -257,8 +257,27 @@ function renderKitchenPage() {
     });
     return cnt;
   }, 0);
-  const target = data.eatOutTarget || 2;
+  const target = (typeof data.eatOutTarget === 'number') ? data.eatOutTarget : 1;
   const withinTarget = outCount <= target;
+
+  const newRecipes = data.newRecipes || [];
+  const vaultFilter = data.vaultFilter || 'all';
+
+  const favMainCount = favoriteRecipes.filter(r => (r.course || 'main') === 'main').length;
+  const favSideCount = favoriteRecipes.filter(r => r.course === 'side').length;
+  const favDessertCount = favoriteRecipes.filter(r => r.course === 'dessert').length;
+
+  const filteredFavs = favoriteRecipes.filter(r => {
+    if (vaultFilter === 'all') return true;
+    return (r.course || 'main') === vaultFilter;
+  });
+  const courseOrder = { main: 1, side: 2, dessert: 3 };
+  filteredFavs.sort((a, b) => {
+    const ca = courseOrder[a.course || 'main'] || 9;
+    const cb = courseOrder[b.course || 'main'] || 9;
+    if (ca !== cb) return ca - cb;
+    return (a.title || '').localeCompare(b.title || '');
+  });
 
   container.innerHTML = `
     <div class="kitchen-workflow-wrap">
@@ -290,14 +309,14 @@ function renderKitchenPage() {
         </div>
       </header>
 
-      <!-- STEP 1: SHOP THE STASH FIRST (2 Separate Buttons: Freezer & Pantry) -->
+      <!-- STEP 1: SHOP THE STASH FIRST (3 Separate Buttons: Pantry, Fridge & Freezer) -->
       <section class="k-section-box" id="k-sec-stash">
         <div class="k-sec-header">
           <div class="k-sec-title-group">
             <span class="k-step-indicator">STEP 1</span>
             <span class="k-sec-title">Shop Your Stash First</span>
           </div>
-          <span class="k-sec-hint">Tap checkbox when used · Tap name to assign to dinner</span>
+          <span class="k-sec-hint">Tap checkbox when used · Tap name to assign to meal</span>
         </div>
 
         <!-- Stash Chips -->
@@ -306,19 +325,22 @@ function renderKitchenPage() {
             <div class="k-stash-chip ${item.used ? 'is-used' : ''}">
               <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
               <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
-              <span class="k-stash-tag-badge ${item.type}">${item.type === 'freezer' ? 'Freezer' : 'Pantry'}</span>
+              <span class="k-stash-tag-badge ${item.type}">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
               <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
             </div>
           `).join('') : `
-            <span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:4px 0;">No stash items saved yet. Use the buttons below to log what's in your freezer or pantry.</span>
+            <span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:4px 0;">No stash items saved yet. Use the buttons below to log what's in your pantry, fridge, or freezer.</span>
           `}
         </div>
 
-        <!-- 2 Separate Buttons: Pantry (Default on Enter) and Freezer -->
+        <!-- 3 Separate Buttons: Pantry (Default on Enter), Fridge, and Freezer -->
         <div class="k-stash-quick-bar">
           <input type="text" class="k-clean-input" id="k-stash-input" name="k_stash_input_new" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
           <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry (Default on Enter)">
             🥫 + Pantry
+          </button>
+          <button type="button" class="k-btn-stash-add fridge" onclick="kAddStashWithSource('fridge')" title="Add directly to Fridge">
+            🥬 + Fridge
           </button>
           <button type="button" class="k-btn-stash-add freezer" onclick="kAddStashWithSource('freezer')" title="Add directly to Freezer">
             🧊 + Freezer
@@ -499,7 +521,7 @@ function renderKitchenPage() {
         </div>
       </section>
 
-      <!-- STEP 3: HOUSEHOLD FAVORITES VAULT (Visible list) -->
+      <!-- STEP 3: HOUSEHOLD FAVORITES VAULT -->
       <section class="k-section-box" id="k-sec-favorites">
         <div class="k-sec-header">
           <div class="k-sec-title-group">
@@ -507,14 +529,30 @@ function renderKitchenPage() {
             <span class="k-sec-title">Household Favorites Vault</span>
             <span style="font-size:11px; font-weight:700; color:var(--text-muted);">(${favoriteRecipes.length} trusted recipes)</span>
           </div>
-          <button type="button" class="k-btn-action" onclick="kOpenAddFavModal()">
+          <button type="button" class="k-btn-action" onclick="kOpenAddFavModal('vault')">
             <i data-lucide="plus" style="width:13px; height:13px;"></i>
             <span>Add Recipe</span>
           </button>
         </div>
 
+        <!-- Tags filter bar for Main, Side, Dessert -->
+        <div class="k-vault-filter-bar">
+          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'all' ? 'active' : ''}" onclick="kSetVaultFilter('all')">
+            All (${favoriteRecipes.length})
+          </button>
+          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'main' ? 'active' : ''}" onclick="kSetVaultFilter('main')">
+            🍲 Main (${favMainCount})
+          </button>
+          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'side' ? 'active' : ''}" onclick="kSetVaultFilter('side')">
+            🥗 Side (${favSideCount})
+          </button>
+          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'dessert' ? 'active' : ''}" onclick="kSetVaultFilter('dessert')">
+            🍨 Dessert (${favDessertCount})
+          </button>
+        </div>
+
         <div class="k-favs-shelf">
-          ${favoriteRecipes.length > 0 ? favoriteRecipes.map(r => `
+          ${filteredFavs.length > 0 ? filteredFavs.map(r => `
             <div class="k-fav-card">
               <div class="k-fav-top">
                 <div class="k-avatar-icon" style="width:32px; height:32px;">
@@ -522,11 +560,12 @@ function renderKitchenPage() {
                 </div>
                 <div style="flex:1; min-width:0;">
                   <div class="k-fav-title">${escapeHtml(r.title)}</div>
-                  ${(r.tags && r.tags.length > 0 && !r.tags.every(t => t === 'Favorite')) ? `
-                    <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:2px;">
-                      ${r.tags.map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('')}
-                    </div>
-                  ` : ''}
+                  <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:3px;">
+                    <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Dessert)">
+                      ${(r.course || 'main').toUpperCase()}
+                    </span>
+                    ${(r.tags && r.tags.length > 0 && !r.tags.every(t => t === 'Favorite')) ? r.tags.filter(t => t !== 'Favorite').map(t => `<span style="font-size:9.5px; font-weight:700; padding:1px 5px; border-radius:4px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('') : ''}
+                  </div>
                 </div>
                 <button class="k-fav-del-btn" onclick="kDeleteFavorite('${r.id}', event)" title="Remove recipe from vault">×</button>
               </div>
@@ -577,18 +616,108 @@ function renderKitchenPage() {
             </div>
           `).join('') : `
             <div style="grid-column: 1 / -1; padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
-              No recipes in your vault yet. Tap <strong>+ Add Recipe</strong> above to save a favorite! 💜
+              No recipes in this vault filter yet. Tap <strong>+ Add Recipe</strong> above to save one! 💜
             </div>
           `}
         </div>
       </section>
 
-      <!-- STEP 4: VISIBLE GROCERY LIST & THINGS 3 EXPORTER -->
+      <!-- STEP 4: NEW RECIPES QUEUE (Want to Try) -->
+      <section class="k-section-box" id="k-sec-new-recipes">
+        <div class="k-sec-header">
+          <div class="k-sec-title-group">
+            <span class="k-step-indicator" style="background:#EDE9FE; color:#6D28D9;">WANT TO TRY</span>
+            <span class="k-sec-title">New Recipes Queue</span>
+            <span style="font-size:11px; font-weight:700; color:var(--text-muted);">(${newRecipes.length} to test)</span>
+          </div>
+          <button type="button" class="k-btn-action" onclick="kOpenAddFavModal('new')">
+            <i data-lucide="plus" style="width:13px; height:13px;"></i>
+            <span>Add Recipe to Try</span>
+          </button>
+        </div>
+
+        <div class="k-favs-shelf">
+          ${newRecipes.length > 0 ? newRecipes.map(r => `
+            <div class="k-fav-card" style="border-left: 3px solid #8B5CF6;">
+              <div class="k-fav-top">
+                <div class="k-avatar-icon" style="width:32px; height:32px;">
+                  ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.chicken}
+                </div>
+                <div style="flex:1; min-width:0;">
+                  <div class="k-fav-title">${escapeHtml(r.title)}</div>
+                  <div style="display:flex; gap:4px; flex-wrap:wrap; margin-top:3px;">
+                    <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'new', event)" title="Click to cycle course (Main, Side, Dessert)">
+                      ${(r.course || 'main').toUpperCase()}
+                    </span>
+                  </div>
+                </div>
+                <button class="k-fav-del-btn" onclick="kDeleteNewRecipe('${r.id}', event)" title="Delete recipe from queue">×</button>
+              </div>
+
+              ${r.ingredients ? `
+                <div class="k-fav-ingredients">
+                  ${escapeHtml(r.ingredients)}
+                </div>
+              ` : ''}
+
+              <div class="k-fav-footer" style="flex-wrap:wrap; gap:6px;">
+                ${r.recipeUrl ? `
+                  <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-web-link">
+                    <i data-lucide="external-link" style="width:10px; height:10px;"></i>
+                    <span>Recipe</span>
+                  </a>
+                ` : `<span></span>`}
+
+                <div style="display:flex; gap:6px; align-items:center;">
+                  <button type="button" class="k-btn-move-vault" onclick="kMoveNewRecipeToVault('${r.id}')" title="Love this recipe? Move it to your Household Favorites Vault!">
+                    <span>Move to Vault 💜</span>
+                  </button>
+
+                  <select class="k-assign-select" onchange="kAssignNewRecipeToMeal('${r.id}', this.value); this.value='';">
+                    <option value="">Assign to...</option>
+                    <optgroup label="${weekOffset === 1 ? 'Next Wk Dinners' : 'Dinners'}">
+                      <option value="0:dinner">Sun Dinner</option>
+                      <option value="1:dinner">Mon Dinner</option>
+                      <option value="2:dinner">Tue Dinner</option>
+                      <option value="3:dinner">Wed Dinner</option>
+                      <option value="4:dinner">Thu Dinner</option>
+                      <option value="5:dinner">Fri Dinner (Takeout)</option>
+                      <option value="6:dinner">Sat Dinner</option>
+                    </optgroup>
+                    <optgroup label="${weekOffset === 1 ? 'Next Wk Lunches' : 'Lunches'}">
+                      <option value="0:lunch">Sun Lunch</option>
+                      <option value="1:lunch">Mon Lunch</option>
+                      <option value="2:lunch">Tue Lunch</option>
+                      <option value="3:lunch">Wed Lunch</option>
+                      <option value="4:lunch">Thu Lunch</option>
+                      <option value="5:lunch">Fri Lunch</option>
+                      <option value="6:lunch">Sat Lunch</option>
+                    </optgroup>
+                    <optgroup label="${weekOffset === 1 ? 'Next Wk Brunch &amp; Desserts' : 'Brunch &amp; Desserts'}">
+                      <option value="0:brunch">Sun Brunch</option>
+                      <option value="6:brunch">Sat Brunch</option>
+                      <option value="5:dessert">Fri Dessert</option>
+                      <option value="6:dessert">Sat Dessert</option>
+                      <option value="0:dessert">Sun Dessert</option>
+                    </optgroup>
+                  </select>
+                </div>
+              </div>
+            </div>
+          `).join('') : `
+            <div style="grid-column: 1 / -1; padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
+              🧪 No new recipes queued yet. Found an exciting dish to try? Tap <strong>+ Add Recipe to Try</strong> to test it before moving to your Vault!
+            </div>
+          `}
+        </div>
+      </section>
+
+      <!-- STEP 5: VISIBLE GROCERY LIST & THINGS 3 EXPORTER -->
       <section class="k-grocery-card" id="k-sec-groceries">
         <div class="k-grocery-top-bar">
           <div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <span class="k-step-indicator" style="background:var(--pal-sage-soft); color:#3B6B35;">STEP 3</span>
+              <span class="k-step-indicator" style="background:var(--pal-sage-soft); color:#3B6B35;">STEP 5</span>
               <span style="font-size:16px; font-weight:700; color:var(--text-primary);">Verify Grocery List</span>
               <span style="font-size:12px; font-weight:700; color:var(--text-muted);">(${groceryItems.filter(g => !g.checked).length} items needed)</span>
             </div>
@@ -679,7 +808,7 @@ function kDeleteStash(id) {
   if (typeof showToast === 'function') showToast('Removed stash item');
 }
 
-// 2 Separate Buttons: Pantry (default on Enter) and Freezer
+// 3 Separate Buttons: Pantry (default on Enter), Fridge, and Freezer
 function kAddStashWithSource(sourceType = 'pantry') {
   const input = document.getElementById('k-stash-input');
   if (!input) return;
@@ -689,19 +818,21 @@ function kAddStashWithSource(sourceType = 'pantry') {
     return;
   }
 
+  const badgeName = sourceType === 'freezer' ? 'Freezer' : (sourceType === 'fridge' ? 'Fridge' : 'Pantry');
+
   const data = storage.getKitchenData();
   if (!data.stashItems) data.stashItems = [];
   data.stashItems.push({
     id: 's-' + Date.now(),
     type: sourceType,
     name: val,
-    badge: sourceType === 'freezer' ? 'Freezer' : 'Pantry',
+    badge: badgeName,
     used: false
   });
   storage.saveKitchenData(data);
   input.value = '';
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(`Added "${val}" to ${sourceType === 'freezer' ? 'Freezer' : 'Pantry'}!`);
+  if (typeof showToast === 'function') showToast(`Added "${val}" to ${badgeName}!`);
 }
 
 function kAssignStashDirect(name, type) {
@@ -1042,7 +1173,7 @@ function kCycleSlotSource(dayIdx, mealType, event) {
   if (!d || !d.meals || !d.meals[mealType]) return;
 
   const slot = d.meals[mealType];
-  const cycle = ['pantry', 'freezer', 'fresh', 'out'];
+  const cycle = ['pantry', 'fridge', 'freezer', 'fresh', 'out'];
   const curIdx = cycle.indexOf(slot.source);
   const nextSource = cycle[(curIdx + 1) % cycle.length];
   slot.source = nextSource;
@@ -1167,7 +1298,45 @@ function kDeleteFavorite(favId, event) {
 }
 window.kDeleteFavorite = kDeleteFavorite;
 
-function kOpenAddFavModal() {
+function kSetVaultFilter(filter) {
+  const data = storage.getKitchenData();
+  data.vaultFilter = filter;
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+}
+window.kSetVaultFilter = kSetVaultFilter;
+
+function kSetRecipeCourse(course) {
+  const hiddenEl = document.getElementById('k-new-recipe-course');
+  if (hiddenEl) hiddenEl.value = course;
+  ['main', 'side', 'dessert'].forEach(c => {
+    const btn = document.getElementById(`k-rcourse-${c}`);
+    if (btn) {
+      if (c === course) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+}
+window.kSetRecipeCourse = kSetRecipeCourse;
+
+function kSetRecipeDest(dest) {
+  const hiddenEl = document.getElementById('k-new-recipe-dest');
+  if (hiddenEl) hiddenEl.value = dest;
+  ['vault', 'new'].forEach(d => {
+    const btn = document.getElementById(`k-rdest-${d}`);
+    if (btn) {
+      if (d === dest) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+  const submitBtn = document.getElementById('k-add-recipe-submit-btn');
+  if (submitBtn) {
+    submitBtn.textContent = dest === 'new' ? 'Save to New Recipes Queue' : 'Save Recipe to Vault';
+  }
+}
+window.kSetRecipeDest = kSetRecipeDest;
+
+function kOpenAddFavModal(preselectedDest = 'vault') {
   const urlEl = document.getElementById('k-new-fav-url');
   const titleEl = document.getElementById('k-new-fav-title');
   const notesEl = document.getElementById('k-new-fav-ingredients');
@@ -1178,19 +1347,27 @@ function kOpenAddFavModal() {
   if (notesEl) notesEl.value = '';
   if (hintEl) hintEl.textContent = '(only for recipes without URL - otherwise auto-pulled)';
 
+  kSetRecipeCourse('main');
+  kSetRecipeDest(preselectedDest);
+
   const modal = document.getElementById('k-add-fav-modal');
   if (modal) modal.classList.add('active');
   if (window.lucide) lucide.createIcons();
 }
+window.kOpenAddFavModal = kOpenAddFavModal;
 
 function kSubmitNewFavorite() {
   const urlEl = document.getElementById('k-new-fav-url');
   const titleEl = document.getElementById('k-new-fav-title');
   const notesEl = document.getElementById('k-new-fav-ingredients');
+  const courseEl = document.getElementById('k-new-recipe-course');
+  const destEl = document.getElementById('k-new-recipe-dest');
 
   const url = urlEl ? urlEl.value.trim() : '';
   let title = titleEl ? titleEl.value.trim() : '';
   const notes = notesEl ? notesEl.value.trim() : '';
+  const course = (courseEl ? courseEl.value : '') || 'main';
+  const dest = (destEl ? destEl.value : '') || 'vault';
 
   if (!title && url) {
     title = extractRecipeTitleFromUrl(url);
@@ -1213,28 +1390,129 @@ function kSubmitNewFavorite() {
     }
   }
 
-  const icon = detectRecipeIcon(title);
+  const icon = detectRecipeIcon(title, course === 'dessert' ? 'dessert' : 'dinner');
   const data = storage.getKitchenData();
-  if (!data.favoriteRecipes) data.favoriteRecipes = [];
 
-  data.favoriteRecipes.push({
+  const newEntry = {
     id: 'r-' + Date.now(),
     title: title,
     icon: icon,
-    tags: [],
+    course: course,
+    tags: [course.charAt(0).toUpperCase() + course.slice(1)],
     recipeUrl: url,
     ingredients: notes,
     stashMatch: null
-  });
+  };
+
+  if (dest === 'new') {
+    if (!Array.isArray(data.newRecipes)) data.newRecipes = [];
+    data.newRecipes.push(newEntry);
+    storage.saveKitchenData(data);
+    kCloseAddFavModal();
+    renderKitchenPage();
+    if (typeof showToast === 'function') showToast(`Added "${title}" to New Recipes Queue! 🧪`);
+  } else {
+    if (!Array.isArray(data.favoriteRecipes)) data.favoriteRecipes = [];
+    data.favoriteRecipes.push(newEntry);
+    storage.saveKitchenData(data);
+    kCloseAddFavModal();
+    renderKitchenPage();
+    if (typeof showToast === 'function') showToast(`Added "${title}" to Favorites Vault! 💜`);
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
+    }
+  }
+}
+window.kSubmitNewFavorite = kSubmitNewFavorite;
+
+function kMoveNewRecipeToVault(id) {
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.newRecipes)) data.newRecipes = [];
+  const idx = data.newRecipes.findIndex(r => r.id === id);
+  if (idx === -1) return;
+
+  const item = data.newRecipes.splice(idx, 1)[0];
+  if (!Array.isArray(data.favoriteRecipes)) data.favoriteRecipes = [];
+  data.favoriteRecipes.push(item);
 
   storage.saveKitchenData(data);
-  kCloseAddFavModal();
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(`Added "${title}" to Favorites Vault! 💜`);
+  if (typeof showToast === 'function') showToast(`Moved "${item.title}" to Favorites Vault! 💜`);
   if (typeof confetti === 'function') {
     confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
   }
 }
+window.kMoveNewRecipeToVault = kMoveNewRecipeToVault;
+
+function kDeleteNewRecipe(id, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.newRecipes)) return;
+  const item = data.newRecipes.find(r => r.id === id);
+  const title = item ? item.title : 'recipe';
+  data.newRecipes = data.newRecipes.filter(r => r.id !== id);
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Deleted "${title}" from New Recipes`);
+}
+window.kDeleteNewRecipe = kDeleteNewRecipe;
+
+function kAssignNewRecipeToMeal(id, targetStr) {
+  if (!targetStr) return;
+  const data = storage.getKitchenData();
+  const item = (data.newRecipes || []).find(r => r.id === id);
+  if (!item) return;
+
+  const parts = targetStr.split(':');
+  const dayIdx = parseInt(parts[0], 10);
+  const mealType = parts[1] || 'dinner';
+
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[dayIdx];
+  if (!d) return;
+  if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
+
+  d.meals[mealType] = {
+    meal: item.title,
+    source: 'fresh',
+    icon: item.icon || detectRecipeIcon(item.title, mealType),
+    recipeUrl: item.recipeUrl || '',
+    favoriteId: null
+  };
+
+  if (mealType === 'dinner') {
+    d.meal = item.title;
+    d.source = 'fresh';
+    d.icon = d.meals[mealType].icon;
+    d.recipeUrl = item.recipeUrl || '';
+  }
+
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  const label = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Meal';
+  if (typeof showToast === 'function') showToast(`Assigned "${item.title}" to ${d.day} ${label}! ✨`);
+}
+window.kAssignNewRecipeToMeal = kAssignNewRecipeToMeal;
+
+function kCycleRecipeCourse(id, collection, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  const list = collection === 'new' ? data.newRecipes : data.favoriteRecipes;
+  if (!Array.isArray(list)) return;
+  const r = list.find(item => item.id === id);
+  if (!r) return;
+
+  const cycle = ['main', 'side', 'dessert'];
+  const curIdx = cycle.indexOf(r.course || 'main');
+  r.course = cycle[(curIdx + 1) % cycle.length];
+
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  const labels = { main: 'Main 🍲', side: 'Side 🥗', dessert: 'Dessert 🍨' };
+  if (typeof showToast === 'function') showToast(`Updated "${r.title}" to ${labels[r.course]}`);
+}
+window.kCycleRecipeCourse = kCycleRecipeCourse;
 
 function kCloseModal() {
   const m = document.getElementById('k-fast-meal-modal');

@@ -4249,13 +4249,15 @@ class StorageManager {
 
     return {
       stashItems: [],
-      eatOutTarget: 2,
+      eatOutTarget: 1,
       selectedHopperIngredients: [],
       weekSchedule: makeWeek(),
       followingWeekSchedule: makeWeek(),
       activeWeekOffset: 0,
       activeMealFilter: 'all',
+      vaultFilter: 'all',
       favoriteRecipes: [],
+      newRecipes: [],
       groceries: []
     };
   }
@@ -4271,6 +4273,35 @@ class StorageManager {
       kd.followingWeekSchedule = this.normalizeKitchenWeekDays(kd.followingWeekSchedule);
       if (typeof kd.activeWeekOffset !== 'number') kd.activeWeekOffset = 0;
       if (!kd.activeMealFilter) kd.activeMealFilter = 'all';
+      if (!kd.vaultFilter) kd.vaultFilter = 'all';
+      if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
+
+      // Update eat-out target to 1x per week
+      if (!this.data.kitchenEatOutTargetV1Updated) {
+        kd.eatOutTarget = 1;
+        this.data.kitchenEatOutTargetV1Updated = true;
+        this.saveData();
+      }
+
+      // Ensure recipes have course property (main, side, dessert)
+      const detectCourse = (r) => {
+        if (r.course) return r.course;
+        const text = `${r.title || ''} ${(r.tags || []).join(' ')} ${r.ingredients || ''}`.toLowerCase();
+        if (text.includes('dessert') || text.includes('cake') || text.includes('cookie') || text.includes('pie') || text.includes('ice cream') || text.includes('tart') || text.includes('brownie') || text.includes('sweet')) return 'dessert';
+        if (text.includes('side') || text.includes('salad') || text.includes('slaw') || text.includes('rice') || text.includes('potato') || text.includes('greens') || text.includes('veggie') || text.includes('dip')) return 'side';
+        return 'main';
+      };
+
+      if (Array.isArray(kd.favoriteRecipes)) {
+        kd.favoriteRecipes.forEach(r => {
+          if (!r.course) r.course = detectCourse(r);
+        });
+      }
+      if (Array.isArray(kd.newRecipes)) {
+        kd.newRecipes.forEach(r => {
+          if (!r.course) r.course = detectCourse(r);
+        });
+      }
 
       // Purge any legacy sample/placeholder records if still present in storage
       if (!this.data.kitchenSampleClearedV3) {
