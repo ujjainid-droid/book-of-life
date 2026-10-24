@@ -15810,6 +15810,9 @@ body.dark-mode .protocol-sample-btn {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+  width: 100%;
 }
 
 .s-widget-head {
@@ -16152,25 +16155,31 @@ body.dark-mode .protocol-sample-btn {
 /* WIDGET 5: VITALITY CHECKPOINTS */
 .s-vitality-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
 }
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .s-vitality-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 }
 .s-checkpoint-box {
   background: var(--bg-surface, #F8FAFC);
   border: 1px solid var(--border-light, rgba(31, 42, 68, 0.08));
   border-radius: 12px;
-  padding: 10px 12px;
+  padding: 10px 11px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
   transition: all 0.15s ease;
   cursor: pointer;
   text-align: left;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 .s-checkpoint-box:hover {
   border-color: var(--primary, #8B5CF6);
@@ -16181,18 +16190,57 @@ body.dark-mode .protocol-sample-btn {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+  width: 100%;
 }
 .s-cp-label {
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
 }
 .s-cp-view-link {
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--primary, #8B5CF6);
+  flex-shrink: 0;
+}
+.s-weight-input-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  margin: 2px 0;
+}
+.s-weight-clean-input {
+  width: 100%;
+  max-width: 62px;
+  font-weight: 900;
+  font-size: 14px;
+  color: var(--text-primary);
+  border: none;
+  border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+  border-radius: 0;
+  background: transparent;
+  padding: 1px 2px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.s-weight-clean-input:focus {
+  border-bottom-color: var(--primary, #8B5CF6);
+}
+.s-weight-unit {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  flex-shrink: 0;
 }
 .s-cp-val {
   font-size: 12px;
@@ -16201,6 +16249,9 @@ body.dark-mode .protocol-sample-btn {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  min-width: 0;
+  display: block;
 }
 .s-cp-sub {
   font-size: 10px;
@@ -16209,6 +16260,9 @@ body.dark-mode .protocol-sample-btn {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
+  min-width: 0;
+  display: block;
 }
 
 /* WIDGET 6: EVENING REFLECTION */

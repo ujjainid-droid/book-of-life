@@ -1771,14 +1771,14 @@ function renderDailySheet() {
           <div class="s-checkpoint-box" onclick="const inp=document.getElementById('s-weight-inline-input'); if(inp){inp.focus();}">
             <div class="s-cp-head">
               <span class="s-cp-label">Weight</span>
-              <span class="s-cp-view-link">Edit ✎</span>
+              <span class="s-cp-view-link">✎</span>
             </div>
-            <div style="display:flex; align-items:baseline; gap:3px;">
-              <input type="number" step="0.1" id="s-weight-inline-input" value="${currentWeight !== null ? currentWeight.toFixed(1) : ''}" placeholder="${latestWeightEntry && latestWeightEntry.weight ? latestWeightEntry.weight.toFixed(1) : '--.-'}" class="s-clean-input" style="padding:2px 4px; width:52px; font-weight:800; font-size:12px; border:none; border-bottom:1px solid rgba(139,92,246,0.3); border-radius:0; background:transparent;" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" onclick="event.stopPropagation();">
-              <span style="font-size:11px; font-weight:700; color:var(--text-secondary);">lbs</span>
+            <div class="s-weight-input-wrap">
+              <input type="number" step="0.1" id="s-weight-inline-input" value="${currentWeight !== null ? currentWeight.toFixed(1) : ''}" placeholder="${latestWeightEntry && latestWeightEntry.weight ? latestWeightEntry.weight.toFixed(1) : '--.-'}" class="s-weight-clean-input" onchange="auroraSaveWeightInput(this.value, '${activeTrackingDate}')" onkeydown="if(event.key==='Enter')this.blur();" onclick="event.stopPropagation();">
+              <span class="s-weight-unit">lbs</span>
             </div>
             <div class="s-cp-sub" style="color:${isWeightAtTarget ? '#047857' : (weightDiff > 0 ? '#BE123C' : 'var(--text-muted)')}; font-weight:700;">
-              ${isWeightLogged ? (isWeightAtTarget ? '✓ On Target (110.0)' : (weightDiff > 0 ? `+${weightDiff.toFixed(1)} lbs` : `${weightDiff.toFixed(1)} lbs`)) : 'Target: 110.0'}
+              ${isWeightLogged ? (isWeightAtTarget ? '✓ On Target' : (weightDiff > 0 ? `+${weightDiff.toFixed(1)} lbs` : `${weightDiff.toFixed(1)} lbs`)) : 'Target: 110.0'}
             </div>
           </div>
 
