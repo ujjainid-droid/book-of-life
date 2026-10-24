@@ -658,19 +658,7 @@ function renderKitchenPage() {
                 <div class="k-avatar-icon-fav">
                   ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.chicken}
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div class="k-fav-title">${escapeHtml(r.title)}</div>
-                  <div style="display:flex; gap:3px; flex-wrap:wrap; margin-top:2px;">
-                    <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
-                      ${(r.course || 'main').toUpperCase()}
-                    </span>
-                    ${(() => {
-                      const ignored = ['favorite', 'main', 'side', 'brunch', 'dessert'];
-                      const extraTags = (r.tags || []).filter(t => !ignored.includes(String(t).toLowerCase()));
-                      return extraTags.map(t => `<span style="font-size:8.5px; font-weight:700; padding:1px 4px; border-radius:3px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('');
-                    })()}
-                  </div>
-                </div>
+                <div class="k-fav-title" style="flex:1; min-width:0;" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</div>
                 <button class="k-fav-del-btn" onclick="kDeleteFavorite('${r.id}', event)" title="Remove recipe from vault">×</button>
               </div>
 
@@ -688,9 +676,14 @@ function renderKitchenPage() {
                   </a>
                 ` : `<span></span>`}
 
-                <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'vault')" title="Assign recipe to a day and meal slot">
-                  <span>Assign 🗓️</span>
-                </button>
+                <div style="display:flex; gap:3px; align-items:center;">
+                  <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
+                    ${(r.course || 'main').toUpperCase()}
+                  </span>
+                  <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'vault')" title="Assign recipe to a day and meal slot">
+                    <span>Assign 🗓️</span>
+                  </button>
+                </div>
               </div>
             </div>
           `).join('') : `
@@ -722,19 +715,7 @@ function renderKitchenPage() {
                 <div class="k-avatar-icon-fav">
                   ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.chicken}
                 </div>
-                <div style="flex:1; min-width:0;">
-                  <div class="k-fav-title">${escapeHtml(r.title)}</div>
-                  <div style="display:flex; gap:3px; flex-wrap:wrap; margin-top:2px;">
-                    <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'new', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
-                      ${(r.course || 'main').toUpperCase()}
-                    </span>
-                    ${(() => {
-                      const ignored = ['favorite', 'main', 'side', 'brunch', 'dessert'];
-                      const extraTags = (r.tags || []).filter(t => !ignored.includes(String(t).toLowerCase()));
-                      return extraTags.map(t => `<span style="font-size:8.5px; font-weight:700; padding:1px 4px; border-radius:3px; background:var(--pal-azure-soft); color:var(--pal-azure);">${escapeHtml(t)}</span>`).join('');
-                    })()}
-                  </div>
-                </div>
+                <div class="k-fav-title" style="flex:1; min-width:0;" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</div>
                 <button class="k-fav-del-btn" onclick="kDeleteNewRecipe('${r.id}', event)" title="Delete recipe from queue">×</button>
               </div>
 
@@ -752,11 +733,13 @@ function renderKitchenPage() {
                   </a>
                 ` : `<span></span>`}
 
-                <div style="display:flex; gap:4px; align-items:center;">
+                <div style="display:flex; gap:2.5px; align-items:center;">
+                  <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'new', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
+                    ${(r.course || 'main').toUpperCase()}
+                  </span>
                   <button type="button" class="k-btn-move-vault" onclick="kMoveNewRecipeToVault('${r.id}')" title="Love this recipe? Move it to your Household Favorites Vault!">
                     <span>+ Vault 💜</span>
                   </button>
-
                   <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'new')" title="Assign recipe to a day and meal slot">
                     <span>Assign 🗓️</span>
                   </button>
