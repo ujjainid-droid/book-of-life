@@ -23,18 +23,18 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.4.4">
-  <link rel="stylesheet" href="css/layout.css?v=9.4.4">
-  <link rel="stylesheet" href="css/cover.css?v=9.4.4">
-  <link rel="stylesheet" href="css/habits.css?v=9.4.4">
-  <link rel="stylesheet" href="css/tasks.css?v=9.4.4">
-  <link rel="stylesheet" href="css/settings.css?v=9.4.4">
-  <link rel="stylesheet" href="css/claims.css?v=9.4.4">
-  <link rel="stylesheet" href="css/zlog.css?v=9.4.4">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.4.4">
-  <link rel="stylesheet" href="css/finance.css?v=9.4.4">
-  <link rel="stylesheet" href="css/hobby.css?v=9.4.4">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.4.4">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.5.0">
+  <link rel="stylesheet" href="css/layout.css?v=9.5.0">
+  <link rel="stylesheet" href="css/cover.css?v=9.5.0">
+  <link rel="stylesheet" href="css/habits.css?v=9.5.0">
+  <link rel="stylesheet" href="css/tasks.css?v=9.5.0">
+  <link rel="stylesheet" href="css/settings.css?v=9.5.0">
+  <link rel="stylesheet" href="css/claims.css?v=9.5.0">
+  <link rel="stylesheet" href="css/zlog.css?v=9.5.0">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.5.0">
+  <link rel="stylesheet" href="css/finance.css?v=9.5.0">
+  <link rel="stylesheet" href="css/hobby.css?v=9.5.0">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.5.0">
 </head>
 <body>
 
@@ -512,11 +512,24 @@
   <div class="modal-overlay" id="k-fast-meal-modal" onclick="if(event.target===this) kCloseModal()">
     <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
       <div class="modal-header">
-        <h3 class="modal-title" id="k-fast-modal-title">Enter Dinner</h3>
+        <h3 class="modal-title" id="k-fast-modal-title">Enter Meal</h3>
         <button class="icon-btn modal-close" onclick="kCloseModal()"><i data-lucide="x"></i></button>
       </div>
 
       <div style="display:flex; flex-direction:column; gap:14px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
+            Meal Type:
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top:6px;">
+            <button type="button" class="k-modal-type-btn" id="k-mtype-brunch" onclick="kSetModalMealType('brunch')">🍳 Brunch</button>
+            <button type="button" class="k-modal-type-btn" id="k-mtype-lunch" onclick="kSetModalMealType('lunch')">🥗 Lunch</button>
+            <button type="button" class="k-modal-type-btn active" id="k-mtype-dinner" onclick="kSetModalMealType('dinner')">🍲 Dinner</button>
+            <button type="button" class="k-modal-type-btn" id="k-mtype-dessert" onclick="kSetModalMealType('dessert')">🍨 Dessert</button>
+          </div>
+          <input type="hidden" id="k-modal-meal-type" value="dinner">
+        </div>
+
         <div>
           <label style="font-size:11px; font-weight:700; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.04em;">
             Dish Name &amp; Link:
@@ -535,9 +548,14 @@
               </select>
             </div>
 
-            <button type="button" class="k-btn-action k-btn-submit" onclick="kSubmitCustomMeal()">
-              Save Dinner
-            </button>
+            <div style="display:flex; gap:8px; margin-top:4px;">
+              <button type="button" class="k-btn-action k-btn-submit" id="k-modal-submit-btn" style="flex:1;" onclick="kSubmitCustomMeal()">
+                Save Meal
+              </button>
+              <button type="button" class="k-btn-action" id="k-modal-clear-btn" style="background:var(--bg-surface); color:var(--pal-coral); border:1px solid rgba(248,124,113,0.3); padding:0 14px;" onclick="kClearCurrentMealSlot()" title="Clear this meal slot">
+                Clear Slot
+              </button>
+            </div>
           </div>
         </div>
 
@@ -599,21 +617,21 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.4.4"></script>
-  <script src="js/zlogData.js?v=9.4.4"></script>
-  <script src="js/financeData.js?v=9.4.4"></script>
-  <script src="js/podcastData.js?v=9.4.4"></script>
-  <script src="js/pdfStore.js?v=9.4.4"></script>
-  <script src="js/storage.js?v=9.4.4"></script>
-  <script src="js/sync.js?v=9.4.4"></script>
-  <script src="js/pages/coverPage.js?v=9.4.4"></script>
-  <script src="js/pages/coverHubPage.js?v=9.4.4"></script>
-  <script src="js/pages/claimsPage.js?v=9.4.4"></script>
-  <script src="js/pages/zlogPage.js?v=9.4.4"></script>
-  <script src="js/pages/financePage.js?v=9.4.4"></script>
-  <script src="js/pages/hobbyPage.js?v=9.4.4"></script>
-  <script src="js/pages/kitchenPage.js?v=9.4.4"></script>
-  <script src="js/podcastAgent.js?v=9.4.4"></script>
-  <script src="js/app.js?v=9.4.4"></script>
+  <script src="js/margoData.js?v=9.5.0"></script>
+  <script src="js/zlogData.js?v=9.5.0"></script>
+  <script src="js/financeData.js?v=9.5.0"></script>
+  <script src="js/podcastData.js?v=9.5.0"></script>
+  <script src="js/pdfStore.js?v=9.5.0"></script>
+  <script src="js/storage.js?v=9.5.0"></script>
+  <script src="js/sync.js?v=9.5.0"></script>
+  <script src="js/pages/coverPage.js?v=9.5.0"></script>
+  <script src="js/pages/coverHubPage.js?v=9.5.0"></script>
+  <script src="js/pages/claimsPage.js?v=9.5.0"></script>
+  <script src="js/pages/zlogPage.js?v=9.5.0"></script>
+  <script src="js/pages/financePage.js?v=9.5.0"></script>
+  <script src="js/pages/hobbyPage.js?v=9.5.0"></script>
+  <script src="js/pages/kitchenPage.js?v=9.5.0"></script>
+  <script src="js/podcastAgent.js?v=9.5.0"></script>
+  <script src="js/app.js?v=9.5.0"></script>
 </body>
 </html>

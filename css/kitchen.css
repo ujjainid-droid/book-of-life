@@ -895,3 +895,306 @@ select.k-clean-input option {
   background: rgba(139, 127, 214, 0.12);
   transform: translateY(-1px);
 }
+
+/* ==========================================================================
+   MULTI-MEAL BOARD (Brunch, Lunch, Dinner, Dessert) & FOLLOWING WEEK STYLES
+   ========================================================================== */
+
+.k-week-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-surface, #F4F6F8);
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.08));
+  border-radius: 999px;
+  padding: 3px;
+  gap: 3px;
+}
+.k-week-toggle-btn {
+  border: none;
+  background: transparent;
+  padding: 5px 13px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.k-week-toggle-btn:hover {
+  color: var(--text-primary, #1F2A44);
+}
+.k-week-toggle-btn.active {
+  background: var(--bg-card, #fff);
+  color: var(--pal-azure, #1D71B8);
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(31, 42, 68, 0.08);
+}
+body.dark .k-week-toggle-btn.active {
+  background: var(--bg-card, #1E2333);
+  color: #60A5FA;
+}
+
+/* Filter bar for meal types */
+.k-meal-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.k-meal-filter-chip {
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.1));
+  background: var(--bg-surface, #F4F6F8);
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.k-meal-filter-chip:hover {
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+}
+.k-meal-filter-chip.active {
+  background: var(--pal-azure-soft);
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+  font-weight: 700;
+}
+body.dark .k-meal-filter-chip {
+  background: var(--bg-surface, #1C1D3A);
+  border-color: var(--border-light, #2E3060);
+  color: var(--text-muted, #9496BC);
+}
+body.dark .k-meal-filter-chip.active {
+  background: rgba(29, 113, 184, 0.25);
+  border-color: #60A5FA;
+  color: #93C5FD;
+}
+
+/* Day multi-slot container */
+.k-day-slots-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.k-slot-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card, #fff);
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.08));
+  border-radius: 9px;
+  padding: 6px 10px;
+  transition: all 0.15s ease;
+}
+.k-slot-row:hover {
+  border-color: var(--pal-azure);
+  box-shadow: 0 2px 8px rgba(31, 42, 68, 0.04);
+}
+body.dark .k-slot-row {
+  background: var(--bg-card, #1A1C30);
+  border-color: var(--border-light, #2E3060);
+}
+
+.k-slot-type-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 5px;
+  letter-spacing: 0.04em;
+  min-width: 58px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.k-slot-type-badge.brunch { background: #EDE9FE; color: #6D28D9; }
+.k-slot-type-badge.lunch { background: #E0F2FE; color: #0369A1; }
+.k-slot-type-badge.dinner { background: #EFF6FF; color: #1D4ED8; }
+.k-slot-type-badge.dessert { background: #FCE7F3; color: #BE185D; }
+body.dark .k-slot-type-badge.brunch { background: rgba(139, 92, 246, 0.25); color: #C084FC; }
+body.dark .k-slot-type-badge.lunch { background: rgba(14, 116, 144, 0.25); color: #38BDF8; }
+body.dark .k-slot-type-badge.dinner { background: rgba(59, 130, 246, 0.25); color: #93C5FD; }
+body.dark .k-slot-type-badge.dessert { background: rgba(244, 114, 182, 0.25); color: #F472B6; }
+
+.k-avatar-icon-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: var(--bg-surface, #F4F6F8);
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.k-avatar-icon-sm svg {
+  width: 18px;
+  height: 18px;
+}
+body.dark .k-avatar-icon-sm {
+  background: #181A33;
+  border-color: #2E3060;
+}
+
+.k-slot-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+.k-slot-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1F2A44);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.k-slot-title:hover {
+  color: var(--pal-azure);
+}
+body.dark .k-slot-title {
+  color: #EDEEFF;
+}
+
+.k-btn-edit-sm {
+  background: var(--bg-surface, #F4F6F8);
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.1));
+  border-radius: 6px;
+  padding: 3px 7px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--text-secondary, #475569);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+.k-btn-edit-sm:hover {
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+}
+body.dark .k-btn-edit-sm {
+  background: #181A33;
+  border-color: #2E3060;
+  color: #9496BC;
+}
+
+.k-icon-btn-sm {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-muted, #64748B);
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.k-icon-btn-sm:hover {
+  color: var(--pal-coral);
+  background: var(--pal-coral-soft);
+}
+.k-icon-btn-sm.is-fav {
+  color: var(--pal-coral);
+  fill: var(--pal-coral);
+}
+.k-icon-btn-sm.is-fav svg {
+  fill: currentColor;
+}
+
+/* Empty slots row with subtle + chips */
+.k-slot-empty-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 2px;
+}
+.k-slot-add-chip {
+  border: 1px dashed var(--border-card, rgba(31, 42, 68, 0.18));
+  background: transparent;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary, #64748B);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.k-slot-add-chip:hover {
+  border-style: solid;
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+  background: var(--pal-azure-soft);
+}
+body.dark .k-slot-add-chip {
+  border-color: rgba(148, 150, 188, 0.25);
+  color: #9496BC;
+}
+body.dark .k-slot-add-chip:hover {
+  border-color: #60A5FA;
+  color: #93C5FD;
+  background: rgba(29, 113, 184, 0.2);
+}
+
+/* Modal Meal Type Selector Grid */
+.k-modal-mealtype-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.k-modal-type-btn {
+  border: 1px solid var(--border-card, rgba(31, 42, 68, 0.15));
+  background: var(--bg-surface, #F4F6F8);
+  padding: 7px 4px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.k-modal-type-btn:hover {
+  border-color: var(--pal-azure);
+  color: var(--pal-azure);
+}
+.k-modal-type-btn.active {
+  background: var(--pal-azure);
+  border-color: var(--pal-azure);
+  color: #fff;
+  font-weight: 700;
+}
+body.dark .k-modal-type-btn {
+  background: #181A33;
+  border-color: #2E3060;
+  color: #9496BC;
+}
+body.dark .k-modal-type-btn.active {
+  background: #1D71B8;
+  border-color: #60A5FA;
+  color: #fff;
+}

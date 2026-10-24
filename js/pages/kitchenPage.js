@@ -107,10 +107,48 @@ const KITCHEN_ICONS = {
       <circle cx="22" cy="17" r="3" fill="#A9D1D1"/>
       <circle cx="20" cy="19" r="2.5" fill="#F87C71"/>
     </svg>
+  `,
+  brunch: `
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="18" fill="#FFD7A7" opacity="0.35"/>
+      <circle cx="20" cy="20" r="18" stroke="#1D71B8" stroke-width="1.5"/>
+      <ellipse cx="20" cy="23" rx="11" ry="8" fill="#FFF" stroke="#1F2A44" stroke-width="1.5"/>
+      <circle cx="20" cy="22" r="4.5" fill="#F87C71"/>
+      <path d="M12 14 C15 11 25 11 28 14" stroke="#1D71B8" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="20" cy="22" r="2" fill="#FFE5D0"/>
+    </svg>
+  `,
+  dessert: `
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="20" cy="20" r="18" fill="#F87C71" opacity="0.25"/>
+      <circle cx="20" cy="20" r="18" stroke="#F87C71" stroke-width="1.5"/>
+      <path d="M14 26 L16 32 H24 L26 26 Z" fill="#FFE5D0" stroke="#1F2A44" stroke-width="1.5"/>
+      <ellipse cx="20" cy="24" rx="9" ry="4" fill="#E0DFAC" stroke="#1F2A44" stroke-width="1.5"/>
+      <circle cx="20" cy="18" r="6" fill="#F87C71"/>
+      <circle cx="21" cy="15" r="2.5" fill="#8B5CF6"/>
+      <path d="M21 12.5 C22 10 24 10 25 11" stroke="#1D71B8" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
   `
 };
 
 let activeKitchenEditIdx = null;
+let activeKitchenMealType = 'dinner'; // 'brunch', 'lunch', 'dinner', 'dessert'
+
+function kSetWeekOffset(offset) {
+  const data = storage.getKitchenData();
+  data.activeWeekOffset = offset;
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+}
+window.kSetWeekOffset = kSetWeekOffset;
+
+function kSetMealFilter(filter) {
+  const data = storage.getKitchenData();
+  data.activeMealFilter = filter;
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+}
+window.kSetMealFilter = kSetMealFilter;
 
 // Helper to get today's ISO date string
 function getTodayIso() {
@@ -121,28 +159,44 @@ function getTodayIso() {
   return `${year}-${month}-${day}`;
 }
 
+function getSourcePillLabel(source, dayName, mealType) {
+  if (source === 'freezer') return 'Freezer 🧊';
+  if (source === 'pantry') return 'Pantry 🥫';
+  if (source === 'out') {
+    if (dayName === 'Fri' && mealType === 'dinner') return 'Friday Takeout 🥡';
+    if (dayName === 'Sat') return 'Dining Out 🍷';
+    return 'Takeout / Out 🥡';
+  }
+  return 'Fresh 🛒';
+}
+
 function renderKitchenPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
 
   const data = storage.getKitchenData();
   const stashItems = data.stashItems || [];
-  const weekSchedule = data.weekSchedule || [];
   const favoriteRecipes = data.favoriteRecipes || [];
   const groceryItems = data.groceries || [];
 
   const todayIso = getTodayIso();
 
-  // Dynamic current week dates (Sun - Sat)
+  // Dynamic week calculation
   const now = new Date();
   const dayOfWeek = now.getDay(); // 0 = Sun
-  const weekDates = [];
-  const sunDate = new Date(now);
-  sunDate.setDate(now.getDate() - dayOfWeek);
+  const baseSun = new Date(now);
+  baseSun.setDate(now.getDate() - dayOfWeek);
 
+  const weekOffset = (typeof data.activeWeekOffset === 'number') ? data.activeWeekOffset : 0;
+  const activeMealFilter = data.activeMealFilter || 'all';
+
+  const activeSun = new Date(baseSun);
+  activeSun.setDate(baseSun.getDate() + (weekOffset * 7));
+
+  const weekDates = [];
   for (let i = 0; i < 7; i++) {
-    const d = new Date(sunDate);
-    d.setDate(sunDate.getDate() + i);
+    const d = new Date(activeSun);
+    d.setDate(activeSun.getDate() + i);
     const yr = d.getFullYear();
     const mo = String(d.getMonth() + 1).padStart(2, '0');
     const da = String(d.getDate()).padStart(2, '0');
@@ -153,25 +207,56 @@ function renderKitchenPage() {
     });
   }
 
+  const thisWeekEnd = new Date(baseSun);
+  thisWeekEnd.setDate(baseSun.getDate() + 6);
+  const nextWeekSun = new Date(baseSun);
+  nextWeekSun.setDate(baseSun.getDate() + 7);
+  const nextWeekEnd = new Date(baseSun);
+  nextWeekEnd.setDate(baseSun.getDate() + 13);
+
+  const thisWeekLabel = `${baseSun.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${thisWeekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+  const nextWeekLabel = `${nextWeekSun.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} – ${nextWeekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
   const weekRangeLabel = `${weekDates[0].dateLabel} – ${weekDates[6].dateLabel}`;
 
-  // Ensure full week has 7 days aligned with active week
+  // Retrieve active week schedule and normalize slots
+  const rawSchedule = weekOffset === 1 ? (data.followingWeekSchedule || []) : (data.weekSchedule || []);
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const fullWeekSchedule = dayNames.map((dayName, idx) => {
-    const existing = weekSchedule.find(s => s.day === dayName) || {};
+    const existing = rawSchedule.find(s => s.day === dayName) || rawSchedule[idx] || {};
+    const meals = existing.meals || {};
+    const dinnerSlot = meals.dinner || (existing.meal ? {
+      meal: existing.meal,
+      source: existing.source || 'fresh',
+      icon: existing.icon || 'chicken',
+      recipeUrl: existing.recipeUrl || ''
+    } : null);
+
     return {
       day: dayName,
       date: weekDates[idx].dateLabel,
       iso: weekDates[idx].iso,
-      meal: existing.meal || '',
-      source: existing.source || (dayName === 'Fri' || dayName === 'Sat' ? 'out' : 'fresh'),
-      icon: existing.icon || (dayName === 'Fri' ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken')),
-      recipeUrl: existing.recipeUrl || '',
-      favoriteId: existing.favoriteId || null
+      meal: (dinnerSlot && dinnerSlot.meal) || existing.meal || '',
+      source: (dinnerSlot && dinnerSlot.source) || existing.source || (dayName === 'Fri' || dayName === 'Sat' ? 'out' : 'fresh'),
+      icon: (dinnerSlot && dinnerSlot.icon) || existing.icon || (dayName === 'Fri' ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken')),
+      recipeUrl: (dinnerSlot && dinnerSlot.recipeUrl) || existing.recipeUrl || '',
+      favoriteId: existing.favoriteId || null,
+      meals: {
+        brunch: meals.brunch || null,
+        lunch: meals.lunch || null,
+        dinner: dinnerSlot,
+        dessert: meals.dessert || null
+      }
     };
   });
 
-  const outCount = fullWeekSchedule.filter(d => d.source === 'out' && d.meal).length;
+  // Calculate eat-out count across all planned meals for this week
+  const outCount = fullWeekSchedule.reduce((cnt, d) => {
+    ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
+      const slot = d.meals[t];
+      if (slot && slot.meal && slot.source === 'out') cnt++;
+    });
+    return cnt;
+  }, 0);
   const target = data.eatOutTarget || 2;
   const withinTarget = outCount <= target;
 
@@ -183,13 +268,21 @@ function renderKitchenPage() {
         <div class="k-header-titles">
           <div class="k-header-main-row">
             <h2 class="k-header-title">Kitchen Sanctuary</h2>
+            <div class="k-week-toggle-group">
+              <button type="button" class="k-week-toggle-btn ${weekOffset === 0 ? 'active' : ''}" onclick="kSetWeekOffset(0)" title="Current Week (${thisWeekLabel})">
+                This Week
+              </button>
+              <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="Following Week (${nextWeekLabel})">
+                Following Week
+              </button>
+            </div>
             <span class="k-header-week-tag">${escapeHtml(weekRangeLabel)}</span>
           </div>
-          <span style="font-size:12px; color:var(--text-muted);">Shop your stash first, dinner on autopilot.</span>
+          <span style="font-size:12px; color:var(--text-muted);">Shop your stash first, meals on autopilot.</span>
         </div>
 
-        <div class="k-eatout-summary-pill" title="Target for dining out / takeout nights">
-          <span>🥡 Eat-Out Nights:</span>
+        <div class="k-eatout-summary-pill" title="Target for dining out / takeout meals">
+          <span>🥡 Eat-Out:</span>
           <span class="k-eatout-badge">${outCount}x</span>
           <span style="font-size:11px; color:${withinTarget ? '#3B6B35' : 'var(--pal-coral)'}; font-weight:700;">
             ${withinTarget ? `✓ On Target (≤ ${target}x)` : `Over Target (${target}x)`}
@@ -233,35 +326,119 @@ function renderKitchenPage() {
         </div>
       </section>
 
-      <!-- STEP 2: 7-NIGHT DINNER BOARD (Past days grayed/lightened out) -->
+      <!-- STEP 2: WEEKLY MEAL BOARD (Brunch, Lunch, Dinner, Dessert) -->
       <section class="k-section-box" id="k-sec-dinners">
         <div class="k-sec-header">
           <div class="k-sec-title-group">
             <span class="k-step-indicator">STEP 2</span>
-            <span class="k-sec-title">7-Night Dinner Board</span>
+            <span class="k-sec-title">Weekly Meal Board</span>
+            <div class="k-week-toggle-group" style="margin-left:4px;">
+              <button type="button" class="k-week-toggle-btn ${weekOffset === 0 ? 'active' : ''}" onclick="kSetWeekOffset(0)" title="${thisWeekLabel}">
+                This Week
+              </button>
+              <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="${nextWeekLabel}">
+                Following Week
+              </button>
+            </div>
           </div>
-          <span class="k-sec-hint">Click ✏️ Edit or meal title to enter dinner</span>
+          <span class="k-sec-hint">Tap any slot or + to plan Brunch, Lunch, Dinner &amp; Dessert</span>
+        </div>
+
+        <!-- Filter bar for meal types -->
+        <div class="k-meal-filter-bar">
+          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'all' ? 'active' : ''}" onclick="kSetMealFilter('all')">
+            All Meals
+          </button>
+          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'brunch' ? 'active' : ''}" onclick="kSetMealFilter('brunch')">
+            🍳 Brunch
+          </button>
+          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'lunch' ? 'active' : ''}" onclick="kSetMealFilter('lunch')">
+            🥗 Lunch
+          </button>
+          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'dinner' ? 'active' : ''}" onclick="kSetMealFilter('dinner')">
+            🍲 Dinner
+          </button>
+          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'dessert' ? 'active' : ''}" onclick="kSetMealFilter('dessert')">
+            🍨 Dessert
+          </button>
         </div>
 
         <div class="k-week-list">
           ${fullWeekSchedule.map((d, idx) => {
-            const isPast = d.iso < todayIso;
-            const isToday = d.iso === todayIso;
+            const isPast = (weekOffset === 0 && d.iso < todayIso);
+            const isToday = (weekOffset === 0 && d.iso === todayIso);
+            const mealTypes = ['brunch', 'lunch', 'dinner', 'dessert'];
+            const mealTypeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+            const mealTypeIcons = { brunch: '🍳', lunch: '🥗', dinner: '🍲', dessert: '🍨' };
 
-            const isFri = (d.day === 'Fri');
-            const isOut = (d.source === 'out');
-            const iconSvg = KITCHEN_ICONS[d.icon] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.chicken);
-            const isFav = d.meal && favoriteRecipes.some(r => r.title.toLowerCase() === d.meal.toLowerCase());
+            // When a single meal type is filtered
+            if (activeMealFilter !== 'all') {
+              const t = activeMealFilter;
+              const slot = d.meals[t];
+              const hasMeal = slot && slot.meal;
+              const isOut = hasMeal && slot.source === 'out';
+              const iconKey = hasMeal ? (slot.icon || (isOut ? 'takeout' : (t === 'brunch' ? 'brunch' : (t === 'dessert' ? 'dessert' : 'chicken')))) : (t === 'brunch' ? 'brunch' : (t === 'dessert' ? 'dessert' : 'chicken'));
+              const iconSvg = KITCHEN_ICONS[iconKey] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.chicken);
+              const isFav = hasMeal && favoriteRecipes.some(r => r.title.toLowerCase() === slot.meal.toLowerCase());
+              const pillLabel = hasMeal ? getSourcePillLabel(slot.source, d.day, t) : 'Fresh 🛒';
 
-            let pillLabel = 'Fresh 🛒';
-            if (d.source === 'freezer') pillLabel = 'Freezer 🧊';
-            else if (d.source === 'pantry') pillLabel = 'Pantry 🥫';
-            else if (isFri && isOut) pillLabel = 'Friday Takeout 🥡';
-            else if (isOut) pillLabel = 'Dining Out 🍷';
+              return `
+                <div class="k-day-row ${isOut ? 'is-takeout-row' : ''} ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}">
+                  <div class="k-day-meta">
+                    <span class="k-day-name">${d.day}</span>
+                    <div class="k-day-date-row">
+                      <span class="k-day-date">${d.date}</span>
+                      ${isToday ? `<span class="k-badge-day-status today">Today</span>` : (isPast ? `<span class="k-badge-day-status past">Past</span>` : '')}
+                    </div>
+                  </div>
+
+                  <div class="k-avatar-icon" onclick="kOpenMealPicker(${idx}, '${t}')" title="Click to enter/edit ${mealTypeLabels[t]}">
+                    ${iconSvg}
+                  </div>
+
+                  <div class="k-meal-center">
+                    <div class="k-meal-name-row">
+                      <span class="k-meal-title-text" onclick="kOpenMealPicker(${idx}, '${t}')" title="Click to enter/edit ${mealTypeLabels[t]}">
+                        ${hasMeal ? escapeHtml(slot.meal) : `<span style="color:var(--text-muted); font-style:italic; font-size:12.5px; font-weight:400;">+ Add ${mealTypeLabels[t]}...</span>`}
+                      </span>
+                      ${hasMeal ? `
+                        <button type="button" class="k-source-pill ${slot.source}" onclick="kCycleSlotSource(${idx}, '${t}', event)" title="Click to flip (Fresh, Freezer, Pantry, Takeout)">
+                          ${pillLabel}
+                        </button>
+                      ` : ''}
+                    </div>
+
+                    ${(hasMeal && slot.recipeUrl) ? `
+                      <div>
+                        <a href="${escapeHtml(slot.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-web-link">
+                          <i data-lucide="external-link" style="width:11px; height:11px;"></i>
+                          <span>Recipe Link</span>
+                        </a>
+                      </div>
+                    ` : ''}
+                  </div>
+
+                  <div class="k-day-actions-box">
+                    <button type="button" class="k-btn-edit-dinner" onclick="kOpenMealPicker(${idx}, '${t}')" title="Enter or change ${mealTypeLabels[t]} for ${d.day}">
+                      <span>✏️ Edit</span>
+                    </button>
+                    ${hasMeal ? `
+                      <button type="button" class="k-icon-btn ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Save dish to Favorites Vault'}" onclick="kToggleFavSlot(${idx}, '${t}', event)">
+                        <i data-lucide="heart" style="width:13px; height:13px;"></i>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              `;
+            }
+
+            // All Meals View: shows planned slots + quick-add chips for empty slots
+            const plannedSlots = mealTypes.filter(t => d.meals[t] && d.meals[t].meal);
+            const emptySlots = mealTypes.filter(t => !d.meals[t] || !d.meals[t].meal);
 
             return `
-              <div class="k-day-row ${isOut ? 'is-takeout-row' : ''} ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}">
-                <div class="k-day-meta">
+              <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}" style="grid-template-columns: 80px 1fr; align-items:flex-start;">
+                <div class="k-day-meta" style="padding-top:4px;">
                   <span class="k-day-name">${d.day}</span>
                   <div class="k-day-date-row">
                     <span class="k-day-date">${d.date}</span>
@@ -269,37 +446,52 @@ function renderKitchenPage() {
                   </div>
                 </div>
 
-                <div class="k-avatar-icon" onclick="kOpenMealPicker(${idx})" title="Click to enter/edit dinner">
-                  ${iconSvg}
-                </div>
+                <div class="k-day-slots-wrap">
+                  ${plannedSlots.map(t => {
+                    const slot = d.meals[t];
+                    const isOut = slot.source === 'out';
+                    const iconKey = slot.icon || (isOut ? 'takeout' : (t === 'brunch' ? 'brunch' : (t === 'dessert' ? 'dessert' : 'chicken')));
+                    const iconSvg = KITCHEN_ICONS[iconKey] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.chicken);
+                    const isFav = favoriteRecipes.some(r => r.title.toLowerCase() === slot.meal.toLowerCase());
+                    const pillLabel = getSourcePillLabel(slot.source, d.day, t);
 
-                <div class="k-meal-center">
-                  <div class="k-meal-name-row">
-                    <span class="k-meal-title-text" onclick="kOpenMealPicker(${idx})" title="Click to enter/edit dinner">
-                      ${d.meal ? escapeHtml(d.meal) : `<span style="color:var(--text-muted); font-style:italic; font-size:12.5px; font-weight:400;">+ Add dinner...</span>`}
-                    </span>
-                    <button type="button" class="k-source-pill ${d.source}" onclick="kCycleDaySource(${idx})" title="Click to flip (Fresh, Freezer, Pantry, Takeout)">
-                      ${pillLabel}
-                    </button>
-                  </div>
+                    return `
+                      <div class="k-slot-row">
+                        <span class="k-slot-type-badge ${t}">${mealTypeLabels[t]}</span>
+                        <div class="k-avatar-icon-sm" onclick="kOpenMealPicker(${idx}, '${t}')" title="Click to edit">
+                          ${iconSvg}
+                        </div>
+                        <div class="k-slot-info" onclick="kOpenMealPicker(${idx}, '${t}')">
+                          <span class="k-slot-title">${escapeHtml(slot.meal)}</span>
+                          ${slot.recipeUrl ? `
+                            <a href="${escapeHtml(slot.recipeUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="k-recipe-web-link">
+                              <i data-lucide="external-link" style="width:10px; height:10px;"></i>
+                            </a>
+                          ` : ''}
+                        </div>
+                        <button type="button" class="k-source-pill ${slot.source}" onclick="kCycleSlotSource(${idx}, '${t}', event)" title="Click to cycle source">
+                          ${pillLabel}
+                        </button>
+                        <button type="button" class="k-btn-edit-sm" onclick="kOpenMealPicker(${idx}, '${t}')" title="Edit ${mealTypeLabels[t]}">
+                          ✏️
+                        </button>
+                        <button type="button" class="k-icon-btn-sm ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Add to Favorites'}" onclick="kToggleFavSlot(${idx}, '${t}', event)">
+                          <i data-lucide="heart" style="width:12px; height:12px;"></i>
+                        </button>
+                      </div>
+                    `;
+                  }).join('')}
 
-                  ${d.recipeUrl ? `
-                    <div>
-                      <a href="${escapeHtml(d.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-web-link">
-                        <i data-lucide="external-link" style="width:11px; height:11px;"></i>
-                        <span>Recipe Link</span>
-                      </a>
+                  ${emptySlots.length > 0 ? `
+                    <div class="k-slot-empty-row">
+                      ${emptySlots.map(t => `
+                        <button type="button" class="k-slot-add-chip ${t}" onclick="kOpenMealPicker(${idx}, '${t}')" title="Add ${mealTypeLabels[t]} for ${d.day}">
+                          <span>${mealTypeIcons[t]}</span>
+                          <span>+ ${mealTypeLabels[t]}</span>
+                        </button>
+                      `).join('')}
                     </div>
                   ` : ''}
-                </div>
-
-                <div class="k-day-actions-box">
-                  <button type="button" class="k-btn-edit-dinner" onclick="kOpenMealPicker(${idx})" title="Enter or change dinner for ${d.day}">
-                    <span>✏️ Edit</span>
-                  </button>
-                  <button type="button" class="k-icon-btn ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Save dish to Favorites Vault'}" onclick="${d.meal ? `kToggleFavoriteDayMeal(${idx})` : `kOpenMealPicker(${idx})`}">
-                    <i data-lucide="heart" style="width:13px; height:13px;"></i>
-                  </button>
                 </div>
               </div>
             `;
@@ -353,15 +545,33 @@ function renderKitchenPage() {
                   </a>
                 ` : `<span></span>`}
 
-                <select class="k-assign-select" onchange="kAssignFavToDay('${r.id}', this.value); this.value='';">
+                <select class="k-assign-select" onchange="kAssignFavToMeal('${r.id}', this.value); this.value='';">
                   <option value="">Assign to...</option>
-                  <option value="0">Sun</option>
-                  <option value="1">Mon</option>
-                  <option value="2">Tue</option>
-                  <option value="3">Wed</option>
-                  <option value="4">Thu</option>
-                  <option value="5">Fri (Takeout)</option>
-                  <option value="6">Sat</option>
+                  <optgroup label="${weekOffset === 1 ? 'Next Wk Dinners' : 'Dinners'}">
+                    <option value="0:dinner">Sun Dinner</option>
+                    <option value="1:dinner">Mon Dinner</option>
+                    <option value="2:dinner">Tue Dinner</option>
+                    <option value="3:dinner">Wed Dinner</option>
+                    <option value="4:dinner">Thu Dinner</option>
+                    <option value="5:dinner">Fri Dinner (Takeout)</option>
+                    <option value="6:dinner">Sat Dinner</option>
+                  </optgroup>
+                  <optgroup label="${weekOffset === 1 ? 'Next Wk Lunches' : 'Lunches'}">
+                    <option value="0:lunch">Sun Lunch</option>
+                    <option value="1:lunch">Mon Lunch</option>
+                    <option value="2:lunch">Tue Lunch</option>
+                    <option value="3:lunch">Wed Lunch</option>
+                    <option value="4:lunch">Thu Lunch</option>
+                    <option value="5:lunch">Fri Lunch</option>
+                    <option value="6:lunch">Sat Lunch</option>
+                  </optgroup>
+                  <optgroup label="${weekOffset === 1 ? 'Next Wk Brunch &amp; Desserts' : 'Brunch &amp; Desserts'}">
+                    <option value="0:brunch">Sun Brunch</option>
+                    <option value="6:brunch">Sat Brunch</option>
+                    <option value="5:dessert">Fri Dessert</option>
+                    <option value="6:dessert">Sat Dessert</option>
+                    <option value="0:dessert">Sun Dessert</option>
+                  </optgroup>
                 </select>
               </div>
             </div>
@@ -495,34 +705,15 @@ function kAddStashWithSource(sourceType = 'pantry') {
 }
 
 function kAssignStashDirect(name, type) {
-  kOpenMealPicker(0);
-  document.getElementById('k-modal-custom-name').value = name;
-  document.getElementById('k-modal-custom-source').value = type;
+  kOpenMealPicker(0, 'dinner');
+  const nameEl = document.getElementById('k-modal-custom-name');
+  if (nameEl) nameEl.value = name;
+  const sourceEl = document.getElementById('k-modal-custom-source');
+  if (sourceEl) sourceEl.value = type;
 }
 
 function kCycleDaySource(dayIdx) {
-  const data = storage.getKitchenData();
-  const d = data.weekSchedule[dayIdx];
-  const cycle = ['freezer', 'pantry', 'fresh', 'out'];
-  const curIdx = cycle.indexOf(d.source);
-  const nextSource = cycle[(curIdx + 1) % cycle.length];
-
-  d.source = nextSource;
-  if (nextSource === 'out') {
-    d.icon = d.day === 'Fri' ? 'takeout' : 'bistro';
-    if (!d.meal) {
-      d.meal = d.day === 'Fri' ? 'Takeout' : 'Dinner Out';
-    }
-  } else if (nextSource === 'freezer') {
-    d.icon = 'salmon';
-  } else if (nextSource === 'pantry') {
-    d.icon = 'pasta';
-  } else {
-    d.icon = 'chicken';
-  }
-
-  storage.saveKitchenData(data);
-  renderKitchenPage();
+  kCycleSlotSource(dayIdx, 'dinner');
 }
 
 function extractRecipeTitleFromUrl(urlStr) {
@@ -565,8 +756,10 @@ function extractRecipeTitleFromUrl(urlStr) {
   }
 }
 
-function detectRecipeIcon(title) {
+function detectRecipeIcon(title, mealType = 'dinner') {
   const t = (title || '').toLowerCase();
+  if (t.includes('dessert') || t.includes('cake') || t.includes('pie') || t.includes('tart') || t.includes('cookie') || t.includes('ice cream') || t.includes('brownie') || t.includes('pudding') || t.includes('crumble') || t.includes('chocolate') || t.includes('berry') || t.includes('parfait') || t.includes('mousse')) return 'dessert';
+  if (t.includes('pancake') || t.includes('waffle') || t.includes('egg') || t.includes('omelet') || t.includes('frittata') || t.includes('toast') || t.includes('oat') || t.includes('granola') || t.includes('bagel') || t.includes('benedict') || t.includes('crepe') || t.includes('french toast') || t.includes('brunch')) return 'brunch';
   if (t.includes('salmon') || t.includes('fish') || t.includes('shrimp') || t.includes('tuna') || t.includes('cod') || t.includes('seafood') || t.includes('halibut') || t.includes('trout')) return 'salmon';
   if (t.includes('taco') || t.includes('burrito') || t.includes('fajita') || t.includes('mexican') || t.includes('enchilada') || t.includes('quesadilla')) return 'taco';
   if (t.includes('chicken') || t.includes('turkey') || t.includes('poultry') || t.includes('wing') || t.includes('thigh') || t.includes('roast chicken')) return 'chicken';
@@ -576,6 +769,9 @@ function detectRecipeIcon(title) {
   if (t.includes('pizza') || t.includes('flatbread')) return 'pizza';
   if (t.includes('salad') || t.includes('greens') || t.includes('slaw') || t.includes('caesar')) return 'salad';
   if (t.includes('takeout') || t.includes('thai') || t.includes('chinese') || t.includes('sushi') || t.includes('bento')) return 'takeout';
+  if (mealType === 'dessert') return 'dessert';
+  if (mealType === 'brunch') return 'brunch';
+  if (mealType === 'lunch') return 'salad';
   return 'chicken';
 }
 
@@ -594,20 +790,62 @@ function kOnRecipeUrlInput(val) {
 }
 window.kOnRecipeUrlInput = kOnRecipeUrlInput;
 
-function kOpenMealPicker(dayIdx) {
+function kOpenMealPicker(dayIdx, mealType = 'dinner') {
   activeKitchenEditIdx = dayIdx;
+  activeKitchenMealType = mealType;
+
+  kSetModalMealType(mealType, false);
+
+  const modal = document.getElementById('k-fast-meal-modal');
+  if (modal) modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+window.kOpenMealPicker = kOpenMealPicker;
+
+function kSetModalMealType(newType, reFocus = true) {
+  activeKitchenMealType = newType;
+  const hiddenTypeEl = document.getElementById('k-modal-meal-type');
+  if (hiddenTypeEl) hiddenTypeEl.value = newType;
+
+  ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
+    const btn = document.getElementById(`k-mtype-${t}`);
+    if (btn) {
+      if (t === newType) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+
   const data = storage.getKitchenData();
-  const d = (data.weekSchedule && data.weekSchedule[dayIdx]) ? data.weekSchedule[dayIdx] : { day: 'Dinner', date: '', meal: '', source: 'fresh', icon: 'chicken' };
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = (activeKitchenEditIdx !== null && schedule && schedule[activeKitchenEditIdx]) ? schedule[activeKitchenEditIdx] : { day: 'Day', date: '', meals: {} };
+  const slot = (d.meals && d.meals[newType]) ? d.meals[newType] : null;
+
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  const label = typeLabels[newType] || 'Meal';
 
   const titleEl = document.getElementById('k-fast-modal-title');
-  if (titleEl) titleEl.textContent = `Enter Dinner · ${d.day}${d.date ? ` (${d.date})` : ''}`;
-  const nameEl = document.getElementById('k-modal-custom-name');
-  if (nameEl) nameEl.value = d.meal || '';
-  const urlEl = document.getElementById('k-modal-custom-url');
-  if (urlEl) urlEl.value = d.recipeUrl || '';
-  const sourceEl = document.getElementById('k-modal-custom-source');
-  if (sourceEl) sourceEl.value = d.source || 'pantry';
+  if (titleEl) {
+    const weekNote = weekOffset === 1 ? ' (Following Week)' : '';
+    titleEl.textContent = `Enter ${label} · ${d.day}${d.date ? ` (${d.date})` : ''}${weekNote}`;
+  }
 
+  const nameEl = document.getElementById('k-modal-custom-name');
+  if (nameEl) nameEl.value = slot ? (slot.meal || '') : '';
+
+  const urlEl = document.getElementById('k-modal-custom-url');
+  if (urlEl) urlEl.value = slot ? (slot.recipeUrl || '') : '';
+
+  const sourceEl = document.getElementById('k-modal-custom-source');
+  if (sourceEl) sourceEl.value = slot ? (slot.source || 'pantry') : 'pantry';
+
+  const submitBtn = document.getElementById('k-modal-submit-btn');
+  if (submitBtn) submitBtn.textContent = `Save ${label}`;
+
+  const clearBtn = document.getElementById('k-modal-clear-btn');
+  if (clearBtn) clearBtn.style.display = (slot && slot.meal) ? 'inline-block' : 'none';
+
+  // Populate stash picker items
   const stashContainer = document.getElementById('k-modal-stash-list');
   if (stashContainer) {
     const stashItems = (data.stashItems || []).filter(i => !i.used);
@@ -623,6 +861,7 @@ function kOpenMealPicker(dayIdx) {
     }
   }
 
+  // Populate favorites picker items
   const favsContainer = document.getElementById('k-modal-favs-list');
   if (favsContainer) {
     const favs = data.favoriteRecipes || [];
@@ -638,135 +877,283 @@ function kOpenMealPicker(dayIdx) {
     }
   }
 
-  const modal = document.getElementById('k-fast-meal-modal');
-  if (modal) modal.classList.add('active');
-  if (window.lucide) lucide.createIcons();
+  if (reFocus && nameEl) nameEl.focus();
 }
+window.kSetModalMealType = kSetModalMealType;
 
 function kSubmitCustomMeal() {
   if (activeKitchenEditIdx === null) return;
   const name = document.getElementById('k-modal-custom-name').value.trim();
   const url = document.getElementById('k-modal-custom-url').value.trim();
   const source = document.getElementById('k-modal-custom-source').value;
+  const mealType = activeKitchenMealType || 'dinner';
 
   const data = storage.getKitchenData();
-  if (!Array.isArray(data.weekSchedule) || !data.weekSchedule[activeKitchenEditIdx]) {
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+
+  if (!Array.isArray(schedule) || !schedule[activeKitchenEditIdx]) {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    if (!Array.isArray(data.weekSchedule)) data.weekSchedule = [];
-    while (data.weekSchedule.length < 7) {
-      const idx = data.weekSchedule.length;
-      data.weekSchedule.push({ day: dayNames[idx], date: '', meal: '', source: 'pantry', icon: 'pasta' });
+    while (schedule.length < 7) {
+      const idx = schedule.length;
+      schedule.push({ day: dayNames[idx], date: '', meal: '', source: 'pantry', icon: 'pasta', meals: { brunch: null, lunch: null, dinner: null, dessert: null } });
     }
   }
-  const d = data.weekSchedule[activeKitchenEditIdx];
-  const icon = source === 'out' ? (d.day === 'Sat' ? 'bistro' : 'takeout') : detectRecipeIcon(name);
+  const d = schedule[activeKitchenEditIdx];
+  if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
 
-  d.meal = name;
-  d.recipeUrl = url;
-  d.icon = icon;
-  d.source = source;
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  const label = typeLabels[mealType] || 'Meal';
+
+  if (name) {
+    const icon = source === 'out' ? (mealType === 'dessert' ? 'dessert' : (d.day === 'Sat' ? 'bistro' : 'takeout')) : detectRecipeIcon(name, mealType);
+    d.meals[mealType] = {
+      meal: name,
+      recipeUrl: url,
+      source: source,
+      icon: icon,
+      favoriteId: null
+    };
+    if (mealType === 'dinner') {
+      d.meal = name;
+      d.recipeUrl = url;
+      d.source = source;
+      d.icon = icon;
+    }
+  } else {
+    d.meals[mealType] = null;
+    if (mealType === 'dinner') {
+      d.meal = '';
+      d.recipeUrl = '';
+    }
+  }
 
   storage.saveKitchenData(data);
   kCloseModal();
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(name ? `Updated ${d.day} dinner! ✨` : `Cleared ${d.day} dinner`);
+  if (typeof showToast === 'function') {
+    showToast(name ? `Updated ${d.day} ${label}! ✨` : `Cleared ${d.day} ${label}`);
+  }
 }
+window.kSubmitCustomMeal = kSubmitCustomMeal;
+
+function kClearCurrentMealSlot() {
+  if (activeKitchenEditIdx === null) return;
+  const mealType = activeKitchenMealType || 'dinner';
+  const data = storage.getKitchenData();
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[activeKitchenEditIdx];
+
+  if (d && d.meals) {
+    d.meals[mealType] = null;
+    if (mealType === 'dinner') {
+      d.meal = '';
+      d.recipeUrl = '';
+    }
+  }
+
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  const label = typeLabels[mealType] || 'Meal';
+
+  storage.saveKitchenData(data);
+  kCloseModal();
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Cleared ${d.day} ${label}`);
+}
+window.kClearCurrentMealSlot = kClearCurrentMealSlot;
 
 function kSelectStashForMeal(name, type) {
   if (activeKitchenEditIdx === null) return;
+  const mealType = activeKitchenMealType || 'dinner';
   const data = storage.getKitchenData();
-  const d = data.weekSchedule[activeKitchenEditIdx];
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[activeKitchenEditIdx];
+  if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
 
-  d.meal = name;
-  d.source = type;
-  d.icon = type === 'freezer' ? 'salmon' : 'risotto';
-  d.recipeUrl = '';
+  const icon = type === 'freezer' ? 'salmon' : 'risotto';
+  d.meals[mealType] = {
+    meal: name,
+    source: type,
+    icon: icon,
+    recipeUrl: '',
+    favoriteId: null
+  };
+
+  if (mealType === 'dinner') {
+    d.meal = name;
+    d.source = type;
+    d.icon = icon;
+    d.recipeUrl = '';
+  }
 
   storage.saveKitchenData(data);
   kCloseModal();
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(`Assigned ${name} to ${d.day} dinner! ✨`);
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  if (typeof showToast === 'function') showToast(`Assigned ${name} to ${d.day} ${typeLabels[mealType] || 'Meal'}! ✨`);
 }
+window.kSelectStashForMeal = kSelectStashForMeal;
 
 function kSelectFavForMeal(favId) {
   if (activeKitchenEditIdx === null) return;
+  const mealType = activeKitchenMealType || 'dinner';
   const data = storage.getKitchenData();
   const fav = (data.favoriteRecipes || []).find(r => r.id === favId);
   if (!fav) return;
 
-  const d = data.weekSchedule[activeKitchenEditIdx];
-  d.meal = fav.title;
-  d.icon = fav.icon || 'chicken';
-  d.recipeUrl = fav.recipeUrl || '';
-  d.source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : 'fresh');
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[activeKitchenEditIdx];
+  if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
+
+  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : (fav.tags || []).some(t => t.includes('Pantry')) ? 'pantry' : 'fresh');
+
+  d.meals[mealType] = {
+    meal: fav.title,
+    icon: fav.icon || detectRecipeIcon(fav.title, mealType),
+    recipeUrl: fav.recipeUrl || '',
+    source: source,
+    favoriteId: fav.id
+  };
+
+  if (mealType === 'dinner') {
+    d.meal = fav.title;
+    d.icon = d.meals[mealType].icon;
+    d.recipeUrl = fav.recipeUrl || '';
+    d.source = source;
+  }
 
   storage.saveKitchenData(data);
   kCloseModal();
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(`Assigned ${fav.title} to ${d.day} dinner! ✨`);
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  if (typeof showToast === 'function') showToast(`Assigned ${fav.title} to ${d.day} ${typeLabels[mealType] || 'Meal'}! ✨`);
 }
+window.kSelectFavForMeal = kSelectFavForMeal;
 
-function kToggleFavoriteDayMeal(dayIdx) {
+function kCycleSlotSource(dayIdx, mealType, event) {
+  if (event) event.stopPropagation();
   const data = storage.getKitchenData();
-  const meal = (data.weekSchedule && data.weekSchedule[dayIdx]) ? data.weekSchedule[dayIdx] : null;
-  if (!meal || !meal.meal) {
-    kOpenMealPicker(dayIdx);
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[dayIdx];
+  if (!d || !d.meals || !d.meals[mealType]) return;
+
+  const slot = d.meals[mealType];
+  const cycle = ['pantry', 'freezer', 'fresh', 'out'];
+  const curIdx = cycle.indexOf(slot.source);
+  const nextSource = cycle[(curIdx + 1) % cycle.length];
+  slot.source = nextSource;
+
+  if (nextSource === 'out') {
+    slot.icon = (mealType === 'dessert') ? 'dessert' : (d.day === 'Sat' ? 'bistro' : 'takeout');
+  } else {
+    slot.icon = detectRecipeIcon(slot.meal, mealType);
+  }
+
+  if (mealType === 'dinner') {
+    d.source = slot.source;
+    d.icon = slot.icon;
+  }
+
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+}
+window.kCycleSlotSource = kCycleSlotSource;
+
+function kToggleFavSlot(dayIdx, mealType, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[dayIdx];
+  const slot = (d && d.meals) ? d.meals[mealType] : null;
+
+  if (!slot || !slot.meal) {
+    kOpenMealPicker(dayIdx, mealType);
     return;
   }
-  const favIdx = (data.favoriteRecipes || []).findIndex(r => r.title.toLowerCase() === meal.meal.toLowerCase());
 
+  const favIdx = (data.favoriteRecipes || []).findIndex(r => r.title.toLowerCase() === slot.meal.toLowerCase());
   if (favIdx !== -1) {
     data.favoriteRecipes.splice(favIdx, 1);
     storage.saveKitchenData(data);
     renderKitchenPage();
-    if (typeof showToast === 'function') showToast(`Removed "${meal.meal}" from Favorites`);
+    if (typeof showToast === 'function') showToast(`Removed "${slot.meal}" from Favorites`);
   } else {
     if (!data.favoriteRecipes) data.favoriteRecipes = [];
+    const typeLabel = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Favorite';
     data.favoriteRecipes.push({
       id: 'r-' + Date.now(),
-      title: meal.meal,
-      icon: meal.icon || (meal.source === 'out' ? 'takeout' : 'chicken'),
-      tags: [meal.source === 'out' ? '🥡 Takeout' : 'Favorite'],
-      recipeUrl: meal.recipeUrl || '',
+      title: slot.meal,
+      icon: slot.icon || (slot.source === 'out' ? 'takeout' : 'chicken'),
+      tags: [slot.source === 'out' ? '🥡 Takeout' : typeLabel],
+      recipeUrl: slot.recipeUrl || '',
       ingredients: 'Trusted favorite recipe',
       stashMatch: null
     });
     storage.saveKitchenData(data);
     renderKitchenPage();
-    if (typeof showToast === 'function') showToast(`Saved "${meal.meal}" to Favorites Vault! 💜`);
+    if (typeof showToast === 'function') showToast(`Saved "${slot.meal}" to Favorites Vault! 💜`);
     if (typeof confetti === 'function') {
       confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
     }
   }
 }
+window.kToggleFavSlot = kToggleFavSlot;
 
-function kAssignFavToDay(favId, dayIdxStr) {
-  if (!dayIdxStr) return;
-  const dayIdx = parseInt(dayIdxStr, 10);
+function kToggleFavoriteDayMeal(dayIdx) {
+  kToggleFavSlot(dayIdx, 'dinner');
+}
+window.kToggleFavoriteDayMeal = kToggleFavoriteDayMeal;
+
+function kAssignFavToMeal(favId, targetStr) {
+  if (!targetStr) return;
+  const parts = targetStr.split(':');
+  const dayIdx = parseInt(parts[0], 10);
+  const mealType = parts[1] || 'dinner';
+
   const data = storage.getKitchenData();
   const fav = (data.favoriteRecipes || []).find(r => r.id === favId);
   if (!fav) return;
 
-  if (!Array.isArray(data.weekSchedule) || !data.weekSchedule[dayIdx]) {
-    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    if (!Array.isArray(data.weekSchedule)) data.weekSchedule = [];
-    while (data.weekSchedule.length < 7) {
-      const idx = data.weekSchedule.length;
-      data.weekSchedule.push({ day: dayNames[idx], date: '', meal: '', source: 'fresh', icon: 'chicken' });
-    }
-  }
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const d = schedule[dayIdx];
+  if (!d) return;
+  if (!d.meals) d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
 
   const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : (fav.tags || []).some(t => t.includes('Pantry')) ? 'pantry' : 'fresh');
 
-  data.weekSchedule[dayIdx].meal = fav.title;
-  data.weekSchedule[dayIdx].source = source;
-  data.weekSchedule[dayIdx].icon = fav.icon || 'salmon';
-  data.weekSchedule[dayIdx].recipeUrl = fav.recipeUrl || '';
+  d.meals[mealType] = {
+    meal: fav.title,
+    source: source,
+    icon: fav.icon || detectRecipeIcon(fav.title, mealType),
+    recipeUrl: fav.recipeUrl || '',
+    favoriteId: fav.id
+  };
+
+  if (mealType === 'dinner') {
+    d.meal = fav.title;
+    d.source = source;
+    d.icon = d.meals[mealType].icon;
+    d.recipeUrl = fav.recipeUrl || '';
+    d.favoriteId = fav.id;
+  }
 
   storage.saveKitchenData(data);
   renderKitchenPage();
-  if (typeof showToast === 'function') showToast(`Assigned "${fav.title}" to ${data.weekSchedule[dayIdx].day} dinner! ✨`);
+  const label = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Meal';
+  if (typeof showToast === 'function') showToast(`Assigned "${fav.title}" to ${d.day} ${label}! ✨`);
 }
+window.kAssignFavToMeal = kAssignFavToMeal;
+
+function kAssignFavToDay(favId, dayIdxStr) {
+  kAssignFavToMeal(favId, `${dayIdxStr}:dinner`);
+}
+window.kAssignFavToDay = kAssignFavToDay;
 
 function kDeleteFavorite(favId, event) {
   if (event) event.stopPropagation();
@@ -911,16 +1298,31 @@ window.kDeleteGroceryItem = kDeleteGroceryItem;
 // 1-Tap Native Things 3 URL Scheme Integration
 function kOpenThings3() {
   const data = storage.getKitchenData();
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const weekTitle = weekOffset === 1 ? 'Following Week' : 'This Week';
+
   const groceries = (data.groceries || []).filter(g => !g.checked);
   const rawItems = groceries.map(g => g.text).filter(Boolean);
 
-  const meals = (data.weekSchedule || []).filter(d => d.meal).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
-  const notes = `Planned in margo:\n${meals || '(None)'}\n\nEat Out Target: ${data.eatOutTarget || 2}x`;
+  const mealLines = [];
+  const typeOrder = ['brunch', 'lunch', 'dinner', 'dessert'];
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  (schedule || []).forEach(d => {
+    const m = d.meals || {};
+    typeOrder.forEach(t => {
+      const slot = m[t];
+      if (slot && slot.meal) {
+        mealLines.push(`• ${d.day} ${typeLabels[t]}: ${slot.meal} (${slot.source === 'out' ? 'Takeout 🥡' : (slot.source === 'freezer' ? 'Freezer 🧊' : (slot.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`);
+      }
+    });
+  });
 
-  const thingsUrl = `things:///add-project?title=${encodeURIComponent('Weekly Groceries')}&to-dos=${encodeURIComponent(rawItems.join('\n'))}&notes=${encodeURIComponent(notes)}`;
+  const notes = `Planned in margo (${weekTitle}):\n${mealLines.length ? mealLines.join('\n') : '(No meals planned yet)'}\n\nEat Out Target: ${data.eatOutTarget || 2}x`;
+  const thingsUrl = `things:///add-project?title=${encodeURIComponent(`Weekly Groceries (${weekTitle})`)}&to-dos=${encodeURIComponent(rawItems.join('\n'))}&notes=${encodeURIComponent(notes)}`;
 
   // Also copy to clipboard as convenience backup
-  const clipboardText = `Weekly Groceries\n${rawItems.length ? rawItems.map(i => `[ ] ${i}`).join('\n') : '(No grocery items entered)'}\n\n${notes}`;
+  const clipboardText = `Weekly Groceries (${weekTitle})\n${rawItems.length ? rawItems.map(i => `[ ] ${i}`).join('\n') : '(No grocery items entered)'}\n\n${notes}`;
   navigator.clipboard.writeText(clipboardText).catch(() => {});
 
   // Trigger Things 3 via deep link
@@ -938,18 +1340,27 @@ window.kOpenThings3 = kOpenThings3;
 // Copy ONLY active, verified (unchecked) grocery items to clipboard
 function kExportVerifiedThings3() {
   const data = storage.getKitchenData();
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const weekTitle = weekOffset === 1 ? 'Following Week' : 'This Week';
+
   const groceries = (data.groceries || []).filter(g => !g.checked);
   const items = groceries.map(g => `[ ] ${g.text}`).filter(Boolean);
 
-  const meals = (data.weekSchedule || []).filter(d => d.meal).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
+  const mealLines = [];
+  const typeOrder = ['brunch', 'lunch', 'dinner', 'dessert'];
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  (schedule || []).forEach(d => {
+    const m = d.meals || {};
+    typeOrder.forEach(t => {
+      const slot = m[t];
+      if (slot && slot.meal) {
+        mealLines.push(`• ${d.day} ${typeLabels[t]}: ${slot.meal} (${slot.source === 'out' ? 'Takeout 🥡' : (slot.source === 'freezer' ? 'Freezer 🧊' : (slot.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`);
+      }
+    });
+  });
 
-  const text = `Weekly Groceries
-${items.length ? items.join('\n') : '(No groceries entered)'}
-
-Dinners Planned in margo:
-${meals || '(No dinners planned)'}
-
-Eat Out: ${data.eatOutTarget || 2}x target`;
+  const text = `Weekly Groceries (${weekTitle})\n${items.length ? items.join('\n') : '(No groceries entered)'}\n\nMeals Planned in margo:\n${mealLines.length ? mealLines.join('\n') : '(No meals planned)'}\n\nEat Out: ${data.eatOutTarget || 2}x target`;
 
   navigator.clipboard.writeText(text).then(() => {
     if (typeof showToast === 'function') showToast(`✓ Copied ${items.length} verified grocery items for Things 3!`);

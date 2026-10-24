@@ -4192,20 +4192,69 @@ class StorageManager {
   /* ==========================================================================
      Kitchen Sanctuary & Saturday Meal Ritual Methods
      ========================================================================== */
+  normalizeKitchenWeekDays(weekList) {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const list = Array.isArray(weekList) ? [...weekList] : [];
+    while (list.length < 7) {
+      const idx = list.length;
+      const dayName = dayNames[idx];
+      list.push({
+        day: dayName,
+        date: '',
+        meal: '',
+        source: (dayName === 'Fri' || dayName === 'Sat') ? 'out' : 'fresh',
+        icon: (dayName === 'Fri') ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken'),
+        recipeUrl: '',
+        favoriteId: null,
+        meals: { brunch: null, lunch: null, dinner: null, dessert: null }
+      });
+    }
+    list.forEach(d => {
+      if (!d.meals || typeof d.meals !== 'object') {
+        d.meals = { brunch: null, lunch: null, dinner: null, dessert: null };
+      }
+      // Migrate legacy single meal to dinner slot if dinner is empty
+      if (d.meal && !d.meals.dinner) {
+        d.meals.dinner = {
+          meal: d.meal,
+          source: d.source || 'fresh',
+          icon: d.icon || 'chicken',
+          recipeUrl: d.recipeUrl || '',
+          favoriteId: d.favoriteId || null
+        };
+      }
+      // Keep legacy fields in sync with dinner for external fallback readers
+      if (d.meals.dinner && d.meals.dinner.meal) {
+        d.meal = d.meals.dinner.meal;
+        d.source = d.meals.dinner.source || d.source || 'fresh';
+        d.icon = d.meals.dinner.icon || d.icon || 'chicken';
+        d.recipeUrl = d.meals.dinner.recipeUrl || '';
+      }
+    });
+    return list;
+  }
+
   getDefaultKitchenData() {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const makeWeek = () => dayNames.map(dayName => ({
+      day: dayName,
+      date: '',
+      meal: '',
+      source: (dayName === 'Fri' || dayName === 'Sat') ? 'out' : 'fresh',
+      icon: (dayName === 'Fri') ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken'),
+      recipeUrl: '',
+      favoriteId: null,
+      meals: { brunch: null, lunch: null, dinner: null, dessert: null }
+    }));
+
     return {
       stashItems: [],
       eatOutTarget: 2,
       selectedHopperIngredients: [],
-      weekSchedule: [
-        { day: 'Sun', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
-        { day: 'Mon', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
-        { day: 'Tue', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
-        { day: 'Wed', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
-        { day: 'Thu', date: '', meal: '', source: 'fresh', icon: 'chicken', recipeUrl: '', favoriteId: null },
-        { day: 'Fri', date: '', meal: '', source: 'out', icon: 'takeout', recipeUrl: '', favoriteId: null },
-        { day: 'Sat', date: '', meal: '', source: 'out', icon: 'bistro', recipeUrl: '', favoriteId: null }
-      ],
+      weekSchedule: makeWeek(),
+      followingWeekSchedule: makeWeek(),
+      activeWeekOffset: 0,
+      activeMealFilter: 'all',
       favoriteRecipes: [],
       groceries: []
     };
@@ -4216,9 +4265,15 @@ class StorageManager {
       this.data.kitchenData = this.getDefaultKitchenData();
       this.saveData();
     } else {
+      const kd = this.data.kitchenData;
+      // Ensure multi-meal schedule & following week support
+      kd.weekSchedule = this.normalizeKitchenWeekDays(kd.weekSchedule);
+      kd.followingWeekSchedule = this.normalizeKitchenWeekDays(kd.followingWeekSchedule);
+      if (typeof kd.activeWeekOffset !== 'number') kd.activeWeekOffset = 0;
+      if (!kd.activeMealFilter) kd.activeMealFilter = 'all';
+
       // Purge any legacy sample/placeholder records if still present in storage
       if (!this.data.kitchenSampleClearedV3) {
-        const kd = this.data.kitchenData;
         const sampleStashIds = new Set(['s1', 's2', 's3', 's4', 's5', 's6']);
         const sampleFavIds = new Set(['r1', 'r2', 'r3', 'r4', 'r5', 'r7']);
         const sampleMeals = new Set([
@@ -4256,6 +4311,7 @@ class StorageManager {
               d.meal = '';
               d.recipeUrl = '';
               d.favoriteId = null;
+              if (d.meals) d.meals.dinner = null;
             }
           });
         }
