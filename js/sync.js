@@ -938,6 +938,7 @@ class SyncManager {
     if (!this.isConfigured() || this.isSyncing) return;
     try {
       this.isSyncing = true;
+      this.updateStatusBadge();
       const separator = this.getEndpoint().includes('?') ? '&' : '?';
       const res = await fetch(`${this.getEndpoint()}${separator}_t=${Date.now()}`, {
         cache: 'no-store'
@@ -974,6 +975,7 @@ class SyncManager {
       console.warn('Cloud pull error:', err);
     } finally {
       this.isSyncing = false;
+      this.updateStatusBadge();
       if (this.pendingPush) {
         this.pushToCloud();
       }
@@ -989,6 +991,7 @@ class SyncManager {
 
     try {
       this.isSyncing = true;
+      this.updateStatusBadge();
       this.pendingPush = false;
       const safeData = this.encodeFirebaseKeys(storage.data);
       const payload = JSON.stringify(safeData);
@@ -1008,6 +1011,7 @@ class SyncManager {
       console.warn('Cloud push error:', err);
     } finally {
       this.isSyncing = false;
+      this.updateStatusBadge();
       if (this.pendingPush) {
         this.pushToCloud();
       }
@@ -1116,10 +1120,35 @@ class SyncManager {
         badge.innerHTML = '<span class="status-dot green"></span> Live Instant Sync (Connected)';
       } else if (this.isConfigured()) {
         badge.className = 'sync-status-badge connecting';
-        badge.innerHTML = '<span class="status-dot teal"></span> Connecting...';
+        badge.innerHTML = '<span class="status-dot blue"></span> Connecting...';
       } else {
         badge.className = 'sync-status-badge offline';
         badge.innerHTML = '<span class="status-dot grey"></span> Offline (Local Only)';
+      }
+    }
+
+    // Global Header Sync Pill
+    const dot = document.getElementById('global-sync-dot');
+    const label = document.getElementById('global-sync-label');
+    const btn = document.getElementById('globalSyncBtn');
+    if (dot && label) {
+      if (this.isSyncing) {
+        dot.className = 'sync-dot syncing';
+        label.textContent = 'Syncing...';
+        if (btn) btn.title = 'Syncing with Firebase Cloud...';
+      } else if (this.isConnected) {
+        dot.className = 'sync-dot connected';
+        label.textContent = 'Synced';
+        const timeStr = this.lastSyncTime ? this.lastSyncTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'now';
+        if (btn) btn.title = `Cloud Sync Active · Last synced ${timeStr} (Click for Settings)`;
+      } else if (this.isConfigured()) {
+        dot.className = 'sync-dot connecting';
+        label.textContent = 'Connecting...';
+        if (btn) btn.title = 'Connecting to Firebase Cloud...';
+      } else {
+        dot.className = 'sync-dot offline';
+        label.textContent = 'Local';
+        if (btn) btn.title = 'Local only · Click to configure Cloud Sync';
       }
     }
   }

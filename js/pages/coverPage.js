@@ -1623,12 +1623,14 @@ function renderDailySheet() {
   const kData = (typeof storage.getKitchenData === 'function') ? storage.getKitchenData() : null;
   let tonightMeal = 'Plan Week ➔';
   let tonightSource = 'Kitchen';
+  let tonightRecipeUrl = '';
   if (kData && Array.isArray(kData.weekSchedule)) {
     const dObj = parseDateIso(activeTrackingDate);
     const dayNameShort = dObj.toLocaleDateString('en-US', { weekday: 'short' });
     const dayMatch = kData.weekSchedule.find(s => s.day === dayNameShort);
     if (dayMatch && dayMatch.meal) {
       tonightMeal = dayMatch.meal;
+      tonightRecipeUrl = dayMatch.recipeUrl || '';
       if (dayMatch.source === 'freezer') tonightSource = 'Freezer Stash 🧊';
       else if (dayMatch.source === 'pantry') tonightSource = 'Pantry Stash 🥫';
       else if (dayMatch.source === 'out') tonightSource = 'Dining Out 🍷';
@@ -1872,6 +1874,11 @@ function renderDailySheet() {
           <div class="s-checkpoint-box" onclick="switchAppView('kitchen')" title="Tap to open Kitchen Meal Ritual">
             <div class="s-cp-head">
               <span class="s-cp-label">Dinner Tonight</span>
+              ${tonightRecipeUrl ? `
+                <a href="${escapeHtml(tonightRecipeUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" style="font-size:10.5px; font-weight:700; color:var(--primary, #8B5CF6); text-decoration:none; padding:1px 6px; border-radius:4px; background:rgba(139, 92, 246, 0.12); display:inline-flex; align-items:center; gap:2px;" title="Open recipe in new tab">
+                  Recipe ↗
+                </a>
+              ` : `<span class="s-cp-view-link">Kitchen ➔</span>`}
             </div>
             <div class="s-cp-val" title="${escapeHtml(tonightMeal)}">${escapeHtml(tonightMeal)}</div>
             <div class="s-cp-sub" style="color:var(--coral-kiss, #E75480); font-weight:700;">${escapeHtml(tonightSource)}</div>

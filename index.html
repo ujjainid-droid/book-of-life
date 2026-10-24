@@ -23,24 +23,28 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.3.8">
-  <link rel="stylesheet" href="css/layout.css?v=9.3.8">
-  <link rel="stylesheet" href="css/cover.css?v=9.3.8">
-  <link rel="stylesheet" href="css/habits.css?v=9.3.8">
-  <link rel="stylesheet" href="css/tasks.css?v=9.3.8">
-  <link rel="stylesheet" href="css/settings.css?v=9.3.8">
-  <link rel="stylesheet" href="css/claims.css?v=9.3.8">
-  <link rel="stylesheet" href="css/zlog.css?v=9.3.8">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.3.8">
-  <link rel="stylesheet" href="css/finance.css?v=9.3.8">
-  <link rel="stylesheet" href="css/hobby.css?v=9.3.8">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.3.8">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.3.9">
+  <link rel="stylesheet" href="css/layout.css?v=9.3.9">
+  <link rel="stylesheet" href="css/cover.css?v=9.3.9">
+  <link rel="stylesheet" href="css/habits.css?v=9.3.9">
+  <link rel="stylesheet" href="css/tasks.css?v=9.3.9">
+  <link rel="stylesheet" href="css/settings.css?v=9.3.9">
+  <link rel="stylesheet" href="css/claims.css?v=9.3.9">
+  <link rel="stylesheet" href="css/zlog.css?v=9.3.9">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.3.9">
+  <link rel="stylesheet" href="css/finance.css?v=9.3.9">
+  <link rel="stylesheet" href="css/hobby.css?v=9.3.9">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.3.9">
 </head>
 <body>
 
-  <!-- Global Light / Dark Mode Switcher -->
+  <!-- Global Light / Dark Mode Switcher & Cloud Sync Status -->
   <div class="global-actions" style="position: fixed; top: 14px; right: 16px; z-index: 950; display: flex; align-items: center; gap: 8px;">
-  <button class="themeBtn" id="globalSettingsBtn" aria-label="Settings & Sync" onclick="openSettingsModal()" title="Settings & Preferences" style="position: static;">
+    <button class="global-sync-pill" id="globalSyncBtn" onclick="openSettingsModal()" title="Cloud Sync Status · Tap for Settings &amp; Sync" aria-label="Cloud Sync Status">
+      <span class="sync-dot connected" id="global-sync-dot"></span>
+      <span class="sync-label" id="global-sync-label">Synced</span>
+    </button>
+    <button class="themeBtn" id="globalSettingsBtn" aria-label="Settings & Sync" onclick="openSettingsModal()" title="Settings & Preferences" style="position: static;">
     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <circle cx="12" cy="12" r="3"></circle>
       <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -612,21 +616,21 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.3.8"></script>
-  <script src="js/zlogData.js?v=9.3.8"></script>
-  <script src="js/financeData.js?v=9.3.8"></script>
-  <script src="js/podcastData.js?v=9.3.8"></script>
-  <script src="js/pdfStore.js?v=9.3.8"></script>
-  <script src="js/storage.js?v=9.3.8"></script>
-  <script src="js/sync.js?v=9.3.8"></script>
-  <script src="js/pages/coverPage.js?v=9.3.8"></script>
-  <script src="js/pages/coverHubPage.js?v=9.3.8"></script>
-  <script src="js/pages/claimsPage.js?v=9.3.8"></script>
-  <script src="js/pages/zlogPage.js?v=9.3.8"></script>
-  <script src="js/pages/financePage.js?v=9.3.8"></script>
-  <script src="js/pages/hobbyPage.js?v=9.3.8"></script>
-  <script src="js/pages/kitchenPage.js?v=9.3.8"></script>
-  <script src="js/podcastAgent.js?v=9.3.8"></script>
-  <script src="js/app.js?v=9.3.8"></script>
+  <script src="js/margoData.js?v=9.3.9"></script>
+  <script src="js/zlogData.js?v=9.3.9"></script>
+  <script src="js/financeData.js?v=9.3.9"></script>
+  <script src="js/podcastData.js?v=9.3.9"></script>
+  <script src="js/pdfStore.js?v=9.3.9"></script>
+  <script src="js/storage.js?v=9.3.9"></script>
+  <script src="js/sync.js?v=9.3.9"></script>
+  <script src="js/pages/coverPage.js?v=9.3.9"></script>
+  <script src="js/pages/coverHubPage.js?v=9.3.9"></script>
+  <script src="js/pages/claimsPage.js?v=9.3.9"></script>
+  <script src="js/pages/zlogPage.js?v=9.3.9"></script>
+  <script src="js/pages/financePage.js?v=9.3.9"></script>
+  <script src="js/pages/hobbyPage.js?v=9.3.9"></script>
+  <script src="js/pages/kitchenPage.js?v=9.3.9"></script>
+  <script src="js/podcastAgent.js?v=9.3.9"></script>
+  <script src="js/app.js?v=9.3.9"></script>
 </body>
 </html>

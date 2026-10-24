@@ -353,10 +353,16 @@ function renderKitchenPage() {
             </span>
           </div>
 
-          <button type="button" class="k-btn-copy-things" onclick="kExportVerifiedThings3()">
-            <i data-lucide="copy" style="width:14px; height:14px;"></i>
-            <span>Copy Verified List for Things 3</span>
-          </button>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button type="button" class="k-btn-copy-things" onclick="kOpenThings3()" title="Open Things 3 natively and create Grocery project">
+              <i data-lucide="external-link" style="width:14px; height:14px;"></i>
+              <span>Open in Things 3</span>
+            </button>
+            <button type="button" class="k-btn-action" onclick="kExportVerifiedThings3()" style="height:36px; padding:0 12px; font-size:12px;" title="Copy markdown checklist to clipboard">
+              <i data-lucide="copy" style="width:13px; height:13px;"></i>
+              <span>Copy Text</span>
+            </button>
+          </div>
         </div>
 
         <div class="k-grocery-sections-grid">
@@ -884,7 +890,36 @@ function kAddExtraGroceryItem() {
   }
 }
 
-// Copy ONLY active, verified (unchecked) grocery items to Things 3!
+// 1-Tap Native Things 3 URL Scheme Integration
+function kOpenThings3() {
+  const data = storage.getKitchenData();
+  const rows = document.querySelectorAll('.k-grocery-row:not(.checked)');
+  const rawItems = Array.from(rows).map(r => {
+    return (r.querySelector('span:not(.k-grocery-check)')?.textContent || '').trim();
+  }).filter(Boolean);
+
+  const meals = (data.weekSchedule || []).map(d => `• ${d.day}: ${d.meal} (${d.source === 'out' ? 'Takeout 🥡' : (d.source === 'freezer' ? 'Freezer 🧊' : (d.source === 'pantry' ? 'Pantry 🥫' : 'Fresh 🛒'))})`).join('\n');
+  const notes = `Planned in margo:\n${meals}\n\nEat Out Target: ${data.eatOutTarget || 2}x`;
+
+  const thingsUrl = `things:///add-project?title=${encodeURIComponent('Weekly Groceries')}&to-dos=${encodeURIComponent(rawItems.join('\n'))}&notes=${encodeURIComponent(notes)}`;
+
+  // Also copy to clipboard as convenience backup
+  const clipboardText = `Weekly Groceries\n${rawItems.map(i => `[ ] ${i}`).join('\n')}\n\n${notes}`;
+  navigator.clipboard.writeText(clipboardText).catch(() => {});
+
+  // Trigger Things 3 via deep link
+  window.location.href = thingsUrl;
+
+  if (typeof showToast === 'function') {
+    showToast(`✓ Opened Things 3 with ${rawItems.length} grocery items! ✨`);
+  }
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 45, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
+  }
+}
+window.kOpenThings3 = kOpenThings3;
+
+// Copy ONLY active, verified (unchecked) grocery items to clipboard
 function kExportVerifiedThings3() {
   const data = storage.getKitchenData();
   const rows = document.querySelectorAll('.k-grocery-row:not(.checked)');

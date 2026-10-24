@@ -225,6 +225,82 @@ button:focus-visible, textarea:focus-visible {
   transition: transform 0.2s ease;
 }
 
+/* Global Cloud Sync Status Pill in Header */
+.global-sync-pill {
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid var(--chip, rgba(40, 50, 140, 0.12));
+  background: var(--card, #1A1B35);
+  color: var(--text-secondary, #94A3B8);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+:root[data-theme="light"] .global-sync-pill {
+  background: #FFFFFF;
+  border-color: rgba(40, 50, 140, 0.12);
+  color: #475569;
+  box-shadow: 0 1px 3px rgba(40, 50, 140, 0.08);
+}
+.global-sync-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--primary, #8B5CF6);
+  color: var(--text, #fff);
+}
+:root[data-theme="light"] .global-sync-pill:hover {
+  color: #1F2A44;
+}
+.sync-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  background: #94A3B8;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.sync-dot.connected {
+  background: #10B981;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.5);
+}
+.sync-dot.syncing {
+  background: #8B5CF6;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.7);
+  animation: syncPulse 0.9s infinite alternate;
+}
+.sync-dot.connecting {
+  background: #0D98BA;
+  animation: syncPulse 1.2s infinite alternate;
+}
+.sync-dot.offline {
+  background: #94A3B8;
+  box-shadow: none;
+}
+.sync-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+@keyframes syncPulse {
+  from { opacity: 0.35; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1.15); }
+}
+@media (max-width: 480px) {
+  .global-sync-pill {
+    padding: 0 10px;
+    height: 36px;
+  }
+  .sync-label {
+    display: none;
+  }
+}
+
 .hidden-date-picker {
   position: absolute;
   opacity: 0;

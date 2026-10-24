@@ -159,9 +159,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Keyboard: Escape closes modals
+  // Keyboard: Escape closes modals; Single-key shortcuts switch primary views
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeAllModals();
+    if (e.key === 'Escape') {
+      closeAllModals();
+      return;
+    }
+
+    // Do NOT trigger shortcuts if user is typing in any input/textarea/select or inside an active modal
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tag = document.activeElement ? document.activeElement.tagName : '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (document.activeElement && document.activeElement.isContentEditable)) return;
+    if (document.querySelector('.modal-overlay.active')) return;
+
+    const key = e.key.toLowerCase();
+    if (key === 't') {
+      e.preventDefault();
+      switchAppView('sanctuary');
+    } else if (key === 'c') {
+      e.preventDefault();
+      switchAppView('cover');
+    } else if (key === 'k') {
+      e.preventDefault();
+      switchAppView('kitchen');
+    } else if (key === 'z') {
+      e.preventDefault();
+      switchAppView('zlog');
+    } else if (key === 'm') {
+      e.preventDefault();
+      switchAppView('finance');
+    } else if (key === 'h') {
+      e.preventDefault();
+      switchAppView('hobby');
+    } else if (key === '?') {
+      e.preventDefault();
+      if (typeof showToast === 'function') {
+        showToast('⌨️ Hotkeys: T (Today) · C (Compass) · K (Kitchen) · Z (Z Hub) · M (Money) · H (Hobby)');
+      }
+    }
   });
 });
 
