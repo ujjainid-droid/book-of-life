@@ -221,14 +221,14 @@ function renderKitchenPage() {
           `}
         </div>
 
-        <!-- 2 Separate Buttons (Freezer & Pantry) instead of dropdown -->
+        <!-- 2 Separate Buttons: Pantry (Default on Enter) and Freezer -->
         <div class="k-stash-quick-bar">
-          <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('freezer')">
+          <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
+          <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry (Default on Enter)">
+            🥫 + Pantry
+          </button>
           <button type="button" class="k-btn-stash-add freezer" onclick="kAddStashWithSource('freezer')" title="Add directly to Freezer">
             🧊 + Freezer
-          </button>
-          <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry">
-            🥫 + Pantry
           </button>
         </div>
       </section>
@@ -469,8 +469,8 @@ function kDeleteStash(id) {
   if (typeof showToast === 'function') showToast('Removed stash item');
 }
 
-// 2 Separate Buttons: Freezer and Pantry
-function kAddStashWithSource(sourceType) {
+// 2 Separate Buttons: Pantry (default on Enter) and Freezer
+function kAddStashWithSource(sourceType = 'pantry') {
   const input = document.getElementById('k-stash-input');
   if (!input) return;
   const val = input.value.trim();
@@ -609,7 +609,7 @@ function kOpenMealPicker(dayIdx) {
   const iconEl = document.getElementById('k-modal-custom-icon');
   if (iconEl) iconEl.value = d.icon || (d.source === 'out' ? 'takeout' : 'chicken');
   const sourceEl = document.getElementById('k-modal-custom-source');
-  if (sourceEl) sourceEl.value = d.source || 'fresh';
+  if (sourceEl) sourceEl.value = d.source || 'pantry';
 
   const stashContainer = document.getElementById('k-modal-stash-list');
   if (stashContainer) {
