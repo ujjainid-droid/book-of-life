@@ -54,10 +54,10 @@ button:focus-visible, textarea:focus-visible {
 
 .aurora-nav-pill {
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   background: var(--card, #181A33);
   border: 1px solid var(--line, #2E3060);
   border-radius: 28px;
@@ -100,18 +100,34 @@ button:focus-visible, textarea:focus-visible {
   font-weight: 800;
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .aurora-primary-nav {
-    padding: 0 8px calc(12px + env(safe-area-inset-bottom));
+    padding: 0 10px calc(12px + env(safe-area-inset-bottom));
   }
   .aurora-nav-pill {
     padding: 3px;
     gap: 2px;
   }
   .aurora-nav-link {
-    font-size: 10.5px;
-    padding: 0 2px;
+    font-size: 11px;
+    padding: 0 3px;
     min-height: 38px;
+  }
+}
+
+@media (max-width: 360px) {
+  .aurora-primary-nav {
+    padding: 0 6px calc(10px + env(safe-area-inset-bottom));
+  }
+  .aurora-nav-pill {
+    padding: 2px;
+    gap: 2px;
+  }
+  .aurora-nav-link {
+    font-size: 9.5px;
+    letter-spacing: -0.02em;
+    padding: 0 1px;
+    min-height: 35px;
   }
 }
 
@@ -128,15 +144,15 @@ button:focus-visible, textarea:focus-visible {
     z-index: 10;
   }
   .aurora-nav-pill {
-    max-width: 560px;
-    padding: 6px;
-    gap: 6px;
+    max-width: 680px;
+    padding: 5px;
+    gap: 5px;
   }
   .aurora-nav-link {
-    min-height: 46px;
-    font-size: 13.5px;
-    gap: 6px;
-    padding: 0 12px;
+    min-height: 44px;
+    font-size: 13px;
+    gap: 4px;
+    padding: 0 8px;
   }
 }
 
