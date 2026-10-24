@@ -4217,7 +4217,7 @@ class StorageManager {
       this.saveData();
     } else {
       // Purge any legacy sample/placeholder records if still present in storage
-      if (!this.data.kitchenSampleClearedV2) {
+      if (!this.data.kitchenSampleClearedV3) {
         const kd = this.data.kitchenData;
         const sampleStashIds = new Set(['s1', 's2', 's3', 's4', 's5', 's6']);
         const sampleFavIds = new Set(['r1', 'r2', 'r3', 'r4', 'r5', 'r7']);
@@ -4232,17 +4232,27 @@ class StorageManager {
         ]);
 
         if (Array.isArray(kd.stashItems)) {
-          kd.stashItems = kd.stashItems.filter(i => !sampleStashIds.has(i.id) && !i.name.toLowerCase().includes('salmon fillets (2 portions)'));
+          kd.stashItems = kd.stashItems.filter(i => {
+            const n = (i.name || '').toLowerCase().trim();
+            return !sampleStashIds.has(i.id) && !n.includes('salmon fillets') && !n.includes('chick pea') && !n.includes('chickpea');
+          });
         }
         if (Array.isArray(kd.favoriteRecipes)) {
           kd.favoriteRecipes = kd.favoriteRecipes.filter(r => {
             const t = (r.title || '').toLowerCase().trim();
-            return !sampleFavIds.has(r.id) && t !== 'noodles' && !t.includes('roasted salmon with broccoli');
+            return !sampleFavIds.has(r.id) && t !== 'noodles' && !t.includes('chick pea') && !t.includes('chickpea') && !t.includes('roasted salmon with broccoli');
+          });
+        }
+        if (Array.isArray(kd.groceries)) {
+          kd.groceries = kd.groceries.filter(g => {
+            const t = (g.text || '').toLowerCase().trim();
+            return !t.includes('chick pea') && !t.includes('chickpea');
           });
         }
         if (Array.isArray(kd.weekSchedule)) {
           kd.weekSchedule.forEach(d => {
-            if (sampleMeals.has((d.meal || '').toLowerCase().trim()) || sampleFavIds.has(d.favoriteId)) {
+            const m = (d.meal || '').toLowerCase().trim();
+            if (sampleMeals.has(m) || sampleFavIds.has(d.favoriteId) || m.includes('chick pea') || m.includes('chickpea')) {
               d.meal = '';
               d.recipeUrl = '';
               d.favoriteId = null;
@@ -4251,7 +4261,7 @@ class StorageManager {
         }
         kd.selectedHopperIngredients = [];
         if (!Array.isArray(kd.groceries)) kd.groceries = [];
-        this.data.kitchenSampleClearedV2 = true;
+        this.data.kitchenSampleClearedV3 = true;
         this.saveData();
       }
     }

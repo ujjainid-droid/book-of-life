@@ -223,7 +223,7 @@ function renderKitchenPage() {
 
         <!-- 2 Separate Buttons: Pantry (Default on Enter) and Freezer -->
         <div class="k-stash-quick-bar">
-          <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
+          <input type="text" class="k-clean-input" id="k-stash-input" name="k_stash_input_new" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
           <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry (Default on Enter)">
             🥫 + Pantry
           </button>
@@ -428,7 +428,7 @@ function renderKitchenPage() {
 
         <!-- Add Custom Grocery Item Field -->
         <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
-          <input type="text" class="k-clean-input" id="k-add-extra-grocery" placeholder="+ Add a grocery item (e.g. Oat milk, Lemons, Coffee beans)..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
+          <input type="text" class="k-clean-input" id="k-add-extra-grocery" name="k_extra_grocery_input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add a grocery item (e.g. Oat milk, Lemons, Coffee beans)..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
           <button type="button" class="k-btn-action" onclick="kAddExtraGroceryItem()">
             <i data-lucide="plus" style="width:13px; height:13px;"></i>
             <span>Add Item</span>
