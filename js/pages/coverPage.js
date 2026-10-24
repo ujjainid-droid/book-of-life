@@ -1777,6 +1777,11 @@ function renderDailySheet() {
           <span class="v" id="zV">${isZLogLogged ? (zlogRatingObj ? zlogRatingObj.shortLabel : 'Logged ✓') : 'Log'}</span>
         </button>
 
+        <button type="button" class="tile2 kitchen" id="kitchenTile" onclick="switchAppView('kitchen')" title="Kitchen: Stash, Saturday Meal Ritual & Grocery">
+          <span class="label">KITCHEN · MEAL RITUAL</span>
+          <span class="v" id="kitchenV">Plan Week ➔</span>
+        </button>
+
       </div>
 
       <div class="col c">

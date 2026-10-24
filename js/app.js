@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return { view: 'finance', subView: sub };
     }
     if (rawHash.startsWith('podcasts')) return { view: 'podcasts', subView: null };
+    if (rawHash.startsWith('kitchen') || rawHash.startsWith('meals')) return { view: 'kitchen', subView: null };
     if (rawHash.startsWith('hobby') || rawHash.startsWith('hobbies')) return { view: 'hobby', subView: null };
     if (rawHash.startsWith('cover') || rawHash.startsWith('compass')) return { view: 'cover', subView: null };
     if (rawHash.startsWith('sanctuary') || rawHash.startsWith('today')) return { view: 'sanctuary', subView: null };
@@ -208,6 +209,8 @@ function switchAppView(viewName, subViewName) {
   } else if (viewName === 'cover' || viewName === 'compass') {
     currentView = 'cover';
     localStorage.setItem('BOL_LAST_SANCTUARY_VIEW', 'cover');
+  } else if (viewName === 'kitchen' || viewName === 'meals') {
+    currentView = 'kitchen';
   } else if (viewName === 'hobby' || viewName === 'hobbies') {
     currentView = 'hobby';
   } else {
@@ -235,6 +238,8 @@ function switchAppView(viewName, subViewName) {
     let targetHash = '';
     if (currentView === 'cover') {
       targetHash = 'compass';
+    } else if (currentView === 'kitchen') {
+      targetHash = 'kitchen';
     } else if (currentView === 'hobby') {
       targetHash = 'hobby';
     } else if (currentView === 'zlog') {
@@ -264,6 +269,7 @@ function switchAppView(viewName, subViewName) {
 
   const todayBtn = document.getElementById('nav-btn-today');
   const coverBtn = document.getElementById('nav-btn-cover');
+  const kitchenBtn = document.getElementById('nav-btn-kitchen');
   const hobbyBtn = document.getElementById('nav-btn-hobby');
   const zhubBtn = document.getElementById('nav-btn-zhub');
   const financeBtn = document.getElementById('nav-btn-finance');
@@ -283,6 +289,7 @@ function switchAppView(viewName, subViewName) {
   const isBudgetActive = currentView === 'finance' && (subViewName === 'budget' || (typeof activeFinanceSubTab !== 'undefined' && activeFinanceSubTab === 'budget'));
   updateNavBtn(todayBtn, currentView === 'sanctuary');
   updateNavBtn(coverBtn, currentView === 'cover');
+  updateNavBtn(kitchenBtn, currentView === 'kitchen');
   updateNavBtn(hobbyBtn, currentView === 'hobby');
   updateNavBtn(zhubBtn, currentView === 'zlog');
   updateNavBtn(budgetBtn, isBudgetActive);
@@ -317,6 +324,8 @@ function switchAppView(viewName, subViewName) {
     if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
   } else if (currentView === 'cover') {
     if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
+  } else if (currentView === 'kitchen') {
+    if (typeof renderKitchenPage === 'function') renderKitchenPage();
   } else if (currentView === 'hobby') {
     if (typeof renderHobbyPage === 'function') renderHobbyPage();
   } else {
@@ -342,6 +351,8 @@ function renderCurrentView() {
     if (typeof renderPodcastAgentView === 'function') renderPodcastAgentView();
   } else if (currentView === 'cover') {
     if (typeof renderCoverHubPage === 'function') renderCoverHubPage();
+  } else if (currentView === 'kitchen') {
+    if (typeof renderKitchenPage === 'function') renderKitchenPage();
   } else if (currentView === 'hobby') {
     if (typeof renderHobbyPage === 'function') renderHobbyPage();
   } else {

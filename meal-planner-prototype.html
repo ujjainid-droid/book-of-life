@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>margo · Kitchen Sanctuary & Saturday Meal Ritual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.3.0">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      background-color: var(--bg-app, #FAF9F5);
+      color: var(--text-primary, #1F2A44);
+      font-family: 'Inter', -apple-system, sans-serif;
+      margin: 0;
+      padding: 24px 16px 80px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(31, 42, 68, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #fff;
+      border: 1px solid rgba(31, 42, 68, 0.14);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 480px;
+      padding: 22px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 16px; font-weight: 700; color: #1F2A44; margin: 0; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: #64748B; }
+    .toast-box {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1F2A44;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 2000;
+      pointer-events: none;
+      border: 1px solid #A9D1D1;
+    }
+    .toast-box.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <main id="daily-sheet-container" style="width:100%; max-width:680px;"></main>
+
+  <!-- Toast -->
+  <div class="toast-box" id="toast">
+    <span id="toast-text">Notification message</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/storage.js?v=9.3.0"></script>
+  <script src="js/pages/kitchenPage.js?v=9.3.0"></script>
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => { toast.classList.remove('show'); }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderKitchenPage();
+    });
+  </script>
+</body>
+</html>

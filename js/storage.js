@@ -4189,6 +4189,55 @@ class StorageManager {
     return list;
   }
 
+  /* ==========================================================================
+     Kitchen Sanctuary & Saturday Meal Ritual Methods
+     ========================================================================== */
+  getDefaultKitchenData() {
+    return {
+      stashItems: [
+        { id: 's1', type: 'freezer', name: 'Salmon fillets (2 portions)', badge: 'Use Soon', used: false },
+        { id: 's2', type: 'freezer', name: 'Ground Turkey (1 lb)', badge: 'Use Soon', used: false },
+        { id: 's3', type: 'freezer', name: 'Edamame & dumplings', badge: 'Backup', used: true },
+        { id: 's4', type: 'pantry', name: 'Black beans & salsa', badge: 'Staple', used: false },
+        { id: 's5', type: 'pantry', name: 'Arborio risotto rice', badge: 'Staple', used: false },
+        { id: 's6', type: 'pantry', name: 'Rao\'s Marinara & Penne', badge: 'Quick', used: false }
+      ],
+      eatOutTarget: 2,
+      selectedHopperIngredients: ['Salmon fillets', 'Ground Turkey', 'Arborio risotto rice'],
+      weekSchedule: [
+        { day: 'Sun', date: 'Oct 24', meal: 'Roasted Salmon with Sweet Potatoes & Broccoli', source: 'freezer', icon: 'salmon', recipeUrl: 'https://cooking.nytimes.com/recipes/1020083-sheet-pan-salmon', favoriteId: 'r1' },
+        { day: 'Mon', date: 'Oct 25', meal: 'Ground Turkey & Black Bean Taco Bowls', source: 'freezer', icon: 'taco', recipeUrl: 'https://pinchofyum.com/turkey-taco-bowls', favoriteId: 'r2' },
+        { day: 'Tue', date: 'Oct 26', meal: 'Creamy Mushroom & Parmesan Risotto', source: 'pantry', icon: 'risotto', recipeUrl: 'https://www.seriouseats.com/pressure-cooker-mushroom-risotto-recipe', favoriteId: 'r3' },
+        { day: 'Wed', date: 'Oct 27', meal: 'Sheet Pan Lemon Herb Chicken & Veggies', source: 'fresh', icon: 'chicken', recipeUrl: 'https://www.eatwell101.com/sheet-pan-lemon-herb-chicken', favoriteId: 'r4' },
+        { day: 'Thu', date: 'Oct 28', meal: 'Rao\'s Penne Pasta with Spinach & Ricotta', source: 'pantry', icon: 'pasta', recipeUrl: 'https://raos.com/blogs/recipes/penne-alla-vodka', favoriteId: 'r5' },
+        { day: 'Fri', date: 'Oct 29', meal: 'Friday Night Takeout (Wood-Fired Pizza / Thai)', source: 'out', icon: 'takeout', recipeUrl: '', favoriteId: 'r7' },
+        { day: 'Sat', date: 'Oct 30', meal: 'Neighborhood Bistro or Date Night Out', source: 'out', icon: 'bistro', recipeUrl: '', favoriteId: null }
+      ],
+      favoriteRecipes: [
+        { id: 'r1', title: 'Roasted Salmon with Broccoli', icon: 'salmon', tags: ['🧊 Freezer', '⚡ 25m'], recipeUrl: 'https://cooking.nytimes.com/recipes/1020083-sheet-pan-salmon', ingredients: 'Salmon fillets, broccoli, sweet potatoes, olive oil, lemon', stashMatch: 'Salmon fillets' },
+        { id: 'r2', title: 'Turkey & Black Bean Taco Bowls', icon: 'taco', tags: ['🧊 Freezer', '🥗 High-Protein'], recipeUrl: 'https://pinchofyum.com/turkey-taco-bowls', ingredients: 'Ground turkey, black beans, salsa, tortillas, avocado, cilantro', stashMatch: 'Ground Turkey' },
+        { id: 'r3', title: 'Creamy Parmesan Risotto', icon: 'risotto', tags: ['🥫 Pantry', '🍲 Comfort'], recipeUrl: 'https://www.seriouseats.com/pressure-cooker-mushroom-risotto-recipe', ingredients: 'Arborio rice, bone broth, parmesan wedge, baby spinach', stashMatch: 'Arborio risotto rice' },
+        { id: 'r4', title: 'Sheet Pan Herb Chicken', icon: 'chicken', tags: ['🛒 Fresh', '🥦 Low Carb'], recipeUrl: 'https://www.eatwell101.com/sheet-pan-lemon-herb-chicken', ingredients: 'Chicken breasts, bell peppers, zucchini, lemon, oregano', stashMatch: null },
+        { id: 'r5', title: 'Rao\'s Penne with Spinach', icon: 'pasta', tags: ['🥫 Pantry', '⚡ 15m'], recipeUrl: 'https://raos.com/blogs/recipes/penne-alla-vodka', ingredients: 'Penne pasta, Rao\'s marinara, baby spinach, parmesan', stashMatch: 'Rao\'s Marinara & Penne' },
+        { id: 'r7', title: 'Friday Night Pizza / Takeout', icon: 'pizza', tags: ['🥡 Friday Ritual', '🍕 Takeout'], recipeUrl: '', ingredients: 'Local pizzeria or favorite takeout Thai / Ramen', stashMatch: null }
+      ],
+      groceryChecked: {}
+    };
+  }
+
+  getKitchenData() {
+    if (!this.data.kitchenData || typeof this.data.kitchenData !== 'object') {
+      this.data.kitchenData = this.getDefaultKitchenData();
+      this.saveData();
+    }
+    return this.data.kitchenData;
+  }
+
+  saveKitchenData(kitchenData) {
+    this.data.kitchenData = kitchenData;
+    this.saveData();
+  }
+
   resetToDefaults() {
     this.data = this.getDefaultState();
     this.saveData();
