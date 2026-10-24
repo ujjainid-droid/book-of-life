@@ -170,6 +170,71 @@ function getSourcePillLabel(source, dayName, mealType) {
   return 'Fresh 🛒';
 }
 
+function kRenderAssignSelectOptions() {
+  return `
+    <option value="">Assign to...</option>
+    <optgroup label="📅 This Week · Dinners">
+      <option value="0:0:dinner">Sun Dinner</option>
+      <option value="0:1:dinner">Mon Dinner</option>
+      <option value="0:2:dinner">Tue Dinner</option>
+      <option value="0:3:dinner">Wed Dinner</option>
+      <option value="0:4:dinner">Thu Dinner</option>
+      <option value="0:5:dinner">Fri Dinner (Takeout)</option>
+      <option value="0:6:dinner">Sat Dinner</option>
+    </optgroup>
+    <optgroup label="🥗 This Week · Lunches">
+      <option value="0:0:lunch">Sun Lunch</option>
+      <option value="0:1:lunch">Mon Lunch</option>
+      <option value="0:2:lunch">Tue Lunch</option>
+      <option value="0:3:lunch">Wed Lunch</option>
+      <option value="0:4:lunch">Thu Lunch</option>
+      <option value="0:5:lunch">Fri Lunch</option>
+      <option value="0:6:lunch">Sat Lunch</option>
+    </optgroup>
+    <optgroup label="☕ This Week · Brunch &amp; Desserts">
+      <option value="0:0:brunch">Sun Brunch</option>
+      <option value="0:6:brunch">Sat Brunch</option>
+      <option value="0:0:dessert">Sun Dessert</option>
+      <option value="0:1:dessert">Mon Dessert</option>
+      <option value="0:2:dessert">Tue Dessert</option>
+      <option value="0:3:dessert">Wed Dessert</option>
+      <option value="0:4:dessert">Thu Dessert</option>
+      <option value="0:5:dessert">Fri Dessert</option>
+      <option value="0:6:dessert">Sat Dessert</option>
+    </optgroup>
+    <optgroup label="⏩ Following Week · Dinners">
+      <option value="1:0:dinner">Following Sun Dinner</option>
+      <option value="1:1:dinner">Following Mon Dinner</option>
+      <option value="1:2:dinner">Following Tue Dinner</option>
+      <option value="1:3:dinner">Following Wed Dinner</option>
+      <option value="1:4:dinner">Following Thu Dinner</option>
+      <option value="1:5:dinner">Following Fri Dinner (Takeout)</option>
+      <option value="1:6:dinner">Following Sat Dinner</option>
+    </optgroup>
+    <optgroup label="🥗 Following Week · Lunches">
+      <option value="1:0:lunch">Following Sun Lunch</option>
+      <option value="1:1:lunch">Following Mon Lunch</option>
+      <option value="1:2:lunch">Following Tue Lunch</option>
+      <option value="1:3:lunch">Following Wed Lunch</option>
+      <option value="1:4:lunch">Following Thu Lunch</option>
+      <option value="1:5:lunch">Following Fri Lunch</option>
+      <option value="1:6:lunch">Following Sat Lunch</option>
+    </optgroup>
+    <optgroup label="☕ Following Week · Brunch &amp; Desserts">
+      <option value="1:0:brunch">Following Sun Brunch</option>
+      <option value="1:6:brunch">Following Sat Brunch</option>
+      <option value="1:0:dessert">Following Sun Dessert</option>
+      <option value="1:1:dessert">Following Mon Dessert</option>
+      <option value="1:2:dessert">Following Tue Dessert</option>
+      <option value="1:3:dessert">Following Wed Dessert</option>
+      <option value="1:4:dessert">Following Thu Dessert</option>
+      <option value="1:5:dessert">Following Fri Dessert</option>
+      <option value="1:6:dessert">Following Sat Dessert</option>
+    </optgroup>
+  `;
+}
+window.kRenderAssignSelectOptions = kRenderAssignSelectOptions;
+
 function renderKitchenPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
@@ -585,32 +650,7 @@ function renderKitchenPage() {
                 ` : `<span></span>`}
 
                 <select class="k-assign-select" onchange="kAssignFavToMeal('${r.id}', this.value); this.value='';">
-                  <option value="">Assign to...</option>
-                  <optgroup label="${weekOffset === 1 ? 'Next Wk Dinners' : 'Dinners'}">
-                    <option value="0:dinner">Sun Dinner</option>
-                    <option value="1:dinner">Mon Dinner</option>
-                    <option value="2:dinner">Tue Dinner</option>
-                    <option value="3:dinner">Wed Dinner</option>
-                    <option value="4:dinner">Thu Dinner</option>
-                    <option value="5:dinner">Fri Dinner (Takeout)</option>
-                    <option value="6:dinner">Sat Dinner</option>
-                  </optgroup>
-                  <optgroup label="${weekOffset === 1 ? 'Next Wk Lunches' : 'Lunches'}">
-                    <option value="0:lunch">Sun Lunch</option>
-                    <option value="1:lunch">Mon Lunch</option>
-                    <option value="2:lunch">Tue Lunch</option>
-                    <option value="3:lunch">Wed Lunch</option>
-                    <option value="4:lunch">Thu Lunch</option>
-                    <option value="5:lunch">Fri Lunch</option>
-                    <option value="6:lunch">Sat Lunch</option>
-                  </optgroup>
-                  <optgroup label="${weekOffset === 1 ? 'Next Wk Brunch &amp; Desserts' : 'Brunch &amp; Desserts'}">
-                    <option value="0:brunch">Sun Brunch</option>
-                    <option value="6:brunch">Sat Brunch</option>
-                    <option value="5:dessert">Fri Dessert</option>
-                    <option value="6:dessert">Sat Dessert</option>
-                    <option value="0:dessert">Sun Dessert</option>
-                  </optgroup>
+                  ${kRenderAssignSelectOptions()}
                 </select>
               </div>
             </div>
@@ -674,32 +714,7 @@ function renderKitchenPage() {
                   </button>
 
                   <select class="k-assign-select" onchange="kAssignNewRecipeToMeal('${r.id}', this.value); this.value='';">
-                    <option value="">Assign to...</option>
-                    <optgroup label="${weekOffset === 1 ? 'Next Wk Dinners' : 'Dinners'}">
-                      <option value="0:dinner">Sun Dinner</option>
-                      <option value="1:dinner">Mon Dinner</option>
-                      <option value="2:dinner">Tue Dinner</option>
-                      <option value="3:dinner">Wed Dinner</option>
-                      <option value="4:dinner">Thu Dinner</option>
-                      <option value="5:dinner">Fri Dinner (Takeout)</option>
-                      <option value="6:dinner">Sat Dinner</option>
-                    </optgroup>
-                    <optgroup label="${weekOffset === 1 ? 'Next Wk Lunches' : 'Lunches'}">
-                      <option value="0:lunch">Sun Lunch</option>
-                      <option value="1:lunch">Mon Lunch</option>
-                      <option value="2:lunch">Tue Lunch</option>
-                      <option value="3:lunch">Wed Lunch</option>
-                      <option value="4:lunch">Thu Lunch</option>
-                      <option value="5:lunch">Fri Lunch</option>
-                      <option value="6:lunch">Sat Lunch</option>
-                    </optgroup>
-                    <optgroup label="${weekOffset === 1 ? 'Next Wk Brunch &amp; Desserts' : 'Brunch &amp; Desserts'}">
-                      <option value="0:brunch">Sun Brunch</option>
-                      <option value="6:brunch">Sat Brunch</option>
-                      <option value="5:dessert">Fri Dessert</option>
-                      <option value="6:dessert">Sat Dessert</option>
-                      <option value="0:dessert">Sun Dessert</option>
-                    </optgroup>
+                    ${kRenderAssignSelectOptions()}
                   </select>
                 </div>
               </div>
@@ -1261,14 +1276,25 @@ window.kToggleFavoriteDayMeal = kToggleFavoriteDayMeal;
 function kAssignFavToMeal(favId, targetStr) {
   if (!targetStr) return;
   const parts = targetStr.split(':');
-  const dayIdx = parseInt(parts[0], 10);
-  const mealType = parts[1] || 'dinner';
+  let weekOffset = 0;
+  let dayIdx = 0;
+  let mealType = 'dinner';
+
+  if (parts.length === 3) {
+    weekOffset = parseInt(parts[0], 10);
+    dayIdx = parseInt(parts[1], 10);
+    mealType = parts[2] || 'dinner';
+  } else {
+    dayIdx = parseInt(parts[0], 10);
+    mealType = parts[1] || 'dinner';
+    const curData = storage.getKitchenData();
+    weekOffset = curData.activeWeekOffset || 0;
+  }
 
   const data = storage.getKitchenData();
   const fav = (data.favoriteRecipes || []).find(r => r.id === favId);
   if (!fav) return;
 
-  const weekOffset = data.activeWeekOffset || 0;
   const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
   const d = schedule[dayIdx];
   if (!d) return;
@@ -1292,10 +1318,12 @@ function kAssignFavToMeal(favId, targetStr) {
     d.favoriteId = fav.id;
   }
 
+  data.activeWeekOffset = weekOffset;
   storage.saveKitchenData(data);
   renderKitchenPage();
   const label = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Meal';
-  if (typeof showToast === 'function') showToast(`Assigned "${fav.title}" to ${d.day} ${label}! ✨`);
+  const weekLabel = weekOffset === 1 ? ' (Following Week)' : '';
+  if (typeof showToast === 'function') showToast(`Assigned "${fav.title}" to ${d.day} ${label}${weekLabel}! ✨`);
 }
 window.kAssignFavToMeal = kAssignFavToMeal;
 
@@ -1477,15 +1505,26 @@ window.kDeleteNewRecipe = kDeleteNewRecipe;
 
 function kAssignNewRecipeToMeal(id, targetStr) {
   if (!targetStr) return;
+  const parts = targetStr.split(':');
+  let weekOffset = 0;
+  let dayIdx = 0;
+  let mealType = 'dinner';
+
+  if (parts.length === 3) {
+    weekOffset = parseInt(parts[0], 10);
+    dayIdx = parseInt(parts[1], 10);
+    mealType = parts[2] || 'dinner';
+  } else {
+    dayIdx = parseInt(parts[0], 10);
+    mealType = parts[1] || 'dinner';
+    const curData = storage.getKitchenData();
+    weekOffset = curData.activeWeekOffset || 0;
+  }
+
   const data = storage.getKitchenData();
   const item = (data.newRecipes || []).find(r => r.id === id);
   if (!item) return;
 
-  const parts = targetStr.split(':');
-  const dayIdx = parseInt(parts[0], 10);
-  const mealType = parts[1] || 'dinner';
-
-  const weekOffset = data.activeWeekOffset || 0;
   const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
   const d = schedule[dayIdx];
   if (!d) return;
@@ -1506,10 +1545,12 @@ function kAssignNewRecipeToMeal(id, targetStr) {
     d.recipeUrl = item.recipeUrl || '';
   }
 
+  data.activeWeekOffset = weekOffset;
   storage.saveKitchenData(data);
   renderKitchenPage();
   const label = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Meal';
-  if (typeof showToast === 'function') showToast(`Assigned "${item.title}" to ${d.day} ${label}! ✨`);
+  const weekLabel = weekOffset === 1 ? ' (Following Week)' : '';
+  if (typeof showToast === 'function') showToast(`Assigned "${item.title}" to ${d.day} ${label}${weekLabel}! ✨`);
 }
 window.kAssignNewRecipeToMeal = kAssignNewRecipeToMeal;
 
