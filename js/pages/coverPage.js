@@ -1356,6 +1356,72 @@ function submitQuickTodayGoal(event, dateStr = activeTrackingDate) {
 }
 window.submitQuickTodayGoal = submitQuickTodayGoal;
 
+let activeHairSkinTab = 'skin'; // 'skin' | 'hair'
+
+function switchHairSkinModalTab(tabName) {
+  activeHairSkinTab = tabName;
+  renderHairSkinModalContent(activeTrackingDate);
+}
+window.switchHairSkinModalTab = switchHairSkinModalTab;
+
+function renderHairSkinModalContent(dateStr = activeTrackingDate) {
+  const container = document.getElementById('hairskin-modal-body');
+  if (!container) return;
+
+  const todayIso = formatDateIso(new Date());
+  const isToday = (dateStr === todayIso);
+  const dObj = parseDateIso(dateStr);
+  const fullFormattedDate = dObj.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const tabHtml = `
+    <div style="display:flex; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(13, 59, 102, 0.1); padding-bottom:10px;">
+      <button type="button" class="s-modal-tab-btn ${activeHairSkinTab === 'skin' ? 'is-active' : ''}" onclick="switchHairSkinModalTab('skin')">
+        🧴 Skincare Routine
+      </button>
+      <button type="button" class="s-modal-tab-btn ${activeHairSkinTab === 'hair' ? 'is-active' : ''}" onclick="switchHairSkinModalTab('hair')">
+        💇‍♀️ Haircare Schedule
+      </button>
+    </div>
+  `;
+
+  const navHtml = `
+    <div class="aurora-hair-modal-nav" style="margin-bottom:12px;">
+      <button type="button" class="aurora-hair-nav-btn" onclick="navigateDate(-1)">‹ Prev Day</button>
+      <div class="aurora-hair-nav-date">
+        <strong>${escapeHtml(fullFormattedDate)}</strong>
+        ${!isToday ? `<button type="button" class="aurora-hair-today-btn" onclick="resetToToday()">Jump to Today</button>` : `<span class="aurora-hair-today-tag">Today</span>`}
+      </div>
+      <button type="button" class="aurora-hair-nav-btn" onclick="navigateDate(1)">Next Day ›</button>
+    </div>
+  `;
+
+  const contentHtml = (activeHairSkinTab === 'skin')
+    ? renderSkinCareCard(dateStr, isToday)
+    : renderHairCareCard(dateStr, isToday);
+
+  container.innerHTML = tabHtml + navHtml + contentHtml;
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+window.renderHairSkinModalContent = renderHairSkinModalContent;
+
+function openHairSkinModal(dateStr = activeTrackingDate, initialTab = 'skin') {
+  if (dateStr) activeTrackingDate = dateStr;
+  activeHairSkinTab = initialTab;
+  renderHairSkinModalContent(activeTrackingDate);
+  const modal = document.getElementById('modal-hairskin-log');
+  if (modal) {
+    modal.classList.add('active');
+  }
+}
+window.openHairSkinModal = openHairSkinModal;
+
 function renderDailySheet() {
   const container = document.getElementById('daily-sheet-container') || document.getElementById('page-cover');
   if (!container) return;
@@ -1783,13 +1849,13 @@ function renderDailySheet() {
           </div>
 
           <!-- Hair & Skin (Pops up on tap) -->
-          <div class="s-checkpoint-box" onclick="openHairCareLogModal('${activeTrackingDate}')" title="Tap to view Hair & Skin routine schedule">
+          <div class="s-checkpoint-box" onclick="openHairSkinModal('${activeTrackingDate}', 'skin')" title="Tap to view Skincare & Haircare routines">
             <div class="s-cp-head">
               <span class="s-cp-label">Hair &amp; Skin</span>
               <span class="s-cp-view-link">View ↗</span>
             </div>
-            <div class="s-cp-val">${escapeHtml(hairRoutine ? hairRoutine.badge : 'Rest Day')} · ${isSkinDone ? 'Done ✓' : (skinCareState.am ? 'AM Done ✓' : 'Pending')}</div>
-            <div class="s-cp-sub">${escapeHtml(skinRoutine ? skinRoutine.badge : 'PM Routine Tonight')}</div>
+            <div class="s-cp-val">💇‍♀️ ${escapeHtml(hairRoutine ? hairRoutine.badge : 'Rest Day')}</div>
+            <div class="s-cp-sub" style="color:var(--orchid, #6C2E7B); font-weight:700;">🧴 ${escapeHtml(skinRoutine ? skinRoutine.badge : 'Skincare')}</div>
           </div>
 
           <!-- Z Hub -->
@@ -1806,10 +1872,9 @@ function renderDailySheet() {
           <div class="s-checkpoint-box" onclick="switchAppView('kitchen')" title="Tap to open Kitchen Meal Ritual">
             <div class="s-cp-head">
               <span class="s-cp-label">Dinner Tonight</span>
-              <span class="s-cp-view-link">Menu ➔</span>
             </div>
             <div class="s-cp-val" title="${escapeHtml(tonightMeal)}">${escapeHtml(tonightMeal)}</div>
-            <div class="s-cp-sub" style="color:#6D28D9;">${escapeHtml(tonightSource)}</div>
+            <div class="s-cp-sub" style="color:var(--coral-kiss, #E75480); font-weight:700;">${escapeHtml(tonightSource)}</div>
           </div>
         </div>
       </section>
@@ -1852,6 +1917,11 @@ function renderDailySheet() {
   const skinModal = document.getElementById('modal-skincare-log');
   if (skinModal && skinModal.classList.contains('active') && typeof renderSkinCareModalContent === 'function') {
     renderSkinCareModalContent(activeTrackingDate);
+  }
+
+    const hairSkinModal = document.getElementById('modal-hairskin-log');
+  if (hairSkinModal && hairSkinModal.classList.contains('active') && typeof renderHairSkinModalContent === 'function') {
+    renderHairSkinModalContent(activeTrackingDate);
   }
 
   const archiveModal = document.getElementById('modal-journal-archive');

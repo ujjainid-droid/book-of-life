@@ -344,13 +344,16 @@
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
 
               <!-- WEIGHT: FILLABLE FIELD ON TAP -->
-              <div class="bg-white p-2.5 rounded-lg border border-slate-200 hover:border-purple-400 transition-all cursor-pointer" onclick="document.getElementById('weight-inline-input').focus()">
-                <div class="text-[10px] font-bold text-slate-400 uppercase">Weight</div>
-                <div class="flex items-center gap-1 mt-1">
-                  <input type="number" step="0.1" id="weight-inline-input" value="110.2" class="w-14 text-xs font-black text-slate-900 border-b border-purple-300 bg-transparent focus:outline-none focus:border-purple-600 py-0.5">
+              <div class="bg-white p-2.5 rounded-lg border border-slate-200 hover:border-purple-400 transition-all cursor-pointer min-w-0" onclick="document.getElementById('weight-inline-input').focus()">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10.5px] font-bold text-slate-400 uppercase">Weight</span>
+                  <span class="text-[10px] text-slate-400 font-bold">✎</span>
+                </div>
+                <div class="flex items-baseline gap-1 mt-1">
+                  <input type="number" step="0.1" id="weight-inline-input" value="117.7" class="w-14 text-sm font-black text-slate-900 border-b-2 border-purple-400 bg-transparent focus:outline-none focus:border-purple-600 py-0.5">
                   <span class="text-[11px] font-bold text-slate-500">lbs</span>
                 </div>
-                <div class="text-[9.5px] text-emerald-600 font-semibold mt-1">✓ On Target (110.0)</div>
+                <div class="text-[9.5px] text-slate-500 font-semibold mt-1 truncate">Target: 110.0</div>
               </div>
 
               <!-- HAIR & SKIN: POPS UP ON TAP -->
