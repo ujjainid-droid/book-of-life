@@ -3485,9 +3485,94 @@ const FOUR_WEEK_SKIN_SCHEDULE_DATA = [
   ]}
 ];
 
+function getSkinCarePhase() {
+  try {
+    return localStorage.getItem('MARGO_SKINCARE_PHASE') || 'rampup';
+  } catch (e) {
+    return 'rampup';
+  }
+}
+
+function setSkinCarePhase(phase) {
+  try {
+    localStorage.setItem('MARGO_SKINCARE_PHASE', phase);
+  } catch (e) {}
+  if (typeof showToast === 'function') {
+    showToast(phase === 'rampup'
+      ? '🌱 Set to Ramp-Up Phase (Weeks 1–4: Retinal Mon/Thu, Wed & Sat swapped to Recovery)'
+      : '🚀 Set to Full Routine (Week 4+: Retinal Mon/Thu/Sat, Lactic Acid Wed)');
+  }
+  const modal = document.getElementById('modal-skincare-log');
+  if (modal && modal.classList.contains('active')) {
+    renderSkinCareModalContent(activeTrackingDate);
+  } else {
+    renderDailySheet();
+  }
+}
+window.getSkinCarePhase = getSkinCarePhase;
+window.setSkinCarePhase = setSkinCarePhase;
+
 function getSkinCareRoutineForDate(dateStr) {
   const dObj = parseDateIso(dateStr);
   const dayOfWeek = dObj.getDay();
+  const phase = getSkinCarePhase();
+
+  // Check if this date has a specific calendar override in Weeks 1-3
+  let calendarEntry = null;
+  for (const w of FOUR_WEEK_SKIN_SCHEDULE_DATA) {
+    const found = w.days.find(d => d.date === dateStr);
+    if (found) {
+      calendarEntry = found;
+      break;
+    }
+  }
+
+  const isRampUpCalendar = calendarEntry && calendarEntry.badge && calendarEntry.badge.includes('(W');
+  const isRampUp = (phase === 'rampup') || isRampUpCalendar;
+
+  if (isRampUp) {
+    if (dayOfWeek === 3) { // Wednesday -> Swapped to Recovery
+      return {
+        type: 'recovery',
+        badge: '🛡️ Recovery (Ramp-Up)',
+        badgeClass: 'badge-recovery',
+        title: 'Recovery Night (Ramp-Up Phase: Weeks 1–4)',
+        subtitle: 'Swapped from Lactic Acid to Recovery · COSRX Snail Mucin + Multi-Peptide',
+        rampUpNote: '🌱 Ramp-Up Guardrail (Rule 2): In Weeks 1–4, Wednesday is swapped to Recovery to protect your barrier while retinizing. Add Lactic Acid in Week 4+ once acclimated.',
+        guardrails: [
+          'Apply COSRX Snail Mucin to damp skin, then layer Multi-Peptide + HA.',
+          'No acids or retinoids tonight — building barrier tolerance.'
+        ],
+        prepSteps: NIGHTLY_DOUBLE_CLEANSE,
+        treatmentSteps: [
+          { id: 'treat-1', icon: '💧', label: 'Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin for immediate moisture plumping.' },
+          { id: 'treat-2', icon: '🧬', label: 'Peptide Infusion', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'Apply 3–4 drops while skin is still slightly dewy from snail mucin for collagen support.' },
+          { id: 'treat-3', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide Ato Concentrate Cream.' }
+        ]
+      };
+    }
+    if (dayOfWeek === 6) { // Saturday -> Swapped to Recovery
+      return {
+        type: 'recovery',
+        badge: '🛡️ Recovery (Ramp-Up)',
+        badgeClass: 'badge-recovery',
+        title: 'Recovery Night (Ramp-Up Phase: Weeks 1–4)',
+        subtitle: 'Swapped from Retinal to Recovery · Retinal Mon & Thu only during ramp-up',
+        rampUpNote: '🌱 Ramp-Up Guardrail (Rule 2): During Weeks 1–4, Retinal is used on Monday and Thursday only. Saturday is kept as Recovery to prevent flaking. Add Saturday Retinal in Week 4+.',
+        guardrails: [
+          'Apply COSRX Snail Mucin to damp skin, then layer Multi-Peptide + HA.',
+          'Retinal paused tonight — resume Monday.'
+        ],
+        prepSteps: NIGHTLY_DOUBLE_CLEANSE,
+        treatmentSteps: [
+          { id: 'treat-1', icon: '💧', label: 'Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin.' },
+          { id: 'treat-2', icon: '🧬', label: 'Peptide Infusion', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'Apply 3–4 drops while dewy to rebuild collagen and firmness.' },
+          { id: 'treat-3', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream.' }
+        ]
+      };
+    }
+  }
+
   return SKIN_CARE_SCHEDULE_MAP[dayOfWeek] || SKIN_CARE_SCHEDULE_MAP[1];
 }
 
@@ -3634,6 +3719,7 @@ window.toggleSkinShoppingAction = toggleSkinShoppingAction;
 
 function renderSkinCareCard(dateStr, isToday) {
   const routine = getSkinCareRoutineForDate(dateStr);
+  const currentPhase = getSkinCarePhase();
   const skinCareState = (typeof storage !== 'undefined' && typeof storage.getSkinCareState === 'function')
     ? storage.getSkinCareState(dateStr)
     : {};
@@ -3722,6 +3808,22 @@ function renderSkinCareCard(dateStr, isToday) {
     tabContentHtml = `
       <!-- Daily Tracker: Master 1 Checkbox + AM/PM Sub-Toggles + Skip / Alternative + Concise Routine -->
       <div class="hair-daily-tracker-box ${isCompleted ? 'is-done' : (isSkipped ? 'is-skipped' : '')}">
+        <!-- Ramp-Up Phase vs Full Routine Selector -->
+        <div class="skin-phase-switcher">
+          <div class="phase-switcher-info">
+            <span class="phase-switcher-label">Acclimation Phase</span>
+            <span class="phase-switcher-hint">${currentPhase === 'rampup' ? '🌱 Weeks 1–4: Retinal Mon/Thu only · Wed &amp; Sat swapped to Recovery' : '🚀 Week 4+: Retinal Mon/Thu/Sat · Lactic Acid on Wed'}</span>
+          </div>
+          <div class="skin-phase-segmented-control" role="group" aria-label="Skincare Acclimation Phase">
+            <button type="button" class="skin-phase-btn ${currentPhase === 'rampup' ? 'active' : ''}" onclick="setSkinCarePhase('rampup')" title="Weeks 1–4 Acclimation (Retinal Mon/Thu, Recovery Wed/Sat)">
+              🌱 Weeks 1–4 (Ramp-Up)
+            </button>
+            <button type="button" class="skin-phase-btn ${currentPhase === 'full' ? 'active' : ''}" onclick="setSkinCarePhase('full')" title="Week 4+ Full Routine (Retinal Mon/Thu/Sat, Lactic Wed)">
+              🚀 Week 4+ (Full Routine)
+            </button>
+          </div>
+        </div>
+
         <!-- Master 1-Tap Checkbox Row -->
         <div class="hair-tracker-check-row" onclick="toggleSkinCareDayAction('${dateStr}')">
           <div class="custom-checkbox ${isCompleted ? 'checked' : ''}">

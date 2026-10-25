@@ -748,7 +748,7 @@ function openTopicAuditModal(editId = null) {
 
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px;">
           <button type="button" class="btn btn-secondary" onclick="closeTopicAuditModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary" style="background: #3D5A45; border-color: #3D5A45;">${audit ? 'Save Changes' : 'Add Topic'}</button>
+          <button type="submit" class="btn btn-primary" style="background: #6C2E7B; border-color: #6C2E7B; color: #FFFFFF;">${audit ? 'Save Changes' : 'Add Topic'}</button>
         </div>
       </form>
     </div>
@@ -1091,7 +1091,7 @@ function openSchoolBattlePlanModal() {
               <div class="banner-phase-focus">School Selection &amp; Admissions Tours</div>
             </div>
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
-              <span style="font-size: 0.72rem; font-weight: 700; color: #2D5A3C; background: #E8F2EC; padding: 2px 8px; border-radius: 9999px;">Radar: Windsor Oct 8</span>
+              <span style="font-size: 0.72rem; font-weight: 700; color: #0D3B66; background: rgba(13, 59, 102, 0.1); padding: 2px 8px; border-radius: 9999px;">Radar: Windsor Oct 8</span>
               <span style="font-size: 0.68rem; color: #64748B;">Parallel: District PWN &amp; Police incident</span>
             </div>
           </div>
@@ -1138,8 +1138,8 @@ function openSchoolBattlePlanModal() {
             </div>
 
             <!-- Phase 4 (Parallel Track) -->
-            <div class="school-step-card is-active" style="border-left: 3px solid #C26344;">
-              <span class="step-card-status-badge status-badge-active" style="background: #2D5A3C;">Phase 4 &bull; Parallel</span>
+            <div class="school-step-card is-active" style="border-left: 3px solid #E75480;">
+              <span class="step-card-status-badge status-badge-active" style="background: #0D3B66;">Phase 4 &bull; Parallel</span>
               <div class="step-card-content">
                 <h5 class="step-card-title">District Accountability &amp; Police Incident Documentation</h5>
                 <p class="step-card-desc">Hold district accountable for non-compliance timeline and document the police incident with precision.</p>
@@ -1160,30 +1160,30 @@ function openSchoolBattlePlanModal() {
             <div class="school-tools-map-grid">
               <div class="tool-map-box">
                 <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
-                  <span class="tool-symbol symbol-m" style="font-family:'Newsreader',Georgia,serif; font-style:italic; font-weight:700; color:#7C3AED; font-size:0.95rem; line-height:1;">m</span>
+                  <span class="tool-symbol symbol-m" style="font-family:'Newsreader',Georgia,serif; font-style:italic; font-weight:700; color:#6C2E7B; font-size:0.95rem; line-height:1;">m</span>
                   <span>margo</span>
                 </div>
                 <div class="tool-map-box-desc">Cover Page Radar (10,000-ft phase horizon) + Z Hub Behavior Log (Daily PDF report attachments).</div>
               </div>
               <div class="tool-map-box">
                 <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#E11D48" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg" style="width:13px; height:13px;"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#E75480" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tool-apple-svg" style="width:13px; height:13px;"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
                   <span>Apple Notes</span>
                 </div>
                 <div class="tool-map-box-desc"><strong># SCHOOL 01_BATTLE PLAN</strong>: School profiles, live impressions, tour observations, incident notes.</div>
               </div>
               <div class="tool-map-box">
                 <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
-                  <span class="tool-symbol symbol-google" style="font-weight:800; color:#1D4ED8; font-size:0.76rem; line-height:1;">G</span>
+                  <span class="tool-symbol symbol-google" style="font-weight:800; color:#0D3B66; font-size:0.76rem; line-height:1;">G</span>
                   <span>Google Drive</span>
                 </div>
                 <div class="tool-map-box-desc"><strong>📁 Z Records</strong>: Static evidence, signed IEP PDFs, neuropsych evaluations, police report PDFs, PWNs.</div>
               </div>
               <div class="tool-map-box">
                 <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
-                  <span class="tool-symbol symbol-things" style="font-weight:800; color:#0284C7; font-size:0.68rem; letter-spacing:-0.04em; line-height:1;">T3</span>
+                  <span class="tool-symbol symbol-things" style="font-weight:800; color:#0D3B66; font-size:0.68rem; letter-spacing:-0.04em; line-height:1;">T3</span>
                   <span>Things 3 &amp;</span>
-                  <i data-lucide="mail" style="width:12px; height:12px; color:#E11D48;"></i>
+                  <i data-lucide="mail" style="width:12px; height:12px; color:#FF8A5B;"></i>
                   <span>Gmail</span>
                 </div>
                 <div class="tool-map-box-desc"><strong>Things 3</strong>: Next 1–2 physical strikes only.<br><strong>Gmail</strong>: Label <code>OOD-Placement</code> for all school correspondence.</div>
