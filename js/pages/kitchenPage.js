@@ -501,8 +501,8 @@ function renderKitchenPage() {
               const items = d.meals[t] || [];
 
               return `
-                <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}" style="grid-template-columns: 80px 1fr; align-items:flex-start;">
-                  <div class="k-day-meta" style="padding-top:4px;">
+                <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}">
+                  <div class="k-day-meta">
                     <span class="k-day-name">${d.day}</span>
                     <div class="k-day-date-row">
                       <span class="k-day-date">${d.date}</span>
@@ -570,8 +570,8 @@ function renderKitchenPage() {
             });
 
             return `
-              <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}" style="grid-template-columns: 80px 1fr; align-items:flex-start;">
-                <div class="k-day-meta" style="padding-top:4px;">
+              <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}">
+                <div class="k-day-meta">
                   <span class="k-day-name">${d.day}</span>
                   <div class="k-day-date-row">
                     <span class="k-day-date">${d.date}</span>

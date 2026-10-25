@@ -521,8 +521,8 @@ body.dark .k-btn-stash-add.freezer:hover {
   border-radius: 12px;
   padding: 10px 14px;
   display: grid;
-  grid-template-columns: 80px 42px 1fr auto;
-  align-items: center;
+  grid-template-columns: 80px 1fr;
+  align-items: flex-start;
   gap: 12px;
   transition: all 0.15s ease;
   position: relative;
@@ -549,16 +549,30 @@ body.dark .k-btn-stash-add.freezer:hover {
   box-shadow: 0 0 0 1px var(--pal-azure);
 }
 
-@media (max-width: 580px) {
+@media (max-width: 640px) {
   .k-day-row {
-    grid-template-columns: 70px 38px 1fr;
-    grid-template-rows: auto auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 10px;
   }
-  .k-day-actions-box {
-    grid-column: 1 / -1;
-    justify-content: flex-end;
-    padding-top: 6px;
-    border-top: 1px dashed var(--border-subtle, rgba(31, 42, 68, 0.08));
+  .k-day-meta {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 0 6px 0;
+    border-bottom: 1px dashed var(--border-subtle, rgba(31, 42, 68, 0.1));
+  }
+  .k-day-name {
+    font-size: 15px;
+    font-weight: 800;
+  }
+  .k-day-date-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
   }
 }
 
@@ -1699,4 +1713,167 @@ body.dark .k-assign-day-card {
 body.dark .k-assign-day-card:hover {
   background: rgba(14, 116, 144, 0.2);
   border-color: #38BDF8;
+}
+
+/* ==========================================================================
+   Mobile Responsive Polish for Kitchen Sanctuary (Phone View <= 640px)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .kitchen-workflow-wrap {
+    padding: 50px 10px 120px !important;
+    gap: 12px !important;
+  }
+  .k-header-card {
+    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+  .k-header-titles {
+    width: 100% !important;
+  }
+  .k-header-main-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .k-header-title {
+    font-size: 17px !important;
+  }
+  .k-header-week-tag {
+    font-size: 10.5px !important;
+    padding: 2px 7px !important;
+  }
+  .k-eatout-summary-pill {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+  }
+  .k-section-box {
+    padding: 14px 12px !important;
+    gap: 10px !important;
+  }
+  .k-section-box.is-collapsed {
+    padding: 11px 12px !important;
+    gap: 0 !important;
+  }
+  .k-sec-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .k-sec-title-group {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+  .k-sec-title {
+    font-size: 14px !important;
+  }
+  .k-week-toggle-group {
+    margin-left: 0 !important;
+  }
+  .k-week-toggle-btn {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+  }
+  .k-week-rollover-btn {
+    margin-left: 0 !important;
+    padding: 4px 9px !important;
+    font-size: 10.5px !important;
+  }
+  .k-sec-hint {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+  .k-meal-filter-bar {
+    gap: 4px !important;
+    flex-wrap: wrap !important;
+  }
+  .k-meal-filter-chip {
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+    border-radius: 6px !important;
+  }
+  .k-slot-row {
+    padding: 7px 8px !important;
+    gap: 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .k-slot-type-badge {
+    min-width: 48px !important;
+    font-size: 8.5px !important;
+    padding: 2px 4px !important;
+  }
+  .k-avatar-icon-sm {
+    width: 24px !important;
+    height: 24px !important;
+    flex-shrink: 0 !important;
+  }
+  .k-avatar-icon-sm svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .k-slot-info {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+  }
+  .k-slot-title {
+    font-size: 13px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    display: block !important;
+  }
+  .k-source-pill {
+    padding: 2px 5px !important;
+    font-size: 9px !important;
+    flex-shrink: 0 !important;
+  }
+  .k-btn-edit-sm {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 11px !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0 !important;
+  }
+  .k-icon-btn-sm {
+    width: 22px !important;
+    height: 22px !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .k-btn-del-item-sm {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 14px !important;
+    padding: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .k-slot-empty-row {
+    gap: 4px !important;
+  }
+  .k-slot-add-chip {
+    padding: 4px 8px !important;
+    font-size: 10.5px !important;
+  }
+  .k-stash-chips-row {
+    gap: 6px !important;
+  }
+  .k-stash-chip {
+    padding: 4px 8px !important;
+    font-size: 11.5px !important;
+    gap: 5px !important;
+  }
+  .k-stash-quick-bar {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .k-btn-stash-add {
+    flex: 1 1 calc(33% - 6px) !important;
+    font-size: 11px !important;
+    padding: 6px 8px !important;
+  }
 }
