@@ -9,7 +9,7 @@
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#7C3AED"/>
     </marker>
     <marker id="arr-r-m" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#E11D48"/>
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#E75480"/>
     </marker>
     <marker id="arr-b-m" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
       <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#2563EB"/>
@@ -27,7 +27,7 @@
   <line x1="38" y1="56" x2="38" y2="76" stroke="#7C3AED" stroke-width="2" marker-end="url(#arr-v-m)"/>
 
   <!-- 2. Gmail ➔ Things 3 -->
-  <line x1="38" y1="124" x2="38" y2="144" stroke="#E11D48" stroke-width="2" marker-end="url(#arr-r-m)"/>
+  <line x1="38" y1="124" x2="38" y2="144" stroke="#E75480" stroke-width="2" marker-end="url(#arr-r-m)"/>
 
   <!-- 3. Things 3 ⟷ Apple Notes (Bidirectional) -->
   <line x1="38" y1="236" x2="38" y2="256" stroke="#2563EB" stroke-width="2" marker-start="url(#arr-b-m-rev)" marker-end="url(#arr-b-m)"/>
@@ -54,16 +54,16 @@
 
   <!-- ================= 2. GMAIL ================= -->
   <g transform="translate(14, 76)">
-    <rect x="0" y="0" width="324" height="48" rx="13" fill="#FFFBFB" stroke="rgba(225, 29, 72, 0.18)" stroke-width="1.2" filter="url(#card-soft-shadow)"/>
+    <rect x="0" y="0" width="324" height="48" rx="13" fill="#FFFBFB" stroke="rgba(231, 84, 128, 0.22)" stroke-width="1.2" filter="url(#card-soft-shadow)"/>
     <circle cx="24" cy="24" r="15" fill="#FFFFFF" stroke="#FECDD3" stroke-width="1.2"/>
-    <path d="M 16 17 L 32 17 C 32.8 17 33.5 17.7 33.5 18.5 L 33.5 25.5 C 33.5 26.3 32.8 27 32 27 L 16 27 C 15.2 27 14.5 26.3 14.5 25.5 L 14.5 18.5 C 14.5 17.7 15.2 17 16 17 Z" fill="none" stroke="#E11D48" stroke-width="1.4"/>
-    <path d="M 14.5 18.5 L 24 23.5 L 33.5 18.5" fill="none" stroke="#E11D48" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M 16 17 L 32 17 C 32.8 17 33.5 17.7 33.5 18.5 L 33.5 25.5 C 33.5 26.3 32.8 27 32 27 L 16 27 C 15.2 27 14.5 26.3 14.5 25.5 L 14.5 18.5 C 14.5 17.7 15.2 17 16 17 Z" fill="none" stroke="#E75480" stroke-width="1.4"/>
+    <path d="M 14.5 18.5 L 24 23.5 L 33.5 18.5" fill="none" stroke="#E75480" stroke-width="1.4" stroke-linecap="round"/>
 
     <text x="50" y="30" font-size="15" font-weight="700" fill="#1E1B4B">Gmail</text>
 
     <g transform="translate(204, 12)">
-      <rect x="0" y="0" width="108" height="24" rx="6" fill="#FFE4E6" stroke="#FECDD3" stroke-width="0.8"/>
-      <text x="54" y="16" font-size="8.5" font-weight="700" fill="#BE123C" text-anchor="middle" letter-spacing="0.03em">INFLOW &amp; SIGNAL</text>
+      <rect x="0" y="0" width="108" height="24" rx="6" fill="#FFEAF1" stroke="#FECDD3" stroke-width="0.8"/>
+      <text x="54" y="16" font-size="8.5" font-weight="700" fill="#E75480" text-anchor="middle" letter-spacing="0.03em">INFLOW &amp; SIGNAL</text>
     </g>
   </g>
 

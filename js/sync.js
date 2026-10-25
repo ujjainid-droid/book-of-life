@@ -278,9 +278,30 @@ class SyncManager {
       });
     }
 
-    // 6. DayGoals: Purge 12,000 steps seed and respect latest timestamp
+    // 6. DayGoals: Purge 12,000 steps seed, clean inverted keys, and respect latest timestamp
     const mergedDayGoals = { ...(storage.data.dayGoals || {}) };
     const mergedDayGoalsUpdatedAt = { ...(storage.data.dayGoalsUpdatedAt || {}), ...(incoming.dayGoalsUpdatedAt || {}) };
+
+    // Clean any inverted day goals from local state
+    Object.keys(mergedDayGoals).forEach(key => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+        const items = mergedDayGoals[key];
+        if (Array.isArray(items)) {
+          items.forEach(item => {
+            const targetDate = (item && item.text && /^\d{4}-\d{2}-\d{2}$/.test(item.text.trim()))
+              ? item.text.trim()
+              : (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]);
+            if (!mergedDayGoals[targetDate]) mergedDayGoals[targetDate] = [];
+            if (!mergedDayGoals[targetDate].some(g => g.id === item.id || g.text === key.trim())) {
+              mergedDayGoals[targetDate].push({ ...item, text: key.trim() });
+            }
+          });
+        }
+        delete mergedDayGoals[key];
+        localWasRicher = true;
+      }
+    });
+
     Object.keys(mergedDayGoals).forEach(dStr => {
       if (Array.isArray(mergedDayGoals[dStr])) {
         mergedDayGoals[dStr] = mergedDayGoals[dStr].filter(g => g && g.id !== 'dg-1' && !(g.text && (g.text.includes('12,000') || g.text.includes('12000'))));
@@ -290,6 +311,21 @@ class SyncManager {
     if (incoming.dayGoals && typeof incoming.dayGoals === 'object') {
       let cloudHadStale12k = false;
       Object.entries(incoming.dayGoals).forEach(([dStr, list]) => {
+        // If incoming has an inverted non-date key, normalize it into valid date list
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dStr) && Array.isArray(list)) {
+          list.forEach(item => {
+            const targetDate = (item && item.text && /^\d{4}-\d{2}-\d{2}$/.test(item.text.trim()))
+              ? item.text.trim()
+              : (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]);
+            if (!mergedDayGoals[targetDate]) mergedDayGoals[targetDate] = [];
+            if (!mergedDayGoals[targetDate].some(g => g.id === item.id || g.text === dStr.trim())) {
+              mergedDayGoals[targetDate].push({ ...item, text: dStr.trim() });
+            }
+          });
+          localWasRicher = true;
+          return;
+        }
+
         if (Array.isArray(list)) {
           const cleanIncoming = list.filter(g => {
             if (!g) return false;

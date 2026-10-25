@@ -5249,19 +5249,19 @@
 .compass-tool-pill .tool-icon svg[data-lucide="mail"] {
   width: 12px;
   height: 12px;
-  stroke: #E11D48;
-  color: #E11D48;
+  stroke: #E75480;
+  color: #E75480;
   display: block;
 }
 
 /* Dark mode colors matching Section 2 */
 [data-theme="dark"] .compass-tool-pill .tool-icon .tool-symbol.symbol-m { color: #C4B5FD; }
-[data-theme="dark"] .compass-tool-pill .tool-icon .tool-apple-svg { stroke: #FB7185; }
+[data-theme="dark"] .compass-tool-pill .tool-icon .tool-apple-svg { stroke: #E75480; }
 [data-theme="dark"] .compass-tool-pill .tool-icon .tool-symbol.symbol-things { color: #38BDF8; }
 [data-theme="dark"] .compass-tool-pill .tool-icon .tool-symbol.symbol-google { color: #60A5FA; }
 [data-theme="dark"] .compass-tool-pill .tool-icon i[data-lucide="mail"],
 [data-theme="dark"] .compass-tool-pill .tool-icon svg.lucide-mail,
-[data-theme="dark"] .compass-tool-pill .tool-icon svg[data-lucide="mail"] { stroke: #FB7185; color: #FB7185; }
+[data-theme="dark"] .compass-tool-pill .tool-icon svg[data-lucide="mail"] { stroke: #E75480; color: #E75480; }
 
 .compass-tool-pill .tool-name {
   font-weight: 700;
@@ -5293,9 +5293,9 @@
 .compass-tool-pill.tool-pill-notes {
   background: #FFF1F2;
   border-color: #FECDD3;
-  box-shadow: 0 1px 3px rgba(225, 29, 72, 0.08);
+  box-shadow: 0 1px 3px rgba(231, 84, 128, 0.08);
 }
-.compass-tool-pill.tool-pill-notes .tool-name { color: #9F1239; }
+.compass-tool-pill.tool-pill-notes .tool-name { color: #E75480; }
 
 .compass-tool-pill.tool-pill-things {
   background: #EDE9FE;
@@ -5312,17 +5312,17 @@
 .compass-tool-pill.tool-pill-drive .tool-name { color: #0369A1; }
 
 .compass-tool-pill.tool-pill-gmail {
-  background: #FFF1F2;
-  border-color: #FDA4AF;
-  box-shadow: 0 1px 3px rgba(225, 29, 72, 0.08);
+  background: #FFEAF1;
+  border-color: rgba(231, 84, 128, 0.35);
+  box-shadow: 0 1px 3px rgba(231, 84, 128, 0.08);
 }
-.compass-tool-pill.tool-pill-gmail .tool-name { color: #BE123C; }
+.compass-tool-pill.tool-pill-gmail .tool-name { color: #E75480; }
 
 [data-theme="dark"] .compass-tool-pill.tool-pill-margo { background: rgba(13, 152, 186, 0.18); border-color: rgba(45, 212, 191, 0.35); }
-[data-theme="dark"] .compass-tool-pill.tool-pill-notes { background: rgba(225, 29, 72, 0.18); border-color: rgba(251, 113, 133, 0.35); }
+[data-theme="dark"] .compass-tool-pill.tool-pill-notes { background: rgba(231, 84, 128, 0.18); border-color: rgba(231, 84, 128, 0.35); }
 [data-theme="dark"] .compass-tool-pill.tool-pill-things { background: rgba(124, 58, 237, 0.18); border-color: rgba(167, 139, 250, 0.35); }
 [data-theme="dark"] .compass-tool-pill.tool-pill-drive { background: rgba(2, 132, 199, 0.18); border-color: rgba(56, 189, 248, 0.35); }
-[data-theme="dark"] .compass-tool-pill.tool-pill-gmail { background: rgba(225, 29, 72, 0.18); border-color: rgba(251, 113, 133, 0.35); }
+[data-theme="dark"] .compass-tool-pill.tool-pill-gmail { background: rgba(231, 84, 128, 0.18); border-color: rgba(231, 84, 128, 0.35); }
 
 /* Top of Mind Scratchpad — Alpine Spruce & Spiced Cedar */
 .top-mind-card {
@@ -6184,7 +6184,7 @@
 .tool-card-notes { border-top: 3px solid #64748B; }
 .tool-card-drive { border-top: 3px solid #2563EB; }
 .tool-card-things { border-top: 3px solid #C2410C; }
-.tool-card-gmail { border-top: 3px solid #DC2626; }
+.tool-card-gmail { border-top: 3px solid #E75480; }
 
 .tool-work-header {
   display: flex;
@@ -7510,20 +7510,20 @@
 
 /* 5. Gmail badge: email icon */
 .tool-icon-btn.tool-badge-email {
-  background: #FFF1F2;
+  background: #FFEAF1;
   border-color: #FECDD3;
-  color: #E11D48;
+  color: #E75480;
 }
 .tool-icon-btn.tool-badge-email:hover {
   background: #FFE4E6;
   border-color: #FDA4AF;
-  color: #BE123C;
+  color: #E75480;
 }
 
 /* Legacy button fallbacks */
-.tool-icon-btn.tool-btn-notes { background: #FFF1F2; border-color: #FECDD3; }
+.tool-icon-btn.tool-btn-notes { background: #FFEAF1; border-color: #FECDD3; color: #E75480; }
 .tool-icon-btn.tool-btn-drive { background: #EFF6FF; border-color: #BFDBFE; color: #1D4ED8; }
-.tool-icon-btn.tool-btn-gmail { background: #FFF1F2; border-color: #FECDD3; color: #E11D48; }
+.tool-icon-btn.tool-btn-gmail { background: #FFEAF1; border-color: #FECDD3; color: #E75480; }
 .tool-icon-btn.tool-btn-roadmap { background: #ECFDF5; border-color: #A7F3D0; color: #065F46; }
 .tool-icon-btn.tool-btn-checkpoint { background: #F0F9FF; border-color: #BAE6FD; color: #0D98BA; }
 .tool-icon-btn.tool-btn-claims { background: #ECFDF5; border-color: #A7F3D0; color: #059669; }

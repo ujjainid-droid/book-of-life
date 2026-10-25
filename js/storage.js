@@ -7,6 +7,7 @@ const STORAGE_KEY = 'BOOK_OF_LIFE_DATA_V2';
 class StorageManager {
   constructor() {
     this.data = this.loadData();
+    this.cleanInvertedDayGoals();
     this.applyZeroResetFix();
     this.applyWhereInfoLivesAuditUpdate();
     this.applyCleanClaimsMigration();
@@ -14,6 +15,38 @@ class StorageManager {
     this.applyZLogOctoberMissingDatesMigration();
     this.recalculateAllStreaks();
     this.recalculatePointsFromHistory();
+  }
+
+  cleanInvertedDayGoals() {
+    if (!this.data || !this.data.dayGoals || typeof this.data.dayGoals !== 'object') return;
+    let changed = false;
+    Object.keys(this.data.dayGoals).forEach(key => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) {
+        const items = this.data.dayGoals[key];
+        if (Array.isArray(items)) {
+          items.forEach(item => {
+            const targetDate = (item && item.text && /^\d{4}-\d{2}-\d{2}$/.test(item.text.trim()))
+              ? item.text.trim()
+              : (typeof formatDateIso === 'function' ? formatDateIso(new Date()) : new Date().toISOString().split('T')[0]);
+            const realText = key.trim();
+            if (!this.data.dayGoals[targetDate]) {
+              this.data.dayGoals[targetDate] = [];
+            }
+            if (!this.data.dayGoals[targetDate].some(g => g.id === item.id || g.text === realText)) {
+              this.data.dayGoals[targetDate].push({
+                ...item,
+                text: realText
+              });
+            }
+          });
+        }
+        delete this.data.dayGoals[key];
+        changed = true;
+      }
+    });
+    if (changed) {
+      this.saveData();
+    }
   }
 
   applyZLogOctoberMissingDatesMigration() {
@@ -2025,6 +2058,12 @@ class StorageManager {
   }
 
   addDayGoal(text, dateStr = formatDateIso(new Date()), extraMeta = {}) {
+    // Defensive check: swap arguments if accidentally passed as (dateStr, text)
+    if (typeof text === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(text.trim()) && typeof dateStr === 'string' && !/^\d{4}-\d{2}-\d{2}$/.test(dateStr.trim())) {
+      const temp = text.trim();
+      text = dateStr.trim();
+      dateStr = temp;
+    }
     if (!text || !text.trim()) return null;
     const goals = this.getDayGoals(dateStr);
     const newGoal = {
@@ -2478,7 +2517,7 @@ class StorageManager {
     if (!Array.isArray(this.data.quickThoughts)) return null;
     const item = this.data.quickThoughts.find(t => t.id === id);
     if (!item) return null;
-    const goal = this.addDayGoal(dateStr, item.text);
+    const goal = this.addDayGoal(item.text, dateStr);
     item.triaged = true;
     item.triagedAt = new Date().toISOString();
     this.addPoints(10);

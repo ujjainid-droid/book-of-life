@@ -1183,7 +1183,7 @@ function openSchoolBattlePlanModal() {
                 <div class="tool-map-box-title" style="display: flex; align-items: center; gap: 6px;">
                   <span class="tool-symbol symbol-things" style="font-weight:800; color:#0D3B66; font-size:0.68rem; letter-spacing:-0.04em; line-height:1;">T3</span>
                   <span>Things 3 &amp;</span>
-                  <i data-lucide="mail" style="width:12px; height:12px; color:#FF8A5B;"></i>
+                  <i data-lucide="mail" style="width:12px; height:12px; color:#E75480;"></i>
                   <span>Gmail</span>
                 </div>
                 <div class="tool-map-box-desc"><strong>Things 3</strong>: Next 1–2 physical strikes only.<br><strong>Gmail</strong>: Label <code>OOD-Placement</code> for all school correspondence.</div>

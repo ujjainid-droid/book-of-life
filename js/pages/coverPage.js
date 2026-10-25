@@ -1344,15 +1344,21 @@ function submitSanctuaryChallengeSteps(goalId, dateStr = activeTrackingDate) {
 window.submitSanctuaryChallengeSteps = submitSanctuaryChallengeSteps;
 
 function submitQuickTodayGoal(event, dateStr = activeTrackingDate) {
-  if (event) event.preventDefault();
+  if (event) {
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+  }
   const input = document.getElementById('s-quick-goal-input');
   if (!input) return;
   const val = input.value.trim();
   if (!val) return;
-  storage.addDayGoal(dateStr, val);
+  const targetDate = dateStr || (typeof activeTrackingDate !== 'undefined' ? activeTrackingDate : formatDateIso(new Date()));
+  storage.addDayGoal(val, targetDate);
   input.value = '';
   if (typeof showToast === 'function') showToast('Added focus item for today');
   renderDailySheet();
+  const nextInp = document.getElementById('s-quick-goal-input');
+  if (nextInp) nextInp.focus();
 }
 window.submitQuickTodayGoal = submitQuickTodayGoal;
 
@@ -1809,17 +1815,17 @@ function renderDailySheet() {
             <div style="font-size:12px; color:var(--text-muted); padding:4px 0;">No focus actions set for today. Add one below!</div>
           ` : customHabits.map(g => `
             <div class="s-focus-item">
-              <label class="s-focus-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
-                <input type="checkbox" class="s-focus-check" ${g.completed ? 'checked' : ''} onchange="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+              <div class="s-focus-left" onclick="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
+                <input type="checkbox" class="s-focus-check" ${g.completed ? 'checked' : ''} onclick="event.stopPropagation()" onchange="toggleDayGoalAction('${g.id}', '${activeTrackingDate}')">
                 <span class="s-focus-text ${g.completed ? 'is-done' : ''}">${escapeHtml(g.text)}</span>
-              </label>
+              </div>
               <button type="button" class="s-focus-del-btn" title="Delete" onclick="deleteDayGoalAction('${g.id}', '${activeTrackingDate}')">×</button>
             </div>
           `).join('')}
         </div>
 
-        <form onsubmit="submitQuickTodayGoal(event, '${activeTrackingDate}')" class="s-quick-goal-form">
-          <input type="text" id="s-quick-goal-input" placeholder="+ Add today's action (Press Enter)..." class="s-clean-input" required>
+        <form onsubmit="event.preventDefault(); submitQuickTodayGoal(event, '${activeTrackingDate}'); return false;" class="s-quick-goal-form">
+          <input type="text" id="s-quick-goal-input" placeholder="+ Add today's action (Press Enter)..." class="s-clean-input" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault(); submitQuickTodayGoal(event, '${activeTrackingDate}');}" required>
           <button type="submit" class="s-btn-action" style="background:#6D28D9;">+</button>
         </form>
       </section>
