@@ -245,6 +245,11 @@ function renderKitchenPage() {
   const stashItems = data.stashItems || [];
   const favoriteRecipes = data.favoriteRecipes || [];
   const groceryItems = data.groceries || [];
+  const stashPlannedCount = stashItems.filter(i => i.planned && !i.used).length;
+  const isStep1Collapsed = (function() {
+    const val = localStorage.getItem('BOL_KITCHEN_STEP1_COLLAPSED');
+    return val === null ? true : (val === 'true');
+  })();
 
   const todayIso = getTodayIso();
 
@@ -392,47 +397,53 @@ function renderKitchenPage() {
         </div>
       </header>
 
-      <!-- STEP 1: SHOP THE STASH FIRST (3 Separate Buttons: Pantry, Fridge & Freezer) -->
-      <section class="k-section-box" id="k-sec-stash">
-        <div class="k-sec-header">
+      <!-- STEP 1: SHOP THE STASH FIRST (Collapsible, Collapsed by Default) -->
+      <section class="k-section-box ${isStep1Collapsed ? 'is-collapsed' : ''}" id="k-sec-stash">
+        <div class="k-sec-header is-clickable" onclick="kToggleKitchenStep1()" title="${isStep1Collapsed ? 'Click to expand Step 1' : 'Click to collapse Step 1'}">
           <div class="k-sec-title-group">
             <span class="k-step-indicator">STEP 1</span>
             <span class="k-sec-title">Shop Your Stash First</span>
+            <span class="k-stash-summary-badge">${stashItems.length} items${stashPlannedCount > 0 ? ` · ${stashPlannedCount} planned` : ''}</span>
+            <button type="button" class="k-collapse-toggle-btn" onclick="event.stopPropagation(); kToggleKitchenStep1()" title="${isStep1Collapsed ? 'Expand Step 1' : 'Collapse Step 1'}">
+              <span>${isStep1Collapsed ? '▶ Expand' : '▼ Collapse'}</span>
+            </button>
           </div>
-          <span class="k-sec-hint">Tap checkbox when used · Tap "+ Plan" to mark planned · Tap badge to flip location</span>
+          <span class="k-sec-hint">${isStep1Collapsed ? 'Tap to view &amp; manage pantry, fridge &amp; freezer stash' : 'Tap checkbox when used · Tap "+ Plan" to mark planned · Tap badge to flip location'}</span>
         </div>
 
-        <!-- Stash Chips -->
-        <div class="k-stash-chips-row">
-          ${stashItems.length > 0 ? stashItems.map(item => `
-            <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-              <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
-              <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
-              <span class="k-stash-tag-badge ${item.type}" onclick="kCycleStashType('${item.id}', event)" title="Click to cycle (Pantry, Fridge, Freezer)" style="cursor:pointer;">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
-              ${item.planned ? `
-                <span class="k-stash-planned-badge" onclick="kToggleStashPlanned('${item.id}', event)" title="Earmarked for this week's plan! Tap to unmark">PLANNED 📌</span>
-              ` : `
-                <span class="k-stash-plan-btn" onclick="kToggleStashPlanned('${item.id}', event)" title="Tap to mark planned for this week">+ Plan</span>
-              `}
-              <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
-            </div>
-          `).join('') : `
-            <span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:4px 0;">No stash items saved yet. Use the buttons below to log what's in your pantry, fridge, or freezer.</span>
-          `}
-        </div>
+        <div class="k-sec-collapsible-body" style="${isStep1Collapsed ? 'display: none;' : ''}">
+          <!-- Stash Chips -->
+          <div class="k-stash-chips-row">
+            ${stashItems.length > 0 ? stashItems.map(item => `
+              <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
+                <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
+                <span class="k-stash-tag-badge ${item.type}" onclick="kCycleStashType('${item.id}', event)" title="Click to cycle (Pantry, Fridge, Freezer)" style="cursor:pointer;">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
+                ${item.planned ? `
+                  <span class="k-stash-planned-badge" onclick="kToggleStashPlanned('${item.id}', event)" title="Earmarked for this week's plan! Tap to unmark">PLANNED 📌</span>
+                ` : `
+                  <span class="k-stash-plan-btn" onclick="kToggleStashPlanned('${item.id}', event)" title="Tap to mark planned for this week">+ Plan</span>
+                `}
+                <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
+              </div>
+            `).join('') : `
+              <span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:4px 0;">No stash items saved yet. Use the buttons below to log what's in your pantry, fridge, or freezer.</span>
+            `}
+          </div>
 
-        <!-- 3 Separate Buttons: Pantry (Default on Enter), Fridge, and Freezer -->
-        <div class="k-stash-quick-bar">
-          <input type="text" class="k-clean-input" id="k-stash-input" name="k_stash_input_new" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
-          <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry (Default on Enter)">
-            🥫 + Pantry
-          </button>
-          <button type="button" class="k-btn-stash-add fridge" onclick="kAddStashWithSource('fridge')" title="Add directly to Fridge">
-            🥬 + Fridge
-          </button>
-          <button type="button" class="k-btn-stash-add freezer" onclick="kAddStashWithSource('freezer')" title="Add directly to Freezer">
-            🧊 + Freezer
-          </button>
+          <!-- 3 Separate Buttons: Pantry (Default on Enter), Fridge, and Freezer -->
+          <div class="k-stash-quick-bar" style="margin-top: 10px;">
+            <input type="text" class="k-clean-input" id="k-stash-input" name="k_stash_input_new" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
+            <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry (Default on Enter)">
+              🥫 + Pantry
+            </button>
+            <button type="button" class="k-btn-stash-add fridge" onclick="kAddStashWithSource('fridge')" title="Add directly to Fridge">
+              🥬 + Fridge
+            </button>
+            <button type="button" class="k-btn-stash-add freezer" onclick="kAddStashWithSource('freezer')" title="Add directly to Freezer">
+              🧊 + Freezer
+            </button>
+          </div>
         </div>
       </section>
 
@@ -2064,3 +2075,12 @@ function kManualWeekRollover() {
   }
 }
 window.kManualWeekRollover = kManualWeekRollover;
+
+// Toggle collapsible Step 1 (Shop Your Stash First) - Stays collapsed by default
+function kToggleKitchenStep1() {
+  const current = localStorage.getItem('BOL_KITCHEN_STEP1_COLLAPSED');
+  const isCollapsed = current === null ? true : (current === 'true');
+  localStorage.setItem('BOL_KITCHEN_STEP1_COLLAPSED', String(!isCollapsed));
+  renderKitchenPage();
+}
+window.kToggleKitchenStep1 = kToggleKitchenStep1;

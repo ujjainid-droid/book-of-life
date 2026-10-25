@@ -171,6 +171,63 @@
   color: var(--text-muted, #64748B);
 }
 
+/* Step 1 Collapsible Styles */
+.k-section-box.is-collapsed {
+  padding: 13px 20px;
+  gap: 0;
+}
+.k-sec-header.is-clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s ease;
+}
+.k-sec-header.is-clickable:hover .k-sec-title {
+  color: var(--pal-purple, #8B5CF6);
+}
+.k-collapse-toggle-btn {
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.12));
+  background: var(--bg-surface, #F4F6F8);
+  color: var(--text-secondary, #475569);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+.k-collapse-toggle-btn:hover {
+  background: var(--bg-card, #fff);
+  color: var(--pal-purple, #8B5CF6);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+body.dark .k-collapse-toggle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #94A3B8;
+}
+body.dark .k-collapse-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #C084FC;
+  border-color: rgba(167, 139, 250, 0.4);
+}
+.k-stash-summary-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted, #64748B);
+  background: var(--bg-surface, #F4F6F8);
+  border: 1px solid var(--border-subtle, rgba(31, 42, 68, 0.08));
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+body.dark .k-stash-summary-badge {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #94A3B8;
+}
+
 /* STEP 1: STASH CHIPS & 2-BUTTON QUICK ADD */
 .k-stash-chips-row {
   display: flex;
