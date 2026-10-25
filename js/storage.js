@@ -4423,7 +4423,9 @@ class StorageManager {
       vaultFilter: 'all',
       favoriteRecipes: [],
       newRecipes: [],
-      groceries: []
+      groceries: [
+        { id: 'g-hashbrowns', text: 'Hash browns', checked: false }
+      ]
     };
   }
 
@@ -4594,6 +4596,22 @@ class StorageManager {
         kd.selectedHopperIngredients = [];
         if (!Array.isArray(kd.groceries)) kd.groceries = [];
         this.data.kitchenSampleClearedV3 = true;
+        this.saveData();
+      }
+
+      // Ensure Hash browns is seeded in the grocery list
+      if (!this.data.kitchenHashBrownAdded) {
+        if (!Array.isArray(kd.groceries)) kd.groceries = [];
+        const exists = kd.groceries.some(g => (g.text || '').toLowerCase().includes('hash brown'));
+        if (!exists) {
+          kd.groceries.push({
+            id: 'g-hashbrowns-' + Date.now(),
+            text: 'Hash browns',
+            checked: false
+          });
+          this.data.kitchenUpdatedAt = Date.now();
+        }
+        this.data.kitchenHashBrownAdded = true;
         this.saveData();
       }
     }
