@@ -5518,13 +5518,13 @@ body.dark-mode .budget-badge-violet {
 }
 
 .budget-badge-rose {
-  background: #E11D48;
+  background: #E75480;
   color: #FFFFFF !important;
   border: 1px solid rgba(255, 255, 255, 0.25);
 }
 [data-theme="dark"] .budget-badge-rose,
 body.dark-mode .budget-badge-rose {
-  background: #BE123C;
+  background: #E75480;
   color: #FFFFFF !important;
   border: 1px solid rgba(253, 164, 175, 0.4);
 }

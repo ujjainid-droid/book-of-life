@@ -14858,6 +14858,18 @@ body.dark-mode .protocol-sample-btn {
 .mc-pl.G { --c: #FF8A5B; --cb: #3A1F18; }
 .mc-pl.O { --c: #0D3B66; --cb: #0F1E38; }
 
+.budget-badge-rose {
+  background: #E75480 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+}
+[data-theme="dark"] .budget-badge-rose,
+body.dark-mode .budget-badge-rose {
+  background: #E75480 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(253, 164, 175, 0.4) !important;
+}
+
 .budget-badge-coral {
   background: #FF8A5B;
   color: #1A0D06 !important;
