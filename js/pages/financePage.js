@@ -566,9 +566,6 @@ function renderFinanceRecurringCommitmentsSection() {
       <div class="finance-subs-summer-grid">
         <!-- 1. Gross Commitments (Lavender Sorbet) -->
         <div class="summer-widget-card theme-lavender">
-          <div class="summer-widget-watermark" style="color: #7C3AED;">
-            <i data-lucide="repeat"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -595,9 +592,6 @@ function renderFinanceRecurringCommitmentsSection() {
 
         <!-- 2. Reimbursed Credits (Seafoam Mint) -->
         <div class="summer-widget-card theme-mint">
-          <div class="summer-widget-watermark" style="color: #0D98BA;">
-            <i data-lucide="shield-check"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -624,9 +618,6 @@ function renderFinanceRecurringCommitmentsSection() {
 
         <!-- 3. Out of Pocket Burn (Sunset Rose) -->
         <div class="summer-widget-card theme-rose">
-          <div class="summer-widget-watermark" style="color: #E11D48;">
-            <i data-lucide="wallet"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -1684,9 +1675,6 @@ function renderFinanceSubscriptions() {
         <div class="finance-card-roi-summer-grid">
           <!-- Card 1: 4 Annual Fee Cards (Ocean Sky) -->
           <div class="summer-widget-card theme-sky">
-            <div class="summer-widget-watermark" style="color: #0284C7;">
-              <i data-lucide="credit-card"></i>
-            </div>
             <div>
               <div class="summer-widget-top">
                 <div class="summer-widget-pill">
@@ -1713,9 +1701,6 @@ function renderFinanceSubscriptions() {
 
           <!-- Card 2: Realized Perks & Credits (Lavender Sorbet) -->
           <div class="summer-widget-card theme-lavender">
-            <div class="summer-widget-watermark" style="color: #7C3AED;">
-              <i data-lucide="gift"></i>
-            </div>
             <div>
               <div class="summer-widget-top">
                 <div class="summer-widget-pill">
@@ -1742,9 +1727,6 @@ function renderFinanceSubscriptions() {
 
           <!-- Card 3: Net Fee Surplus (Pacific Blue-Green / Mint) -->
           <div class="summer-widget-card theme-mint">
-            <div class="summer-widget-watermark" style="color: #0D98BA;">
-              <i data-lucide="trending-up"></i>
-            </div>
             <div>
               <div class="summer-widget-top">
                 <div class="summer-widget-pill">
@@ -1771,9 +1753,6 @@ function renderFinanceSubscriptions() {
 
           <!-- Card 4: Negative Value Cards Widget (Sunset Rose) -->
           <div class="summer-widget-card ${negativeCardsCount > 0 ? 'theme-rose' : 'theme-mint'}" style="cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
-            <div class="summer-widget-watermark" style="color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};">
-              <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}"></i>
-            </div>
             <div>
               <div class="summer-widget-top">
                 <div class="summer-widget-pill">
@@ -4391,9 +4370,6 @@ function renderFinanceBudget() {
         
         <!-- Master Income Inflow -->
         <div class="budget-master-card income-theme" onclick="openBudgetCategoryTransactionsModal('__income_inflow__', 'Verified Income Inflow')" title="Click to inspect all verified income inflow transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #0284C7;">
-            <i data-lucide="trending-up"></i>
-          </div>
           <div class="summer-widget-top">
             <div style="display: flex; align-items: center; gap: 10px;">
               <div class="summer-widget-pill">
@@ -4426,9 +4402,6 @@ function renderFinanceBudget() {
 
         <!-- Master Living Outflows -->
         <div class="budget-master-card" onclick="openBudgetCategoryTransactionsModal('__living_all__', 'All Living Expenses')" title="Click to inspect all living expense transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #7C3AED;">
-            <i data-lucide="wallet"></i>
-          </div>
           <div class="summer-widget-top">
             <div style="display: flex; align-items: center; gap: 10px;">
               <div class="summer-widget-pill">
@@ -4461,9 +4434,6 @@ function renderFinanceBudget() {
 
         <!-- Master Wealth & Savings Envelope -->
         <div class="budget-master-card savings-theme" onclick="openBudgetCategoryTransactionsModal('__savings_transfers__', 'Direct Wealth Transfers')" title="Click to inspect direct wealth &amp; savings transfers" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #0D98BA;">
-            <i data-lucide="gem"></i>
-          </div>
           <div class="summer-widget-top">
             <div style="display: flex; align-items: center; gap: 10px;">
               <div class="summer-widget-pill">
@@ -4501,9 +4471,6 @@ function renderFinanceBudget() {
         
         <!-- Card 1: Groceries (Peach Coral) -->
         <div class="summer-widget-card theme-coral" onclick="openBudgetCategoryTransactionsModal('Groceries', 'Groceries')" title="Click to view all Groceries transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #EA580C;">
-            <i data-lucide="shopping-cart"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -4530,9 +4497,6 @@ function renderFinanceBudget() {
 
         <!-- Card 2: Eating Out (Ocean Sky Blue) -->
         <div class="summer-widget-card theme-sky" onclick="openBudgetCategoryTransactionsModal('Eating out', 'Eating Out')" title="Click to view all Eating Out transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #0284C7;">
-            <i data-lucide="utensils"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -4559,9 +4523,6 @@ function renderFinanceBudget() {
 
         <!-- Card 3: Shopping (Lavender Sorbet) -->
         <div class="summer-widget-card theme-lavender" onclick="openBudgetCategoryTransactionsModal('Shopping', 'Shopping')" title="Click to view all Shopping transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #7C3AED;">
-            <i data-lucide="shopping-bag"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -4588,9 +4549,6 @@ function renderFinanceBudget() {
 
         <!-- Card 4: Clothing, Shoes & Jewelry (Seafoam Mint) -->
         <div class="summer-widget-card theme-mint" onclick="openBudgetCategoryTransactionsModal('Clothing, Shoes, Jewelry', 'Clothing &amp; Jewelry')" title="Click to view all Clothing &amp; Jewelry transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #0D98BA;">
-            <i data-lucide="shirt"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -4617,9 +4575,6 @@ function renderFinanceBudget() {
 
         <!-- Card 5: Self care & Grooming (Sunset Rose Guava) -->
         <div class="summer-widget-card theme-rose" onclick="openBudgetCategoryTransactionsModal('Self care + Grooming', 'Self Care &amp; Grooming')" title="Click to view all Self Care &amp; Grooming transactions" style="cursor: pointer;">
-          <div class="summer-widget-watermark" style="color: #E11D48;">
-            <i data-lucide="sparkles"></i>
-          </div>
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
@@ -4648,9 +4603,6 @@ function renderFinanceBudget() {
 
       <!-- 3B. Wealth Sweep Pot (Surplus Holding Tank) -->
       <div class="wealth-sweep-pot-card">
-        <div class="summer-widget-watermark" style="color: #0D98BA; opacity: 0.14;">
-          <i data-lucide="sparkles"></i>
-        </div>
 
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 18px; position: relative; z-index: 2;">
           <div style="max-width: 530px;">

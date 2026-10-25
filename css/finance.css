@@ -5253,27 +5253,9 @@ body.dark-mode .summer-widget-pill {
   background: rgba(255, 255, 255, 0.92);
 }
 
-/* Translucent Watermark (Top Right) */
+/* Translucent Watermark (Top Right) - Disabled / Removed */
 .summer-widget-watermark {
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  opacity: 0.16;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  z-index: 1;
-}
-.summer-widget-card:hover .summer-widget-watermark {
-  opacity: 0.26;
-  transform: scale(1.06) rotate(4deg);
-}
-.summer-widget-watermark svg,
-.summer-widget-watermark i {
-  width: 82px;
-  height: 82px;
+  display: none !important;
 }
 
 /* Content Layout */
