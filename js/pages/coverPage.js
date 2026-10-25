@@ -3200,155 +3200,130 @@ let skinCalendarCollapsed = true;
 let activeSkinSkipDate = null;
 let activeSkinCareTab = 'evening'; // 'evening' | 'morning' | 'rules'
 
+const NIGHTLY_DOUBLE_CLEANSE = [
+  { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
+  { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean with lukewarm water.' }
+];
+
 const SKIN_CARE_SCHEDULE_MAP = {
   1: { // Monday
     type: 'retinoid',
-    badge: '🌙 Retinoid Night',
+    badge: '🌙 Retinal Night',
     badgeClass: 'badge-retinoid',
-    title: 'Retinoid Night (Anti-Aging)',
+    title: 'Retinal Night (Anti-Aging)',
     subtitle: 'Cell turnover & collagen stimulation · Naturium Retinaldehyde 0.05%',
     guardrails: [
-      'Wait 2–3 mins until skin is 100% dry before applying Retinaldehyde (Rule 2).',
-      'No Thayers Witch Hazel Toner on Retinoid nights (Rule 3).'
+      'Apply pea-sized amount on 100% dry skin.',
+      'Keep 1 finger-width below lash line. Buffer with moisturizer first if sensitive.',
+      'Never combine retinal and lactic acid on the same night (Rule 1).'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '💧', label: '2. Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone BEFORE applying actives to protect delicate under-eye skin from retinoid or acid migration.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '🌙', label: '4. Active Treatment (Wait 2–3 Mins until 100% Dry)', product: 'Naturium Retinaldehyde Cream Serum 0.05%', desc: 'Wait 2–3 mins for COSRX Snail Mucin to dry 100%. Apply 1–2 pumps (pea-sized amount) to face and neck.' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream to lock in moisture.' }
+      { id: 'treat-1', icon: '🌙', label: 'Retinal (Pea-sized on dry skin)', product: 'Naturium Retinaldehyde Cream Serum 0.05%', desc: 'Wait until skin is completely dry. Apply a pea-sized amount to face and neck. Keep 1 finger-width below lash line.' },
+      { id: 'treat-2', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream to lock in moisture and nourish the skin barrier.' }
     ]
   },
   2: { // Tuesday
-    type: 'exfoliation',
-    badge: '✨ Exfoliation & Glow',
-    badgeClass: 'badge-exfoliation',
-    title: 'Exfoliation & Glow (Dullness)',
-    subtitle: 'Nighttime exfoliant & hydration cushion · The Ordinary Lactic Acid 5% + HA',
+    type: 'recovery',
+    badge: '🛡️ Recovery Night',
+    badgeClass: 'badge-recovery',
+    title: 'Recovery Night (Hydration & Barrier)',
+    subtitle: 'Deep hydration replenishment & peptide matrix repair',
     guardrails: [
-      'Swipe dry face with Thayers Toner, apply COSRX Snail Mucin and let dry, then apply Lactic Acid 5% (Rule 3).',
-      'Never mix with Peptides (Rule 1: direct acids break peptide bonds).',
-      'Wait 2–3 mins for skin to dry completely before applying Lactic Acid to prevent stinging (Rule 2).'
+      'Apply COSRX Snail Mucin to damp skin, then layer Multi-Peptide + HA.',
+      'No acids or retinoids tonight — deep repair mode.'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '🌿', label: '2. Toner & Hydration', product: 'Thayers Classic Witch Hazel Toner + COSRX Snail Mucin', desc: 'Swipe dry face with Thayers on cotton pad, then apply COSRX Snail Mucin and let dry.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone before applying actives to buffer eye area.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '✨', label: '4. Nighttime Exfoliant', product: 'The Ordinary Lactic Acid 5% + HA', desc: 'Apply 3–4 drops of The Ordinary Lactic Acid 5% + HA over dry face to clear dullness, smooth texture, and draw in hydration.' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide Ato Concentrate Cream.' }
+      { id: 'treat-1', icon: '💧', label: 'Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin for immediate moisture plumping.' },
+      { id: 'treat-2', icon: '🧬', label: 'Peptide Infusion', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'Apply 3–4 drops while skin is still slightly dewy from snail mucin for collagen support.' },
+      { id: 'treat-3', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide Ato Concentrate Cream.' }
     ]
   },
   3: { // Wednesday
-    type: 'recovery',
-    badge: '🛡️ Barrier & Peptide Recovery',
-    badgeClass: 'badge-recovery',
-    title: 'Peptide & Barrier Recovery Night',
-    subtitle: 'Deep hydration replenishment & lipid barrier restoration',
+    type: 'exfoliation',
+    badge: '✨ Exfoliate Night',
+    badgeClass: 'badge-exfoliation',
+    title: 'Exfoliate & Glow Night (Dullness)',
+    subtitle: 'Gentle AHA resurfacing & glass-skin hydration · The Ordinary Lactic Acid 5% + HA',
+    rampUpNote: '⏳ Ramp-Up Schedule (Rule 2): In Weeks 1–4, swap Wednesday to Recovery (COSRX + Peptides). Add Lactic Acid on Wednesday from Week 4+ once skin is acclimated.',
     guardrails: [
-      'Apply Multi-Peptide + HA while skin is still slightly dewy from Snail Mucin.',
-      'No Vitamin C or acids tonight (Rule 1).'
+      'Apply Lactic Acid onto 100% dry skin.',
+      'Follow with Peach & Lily Glass Skin Serum to soothe and hydrate.',
+      'Never combine lactic acid with retinal on the same night (Rule 1).'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '💧', label: '2. Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap along orbital bone before applying serums.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '🧬', label: '4. Peptide Infusion (On Dewy Skin)', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'Apply 3–4 drops of The Ordinary Multi-Peptide + HA Serum while skin is still slightly dewy from COSRX Snail Mucin.' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide Ato Concentrate Cream (+ optional dab of Vanicream Moisturizing Cream tub on dry spots).' }
+      { id: 'treat-1', icon: '✨', label: 'Lactic Acid Exfoliant (Dry Skin)', product: 'The Ordinary Lactic Acid 5% + HA', desc: 'Apply 3–4 drops onto completely dry skin to clear dullness, smooth texture, and draw in hydration.' },
+      { id: 'treat-2', icon: '🫧', label: 'Hydrate & Soothe', product: 'Peach & Lily Glass Skin Refining Serum', desc: 'Apply 1–2 pumps to calm, replenish, and illuminate post-exfoliation.' },
+      { id: 'treat-3', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal and cushion with ceramide cream.' }
     ]
   },
   4: { // Thursday
     type: 'retinoid',
-    badge: '🌙 Retinoid Night',
+    badge: '🌙 Retinal Night',
     badgeClass: 'badge-retinoid',
-    title: 'Retinoid Night (Anti-Aging)',
+    title: 'Retinal Night (Anti-Aging)',
     subtitle: 'Cell turnover & collagen stimulation · Naturium Retinaldehyde 0.05%',
     guardrails: [
-      'Wait 2–3 mins until skin is 100% dry before applying Retinaldehyde (Rule 2).',
-      'No Thayers Witch Hazel Toner on Retinoid nights (Rule 3).'
+      'Apply pea-sized amount on bone-dry skin.',
+      'Keep 1 finger-width below lash line. Buffer with moisturizer if sensitive.'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '💧', label: '2. Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone BEFORE applying actives.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '🌙', label: '4. Active Treatment (Wait 2–3 Mins until 100% Dry)', product: 'Naturium Retinaldehyde Cream Serum 0.05%', desc: 'Wait 2–3 mins for COSRX Snail Mucin to dry 100%. Apply 1–2 pumps (pea-sized amount) of Naturium Retinaldehyde Cream Serum 0.05%.' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream to lock in moisture.' }
+      { id: 'treat-1', icon: '🌙', label: 'Retinal (Pea-sized on dry skin)', product: 'Naturium Retinaldehyde Cream Serum 0.05%', desc: 'Apply pea-sized amount on bone-dry skin. Keep 1 finger-width below lash line.' },
+      { id: 'treat-2', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream.' }
     ]
   },
   5: { // Friday
-    type: 'brightening',
-    badge: '💠 Brightening & Resurfacing',
-    badgeClass: 'badge-brightening',
-    title: 'Brightening & Resurfacing Night',
-    subtitle: 'Gentle AHA resurfacing & hydration glow · The Ordinary Lactic Acid 5% + HA',
+    type: 'recovery',
+    badge: '🛡️ Recovery Night',
+    badgeClass: 'badge-recovery',
+    title: 'Recovery Night (Hydration & Barrier)',
+    subtitle: 'Deep hydration replenishment & peptide matrix repair',
     guardrails: [
-      'Wait for COSRX Snail Mucin to dry completely before applying Lactic Acid (Rule 2).',
-      'No peptides in this routine (Rule 1).'
+      'Layer Multi-Peptide + HA while skin is slightly dewy from Snail Mucin.',
+      'Zero acids or retinoids tonight.'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '💧', label: '2. Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '💠', label: '4. Nighttime Exfoliant (Wait for Snail Mucin to Dry)', product: 'The Ordinary Lactic Acid 5% + HA', desc: 'Wait for COSRX Advanced Snail 96 Mucin Power Essence to dry, then apply 3–4 drops of The Ordinary Lactic Acid 5% + HA.' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide Ato Concentrate Cream.' }
+      { id: 'treat-1', icon: '💧', label: 'Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'Press 1–2 pumps into damp skin.' },
+      { id: 'treat-2', icon: '🧬', label: 'Peptide Infusion', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'Apply 3–4 drops while dewy to rebuild collagen and firmness.' },
+      { id: 'treat-3', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with Illiyoon Ceramide Ato Concentrate Cream.' }
     ]
   },
   6: { // Saturday
     type: 'retinoid',
-    badge: '🌙 Retinoid Night',
+    badge: '🌙 Retinal / Recovery',
     badgeClass: 'badge-retinoid',
-    title: 'Retinoid Night (Anti-Aging)',
-    subtitle: 'Cell turnover · Acclimation note: Peptides W1–2, Retinal W3+',
-    rampUpNote: '⚠️ 2-Week Retinoid Ramp-Up (Rule 4): For Weeks 1 and 2, only use Naturium Retinaldehyde on Monday & Thursday nights (swap Saturday to The Ordinary Multi-Peptide + HA). Start with Tuesday only for Lactic Acid in Week 1, add Friday in Week 2, and Saturday Retinaldehyde in Week 3.',
+    title: 'Retinal Night (or Recovery if Sensitive)',
+    subtitle: 'Retinal 3x weekly goal · Flex to Recovery if skin feels sensitive',
+    rampUpNote: '⏳ Ramp-Up Schedule (Rule 2): For Weeks 1–4, keep Saturday as Recovery (COSRX + Peptides). Add Saturday Retinal in Week 4+ once Monday and Thursday are well tolerated.',
     guardrails: [
-      'Weeks 1–2: Use Multi-Peptide + HA Serum tonight.',
-      'Week 3+: Apply Retinaldehyde 0.05% on 100% dry skin.',
-      'No Thayers Witch Hazel Toner on Retinoid nights (Rule 3).'
+      'If skin feels tight, pink, or sensitive, swap to Recovery tonight.',
+      'Apply Retinal pea-sized amount on bone-dry skin.'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '💧', label: '2. Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '🌙', label: '4. Active Treatment (Wait 2–3 Mins until 100% Dry)', product: 'Naturium Retinaldehyde 0.05% (or Peptides for Weeks 1–2)', desc: 'Wait 2–3 mins for COSRX Snail Mucin to dry 100%. Apply 1–2 pumps (pea-sized amount) of Naturium Retinaldehyde Cream Serum 0.05%. (Note: Make this a Peptide Recovery Night for Weeks 1–2).' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal and protect.' }
+      { id: 'treat-1', icon: '🌙', label: 'Retinal (or Recovery if sensitive)', product: 'Naturium Retinaldehyde 0.05% (or COSRX + Peptides)', desc: 'Pea-sized amount of Retinal on dry skin (or switch to COSRX Snail Mucin + Peptides if skin feels sensitive or during Weeks 1–4).' },
+      { id: 'treat-2', icon: '🛡️', label: 'Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Seal with rich ceramide cream.' }
     ]
   },
   0: { // Sunday
     type: 'glass-skin',
-    badge: '🫧 Deep Glass-Skin Reset',
+    badge: '🫧 Recovery & Glow',
     badgeClass: 'badge-glass-skin',
-    title: 'Deep Glass-Skin Reset Night',
-    subtitle: 'Nourishment cushion · Peach & Lily + Multi-Peptide cocktail',
+    title: 'Recovery: Glass-Skin Reset Night',
+    subtitle: 'Deep nourishment cushion · Peach & Lily + Multi-Peptide reset',
     guardrails: [
-      'Apply Peach & Lily to damp skin, then layer Multi-Peptide + HA.',
+      'Apply Peach & Lily onto damp skin, then layer Multi-Peptide + HA.',
       'Seal with a generous layer of Illiyoon Ceramide Cream.'
     ],
-    prepSteps: [
-      { id: 'prep-1a', icon: '🧴', label: '1A. Oil Cleanse (Dry Skin)', product: 'Prequel Pre-Gleanse Nourishing Oil Cleanser', desc: 'Massage 1–2 pumps onto dry skin for 30s to melt mineral SPF and makeup, emulsify with water & rinse thoroughly.' },
-      { id: 'prep-1b', icon: '🫧', label: '1B. Water Cleanse (Wet Skin)', product: 'Vanicream Gentle Facial Cleanser', desc: 'Wash with Vanicream Gentle Facial Cleanser and rinse clean.' },
-      { id: 'prep-2', icon: '💧', label: '2. Damp-Skin Hydration', product: 'COSRX Advanced Snail 96 Mucin Power Essence', desc: 'While skin is still damp, press in 1–2 pumps for deep hydration cushion.' },
-      { id: 'prep-3', icon: '👁️', label: '3. Eye Buffer', product: 'NIA24 Eye Repair Complex', desc: 'Tap around orbital bone.' }
-    ],
+    prepSteps: NIGHTLY_DOUBLE_CLEANSE,
     treatmentSteps: [
-      { id: 'treat-4', icon: '🫧', label: '4. Deep Glass-Skin Layering', product: 'Peach & Lily Glass Skin Serum + The Ordinary Multi-Peptide', desc: 'Layer 1–2 pumps of Peach & Lily Glass Skin Refining Serum + 3–4 drops of The Ordinary Multi-Peptide + HA Serum.' },
-      { id: 'treat-5', icon: '🛡️', label: '5. Thick Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Thick layer of Illiyoon Ceramide Ato Concentrate Cream.' }
+      { id: 'treat-1', icon: '🫧', label: 'Glass-Skin Hydration', product: 'Peach & Lily Glass Skin Refining Serum', desc: 'Apply 1–2 pumps onto slightly damp skin.' },
+      { id: 'treat-2', icon: '🧬', label: 'Peptide Matrix Repair', product: 'The Ordinary Multi-Peptide + HA Serum', desc: 'Apply 3–4 drops for deep collagen support and fine-line hydration.' },
+      { id: 'treat-3', icon: '🛡️', label: 'Thick Barrier Seal', product: 'Illiyoon Ceramide Ato Concentrate Cream', desc: 'Generous layer of Illiyoon Ceramide Ato Concentrate Cream to reset for the week ahead.' }
     ]
   }
 };
@@ -3356,46 +3331,45 @@ const SKIN_CARE_SCHEDULE_MAP = {
 const SKIN_CARE_MORNING_ROUTINE = [
   {
     num: 1,
-    icon: '🌿',
-    title: 'Prep / Refresh',
-    product: 'Thayers Classic Witch Hazel Toner + Light Water Mist',
-    desc: 'Swipe face with Thayers Classic Witch Hazel Toner on a cotton pad (skip sink cleanser), then splash or mist lightly with water so skin is slightly damp.',
-    hack: 'Extra Puffy Eye Option: Soak two cotton rounds in cold water + a few drops of Thayers Classic Witch Hazel Toner, press over closed eyes for 60 seconds, rinse eye area with cool water, then pat dry.'
+    icon: '🫧',
+    title: 'Cleanse or Water Rinse',
+    product: 'Vanicream Gentle Facial Cleanser (or Water Rinse)',
+    desc: 'Wash with Vanicream cleanser, or simply rinse with lukewarm water if your skin feels dry.'
   },
   {
     num: 2,
     icon: '🧪',
     title: 'Antioxidant (On Dry Skin)',
-    product: 'Naturium Vitamin C Complex Serum (or Vichy LiftActiv)',
-    desc: 'Apply 1–2 pumps of Naturium Vitamin C Complex Serum (or 4 drops of Vichy LiftActiv Vitamin C Brightening Skin Corrector until finished — never use both at once). Let absorb for 60 seconds.'
+    product: 'Timeless 20% Vitamin C + E Ferulic Acid Serum',
+    desc: 'Apply 1–2 pumps to dry face and neck. Let absorb for 60 seconds to neutralize free radicals and brighten dullness. (Store bottle in refrigerator).'
   },
   {
     num: 3,
-    icon: '✨',
-    title: 'Hydrate & Glow',
-    product: 'Peach & Lily Glass Skin Refining Serum',
-    desc: 'Apply 1–2 pumps of Peach & Lily Glass Skin Refining Serum.'
+    icon: '👁️',
+    title: 'De-Puff Under Eyes',
+    product: 'The Ordinary Caffeine Solution 5% + EGCG',
+    desc: 'Dab 1 small drop lightly under the eyes only along the orbital bone to target puffiness and morning bags.'
   },
   {
     num: 4,
-    icon: '👁️',
-    title: 'De-Puff Eyes',
-    product: 'NIA24 Eye Repair Complex',
-    desc: 'Tap a rice-grain amount of NIA24 Eye Repair Complex along the orbital bone under each eye.'
+    icon: '✨',
+    title: 'Hydrate & Glow',
+    product: 'Peach & Lily Glass Skin Refining Serum (or COSRX Snail Mucin)',
+    desc: 'Apply 1–2 pumps of Peach & Lily Glass Skin Refining Serum to face and neck (or swap in COSRX Snail Mucin if you prefer a richer dewy layer).'
   },
   {
     num: 5,
     icon: '🛡️',
-    title: 'Moisturize + UV Block',
+    title: 'Moisturize + UV Defense',
     product: 'Vanicream Facial Moisturizer Broad Spectrum SPF 30',
-    desc: 'Apply a generous 1/4 tsp layer of Vanicream Facial Moisturizer Broad Spectrum SPF 30.'
+    desc: 'Apply a generous 1/4 tsp layer. Tinted moisturizer alone won’t give SPF 30 in a thin layer, so always apply the Vanicream SPF first.'
   },
   {
     num: 6,
     icon: '🪞',
     title: 'Complexion (Optional)',
     product: 'Laura Mercier Tinted Moisturizer Natural Skin Perfector SPF 30',
-    desc: 'Smooth Laura Mercier Tinted Moisturizer Natural Skin Perfector SPF 30 on top.'
+    desc: 'Smooth on top of the Vanicream SPF for light, natural, perfected coverage.'
   }
 ];
 
@@ -3403,37 +3377,51 @@ const SKIN_CARE_RULES = [
   {
     num: 1,
     icon: '🚫',
-    title: 'Rule 1 — Never Mix Peptides with Acids or Vitamin C',
-    rule: 'Keep The Ordinary Multi-Peptide + HA Serum strictly on Wednesday and Sunday nights (or Saturday night during your 2-week ramp-up). Never layer it in the same routine as The Ordinary Lactic Acid 5% + HA, Naturium Vitamin C Complex Serum, or Vichy LiftActiv Vitamin C Brightening Skin Corrector — direct acids and low-pH Vitamin C break peptide bonds and deactivate them.',
-    why: 'Direct acids and acidic low-pH Vitamin C break down delicate peptide bonds, rendering them completely ineffective.'
+    title: 'Never Combine Retinal and Lactic Acid on the Same Night',
+    rule: 'Never use Naturium Retinaldehyde and The Ordinary Lactic Acid together in the same evening routine. Keep them on separate designated nights (Retinal Mon/Thu/Sat, Lactic Acid Wed).',
+    why: 'Combining a potent retinoid with an AHA chemical exfoliant will overwhelm the skin barrier, leading to irritation, peeling, and redness.'
   },
   {
     num: 2,
-    icon: '💧',
-    title: 'Rule 2 — Damp Skin for Hydrators, Bone-Dry Skin for Actives',
-    rule: 'Always apply COSRX Advanced Snail 96 Mucin Power Essence and Peach & Lily Glass Skin Refining Serum to damp skin to pull moisture in. Always wait 2–3 minutes for your skin to dry completely before applying Naturium Retinaldehyde Cream Serum 0.05% or The Ordinary Lactic Acid 5% + HA to prevent stinging or flaking.',
-    why: 'Applying retinoids or AHA acids to damp skin drastically increases penetration depth and speed, triggering stinging, peeling, and barrier damage.'
+    icon: '⏳',
+    title: 'Ramp Up Slowly (Weeks 1–4 Acclimation)',
+    rule: 'Weeks 1–4: Retinal on Monday & Thursday only, and swap Wednesday to Recovery (COSRX + Peptides). Weeks 4+: Add Lactic Acid on Wednesday, then add Saturday Retinal once your skin tolerates it.',
+    why: 'Gradual retinization prevents retinoid dermatitis and allows your skin barrier to build tolerance sustainably.'
   },
   {
     num: 3,
-    icon: '🌿',
-    title: 'Rule 3 — Keep Thayers Off Retinoid Nights',
-    rule: 'Only use Thayers Classic Witch Hazel Toner in the morning, post-workout, or on Tuesday night before The Ordinary Lactic Acid 5% + HA. Never use it on Monday, Thursday, or Saturday nights before Naturium Retinaldehyde Cream Serum 0.05%.',
-    why: 'Astringent witch hazel combined with active retinoids can over-dry and compromise the stratum corneum barrier.'
+    icon: '👁️',
+    title: 'Retinal Placement & Buffer Tip',
+    rule: 'Keep retinal about a finger-width below the lash line. If your skin is sensitive, apply moisturizer (Illiyoon) first as a buffer before applying retinal.',
+    why: 'Under-eye skin is the thinnest on the face and easily irritated by retinoid migration. Buffering slows absorption speed.'
   },
   {
     num: 4,
-    icon: '⏳',
-    title: 'Rule 4 — 2-Week Retinoid Ramp-Up',
-    rule: 'For Weeks 1 and 2, only use Naturium Retinaldehyde Cream Serum 0.05% on Monday and Thursday nights (use The Ordinary Multi-Peptide + HA Serum on Saturday night instead). Also start with just Tuesday night for The Ordinary Lactic Acid 5% + HA during Week 1, then add Friday night in Week 2 and Saturday Retinaldehyde in Week 3.',
-    why: 'Allows gentle retinization and AHA acclimation without flaking or barrier irritation.'
+    icon: '🌿',
+    title: 'Skip the Thayers Witch Hazel',
+    rule: 'Skip the Thayers toner. It adds little for your goals (anti-aging, hydration, dullness) and can dry skin, especially on retinal and acid nights.',
+    why: 'Astringent witch hazel strips natural lipids and counteracts your hydration and barrier-repair goals.'
   },
   {
     num: 5,
+    icon: '🧴',
+    title: 'Vanicream Moisturizing Cream (Tub)',
+    rule: 'Use the Vanicream Moisturizing Cream tub on your body or hands. Illiyoon Ceramide Ato Concentrate Cream covers your face.',
+    why: 'Illiyoon contains the optimal encapsulated ceramide, fatty acid, and cholesterol ratio specifically formulated for facial barrier health.'
+  },
+  {
+    num: 6,
+    icon: '🛡️',
+    title: 'Sunscreen First, Tint Second',
+    rule: 'The tinted moisturizer alone will not give you adequate SPF 30 protection in a normal thin cosmetic layer, so always apply a generous 1/4 tsp layer of Vanicream SPF 30 first.',
+    why: 'Cosmetic tints are applied too sheerly to achieve labeled SPF ratings; dedicated SPF underneath guarantees full protection.'
+  },
+  {
+    num: 7,
     icon: '🧪',
-    title: 'Rule 5 — Check the Vichy Bottle First',
-    rule: 'Test a drop of Vichy LiftActiv Vitamin C Brightening Skin Corrector on a white tissue. If it is clear to pale champagne-yellow, finish that bottle before opening Naturium Vitamin C Complex Serum. If it has turned dark amber/orange, toss it and start the Naturium pump immediately.',
-    why: 'Oxidized Vitamin C turns into dehydroascorbic acid and erythrulose, causing free-radical stress and clogging pores.'
+    title: 'Timeless Vitamin C Storage',
+    rule: 'Keep your Timeless Vitamin C refrigerated and replace it if it turns dark orange or brown.',
+    why: 'Pure L-ascorbic acid oxidizes rapidly at room temperature. Oxidation turns it into dehydroascorbic acid, causing free-radical stress.'
   }
 ];
 
@@ -3460,40 +3448,40 @@ const SKIN_CARE_SHOPPING_ITEMS = [
 
 const FOUR_WEEK_SKIN_SCHEDULE_DATA = [
   { week: 'Week 1 (Sep 28 – Oct 4)', days: [
-    { date: '2026-09-28', dayName: 'Mon', num: '28', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-09-29', dayName: 'Tue', num: '29', type: 'exfoliation', badge: 'Lactic 5%' },
-    { date: '2026-09-30', dayName: 'Wed', num: '30', type: 'recovery', badge: 'Barrier' },
-    { date: '2026-10-01', dayName: 'Thu', num: '1', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-02', dayName: 'Fri', num: '2', type: 'brightening', badge: 'Resurfacing' },
-    { date: '2026-10-03', dayName: 'Sat', num: '3', type: 'retinoid', badge: 'Peptide Ramp' },
-    { date: '2026-10-04', dayName: 'Sun', num: '4', type: 'glass-skin', badge: 'Glass Reset' }
+    { date: '2026-09-28', dayName: 'Mon', num: '28', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-09-29', dayName: 'Tue', num: '29', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-09-30', dayName: 'Wed', num: '30', type: 'recovery', badge: 'Recovery (W1)' },
+    { date: '2026-10-01', dayName: 'Thu', num: '1', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-02', dayName: 'Fri', num: '2', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-03', dayName: 'Sat', num: '3', type: 'recovery', badge: 'Recovery (W1)' },
+    { date: '2026-10-04', dayName: 'Sun', num: '4', type: 'glass-skin', badge: 'Recovery' }
   ]},
   { week: 'Week 2 (Oct 5 – Oct 11)', days: [
-    { date: '2026-10-05', dayName: 'Mon', num: '5', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-06', dayName: 'Tue', num: '6', type: 'exfoliation', badge: 'Lactic 5%' },
-    { date: '2026-10-07', dayName: 'Wed', num: '7', type: 'recovery', badge: 'Barrier' },
-    { date: '2026-10-08', dayName: 'Thu', num: '8', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-09', dayName: 'Fri', num: '9', type: 'brightening', badge: 'Resurfacing' },
-    { date: '2026-10-10', dayName: 'Sat', num: '10', type: 'retinoid', badge: 'Peptide Ramp' },
-    { date: '2026-10-11', dayName: 'Sun', num: '11', type: 'glass-skin', badge: 'Glass Reset' }
+    { date: '2026-10-05', dayName: 'Mon', num: '5', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-06', dayName: 'Tue', num: '6', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-07', dayName: 'Wed', num: '7', type: 'recovery', badge: 'Recovery (W2)' },
+    { date: '2026-10-08', dayName: 'Thu', num: '8', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-09', dayName: 'Fri', num: '9', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-10', dayName: 'Sat', num: '10', type: 'recovery', badge: 'Recovery (W2)' },
+    { date: '2026-10-11', dayName: 'Sun', num: '11', type: 'glass-skin', badge: 'Recovery' }
   ]},
   { week: 'Week 3 (Oct 12 – Oct 18)', days: [
-    { date: '2026-10-12', dayName: 'Mon', num: '12', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-13', dayName: 'Tue', num: '13', type: 'exfoliation', badge: 'Lactic 5%' },
-    { date: '2026-10-14', dayName: 'Wed', num: '14', type: 'recovery', badge: 'Barrier' },
-    { date: '2026-10-15', dayName: 'Thu', num: '15', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-16', dayName: 'Fri', num: '16', type: 'brightening', badge: 'Resurfacing' },
-    { date: '2026-10-17', dayName: 'Sat', num: '17', type: 'retinoid', badge: 'Retinoid 3x' },
-    { date: '2026-10-18', dayName: 'Sun', num: '18', type: 'glass-skin', badge: 'Glass Reset' }
+    { date: '2026-10-12', dayName: 'Mon', num: '12', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-13', dayName: 'Tue', num: '13', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-14', dayName: 'Wed', num: '14', type: 'recovery', badge: 'Recovery (W3)' },
+    { date: '2026-10-15', dayName: 'Thu', num: '15', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-16', dayName: 'Fri', num: '16', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-17', dayName: 'Sat', num: '17', type: 'recovery', badge: 'Recovery (W3)' },
+    { date: '2026-10-18', dayName: 'Sun', num: '18', type: 'glass-skin', badge: 'Recovery' }
   ]},
   { week: 'Week 4 (Oct 19 – Oct 25)', days: [
-    { date: '2026-10-19', dayName: 'Mon', num: '19', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-20', dayName: 'Tue', num: '20', type: 'exfoliation', badge: 'Lactic 5%' },
-    { date: '2026-10-21', dayName: 'Wed', num: '21', type: 'recovery', badge: 'Barrier' },
-    { date: '2026-10-22', dayName: 'Thu', num: '22', type: 'retinoid', badge: 'Retinoid' },
-    { date: '2026-10-23', dayName: 'Fri', num: '23', type: 'brightening', badge: 'Resurfacing' },
-    { date: '2026-10-24', dayName: 'Sat', num: '24', type: 'retinoid', badge: 'Retinoid 3x' },
-    { date: '2026-10-25', dayName: 'Sun', num: '25', type: 'glass-skin', badge: 'Glass Reset' }
+    { date: '2026-10-19', dayName: 'Mon', num: '19', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-20', dayName: 'Tue', num: '20', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-21', dayName: 'Wed', num: '21', type: 'exfoliation', badge: 'Lactic 5%' },
+    { date: '2026-10-22', dayName: 'Thu', num: '22', type: 'retinoid', badge: 'Retinal' },
+    { date: '2026-10-23', dayName: 'Fri', num: '23', type: 'recovery', badge: 'Recovery' },
+    { date: '2026-10-24', dayName: 'Sat', num: '24', type: 'retinoid', badge: 'Retinal 3x' },
+    { date: '2026-10-25', dayName: 'Sun', num: '25', type: 'glass-skin', badge: 'Recovery' }
   ]}
 ];
 
@@ -3831,9 +3819,9 @@ function renderSkinCareCard(dateStr, isToday) {
 
         <!-- Concise Evening Sequence Tray -->
         <div class="hair-concise-routine-tray">
-          <!-- Nightly Prep (Steps 1-3) -->
+          <!-- Nightly Cleanse (Steps 1A & 1B) -->
           <div class="hair-concise-tray-header" style="margin-top: 4px;">
-            <span class="hair-concise-tray-title">Part 1: Nightly Prep (Every Night)</span>
+            <span class="hair-concise-tray-title">Every Night First: Double Cleanse</span>
             <span class="hair-concise-step-badge">${routine.prepSteps.length} steps</span>
           </div>
           <ul class="hair-concise-steps-list">
@@ -3852,15 +3840,15 @@ function renderSkinCareCard(dateStr, isToday) {
 
           <div class="skin-tray-divider"></div>
 
-          <!-- Nightly Treatment (Steps 4-5) -->
+          <!-- Nightly Treatment (Steps after cleansing) -->
           <div class="hair-concise-tray-header">
-            <span class="hair-concise-tray-title">Part 2: Nightly Treatment (${formattedDay})</span>
+            <span class="hair-concise-tray-title">Steps After Cleansing (${formattedDay})</span>
             <span class="hair-concise-step-badge" style="color: #6D28D9; background: rgba(139, 92, 246, 0.15);">${routine.treatmentSteps.length} steps</span>
           </div>
           <ul class="hair-concise-steps-list">
             ${routine.treatmentSteps.map((s, idx) => `
               <li class="hair-concise-step-item">
-                <span class="step-num" style="color: #6D28D9; background: rgba(139, 92, 246, 0.15);">${idx + 4}</span>
+                <span class="step-num" style="color: #6D28D9; background: rgba(139, 92, 246, 0.15);">${idx + 1}</span>
                 <span class="step-bullet">${s.icon}</span>
                 <div class="step-text">
                   <span class="step-label"><strong>${escapeHtml(s.label)}:</strong></span>
@@ -3896,7 +3884,7 @@ function renderSkinCareCard(dateStr, isToday) {
           <div class="skin-morning-banner-left">
             <span class="skin-morning-tag">Daily Rhythm</span>
             <h4>Morning Routine (Every Day: Monday – Sunday)</h4>
-            <p>Antioxidant protection, peptide glow, hydration cushion &amp; SPF 30 broad-spectrum defense</p>
+            <p>Antioxidant defense, de-puffing eye care, hydration &amp; SPF 30 broad-spectrum defense</p>
           </div>
           <button type="button" class="skin-quick-action-btn ${isAmDone ? 'is-done' : ''}" onclick="toggleSkinCareSubAction('${dateStr}', 'am')">
             ${isAmDone ? '✓ Morning Done (+5 XP)' : '+ Mark Morning Done (+5 XP)'}
@@ -3930,7 +3918,7 @@ function renderSkinCareCard(dateStr, isToday) {
     tabContentHtml = `
       <div class="skin-rules-container">
         <div class="skin-rules-header">
-          <h4>5 Important Rules &amp; Guardrails</h4>
+          <h4>7 Essential Rules &amp; Guardrails</h4>
           <p>Scientific guidelines to prevent barrier irritation, peptide degradation, and product conflicts</p>
         </div>
         <div class="skin-rules-grid">
@@ -3988,7 +3976,7 @@ function renderSkinCareCard(dateStr, isToday) {
         </button>
         <button type="button" role="tab" class="skin-tab-btn ${activeSkinCareTab === 'rules' ? 'active' : ''}" onclick="setSkinCareTab('rules')" aria-selected="${activeSkinCareTab === 'rules'}">
           <span class="tab-icon">🛡️</span>
-          <span>5 Golden Rules</span>
+          <span>Rules &amp; Guardrails</span>
         </button>
       </div>
 
