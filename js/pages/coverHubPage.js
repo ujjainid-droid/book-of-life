@@ -107,12 +107,108 @@ function renderCoverHubPage() {
 
       <section class="mc-banner" aria-label="Focus theme">
         <div class="mc-bt">
-          <svg width="64" height="70" viewBox="0 0 104 112" role="img" aria-label="Bed Potato mascot" style="flex:none;cursor:pointer" onclick="switchAppView('sanctuary')" title="Tap to view Today">
-            <ellipse cx="50" cy="48" rx="34" ry="30" fill="#E0AE70"/>
-            <path d="M36 46 q6 6 12 0 M56 46 q6 6 12 0" stroke="#5a3b17" stroke-width="3" fill="none" stroke-linecap="round"/>
-            <circle cx="34" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
-            <circle cx="66" cy="58" r="5" fill="#F0A0A0" opacity=".7"/>
-            <rect x="14" y="68" width="72" height="34" rx="10" fill="#6C2E7B"/>
+          <!-- Sassy Cartoon Avatar -->
+          <svg width="68" height="74" viewBox="0 0 104 112" role="img" aria-label="Sassy cartoon avatar" style="flex:none;cursor:pointer;transition:transform 0.18s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" onclick="switchAppView('sanctuary')" title="Tap to view Today" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="avatarHairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#2D2235"/>
+                <stop offset="50%" stop-color="#1A1320"/>
+                <stop offset="100%" stop-color="#120D17"/>
+              </linearGradient>
+              <linearGradient id="avatarSkinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ECC095"/>
+                <stop offset="100%" stop-color="#D99E6C"/>
+              </linearGradient>
+              <linearGradient id="avatarSweaterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7C3AED"/>
+                <stop offset="100%" stop-color="#5B21B6"/>
+              </linearGradient>
+              <linearGradient id="avatarLipGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#E75480"/>
+                <stop offset="100%" stop-color="#BE185D"/>
+              </linearGradient>
+              <filter id="avatarGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7C3AED" flood-opacity="0.18"/>
+              </filter>
+            </defs>
+
+            <!-- Ambient Glow -->
+            <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+
+            <!-- Back Hair (Flowing waves) -->
+            <path d="M 24 44 C 20 62 21 82 28 98 C 30 102 34 102 36 96 C 33 80 32 62 35 48 Z" fill="url(#avatarHairGrad)"/>
+            <path d="M 80 44 C 84 62 83 82 76 98 C 74 102 70 102 68 96 C 71 80 72 62 69 48 Z" fill="url(#avatarHairGrad)"/>
+            <ellipse cx="52" cy="40" rx="34" ry="32" fill="url(#avatarHairGrad)"/>
+
+            <!-- Chic Violet Turtleneck Sweater -->
+            <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#avatarSweaterGrad)" filter="url(#avatarGlow)"/>
+            <!-- Ribbed Neckline -->
+            <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+            <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+            <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+            <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+            <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+
+            <!-- Neck -->
+            <path d="M 44 68 L 44 76 C 44 79 60 79 60 76 L 60 68 Z" fill="#D39665"/>
+
+            <!-- Head Base -->
+            <ellipse cx="52" cy="49" rx="23" ry="24" fill="url(#avatarSkinGrad)"/>
+
+            <!-- Ears & Gold Hoops -->
+            <circle cx="29" cy="50" r="5" fill="#DC9F6D"/>
+            <circle cx="28" cy="55" r="4.5" fill="none" stroke="#F59E0B" stroke-width="1.8"/>
+            <circle cx="75" cy="50" r="5" fill="#DC9F6D"/>
+            <circle cx="76" cy="55" r="4.5" fill="none" stroke="#F59E0B" stroke-width="1.8"/>
+
+            <!-- Soft Rosy Cheeks -->
+            <ellipse cx="38" cy="55" rx="5" ry="3" fill="#F472B6" opacity="0.55"/>
+            <ellipse cx="66" cy="55" rx="5" ry="3" fill="#F472B6" opacity="0.55"/>
+
+            <!-- Sassy Eyebrows -->
+            <path d="M 36 39 Q 42 34 47 37" fill="none" stroke="#1A1320" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M 57 35 Q 63 30 69 35" fill="none" stroke="#1A1320" stroke-width="2.6" stroke-linecap="round"/>
+
+            <!-- Sassy Winged Eyeliner & Playful Wink -->
+            <!-- Left Eye (Confident winged gaze) -->
+            <path d="M 37 45 Q 42 41 47 45" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M 47 45 L 49 43.5" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="43" cy="46" r="3.2" fill="#261710"/>
+            <circle cx="44.2" cy="45" r="1.1" fill="#FFFFFF"/>
+            <path d="M 38 48 Q 42 50 46 48" fill="none" stroke="#120D17" stroke-width="0.8" opacity="0.4"/>
+
+            <!-- Right Eye (Playful Sassy Wink) -->
+            <path d="M 57 46 Q 62 41 68 45" fill="none" stroke="#120D17" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M 68 45 L 71 43" stroke="#120D17" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M 67 47 L 70 47" stroke="#120D17" stroke-width="1.8" stroke-linecap="round"/>
+
+            <!-- Cute Refined Nose -->
+            <path d="M 51 49 Q 53 54 50 54" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
+
+            <!-- Sassy Smirk (Coral Rose Lips #E75480) -->
+            <path d="M 46 61 Q 53 64 60 59" fill="none" stroke="url(#avatarLipGrad)" stroke-width="2.8" stroke-linecap="round"/>
+            <path d="M 59 60 Q 61 58 62 55" fill="none" stroke="url(#avatarLipGrad)" stroke-width="2.2" stroke-linecap="round"/>
+            <ellipse cx="53" cy="63.5" rx="3.5" ry="1.2" fill="#FDA4AF" opacity="0.8"/>
+
+            <!-- Voluminous Side-Swept Dark Hair -->
+            <path d="M 26 38 C 28 22 45 14 62 17 C 76 19 82 28 80 40 C 76 34 71 31 63 31 C 47 31 36 39 33 48 C 30 42 27 40 26 38 Z" fill="url(#avatarHairGrad)"/>
+            <path d="M 32 46 C 30 54 30 64 33 70 C 34 72 35 70 34 66 C 32 60 32 52 34 46 Z" fill="#241B2B"/>
+            <path d="M 72 44 C 74 52 74 62 72 68 C 71 70 70 69 71 65 C 72 58 72 50 71 44 Z" fill="#241B2B"/>
+            <!-- Glossy Highlight -->
+            <path d="M 44 20 Q 56 17 68 22" fill="none" stroke="#5E486D" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/>
+
+            <!-- Sassy Perched Sunglasses on Head -->
+            <g transform="translate(32, 14)">
+              <rect x="0" y="2" width="18" height="12" rx="4" fill="#0F172A" stroke="#475569" stroke-width="1.2"/>
+              <line x1="3" y1="4" x2="8" y2="12" stroke="#A78BFA" stroke-width="1.2" opacity="0.8" stroke-linecap="round"/>
+              <path d="M 17 6 Q 20 4 23 6" fill="none" stroke="#475569" stroke-width="1.8"/>
+              <rect x="22" y="2" width="18" height="12" rx="4" fill="#0F172A" stroke="#475569" stroke-width="1.2"/>
+              <line x1="25" y1="4" x2="30" y2="12" stroke="#A78BFA" stroke-width="1.2" opacity="0.8" stroke-linecap="round"/>
+            </g>
+
+            <!-- Sparkle of Confidence -->
+            <path d="M 85 24 Q 86 19 91 18 Q 86 17 85 12 Q 84 17 79 18 Q 84 19 85 24 Z" fill="#8B5CF6"/>
+            <circle cx="89" cy="27" r="1.2" fill="#0D98BA"/>
           </svg>
           <div class="mc-txt">
             <p class="mc-quote" id="cover-season-focus-text" onclick="promptEditSeasonFocus()" style="cursor:pointer" title="Tap to edit season focus">“${escapeHtml(seasonTheme)}”</p>
