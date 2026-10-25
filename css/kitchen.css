@@ -1091,6 +1091,39 @@ body.dark .k-week-toggle-btn.active {
   color: #60A5FA;
 }
 
+/* Rollover Action Button */
+.k-week-rollover-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  background: rgba(139, 92, 246, 0.08);
+  color: var(--pal-purple, #8B5CF6);
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.k-week-rollover-btn:hover {
+  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.45);
+  transform: translateY(-0.5px);
+}
+.k-week-rollover-btn:active {
+  transform: translateY(0);
+}
+body.dark .k-week-rollover-btn {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.32);
+  color: #C084FC;
+}
+body.dark .k-week-rollover-btn:hover {
+  background: rgba(167, 139, 250, 0.22);
+}
+
 /* Filter bar for meal types */
 .k-meal-filter-bar {
   display: flex;

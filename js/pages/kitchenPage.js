@@ -203,34 +203,34 @@ function kRenderAssignSelectOptions() {
       <option value="0:5:dessert">Fri Dessert</option>
       <option value="0:6:dessert">Sat Dessert</option>
     </optgroup>
-    <optgroup label="⏩ Following Week · Dinners">
-      <option value="1:0:dinner">Following Sun Dinner</option>
-      <option value="1:1:dinner">Following Mon Dinner</option>
-      <option value="1:2:dinner">Following Tue Dinner</option>
-      <option value="1:3:dinner">Following Wed Dinner</option>
-      <option value="1:4:dinner">Following Thu Dinner</option>
-      <option value="1:5:dinner">Following Fri Dinner (Takeout)</option>
-      <option value="1:6:dinner">Following Sat Dinner</option>
+    <optgroup label="⏩ Upcoming Week · Dinners">
+      <option value="1:0:dinner">Upcoming Sun Dinner</option>
+      <option value="1:1:dinner">Upcoming Mon Dinner</option>
+      <option value="1:2:dinner">Upcoming Tue Dinner</option>
+      <option value="1:3:dinner">Upcoming Wed Dinner</option>
+      <option value="1:4:dinner">Upcoming Thu Dinner</option>
+      <option value="1:5:dinner">Upcoming Fri Dinner (Takeout)</option>
+      <option value="1:6:dinner">Upcoming Sat Dinner</option>
     </optgroup>
-    <optgroup label="🥗 Following Week · Lunches">
-      <option value="1:0:lunch">Following Sun Lunch</option>
-      <option value="1:1:lunch">Following Mon Lunch</option>
-      <option value="1:2:lunch">Following Tue Lunch</option>
-      <option value="1:3:lunch">Following Wed Lunch</option>
-      <option value="1:4:lunch">Following Thu Lunch</option>
-      <option value="1:5:lunch">Following Fri Lunch</option>
-      <option value="1:6:lunch">Following Sat Lunch</option>
+    <optgroup label="🥗 Upcoming Week · Lunches">
+      <option value="1:0:lunch">Upcoming Sun Lunch</option>
+      <option value="1:1:lunch">Upcoming Mon Lunch</option>
+      <option value="1:2:lunch">Upcoming Tue Lunch</option>
+      <option value="1:3:lunch">Upcoming Wed Lunch</option>
+      <option value="1:4:lunch">Upcoming Thu Lunch</option>
+      <option value="1:5:lunch">Upcoming Fri Lunch</option>
+      <option value="1:6:lunch">Upcoming Sat Lunch</option>
     </optgroup>
-    <optgroup label="☕ Following Week · Brunch &amp; Desserts">
-      <option value="1:0:brunch">Following Sun Brunch</option>
-      <option value="1:6:brunch">Following Sat Brunch</option>
-      <option value="1:0:dessert">Following Sun Dessert</option>
-      <option value="1:1:dessert">Following Mon Dessert</option>
-      <option value="1:2:dessert">Following Tue Dessert</option>
-      <option value="1:3:dessert">Following Wed Dessert</option>
-      <option value="1:4:dessert">Following Thu Dessert</option>
-      <option value="1:5:dessert">Following Fri Dessert</option>
-      <option value="1:6:dessert">Following Sat Dessert</option>
+    <optgroup label="☕ Upcoming Week · Brunch &amp; Desserts">
+      <option value="1:0:brunch">Upcoming Sun Brunch</option>
+      <option value="1:6:brunch">Upcoming Sat Brunch</option>
+      <option value="1:0:dessert">Upcoming Sun Dessert</option>
+      <option value="1:1:dessert">Upcoming Mon Dessert</option>
+      <option value="1:2:dessert">Upcoming Tue Dessert</option>
+      <option value="1:3:dessert">Upcoming Wed Dessert</option>
+      <option value="1:4:dessert">Upcoming Thu Dessert</option>
+      <option value="1:5:dessert">Upcoming Fri Dessert</option>
+      <option value="1:6:dessert">Upcoming Sat Dessert</option>
     </optgroup>
   `;
 }
@@ -240,6 +240,7 @@ function renderKitchenPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
 
+  storage.checkAndRolloverKitchenWeek();
   const data = storage.getKitchenData();
   const stashItems = data.stashItems || [];
   const favoriteRecipes = data.favoriteRecipes || [];
@@ -370,10 +371,13 @@ function renderKitchenPage() {
               <button type="button" class="k-week-toggle-btn ${weekOffset === 0 ? 'active' : ''}" onclick="kSetWeekOffset(0)" title="Current Week (${thisWeekLabel})">
                 This Week
               </button>
-              <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="Following Week (${nextWeekLabel})">
-                Following Week
+              <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="Upcoming Week (${nextWeekLabel})">
+                Upcoming Week
               </button>
             </div>
+            <button type="button" class="k-week-rollover-btn" onclick="kManualWeekRollover()" title="Promote Upcoming Week to This Week and start fresh upcoming plan">
+              ↻ Roll Over Week
+            </button>
             <span class="k-header-week-tag">${escapeHtml(weekRangeLabel)}</span>
           </div>
           <span style="font-size:12px; color:var(--text-muted);">Shop your stash first, meals on autopilot.</span>
@@ -443,9 +447,12 @@ function renderKitchenPage() {
                 This Week
               </button>
               <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="${nextWeekLabel}">
-                Following Week
+                Upcoming Week
               </button>
             </div>
+            <button type="button" class="k-week-rollover-btn" onclick="kManualWeekRollover()" style="margin-left:4px;" title="Promote Upcoming Week to This Week and start fresh upcoming plan">
+              ↻ Roll Over Week
+            </button>
           </div>
           <span class="k-sec-hint">Tap any slot or + to plan Brunch, Lunch, Dinner &amp; Dessert</span>
         </div>
@@ -1044,7 +1051,7 @@ function kSetModalMealType(newType, reFocus = true) {
 
   const titleEl = document.getElementById('k-fast-modal-title');
   if (titleEl) {
-    const weekNote = weekOffset === 1 ? ' (Following Week)' : '';
+    const weekNote = weekOffset === 1 ? ' (Upcoming Week)' : '';
     const actionLabel = slot ? 'Edit' : 'Add';
     titleEl.textContent = `${actionLabel} ${label} · ${d.day}${d.date ? ` (${d.date})` : ''}${weekNote}`;
   }
@@ -1495,7 +1502,7 @@ function kAssignFavToMeal(favId, targetStr) {
   storage.saveKitchenData(data);
   renderKitchenPage();
   const label = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Meal';
-  const weekLabel = weekOffset === 1 ? ' (Following Week)' : '';
+  const weekLabel = weekOffset === 1 ? ' (Upcoming Week)' : '';
   if (typeof showToast === 'function') showToast(`Assigned "${fav.title}" to ${d.day} ${label}${weekLabel}! ✨`);
 }
 window.kAssignFavToMeal = kAssignFavToMeal;
@@ -1728,7 +1735,7 @@ function kAssignNewRecipeToMeal(id, targetStr) {
   storage.saveKitchenData(data);
   renderKitchenPage();
   const label = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' }[mealType] || 'Meal';
-  const weekLabel = weekOffset === 1 ? ' (Following Week)' : '';
+  const weekLabel = weekOffset === 1 ? ' (Upcoming Week)' : '';
   if (typeof showToast === 'function') showToast(`Assigned "${item.title}" to ${d.day} ${label}${weekLabel}! ✨`);
 }
 window.kAssignNewRecipeToMeal = kAssignNewRecipeToMeal;
@@ -1964,7 +1971,7 @@ function kOpenThings3() {
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
   const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
-  const weekTitle = weekOffset === 1 ? 'Following Week' : 'This Week';
+  const weekTitle = weekOffset === 1 ? 'Upcoming Week' : 'This Week';
 
   const groceries = (data.groceries || []).filter(g => !g.checked);
   const rawItems = groceries.map(g => g.text).filter(Boolean);
@@ -2009,7 +2016,7 @@ function kExportVerifiedThings3() {
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
   const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
-  const weekTitle = weekOffset === 1 ? 'Following Week' : 'This Week';
+  const weekTitle = weekOffset === 1 ? 'Upcoming Week' : 'This Week';
 
   const groceries = (data.groceries || []).filter(g => !g.checked);
   const items = groceries.map(g => `[ ] ${g.text}`).filter(Boolean);
@@ -2042,3 +2049,18 @@ function kExportVerifiedThings3() {
   });
 }
 window.kExportVerifiedThings3 = kExportVerifiedThings3;
+
+// Manual rollover action for on-demand week promotion
+function kManualWeekRollover() {
+  const confirmed = confirm("Roll over Upcoming Week to This Week?\n\n• Upcoming meals will become This Week's plan\n• Upcoming Week will reset to a clean template for future planning\n\nContinue?");
+  if (!confirmed) return;
+  storage.rolloverKitchenWeekNow();
+  renderKitchenPage();
+  if (typeof showToast === 'function') {
+    showToast("Rolled over to This Week! Fresh plan ready 🍳");
+  }
+  if (typeof confetti === 'function') {
+    confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA'] });
+  }
+}
+window.kManualWeekRollover = kManualWeekRollover;

@@ -4288,9 +4288,19 @@ class StorageManager {
     return list;
   }
 
-  getDefaultKitchenData() {
+  getCurrentSundayIso() {
+    const now = new Date();
+    const day = now.getDay(); // 0 = Sun
+    const sun = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
+    const yr = sun.getFullYear();
+    const mo = String(sun.getMonth() + 1).padStart(2, '0');
+    const da = String(sun.getDate()).padStart(2, '0');
+    return `${yr}-${mo}-${da}`;
+  }
+
+  makeEmptyKitchenWeek() {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const makeWeek = () => dayNames.map(dayName => ({
+    return dayNames.map(dayName => ({
       day: dayName,
       date: '',
       meal: '',
@@ -4298,15 +4308,116 @@ class StorageManager {
       icon: (dayName === 'Fri') ? 'takeout' : (dayName === 'Sat' ? 'bistro' : 'chicken'),
       recipeUrl: '',
       favoriteId: null,
-      meals: { brunch: null, lunch: null, dinner: null, dessert: null }
+      meals: { brunch: [], lunch: [], dinner: [], dessert: [] }
     }));
+  }
 
+  checkAndRolloverKitchenWeek() {
+    if (!this.data.kitchenData || typeof this.data.kitchenData !== 'object') {
+      this.data.kitchenData = this.getDefaultKitchenData();
+    }
+    const kd = this.data.kitchenData;
+    const curSunIso = this.getCurrentSundayIso();
+
+    const hasMeals = (schedule) => {
+      if (!Array.isArray(schedule)) return false;
+      return schedule.some(d => {
+        if (d.meal && d.meal.trim() !== '') return true;
+        if (d.meals && typeof d.meals === 'object') {
+          return ['brunch', 'lunch', 'dinner', 'dessert'].some(t => {
+            const slots = d.meals[t];
+            if (Array.isArray(slots)) return slots.some(s => s && s.meal && s.meal.trim() !== '');
+            return Boolean(slots && slots.meal && slots.meal.trim() !== '');
+          });
+        }
+        return false;
+      });
+    };
+
+    let changed = false;
+
+    if (!kd.currentWeekSundayIso) {
+      // First run with automatic rollover tracking
+      if (hasMeals(kd.followingWeekSchedule)) {
+        // Meals were planned in upcoming week; promote them to this week
+        kd.previousWeekSchedule = JSON.parse(JSON.stringify(kd.weekSchedule || []));
+        kd.weekSchedule = JSON.parse(JSON.stringify(kd.followingWeekSchedule));
+        kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
+        kd.activeWeekOffset = 0;
+        changed = true;
+      }
+      kd.currentWeekSundayIso = curSunIso;
+      changed = true;
+    } else if (kd.currentWeekSundayIso !== curSunIso) {
+      const prevSun = new Date(kd.currentWeekSundayIso + 'T00:00:00');
+      const curSun = new Date(curSunIso + 'T00:00:00');
+      const diffMs = curSun.getTime() - prevSun.getTime();
+      const diffWeeks = Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
+
+      if (diffWeeks === 1) {
+        kd.previousWeekSchedule = JSON.parse(JSON.stringify(kd.weekSchedule || []));
+        kd.weekSchedule = JSON.parse(JSON.stringify(kd.followingWeekSchedule || this.makeEmptyKitchenWeek()));
+        kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
+        kd.activeWeekOffset = 0;
+        kd.currentWeekSundayIso = curSunIso;
+        changed = true;
+      } else if (diffWeeks > 1) {
+        kd.previousWeekSchedule = JSON.parse(JSON.stringify(kd.weekSchedule || []));
+        kd.weekSchedule = this.makeEmptyKitchenWeek();
+        kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
+        kd.activeWeekOffset = 0;
+        kd.currentWeekSundayIso = curSunIso;
+        changed = true;
+      } else {
+        kd.currentWeekSundayIso = curSunIso;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      this.data.kitchenUpdatedAt = Date.now();
+      this.saveData();
+    }
+    return changed;
+  }
+
+  rolloverKitchenWeekNow() {
+    if (!this.data.kitchenData || typeof this.data.kitchenData !== 'object') {
+      this.data.kitchenData = this.getDefaultKitchenData();
+    }
+    const kd = this.data.kitchenData;
+    const now = new Date();
+    const day = now.getDay();
+    // If manual rollover is done on Friday or Saturday, it targets the upcoming Sunday week
+    let targetSun;
+    if (day === 5 || day === 6) {
+      targetSun = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (7 - day));
+    } else {
+      targetSun = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day);
+    }
+    const yr = targetSun.getFullYear();
+    const mo = String(targetSun.getMonth() + 1).padStart(2, '0');
+    const da = String(targetSun.getDate()).padStart(2, '0');
+    const targetSunIso = `${yr}-${mo}-${da}`;
+
+    kd.previousWeekSchedule = JSON.parse(JSON.stringify(kd.weekSchedule || []));
+    kd.weekSchedule = JSON.parse(JSON.stringify(kd.followingWeekSchedule || this.makeEmptyKitchenWeek()));
+    kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
+    kd.currentWeekSundayIso = targetSunIso;
+    kd.activeWeekOffset = 0;
+    this.data.kitchenUpdatedAt = Date.now();
+    this.saveData();
+    return kd;
+  }
+
+  getDefaultKitchenData() {
     return {
+      currentWeekSundayIso: this.getCurrentSundayIso(),
       stashItems: [],
       eatOutTarget: 1,
       selectedHopperIngredients: [],
-      weekSchedule: makeWeek(),
-      followingWeekSchedule: makeWeek(),
+      weekSchedule: this.makeEmptyKitchenWeek(),
+      followingWeekSchedule: this.makeEmptyKitchenWeek(),
       activeWeekOffset: 0,
       activeMealFilter: 'all',
       vaultFilter: 'all',
@@ -4321,6 +4432,9 @@ class StorageManager {
       this.data.kitchenData = this.getDefaultKitchenData();
       this.saveData();
     } else {
+      // Auto rollover check whenever kitchen data is retrieved
+      this.checkAndRolloverKitchenWeek();
+
       const kd = this.data.kitchenData;
       // Ensure multi-meal schedule & following week support
       kd.weekSchedule = this.normalizeKitchenWeekDays(kd.weekSchedule);
@@ -4488,6 +4602,7 @@ class StorageManager {
 
   saveKitchenData(kitchenData) {
     this.data.kitchenData = kitchenData;
+    this.data.kitchenUpdatedAt = Date.now();
     this.saveData();
   }
 

@@ -910,10 +910,43 @@ class SyncManager {
       localStorage.setItem('BOL_FINANCE_WEEKLY_CHECKLISTS', JSON.stringify(mergedWeeklyChecklists));
     } catch (e) {}
 
+    // 11g. Kitchen Data: 2-way merge by kitchenUpdatedAt
+    const locKitchen = storage.data.kitchenData || {};
+    const incKitchen = incoming.kitchenData || {};
+    const locKitchenTime = Number(storage.data.kitchenUpdatedAt) || 0;
+    const incKitchenTime = Number(incoming.kitchenUpdatedAt) || 0;
+
+    let mergedKitchen = storage.data.kitchenData;
+    let mergedKitchenUpdatedAt = Math.max(locKitchenTime, incKitchenTime);
+
+    if (incKitchen && typeof incKitchen === 'object' && Object.keys(incKitchen).length > 0) {
+      if (incKitchenTime > locKitchenTime || !storage.data.kitchenData) {
+        mergedKitchen = incKitchen;
+      } else if (locKitchenTime > incKitchenTime) {
+        mergedKitchen = locKitchen;
+        localWasRicher = true;
+      } else {
+        // Equal timestamps: merge collections and schedule
+        mergedKitchen = {
+          ...locKitchen,
+          ...incKitchen,
+          stashItems: (Array.isArray(incKitchen.stashItems) && incKitchen.stashItems.length > 0) ? incKitchen.stashItems : (locKitchen.stashItems || []),
+          favoriteRecipes: (Array.isArray(incKitchen.favoriteRecipes) && incKitchen.favoriteRecipes.length > 0) ? incKitchen.favoriteRecipes : (locKitchen.favoriteRecipes || []),
+          newRecipes: (Array.isArray(incKitchen.newRecipes) && incKitchen.newRecipes.length > 0) ? incKitchen.newRecipes : (locKitchen.newRecipes || []),
+          groceries: (Array.isArray(incKitchen.groceries) && incKitchen.groceries.length > 0) ? incKitchen.groceries : (locKitchen.groceries || []),
+          weekSchedule: incKitchen.weekSchedule || locKitchen.weekSchedule,
+          followingWeekSchedule: incKitchen.followingWeekSchedule || locKitchen.followingWeekSchedule,
+          currentWeekSundayIso: incKitchen.currentWeekSundayIso || locKitchen.currentWeekSundayIso
+        };
+      }
+    }
+
     // Apply consolidated data
     storage.data = {
       ...storage.data,
       ...incoming,
+      kitchenData: mergedKitchen,
+      kitchenUpdatedAt: mergedKitchenUpdatedAt,
       finance: mergedFinance,
       coverTopMind: mergedTopMind,
       coverTopicAudits: mergedTopicAudits,
