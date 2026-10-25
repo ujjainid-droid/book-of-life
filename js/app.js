@@ -359,8 +359,9 @@ function switchAppView(viewName, subViewName) {
 
   // Clean up view-specific container classes
   const sheetContainer = document.getElementById('daily-sheet-container');
-  if (sheetContainer && currentView !== 'finance') {
-    sheetContainer.classList.remove('has-mm-shell');
+  if (sheetContainer) {
+    if (currentView !== 'finance') sheetContainer.classList.remove('has-mm-shell');
+    sheetContainer.classList.toggle('has-kitchen-view', currentView === 'kitchen');
   }
 
   // Render view directly into the daily sheet container

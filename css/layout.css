@@ -769,6 +769,13 @@ button:focus-visible, textarea:focus-visible {
   box-sizing: border-box;
 }
 
+.daily-sheet-container:has(.kitchen-workflow-wrap),
+.daily-sheet-container.has-kitchen-view {
+  padding: 0 0 calc(96px + env(safe-area-inset-bottom)) !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
 @media (min-width: 900px) {
   .daily-sheet-container {
     padding: 16px 24px 40px;
