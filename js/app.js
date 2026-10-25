@@ -34,6 +34,10 @@ function applyAppModeUI() {
       if (!navCapsule.classList.contains('family-mode-nav')) {
         navCapsule.classList.add('family-mode-nav');
         navCapsule.innerHTML = `
+          <a href="#kitchen" id="nav-btn-kitchen" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('kitchen')" title="Kitchen: Stash, Saturday Meal Ritual & Grocery">
+            <i data-lucide="utensils" style="width:14px;height:14px;"></i>
+            <span>Kitchen</span>
+          </a>
           <a href="#zhub" id="nav-btn-zhub" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior & Insights">
             <i data-lucide="shield" style="width:14px;height:14px;"></i>
             <span>Z Hub</span>
@@ -90,8 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const isFamilyMode = (getAppMode() === 'family');
     const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
 
-    // Guard: Family Mode strictly permits only Z Hub and Money
+    // Guard: Family Mode strictly permits Kitchen, Z Hub and Money
     if (isFamilyMode) {
+      if (rawHash.startsWith('kitchen') || rawHash.startsWith('meals')) {
+        return { view: 'kitchen', subView: null };
+      }
       if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money') || rawHash.startsWith('budget')) {
         const parts = rawHash.split(/[\/\-_?]/);
         let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')));
@@ -102,10 +109,20 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (sub === 'plan') sub = 'budget';
         return { view: 'finance', subView: sub };
       }
-      // Any other route (including empty, #today, #compass, #hobby) routes strictly to Z Hub
-      const parts = rawHash.split(/[\/\-_?]/);
-      const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
-      return { view: 'zlog', subView: sub };
+      if (rawHash.startsWith('zhub') || rawHash.startsWith('zlog')) {
+        const parts = rawHash.split(/[\/\-_?]/);
+        const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
+        return { view: 'zlog', subView: sub };
+      }
+      // Any other route (including empty, #today, #compass, #hobby) defaults to kitchen or last saved
+      const saved = localStorage.getItem('BOL_ACTIVE_VIEW') || 'kitchen';
+      if (saved === 'finance' || saved === 'claims') {
+        return { view: 'finance', subView: localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn' };
+      }
+      if (saved === 'zlog' || saved === 'zhub') {
+        return { view: 'zlog', subView: localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline' };
+      }
+      return { view: 'kitchen', subView: null };
     }
 
     if (!rawHash) {
@@ -225,12 +242,12 @@ function switchAppView(viewName, subViewName) {
     if (!subViewName) subViewName = parts[1];
   }
 
-  // Route Guard: Family Mode strictly permits only Z Hub and Finance
+  // Route Guard: Family Mode strictly permits Kitchen, Z Hub and Finance
   const isFamilyMode = (getAppMode() === 'family');
   if (isFamilyMode) {
-    if (viewName !== 'zlog' && viewName !== 'finance' && viewName !== 'claims' && viewName !== 'budget') {
-      viewName = 'zlog';
-      if (!subViewName) subViewName = localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline';
+    if (viewName !== 'kitchen' && viewName !== 'zlog' && viewName !== 'zhub' && viewName !== 'finance' && viewName !== 'claims' && viewName !== 'budget') {
+      viewName = 'kitchen';
+      subViewName = null;
     }
   }
 
@@ -680,12 +697,12 @@ function openSettingsModal() {
           <div class="settings-card-header">
             <div style="display:flex;align-items:center;gap:8px;">
               <i data-lucide="shield-check" style="color:var(--accent, #5CE1F0);width:18px;height:18px;"></i>
-              <h3>Family Co-Parenting &amp; Finances</h3>
+              <h3>Family Portal (Kitchen, Z Hub &amp; Money)</h3>
             </div>
             <span class="badge" style="background:rgba(92, 225, 240, 0.2);color:var(--accent, #5CE1F0);font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:12px;">Full Edit Active</span>
           </div>
           <p class="settings-desc">
-            You are viewing the shared family portal for Z Hub care management and household finances. All edits sync live with the household.
+            You are viewing the shared family portal for Kitchen meal planning, Z Hub care management, and household finances. All edits sync live with the household.
           </p>
         </div>
 
@@ -780,12 +797,12 @@ function openSettingsModal() {
         <div class="settings-card-header">
           <div style="display:flex;align-items:center;gap:8px;">
             <i data-lucide="users" style="color:var(--accent, #5CE1F0);width:18px;height:18px;"></i>
-            <h3>Share with Husband (Z Hub &amp; Money)</h3>
+            <h3>Share with Husband (Kitchen, Z Hub &amp; Money)</h3>
           </div>
           <span class="badge" style="background:rgba(92, 225, 240, 0.15);color:var(--accent, #5CE1F0);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:12px;">Full Edit Access</span>
         </div>
         <p class="settings-desc">
-          Share a dedicated link with your husband that provides full access to edit and view <strong>Z Hub</strong> (care, meds, school notes, doctor briefs) and <strong>Money</strong> (burn, budget, medical claims). Your personal sanctuary, habits, weight tracker, and journals remain completely hidden on his device.
+          Share a dedicated link with your husband that provides full access to edit and view <strong>Kitchen</strong> (meal schedules, stash, grocery list), <strong>Z Hub</strong> (care, meds, school notes, doctor briefs) and <strong>Money</strong> (burn, budget, medical claims). Your personal sanctuary, daily habits, weight tracker, and journals remain completely hidden on his device.
         </p>
         <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;">
           <button class="btn btn-primary btn-sm" onclick="copyFamilyShareLink()">
@@ -794,7 +811,7 @@ function openSettingsModal() {
           <button class="btn btn-secondary btn-sm" onclick="openFamilyPairingModal()">
             <i data-lucide="qr-code" style="width:14px;height:14px;"></i> Show QR Code
           </button>
-          <a href="${typeof syncManager !== 'undefined' ? syncManager.getFamilyPairingUrl() : '?mode=family#zhub'}" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:4px;">
+          <a href="${typeof syncManager !== 'undefined' ? syncManager.getFamilyPairingUrl() : '?mode=family#kitchen'}" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:4px;">
             <i data-lucide="external-link" style="width:14px;height:14px;"></i> Preview Family View
           </a>
         </div>
@@ -1209,7 +1226,7 @@ function openPairingModal() {
 function openFamilyPairingModal() {
   const familyUrl = (typeof syncManager !== 'undefined' && typeof syncManager.getFamilyPairingUrl === 'function')
     ? syncManager.getFamilyPairingUrl()
-    : `${window.location.origin}${window.location.pathname}?mode=family#zhub`;
+    : `${window.location.origin}${window.location.pathname}?mode=family#kitchen`;
 
   const modal = document.getElementById('modal-family-share');
   const body = document.getElementById('family-share-modal-body');
@@ -1222,7 +1239,7 @@ function openFamilyPairingModal() {
       <img src="${qrSrc}" alt="Family Share QR Code" width="200" height="200" style="display: block;">
     </div>
     <div style="font-size: 0.84rem; color: var(--text-secondary); max-width: 360px; line-height: 1.45; text-align: center;">
-      <strong>Point phone camera at this QR code</strong> to open the Family Hub on your husband's phone. He will have full edit access to <strong>Z Hub</strong> and <strong>Money</strong>. Your personal sanctuary, habits, weight, and journal remain completely hidden.
+      <strong>Point phone camera at this QR code</strong> to open the Family Hub on your husband's phone. He will have full edit access to <strong>Kitchen</strong>, <strong>Z Hub</strong>, and <strong>Money</strong>. Your personal sanctuary, daily habits, weight, and journal remain completely hidden.
     </div>
     <div style="display: flex; gap: 10px; justify-content: center; width: 100%; flex-wrap: wrap;">
       <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText('${familyUrl.replace(/'/g, "\\'")}'); showToast('📋 Family link copied!')">
@@ -1245,7 +1262,7 @@ window.openFamilyPairingModal = openFamilyPairingModal;
 function copyFamilyShareLink() {
   const familyUrl = (typeof syncManager !== 'undefined' && typeof syncManager.getFamilyPairingUrl === 'function')
     ? syncManager.getFamilyPairingUrl()
-    : `${window.location.origin}${window.location.pathname}?mode=family#zhub`;
+    : `${window.location.origin}${window.location.pathname}?mode=family#kitchen`;
 
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(familyUrl).then(() => {

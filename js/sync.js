@@ -1176,9 +1176,9 @@ class SyncManager {
   getFamilyPairingUrl() {
     const base = this.getMobileBaseUrl();
     if (this.isConfigured()) {
-      return `${base}?mode=family&sync_url=${encodeURIComponent(this.dbUrl)}&sync_key=${encodeURIComponent(this.passphrase)}#zhub`;
+      return `${base}?mode=family&sync_url=${encodeURIComponent(this.dbUrl)}&sync_key=${encodeURIComponent(this.passphrase)}#kitchen`;
     }
-    return `${base}?mode=family#zhub`;
+    return `${base}?mode=family#kitchen`;
   }
 
   updateStatusBadge() {
