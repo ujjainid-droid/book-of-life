@@ -76,12 +76,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V15';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V16';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
           this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
-          this.data.claimsSeedVersion = 15;
+          this.data.claimsSeedVersion = 16;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -2629,8 +2629,11 @@ class StorageManager {
         }
         if (c.id === 'claim-neuro-2025-10-15') {
           c.claimNumber = c.claimNumber || '20253272A0969';
-          c.reissueRequested = true;
-          c.nextAction = 'Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969';
+          c.stage = 'settled';
+          c.inBank = true;
+          c.reimbursedAmount = 1457.76;
+          c.reissueRequested = false;
+          c.nextAction = 'Reconciled in bank ($1,457.76 deposited on 2026-10-23)';
         }
       }
       return true;
@@ -2676,7 +2679,7 @@ class StorageManager {
 
     // Sync seed updates for requested reissued checks and submitted Anthem claims
     const barnessSubmittedIds = new Set([
-      'claim-barness-2026-10-13', 'claim-barness-2026-09-15', 'claim-barness-2026-08-21',
+      'claim-barness-2026-09-15', 'claim-barness-2026-08-21',
       'claim-barness-2026-06-01', 'claim-barness-2026-05-04', 'claim-barness-2026-03-13',
       'claim-barness-2026-03-02'
     ]);
@@ -2697,13 +2700,37 @@ class StorageManager {
       }
       if (c.id === 'claim-neuro-2025-10-15') {
         c.claimNumber = c.claimNumber || '20253272A0969';
-        c.reissueRequested = true;
-        c.nextAction = 'Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969';
+        c.stage = 'settled';
+        c.inBank = true;
+        c.reimbursedAmount = 1457.76;
+        c.reissueRequested = false;
+        c.nextAction = 'Reconciled in bank ($1,457.76 deposited on 2026-10-23)';
       }
       if (c.id === 'claim-ms-2026-01-28') {
         c.claimNumber = c.claimNumber || '2026036ML5580';
-        c.reissueRequested = true;
-        c.nextAction = 'Anthem form submitted for missing check ($70.00) — Claim Tracking ID: 2026036ML5580';
+        c.stage = 'settled';
+        c.inBank = true;
+        c.reimbursedAmount = 70.0;
+        c.reissueRequested = false;
+        c.nextAction = 'Reconciled in bank ($70.00 deposited on 2026-10-23)';
+      }
+      if (c.id === 'claim-barness-2026-10-13') {
+        c.stage = 'settled';
+        c.inBank = true;
+        c.reimbursedAmount = 210.0;
+        c.nextAction = 'Reconciled in bank ($210.00 deposited on 2026-10-26)';
+      }
+      if (c.id === 'claim-ms-2026-10-14') {
+        c.stage = 'settled';
+        c.inBank = true;
+        c.reimbursedAmount = 157.5;
+        c.nextAction = 'Reconciled in bank ($157.50 deposited on 2026-10-22)';
+      }
+      if (['claim-ms-2026-09-14', 'claim-ms-2026-09-16', 'claim-ms-2026-09-23'].includes(c.id)) {
+        c.stage = 'settled';
+        c.inBank = true;
+        c.reimbursedAmount = 157.5;
+        c.nextAction = 'Reconciled in bank ($157.50 deposited on 2026-09-28 via batch EFT TRN*1*34234)';
       }
       if (c.id === 'claim-barness-2026-02-02') {
         c.claimNumber = c.claimNumber || '20260462A0745';
