@@ -929,8 +929,13 @@ function renderFinanceBurn() {
         const isTransfer = transferCats.includes(catName);
         const isInc = t.isIncome || incomeCats.includes(catName) || (t.tags && t.tags.includes('Income')) || amt < 0;
         if (!isInc && !isTransfer) {
-          categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
-          mSpend += amt;
+          if (t.isRefund) {
+            categorySpendMap[catName] = (categorySpendMap[catName] || 0) - amt;
+            mSpend -= amt;
+          } else {
+            categorySpendMap[catName] = (categorySpendMap[catName] || 0) + amt;
+            mSpend += amt;
+          }
         }
       });
       totalAggregatedOutflow += mSpend;
@@ -4139,7 +4144,7 @@ function renderFinanceBudget() {
   // Calculate day of month
   let currentDayOfMonth = daysInMonth; // default full month for past months
   if (selectedBudgetMonth === '2026-10') {
-    currentDayOfMonth = 17; // As of Oct 17
+    currentDayOfMonth = 26; // As of Oct 26
   } else if (selectedBudgetMonth > '2026-10') {
     currentDayOfMonth = 1;
   }
@@ -4153,7 +4158,11 @@ function renderFinanceBudget() {
   monthTxs.forEach(t => {
     const catName = t.category || '';
     if (!t.isIncome && !transferCats.includes(catName)) {
-      catActuals[catName] = (catActuals[catName] || 0) + (parseFloat(t.amount) || 0);
+      if (t.isRefund) {
+        catActuals[catName] = (catActuals[catName] || 0) - (parseFloat(t.amount) || 0);
+      } else {
+        catActuals[catName] = (catActuals[catName] || 0) + (parseFloat(t.amount) || 0);
+      }
     }
   });
 
@@ -5105,7 +5114,7 @@ function renderBudgetTxRowsHtml(txs, isIncome) {
   return txs.map(t => {
     const dateFormatted = formatBudgetTxDate(t.date);
     const amt = parseFloat(t.amount) || 0;
-    const isCredit = isIncome || t.isIncome || amt < 0;
+    const isCredit = isIncome || t.isIncome || t.isRefund || amt < 0;
     const displayAmt = Math.abs(amt).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const amtColor = isCredit ? '#0D98BA' : 'var(--text-primary, #0F172A)';
     const amtPrefix = isCredit ? '+' : '';

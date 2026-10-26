@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 14,
+  "seedVersion": 15,
   "monthlyTarget": 18200,
   "savingsTarget": 3000,
   "incomeTarget": 22000,
@@ -43,8 +43,8 @@ const DEFAULT_FINANCE_DATA = {
   "monthlySummaries": [
     {
       "month": "2026-10",
-      "income": 14515.7,
-      "outflow": 10589.9
+      "income": 20014.72,
+      "outflow": 16216.03
     },
     {
       "month": "2026-09",
@@ -638,6 +638,540 @@ const DEFAULT_FINANCE_DATA = {
   ],
   "transactions": [
     {
+      "id": "258705053181301756",
+      "date": "2026-10-26",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 210.0,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "258705053181301755",
+      "date": "2026-10-26",
+      "merchant": "Venmo",
+      "category": "Shopping",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 4.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258704352096047840",
+      "date": "2026-10-25",
+      "merchant": "Walmart",
+      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 63.48,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258653098522202466",
+      "date": "2026-10-25",
+      "merchant": "CVS",
+      "category": "Medical + Dentist",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 5.75,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258653098522202465",
+      "date": "2026-10-25",
+      "merchant": "CVS",
+      "category": "Medical + Dentist",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 3.19,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258653098522202464",
+      "date": "2026-10-25",
+      "merchant": "Target",
+      "category": "Groceries",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 60.02,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258647801940431376",
+      "date": "2026-10-25",
+      "merchant": "the YMCA",
+      "category": "Child Care",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 107.1,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258590520045490947",
+      "date": "2026-10-24",
+      "merchant": "Ulta Beauty",
+      "category": "Self care + Grooming",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 9.81,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258533892676932526",
+      "date": "2026-10-24",
+      "merchant": "the YMCA",
+      "category": "Fitness",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 128.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258562521307828226",
+      "date": "2026-10-23",
+      "merchant": "Amazon",
+      "category": "Groceries",
+      "account": "U WOH.6581 due 21st",
+      "amount": 67.6,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258523635061903476",
+      "date": "2026-10-23",
+      "merchant": "Costco",
+      "category": "Groceries",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 3.2,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258523635061903475",
+      "date": "2026-10-23",
+      "merchant": "The Funplex",
+      "category": "Entertainment & Recreation",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 31.06,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258523635061903474",
+      "date": "2026-10-23",
+      "merchant": "Target",
+      "category": "Self care + Grooming",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 10.65,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258523635061903473",
+      "date": "2026-10-23",
+      "merchant": "Spirit Halloween",
+      "category": "Shopping",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 34.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258523635061903472",
+      "date": "2026-10-23",
+      "merchant": "Canteen",
+      "category": "Eating out",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 2.7,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258523635061903471",
+      "date": "2026-10-23",
+      "merchant": "Costco",
+      "category": "Groceries",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 85.34,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258472729236754486",
+      "date": "2026-10-23",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 100.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258472729236754485",
+      "date": "2026-10-23",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 100.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258471320047080254",
+      "date": "2026-10-23",
+      "merchant": "Rincon Azteca",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 75.78,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258471320047080253",
+      "date": "2026-10-23",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258439821531829093",
+      "date": "2026-10-23",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 11.91,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258439821531829092",
+      "date": "2026-10-23",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 70.0,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "258439821531829091",
+      "date": "2026-10-23",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 1457.76,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "258439821531829090",
+      "date": "2026-10-23",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5194.5,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258361342374203461",
+      "date": "2026-10-22",
+      "merchant": "Walmart",
+      "category": "Shopping",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 58.9,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258344548948267115",
+      "date": "2026-10-22",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 157.5,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "258344548948267114",
+      "date": "2026-10-22",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 182.16,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258283555338604697",
+      "date": "2026-10-22",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258376703786111606",
+      "date": "2026-10-21",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "U WOH.6581 due 21st",
+      "amount": 182.16,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258318551345549390",
+      "date": "2026-10-21",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 8.63,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258318551345549389",
+      "date": "2026-10-21",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 0.93,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258318551345549388",
+      "date": "2026-10-21",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 0.93,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258318551345549387",
+      "date": "2026-10-21",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 8.63,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258291493821239369",
+      "date": "2026-10-21",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 750.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258283555338604698",
+      "date": "2026-10-21",
+      "merchant": "Excel Martial Arts",
+      "category": "Child Activities",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 40.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258251674928829260",
+      "date": "2026-10-21",
+      "merchant": "Public Service Enterprise Group",
+      "category": "Gas & Electric",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 43.01,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258376702950396525",
+      "date": "2026-10-20",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258201350677484023",
+      "date": "2026-10-20",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 5000.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258162927389397683",
+      "date": "2026-10-20",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 750.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258162927389397682",
+      "date": "2026-10-20",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 600.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258015221213843871",
+      "date": "2026-10-20",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 73.11,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258098357391086240",
+      "date": "2026-10-19",
+      "merchant": "Mint Mobile",
+      "category": "Phone",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 261.88,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258093555255890554",
+      "date": "2026-10-19",
+      "merchant": "MEYERDEPEW",
+      "category": "Home maintenance",
+      "account": "T CSP 5914 due 15th",
+      "amount": 39.94,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258074575729348877",
+      "date": "2026-10-19",
+      "merchant": "PennyMac",
+      "category": "Mortgage",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5933.22,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258074575729348876",
+      "date": "2026-10-19",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5000.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258074575729348875",
+      "date": "2026-10-19",
+      "merchant": "Citi",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 176.49,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258110335607132805",
+      "date": "2026-10-18",
+      "merchant": "Capital One",
+      "category": "Interest",
+      "account": "CD (...2555)",
+      "amount": 92.61,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258098357391086239",
+      "date": "2026-10-18",
+      "merchant": "The Newmark School",
+      "category": "School stuff + Education",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 153.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258074575729348878",
+      "date": "2026-10-18",
+      "merchant": "Carrie DiStefano",
+      "category": "Mocha",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 340.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258015221213843870",
+      "date": "2026-10-18",
+      "merchant": "the YMCA",
+      "category": "Child Care",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 107.1,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258006977624953850",
+      "date": "2026-10-18",
+      "merchant": "Aldi",
+      "category": "Groceries",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 47.07,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258006977298846699",
+      "date": "2026-10-18",
+      "merchant": "Apple",
+      "category": "Subscriptions",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 9.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258208057304567880",
+      "date": "2026-10-17",
+      "merchant": "Costco Credit Card",
+      "category": "Credit Card Payment",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 176.49,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
       "id": "257916196640805328",
       "date": "2026-10-16",
       "merchant": "Shake Shack",
@@ -652,7 +1186,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-16",
       "merchant": "Bombay Heritage",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 118.25,
       "isIncome": false,
       "tags": ""
@@ -862,7 +1396,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-15",
       "merchant": "Chase",
       "category": "Credit Card Payment",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 3134.29,
       "isIncome": false,
       "tags": ""
@@ -962,7 +1496,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-13",
       "merchant": "Play It Again Sports",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.89,
       "isIncome": false,
       "tags": ""
@@ -972,7 +1506,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-13",
       "merchant": "Caputos Homemade Ice Cream",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 15.75,
       "isIncome": false,
       "tags": ""
@@ -982,7 +1516,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-13",
       "merchant": "New Portugalo",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 17.06,
       "isIncome": false,
       "tags": ""
@@ -992,7 +1526,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-13",
       "merchant": "Excel Martial Arts",
       "category": "Child Activities",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 40.0,
       "isIncome": false,
       "tags": ""
@@ -1022,7 +1556,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-13",
       "merchant": "McDonald's",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 22.55,
       "isIncome": false,
       "tags": ""
@@ -1152,7 +1686,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-10",
       "merchant": "Soft N' Yummy",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 16.89,
       "isIncome": false,
       "tags": ""
@@ -1405,7 +1939,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 3.69,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "257067662747128467",
@@ -1475,7 +2010,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 157.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "257001298575512171",
@@ -1595,7 +2131,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 157.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "257001298575512173",
@@ -1935,14 +2472,15 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 13.81,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "256712655098105860",
       "date": "2026-10-03",
       "merchant": "Aldi",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 7.3,
       "isIncome": false,
       "tags": ""
@@ -1982,7 +2520,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-02",
       "merchant": "Main Street Wine Cell",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 14.97,
       "isIncome": false,
       "tags": ""
@@ -2002,7 +2540,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-10-01",
       "merchant": "Industry Squares",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 16.82,
       "isIncome": false,
       "tags": ""
@@ -2432,10 +2970,11 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-30",
       "merchant": "PM Pediatrics",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "256418529874038855",
@@ -2625,7 +3164,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 472.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "257363950156927038",
@@ -2642,7 +3182,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-27",
       "merchant": "Monster Mini Golf",
       "category": "Entertainment & Recreation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.0,
       "isIncome": false,
       "tags": ""
@@ -2652,7 +3192,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-27",
       "merchant": "Monster Mini Golf",
       "category": "Entertainment & Recreation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 31.0,
       "isIncome": false,
       "tags": ""
@@ -2712,7 +3252,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-26",
       "merchant": "Bombay Heritage",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 110.81,
       "isIncome": false,
       "tags": ""
@@ -2862,7 +3402,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-24",
       "merchant": "Shake Shack",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 45.54,
       "isIncome": false,
       "tags": ""
@@ -2872,7 +3412,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-24",
       "merchant": "Shake Shack",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 15.79,
       "isIncome": false,
       "tags": ""
@@ -3085,7 +3625,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CFF 6579 due 15th",
       "amount": 10.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "256121666967982906",
@@ -3135,7 +3676,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CFF (...2344) due 15th",
       "amount": 10.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255575992410067708",
@@ -3162,7 +3704,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-20",
       "merchant": "Woofz Petcare",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 6.93,
       "isIncome": false,
       "tags": ""
@@ -3172,7 +3714,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-20",
       "merchant": "Woofz Petcare",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 9.79,
       "isIncome": false,
       "tags": ""
@@ -3362,7 +3904,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-18",
       "merchant": "Meyer Depew",
       "category": "Home maintenance",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 39.94,
       "isIncome": false,
       "tags": ""
@@ -3452,7 +3994,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-17",
       "merchant": "PM Pediatrics",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.0,
       "isIncome": false,
       "tags": ""
@@ -3462,7 +4004,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-17",
       "merchant": "CVS",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 22.38,
       "isIncome": false,
       "tags": ""
@@ -3592,7 +4134,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-16",
       "merchant": "Aldi",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 27.86,
       "isIncome": false,
       "tags": ""
@@ -3642,7 +4184,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-15",
       "merchant": "Chase",
       "category": "Credit Card Payment",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 726.55,
       "isIncome": false,
       "tags": ""
@@ -3832,7 +4374,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-12",
       "merchant": "China Chalet",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 104.61,
       "isIncome": false,
       "tags": ""
@@ -3842,7 +4384,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-12",
       "merchant": "Turtle Back Zoo",
       "category": "Entertainment & Recreation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 26.0,
       "isIncome": false,
       "tags": ""
@@ -3852,7 +4394,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-12",
       "merchant": "McDonald's",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 15.55,
       "isIncome": false,
       "tags": ""
@@ -3862,7 +4404,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-12",
       "merchant": "The Milkshake Factor",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 24.5,
       "isIncome": false,
       "tags": ""
@@ -3902,7 +4444,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-11",
       "merchant": "Domino's",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 26.94,
       "isIncome": false,
       "tags": ""
@@ -4092,7 +4634,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-09",
       "merchant": "ShopRite",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 25.13,
       "isIncome": false,
       "tags": ""
@@ -4275,7 +4817,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 25.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "254373053342437898",
@@ -4362,7 +4905,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-06",
       "merchant": "Costco",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 33.97,
       "isIncome": false,
       "tags": ""
@@ -4372,7 +4915,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-06",
       "merchant": "Target",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 28.64,
       "isIncome": false,
       "tags": ""
@@ -4382,7 +4925,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-06",
       "merchant": "Dehart Garage",
       "category": "Transportation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 3.0,
       "isIncome": false,
       "tags": ""
@@ -4392,7 +4935,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-06",
       "merchant": "Costco",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 1492.71,
       "isIncome": false,
       "tags": ""
@@ -4415,7 +4958,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CFF (...2344) due 15th",
       "amount": 18.84,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484117813580364",
@@ -4435,7 +4979,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CFF 6579 due 15th",
       "amount": 18.84,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "254308230343709320",
@@ -4445,7 +4990,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 3.69,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "254197356848239031",
@@ -4482,7 +5028,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-05",
       "merchant": "Dunkin'",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 8.39,
       "isIncome": false,
       "tags": ""
@@ -4542,7 +5088,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-04",
       "merchant": "Veterinary Medical Center",
       "category": "Mocha",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 87.49,
       "isIncome": false,
       "tags": ""
@@ -4552,7 +5098,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-04",
       "merchant": "Smile Perfection",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 448.4,
       "isIncome": false,
       "tags": ""
@@ -4752,7 +5298,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-03",
       "merchant": "McDonald's",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 36.52,
       "isIncome": false,
       "tags": ""
@@ -4795,7 +5341,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 13.81,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "254030762687877552",
@@ -4872,7 +5419,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-09-02",
       "merchant": "Dunkin'",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 5.84,
       "isIncome": false,
       "tags": ""
@@ -4975,7 +5522,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 157.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484189674591119",
@@ -5262,10 +5810,11 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-30",
       "merchant": "Annual Hotel",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 100.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "253673220476522580",
@@ -5442,7 +5991,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-28",
       "merchant": "BJ's Restaurant",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 40.78,
       "isIncome": false,
       "tags": ""
@@ -5452,7 +6001,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-28",
       "merchant": "Ford Motor Company",
       "category": "Transportation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 24.09,
       "isIncome": false,
       "tags": ""
@@ -5512,7 +6061,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-28",
       "merchant": "Stop & Shop",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 4.49,
       "isIncome": false,
       "tags": ""
@@ -5522,7 +6071,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-28",
       "merchant": "Chase",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 251.85,
       "isIncome": false,
       "tags": ""
@@ -5592,7 +6141,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-27",
       "merchant": "Miga Sushi",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 101.25,
       "isIncome": false,
       "tags": ""
@@ -5772,7 +6321,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-23",
       "merchant": "AFC South",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.0,
       "isIncome": false,
       "tags": ""
@@ -5782,7 +6331,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-23",
       "merchant": "CVS",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 15.66,
       "isIncome": false,
       "tags": ""
@@ -5842,7 +6391,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-22",
       "merchant": "Play It Again Sports",
       "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 85.26,
       "isIncome": false,
       "tags": ""
@@ -5922,7 +6471,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-21",
       "merchant": "Staples",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 5.67,
       "isIncome": false,
       "tags": ""
@@ -5992,7 +6541,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-20",
       "merchant": "Nayax",
       "category": "Transportation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 21.14,
       "isIncome": false,
       "tags": ""
@@ -6032,7 +6581,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-20",
       "merchant": "McDonald's",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.91,
       "isIncome": false,
       "tags": ""
@@ -6042,7 +6591,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-20",
       "merchant": "Dunkin'",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 18.83,
       "isIncome": false,
       "tags": ""
@@ -6052,7 +6601,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-20",
       "merchant": "Panera Bread",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 6.48,
       "isIncome": false,
       "tags": ""
@@ -6062,7 +6611,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-20",
       "merchant": "Seed Bagel Shop",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 47.24,
       "isIncome": false,
       "tags": ""
@@ -6082,7 +6631,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-19",
       "merchant": "Seven Presidents Park",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.0,
       "isIncome": false,
       "tags": ""
@@ -6145,7 +6694,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 157.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "252537392253653336",
@@ -6162,7 +6712,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-18",
       "merchant": "Essex Golf",
       "category": "Entertainment & Recreation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.0,
       "isIncome": false,
       "tags": ""
@@ -6172,7 +6722,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-18",
       "merchant": "Meyerdpew",
       "category": "Home maintenance",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 39.9,
       "isIncome": false,
       "tags": ""
@@ -6182,7 +6732,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-18",
       "merchant": "ShopRite",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 2.81,
       "isIncome": false,
       "tags": ""
@@ -6482,7 +7032,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-15",
       "merchant": "The Home Depot",
       "category": "Home maintenance",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 182.02,
       "isIncome": false,
       "tags": ""
@@ -6552,7 +7102,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-14",
       "merchant": "Chase",
       "category": "Credit Card Payment",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 1279.49,
       "isIncome": false,
       "tags": ""
@@ -6725,7 +7275,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 3.56,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "252122709038224351",
@@ -6902,7 +7453,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-10",
       "merchant": "Livingston",
       "category": "Credit Card Payment",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.3,
       "isIncome": false,
       "tags": ""
@@ -6985,7 +7536,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 200.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251743977536508429",
@@ -7072,17 +7624,18 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-08",
       "merchant": "Known Traveler",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 120.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251653633247564218",
       "date": "2026-08-08",
       "merchant": "CVS",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 5.48,
       "isIncome": false,
       "tags": ""
@@ -7092,7 +7645,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-08",
       "merchant": "US Customs Trusted Traveler",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 120.0,
       "isIncome": false,
       "tags": ""
@@ -7102,7 +7655,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-08",
       "merchant": "Nordstrom Rack",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 119.97,
       "isIncome": false,
       "tags": ""
@@ -7112,7 +7665,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-08",
       "merchant": "AFC South",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.0,
       "isIncome": false,
       "tags": ""
@@ -7122,17 +7675,18 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-08",
       "merchant": "ON Inc",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 115.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251653633247564213",
       "date": "2026-08-08",
       "merchant": "Burlington",
       "category": "Shopping",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 49.99,
       "isIncome": false,
       "tags": ""
@@ -7175,7 +7729,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP (...8373) due 15th",
       "amount": 30.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484117813580429",
@@ -7232,7 +7787,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-08-07",
       "merchant": "Veterinary Medical Center",
       "category": "Mocha",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 98.79,
       "isIncome": false,
       "tags": ""
@@ -7275,7 +7830,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP 9369 due 15th",
       "amount": 30.0,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251469516887315269",
@@ -7635,7 +8191,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 13.81,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251197560212443658",
@@ -7655,7 +8212,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 21.31,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251186773501694027",
@@ -7725,14 +8283,15 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 0.13,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251187760564032491",
       "date": "2026-08-01",
       "merchant": "Ike's Bagel Cafe",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 19.92,
       "isIncome": false,
       "tags": ""
@@ -7785,7 +8344,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP (...8373) due 15th",
       "amount": 34.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484187761987997",
@@ -8055,7 +8615,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP 9369 due 15th",
       "amount": 34.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "251093557126386670",
@@ -8252,7 +8813,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-29",
       "merchant": "The Home Depot",
       "category": "Home maintenance",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 6.15,
       "isIncome": false,
       "tags": ""
@@ -8262,7 +8823,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-29",
       "merchant": "CityMD",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 30.0,
       "isIncome": false,
       "tags": ""
@@ -8342,7 +8903,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-27",
       "merchant": "Walgreens",
       "category": "Medical + Dentist",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.12,
       "isIncome": false,
       "tags": ""
@@ -8365,7 +8926,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP (...8373) due 15th",
       "amount": 196.18,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484189675638972",
@@ -8405,7 +8967,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP (...8373) due 15th",
       "amount": 12.76,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484187761987909",
@@ -8415,7 +8978,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP (...8373) due 15th",
       "amount": 9.56,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "255484187761987832",
@@ -8432,7 +8996,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-26",
       "merchant": "The Home Depot",
       "category": "Home maintenance",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 21.94,
       "isIncome": false,
       "tags": ""
@@ -8445,7 +9009,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP 9369 due 15th",
       "amount": 12.76,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "250632611373273494",
@@ -8455,7 +9020,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP 9369 due 15th",
       "amount": 9.56,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "250632611373273493",
@@ -8495,7 +9061,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP 9369 due 15th",
       "amount": 196.18,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "250540688525513029",
@@ -8542,7 +9109,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-25",
       "merchant": "Ike's Bagel Cafe",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 1.82,
       "isIncome": false,
       "tags": ""
@@ -8572,7 +9139,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-25",
       "merchant": "Aldi",
       "category": "Groceries",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.84,
       "isIncome": false,
       "tags": ""
@@ -8712,7 +9279,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-23",
       "merchant": "Swiggy",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 11.9,
       "isIncome": false,
       "tags": ""
@@ -8782,7 +9349,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-22",
       "merchant": "Swiggy",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 6.27,
       "isIncome": false,
       "tags": ""
@@ -8912,7 +9479,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-21",
       "merchant": "Swiggy",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 0.02,
       "isIncome": false,
       "tags": ""
@@ -8922,7 +9489,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-21",
       "merchant": "Swiggy",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 5.89,
       "isIncome": false,
       "tags": ""
@@ -8932,10 +9499,11 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-21",
       "merchant": "Swiggy",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 0.02,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "250082666375304136",
@@ -9002,7 +9570,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-20",
       "merchant": "Meyer Depew",
       "category": "Home maintenance",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 39.94,
       "isIncome": false,
       "tags": ""
@@ -9012,7 +9580,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-20",
       "merchant": "Bombay Brassiere",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 55.49,
       "isIncome": false,
       "tags": ""
@@ -9442,7 +10010,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-16",
       "merchant": "Uber",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 2.34,
       "isIncome": false,
       "tags": ""
@@ -9452,7 +10020,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-16",
       "merchant": "Uber",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 2.88,
       "isIncome": false,
       "tags": ""
@@ -9512,7 +10080,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-15",
       "merchant": "Chase",
       "category": "Credit Card Payment",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 3666.65,
       "isIncome": false,
       "tags": ""
@@ -9562,7 +10130,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "VIOLOGIKO_CHORIO_MITRP",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 10.65,
       "isIncome": false,
       "tags": ""
@@ -9572,7 +10140,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Homed ID Polyiatrio PC",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 114.47,
       "isIncome": false,
       "tags": ""
@@ -9582,7 +10150,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Ssp Hellas",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 15.11,
       "isIncome": false,
       "tags": ""
@@ -9592,7 +10160,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Filippeou F Co EE",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 108.75,
       "isIncome": false,
       "tags": ""
@@ -9602,7 +10170,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Ergon Bake House",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 39.49,
       "isIncome": false,
       "tags": ""
@@ -9612,7 +10180,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "FARMakeio Konstantinou",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 16.94,
       "isIncome": false,
       "tags": ""
@@ -9622,7 +10190,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Hercules Greek Sou",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 19.46,
       "isIncome": false,
       "tags": ""
@@ -9632,7 +10200,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Uber",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 3.01,
       "isIncome": false,
       "tags": ""
@@ -9642,7 +10210,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Uber",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 47.96,
       "isIncome": false,
       "tags": ""
@@ -9652,7 +10220,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Uber",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 5.01,
       "isIncome": false,
       "tags": ""
@@ -9662,7 +10230,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-14",
       "merchant": "Uber",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 65.18,
       "isIncome": false,
       "tags": ""
@@ -9722,7 +10290,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-13",
       "merchant": "Detto Travel",
       "category": "Travel & Vacation",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 202.65,
       "isIncome": false,
       "tags": ""
@@ -9852,7 +10420,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-12",
       "merchant": "Jersey Reserve",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 7.76,
       "isIncome": false,
       "tags": ""
@@ -10072,7 +10640,7 @@ const DEFAULT_FINANCE_DATA = {
       "date": "2026-07-10",
       "merchant": "The Milkshake Factor",
       "category": "Eating out",
-      "account": "T CSP 5914 due 15th ",
+      "account": "T CSP 5914 due 15th",
       "amount": 35.38,
       "isIncome": false,
       "tags": ""
@@ -10215,7 +10783,8 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Primary Checking ...002 (....002)",
       "amount": 157.5,
       "isIncome": false,
-      "tags": ""
+      "tags": "",
+      "isRefund": true
     },
     {
       "id": "248906041937907855",
@@ -10648,15 +11217,15 @@ const DEFAULT_REAL_CLAIMS = [
     "patient": "Xavier Healy",
     "amountPaid": 300.0,
     "expectedRecovery": 210.0,
-    "reimbursedAmount": 0.0,
+    "reimbursedAmount": 210.0,
     "submissionType": "self",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "with_included_health",
+    "stage": "settled",
     "inPortal": true,
-    "inBank": false,
+    "inBank": true,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem with Receipt #006190 — in review ($210.00 expected)",
+    "nextAction": "Reconciled in bank ($210.00 deposited on 2026-10-26)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement (Receipt #006190 attached)."
   },
   {
@@ -10666,15 +11235,15 @@ const DEFAULT_REAL_CLAIMS = [
     "patient": "Xavier Healy",
     "amountPaid": 225.0,
     "expectedRecovery": 157.5,
-    "reimbursedAmount": 0.0,
+    "reimbursedAmount": 157.5,
     "submissionType": "provider",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "with_included_health",
+    "stage": "settled",
     "inPortal": true,
-    "inBank": false,
+    "inBank": true,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem — in review ($157.50 expected)",
+    "nextAction": "Reconciled in bank ($157.50 deposited on 2026-10-22)",
     "notes": "Therapy session. Paid $225 via U CSP ...8373 on 2026-10-14. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -10692,7 +11261,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem with Receipt #005834 — in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem with Receipt #005834 \u2014 in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement (Receipt #005834 attached)."
   },
   {
@@ -10710,7 +11279,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -10746,7 +11315,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -10764,7 +11333,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -10782,7 +11351,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -10800,7 +11369,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -10810,17 +11379,17 @@ const DEFAULT_REAL_CLAIMS = [
     "patient": "Xavier Healy",
     "amountPaid": 2375.0,
     "expectedRecovery": 1457.76,
-    "reimbursedAmount": 0.0,
+    "reimbursedAmount": 1457.76,
     "submissionType": "provider",
     "payoutMethod": "check",
     "superbillStatus": "have",
-    "stage": "check_due",
+    "stage": "settled",
     "reissueRequested": true,
     "inPortal": true,
-    "inBank": false,
+    "inBank": true,
     "claimNumber": "20253272A0969",
     "eobPlanPaid": 1457.76,
-    "nextAction": "Anthem form submitted for missing check ($1,457.76) — Claim Tracking ID: 20253272A0969",
+    "nextAction": "Reconciled in bank ($1,457.76 deposited on 2026-10-23)",
     "notes": "Evaluation. Billed $5,000, Plan Paid $1,457.76. Filled out Anthem form re missing check ($1,457.76). Claim Tracking ID: 20253272A0969."
   },
   {
@@ -10850,17 +11419,17 @@ const DEFAULT_REAL_CLAIMS = [
     "patient": "Xavier Healy",
     "amountPaid": 225.0,
     "expectedRecovery": 70.0,
-    "reimbursedAmount": 0.0,
+    "reimbursedAmount": 70.0,
     "submissionType": "provider",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "check_due",
+    "stage": "settled",
     "reissueRequested": true,
     "inPortal": true,
-    "inBank": false,
+    "inBank": true,
     "claimNumber": "2026036ML5580",
     "eobPlanPaid": 70.0,
-    "nextAction": "Anthem form submitted for missing check ($70.00) — Claim Tracking ID: 2026036ML5580",
+    "nextAction": "Reconciled in bank ($70.00 deposited on 2026-10-23)",
     "notes": "Partial adjustment of $70 approved to meet $800 deductible cap. Filled out Anthem form re missing check ($70.00). Claim Tracking ID: 2026036ML5580."
   },
   {
@@ -12006,7 +12575,7 @@ const DEFAULT_FINANCE_CARDS_ROI = [
     theme: 'violet',
     color: '#7C3AED',
     renewalMonth: 'October',
-    lastUpdated: '10/16/2026',
+    lastUpdated: '10/26/2026',
     benefits: [
       {
         id: 'amex-uber',

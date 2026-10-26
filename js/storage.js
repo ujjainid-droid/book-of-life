@@ -76,12 +76,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V14';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V15';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
           this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
-          this.data.claimsSeedVersion = 14;
+          this.data.claimsSeedVersion = 15;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -3523,9 +3523,9 @@ class StorageManager {
       }
     }
 
-    // Seed v14 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 14)) {
-      this.data.finance.seedVersion = 14;
+    // Seed v15 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 15)) {
+      this.data.finance.seedVersion = 15;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
         if (Array.isArray(DEFAULT_FINANCE_DATA.transactions)) {
           this.data.finance.transactions = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.transactions));
