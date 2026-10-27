@@ -95,6 +95,15 @@ function renderCoverHubPage() {
     isWorkflowWide = localStorage.getItem('BOL_COMPASS_WF_WIDE') === 'true';
   } catch (e) {}
 
+  const isMaintainCamp = (camp) => {
+    if (!camp) return false;
+    const isHc = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
+    const raw = String(camp.status || (isHc ? 'Maintain' : 'IP')).trim().toLowerCase();
+    return raw === 'maintain' || raw === 'review';
+  };
+  const nowPrimary = campaignsData.now.filter(c => !isMaintainCamp(c));
+  const nowMaintain = campaignsData.now.filter(c => isMaintainCamp(c));
+
   container.innerHTML = `
     <div class="mc-app ${activeLens === 'simple' ? 'simple' : ''}" id="mc-app">
 
@@ -215,9 +224,22 @@ function renderCoverHubPage() {
           </div>
         </div>
         <div class="mc-stats">
-          <div class="mc-stat"><b id="sActive">${campaignsData.now.length}</b><span>Active focus</span></div>
-          <div class="mc-stat"><b id="sDeck">${campaignsData.later.length}</b><span>On deck</span></div>
-          <div class="mc-stat"><b>5</b><span>Pillars</span></div>
+          <div class="mc-stat" onclick="document.getElementById('nowSublaneIp')?.scrollIntoView({behavior:'smooth'})" title="In Progress (IP) strikes · Active focus">
+            <b id="sIp">${nowPrimary.length}</b>
+            <span>In Progress</span>
+          </div>
+          <div class="mc-stat" onclick="document.getElementById('nowSublaneMaintain')?.scrollIntoView({behavior:'smooth'})" title="Maintain · Steady background routines">
+            <b id="sMaintain">${nowMaintain.length}</b>
+            <span>Maintain</span>
+          </div>
+          <div class="mc-stat" onclick="document.getElementById('laterLaneHead')?.scrollIntoView({behavior:'smooth'})" title="On deck · Queued in Later">
+            <b id="sDeck">${campaignsData.later.length}</b>
+            <span>On deck</span>
+          </div>
+          <div class="mc-stat" onclick="document.getElementById('section-architecture-blueprint')?.scrollIntoView({behavior:'smooth'})" title="5 Core Pillars (Care, Grow, Home, Finance, School)">
+            <b>5</b>
+            <span>Pillars</span>
+          </div>
         </div>
       </section>
 
@@ -263,7 +285,7 @@ function renderCoverHubPage() {
           }
           return `
             ${nowPrimary.length > 0 ? `
-              <div class="mc-sublane-section ip-section">
+              <div class="mc-sublane-section ip-section" id="nowSublaneIp">
                 ${nowMaintain.length > 0 ? `
                   <div class="mc-sublane-head in-flight">
                     <div class="mc-sublane-title-wrap">
@@ -282,7 +304,7 @@ function renderCoverHubPage() {
               </div>
             ` : ''}
             ${nowMaintain.length > 0 ? `
-              <div class="mc-sublane-section maintain-section">
+              <div class="mc-sublane-section maintain-section" id="nowSublaneMaintain">
                 <div class="mc-sublane-divider"></div>
                 <div class="mc-sublane-head maintain">
                   <div class="mc-sublane-title-wrap">
@@ -306,7 +328,7 @@ function renderCoverHubPage() {
 
         <div class="mc-divider"></div>
 
-        <div class="mc-lane-head">
+        <div class="mc-lane-head" id="laterLaneHead">
           <div class="l">
             <span class="mc-lane-tag later">🧊 LATER</span>
             <span class="mc-muted">On deck &amp; parking lot · next in queue once bandwidth opens</span>
