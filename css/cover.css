@@ -14111,37 +14111,37 @@ body.dark-mode .protocol-sample-btn {
   text-transform: uppercase;
 }
 .mc-sublane-tag.in-flight {
-  background: rgba(139, 92, 246, 0.18);
-  color: #C4B5FD;
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.25);
+  color: #E9D5FF;
+  border: 1px solid rgba(167, 139, 250, 0.45);
 }
 .mc-sublane-tag.maintain {
-  background: rgba(13, 152, 186, 0.18);
-  color: #5CE1F0;
-  border: 1px solid rgba(13, 152, 186, 0.35);
+  background: rgba(13, 152, 186, 0.25);
+  color: #A5F3FC;
+  border: 1px solid rgba(13, 152, 186, 0.45);
 }
 .mc-sublane-desc {
-  font-size: 11px;
-  color: var(--muted, #94A3B8);
-  font-weight: 500;
+  font-size: 11.5px;
+  color: #CBD5E1;
+  font-weight: 600;
 }
 .mc-sublane-count-badge {
   font-size: 10px;
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--muted, #94A3B8);
+  background: rgba(255, 255, 255, 0.12);
+  color: #F1F5F9;
   white-space: nowrap;
 }
 .mc-sublane-count-badge.maintain {
-  background: rgba(13, 152, 186, 0.12);
-  color: #5CE1F0;
+  background: rgba(13, 152, 186, 0.22);
+  color: #A5F3FC;
 }
 .mc-sublane-divider {
   height: 1px;
-  background: var(--line, rgba(255, 255, 255, 0.12));
-  margin: 12px 0 4px;
+  background: var(--line, rgba(255, 255, 255, 0.15));
+  margin: 14px 0 6px;
 }
 .pulse-dot {
   width: 6px;
@@ -15779,30 +15779,70 @@ body.dark-mode .budget-badge-orchid {
   color: #0D3B66;
   box-shadow: none;
 }
+:root[data-theme="light"] .mc-sublane-tag.in-flight {
+  background: #F3E8FF !important;
+  color: #581C87 !important;
+  border: 1px solid #C084FC !important;
+}
+:root[data-theme="light"] .mc-sublane-tag.in-flight .pulse-dot {
+  background: #7C3AED !important;
+  box-shadow: 0 0 6px rgba(124, 58, 237, 0.6) !important;
+}
+:root[data-theme="light"] .mc-sublane-tag.maintain {
+  background: #E0F2FE !important;
+  color: #0C4A6E !important;
+  border: 1px solid #7DD3FC !important;
+}
+:root[data-theme="light"] .mc-sublane-tag.maintain svg {
+  stroke: #0C4A6E !important;
+}
+:root[data-theme="light"] .mc-sublane-desc {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+:root[data-theme="light"] .mc-sublane-count-badge {
+  background: #F3E8FF !important;
+  color: #581C87 !important;
+  border: 1px solid #D8B4FE !important;
+  font-weight: 700 !important;
+}
+:root[data-theme="light"] .mc-sublane-count-badge.maintain {
+  background: #E0F2FE !important;
+  color: #0C4A6E !important;
+  border: 1px solid #BAE6FD !important;
+  font-weight: 700 !important;
+}
+:root[data-theme="light"] .mc-sublane-divider {
+  background: rgba(13, 59, 102, 0.16) !important;
+}
 :root[data-theme="light"] .mc-status.IP {
-  background: rgba(109, 40, 217, 0.08) !important;
-  color: #6D28D9 !important;
-  border: 1px solid rgba(109, 40, 217, 0.22) !important;
+  background: #F3E8FF !important;
+  color: #581C87 !important;
+  border: 1px solid #C084FC !important;
+  font-weight: 800 !important;
 }
 :root[data-theme="light"] .mc-status.IP i {
-  background: #6D28D9 !important;
+  background: #7C3AED !important;
+  box-shadow: 0 0 4px rgba(124, 58, 237, 0.5) !important;
 }
 :root[data-theme="light"] .mc-status.Maintain {
-  background: rgba(14, 116, 144, 0.08) !important;
-  color: #0E7490 !important;
-  border: 1px solid rgba(14, 116, 144, 0.25) !important;
+  background: #E0F2FE !important;
+  color: #0C4A6E !important;
+  border: 1px solid #7DD3FC !important;
+  font-weight: 800 !important;
 }
 :root[data-theme="light"] .mc-status.Maintain i {
-  background: #0E7490 !important;
+  background: #0284C7 !important;
+  box-shadow: 0 0 4px rgba(2, 132, 199, 0.5) !important;
 }
 :root[data-theme="light"] .mc-fc.is-maintain {
   background: linear-gradient(135deg, rgba(240, 249, 255, 0.5) 0%, #FFFFFF 100%) !important;
-  border: 1.5px dashed rgba(14, 116, 144, 0.3) !important;
+  border: 1.5px dashed rgba(14, 116, 144, 0.35) !important;
   box-shadow: 0 1px 4px rgba(13, 59, 102, 0.03) !important;
 }
 :root[data-theme="light"] .mc-fc.is-maintain:hover {
   background: linear-gradient(135deg, rgba(240, 249, 255, 0.8) 0%, #FFFFFF 100%) !important;
-  border-color: rgba(14, 116, 144, 0.55) !important;
+  border-color: rgba(14, 116, 144, 0.6) !important;
 }
 .mc-fc.is-maintain {
   background: linear-gradient(145deg, rgba(14, 116, 144, 0.1) 0%, rgba(20, 24, 40, 0.92) 100%) !important;
@@ -15815,19 +15855,21 @@ body.dark-mode .budget-badge-orchid {
 }
 :root[data-theme="light"] .mc-status:hover,
 :root[data-theme="light"] .status:hover {
-  background: rgba(13, 59, 102, 0.06);
+  background: rgba(13, 59, 102, 0.08) !important;
 }
 :root[data-theme="light"] .mc-mv,
 :root[data-theme="light"] .mv {
-  color: #6C2E7B;
-  background: rgba(108, 46, 123, 0.08);
-  border: 1px solid rgba(108, 46, 123, 0.2);
+  color: #581C87 !important;
+  background: #FAF5FF !important;
+  border: 1px solid #D8B4FE !important;
+  font-weight: 700 !important;
   box-shadow: none;
 }
 :root[data-theme="light"] .mc-mv:hover,
 :root[data-theme="light"] .mv:hover {
-  color: #FFFFFF;
-  background: #6C2E7B;
+  color: #FFFFFF !important;
+  background: #6D28D9 !important;
+  border-color: #6D28D9 !important;
 }
 :root[data-theme="light"] .mc-fc .mc-sep {
   background: var(--text);

@@ -500,6 +500,19 @@ class StorageManager {
             }
           },
           {
+            id: 'camp-foreheadline',
+            title: 'Forehead lines',
+            status: 'NS',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Forehead Protocol' },
+              apple: { noteQuery: '# BEAUTY 07_FOREHEAD' },
+              google: { folder: 'Forehead Treatments & Research' },
+              things: { query: 'Forehead Lines Protocol' },
+              email: { emailQuery: 'Forehead Consults' }
+            }
+          },
+          {
             id: 'camp-healthyfood',
             title: 'Healthy food',
             status: 'NS',
@@ -3256,6 +3269,28 @@ class StorageManager {
         this.data.coverCampaigns.later.push(JSON.parse(JSON.stringify(shoesDefault)));
         this.saveData();
       }
+    }
+
+    // Ensure Forehead lines is present in later if not already in now or later
+    const hasForeheadLines = [...this.data.coverCampaigns.now, ...this.data.coverCampaigns.later].some(c =>
+      c && (c.id === 'camp-foreheadline' || (c.title || '').toLowerCase().trim() === 'forehead lines')
+    );
+    if (!hasForeheadLines) {
+      this.data.coverCampaigns.later.push({
+        id: 'camp-foreheadline',
+        title: 'Forehead lines',
+        status: 'NS',
+        theme: 'cat-care',
+        tools: {
+          margo: { label: 'Forehead Protocol' },
+          apple: { noteQuery: '# BEAUTY 07_FOREHEAD' },
+          google: { folder: 'Forehead Treatments & Research' },
+          things: { query: 'Forehead Lines Protocol' },
+          email: { emailQuery: 'Forehead Consults' }
+        }
+      });
+      this.data.coverUpdatedAt = Date.now();
+      this.saveData();
     }
 
     // Normalize any legacy statuses to IP, NS, Maintain, Done

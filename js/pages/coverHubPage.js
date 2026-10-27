@@ -694,7 +694,6 @@ function renderUnifiedCampaignCard(camp, tier) {
       <div class="mc-fc-top">
         <div class="mc-fc-head-left">
           <span class="budget-badge ${catMeta.badgeClass}">${catMeta.tag}</span>
-          ${statusKey === 'Maintain' ? `<span class="mc-card-maintain-tag">Steady</span>` : ''}
           <h3 class="mc-fc-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
         </div>
         <div class="mc-top-actions">
