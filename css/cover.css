@@ -14035,10 +14035,18 @@ body.dark-mode .protocol-sample-btn {
   letter-spacing: 0.08em;
   padding: 4px 10px;
   border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 .mc-lane-tag.now {
   background: #6C2E7B;
-  color: #FFD8C7;
+  color: #FFFFFF;
+}
+.mc-lane-tag.now .mc-lane-paw {
+  fill: #FFFFFF;
+  display: inline-block;
+  flex-shrink: 0;
 }
 .mc-lane-tag.later {
   background: rgba(13, 59, 102, 0.35);
@@ -15541,6 +15549,9 @@ body.dark-mode .budget-badge-orchid {
 :root[data-theme="light"] .mc-lane-tag.now {
   background: #6C2E7B;
   color: #FFFFFF;
+}
+:root[data-theme="light"] .mc-lane-tag.now .mc-lane-paw {
+  fill: #FFFFFF;
 }
 :root[data-theme="light"] .mc-lane-tag.later {
   background: rgba(13, 59, 102, 0.08);

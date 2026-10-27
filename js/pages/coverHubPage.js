@@ -228,7 +228,23 @@ function renderCoverHubPage() {
 
         <div class="mc-lane-head">
           <div class="l">
-            <span class="mc-lane-tag now">🐾 NOW</span>
+            <span class="mc-lane-tag now">
+              <svg class="mc-lane-paw" viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
+                <ellipse cx="6.5" cy="5" rx="1.5" ry="2" transform="rotate(-12 6.5 5)"/>
+                <ellipse cx="10.8" cy="4.8" rx="1.5" ry="2" transform="rotate(10 10.8 4.8)"/>
+                <ellipse cx="3.5" cy="8.2" rx="1.3" ry="1.7" transform="rotate(-25 3.5 8.2)"/>
+                <ellipse cx="13.5" cy="8" rx="1.3" ry="1.7" transform="rotate(25 13.5 8)"/>
+                <path d="M8.5 8.5c2.2 0 3.8 2 3.8 3.8 0 1.1-.8 1.6-1.8 1.6-.7 0-1.1-.4-2-.4s-1.3.4-2 .4c-1 0-1.8-.5-1.8-1.6 0-1.8 1.6-3.8 3.8-3.8z"/>
+                <g transform="translate(8.5, 7.5) scale(0.72)">
+                  <ellipse cx="6.5" cy="5" rx="1.5" ry="2" transform="rotate(-12 6.5 5)"/>
+                  <ellipse cx="10.8" cy="4.8" rx="1.5" ry="2" transform="rotate(10 10.8 4.8)"/>
+                  <ellipse cx="3.5" cy="8.2" rx="1.3" ry="1.7" transform="rotate(-25 3.5 8.2)"/>
+                  <ellipse cx="13.5" cy="8" rx="1.3" ry="1.7" transform="rotate(25 13.5 8)"/>
+                  <path d="M8.5 8.5c2.2 0 3.8 2 3.8 3.8 0 1.1-.8 1.6-1.8 1.6-.7 0-1.1-.4-2-.4s-1.3.4-2 .4c-1 0-1.8-.5-1.8-1.6 0-1.8 1.6-3.8 3.8-3.8z"/>
+                </g>
+              </svg>
+              <span>NOW</span>
+            </span>
             <span class="mc-muted">Active focus · in flight, ball in court or tracked</span>
           </div>
           <button type="button" class="mc-add" id="addNow" onclick="promptAddCampaignItem('now')">+ Add focus</button>
