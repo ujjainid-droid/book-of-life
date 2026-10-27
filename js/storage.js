@@ -392,6 +392,19 @@ class StorageManager {
               things: { query: 'Under Eye Research' },
               email: { emailQuery: 'Dermatology Consults' }
             }
+          },
+          {
+            id: 'camp-makeup',
+            title: 'Makeup',
+            status: 'Maintain',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Makeup & Beauty' },
+              apple: { noteQuery: '# BEAUTY 05_MAKEUP' },
+              google: { folder: 'Makeup Swatches & Products' },
+              things: { query: 'Makeup Essentials' },
+              email: { emailQuery: 'Makeup Orders' }
+            }
           }
         ],
         later: [
@@ -406,19 +419,6 @@ class StorageManager {
               google: { folder: 'Foot Care Protocol' },
               things: { query: 'Foot Care' },
               email: { emailQuery: 'Foot Care' }
-            }
-          },
-          {
-            id: 'camp-makeup',
-            title: 'Makeup',
-            status: 'NS',
-            theme: 'cat-care',
-            tools: {
-              margo: { label: 'Makeup & Beauty' },
-              apple: { noteQuery: '# BEAUTY 05_MAKEUP' },
-              google: { folder: 'Makeup Swatches & Products' },
-              things: { query: 'Makeup Essentials' },
-              email: { emailQuery: 'Makeup Orders' }
             }
           },
           {
@@ -3351,6 +3351,35 @@ class StorageManager {
       });
 
       this.data.coverMaintainSeedV2 = true;
+      this.data.coverUpdatedAt = Date.now();
+      updated = true;
+    }
+
+    if (!this.data.coverMaintainSeedV3) {
+      for (let i = this.data.coverCampaigns.later.length - 1; i >= 0; i--) {
+        const item = this.data.coverCampaigns.later[i];
+        if (!item) continue;
+        const t = (item.title || '').toLowerCase().trim();
+        if (item.id === 'camp-makeup' || t === 'makeup') {
+          item.status = 'Maintain';
+          const [removed] = this.data.coverCampaigns.later.splice(i, 1);
+          if (!this.data.coverCampaigns.now.some(x => x.id === removed.id || (x.title || '').toLowerCase().trim() === t)) {
+            this.data.coverCampaigns.now.push(removed);
+          }
+          updated = true;
+        }
+      }
+
+      this.data.coverCampaigns.now.forEach(item => {
+        if (!item) return;
+        const t = (item.title || '').toLowerCase().trim();
+        if (item.id === 'camp-makeup' || t === 'makeup') {
+          item.status = 'Maintain';
+          updated = true;
+        }
+      });
+
+      this.data.coverMaintainSeedV3 = true;
       this.data.coverUpdatedAt = Date.now();
       updated = true;
     }
