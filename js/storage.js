@@ -346,7 +346,7 @@ class StorageManager {
           {
             id: 'camp-oon',
             title: 'oon',
-            status: 'IP',
+            status: 'Maintain',
             theme: 'cat-finance',
             tools: {
               margo: { label: 'Medical Claims Tracker', action: 'claims' },
@@ -366,13 +366,11 @@ class StorageManager {
               apple: { noteQuery: '# BEAUTY 02_HAIR' }
             },
             visibleTools: ['margo', 'apple']
-          }
-        ],
-        later: [
+          },
           {
             id: 'camp-skincare',
             title: 'Skincare',
-            status: 'NS',
+            status: 'Maintain',
             theme: 'cat-care',
             tools: {
               margo: { label: 'Skincare Regimen' },
@@ -382,6 +380,21 @@ class StorageManager {
               email: { emailQuery: 'Skincare Orders' }
             }
           },
+          {
+            id: 'camp-undereye',
+            title: 'Under eye bags',
+            status: 'Maintain',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Eye Care & Vitality' },
+              apple: { noteQuery: '# BEAUTY 03_UNDEREYE' },
+              google: { folder: 'Eye Treatments & Consults' },
+              things: { query: 'Under Eye Research' },
+              email: { emailQuery: 'Dermatology Consults' }
+            }
+          }
+        ],
+        later: [
           {
             id: 'camp-footcare',
             title: 'Foot care',
@@ -471,19 +484,6 @@ class StorageManager {
               google: { folder: 'Home Inventory' },
               things: { query: 'Room-by-Room Declutter' },
               email: { emailQuery: 'Donations & Orders' }
-            }
-          },
-          {
-            id: 'camp-undereye',
-            title: 'Under eye bags',
-            status: 'NS',
-            theme: 'cat-care',
-            tools: {
-              margo: { label: 'Eye Care & Vitality' },
-              apple: { noteQuery: '# BEAUTY 03_UNDEREYE' },
-              google: { folder: 'Eye Treatments & Consults' },
-              things: { query: 'Under Eye Research' },
-              email: { emailQuery: 'Dermatology Consults' }
             }
           },
           {
@@ -3285,6 +3285,41 @@ class StorageManager {
         }
       }
     });
+
+    if (!this.data.coverMaintainSeedV2) {
+      const targetTitles = ['oon', 'skincare', 'under eye bags'];
+      const targetIds = ['camp-oon', 'camp-skincare', 'camp-undereye'];
+
+      // Check later array first: promote them to now and set to Maintain
+      for (let i = this.data.coverCampaigns.later.length - 1; i >= 0; i--) {
+        const item = this.data.coverCampaigns.later[i];
+        if (!item) continue;
+        const t = (item.title || '').toLowerCase().trim();
+        if (targetIds.includes(item.id) || targetTitles.some(x => t.includes(x)) || t.includes('reimb')) {
+          item.status = 'Maintain';
+          const [removed] = this.data.coverCampaigns.later.splice(i, 1);
+          if (!this.data.coverCampaigns.now.some(x => x.id === removed.id || (x.title || '').toLowerCase().trim() === t)) {
+            this.data.coverCampaigns.now.push(removed);
+          }
+          updated = true;
+        }
+      }
+
+      // Check now array: ensure they have status Maintain
+      this.data.coverCampaigns.now.forEach(item => {
+        if (!item) return;
+        const t = (item.title || '').toLowerCase().trim();
+        if (targetIds.includes(item.id) || targetTitles.some(x => t.includes(x)) || t.includes('reimb')) {
+          item.status = 'Maintain';
+          updated = true;
+        }
+      });
+
+      this.data.coverMaintainSeedV2 = true;
+      this.data.coverUpdatedAt = Date.now();
+      updated = true;
+    }
+
     if (updated) this.saveData();
     return this.data.coverCampaigns;
   }

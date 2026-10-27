@@ -263,13 +263,42 @@ function renderCoverHubPage() {
           }
           return `
             ${nowPrimary.length > 0 ? `
-              <div class="mc-focus-grid" id="nowList">
-                ${nowPrimary.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+              <div class="mc-sublane-section ip-section">
+                ${nowMaintain.length > 0 ? `
+                  <div class="mc-sublane-head in-flight">
+                    <div class="mc-sublane-title-wrap">
+                      <span class="mc-sublane-tag in-flight">
+                        <span class="pulse-dot"></span>
+                        <span>IN PROGRESS</span>
+                      </span>
+                      <span class="mc-sublane-desc">Active strikes &bull; focused bandwidth</span>
+                    </div>
+                    <span class="mc-sublane-count-badge in-flight">${nowPrimary.length} active</span>
+                  </div>
+                ` : ''}
+                <div class="mc-focus-grid" id="nowList">
+                  ${nowPrimary.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+                </div>
               </div>
             ` : ''}
             ${nowMaintain.length > 0 ? `
-              <div class="mc-focus-grid mc-maintain-row" id="nowMaintainList">
-                ${nowMaintain.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+              <div class="mc-sublane-section maintain-section">
+                <div class="mc-sublane-divider"></div>
+                <div class="mc-sublane-head maintain">
+                  <div class="mc-sublane-title-wrap">
+                    <span class="mc-sublane-tag maintain">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
+                      <span>MAINTAIN</span>
+                    </span>
+                    <span class="mc-sublane-desc">Steady state &bull; background routines &amp; cadence</span>
+                  </div>
+                  <span class="mc-sublane-count-badge maintain">${nowMaintain.length} steady</span>
+                </div>
+                <div class="mc-focus-grid mc-maintain-grid" id="nowMaintainList">
+                  ${nowMaintain.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
+                </div>
               </div>
             ` : ''}
           `;
@@ -665,6 +694,7 @@ function renderUnifiedCampaignCard(camp, tier) {
       <div class="mc-fc-top">
         <div class="mc-fc-head-left">
           <span class="budget-badge ${catMeta.badgeClass}">${catMeta.tag}</span>
+          ${statusKey === 'Maintain' ? `<span class="mc-card-maintain-tag">Steady</span>` : ''}
           <h3 class="mc-fc-title" onclick="promptEditCampaignTitle('${camp.id}', '${escapedTitleForJs}')" title="Tap to edit title" style="cursor:pointer">${escapeHtml(displayTitle)}</h3>
         </div>
         <div class="mc-top-actions">

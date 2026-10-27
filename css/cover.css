@@ -14075,9 +14075,93 @@ body.dark-mode .protocol-sample-btn {
   grid-template-columns: 1fr;
   gap: 14px;
 }
-.mc-maintain-row {
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
+.mc-maintain-row,
+.mc-maintain-grid {
+  padding-top: 4px;
+}
+
+/* Focus Board: Sublane Headers (In Progress vs. Maintain) */
+.mc-sublane-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.mc-sublane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px 2px;
+  gap: 8px;
+}
+.mc-sublane-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mc-sublane-tag {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+}
+.mc-sublane-tag.in-flight {
+  background: rgba(139, 92, 246, 0.18);
+  color: #C4B5FD;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+}
+.mc-sublane-tag.maintain {
+  background: rgba(13, 152, 186, 0.18);
+  color: #5CE1F0;
+  border: 1px solid rgba(13, 152, 186, 0.35);
+}
+.mc-sublane-desc {
+  font-size: 11px;
+  color: var(--muted, #94A3B8);
+  font-weight: 500;
+}
+.mc-sublane-count-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--muted, #94A3B8);
+  white-space: nowrap;
+}
+.mc-sublane-count-badge.maintain {
+  background: rgba(13, 152, 186, 0.12);
+  color: #5CE1F0;
+}
+.mc-sublane-divider {
+  height: 1px;
+  background: var(--line, rgba(255, 255, 255, 0.12));
+  margin: 12px 0 4px;
+}
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #A78BFA;
+  box-shadow: 0 0 6px rgba(167, 139, 250, 0.8);
+}
+.mc-card-maintain-tag {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  background: rgba(13, 152, 186, 0.2);
+  color: #5CE1F0;
+  border: 1px solid rgba(13, 152, 186, 0.35);
+  display: inline-block;
+  line-height: 1.2;
 }
 .mc-fc,
 .mc-fc.summer-widget-card {
@@ -14239,34 +14323,50 @@ body.dark-mode .protocol-sample-btn {
 }
 .mc-status {
   min-height: auto;
-  padding: 4px 6px;
-  border-radius: 8px;
-  border: none;
-  background: transparent;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--text);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   cursor: pointer;
   box-shadow: none;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   white-space: nowrap;
-  transition: opacity 0.15s ease, background 0.15s ease;
+  transition: opacity 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .mc-status:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.14);
 }
 .mc-status i {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
   background: var(--muted);
   display: inline-block;
   flex-shrink: 0;
 }
-.mc-status.IP i { background: #8B7FD6; }
-.mc-status.Maintain i { background: #FFD8C7; }
+.mc-status.IP {
+  background: rgba(139, 127, 214, 0.18);
+  color: #C4B5FD;
+  border-color: rgba(139, 127, 214, 0.4);
+}
+.mc-status.IP i {
+  background: #A78BFA;
+  box-shadow: 0 0 6px rgba(167, 139, 250, 0.6);
+}
+.mc-status.Maintain {
+  background: rgba(13, 152, 186, 0.18);
+  color: #5CE1F0;
+  border-color: rgba(13, 152, 186, 0.38);
+}
+.mc-status.Maintain i {
+  background: #0D98BA;
+  box-shadow: 0 0 6px rgba(13, 152, 186, 0.5);
+}
 
 .mc-mv {
   min-height: auto;
@@ -15678,6 +15778,40 @@ body.dark-mode .budget-badge-orchid {
   border: none;
   color: #0D3B66;
   box-shadow: none;
+}
+:root[data-theme="light"] .mc-status.IP {
+  background: rgba(109, 40, 217, 0.08) !important;
+  color: #6D28D9 !important;
+  border: 1px solid rgba(109, 40, 217, 0.22) !important;
+}
+:root[data-theme="light"] .mc-status.IP i {
+  background: #6D28D9 !important;
+}
+:root[data-theme="light"] .mc-status.Maintain {
+  background: rgba(14, 116, 144, 0.08) !important;
+  color: #0E7490 !important;
+  border: 1px solid rgba(14, 116, 144, 0.25) !important;
+}
+:root[data-theme="light"] .mc-status.Maintain i {
+  background: #0E7490 !important;
+}
+:root[data-theme="light"] .mc-fc.is-maintain {
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.5) 0%, #FFFFFF 100%) !important;
+  border: 1.5px dashed rgba(14, 116, 144, 0.3) !important;
+  box-shadow: 0 1px 4px rgba(13, 59, 102, 0.03) !important;
+}
+:root[data-theme="light"] .mc-fc.is-maintain:hover {
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.8) 0%, #FFFFFF 100%) !important;
+  border-color: rgba(14, 116, 144, 0.55) !important;
+}
+.mc-fc.is-maintain {
+  background: linear-gradient(145deg, rgba(14, 116, 144, 0.1) 0%, rgba(20, 24, 40, 0.92) 100%) !important;
+  border: 1.5px dashed rgba(13, 152, 186, 0.4) !important;
+  box-shadow: none !important;
+}
+.mc-fc.is-maintain:hover {
+  background: linear-gradient(145deg, rgba(14, 116, 144, 0.16) 0%, rgba(24, 28, 48, 0.95) 100%) !important;
+  border-color: rgba(92, 225, 240, 0.6) !important;
 }
 :root[data-theme="light"] .mc-status:hover,
 :root[data-theme="light"] .status:hover {
