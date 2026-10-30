@@ -6040,3 +6040,318 @@ dialog.zhub-dlg .dact .rm {
   }
 }
 
+/* ==========================================================================
+   Z Log Tap-to-Select Modal & Pastel Capsule Pills (User Reference Palette)
+   ========================================================================== */
+:root {
+  --zlog-blue-bg: #EBF2FC;
+  --zlog-blue-border: #94B5EB;
+  --zlog-blue-text: #2E6FD0;
+
+  --zlog-green-bg: #E8F5EF;
+  --zlog-green-border: #98CDB7;
+  --zlog-green-text: #18935F;
+
+  --zlog-rose-bg: #FDEEF5;
+  --zlog-rose-border: #E796BD;
+  --zlog-rose-text: #C92B86;
+
+  --zlog-lavender-bg: #F1EDFD;
+  --zlog-lavender-border: #C3B8F6;
+  --zlog-lavender-text: #5B3FD9;
+
+  --zlog-pill-ink: #1C1E38;
+}
+
+:root[data-theme="dark"] {
+  --zlog-blue-bg: rgba(46, 111, 208, 0.22);
+  --zlog-blue-border: rgba(148, 181, 235, 0.45);
+  --zlog-blue-text: #82B4F8;
+
+  --zlog-green-bg: rgba(24, 147, 95, 0.22);
+  --zlog-green-border: rgba(152, 205, 183, 0.45);
+  --zlog-green-text: #50E396;
+
+  --zlog-rose-bg: rgba(201, 43, 134, 0.22);
+  --zlog-rose-border: rgba(231, 150, 189, 0.45);
+  --zlog-rose-text: #F687B3;
+
+  --zlog-lavender-bg: rgba(91, 63, 217, 0.25);
+  --zlog-lavender-border: rgba(195, 184, 246, 0.45);
+  --zlog-lavender-text: #B4A2F8;
+
+  --zlog-pill-ink: #F3F4F6;
+}
+
+/* Symmetrical Rating Row */
+.zhub-rating-capsule-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.rating-capsule {
+  height: 44px;
+  min-height: 44px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--chip, #E2E6F5);
+  background: var(--card, #FFFFFF);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted, #6B6785);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0 4px;
+}
+
+.rating-capsule i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.rating-capsule[data-r="great"] i { background: var(--zlog-blue-text); }
+.rating-capsule[data-r="almost"] i { background: var(--zlog-green-text); }
+.rating-capsule[data-r="okay"] i { background: var(--zlog-lavender-text); }
+.rating-capsule[data-r="tough"] i { background: var(--zlog-rose-text); }
+
+.rating-capsule.active[data-r="great"] {
+  background: var(--zlog-blue-bg) !important;
+  border-color: var(--zlog-blue-border) !important;
+  color: var(--zlog-blue-text) !important;
+  font-weight: 800;
+}
+.rating-capsule.active[data-r="almost"] {
+  background: var(--zlog-green-bg) !important;
+  border-color: var(--zlog-green-border) !important;
+  color: var(--zlog-green-text) !important;
+  font-weight: 800;
+}
+.rating-capsule.active[data-r="okay"] {
+  background: var(--zlog-lavender-bg) !important;
+  border-color: var(--zlog-lavender-border) !important;
+  color: var(--zlog-lavender-text) !important;
+  font-weight: 800;
+}
+.rating-capsule.active[data-r="tough"] {
+  background: var(--zlog-rose-bg) !important;
+  border-color: var(--zlog-rose-border) !important;
+  color: var(--zlog-rose-text) !important;
+  font-weight: 800;
+}
+
+/* 3-Pill Routine Med Row (Direct Match to User Reference) */
+.zlog-med-pill-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.zlog-med-pill {
+  height: 44px;
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  padding: 0 6px;
+  background: #FFFFFF;
+}
+
+.zlog-med-pill.pill-blue {
+  background: var(--zlog-blue-bg);
+  border-color: var(--zlog-blue-border);
+}
+.zlog-med-pill.pill-blue .med-p-name {
+  color: var(--zlog-blue-text);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.zlog-med-pill.pill-green {
+  background: var(--zlog-green-bg);
+  border-color: var(--zlog-green-border);
+}
+.zlog-med-pill.pill-green .med-p-name {
+  color: var(--zlog-green-text);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.zlog-med-pill.pill-rose {
+  background: var(--zlog-rose-bg);
+  border-color: var(--zlog-rose-border);
+}
+.zlog-med-pill.pill-rose .med-p-name {
+  color: var(--zlog-rose-text);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.zlog-med-pill .med-p-dose {
+  color: var(--zlog-pill-ink);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.zlog-med-pill.skipped {
+  opacity: 0.42;
+  text-decoration: line-through;
+  filter: grayscale(0.5);
+  border-color: var(--line, #E2E6F5);
+  background: var(--card2, #F8F9FA);
+}
+
+/* PRN & Custom Med Drawer */
+.zlog-med-drawer {
+  margin-top: 8px;
+  padding: 12px 14px;
+  background: var(--bg, #F8F9FD);
+  border: 1px solid var(--line, #E2E6F5);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+/* Symmetrical 2-Column Checkpoints Grid */
+.zhub-checkpoint-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.capsule-pill {
+  width: 100%;
+  height: 46px;
+  min-height: 46px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--line, #E2E6F5);
+  background: var(--card, #FFFFFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.capsule-pill .bold-tag {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted, #6B6785);
+  transition: color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.capsule-pill:hover {
+  transform: translateY(-1px);
+}
+
+.capsule-pill:active {
+  transform: scale(0.97);
+}
+
+.capsule-pill.active.theme-blue {
+  background-color: var(--zlog-blue-bg) !important;
+  border-color: var(--zlog-blue-border) !important;
+}
+.capsule-pill.active.theme-blue .bold-tag {
+  color: var(--zlog-blue-text) !important;
+  font-weight: 750;
+}
+
+.capsule-pill.active.theme-green {
+  background-color: var(--zlog-green-bg) !important;
+  border-color: var(--zlog-green-border) !important;
+}
+.capsule-pill.active.theme-green .bold-tag {
+  color: var(--zlog-green-text) !important;
+  font-weight: 750;
+}
+
+.capsule-pill.active.theme-rose {
+  background-color: var(--zlog-rose-bg) !important;
+  border-color: var(--zlog-rose-border) !important;
+}
+.capsule-pill.active.theme-rose .bold-tag {
+  color: var(--zlog-rose-text) !important;
+  font-weight: 750;
+}
+
+.capsule-pill.active.theme-lavender {
+  background-color: var(--zlog-lavender-bg) !important;
+  border-color: var(--zlog-lavender-border) !important;
+}
+.capsule-pill.active.theme-lavender .bold-tag {
+  color: var(--zlog-lavender-text) !important;
+  font-weight: 750;
+}
+
+/* Custom 1-line Note Input */
+.zlog-custom-note-input {
+  width: 100%;
+  height: 46px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--chip, #E2E6F5);
+  background: var(--bg, #F8F9FD);
+  color: var(--text, #1E1B3A);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 16px;
+  box-sizing: border-box;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.zlog-custom-note-input:focus {
+  border-color: var(--zlog-lavender-text, #5B3FD9);
+  background: var(--card, #FFFFFF);
+}
+
+/* Auto-Generated Bullets Live Preview Container */
+.zlog-preview-box {
+  background: var(--zlog-lavender-bg, #F1EDFD);
+  border: 1px solid var(--zlog-lavender-border, #C3B8F6);
+  border-radius: 18px;
+  padding: 12px 16px;
+  font-size: 12.5px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zlog-preview-box .preview-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--zlog-lavender-text, #5B3FD9);
+}
+
+.zlog-preview-content {
+  font-family: inherit;
+  color: var(--text, #1E1B3A);
+  line-height: 1.5;
+  font-size: 12.5px;
+}
+
+

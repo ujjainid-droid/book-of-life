@@ -65,6 +65,71 @@ const ZHUB_SHORT_MONTHS = [
 ];
 
 /* --------------------------------------------------------------------------
+   Tap-to-Select Checkpoint Capsule Definitions (Symmetrical, Nordic Palette)
+   -------------------------------------------------------------------------- */
+const ZHUB_CHECKPOINT_SECTIONS = [
+  {
+    title: 'Morning & Wake',
+    theme: 'theme-blue',
+    color: '#2E6FD0',
+    items: [
+      { id: 'm-wake',  label: '🌅 Smooth wake',     text: 'Woke up in a good mood' },
+      { id: 'm-drop',  label: '🎒 Smooth drop-off', text: 'Good morning and smooth drop off' },
+      { id: 'm-slow',  label: '🥱 Slow / groggy',   text: 'Slow morning and hard to wake up' },
+      { id: 'm-antsy', label: '⚡ Antsy / hyper',    text: 'Very hyper and antsy in the morning' }
+    ]
+  },
+  {
+    title: 'School & Pickup',
+    theme: 'theme-lavender',
+    color: '#5B3FD9',
+    items: [
+      { id: 's-good',  label: '🏫 Great school day', text: 'Had a good day in school' },
+      { id: 's-pick',  label: '🚗 Good pickup',      text: 'Was in good mood at pickup' },
+      { id: 's-bump',  label: '🔄 Transition bump',  text: 'Minor friction during transition' },
+      { id: 's-call',  label: '📞 School call',      text: 'Call / incident report from school' }
+    ]
+  },
+  {
+    title: 'Activities & Somatic Play',
+    theme: 'theme-green',
+    color: '#18935F',
+    items: [
+      { id: 'a-mocha', label: '🐶 Mocha play',    text: 'Played with Mocha' },
+      { id: 'a-arts',  label: '🥋 Martial arts',  text: 'Did really well in martial arts' },
+      { id: 'a-swim',  label: '🏊 Swimming',      text: 'Went to swim class' },
+      { id: 'a-bike',  label: '🚲 Bike ride',     text: 'Went for bike ride with Mocha' },
+      { id: 'a-lego',  label: '🧱 LEGOs',         text: 'Played LEGOs calmly' },
+      { id: 'a-tv',    label: '📺 TV / Kindle',   text: 'Watched TV / Kindle' }
+    ]
+  },
+  {
+    title: 'Friction & Triggers',
+    theme: 'theme-rose',
+    color: '#C92B86',
+    items: [
+      { id: 'f-screen', label: '🛑 Screen limit',   text: 'Protested screen time cutoff' },
+      { id: 'f-food',   label: '🍽️ Food pushback',  text: 'Complained about dinner options' },
+      { id: 'f-bored',  label: '🥱 Boredom whine',  text: 'Whiny complaining about being bored' },
+      { id: 'f-melt',   label: '💥 Meltdown',       text: 'Full escalation: screaming and kicking' }
+    ]
+  },
+  {
+    title: 'Evening & Bedtime',
+    theme: 'theme-green',
+    color: '#18935F',
+    items: [
+      { id: 'e-din',   label: '🍲 Dinner smooth',  text: 'Good about dinner' },
+      { id: 'e-bath',  label: '🛁 Bath taken',     text: 'Took bath smoothly' },
+      { id: 'e-sleep', label: '🌙 Asleep on time', text: 'Asleep on time around 8:30pm' },
+      { id: 'e-late',  label: '⏰ Late sleep',     text: 'Bedtime resistance; fell asleep late' }
+    ]
+  }
+];
+
+let zhubSelectedCapsules = new Set();
+
+/* --------------------------------------------------------------------------
    View State
    -------------------------------------------------------------------------- */
 function getInitialZLogSubTab() {
@@ -540,12 +605,13 @@ function renderZLogPage(targetSubTab) {
         <!-- Dialog: Log / Edit Day (#dlg per margo-zhub.html) -->
         <dialog id="dlg" class="zhub-dlg" aria-labelledby="dT">
           <form id="form" onsubmit="submitZLogEntryModal(event)" novalidate>
-            <h2 id="dT">Log day</h2>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <h2 id="dT" style="margin:0;">Log day</h2>
+              <span id="zlog-date-status-badge" class="zhub-date-status-badge"></span>
+            </div>
+
+            <!-- Date Row -->
             <div class="fld zhub-modal-date-fld">
-              <div class="between" style="align-items:center;margin-bottom:4px;">
-                <label for="fDate" style="margin:0;">Date</label>
-                <span id="zlog-date-status-badge" class="zhub-date-status-badge"></span>
-              </div>
               <div class="zhub-modal-date-picker-row">
                 <input type="date" id="fDate" name="fDate" class="zhub-modal-date-input" required onchange="onZLogModalDateChange(this.value)">
                 <div class="zhub-modal-date-presets" role="group" aria-label="Quick date options">
@@ -557,32 +623,101 @@ function renderZLogPage(targetSubTab) {
               </div>
               <div id="zlog-already-logged-banner" class="zhub-already-logged-banner" style="display:none;"></div>
             </div>
+
+            <!-- 1. Rating Row (Symmetrical 4 Pills) -->
             <div class="fld">
               <span class="l">How did the day feel?</span>
-              <div class="row" id="fRate" role="group" aria-label="Day rating">
-                <button type="button" class="fchip" data-r="great" aria-pressed="true" style="--c:var(--cyan)" onclick="selectZHubDialogRating('great')"><i></i>Great</button>
-                <button type="button" class="fchip" data-r="almost" aria-pressed="false" style="--c:var(--blue)" onclick="selectZHubDialogRating('almost')"><i></i>Almost Good</button>
-                <button type="button" class="fchip" data-r="okay" aria-pressed="false" style="--c:var(--violet)" onclick="selectZHubDialogRating('okay')"><i></i>Okay</button>
-                <button type="button" class="fchip" data-r="tough" aria-pressed="false" style="--c:var(--rose)" onclick="selectZHubDialogRating('tough')"><i></i>Big feelings</button>
+              <div class="zhub-rating-capsule-row" id="fRate" role="group" aria-label="Day rating">
+                <button type="button" class="rating-capsule" data-r="great" onclick="selectZHubDialogRating('great')"><i></i>Great</button>
+                <button type="button" class="rating-capsule" data-r="almost" onclick="selectZHubDialogRating('almost')"><i></i>Almost</button>
+                <button type="button" class="rating-capsule" data-r="okay" onclick="selectZHubDialogRating('okay')"><i></i>Okay</button>
+                <button type="button" class="rating-capsule" data-r="tough" onclick="selectZHubDialogRating('tough')"><i></i>Tough</button>
               </div>
             </div>
+
+            <!-- 2. Routine Medications (Soft Pastel Capsule Row from user reference) -->
             <div class="fld">
-              <span class="l">Medications &amp; daily dose</span>
-              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:6px;">
-                ${ZHUB_MED_DEFS.map(m => `
-                  <label style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:14px;border:1px solid var(--chip);background:var(--bg);cursor:pointer;font-size:12.5px;color:var(--text);">
-                    <input type="checkbox" id="zlog-m-${m.key}" style="width:15px;height:15px;accent-color:var(--pri);" />
-                    <span style="width:8px;height:8px;border-radius:50%;background:${m.c};flex:none;"></span>
-                    <span style="font-weight:700;flex:1;">${m.n}</span>
-                    <input type="text" id="zlog-m-${m.key}-dose" value="${m.defaultDose}" style="width:68px;min-height:26px;height:26px;padding:0 6px;border-radius:8px;border:1px solid var(--chip);background:transparent;font-size:11.5px;text-align:right;" onclick="event.stopPropagation()" />
-                  </label>
-                `).join('')}
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
+                <span class="l" style="margin:0;">Routine Medications</span>
+                <button type="button" onclick="toggleZLogMedDrawer()" style="background:none;border:none;color:var(--zlog-lavender-text,#5B3FD9);font-size:12px;font-weight:700;cursor:pointer;padding:0;">
+                  Adjust / PRN ▾
+                </button>
+              </div>
+
+              <div class="zlog-med-pill-row">
+                <button type="button" id="zlog-btn-med-z" class="zlog-med-pill pill-blue" onclick="toggleZLogMedButton('z')" title="Tap to toggle taken/skipped">
+                  <span class="med-p-name">Zoloft</span>
+                  <span class="med-p-dose" id="zlog-disp-med-z-dose">75mg</span>
+                </button>
+                <button type="button" id="zlog-btn-med-g" class="zlog-med-pill pill-green" onclick="toggleZLogMedButton('g')" title="Tap to toggle taken/skipped">
+                  <span class="med-p-name">Guanfacine XR</span>
+                  <span class="med-p-dose" id="zlog-disp-med-g-dose">2mg</span>
+                </button>
+                <button type="button" id="zlog-btn-med-rit" class="zlog-med-pill pill-rose" onclick="toggleZLogMedButton('rit')" title="Tap to toggle taken/skipped">
+                  <span class="med-p-name">Ritalin</span>
+                  <span class="med-p-dose" id="zlog-disp-med-rit-dose">15mg</span>
+                </button>
+              </div>
+
+              <!-- PRN / Adjust Drawer -->
+              <div id="zlog-med-drawer" class="zlog-med-drawer" style="display:none;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px;">
+                  ${ZHUB_MED_DEFS.map(m => `
+                    <label style="display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:14px;border:1px solid var(--chip);background:var(--card);cursor:pointer;font-size:12px;color:var(--text);">
+                      <input type="checkbox" id="zlog-m-${m.key}" style="width:15px;height:15px;accent-color:var(--pri);" />
+                      <span style="width:8px;height:8px;border-radius:50%;background:${m.c};flex:none;"></span>
+                      <span style="font-weight:700;flex:1;">${m.n}</span>
+                      <input type="text" id="zlog-m-${m.key}-dose" value="${m.defaultDose}" style="width:64px;min-height:24px;height:24px;padding:0 4px;border-radius:6px;border:1px solid var(--chip);background:transparent;font-size:11px;text-align:right;" onclick="event.stopPropagation()" />
+                    </label>
+                  `).join('')}
+                </div>
               </div>
             </div>
-            <div class="fld">
-              <label for="fNotes">Notes (one event per line)</label>
-              <textarea id="fNotes" name="fNotes" placeholder="What happened today?"></textarea>
+
+            <!-- 3. Checkpoints (Symmetrical 2-Column Grid) -->
+            <div class="fld" style="gap:12px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <span class="l" style="margin:0;">Tap Checkpoints (15s Selection)</span>
+                <span id="zlog-modal-pill-count" style="font-size:11px;font-weight:700;color:var(--zlog-lavender-text,#5B3FD9);">0 selected</span>
+              </div>
+
+              ${ZHUB_CHECKPOINT_SECTIONS.map(sec => `
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                  <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:${sec.color};">
+                    ${sec.title}
+                  </span>
+                  <div class="zhub-checkpoint-grid">
+                    ${sec.items.map(item => `
+                      <button type="button" class="capsule-pill ${sec.theme}" data-capsule-text="${escapeHtml(item.text)}" onclick="toggleZLogCapsule('${escapeHtml(item.text)}', this)">
+                        <span class="bold-tag">${item.label}</span>
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+              `).join('')}
             </div>
+
+            <!-- 4. Optional 1-line Unique Note -->
+            <div class="fld">
+              <span class="l">Unique Note (Optional · 1 Line)</span>
+              <input type="text" id="zlog-custom-note" class="zlog-custom-note-input" placeholder="Add unique observation or detail..." oninput="updateZLogLivePreview()" />
+            </div>
+
+            <!-- 5. Live Auto-Generated Bullet Notes Preview -->
+            <div class="fld">
+              <div class="zlog-preview-box">
+                <div class="preview-header">
+                  <span>Live Generated Bullet Notes</span>
+                  <span style="font-weight:600;opacity:0.8;">Auto-formatted</span>
+                </div>
+                <div id="zlog-notes-preview" class="zlog-preview-content"></div>
+              </div>
+            </div>
+
+            <!-- Hidden compatibility textarea -->
+            <textarea id="fNotes" name="fNotes" style="display:none;"></textarea>
+
+            <!-- Attachments -->
             <div class="fld">
               <span class="l">Daily report PDF</span>
               <div class="row">
@@ -593,10 +728,12 @@ function renderZLogPage(targetSubTab) {
               </div>
               <div id="zlog-modal-attachments-container" style="display:flex;flex-direction:column;gap:6px;margin-top:4px;"></div>
             </div>
+
+            <!-- Actions -->
             <div class="dact">
               <button type="button" class="rm" id="rmBtn" style="display:none" onclick="deleteZLogEntryWithUndo()">Delete</button>
               <button type="button" class="cancel" id="cancel" onclick="closeZLogModal()">Cancel</button>
-              <button type="submit" class="go">Save</button>
+              <button type="submit" class="go">Save Day</button>
             </div>
           </form>
         </dialog>
@@ -2074,14 +2211,73 @@ function renderZLogInsights() {
 const renderPatterns = renderZLogInsights;
 
 /* --------------------------------------------------------------------------
-   Dialog: Log / Edit Daily Entry (<dialog id="zhub-dlg">)
+   Dialog: Log / Edit Daily Entry (<dialog id="dlg" class="zhub-dlg">)
    -------------------------------------------------------------------------- */
 function selectZHubDialogRating(rKey) {
   zhubDialogRating = ZHUB_RATE[rKey] ? rKey : 'great';
-  document.querySelectorAll('#fRate .fchip').forEach(btn => {
-    btn.setAttribute('aria-pressed', btn.dataset.r === zhubDialogRating ? 'true' : 'false');
+  document.querySelectorAll('#fRate .rating-capsule, #fRate .fchip').forEach(btn => {
+    const isAct = btn.dataset.r === zhubDialogRating;
+    btn.setAttribute('aria-pressed', isAct ? 'true' : 'false');
+    btn.classList.toggle('active', isAct);
   });
 }
+window.selectZHubDialogRating = selectZHubDialogRating;
+
+function toggleZLogCapsule(text, btnEl) {
+  if (zhubSelectedCapsules.has(text)) {
+    zhubSelectedCapsules.delete(text);
+    if (btnEl) btnEl.classList.remove('active');
+  } else {
+    zhubSelectedCapsules.add(text);
+    if (btnEl) btnEl.classList.add('active');
+  }
+  updateZLogLivePreview();
+}
+window.toggleZLogCapsule = toggleZLogCapsule;
+
+function toggleZLogMedButton(key) {
+  const btn = document.getElementById(`zlog-btn-med-${key}`);
+  const chk = document.getElementById(`zlog-m-${key}`);
+  if (!btn) return;
+  const isSkipped = btn.classList.toggle('skipped');
+  if (chk) chk.checked = !isSkipped;
+}
+window.toggleZLogMedButton = toggleZLogMedButton;
+
+function toggleZLogMedDrawer() {
+  const drawer = document.getElementById('zlog-med-drawer');
+  if (!drawer) return;
+  drawer.style.display = (drawer.style.display === 'none' || !drawer.style.display) ? 'block' : 'none';
+}
+window.toggleZLogMedDrawer = toggleZLogMedDrawer;
+
+function updateZLogLivePreview() {
+  const previewEl = document.getElementById('zlog-notes-preview');
+  const countEl = document.getElementById('zlog-modal-pill-count');
+  const hiddenNotes = document.getElementById('fNotes');
+  const customNoteInput = document.getElementById('zlog-custom-note');
+
+  const customText = customNoteInput ? customNoteInput.value.trim() : '';
+  const bullets = Array.from(zhubSelectedCapsules);
+  if (customText) {
+    customText.split(/[;\n]+/).map(s => s.trim()).filter(Boolean).forEach(s => bullets.push(s));
+  }
+
+  if (countEl) countEl.textContent = `${bullets.length} selected`;
+
+  if (hiddenNotes) {
+    hiddenNotes.value = bullets.length > 0 ? bullets.map(b => `• ${b}`).join('\n') : '';
+  }
+
+  if (previewEl) {
+    if (bullets.length === 0) {
+      previewEl.innerHTML = '<span style="color:var(--muted);font-style:italic;">Tap pills above to automatically generate daily notes...</span>';
+    } else {
+      previewEl.innerHTML = bullets.map(b => `<div style="margin-bottom:3px;">• ${escapeHtml(b)}</div>`).join('');
+    }
+  }
+}
+window.updateZLogLivePreview = updateZLogLivePreview;
 
 function loadZLogModalForDate(dateStr) {
   const todayIso = (typeof formatDateIso === 'function') ? formatDateIso(new Date()) : '2026-10-15';
@@ -2157,35 +2353,89 @@ function loadZLogModalForDate(dateStr) {
 
   selectZHubDialogRating(zhubDialogRating);
 
-  ZHUB_MED_DEFS.forEach(m => {
-    const chk = document.getElementById(`zlog-m-${m.key}`);
-    const doseIn = document.getElementById(`zlog-m-${m.key}-dose`);
-    if (chk) {
-      if (isExistingEntry) {
-        chk.checked = !!meds[m.key];
+  // Reset selected capsules
+  zhubSelectedCapsules.clear();
+
+  // Reset custom note input
+  const customNoteInput = document.getElementById('zlog-custom-note');
+  if (customNoteInput) customNoteInput.value = '';
+
+  // Parse existing entry notes into pills + leftover custom note
+  if (isExistingEntry && entry.notes) {
+    const events = getEntryEventsList(entry);
+    const leftoverEvents = [];
+    
+    // Flat array of known item texts
+    const allKnownItems = [];
+    ZHUB_CHECKPOINT_SECTIONS.forEach(sec => {
+      sec.items.forEach(it => allKnownItems.push(it.text));
+    });
+
+    events.forEach(ev => {
+      const cleanEv = ev.replace(/^[•\*\-\s]+/, '').trim();
+      if (!cleanEv) return;
+
+      const matched = allKnownItems.find(known => {
+        return known.toLowerCase() === cleanEv.toLowerCase() ||
+               cleanEv.toLowerCase().includes(known.toLowerCase()) ||
+               known.toLowerCase().includes(cleanEv.toLowerCase());
+      });
+
+      if (matched) {
+        zhubSelectedCapsules.add(matched);
       } else {
-        chk.checked = (m.key !== 'ris'); // default daily active meds
+        leftoverEvents.push(cleanEv);
       }
+    });
+
+    if (customNoteInput && leftoverEvents.length > 0) {
+      customNoteInput.value = leftoverEvents.join('; ');
     }
-    if (doseIn) {
-      if (m.key === 'rit') {
-        doseIn.value = isExistingEntry ? String(meds.ritDose || (typeof meds.rit === 'string' && meds.rit ? meds.rit : m.defaultDose)) : m.defaultDose;
+  }
+
+  // Update capsule buttons DOM state
+  document.querySelectorAll('.capsule-pill[data-capsule-text]').forEach(btn => {
+    const text = btn.getAttribute('data-capsule-text');
+    const isAct = zhubSelectedCapsules.has(text);
+    btn.classList.toggle('active', isAct);
+  });
+
+  // Sync Routine Med Buttons (z, g, rit)
+  ['z', 'g', 'rit'].forEach(k => {
+    const btn = document.getElementById(`zlog-btn-med-${k}`);
+    const isChecked = isExistingEntry ? !!meds[k] : true;
+    if (btn) btn.classList.toggle('skipped', !isChecked);
+    
+    const chk = document.getElementById(`zlog-m-${k}`);
+    if (chk) chk.checked = isChecked;
+
+    const doseSpan = document.getElementById(`zlog-disp-med-${k}-dose`);
+    if (doseSpan) {
+      if (k === 'rit') {
+        doseSpan.textContent = isExistingEntry ? String(meds.ritDose || (typeof meds.rit === 'string' && meds.rit ? meds.rit : '15mg')) : '15mg';
       } else {
-        doseIn.value = isExistingEntry ? String(meds[m.key + 'Dose'] || m.defaultDose) : m.defaultDose;
+        doseSpan.textContent = isExistingEntry ? String(meds[k + 'Dose'] || (k === 'z' ? '75mg' : '2mg')) : (k === 'z' ? '75mg' : '2mg');
       }
     }
   });
 
-  const notesArea = document.getElementById('fNotes') || document.getElementById('zlog-modal-notes');
-  if (notesArea) {
-    if (isExistingEntry) {
-      const events = getEntryEventsList(entry);
-      notesArea.value = events.length > 0 ? events.join('\n') : (entry.notes || '');
-    } else {
-      notesArea.value = '';
+  // Sync Drawer Meds (mag, mel, ris)
+  ['mag', 'mel', 'ris'].forEach(mKey => {
+    const chk = document.getElementById(`zlog-m-${mKey}`);
+    const doseIn = document.getElementById(`zlog-m-${mKey}-dose`);
+    if (chk) {
+      if (isExistingEntry) {
+        chk.checked = !!meds[mKey];
+      } else {
+        chk.checked = (mKey !== 'ris'); // default daily active meds
+      }
     }
-  }
+    if (doseIn) {
+      doseIn.value = isExistingEntry ? String(meds[mKey + 'Dose'] || (mKey === 'ris' ? '0.25mg' : mKey === 'mel' ? 'Bedtime' : 'Daily')) : (mKey === 'ris' ? '0.25mg' : mKey === 'mel' ? 'Bedtime' : 'Daily');
+    }
+  });
 
+  updateZLogLivePreview();
   renderModalAttachmentsList();
 }
 window.loadZLogModalForDate = loadZLogModalForDate;
@@ -2262,8 +2512,8 @@ function openZLogEntryModal(targetDate = null) {
     dialogEl.setAttribute('open', '');
   }
 
-  const notesArea = document.getElementById('fNotes') || document.getElementById('zlog-modal-notes');
-  if (notesArea) notesArea.focus();
+  const customInput = document.getElementById('zlog-custom-note');
+  if (customInput) customInput.focus();
 }
 window.openZLogEntryModal = openZLogEntryModal;
 
@@ -2285,19 +2535,30 @@ function submitZLogEntryModal(event) {
   }
 
   const rMeta = ZHUB_RATE[zhubDialogRating] || ZHUB_RATE.great;
-  const notesArea = document.getElementById('fNotes') || document.getElementById('zlog-modal-notes');
-  const evs = (notesArea?.value || '')
-    .split('\n')
-    .map(s => s.trim())
-    .filter(Boolean);
-  const notesRaw = evs.length > 0 ? evs.join('\n') : 'No notes';
 
-  const zChecked = !!document.getElementById('zlog-m-z')?.checked;
+  // Collect selected bullets + custom 1-line note
+  const bulletLines = Array.from(zhubSelectedCapsules);
+  const customNoteInput = document.getElementById('zlog-custom-note');
+  const customVal = customNoteInput ? customNoteInput.value.trim() : '';
+  if (customVal) {
+    customVal.split(/[;\n]+/).map(s => s.trim()).filter(Boolean).forEach(s => {
+      bulletLines.push(s);
+    });
+  }
+
+  const notesRaw = bulletLines.length > 0 
+    ? bulletLines.map(b => `• ${b}`).join('\n')
+    : 'No notes';
+
+  // Read med pill toggle states
+  const zChecked = !document.getElementById('zlog-btn-med-z')?.classList.contains('skipped');
   const zDose = (document.getElementById('zlog-m-z-dose')?.value || '75mg').trim();
-  const gChecked = !!document.getElementById('zlog-m-g')?.checked;
+  const gChecked = !document.getElementById('zlog-btn-med-g')?.classList.contains('skipped');
   const gDose = (document.getElementById('zlog-m-g-dose')?.value || '2mg').trim();
-  const ritChecked = !!document.getElementById('zlog-m-rit')?.checked;
-  const ritDose = (document.getElementById('zlog-m-rit-dose')?.value || '15 + 10mg').trim();
+  const ritChecked = !document.getElementById('zlog-btn-med-rit')?.classList.contains('skipped');
+  const ritDose = (document.getElementById('zlog-m-rit-dose')?.value || '15mg').trim();
+
+  // Read drawer meds
   const magChecked = !!document.getElementById('zlog-m-mag')?.checked;
   const magDose = (document.getElementById('zlog-m-mag-dose')?.value || 'Daily').trim();
   const melChecked = !!document.getElementById('zlog-m-mel')?.checked;
