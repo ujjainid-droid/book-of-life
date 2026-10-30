@@ -893,15 +893,15 @@ body:has(.margo-screen-wrap) .global-actions {
 
 .aurora-nav-pill {
   width: 100%;
-  max-width: 390px;
+  max-width: 420px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(5, 1fr) !important;
   background: var(--margo-card, #FFFFFF) !important;
   border: none !important;
   border-radius: 28px !important;
-  padding: 8px !important;
-  gap: 8px !important;
+  padding: 6px !important;
+  gap: 5px !important;
   box-shadow: 0 1px 2px rgba(30, 27, 58, 0.06), 0 8px 24px rgba(30, 27, 58, 0.08) !important;
   pointer-events: auto;
   box-sizing: border-box;
@@ -915,7 +915,7 @@ body:has(.margo-screen-wrap) .global-actions {
   align-items: center;
   justify-content: center;
   font-family: var(--margo-font) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
   color: var(--margo-muted, #6B6785) !important;
   background: transparent !important;
@@ -924,8 +924,9 @@ body:has(.margo-screen-wrap) .global-actions {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
-  padding: 0 4px !important;
+  padding: 0 2px !important;
   box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .aurora-nav-link.active,

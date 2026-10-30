@@ -1030,6 +1030,7 @@ window.closeMoreNavSheet = closeMoreNavSheet;
 
 function updatePrimaryNavTodayState() {
   const todayBtn = document.getElementById('nav-btn-today');
+  const coverBtn = document.getElementById('nav-btn-cover');
   const kitchenBtn = document.getElementById('nav-btn-kitchen');
   const zhubBtn = document.getElementById('nav-btn-zhub');
   const moreBtn = document.getElementById('nav-btn-more');
@@ -1040,6 +1041,10 @@ function updatePrimaryNavTodayState() {
     todayBtn.classList.toggle('active', cur === 'sanctuary');
     todayBtn.classList.toggle('on', cur === 'sanctuary');
   }
+  if (coverBtn) {
+    coverBtn.classList.toggle('active', cur === 'cover');
+    coverBtn.classList.toggle('on', cur === 'cover');
+  }
   if (kitchenBtn) {
     kitchenBtn.classList.toggle('active', cur === 'kitchen');
     kitchenBtn.classList.toggle('on', cur === 'kitchen');
@@ -1049,7 +1054,7 @@ function updatePrimaryNavTodayState() {
     zhubBtn.classList.toggle('on', cur === 'zlog');
   }
   if (moreBtn) {
-    const isMoreActive = (cur === 'cover' || cur === 'finance' || cur === 'hobby');
+    const isMoreActive = (cur === 'finance' || cur === 'hobby');
     moreBtn.classList.toggle('active', isMoreActive);
     moreBtn.classList.toggle('on', isMoreActive);
   }

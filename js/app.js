@@ -346,7 +346,7 @@ function switchAppView(viewName, subViewName) {
     }
   };
   const isBudgetActive = currentView === 'finance' && (subViewName === 'budget' || (typeof activeFinanceSubTab !== 'undefined' && activeFinanceSubTab === 'budget'));
-  const isMoreActive = (currentView === 'cover' || currentView === 'finance' || currentView === 'hobby');
+  const isMoreActive = (currentView === 'finance' || currentView === 'hobby');
 
   updateNavBtn(todayBtn, currentView === 'sanctuary');
   updateNavBtn(coverBtn, currentView === 'cover');
