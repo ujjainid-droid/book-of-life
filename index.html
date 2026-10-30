@@ -12,10 +12,10 @@
   <meta http-equiv="Expires" content="0">
   <title>margo</title>
   
-  <!-- Google Fonts: Onest, Fraunces, Inter & Newsreader for Margo Aurora & Care Sanctuary aesthetic -->
+  <!-- Google Fonts: Plus Jakarta Sans for Simplified Today aesthetic, plus Onest, Fraunces & Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Onest:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600;1,6..72,700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Onest:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600;1,6..72,700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -23,18 +23,19 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.8.2">
-  <link rel="stylesheet" href="css/layout.css?v=9.8.2">
-  <link rel="stylesheet" href="css/cover.css?v=9.8.2">
-  <link rel="stylesheet" href="css/habits.css?v=9.8.2">
-  <link rel="stylesheet" href="css/tasks.css?v=9.8.2">
-  <link rel="stylesheet" href="css/settings.css?v=9.8.2">
-  <link rel="stylesheet" href="css/claims.css?v=9.8.2">
-  <link rel="stylesheet" href="css/zlog.css?v=9.8.2">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.8.2">
-  <link rel="stylesheet" href="css/finance.css?v=9.8.2">
-  <link rel="stylesheet" href="css/hobby.css?v=9.8.2">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.8.2">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.0">
+  <link rel="stylesheet" href="css/layout.css?v=9.9.0">
+  <link rel="stylesheet" href="css/cover.css?v=9.9.0">
+  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.0">
+  <link rel="stylesheet" href="css/habits.css?v=9.9.0">
+  <link rel="stylesheet" href="css/tasks.css?v=9.9.0">
+  <link rel="stylesheet" href="css/settings.css?v=9.9.0">
+  <link rel="stylesheet" href="css/claims.css?v=9.9.0">
+  <link rel="stylesheet" href="css/zlog.css?v=9.9.0">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.0">
+  <link rel="stylesheet" href="css/finance.css?v=9.9.0">
+  <link rel="stylesheet" href="css/hobby.css?v=9.9.0">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.9.0">
 </head>
 <body>
 
@@ -62,13 +63,9 @@
     <nav class="aurora-primary-nav" aria-label="Primary">
       <div class="aurora-nav-pill" id="main-nav-capsule">
         <a href="#today" id="nav-btn-today" class="aurora-nav-link on active" onclick="event.preventDefault(); switchAppView('sanctuary')" aria-current="page" title="Today: Daily Habits, Momentum &amp; Reflections">Today</a>
-        <a href="#compass" id="nav-btn-cover" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('cover')" title="Compass: System Architecture, Life Focus &amp; Long-term Index">Compass</a>
         <a href="#kitchen" id="nav-btn-kitchen" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('kitchen')" title="Kitchen: Stash, Saturday Meal Ritual &amp; Grocery">Kitchen</a>
-        <a href="#hobby" id="nav-btn-hobby" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('hobby')" title="Hobby: Tasting Menu &amp; Somatic Exploration">Hobby</a>
         <a href="#zhub" id="nav-btn-zhub" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior &amp; Insights">Z Hub</a>
-        <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance')" title="Money: Burn, Subscriptions &amp; Reimbursements">
-          <span>Money</span>
-        </a>
+        <button type="button" id="nav-btn-more" class="aurora-nav-link" onclick="toggleMoreNavSheet()" title="More: Compass, Money, Hobby, Settings">More</button>
       </div>
     </nav>
 
@@ -694,21 +691,22 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.8.2"></script>
-  <script src="js/zlogData.js?v=9.8.2"></script>
-  <script src="js/financeData.js?v=9.8.2"></script>
-  <script src="js/podcastData.js?v=9.8.2"></script>
-  <script src="js/pdfStore.js?v=9.8.2"></script>
-  <script src="js/storage.js?v=9.8.2"></script>
-  <script src="js/sync.js?v=9.8.2"></script>
-  <script src="js/pages/coverPage.js?v=9.8.2"></script>
-  <script src="js/pages/coverHubPage.js?v=9.8.2"></script>
-  <script src="js/pages/claimsPage.js?v=9.8.2"></script>
-  <script src="js/pages/zlogPage.js?v=9.8.2"></script>
-  <script src="js/pages/financePage.js?v=9.8.2"></script>
-  <script src="js/pages/hobbyPage.js?v=9.8.2"></script>
-  <script src="js/pages/kitchenPage.js?v=9.8.2"></script>
-  <script src="js/podcastAgent.js?v=9.8.2"></script>
-  <script src="js/app.js?v=9.8.2"></script>
+  <script src="js/margoData.js?v=9.9.0"></script>
+  <script src="js/zlogData.js?v=9.9.0"></script>
+  <script src="js/financeData.js?v=9.9.0"></script>
+  <script src="js/podcastData.js?v=9.9.0"></script>
+  <script src="js/pdfStore.js?v=9.9.0"></script>
+  <script src="js/storage.js?v=9.9.0"></script>
+  <script src="js/sync.js?v=9.9.0"></script>
+  <script src="js/pages/coverPage.js?v=9.9.0"></script>
+  <script src="js/pages/todayPage.js?v=9.9.0"></script>
+  <script src="js/pages/coverHubPage.js?v=9.9.0"></script>
+  <script src="js/pages/claimsPage.js?v=9.9.0"></script>
+  <script src="js/pages/zlogPage.js?v=9.9.0"></script>
+  <script src="js/pages/financePage.js?v=9.9.0"></script>
+  <script src="js/pages/hobbyPage.js?v=9.9.0"></script>
+  <script src="js/pages/kitchenPage.js?v=9.9.0"></script>
+  <script src="js/podcastAgent.js?v=9.9.0"></script>
+  <script src="js/app.js?v=9.9.0"></script>
 </body>
 </html>
