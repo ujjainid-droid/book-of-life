@@ -10,7 +10,6 @@
 
 let todaySubView = 'today'; // 'today' | 'sunday-review' | 'parking-lot'
 let isStepsSheetOpen = false;
-let isMoreSheetOpen = false;
 
 /**
  * Main rendering router for Today / Sanctuary
@@ -53,7 +52,6 @@ function renderTodayPage() {
       ${contentHtml}
     </div>
     ${renderStepsSheetModalHtml(activeDate)}
-    ${renderMoreNavSheetHtml()}
   `;
 
   // Attach focus listeners or setup dynamic UI
@@ -500,50 +498,7 @@ function renderStepsSheetModalHtml(dateStr) {
   `;
 }
 
-/**
- * --------------------------------------------------------------------------
- * 6. "More" Navigation Sheet HTML
- * --------------------------------------------------------------------------
- */
-function renderMoreNavSheetHtml() {
-  return `
-    <div class="margo-more-sheet-overlay ${isMoreSheetOpen ? 'active' : ''}"
-      id="margo-more-sheet-overlay"
-      onclick="if(event.target === this) closeMoreNavSheet()">
-      <div class="margo-more-sheet" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px 6px;">
-          <span style="font-size: 17px; font-weight: 800; color: var(--margo-ink);">More Views</span>
-          <button type="button" onclick="closeMoreNavSheet()" style="background:none; border:none; font-size:18px; color:var(--margo-muted); cursor:pointer;">✕</button>
-        </div>
 
-        <a href="#compass" class="margo-more-item" onclick="event.preventDefault(); closeMoreNavSheet(); switchAppView('cover');">
-          <span class="margo-more-icon">🧭</span>
-          <span>Compass (System Index)</span>
-        </a>
-
-        <a href="#finance" class="margo-more-item" onclick="event.preventDefault(); closeMoreNavSheet(); switchAppView('finance');">
-          <span class="margo-more-icon">💸</span>
-          <span>Money (Burn & Runway)</span>
-        </a>
-
-        <a href="#hobby" class="margo-more-item" onclick="event.preventDefault(); closeMoreNavSheet(); switchAppView('hobby');">
-          <span class="margo-more-icon">🎨</span>
-          <span>Hobby (Tasting Menu)</span>
-        </a>
-
-        <button type="button" class="margo-more-item" onclick="closeMoreNavSheet(); if(typeof openSettingsModal==='function') openSettingsModal();">
-          <span class="margo-more-icon">⚙️</span>
-          <span>Settings & Cloud Sync</span>
-        </button>
-
-        <button type="button" class="margo-more-item" onclick="closeMoreNavSheet(); if(typeof toggleTheme==='function') toggleTheme();">
-          <span class="margo-more-icon">🌓</span>
-          <span>Switch Theme</span>
-        </button>
-      </div>
-    </div>
-  `;
-}
 
 /**
  * --------------------------------------------------------------------------
@@ -1011,20 +966,16 @@ function getWeekNumber(d) {
  * --------------------------------------------------------------------------
  */
 function toggleMoreNavSheet() {
-  isMoreSheetOpen = !isMoreSheetOpen;
   const overlay = document.getElementById('margo-more-sheet-overlay');
-  if (overlay) {
-    overlay.classList.toggle('active', isMoreSheetOpen);
-  }
+  if (!overlay) return;
+  overlay.classList.toggle('active');
 }
 window.toggleMoreNavSheet = toggleMoreNavSheet;
 
 function closeMoreNavSheet() {
-  isMoreSheetOpen = false;
   const overlay = document.getElementById('margo-more-sheet-overlay');
-  if (overlay) {
-    overlay.classList.remove('active');
-  }
+  if (!overlay) return;
+  overlay.classList.remove('active');
 }
 window.closeMoreNavSheet = closeMoreNavSheet;
 

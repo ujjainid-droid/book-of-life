@@ -434,6 +434,20 @@ function renderCurrentView() {
 }
 window.renderCurrentView = renderCurrentView;
 
+function toggleMoreNavSheet() {
+  const overlay = document.getElementById('margo-more-sheet-overlay');
+  if (!overlay) return;
+  overlay.classList.toggle('active');
+}
+window.toggleMoreNavSheet = toggleMoreNavSheet;
+
+function closeMoreNavSheet() {
+  const overlay = document.getElementById('margo-more-sheet-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+}
+window.closeMoreNavSheet = closeMoreNavSheet;
+
 // Backward compatibility alias
 function toggleAdultingBunker() {
   if (currentView === 'sanctuary' || currentView === 'cover') {
@@ -540,7 +554,6 @@ function renderCurrentView() {
   }
   switchAppView(active, sub);
 }
-window.renderCurrentView = renderCurrentView;
 
 function refreshAppBadges() {
   if (typeof storage !== 'undefined' && typeof storage.getClaimsStats === 'function') {

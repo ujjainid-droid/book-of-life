@@ -23,19 +23,19 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.1">
-  <link rel="stylesheet" href="css/layout.css?v=9.9.1">
-  <link rel="stylesheet" href="css/cover.css?v=9.9.1">
-  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.1">
-  <link rel="stylesheet" href="css/habits.css?v=9.9.1">
-  <link rel="stylesheet" href="css/tasks.css?v=9.9.1">
-  <link rel="stylesheet" href="css/settings.css?v=9.9.1">
-  <link rel="stylesheet" href="css/claims.css?v=9.9.1">
-  <link rel="stylesheet" href="css/zlog.css?v=9.9.1">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.1">
-  <link rel="stylesheet" href="css/finance.css?v=9.9.1">
-  <link rel="stylesheet" href="css/hobby.css?v=9.9.1">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.9.1">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.2">
+  <link rel="stylesheet" href="css/layout.css?v=9.9.2">
+  <link rel="stylesheet" href="css/cover.css?v=9.9.2">
+  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.2">
+  <link rel="stylesheet" href="css/habits.css?v=9.9.2">
+  <link rel="stylesheet" href="css/tasks.css?v=9.9.2">
+  <link rel="stylesheet" href="css/settings.css?v=9.9.2">
+  <link rel="stylesheet" href="css/claims.css?v=9.9.2">
+  <link rel="stylesheet" href="css/zlog.css?v=9.9.2">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.2">
+  <link rel="stylesheet" href="css/finance.css?v=9.9.2">
+  <link rel="stylesheet" href="css/hobby.css?v=9.9.2">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.9.2">
 </head>
 <body>
 
@@ -688,26 +688,61 @@
     </div>
   </div>
 
+  <!-- More Navigation Sheet Modal (Always Available in DOM) -->
+  <div class="margo-more-sheet-overlay" id="margo-more-sheet-overlay" onclick="if(event.target===this) closeMoreNavSheet()">
+    <div class="margo-more-sheet" onclick="event.stopPropagation()">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 4px 6px;">
+        <span style="font-size: 17px; font-weight: 800; color: var(--margo-ink, #1E1B3A);">More Views</span>
+        <button type="button" onclick="closeMoreNavSheet()" style="background:none; border:none; font-size:20px; color:var(--margo-muted, #6B6785); cursor:pointer; padding: 4px;" aria-label="Close">✕</button>
+      </div>
+
+      <a href="#compass" class="margo-more-item" onclick="event.preventDefault(); closeMoreNavSheet(); switchAppView('cover');">
+        <span class="margo-more-icon">🧭</span>
+        <span>Compass (System Index)</span>
+      </a>
+
+      <a href="#finance" class="margo-more-item" onclick="event.preventDefault(); closeMoreNavSheet(); switchAppView('finance');">
+        <span class="margo-more-icon">💸</span>
+        <span>Money (Burn &amp; Runway)</span>
+      </a>
+
+      <a href="#hobby" class="margo-more-item" onclick="event.preventDefault(); closeMoreNavSheet(); switchAppView('hobby');">
+        <span class="margo-more-icon">🎨</span>
+        <span>Hobby (Tasting Menu)</span>
+      </a>
+
+      <button type="button" class="margo-more-item" onclick="closeMoreNavSheet(); if(typeof openSettingsModal==='function') openSettingsModal();">
+        <span class="margo-more-icon">⚙️</span>
+        <span>Settings &amp; Cloud Sync</span>
+      </button>
+
+      <button type="button" class="margo-more-item" onclick="closeMoreNavSheet(); if(typeof toggleTheme==='function') toggleTheme();">
+        <span class="margo-more-icon">🌓</span>
+        <span>Switch Theme</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.9.1"></script>
-  <script src="js/zlogData.js?v=9.9.1"></script>
-  <script src="js/financeData.js?v=9.9.1"></script>
-  <script src="js/podcastData.js?v=9.9.1"></script>
-  <script src="js/pdfStore.js?v=9.9.1"></script>
-  <script src="js/storage.js?v=9.9.1"></script>
-  <script src="js/sync.js?v=9.9.1"></script>
-  <script src="js/pages/coverPage.js?v=9.9.1"></script>
-  <script src="js/pages/todayPage.js?v=9.9.1"></script>
-  <script src="js/pages/coverHubPage.js?v=9.9.1"></script>
-  <script src="js/pages/claimsPage.js?v=9.9.1"></script>
-  <script src="js/pages/zlogPage.js?v=9.9.1"></script>
-  <script src="js/pages/financePage.js?v=9.9.1"></script>
-  <script src="js/pages/hobbyPage.js?v=9.9.1"></script>
-  <script src="js/pages/kitchenPage.js?v=9.9.1"></script>
-  <script src="js/podcastAgent.js?v=9.9.1"></script>
-  <script src="js/app.js?v=9.9.1"></script>
+  <script src="js/margoData.js?v=9.9.2"></script>
+  <script src="js/zlogData.js?v=9.9.2"></script>
+  <script src="js/financeData.js?v=9.9.2"></script>
+  <script src="js/podcastData.js?v=9.9.2"></script>
+  <script src="js/pdfStore.js?v=9.9.2"></script>
+  <script src="js/storage.js?v=9.9.2"></script>
+  <script src="js/sync.js?v=9.9.2"></script>
+  <script src="js/pages/coverPage.js?v=9.9.2"></script>
+  <script src="js/pages/todayPage.js?v=9.9.2"></script>
+  <script src="js/pages/coverHubPage.js?v=9.9.2"></script>
+  <script src="js/pages/claimsPage.js?v=9.9.2"></script>
+  <script src="js/pages/zlogPage.js?v=9.9.2"></script>
+  <script src="js/pages/financePage.js?v=9.9.2"></script>
+  <script src="js/pages/hobbyPage.js?v=9.9.2"></script>
+  <script src="js/pages/kitchenPage.js?v=9.9.2"></script>
+  <script src="js/podcastAgent.js?v=9.9.2"></script>
+  <script src="js/app.js?v=9.9.2"></script>
 </body>
 </html>
