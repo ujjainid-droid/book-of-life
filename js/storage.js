@@ -4557,6 +4557,16 @@ class StorageManager {
           recipeUrl: '',
           ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
           stashMatch: null
+        },
+        {
+          id: 'r-buffalo-jack-salad',
+          title: 'Buffalo Jack Salad',
+          icon: 'salad',
+          course: 'main',
+          tags: ['custom'],
+          recipeUrl: '',
+          ingredients: 'Romaine lettuce, breaded buffalo chicken, pepper jack cheese, seasoned croutons, beets, chickpeas & chipotle aioli (no tomatoes)',
+          stashMatch: null
         }
       ],
       newRecipes: [],
@@ -4899,6 +4909,27 @@ class StorageManager {
           this.data.kitchenUpdatedAt = Date.now();
         }
         this.data.kitchenKaleSaladSeeded = true;
+        this.saveData();
+      }
+
+      // Ensure Buffalo Jack Salad is seeded in Favorites Vault
+      if (!this.data.kitchenBuffaloJackSeeded) {
+        if (!Array.isArray(kd.favoriteRecipes)) kd.favoriteRecipes = [];
+        const exists = kd.favoriteRecipes.some(r => (r.title || '').toLowerCase().includes('buffalo jack'));
+        if (!exists) {
+          kd.favoriteRecipes.unshift({
+            id: 'r-buffalo-jack-' + Date.now(),
+            title: 'Buffalo Jack Salad',
+            icon: 'salad',
+            course: 'main',
+            tags: ['custom'],
+            recipeUrl: '',
+            ingredients: 'Romaine lettuce, breaded buffalo chicken, pepper jack cheese, seasoned croutons, beets, chickpeas & chipotle aioli (no tomatoes)',
+            stashMatch: null
+          });
+          this.data.kitchenUpdatedAt = Date.now();
+        }
+        this.data.kitchenBuffaloJackSeeded = true;
         this.saveData();
       }
     }
