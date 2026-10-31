@@ -4740,6 +4740,135 @@ class StorageManager {
         this.data.kitchenHashBrownAdded = true;
         this.saveData();
       }
+
+      // Seed this week's dinners and shopping list
+      if (!this.data.kitchenDinnersNov2026Seeded) {
+        const plannedWeek = [
+          {
+            day: 'Sun',
+            meal: 'Spanish rice',
+            source: 'fresh',
+            icon: 'risotto',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: {
+              brunch: [],
+              lunch: [],
+              dinner: [{ meal: 'Spanish rice', source: 'fresh', icon: 'risotto', recipeUrl: '', favoriteId: null }],
+              dessert: []
+            }
+          },
+          {
+            day: 'Mon',
+            meal: 'Home made pizza with salami',
+            source: 'fresh',
+            icon: 'pizza',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: {
+              brunch: [],
+              lunch: [],
+              dinner: [{ meal: 'Home made pizza with salami', source: 'fresh', icon: 'pizza', recipeUrl: '', favoriteId: null }],
+              dessert: []
+            }
+          },
+          {
+            day: 'Tue',
+            meal: 'Tacos soft Shell with shredded lettuce and ground turkey',
+            source: 'fresh',
+            icon: 'taco',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: {
+              brunch: [],
+              lunch: [],
+              dinner: [{ meal: 'Tacos soft Shell with shredded lettuce and ground turkey', source: 'fresh', icon: 'taco', recipeUrl: '', favoriteId: null }],
+              dessert: []
+            }
+          },
+          {
+            day: 'Wed',
+            meal: 'Salad with grilled chicken and cucumbers, tomatoes, chickpeas, bacon',
+            source: 'fresh',
+            icon: 'salad',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: {
+              brunch: [],
+              lunch: [],
+              dinner: [{ meal: 'Salad with grilled chicken and cucumbers, tomatoes, chickpeas, bacon', source: 'fresh', icon: 'salad', recipeUrl: '', favoriteId: null }],
+              dessert: []
+            }
+          },
+          {
+            day: 'Thu',
+            meal: 'Chicken nuggets, veggies, stuff from freezer and pantry',
+            source: 'freezer',
+            icon: 'chicken',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: {
+              brunch: [],
+              lunch: [],
+              dinner: [{ meal: 'Chicken nuggets, veggies, stuff from freezer and pantry', source: 'freezer', icon: 'chicken', recipeUrl: '', favoriteId: null }],
+              dessert: []
+            }
+          },
+          {
+            day: 'Fri',
+            meal: 'Takeout / Eat Out',
+            source: 'out',
+            icon: 'takeout',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: {
+              brunch: [],
+              lunch: [],
+              dinner: [{ meal: 'Takeout / Eat Out', source: 'out', icon: 'takeout', recipeUrl: '', favoriteId: null }],
+              dessert: []
+            }
+          },
+          {
+            day: 'Sat',
+            meal: '',
+            source: 'fresh',
+            icon: 'chicken',
+            recipeUrl: '',
+            favoriteId: null,
+            meals: { brunch: [], lunch: [], dinner: [], dessert: [] }
+          }
+        ];
+
+        kd.weekSchedule = JSON.parse(JSON.stringify(plannedWeek));
+        kd.followingWeekSchedule = JSON.parse(JSON.stringify(plannedWeek));
+
+        kd.groceries = [
+          { id: 'g-peas', text: 'Peas', checked: false },
+          { id: 'g-edamame', text: 'Edamame', checked: false },
+          { id: 'g-rice', text: 'Rice (for Spanish rice)', checked: false },
+          { id: 'g-tomatoes-sauce', text: 'Tomato sauce / diced tomatoes', checked: false },
+          { id: 'g-pizzadough', text: 'Pizza dough', checked: false },
+          { id: 'g-pizzasauce', text: 'Pizza sauce', checked: false },
+          { id: 'g-mozzarella', text: 'Mozzarella cheese', checked: false },
+          { id: 'g-salami', text: 'Salami', checked: false },
+          { id: 'g-tacoshells', text: 'Soft taco shells', checked: false },
+          { id: 'g-groundturkey', text: 'Ground turkey', checked: false },
+          { id: 'g-tacoseasoning', text: 'Taco seasoning', checked: false },
+          { id: 'g-shreddedlettuce', text: 'Shredded lettuce', checked: false },
+          { id: 'g-chickenbreast', text: 'Chicken breasts', checked: false },
+          { id: 'g-saladgreens', text: 'Salad greens / romaine', checked: false },
+          { id: 'g-cucumbers', text: 'Cucumbers', checked: false },
+          { id: 'g-tomatoes', text: 'Tomatoes', checked: false },
+          { id: 'g-chickpeas', text: 'Chickpeas', checked: false },
+          { id: 'g-bacon', text: 'Bacon', checked: false },
+          { id: 'g-chickennuggets', text: 'Chicken nuggets', checked: false },
+          { id: 'g-veggies', text: 'Veggies (freezer/pantry)', checked: false }
+        ];
+
+        this.data.kitchenDinnersNov2026Seeded = true;
+        this.data.kitchenUpdatedAt = Date.now();
+        this.saveData();
+      }
     }
     return this.data.kitchenData;
   }
