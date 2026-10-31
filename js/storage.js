@@ -4567,120 +4567,9 @@ class StorageManager {
           recipeUrl: '',
           ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
           stashMatch: null
-        },
-        {
-          id: 'r-salmon-broccoli',
-          title: 'Roasted Salmon with Broccoli',
-          icon: 'salmon',
-          course: 'main',
-          tags: [],
-          recipeUrl: 'https://cooking.nytimes.com/recipes/1020083-sheet-pan-salmon',
-          ingredients: 'Salmon fillets, broccoli, sweet potatoes, olive oil, lemon',
-          stashMatch: 'Salmon fillets'
-        },
-        {
-          id: 'r-taco-bowls',
-          title: 'Turkey & Black Bean Taco Bowls',
-          icon: 'taco',
-          course: 'main',
-          tags: [],
-          recipeUrl: 'https://pinchofyum.com/turkey-taco-bowls',
-          ingredients: 'Ground turkey, black beans, salsa, tortillas, avocado, cilantro',
-          stashMatch: 'Ground Turkey'
-        },
-        {
-          id: 'r-parmesan-risotto',
-          title: 'Creamy Parmesan Risotto',
-          icon: 'risotto',
-          course: 'side',
-          tags: [],
-          recipeUrl: 'https://www.seriouseats.com/pressure-cooker-mushroom-risotto-recipe',
-          ingredients: 'Arborio rice, bone broth, parmesan wedge, baby spinach',
-          stashMatch: 'Arborio risotto rice'
-        },
-        {
-          id: 'r-sheet-pan-chicken',
-          title: 'Sheet Pan Herb Chicken',
-          icon: 'chicken',
-          course: 'main',
-          tags: [],
-          recipeUrl: 'https://www.eatwell101.com/sheet-pan-lemon-herb-chicken',
-          ingredients: 'Chicken breasts, bell peppers, zucchini, lemon, oregano',
-          stashMatch: null
-        },
-        {
-          id: 'r-raos-penne',
-          title: 'Rao\'s Penne with Spinach',
-          icon: 'pasta',
-          course: 'main',
-          tags: [],
-          recipeUrl: 'https://raos.com/blogs/recipes/penne-alla-vodka',
-          ingredients: 'Penne pasta, Rao\'s marinara, baby spinach, parmesan',
-          stashMatch: 'Rao\'s Marinara & Penne'
-        },
-        {
-          id: 'r-spanish-rice',
-          title: 'Spanish Rice',
-          icon: 'risotto',
-          course: 'side',
-          tags: [],
-          recipeUrl: '',
-          ingredients: 'Rice, tomato sauce, diced tomatoes, onion, garlic, broth, cumin & taco spices',
-          stashMatch: null
-        },
-        {
-          id: 'r-homemade-pizza',
-          title: 'Homemade Pizza with Salami',
-          icon: 'pizza',
-          course: 'main',
-          tags: [],
-          recipeUrl: '',
-          ingredients: 'Pizza dough, pizza sauce, mozzarella cheese, sliced salami',
-          stashMatch: null
-        },
-        {
-          id: 'r-friday-pizza',
-          title: 'Friday Night Pizza / Takeout',
-          icon: 'pizza',
-          course: 'main',
-          tags: [],
-          recipeUrl: '',
-          ingredients: 'Local pizzeria or favorite takeout Thai / Ramen',
-          stashMatch: null
-        },
-        {
-          id: 'r-weekend-pancakes',
-          title: 'Fluffy Weekend Pancakes & Berries',
-          icon: 'brunch',
-          course: 'brunch',
-          tags: [],
-          recipeUrl: '',
-          ingredients: 'Flour, eggs, milk, butter, pure maple syrup, fresh blueberries & strawberries',
-          stashMatch: null
-        },
-        {
-          id: 'r-berry-crumble',
-          title: 'Warm Berry Crumble',
-          icon: 'dessert',
-          course: 'dessert',
-          tags: [],
-          recipeUrl: '',
-          ingredients: 'Blueberries, blackberries, rolled oats, butter, brown sugar, cinnamon, vanilla ice cream',
-          stashMatch: null
         }
       ],
-      newRecipes: [
-        {
-          id: 'r-new-chickpea-wrap',
-          title: 'Crispy Chickpea & Avocado Wrap',
-          icon: 'salad',
-          course: 'main',
-          tags: [],
-          recipeUrl: '',
-          ingredients: 'Tortillas, roasted seasoned chickpeas, mashed avocado, cucumbers, microgreens, tahini drizzle',
-          stashMatch: null
-        }
-      ],
+      newRecipes: [],
       groceries: [
         { id: 'g-hashbrowns', text: 'Hash browns', checked: false }
       ]
@@ -5044,164 +4933,24 @@ class StorageManager {
         this.saveData();
       }
 
-      // Restore all permanent household favorites and queue
-      if (!this.data.kitchenPermanentVaultRestoredV1) {
-        if (!Array.isArray(kd.favoriteRecipes)) kd.favoriteRecipes = [];
-
-        const permanentRecipes = [
-          {
-            id: 'r-buffalo-jack-salad',
-            title: 'Buffalo Jack Salad',
-            icon: 'salad',
-            course: 'main',
-            tags: ['custom'],
-            recipeUrl: '',
-            ingredients: 'Romaine lettuce, breaded buffalo chicken, pepper jack cheese, seasoned croutons, beets, chickpeas & chipotle aioli (no tomatoes)',
-            stashMatch: null
-          },
-          {
-            id: 'r-kale-salad',
-            title: 'Kale Salad',
-            icon: 'salad',
-            course: 'side',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
-            stashMatch: null
-          },
-          {
-            id: 'r-salmon-broccoli',
-            title: 'Roasted Salmon with Broccoli',
-            icon: 'salmon',
-            course: 'main',
-            tags: [],
-            recipeUrl: 'https://cooking.nytimes.com/recipes/1020083-sheet-pan-salmon',
-            ingredients: 'Salmon fillets, broccoli, sweet potatoes, olive oil, lemon',
-            stashMatch: 'Salmon fillets'
-          },
-          {
-            id: 'r-taco-bowls',
-            title: 'Turkey & Black Bean Taco Bowls',
-            icon: 'taco',
-            course: 'main',
-            tags: [],
-            recipeUrl: 'https://pinchofyum.com/turkey-taco-bowls',
-            ingredients: 'Ground turkey, black beans, salsa, tortillas, avocado, cilantro',
-            stashMatch: 'Ground Turkey'
-          },
-          {
-            id: 'r-parmesan-risotto',
-            title: 'Creamy Parmesan Risotto',
-            icon: 'risotto',
-            course: 'side',
-            tags: [],
-            recipeUrl: 'https://www.seriouseats.com/pressure-cooker-mushroom-risotto-recipe',
-            ingredients: 'Arborio rice, bone broth, parmesan wedge, baby spinach',
-            stashMatch: 'Arborio risotto rice'
-          },
-          {
-            id: 'r-sheet-pan-chicken',
-            title: 'Sheet Pan Herb Chicken',
-            icon: 'chicken',
-            course: 'main',
-            tags: [],
-            recipeUrl: 'https://www.eatwell101.com/sheet-pan-lemon-herb-chicken',
-            ingredients: 'Chicken breasts, bell peppers, zucchini, lemon, oregano',
-            stashMatch: null
-          },
-          {
-            id: 'r-raos-penne',
-            title: 'Rao\'s Penne with Spinach',
-            icon: 'pasta',
-            course: 'main',
-            tags: [],
-            recipeUrl: 'https://raos.com/blogs/recipes/penne-alla-vodka',
-            ingredients: 'Penne pasta, Rao\'s marinara, baby spinach, parmesan',
-            stashMatch: 'Rao\'s Marinara & Penne'
-          },
-          {
-            id: 'r-spanish-rice',
-            title: 'Spanish Rice',
-            icon: 'risotto',
-            course: 'side',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Rice, tomato sauce, diced tomatoes, onion, garlic, broth, cumin & taco spices',
-            stashMatch: null
-          },
-          {
-            id: 'r-homemade-pizza',
-            title: 'Homemade Pizza with Salami',
-            icon: 'pizza',
-            course: 'main',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Pizza dough, pizza sauce, mozzarella cheese, sliced salami',
-            stashMatch: null
-          },
-          {
-            id: 'r-friday-pizza',
-            title: 'Friday Night Pizza / Takeout',
-            icon: 'pizza',
-            course: 'main',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Local pizzeria or favorite takeout Thai / Ramen',
-            stashMatch: null
-          },
-          {
-            id: 'r-weekend-pancakes',
-            title: 'Fluffy Weekend Pancakes & Berries',
-            icon: 'brunch',
-            course: 'brunch',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Flour, eggs, milk, butter, pure maple syrup, fresh blueberries & strawberries',
-            stashMatch: null
-          },
-          {
-            id: 'r-berry-crumble',
-            title: 'Warm Berry Crumble',
-            icon: 'dessert',
-            course: 'dessert',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Blueberries, blackberries, rolled oats, butter, brown sugar, cinnamon, vanilla ice cream',
-            stashMatch: null
-          }
-        ];
-
-        permanentRecipes.forEach(rec => {
-          const exists = kd.favoriteRecipes.some(r => (r.title || '').toLowerCase().trim() === rec.title.toLowerCase().trim());
-          if (!exists) {
-            kd.favoriteRecipes.push(rec);
-          }
-        });
-
-        // Also ensure New Recipes Queue has ready-to-test favorite
-        if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
-        const queueItems = [
-          {
-            id: 'r-new-chickpea-wrap',
-            title: 'Crispy Chickpea & Avocado Wrap',
-            icon: 'salad',
-            course: 'main',
-            tags: [],
-            recipeUrl: '',
-            ingredients: 'Tortillas, roasted seasoned chickpeas, mashed avocado, cucumbers, microgreens, tahini drizzle',
-            stashMatch: null
-          }
-        ];
-        queueItems.forEach(q => {
-          const exists = kd.newRecipes.some(r => (r.title || '').toLowerCase().trim() === q.title.toLowerCase().trim());
-          if (!exists) {
-            kd.newRecipes.push(q);
-          }
-        });
-
-        this.data.kitchenPermanentVaultRestoredV1 = true;
-        this.data.kitchenUpdatedAt = Date.now();
-        this.saveData();
+      // Clean out incorrect template recipes, keeping only user's verified favorites
+      const dummyTitles = new Set([
+        'roasted salmon with broccoli',
+        'turkey & black bean taco bowls',
+        'creamy parmesan risotto',
+        'sheet pan herb chicken',
+        'rao\'s penne with spinach',
+        'friday night pizza / takeout',
+        'fluffy weekend pancakes & berries',
+        'warm berry crumble',
+        'spanish rice',
+        'homemade pizza with salami'
+      ]);
+      if (Array.isArray(kd.favoriteRecipes)) {
+        kd.favoriteRecipes = kd.favoriteRecipes.filter(r => !dummyTitles.has((r.title || '').toLowerCase().trim()));
+      }
+      if (Array.isArray(kd.newRecipes)) {
+        kd.newRecipes = kd.newRecipes.filter(r => (r.title || '').toLowerCase().trim() !== 'crispy chickpea & avocado wrap');
       }
     }
     return this.data.kitchenData;
