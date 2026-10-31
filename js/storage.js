@@ -4547,7 +4547,18 @@ class StorageManager {
       activeWeekOffset: 0,
       activeMealFilter: 'all',
       vaultFilter: 'all',
-      favoriteRecipes: [],
+      favoriteRecipes: [
+        {
+          id: 'r-kale-salad',
+          title: 'Kale Salad',
+          icon: 'salad',
+          course: 'side',
+          tags: [],
+          recipeUrl: '',
+          ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
+          stashMatch: null
+        }
+      ],
       newRecipes: [],
       groceries: [
         { id: 'g-hashbrowns', text: 'Hash browns', checked: false }
@@ -4867,6 +4878,27 @@ class StorageManager {
 
         this.data.kitchenDinnersNov2026Seeded = true;
         this.data.kitchenUpdatedAt = Date.now();
+        this.saveData();
+      }
+
+      // Ensure Kale Salad is seeded in Favorites Vault
+      if (!this.data.kitchenKaleSaladSeeded) {
+        if (!Array.isArray(kd.favoriteRecipes)) kd.favoriteRecipes = [];
+        const exists = kd.favoriteRecipes.some(r => (r.title || '').toLowerCase().includes('kale salad'));
+        if (!exists) {
+          kd.favoriteRecipes.unshift({
+            id: 'r-kale-salad-' + Date.now(),
+            title: 'Kale Salad',
+            icon: 'salad',
+            course: 'side',
+            tags: [],
+            recipeUrl: '',
+            ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
+            stashMatch: null
+          });
+          this.data.kitchenUpdatedAt = Date.now();
+        }
+        this.data.kitchenKaleSaladSeeded = true;
         this.saveData();
       }
     }
