@@ -57,7 +57,7 @@ button:focus-visible, textarea:focus-visible {
   max-width: 600px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   background: var(--card, #181A33);
   border: 1px solid var(--line, #2E3060);
   border-radius: 28px;

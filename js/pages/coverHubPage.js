@@ -105,379 +105,139 @@ function renderCoverHubPage() {
   const nowMaintain = campaignsData.now.filter(c => isMaintainCamp(c));
 
   container.innerHTML = `
-    <div class="mc-app ${activeLens === 'simple' ? 'simple' : ''}" id="mc-app">
+    <div class="margo-compass-wrap">
 
-      <div class="mc-lens" id="lens" role="group" aria-label="View">
-        <button type="button" aria-pressed="${activeLens === 'simple' ? 'true' : 'false'}" data-lens="simple" onclick="setCompassLens('simple')">simple</button>
-        <button type="button" aria-pressed="${activeLens === 'visible' ? 'true' : 'false'}" data-lens="visible" onclick="setCompassLens('visible')">visible</button>
-        <button type="button" aria-pressed="${activeLens === 'next' ? 'true' : 'false'}" data-lens="next" onclick="setCompassLens('next')">next step</button>
-        <button type="button" aria-pressed="${activeLens === 'done' ? 'true' : 'false'}" data-lens="done" onclick="setCompassLens('done')">done</button>
-      </div>
+      <!-- Header with Sassy Cartoon Avatar -->
+      <header class="margo-compass-header">
+        <svg width="68" height="74" viewBox="0 0 104 112" role="img" aria-label="Sassy cartoon avatar" style="flex:none;cursor:pointer;transition:transform 0.18s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" onclick="switchAppView('sanctuary')" title="margo · Tap to return to Today" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="avatarHairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2D2235"/>
+              <stop offset="50%" stop-color="#1A1320"/>
+              <stop offset="100%" stop-color="#120D17"/>
+            </linearGradient>
+            <linearGradient id="avatarSkinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ECC095"/>
+              <stop offset="100%" stop-color="#D99E6C"/>
+            </linearGradient>
+            <linearGradient id="avatarSweaterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7C3AED"/>
+              <stop offset="100%" stop-color="#5B21B6"/>
+            </linearGradient>
+            <linearGradient id="avatarLipGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#E75480"/>
+              <stop offset="100%" stop-color="#BE185D"/>
+            </linearGradient>
+            <filter id="avatarGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7C3AED" flood-opacity="0.18"/>
+            </filter>
+          </defs>
 
-      <section class="mc-banner" aria-label="Focus theme">
-        <div class="mc-bt">
-          <!-- Sassy Cartoon Avatar -->
-          <svg width="68" height="74" viewBox="0 0 104 112" role="img" aria-label="Sassy cartoon avatar" style="flex:none;cursor:pointer;transition:transform 0.18s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" onclick="switchAppView('sanctuary')" title="Tap to view Today" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="avatarHairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#2D2235"/>
-                <stop offset="50%" stop-color="#1A1320"/>
-                <stop offset="100%" stop-color="#120D17"/>
-              </linearGradient>
-              <linearGradient id="avatarSkinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#ECC095"/>
-                <stop offset="100%" stop-color="#D99E6C"/>
-              </linearGradient>
-              <linearGradient id="avatarSweaterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#7C3AED"/>
-                <stop offset="100%" stop-color="#5B21B6"/>
-              </linearGradient>
-              <linearGradient id="avatarLipGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#E75480"/>
-                <stop offset="100%" stop-color="#BE185D"/>
-              </linearGradient>
-              <filter id="avatarGlow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7C3AED" flood-opacity="0.18"/>
-              </filter>
-            </defs>
+          <!-- Ambient Glow -->
+          <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
 
-            <!-- Ambient Glow -->
-            <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+          <!-- Back Hair (Flowing waves) -->
+          <path d="M 24 44 C 20 62 21 82 28 98 C 30 102 34 102 36 96 C 33 80 32 62 35 48 Z" fill="url(#avatarHairGrad)"/>
+          <path d="M 80 44 C 84 62 83 82 76 98 C 74 102 70 102 68 96 C 71 80 72 62 69 48 Z" fill="url(#avatarHairGrad)"/>
+          <ellipse cx="52" cy="40" rx="34" ry="32" fill="url(#avatarHairGrad)"/>
 
-            <!-- Back Hair (Flowing waves) -->
-            <path d="M 24 44 C 20 62 21 82 28 98 C 30 102 34 102 36 96 C 33 80 32 62 35 48 Z" fill="url(#avatarHairGrad)"/>
-            <path d="M 80 44 C 84 62 83 82 76 98 C 74 102 70 102 68 96 C 71 80 72 62 69 48 Z" fill="url(#avatarHairGrad)"/>
-            <ellipse cx="52" cy="40" rx="34" ry="32" fill="url(#avatarHairGrad)"/>
+          <!-- Chic Violet Turtleneck Sweater -->
+          <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#avatarSweaterGrad)" filter="url(#avatarGlow)"/>
+          <!-- Ribbed Neckline -->
+          <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+          <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+          <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+          <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+          <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
 
-            <!-- Chic Violet Turtleneck Sweater -->
-            <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#avatarSweaterGrad)" filter="url(#avatarGlow)"/>
-            <!-- Ribbed Neckline -->
-            <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
-            <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-            <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-            <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-            <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+          <!-- Neck -->
+          <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#avatarSkinGrad)"/>
 
-            <!-- Neck -->
-            <path d="M 44 68 L 44 76 C 44 79 60 79 60 76 L 60 68 Z" fill="#D39665"/>
+          <!-- Sassy Head / Jawline -->
+          <path d="M 32 40 C 32 62 38 74 52 74 C 66 74 72 62 72 40 C 72 24 66 18 52 18 C 38 18 32 24 32 40 Z" fill="url(#avatarSkinGrad)"/>
 
-            <!-- Head Base -->
-            <ellipse cx="52" cy="49" rx="23" ry="24" fill="url(#avatarSkinGrad)"/>
+          <!-- Cute Ears -->
+          <circle cx="31" cy="45" r="5" fill="#D99E6C"/>
+          <circle cx="73" cy="45" r="5" fill="#D99E6C"/>
 
-            <!-- Ears & Gold Hoops -->
-            <circle cx="29" cy="50" r="5" fill="#DC9F6D"/>
-            <circle cx="28" cy="55" r="4.5" fill="none" stroke="#F59E0B" stroke-width="1.8"/>
-            <circle cx="75" cy="50" r="5" fill="#DC9F6D"/>
-            <circle cx="76" cy="55" r="4.5" fill="none" stroke="#F59E0B" stroke-width="1.8"/>
+          <!-- Glam Oversized Sunglasses (Soft Lavender-Black Tint) -->
+          <rect x="33" y="36" width="16" height="13" rx="4.5" fill="#1E1B3A" stroke="#5B3FD9" stroke-width="1.4"/>
+          <rect x="55" y="36" width="16" height="13" rx="4.5" fill="#1E1B3A" stroke="#5B3FD9" stroke-width="1.4"/>
+          <path d="M 49 41 L 55 41" stroke="#5B3FD9" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Lens Flare Accent -->
+          <path d="M 35 39 L 43 45" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+          <path d="M 57 39 L 65 45" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
 
-            <!-- Soft Rosy Cheeks -->
-            <ellipse cx="38" cy="55" rx="5" ry="3" fill="#F472B6" opacity="0.55"/>
-            <ellipse cx="66" cy="55" rx="5" ry="3" fill="#F472B6" opacity="0.55"/>
+          <!-- Sassy Smile / Lip Gloss -->
+          <path d="M 46 62 Q 52 66 58 62" stroke="url(#avatarLipGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <!-- Rosy Cheeks -->
+          <circle cx="36" cy="53" r="4" fill="#F472B6" opacity="0.3" filter="blur(1px)"/>
+          <circle cx="68" cy="53" r="4" fill="#F472B6" opacity="0.3" filter="blur(1px)"/>
 
-            <!-- Sassy Eyebrows -->
-            <path d="M 36 39 Q 42 34 47 37" fill="none" stroke="#1A1320" stroke-width="2.4" stroke-linecap="round"/>
-            <path d="M 57 35 Q 63 30 69 35" fill="none" stroke="#1A1320" stroke-width="2.6" stroke-linecap="round"/>
+          <!-- Front Hair Fringe / Side Swept Curtain Bangs -->
+          <path d="M 26 34 C 30 18 42 12 52 12 C 64 12 76 18 78 34 C 74 24 64 22 52 23 C 40 22 30 25 26 34 Z" fill="url(#avatarHairGrad)"/>
+          <path d="M 28 32 C 34 38 38 46 38 52 C 34 46 32 40 28 32 Z" fill="#2D2235"/>
+          <path d="M 76 32 C 70 38 66 46 66 52 C 70 46 72 40 76 32 Z" fill="#2D2235"/>
+        </svg>
+        <div>
+          <h1>Compass</h1>
+          <p onclick="promptEditSeasonFocus()" title="Tap to edit focus theme">${escapeHtml(seasonTheme)}</p>
+        </div>
+      </header>
 
-            <!-- Sassy Winged Eyeliner & Playful Wink -->
-            <!-- Left Eye (Confident winged gaze) -->
-            <path d="M 37 45 Q 42 41 47 45" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
-            <path d="M 47 45 L 49 43.5" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
-            <circle cx="43" cy="46" r="3.2" fill="#261710"/>
-            <circle cx="44.2" cy="45" r="1.1" fill="#FFFFFF"/>
-            <path d="M 38 48 Q 42 50 46 48" fill="none" stroke="#120D17" stroke-width="0.8" opacity="0.4"/>
-
-            <!-- Right Eye (Playful Sassy Wink) -->
-            <path d="M 57 46 Q 62 41 68 45" fill="none" stroke="#120D17" stroke-width="2.4" stroke-linecap="round"/>
-            <path d="M 68 45 L 71 43" stroke="#120D17" stroke-width="2.4" stroke-linecap="round"/>
-            <path d="M 67 47 L 70 47" stroke="#120D17" stroke-width="1.8" stroke-linecap="round"/>
-
-            <!-- Cute Refined Nose -->
-            <path d="M 51 49 Q 53 54 50 54" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
-
-            <!-- Sassy Smirk (Coral Rose Lips #E75480) -->
-            <path d="M 46 61 Q 53 64 60 59" fill="none" stroke="url(#avatarLipGrad)" stroke-width="2.8" stroke-linecap="round"/>
-            <path d="M 59 60 Q 61 58 62 55" fill="none" stroke="url(#avatarLipGrad)" stroke-width="2.2" stroke-linecap="round"/>
-            <ellipse cx="53" cy="63.5" rx="3.5" ry="1.2" fill="#FDA4AF" opacity="0.8"/>
-
-            <!-- Voluminous Side-Swept Dark Hair -->
-            <path d="M 26 38 C 28 22 45 14 62 17 C 76 19 82 28 80 40 C 76 34 71 31 63 31 C 47 31 36 39 33 48 C 30 42 27 40 26 38 Z" fill="url(#avatarHairGrad)"/>
-            <path d="M 32 46 C 30 54 30 64 33 70 C 34 72 35 70 34 66 C 32 60 32 52 34 46 Z" fill="#241B2B"/>
-            <path d="M 72 44 C 74 52 74 62 72 68 C 71 70 70 69 71 65 C 72 58 72 50 71 44 Z" fill="#241B2B"/>
-            <!-- Glossy Highlight -->
-            <path d="M 44 20 Q 56 17 68 22" fill="none" stroke="#5E486D" stroke-width="2.2" stroke-linecap="round" opacity="0.7"/>
-
-            <!-- Sassy Perched Sunglasses on Head -->
-            <g transform="translate(32, 14)">
-              <rect x="0" y="2" width="18" height="12" rx="4" fill="#0F172A" stroke="#475569" stroke-width="1.2"/>
-              <line x1="3" y1="4" x2="8" y2="12" stroke="#A78BFA" stroke-width="1.2" opacity="0.8" stroke-linecap="round"/>
-              <path d="M 17 6 Q 20 4 23 6" fill="none" stroke="#475569" stroke-width="1.8"/>
-              <rect x="22" y="2" width="18" height="12" rx="4" fill="#0F172A" stroke="#475569" stroke-width="1.2"/>
-              <line x1="25" y1="4" x2="30" y2="12" stroke="#A78BFA" stroke-width="1.2" opacity="0.8" stroke-linecap="round"/>
-            </g>
-
-            <!-- Sparkle of Confidence -->
-            <path d="M 85 24 Q 86 19 91 18 Q 86 17 85 12 Q 84 17 79 18 Q 84 19 85 24 Z" fill="#8B5CF6"/>
-            <circle cx="89" cy="27" r="1.2" fill="#0D98BA"/>
-          </svg>
-          <div class="mc-txt">
-            <p class="mc-quote" id="cover-season-focus-text" onclick="promptEditSeasonFocus()" style="cursor:pointer" title="Tap to edit season focus">“${escapeHtml(seasonTheme)}”</p>
+      <!-- 1. In focus Section -->
+      <section class="compass-sec" aria-label="In focus">
+        <div class="compass-sec-head">
+          <h2>In focus</h2>
+          <div class="sec-counter">
+            ${nowPrimary.map(() => '<span class="compass-dot-indicator"></span>').join('')}
+            <span>${nowPrimary.length} of ${nowPrimary.length}</span>
           </div>
         </div>
-        <div class="mc-stats">
-          <div class="mc-stat" onclick="document.getElementById('nowSublaneIp')?.scrollIntoView({behavior:'smooth'})" title="In Progress (IP) strikes · Active focus">
-            <b id="sIp">${nowPrimary.length}</b>
-            <span>In Progress</span>
-          </div>
-          <div class="mc-stat" onclick="document.getElementById('nowSublaneMaintain')?.scrollIntoView({behavior:'smooth'})" title="Maintain · Steady background routines">
-            <b id="sMaintain">${nowMaintain.length}</b>
-            <span>Maintain</span>
-          </div>
-          <div class="mc-stat" onclick="document.getElementById('laterLaneHead')?.scrollIntoView({behavior:'smooth'})" title="On deck · Queued in Later">
-            <b id="sDeck">${campaignsData.later.length}</b>
-            <span>On deck</span>
-          </div>
-          <div class="mc-stat" onclick="document.getElementById('section-architecture-blueprint')?.scrollIntoView({behavior:'smooth'})" title="5 Core Pillars (Care, Grow, Home, Finance, School)">
-            <b>5</b>
-            <span>Pillars</span>
-          </div>
+        <div class="compass-focus-cards">
+          ${nowPrimary.map(camp => `
+            <div class="compass-focus-card" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
+              <span class="compass-focus-cat">${escapeHtml(getCampaignDomainName(camp))}</span>
+              <h3 class="compass-focus-title">${escapeHtml(camp.title || 'Focus item')}</h3>
+            </div>
+          `).join('')}
         </div>
       </section>
 
-      <section class="mc-board" id="board" aria-labelledby="bT">
-        <div class="mc-sechead">
-          <h2 id="bT">Life architecture &amp; focus board</h2>
+      <!-- 2. Maintain Section -->
+      <section class="compass-sec" aria-label="Maintain">
+        <div class="compass-sec-head">
+          <h2>Maintain</h2>
+          <span class="sec-counter">${nowMaintain.length} steady</span>
         </div>
-
-        <div class="mc-lane-head">
-          <div class="l">
-            <span class="mc-lane-tag now">
-              <svg class="mc-lane-paw" viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true">
-                <ellipse cx="6.5" cy="5" rx="1.5" ry="2" transform="rotate(-12 6.5 5)"/>
-                <ellipse cx="10.8" cy="4.8" rx="1.5" ry="2" transform="rotate(10 10.8 4.8)"/>
-                <ellipse cx="3.5" cy="8.2" rx="1.3" ry="1.7" transform="rotate(-25 3.5 8.2)"/>
-                <ellipse cx="13.5" cy="8" rx="1.3" ry="1.7" transform="rotate(25 13.5 8)"/>
-                <path d="M8.5 8.5c2.2 0 3.8 2 3.8 3.8 0 1.1-.8 1.6-1.8 1.6-.7 0-1.1-.4-2-.4s-1.3.4-2 .4c-1 0-1.8-.5-1.8-1.6 0-1.8 1.6-3.8 3.8-3.8z"/>
-                <g transform="translate(8.5, 7.5) scale(0.72)">
-                  <ellipse cx="6.5" cy="5" rx="1.5" ry="2" transform="rotate(-12 6.5 5)"/>
-                  <ellipse cx="10.8" cy="4.8" rx="1.5" ry="2" transform="rotate(10 10.8 4.8)"/>
-                  <ellipse cx="3.5" cy="8.2" rx="1.3" ry="1.7" transform="rotate(-25 3.5 8.2)"/>
-                  <ellipse cx="13.5" cy="8" rx="1.3" ry="1.7" transform="rotate(25 13.5 8)"/>
-                  <path d="M8.5 8.5c2.2 0 3.8 2 3.8 3.8 0 1.1-.8 1.6-1.8 1.6-.7 0-1.1-.4-2-.4s-1.3.4-2 .4c-1 0-1.8-.5-1.8-1.6 0-1.8 1.6-3.8 3.8-3.8z"/>
-                </g>
-              </svg>
-              <span>NOW</span>
-            </span>
-            <span class="mc-muted">Active focus · in flight, ball in court or tracked</span>
-          </div>
-          <button type="button" class="mc-add" id="addNow" onclick="promptAddCampaignItem('now')">+ Add focus</button>
+        <div class="compass-maintain-cards">
+          ${nowMaintain.map(camp => `
+            <div class="compass-maintain-row" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
+              <div class="compass-maintain-left">
+                <span class="compass-dot-indicator"></span>
+                <span class="compass-maintain-title">${escapeHtml(camp.title || 'Maintain item')}</span>
+              </div>
+              <span class="compass-maintain-tag">${escapeHtml(getCampaignDomainName(camp))}</span>
+            </div>
+          `).join('')}
         </div>
-        ${(() => {
-          const isMaintainItem = (camp) => {
-            if (!camp) return false;
-            const isHc = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
-            const raw = String(camp.status || (isHc ? 'Maintain' : 'IP')).trim().toLowerCase();
-            return raw === 'maintain' || raw === 'review';
-          };
-          const nowPrimary = campaignsData.now.filter(c => !isMaintainItem(c));
-          const nowMaintain = campaignsData.now.filter(c => isMaintainItem(c));
-          if (campaignsData.now.length === 0) {
-            return `<div class="mc-focus-grid" id="nowList"><div class="mc-empty">Nothing active. Pull something in from Later.</div></div>`;
-          }
-          return `
-            ${nowPrimary.length > 0 ? `
-              <div class="mc-sublane-section ip-section" id="nowSublaneIp">
-                ${nowMaintain.length > 0 ? `
-                  <div class="mc-sublane-head in-flight">
-                    <div class="mc-sublane-title-wrap">
-                      <span class="mc-sublane-tag in-flight">
-                        <span class="pulse-dot"></span>
-                        <span>IN PROGRESS</span>
-                      </span>
-                      <span class="mc-sublane-desc">Active strikes &bull; focused bandwidth</span>
-                    </div>
-                    <span class="mc-sublane-count-badge in-flight">${nowPrimary.length} active</span>
-                  </div>
-                ` : ''}
-                <div class="mc-focus-grid" id="nowList">
-                  ${nowPrimary.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
-                </div>
-              </div>
-            ` : ''}
-            ${nowMaintain.length > 0 ? `
-              <div class="mc-sublane-section maintain-section" id="nowSublaneMaintain">
-                <div class="mc-sublane-divider"></div>
-                <div class="mc-sublane-head maintain">
-                  <div class="mc-sublane-title-wrap">
-                    <span class="mc-sublane-tag maintain">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                      </svg>
-                      <span>MAINTAIN</span>
-                    </span>
-                    <span class="mc-sublane-desc">Steady state &bull; background routines &amp; cadence</span>
-                  </div>
-                  <span class="mc-sublane-count-badge maintain">${nowMaintain.length} steady</span>
-                </div>
-                <div class="mc-focus-grid mc-maintain-grid" id="nowMaintainList">
-                  ${nowMaintain.map(camp => renderUnifiedCampaignCard(camp, 'now')).join('')}
-                </div>
-              </div>
-            ` : ''}
-          `;
-        })()}
-
-        <div class="mc-divider"></div>
-
-        <div class="mc-lane-head" id="laterLaneHead">
-          <div class="l">
-            <span class="mc-lane-tag later">🧊 LATER</span>
-            <span class="mc-muted">On deck &amp; parking lot · next in queue once bandwidth opens</span>
-          </div>
-          <button type="button" class="mc-add" id="addLater" onclick="promptAddCampaignItem('later')">+ Add to later</button>
-        </div>
-        ${(() => {
-          const isMaintainItem = (camp) => {
-            if (!camp) return false;
-            const isHc = (camp.id === 'camp-haircare' || (camp.title || '').toLowerCase().trim() === 'haircare');
-            const raw = String(camp.status || (isHc ? 'Maintain' : 'NS')).trim().toLowerCase();
-            return raw === 'maintain' || raw === 'review';
-          };
-          const laterPrimary = campaignsData.later.filter(c => !isMaintainItem(c));
-          const laterMaintain = campaignsData.later.filter(c => isMaintainItem(c));
-          if (campaignsData.later.length === 0) {
-            return `<div class="mc-later-grid" id="laterList"><div class="mc-empty">Parking lot is empty.</div></div>`;
-          }
-          return `
-            ${laterPrimary.length > 0 ? `
-              <div class="mc-later-grid" id="laterList">
-                ${laterPrimary.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
-              </div>
-            ` : ''}
-            ${laterMaintain.length > 0 ? `
-              <div class="mc-later-grid mc-maintain-row" id="laterMaintainList">
-                ${laterMaintain.map(camp => renderUnifiedCampaignCard(camp, 'later')).join('')}
-              </div>
-            ` : ''}
-          `;
-        })()}
       </section>
 
-      <div class="mc-side">
-
-        <section class="mc-panel mc-workflow-panel ${isWorkflowWide ? 'is-wide' : ''}" aria-labelledby="tT" id="section-architecture-blueprint">
-          <div class="mc-panel-head">
-            <h2 id="tT">System compass</h2>
-          </div>
-
-          <!-- Modern Bento Grid Architecture (Native Interactive UI) -->
-          <div class="mc-bento-grid">
-            <!-- 1. margo -->
-            <div class="mc-bento-card mc-bento-hero" onclick="switchAppView('sanctuary')" title="margo (Tap to open Daily Sheet)">
-              <div class="mc-bento-top-row">
-                <div class="mc-bento-brand">
-                  <span class="mc-tb m">m</span>
-                  <span class="mc-bento-name">margo</span>
-                </div>
-                <span class="mc-bento-badge cmd">COMMAND &amp; CONTROL</span>
-              </div>
+      <!-- 3. Later Section (Transparent Rows, No White Background) -->
+      <section class="compass-sec" aria-label="Later">
+        <div class="compass-sec-head">
+          <h2>Later</h2>
+          <span class="sec-counter">${(campaignsData.later || []).length} on deck</span>
+        </div>
+        <div class="compass-later-list">
+          ${(campaignsData.later || []).map(camp => `
+            <div class="compass-later-row" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
+              <span class="compass-later-title">${escapeHtml(camp.title || 'Later item')}</span>
+              <span class="compass-later-tag">${escapeHtml(getCampaignDomainName(camp))}</span>
             </div>
-
-            <!-- 2. Things 3 -->
-            <div class="mc-bento-card mc-bento-things" title="Things 3">
-              <div class="mc-bento-top-row" onclick="openThings3Query('')">
-                <div class="mc-bento-brand">
-                  <span class="mc-tb T3">T3</span>
-                  <span class="mc-bento-name">Things 3</span>
-                </div>
-                <span class="mc-bento-badge exec">EXECUTION</span>
-              </div>
-              <div class="mc-bento-tags">
-                <span class="mc-bento-tag high" onclick="openThings3Query('🌶️ #high priority')" title="Open 🌶️ High Priority in Things 3">🌶️ High Priority</span>
-                <span class="mc-bento-tag active" onclick="openThings3Query('🐾 #active')" title="Open 🐾 Active in Things 3">🐾 Active</span>
-                <span class="mc-bento-tag later" onclick="openThings3Query('🧊 #later')" title="Open 🧊 Later in Things 3">🧊 Later</span>
-              </div>
-            </div>
-
-            <!-- 3. Gmail -->
-            <div class="mc-bento-card" onclick="window.open('https://mail.google.com', '_blank')" title="Gmail (Tap to open)">
-              <div class="mc-bento-top-row">
-                <span class="mc-tb mail">${COMPASS_MAIL_SVG}</span>
-                <span class="mc-bento-badge inflow">INFLOW</span>
-              </div>
-              <span class="mc-bento-name">Gmail</span>
-            </div>
-
-            <!-- 4. Apple Notes -->
-            <div class="mc-bento-card" onclick="copyAppleNoteLauncher('')" title="Apple Notes (Tap to open)">
-              <div class="mc-bento-top-row">
-                <span class="mc-tb N">N</span>
-                <span class="mc-bento-badge notes">MASTER NOTES</span>
-              </div>
-              <span class="mc-bento-name">Apple Notes</span>
-            </div>
-
-            <!-- 5. Google Drive -->
-            <div class="mc-bento-card mc-bento-vault" onclick="window.open('https://drive.google.com', '_blank')" title="Google Drive (Tap to open)">
-              <div class="mc-bento-top-row">
-                <div class="mc-bento-brand">
-                  <span class="mc-tb G">G</span>
-                  <span class="mc-bento-name">Google Drive</span>
-                </div>
-                <span class="mc-bento-badge vault">MASTER VAULT</span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="mc-panel" aria-labelledby="fT" id="section-framework-shelf">
-          <div class="mc-fw-head">
-            <div>
-              <h2 id="fT">MARGO framework</h2>
-              <span class="mc-muted">Daily intentional design buckets &amp; core focus areas</span>
-            </div>
-            <button type="button" id="fwBtn" aria-expanded="${fwOpen ? 'true' : 'false'}" aria-controls="pillars" onclick="toggleCompassFramework()">${fwOpen ? 'Collapse' : 'Expand'}</button>
-          </div>
-          <div class="mc-pillars" id="pillars" style="display:${fwOpen ? 'grid' : 'none'}">
-            ${COMPASS_PILLARS.map(p => `
-              <article class="mc-pl ${p.k}">
-                <div class="hd">
-                  <span class="ltr" aria-hidden="true">${p.k}</span>
-                  <h3>${escapeHtml(p.n)}</h3>
-                </div>
-                <div class="cs">
-                  ${p.c.map(chip => `<span>${escapeHtml(chip)}</span>`).join('')}
-                </div>
-              </article>
-            `).join('')}
-          </div>
-        </section>
-
-        <section class="mc-panel" aria-labelledby="pT" id="section-presets-shelf">
-          <h2 id="pT">Habit presets</h2>
-          <span class="mc-muted">Tap a preset to add it to your daily tracking stack</span>
-          <div class="mc-presets" id="presets">
-            ${RECOMMENDED_HABIT_PRESETS.map((preset, pIdx) => {
-              const pName = preset.name.toLowerCase().trim();
-              const isStand = (pName === 'stand ring' || pName === 'stand');
-              const isAdded = isStand
-                ? !standPresetDisabled
-                : habits.some(h => h && h.name.toLowerCase().trim() === pName);
-              return `
-                <button type="button"
-                        aria-pressed="${isAdded ? 'true' : 'false'}"
-                        data-n="${escapeHtml(preset.name)}"
-                        onclick="addHabitFromPresetCover(${pIdx})">${isAdded ? '✓ ' : '+ '}${escapeHtml(preset.name)}</button>
-              `;
-            }).join('')}
-          </div>
-        </section>
-
-      </div>
-
-      <div id="mc-toast" role="status" aria-live="polite" style="display:${compassUndoState ? 'flex' : 'none'}">
-        <span id="mcToastMsg">${compassUndoState ? escapeHtml(compassUndoState.message) : ''}</span>
-        <button type="button" id="mcToastUndo" onclick="undoCompassRemove()">Undo</button>
-      </div>
+          `).join('')}
+        </div>
+      </section>
 
     </div>
   `;
@@ -1431,3 +1191,17 @@ window.toggleWorkflowPanelWidth = toggleWorkflowPanelWidth;
 
 
 
+
+function getCampaignDomainName(camp) {
+  if (!camp) return 'Focus';
+  const t = ((camp.title || camp.id || '') + ' ' + (camp.cat || camp.theme || '')).toLowerCase();
+  if (t.includes('school') || t.includes('iep') || t.includes('ood') || t.includes('windsor') || t.includes('education')) return 'Education';
+  if (t.includes('surg') || t.includes('health') || t.includes('doctor') || t.includes('med')) return 'Health';
+  if (t.includes('oon') || t.includes('finance') || t.includes('money') || t.includes('budget') || t.includes('tax') || t.includes('invest') || t.includes('claim')) return 'Finance';
+  if (t.includes('home') || t.includes('house') || t.includes('declutter') || t.includes('clean')) return 'Home';
+  if (t.includes('outfit') || t.includes('shoe') || t.includes('cloth') || t.includes('wardrobe') || t.includes('jewelry') || t.includes('style')) return 'Style';
+  if (t.includes('food') || t.includes('meal') || t.includes('cook') || t.includes('kitchen') || t.includes('nutrition') || t.includes('recipe')) return 'Nutrition';
+  if (t.includes('hair') || t.includes('skin') || t.includes('bag') || t.includes('face') || t.includes('makeup') || t.includes('care') || t.includes('foot')) return 'Care';
+  return 'Focus';
+}
+window.getCampaignDomainName = getCampaignDomainName;

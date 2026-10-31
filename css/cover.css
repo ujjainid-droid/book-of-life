@@ -16711,3 +16711,224 @@ body.dark-mode .budget-badge-orchid {
   border-color: var(--orchid, #6C2E7B);
   box-shadow: 0 2px 8px rgba(108, 46, 123, 0.35);
 }
+
+/* ==========================================================================
+   margo · Simplified Compass Experience (Lavender Palette, Mobile 390px)
+   ========================================================================== */
+body:has(.margo-compass-wrap) {
+  background-color: var(--margo-bg, #F4F1FB) !important;
+  font-family: var(--margo-font, 'Plus Jakarta Sans', sans-serif) !important;
+  color: var(--margo-ink, #1E1B3A) !important;
+}
+
+.daily-sheet-container:has(.margo-compass-wrap) {
+  padding: 0 !important;
+  max-width: 100% !important;
+  background-color: var(--margo-bg, #F4F1FB) !important;
+}
+
+.margo-compass-wrap {
+  width: 100%;
+  max-width: 390px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 56px 24px calc(110px + env(safe-area-inset-bottom)) 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: var(--margo-font, 'Plus Jakarta Sans', sans-serif);
+  color: var(--margo-ink, #1E1B3A);
+}
+
+.margo-compass-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.margo-compass-header h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--margo-ink, #1E1B3A);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.margo-compass-header p {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--margo-muted, #6B6785);
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  margin: 4px 0 0 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.margo-compass-header p:hover {
+  color: var(--margo-ink, #1E1B3A);
+}
+
+.compass-sec {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.compass-sec-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.compass-sec-head h2 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--margo-ink, #1E1B3A);
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.compass-sec-head .sec-counter {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--margo-muted, #6B6785);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.compass-dot-indicator {
+  width: 7.5px;
+  height: 7.5px;
+  border-radius: 50%;
+  background: var(--margo-accent, #5B3FD9);
+  flex: none;
+}
+
+.compass-focus-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* In Focus Cards */
+.compass-focus-card {
+  background: #FFFFFF;
+  border-radius: 24px;
+  padding: 20px 22px;
+  box-shadow: 0 1px 2px rgba(30, 27, 58, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.compass-focus-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(91, 63, 217, 0.08);
+}
+
+.compass-focus-cat {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--margo-muted, #6B6785);
+}
+
+.compass-focus-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--margo-ink, #1E1B3A);
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.compass-maintain-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Maintain Rows */
+.compass-maintain-row {
+  background: #FFFFFF;
+  border-radius: 18px;
+  height: 52px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 1px 2px rgba(30, 27, 58, 0.04);
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.compass-maintain-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(91, 63, 217, 0.06);
+}
+
+.compass-maintain-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.compass-maintain-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--margo-ink, #1E1B3A);
+}
+
+.compass-maintain-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--margo-muted, #6B6785);
+}
+
+/* Later Rows - Transparent without white background */
+.compass-later-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0 4px;
+}
+
+.compass-later-row {
+  background: transparent;
+  border-radius: 14px;
+  height: 46px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(227, 221, 245, 0.85);
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.compass-later-row:last-child {
+  border-bottom: none;
+}
+
+.compass-later-row:hover {
+  background: rgba(233, 227, 250, 0.5);
+}
+
+.compass-later-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--margo-ink, #1E1B3A);
+}
+
+.compass-later-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--margo-muted, #6B6785);
+}
