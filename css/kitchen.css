@@ -218,24 +218,72 @@
   background: var(--k-coral-soft);
 }
 
-/* Sub-header reality note */
+/* Sub-header Week Navigator */
 .k-hub-subbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-  font-size: 12px;
+  justify-content: flex-start;
+  padding: 2px 4px;
+}
+
+.k-subbar-week-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.k-subbar-nav-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #FFFFFF;
+  border: 1px solid var(--k-birch-border);
+  color: var(--k-obsidian);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.k-subbar-nav-arrow:hover {
+  background: var(--k-coral-soft);
+  border-color: var(--k-coral);
+  color: var(--k-coral);
+  transform: translateY(-1px);
+}
+
+.k-subbar-viewing-label {
+  font-size: 13px;
   color: var(--k-text-muted);
 }
 
 .k-hub-subbar-date {
   color: var(--k-obsidian);
-  font-weight: 700;
+  font-weight: 800;
 }
 
-.k-hub-subbar-hint {
+.k-subbar-reset-today {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--k-coral-soft);
   color: var(--k-coral);
-  font-weight: 600;
+  border: 1px solid var(--k-coral-border);
+  cursor: pointer;
+  transition: all 0.12s;
+  margin-left: 2px;
+}
+
+.k-subbar-reset-today:hover {
+  background: var(--k-coral);
+  color: #FFFFFF;
 }
 
 /* ==========================================================================
@@ -338,22 +386,61 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 11px;
+}
+
+.k-dinner-tag-label {
+  font-size: 12px;
   font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--k-wine);
+  color: #E11D48; /* Vibrant Rose - pops cheerily */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: 0.02em;
 }
 
 .k-hero-source-pill {
   font-size: 11px;
   font-weight: 700;
-  padding: 1px 7px;
+  padding: 2px 8px;
   border-radius: 6px;
-  background: #FFFFFF;
-  color: var(--k-wine);
-  border: 1px solid var(--k-coral-border);
   text-transform: none;
+  letter-spacing: normal;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  line-height: 1.3;
+}
+
+/* Vibrant, Cheerful & Distinct Source Color Pops */
+.k-hero-source-pill.source-fresh {
+  background: #FFE4E6;
+  color: #BE123C;
+  border: 1px solid #FDA4AF;
+}
+
+.k-hero-source-pill.source-leftover {
+  background: #EDE9FE;
+  color: #6D28D9;
+  border: 1px solid #DDD6FE;
+}
+
+.k-hero-source-pill.source-out {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
+
+.k-hero-source-pill.source-prep,
+.k-hero-source-pill.source-custom {
+  background: #CCFBF1;
+  color: #0F766E;
+  border: 1px solid #99F6E4;
+}
+
+.k-hero-source-pill.source-freezer {
+  background: #F0F9FF;
+  color: #0284C7;
+  border: 1px solid #BAE6FD;
 }
 
 .k-hero-dinner-main {

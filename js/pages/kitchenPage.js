@@ -437,13 +437,13 @@ function renderKitchenPage() {
         </div>
       </header>
 
-      <!-- SUB-HEADER INFORMATION STRIP -->
+      <!-- SUB-HEADER INFORMATION STRIP (WITH WEEK NAV ARROWS) -->
       <div class="k-hub-subbar">
-        <div>
-          Viewing: <strong class="k-hub-subbar-date">${escapeHtml(weekRangeLabel)}</strong>
-        </div>
-        <div class="k-hub-subbar-hint">
-          ${activeTab === 'meals' ? 'Hero dinners front &amp; center' : (activeTab === 'stash' ? 'Shop stash first, then verify groceries' : (activeTab === 'vault' ? 'Trusted household staples' : 'Test kitchen queue'))}
+        <div class="k-subbar-week-nav">
+          <button type="button" class="k-subbar-nav-arrow" onclick="kSetWeekOffset(${weekOffset - 1})" title="Previous week" aria-label="Previous week">‹</button>
+          <span class="k-subbar-viewing-label">Viewing: <strong class="k-hub-subbar-date">${escapeHtml(weekRangeLabel)}</strong></span>
+          <button type="button" class="k-subbar-nav-arrow" onclick="kSetWeekOffset(${weekOffset + 1})" title="Next week" aria-label="Next week">›</button>
+          ${weekOffset !== 0 ? `<button type="button" class="k-subbar-reset-today" onclick="kSetWeekOffset(0)" title="Return to current week">Today</button>` : ''}
         </div>
       </div>
 
@@ -481,12 +481,12 @@ function renderKitchenPage() {
                   ${isToday ? `<span class="k-badge-today">Today</span>` : (d.day === 'Sun' ? `<span class="k-badge-day-tag">Rest Day</span>` : (d.day === 'Fri' ? `<span class="k-badge-day-tag">Ritual</span>` : ''))}
                 </div>
 
-                <!-- Hero Dinner Slot -->
+                <!-- Dinner Slot -->
                 ${heroDinner && heroDinner.meal ? `
                   <div class="k-hero-dinner-box" onclick="kOpenMealPicker(${idx}, 'dinner', 0)" title="Click to view or edit dinner">
                     <div class="k-hero-dinner-tag-row">
-                      <span>🍽️ Dinner (Hero)</span>
-                      <span class="k-hero-source-pill">${heroSourceLabel}</span>
+                      <span class="k-dinner-tag-label">🍽️ Dinner</span>
+                      <span class="k-hero-source-pill source-${heroDinner.source || 'fresh'}">${heroSourceLabel}</span>
                     </div>
                     <div class="k-hero-dinner-main">
                       <span class="k-hero-dinner-name">${escapeHtml(heroDinner.meal)}</span>
