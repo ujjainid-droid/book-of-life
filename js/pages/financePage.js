@@ -1800,42 +1800,35 @@ function clearFinanceNwSearch(event) {
 }
 window.clearFinanceNwSearch = clearFinanceNwSearch;
 
-function renderFinanceQuarterlyCadenceBar() {
-  const qKey = getCurrentQuarterKey();
-  const checklist = storage.getFinanceQuarterlyChecklist(qKey);
-  const doneCount = [1, 2, 3, 4, 5].filter(num => !!checklist[num]).length;
-  const allDone = doneCount === 5;
+let activeGovernanceCadenceTab = 'quarterly'; // 'quarterly' | 'annual'
 
-  const items = [
-    {
-      num: 1,
-      label: '401(k) Review',
-      theme: 'violet',
-      color: '#7C3AED',
-      hint: 'Elective deferral pacing toward $23.5k/$30k max',
-      action: null
-    },
-    {
-      num: 2,
-      label: 'Tax Withholdings',
-      theme: 'teal',
-      color: '#0D98BA',
-      hint: 'Audit W-4 federal/state withholdings & quarterly estimates',
-      action: null
-    },
-    {
-      num: 3,
-      label: 'Charity Donations',
-      theme: 'rose',
-      color: '#E11D48',
-      hint: 'Plan & disburse quarterly charitable donations',
-      action: null
-    },
+function switchGovernanceCadenceTab(tab) {
+  if (tab === 'quarterly' || tab === 'annual') {
+    activeGovernanceCadenceTab = tab;
+    renderFinanceRunway();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+window.switchGovernanceCadenceTab = switchGovernanceCadenceTab;
+
+function renderFinanceGovernanceCadenceCard() {
+  const qKey = getCurrentQuarterKey();
+  const qChecklist = storage.getFinanceQuarterlyChecklist(qKey);
+  const qDoneCount = [1, 2, 3, 4, 5].filter(num => !!qChecklist[num]).length;
+
+  const yKey = getCurrentYearKey();
+  const aChecklist = storage.getFinanceAnnualChecklist(yKey);
+  const aDoneCount = [1, 2, 3, 4].filter(num => !!aChecklist[num]).length;
+
+  const isQuarterly = activeGovernanceCadenceTab !== 'annual';
+
+  const qItems = [
+    { num: 1, label: '401(k) Review', hint: 'Elective deferral pacing toward $23.5k/$30k max', action: null },
+    { num: 2, label: 'Tax Withholdings', hint: 'Audit W-4 federal/state withholdings & quarterly estimates', action: null },
+    { num: 3, label: 'Charity Donations', hint: 'Plan & disburse quarterly charitable donations', action: null },
     {
       num: 4,
       label: 'Freedom Flex 5%',
-      theme: 'emerald',
-      color: '#059669',
       hint: 'Activate 5% rotating quarterly cash back categories on Chase',
       action: `
         <a href="https://www.chase.com/mybonus" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Activate Freedom Flex 5% Categories">
@@ -1846,8 +1839,6 @@ function renderFinanceQuarterlyCadenceBar() {
     {
       num: 5,
       label: 'Savings Radar',
-      theme: 'indigo',
-      color: '#4F46E5',
       hint: 'Spot check category trends for savings leaks & outliers',
       action: `
         <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); switchFinanceSubTab('burn'); setTimeout(() => scrollToFinanceOutliers(), 50);" title="Jump to Cash Flow &amp; Outliers Radar">
@@ -1857,58 +1848,10 @@ function renderFinanceQuarterlyCadenceBar() {
     }
   ];
 
-  return `
-    <div class="finance-cadence-strip-card cadence-strip-quarterly ${allDone ? 'all-done' : ''}">
-      <div class="finance-cadence-header">
-        <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'calendar-range'}" style="width: 14px; height: 14px; color: ${allDone ? '#34D399' : '#E05A47'};"></i>
-          <span>Quarterly Review</span>
-          <div class="finance-cadence-quarter-capsules">
-            <button class="finance-cadence-q-btn ${qKey === '2026-Q3' ? 'active' : ''}" onclick="selectFinanceQuarter('2026-Q3')" title="Review closed Q3 2026 (July – September)">
-              Q3 2026 Review
-            </button>
-            <button class="finance-cadence-q-btn ${qKey === '2026-Q4' ? 'active' : ''}" onclick="selectFinanceQuarter('2026-Q4')" title="Plan Q4 2026 (October – December)">
-              Q4 2026
-            </button>
-          </div>
-        </div>
-        <span class="finance-cadence-progress-pill ${allDone ? 'done' : ''}">
-          ${allDone ? '✓ 5 of 5 Done' : `${doneCount} of 5 Done`}
-        </span>
-      </div>
-      <div class="finance-cadence-pills-row">
-        ${items.map(item => {
-          const isDone = !!checklist[item.num];
-          return `
-            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceQuarterlyChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
-              <div class="cadence-pill-left">
-                <span class="cadence-check-icon">
-                  <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
-                </span>
-                <span class="cadence-pill-num">${item.num}.</span>
-                <span class="cadence-pill-title">${item.label}</span>
-              </div>
-              ${item.action ? item.action : ''}
-            </div>
-          `;
-        }).join('')}
-      </div>
-    </div>
-  `;
-}
-
-function renderFinanceAnnualCadenceBar() {
-  const yKey = getCurrentYearKey();
-  const checklist = storage.getFinanceAnnualChecklist(yKey);
-  const doneCount = [1, 2, 3, 4].filter(num => !!checklist[num]).length;
-  const allDone = doneCount === 4;
-
-  const items = [
+  const aItems = [
     {
       num: 1,
       label: 'Credit Report',
-      theme: 'sky',
-      color: '#0284C7',
       hint: 'annualcreditreport.com credit check',
       action: `
         <a href="https://www.annualcreditreport.com" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Open AnnualCreditReport.com">
@@ -1916,19 +1859,10 @@ function renderFinanceAnnualCadenceBar() {
         </a>
       `
     },
-    {
-      num: 2,
-      label: 'Retirement Planning',
-      theme: 'violet',
-      color: '#7C3AED',
-      hint: 'Annual Monte Carlo models & safe withdrawal rate review',
-      action: null
-    },
+    { num: 2, label: 'Retirement Planning', hint: 'Annual Monte Carlo models & safe withdrawal rate review', action: null },
     {
       num: 3,
       label: 'Unclaimed Property',
-      theme: 'teal',
-      color: '#0D98BA',
       hint: 'Search NYS / state registries for unclaimed funds',
       action: `
         <a href="https://www.osc.ny.gov/unclaimed-funds" target="_blank" rel="noopener" class="cadence-pill-action-btn" onclick="event.stopPropagation();" title="Search NYS Unclaimed Funds">
@@ -1936,45 +1870,64 @@ function renderFinanceAnnualCadenceBar() {
         </a>
       `
     },
-    {
-      num: 4,
-      label: 'UR + MR Points Plan',
-      theme: 'indigo',
-      color: '#4F46E5',
-      hint: 'Annual redemption strategy for Chase UR & Amex MR rewards',
-      action: null
-    }
+    { num: 4, label: 'UR + MR Points Plan', hint: 'Annual redemption strategy for Chase UR & Amex MR rewards', action: null }
   ];
 
+  const activeItems = isQuarterly ? qItems : aItems;
+  const activeChecklist = isQuarterly ? qChecklist : aChecklist;
+  const toggleFnName = isQuarterly ? 'toggleFinanceQuarterlyChecklistItem' : 'toggleFinanceAnnualChecklistItem';
+
   return `
-    <div class="finance-cadence-strip-card cadence-strip-annual ${allDone ? 'all-done' : ''}">
-      <div class="finance-cadence-header">
-        <div class="finance-cadence-title">
-          <i data-lucide="${allDone ? 'check-check' : 'shield-check'}" style="width: 14px; height: 14px; color: ${allDone ? '#0D98BA' : '#0D98BA'};"></i>
-          <span>Annual Governance</span>
-          <span class="finance-cadence-sub">&bull; ${yKey} Horizon</span>
+    <div style="background: var(--bg-card, #FFFFFF); border: 1px solid var(--border-color, #E2E8F0); border-radius: 14px; padding: 14px 18px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);">
+      
+      <!-- Top Bar: Segmented Toggle + Quarter Switcher -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;">
+        <div style="display: inline-flex; padding: 3px; border-radius: 999px; background: var(--bg-secondary, #F1F5F9); border: 1px solid var(--border-color, #E2E8F0);">
+          <button type="button"
+                  onclick="switchGovernanceCadenceTab('quarterly')"
+                  style="padding: 5px 14px; border-radius: 999px; border: none; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease; background: ${isQuarterly ? '#475569' : 'transparent'}; color: ${isQuarterly ? '#FFFFFF' : 'var(--text-secondary, #64748B)'};">
+            Quarterly Review &bull; ${qKey.replace('2026-', '')} (${qDoneCount}/5)
+          </button>
+          <button type="button"
+                  onclick="switchGovernanceCadenceTab('annual')"
+                  style="padding: 5px 14px; border-radius: 999px; border: none; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease; background: ${!isQuarterly ? '#475569' : 'transparent'}; color: ${!isQuarterly ? '#FFFFFF' : 'var(--text-secondary, #64748B)'};">
+            Annual Governance &bull; ${yKey} (${aDoneCount}/4)
+          </button>
         </div>
-        <span class="finance-cadence-progress-pill ${allDone ? 'done' : ''}">
-          ${allDone ? '✓ 4 of 4 Done' : `${doneCount} of 4 Done`}
-        </span>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          ${isQuarterly ? `
+            <div style="display: inline-flex; gap: 4px; background: var(--bg-secondary, #F8FAFC); padding: 2px; border-radius: 999px; border: 1px solid var(--border-color, #E2E8F0);">
+              <button type="button" onclick="selectFinanceQuarter('2026-Q3')" style="padding: 3px 9px; border-radius: 999px; border: none; font-size: 0.68rem; font-weight: 700; cursor: pointer; background: ${qKey === '2026-Q3' ? '#334155' : 'transparent'}; color: ${qKey === '2026-Q3' ? '#FFFFFF' : 'var(--text-muted, #64748B)'};">Q3</button>
+              <button type="button" onclick="selectFinanceQuarter('2026-Q4')" style="padding: 3px 9px; border-radius: 999px; border: none; font-size: 0.68rem; font-weight: 700; cursor: pointer; background: ${qKey === '2026-Q4' ? '#334155' : 'transparent'}; color: ${qKey === '2026-Q4' ? '#FFFFFF' : 'var(--text-muted, #64748B)'};">Q4</button>
+            </div>
+          ` : ''}
+          <span style="font-size: 0.72rem; color: var(--text-muted, #64748B);">Tap to check off</span>
+        </div>
       </div>
-      <div class="finance-cadence-pills-row four-cols">
-        ${items.map(item => {
-          const isDone = !!checklist[item.num];
+
+      <!-- Checklist Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px;">
+        ${activeItems.map(item => {
+          const isDone = !!activeChecklist[item.num];
           return `
-            <div class="finance-cadence-pill-btn ${isDone ? 'done' : ''}" onclick="toggleFinanceAnnualChecklistItem(${item.num}, event)" title="${item.hint} &bull; Click to toggle">
-              <div class="cadence-pill-left">
-                <span class="cadence-check-icon">
-                  <i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>
+            <div onclick="${toggleFnName}(${item.num}, event)"
+                 title="${escapeHtml(item.hint)} &bull; Click to toggle"
+                 style="display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 12px; border-radius: 10px; border: 1px solid ${isDone ? '#475569' : 'var(--border-color, #E2E8F0)'}; background: ${isDone ? 'rgba(71, 85, 105, 0.08)' : 'var(--bg-secondary, #F8FAFC)'}; cursor: pointer; transition: all 0.15s ease;">
+              <div style="display: flex; align-items: center; gap: 8px; min-width: 0;">
+                <span style="width: 16px; height: 16px; border-radius: 5px; border: 1.5px solid ${isDone ? '#475569' : '#94A3B8'}; background: ${isDone ? '#475569' : '#FFFFFF'}; color: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  ${isDone ? '<i data-lucide="check" style="width: 10px; height: 10px; stroke-width: 3;"></i>' : ''}
                 </span>
-                <span class="cadence-pill-num">${item.num}.</span>
-                <span class="cadence-pill-title">${item.label}</span>
+                <span style="font-size: 0.78rem; font-weight: 600; color: ${isDone ? '#475569' : 'var(--text-primary, #334155)'}; text-decoration: ${isDone ? 'line-through' : 'none'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  ${escapeHtml(item.label)}
+                </span>
               </div>
               ${item.action ? item.action : ''}
             </div>
           `;
         }).join('')}
       </div>
+
     </div>
   `;
 }
@@ -2180,11 +2133,8 @@ function renderFinanceRunway() {
   container.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px;">
       
-      <!-- 1. Top Quarterly Review Cadence Strip (Option 1 Horizontal Checkpoints) -->
-      ${renderFinanceQuarterlyCadenceBar()}
-
-      <!-- 2. Annual Financial Governance Strip (Option 1 Horizontal Checkpoints) -->
-      ${renderFinanceAnnualCadenceBar()}
+      <!-- 1. Unified Quarterly & Annual Governance Card (Option A) -->
+      ${renderFinanceGovernanceCadenceCard()}
 
       <!-- 3. Executive Horizon Deck (Option B: Net Worth · Runway · Asset Allocation Donut) -->
       <div class="finance-horizon-deck">
