@@ -787,94 +787,77 @@ function renderCoverHubPage() {
     'Focus': { label: 'General', icon: 'compass', dot: '#6B6785' }
   };
 
-  let activeFocusLayout = 'grid';
+  let activeFocusLayout = 'square';
   try {
-    activeFocusLayout = localStorage.getItem('BOL_COMPASS_FOCUS_LAYOUT') || 'grid';
+    const stored = localStorage.getItem('BOL_COMPASS_FOCUS_LAYOUT');
+    if (stored === 'minimal' || stored === 'stack' || stored === 'square') {
+      activeFocusLayout = stored;
+    } else {
+      activeFocusLayout = 'square';
+    }
   } catch (e) {}
 
+  const getFocusIcon = (title) => {
+    const t = (title || '').toLowerCase();
+    if (t.includes('move') || t.includes('walk') || t.includes('step') || t.includes('activity')) return 'zap';
+    if (t.includes('food') || t.includes('meal') || t.includes('cook') || t.includes('nutrition')) return 'salad';
+    if (t.includes('surg') || t.includes('health') || t.includes('doctor') || t.includes('med')) return 'heart-pulse';
+    if (t.includes('school') || t.includes('iep')) return 'graduation-cap';
+    if (t.includes('oon') || t.includes('finance')) return 'receipt';
+    return 'sparkles';
+  };
+
   let focusHtml = '';
-  if (activeFocusLayout === 'spotlight' && nowPrimary.length > 0) {
-    const [hero, ...satellites] = nowPrimary;
-    const heroCat = getCampaignDomainName(hero);
-    const heroMeta = catMetaConfig[heroCat] || { dot: '#7C3AED', icon: 'compass' };
-    focusHtml = `
-      <div class="compass-focus-cards layout-spotlight">
-        <div class="compass-focus-card is-spotlight" onclick="promptEditCampaignTitle('${hero.id}', '${escapeHtml(hero.title || '')}')" title="Tap to edit title">
-          <div class="compass-focus-card-top">
-            <span class="compass-focus-cat" style="color:${heroMeta.dot};"><span class="focus-dot" style="background:${heroMeta.dot};"></span>${escapeHtml(heroCat)} · Priority</span>
-            <span class="focus-live-pill">In focus</span>
-          </div>
-          <h3 class="compass-focus-title">${escapeHtml(hero.title || 'Focus item')}</h3>
-        </div>
-        ${satellites.length > 0 ? `
-          <div class="spotlight-satellites">
-            ${satellites.map(camp => {
-              const cat = getCampaignDomainName(camp);
-              const meta = catMetaConfig[cat] || { dot: '#7C3AED', icon: 'compass' };
-              return `
-                <div class="compass-focus-card" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
-                  <div class="compass-focus-card-top">
-                    <span class="compass-focus-cat" style="color:${meta.dot};"><span class="focus-dot" style="background:${meta.dot};"></span>${escapeHtml(cat)}</span>
-                    <span class="focus-live-pill">In focus</span>
-                  </div>
-                  <h3 class="compass-focus-title">${escapeHtml(camp.title || 'Focus item')}</h3>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        ` : ''}
-      </div>
-    `;
-  } else if (activeFocusLayout === 'minimal') {
+  if (activeFocusLayout === 'minimal') {
+    // Minimal Single-Line Rows (no category header)
     focusHtml = `
       <div class="compass-focus-cards layout-minimal">
         ${nowPrimary.map(camp => {
-          const cat = getCampaignDomainName(camp);
-          const meta = catMetaConfig[cat] || { dot: '#7C3AED', icon: 'compass' };
+          const iconName = getFocusIcon(camp.title);
           return `
             <div class="compass-focus-card" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
-              <div style="display:flex;align-items:center;gap:10px;">
-                <span class="focus-dot" style="background:${meta.dot};width:8px;height:8px;border-radius:50%;flex:none;"></span>
-                <h3 class="compass-focus-title" style="margin:0;font-size:16.5px;">${escapeHtml(camp.title || 'Focus item')}</h3>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="focus-mini-icon-wrap">
+                  <i data-lucide="${iconName}"></i>
+                </div>
+                <h3 class="compass-focus-title" style="margin:0;font-size:16px;">${escapeHtml(camp.title || 'Focus item')}</h3>
               </div>
-              <span class="compass-focus-cat" style="color:${meta.dot};margin:0;">${escapeHtml(cat)}</span>
             </div>
           `;
         }).join('')}
       </div>
     `;
   } else if (activeFocusLayout === 'stack') {
+    // Clean Stack (no category header)
     focusHtml = `
       <div class="compass-focus-cards layout-stack">
         ${nowPrimary.map(camp => {
-          const cat = getCampaignDomainName(camp);
-          const meta = catMetaConfig[cat] || { dot: '#7C3AED', icon: 'compass' };
+          const iconName = getFocusIcon(camp.title);
           return `
             <div class="compass-focus-card" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
-              <div class="compass-focus-card-top">
-                <span class="compass-focus-cat" style="color:${meta.dot};"><span class="focus-dot" style="background:${meta.dot};"></span>${escapeHtml(cat)}</span>
-                <span class="focus-live-pill">In focus</span>
+              <div style="display:flex;align-items:center;gap:14px;">
+                <div class="focus-square-icon-wrap" style="width:42px;height:42px;">
+                  <i data-lucide="${iconName}"></i>
+                </div>
+                <h3 class="compass-focus-title" style="margin:0;font-size:19px;">${escapeHtml(camp.title || 'Focus item')}</h3>
               </div>
-              <h3 class="compass-focus-title">${escapeHtml(camp.title || 'Focus item')}</h3>
             </div>
           `;
         }).join('')}
       </div>
     `;
   } else {
-    // Default: 'grid' (Horizontal Bento Grid)
+    // Default: 'square' (Clean Tactile Square Widgets)
     focusHtml = `
-      <div class="compass-focus-cards layout-grid">
+      <div class="compass-focus-cards layout-square">
         ${nowPrimary.map(camp => {
-          const cat = getCampaignDomainName(camp);
-          const meta = catMetaConfig[cat] || { dot: '#7C3AED', icon: 'compass' };
+          const iconName = getFocusIcon(camp.title);
           return `
-            <div class="compass-focus-card grid-card" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
-              <div class="compass-focus-card-top">
-                <span class="compass-focus-cat" style="color:${meta.dot};"><span class="focus-dot" style="background:${meta.dot};"></span>${escapeHtml(cat)}</span>
-                <span class="focus-live-pill">In focus</span>
+            <div class="compass-focus-square-card" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
+              <div class="focus-square-icon-wrap">
+                <i data-lucide="${iconName}"></i>
               </div>
-              <h3 class="compass-focus-title">${escapeHtml(camp.title || 'Focus item')}</h3>
+              <span class="focus-square-title">${escapeHtml(camp.title || 'Focus item')}</span>
             </div>
           `;
         }).join('')}
@@ -903,10 +886,9 @@ function renderCoverHubPage() {
           <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <h2>In focus</h2>
             <div class="focus-layout-switcher" role="group" aria-label="In focus layout switcher">
-              <button class="layout-toggle-btn ${activeFocusLayout === 'grid' ? 'active' : ''}" onclick="setCompassFocusLayout('grid')" title="Horizontal Bento Grid">Grid</button>
-              <button class="layout-toggle-btn ${activeFocusLayout === 'spotlight' ? 'active' : ''}" onclick="setCompassFocusLayout('spotlight')" title="Hero Spotlight + Companions">Spotlight</button>
-              <button class="layout-toggle-btn ${activeFocusLayout === 'stack' ? 'active' : ''}" onclick="setCompassFocusLayout('stack')" title="Classic Vertical Stack">Stack</button>
-              <button class="layout-toggle-btn ${activeFocusLayout === 'minimal' ? 'active' : ''}" onclick="setCompassFocusLayout('minimal')" title="Nordic Minimal Rows">Minimal</button>
+              <button class="layout-toggle-btn ${activeFocusLayout === 'square' ? 'active' : ''}" onclick="setCompassFocusLayout('square')" title="Square Widgets">Square</button>
+              <button class="layout-toggle-btn ${activeFocusLayout === 'minimal' ? 'active' : ''}" onclick="setCompassFocusLayout('minimal')" title="Single-line Minimal Rows">Rows</button>
+              <button class="layout-toggle-btn ${activeFocusLayout === 'stack' ? 'active' : ''}" onclick="setCompassFocusLayout('stack')" title="Spacious Stack">Stack</button>
             </div>
           </div>
           <div class="sec-counter">

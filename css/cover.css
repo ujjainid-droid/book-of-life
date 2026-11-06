@@ -16977,6 +16977,118 @@ body:has(.margo-compass-wrap) {
   gap: 12px;
 }
 
+/* Square Widgets Layout (Minimal & Tactile) */
+.compass-focus-cards.layout-square {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 140px));
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .compass-focus-cards.layout-square {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+
+.compass-focus-square-card {
+  aspect-ratio: 1 / 1;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(124, 58, 237, 0.08);
+  border-radius: 20px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(30, 27, 58, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  user-select: none;
+}
+
+.compass-focus-square-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.12);
+}
+
+.focus-square-icon-wrap {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(124, 58, 237, 0.08);
+  color: var(--margo-accent, #7C3AED);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  transition: transform 0.18s ease;
+}
+
+.compass-focus-square-card:hover .focus-square-icon-wrap {
+  transform: scale(1.08);
+  background: rgba(124, 58, 237, 0.14);
+}
+
+.focus-square-icon-wrap i {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+.focus-square-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--margo-ink, #1E1B3A);
+  letter-spacing: -0.015em;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.focus-mini-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: rgba(124, 58, 237, 0.08);
+  color: var(--margo-accent, #7C3AED);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.focus-mini-icon-wrap i {
+  width: 17px;
+  height: 17px;
+  stroke-width: 2.2;
+}
+
+/* Dark mode for square cards */
+[data-theme="dark"] .compass-focus-square-card {
+  background: #181424;
+  border-color: rgba(139, 92, 246, 0.16);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .compass-focus-square-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .focus-square-icon-wrap,
+[data-theme="dark"] .focus-mini-icon-wrap {
+  background: rgba(139, 92, 246, 0.16);
+  color: #C4B5FD;
+}
+
+[data-theme="dark"] .focus-square-title {
+  color: #EDE9FE;
+}
+
 /* 1. Bento Grid Layout */
 .compass-focus-cards.layout-grid {
   display: grid;
