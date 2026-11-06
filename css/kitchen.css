@@ -741,6 +741,32 @@
 }
 
 /* Verified Grocery Checklist */
+.k-grocery-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.k-btn-clear-groceries {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: var(--k-coral-soft);
+  color: var(--k-wine);
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--k-coral-border);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.k-btn-clear-groceries:hover {
+  background: var(--k-coral);
+  color: #FFFFFF;
+}
+
 .k-btn-things3 {
   display: inline-flex;
   align-items: center;

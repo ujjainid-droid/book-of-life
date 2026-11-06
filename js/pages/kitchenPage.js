@@ -667,10 +667,17 @@ function renderKitchenPage() {
                 </h3>
                 <span class="k-panel-desc">Only ingredients you actually need to buy</span>
               </div>
-              <button type="button" class="k-btn-things3" onclick="kExportVerifiedThings3()" title="Sync grocery list to Things 3">
-                <span>↗</span>
-                <span>Send to Things 3</span>
-              </button>
+              <div class="k-grocery-header-actions">
+                ${groceryItems.length > 0 ? `
+                  <button type="button" class="k-btn-clear-groceries" onclick="kClearAllGroceries()" title="Clear all grocery items">
+                    Clear All
+                  </button>
+                ` : ''}
+                <button type="button" class="k-btn-things3" onclick="kExportVerifiedThings3()" title="Sync grocery list to Things 3">
+                  <span>↗</span>
+                  <span>Send to Things 3</span>
+                </button>
+              </div>
             </div>
 
             <div class="k-grocery-list" id="k-grocery-items-wrap">
@@ -1955,6 +1962,15 @@ function kDeleteGroceryItem(id) {
   if (typeof showToast === 'function') showToast('Removed grocery item');
 }
 window.kDeleteGroceryItem = kDeleteGroceryItem;
+
+function kClearAllGroceries() {
+  const data = storage.getKitchenData();
+  data.groceries = [];
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast('Cleared grocery list');
+}
+window.kClearAllGroceries = kClearAllGroceries;
 
 // 1-Tap Native Things 3 URL Scheme Integration
 function kOpenThings3() {
