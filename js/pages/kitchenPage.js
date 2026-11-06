@@ -236,6 +236,36 @@ function kRenderAssignSelectOptions() {
 }
 window.kRenderAssignSelectOptions = kRenderAssignSelectOptions;
 
+window.kSetActiveTab = function(tabName) {
+  localStorage.setItem('BOL_KITCHEN_ACTIVE_TAB', tabName);
+  renderKitchenPage();
+};
+
+window.kToggleWeekDropdown = function() {
+  const menu = document.getElementById('k-week-dropdown-menu');
+  if (menu) menu.classList.toggle('active');
+};
+
+window.kToggleDayExtras = function(dayIdx) {
+  const el = document.getElementById(`k-day-extras-${dayIdx}`);
+  const arrow = document.getElementById(`k-day-arrow-${dayIdx}`);
+  if (el) {
+    const isHidden = el.classList.toggle('is-hidden');
+    if (arrow) arrow.textContent = isHidden ? '▾' : '▴';
+  }
+};
+
+if (!window._kWeekDropdownListenerAttached) {
+  window._kWeekDropdownListenerAttached = true;
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('k-week-dropdown-wrap');
+    const menu = document.getElementById('k-week-dropdown-menu');
+    if (wrap && menu && !wrap.contains(e.target)) {
+      menu.classList.remove('active');
+    }
+  });
+}
+
 function renderKitchenPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
@@ -244,12 +274,9 @@ function renderKitchenPage() {
   const data = storage.getKitchenData();
   const stashItems = data.stashItems || [];
   const favoriteRecipes = data.favoriteRecipes || [];
+  const newRecipes = data.newRecipes || [];
   const groceryItems = data.groceries || [];
-  const stashPlannedCount = stashItems.filter(i => i.planned && !i.used).length;
-  const isStep1Collapsed = (function() {
-    const val = localStorage.getItem('BOL_KITCHEN_STEP1_COLLAPSED');
-    return val === null ? true : (val === 'true');
-  })();
+  const activeTab = localStorage.getItem('BOL_KITCHEN_ACTIVE_TAB') || 'meals';
 
   const todayIso = getTodayIso();
 
@@ -260,8 +287,6 @@ function renderKitchenPage() {
   baseSun.setDate(now.getDate() - dayOfWeek);
 
   const weekOffset = (typeof data.activeWeekOffset === 'number') ? data.activeWeekOffset : 0;
-  const activeMealFilter = data.activeMealFilter || 'all';
-
   const activeSun = new Date(baseSun);
   activeSun.setDate(baseSun.getDate() + (weekOffset * 7));
 
@@ -297,7 +322,6 @@ function renderKitchenPage() {
     return [];
   };
 
-  // Retrieve active week schedule and normalize slots (supports multiple entries per slot)
   const rawSchedule = weekOffset === 1 ? (data.followingWeekSchedule || []) : (data.weekSchedule || []);
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const fullWeekSchedule = dayNames.map((dayName, idx) => {
@@ -332,21 +356,7 @@ function renderKitchenPage() {
     };
   });
 
-  // Calculate eat-out count across all planned meals for this week
-  const outCount = fullWeekSchedule.reduce((cnt, d) => {
-    ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
-      (d.meals[t] || []).forEach(slot => {
-        if (slot && slot.meal && slot.source === 'out') cnt++;
-      });
-    });
-    return cnt;
-  }, 0);
-  const target = (typeof data.eatOutTarget === 'number') ? data.eatOutTarget : 1;
-  const withinTarget = outCount <= target;
-
-  const newRecipes = data.newRecipes || [];
   const vaultFilter = data.vaultFilter || 'all';
-
   const favMainCount = favoriteRecipes.filter(r => (r.course || 'main') === 'main').length;
   const favSideCount = favoriteRecipes.filter(r => r.course === 'side').length;
   const favBrunchCount = favoriteRecipes.filter(r => r.course === 'brunch').length;
@@ -364,476 +374,431 @@ function renderKitchenPage() {
     return (a.title || '').localeCompare(b.title || '');
   });
 
+  const freezerItems = stashItems.filter(i => i.type === 'freezer');
+  const fridgeItems = stashItems.filter(i => i.type === 'fridge');
+  const pantryItems = stashItems.filter(i => i.type !== 'freezer' && i.type !== 'fridge');
+  const uncheckedGroceriesCount = groceryItems.filter(g => !g.checked).length;
+
   container.innerHTML = `
     <div class="kitchen-workflow-wrap">
 
-      <!-- HEADER: WEEKLY REALITY CHECK -->
-      <header class="k-header-card">
-        <div class="k-header-titles">
-          <div class="k-header-main-row">
-            <h2 class="k-header-title">Kitchen Sanctuary</h2>
-            <div class="k-week-toggle-group">
-              <button type="button" class="k-week-toggle-btn ${weekOffset === 0 ? 'active' : ''}" onclick="kSetWeekOffset(0)" title="Current Week (${thisWeekLabel})">
-                This Week
-              </button>
-              <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="Upcoming Week (${nextWeekLabel})">
-                Upcoming Week
-              </button>
-            </div>
-            <button type="button" class="k-week-rollover-btn" onclick="kManualWeekRollover()" title="Promote Upcoming Week to This Week and start fresh upcoming plan">
-              ↻ Roll Over Week
-            </button>
-            <span class="k-header-week-tag">${escapeHtml(weekRangeLabel)}</span>
-          </div>
-          <span style="font-size:12px; color:var(--text-muted);">Shop your stash first, meals on autopilot.</span>
-        </div>
+      <!-- TOP NAVIGATION HUB CARD (MIDNIGHT OBSIDIAN & ROSE) -->
+      <header class="k-hub-nav-card">
+        <nav class="k-hub-tabs-list" aria-label="Kitchen Workflows">
+          <button type="button" class="k-hub-tab-btn ${activeTab === 'meals' ? 'active' : ''}" onclick="kSetActiveTab('meals')">
+            <span>🗓️</span>
+            <span>Weekly Board</span>
+          </button>
+          <button type="button" class="k-hub-tab-btn ${activeTab === 'stash' ? 'active' : ''}" onclick="kSetActiveTab('stash')">
+            <span>🥫</span>
+            <span>Stash &amp; Groceries</span>
+            ${stashItems.length > 0 ? `<span class="k-hub-tab-count">${stashItems.length}</span>` : ''}
+          </button>
+          <button type="button" class="k-hub-tab-btn ${activeTab === 'vault' ? 'active' : ''}" onclick="kSetActiveTab('vault')">
+            <span>📖</span>
+            <span>Recipe Vault</span>
+            <span class="k-hub-tab-count">${favoriteRecipes.length}</span>
+          </button>
+          <button type="button" class="k-hub-tab-btn ${activeTab === 'want' ? 'active' : ''}" onclick="kSetActiveTab('want')">
+            <span>✨</span>
+            <span>Want to Try</span>
+            <span class="k-hub-tab-count want-badge">${newRecipes.length} new</span>
+          </button>
+        </nav>
 
-        <div class="k-eatout-summary-pill" title="Target for dining out / takeout meals">
-          <span>🥡 Eat-Out:</span>
-          <span class="k-eatout-badge">${outCount}x</span>
-          <span style="font-size:11px; color:${withinTarget ? '#3B6B35' : 'var(--pal-coral)'}; font-weight:700;">
-            ${withinTarget ? `✓ On Target (≤ ${target}x)` : `Over Target (${target}x)`}
-          </span>
+        <!-- Interactive Week Selector Dropdown -->
+        <div class="k-week-dropdown-wrap" id="k-week-dropdown-wrap">
+          <button type="button" class="k-week-dropdown-trigger" onclick="kToggleWeekDropdown()" aria-haspopup="true">
+            <span>${weekOffset === 0 ? `This Week (${thisWeekLabel})` : `Next Week (${nextWeekLabel})`}</span>
+            <span style="font-size:10px;">▾</span>
+          </button>
+
+          <div class="k-week-dropdown-menu" id="k-week-dropdown-menu">
+            <button type="button" class="k-week-dropdown-item ${weekOffset === 0 ? 'active' : ''}" onclick="kSetWeekOffset(0); kToggleWeekDropdown();">
+              <div>
+                <div class="k-week-dropdown-item-title">This Week</div>
+                <div class="k-week-dropdown-item-sub">${escapeHtml(thisWeekLabel)} (Active)</div>
+              </div>
+              ${weekOffset === 0 ? `<span style="font-size:12px; font-weight:800; color:var(--k-coral);">✓</span>` : ''}
+            </button>
+            <button type="button" class="k-week-dropdown-item ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1); kToggleWeekDropdown();">
+              <div>
+                <div class="k-week-dropdown-item-title">Next Week</div>
+                <div class="k-week-dropdown-item-sub">${escapeHtml(nextWeekLabel)} (Advance Plan)</div>
+              </div>
+              ${weekOffset === 1 ? `<span style="font-size:12px; font-weight:800; color:var(--k-coral);">✓</span>` : ''}
+            </button>
+            <div class="k-week-dropdown-divider"></div>
+            <button type="button" class="k-week-dropdown-rollover" onclick="kManualWeekRollover(); kToggleWeekDropdown();">
+              <span>↻</span>
+              <span>Roll Next Week into Current</span>
+            </button>
+          </div>
         </div>
       </header>
 
-      <!-- STEP 1: SHOP THE STASH FIRST (Collapsible, Collapsed by Default) -->
-      <section class="k-section-box ${isStep1Collapsed ? 'is-collapsed' : ''}" id="k-sec-stash">
-        <div class="k-sec-header is-clickable" onclick="kToggleKitchenStep1()" title="${isStep1Collapsed ? 'Click to expand Step 1' : 'Click to collapse Step 1'}">
-          <div class="k-sec-title-group">
-            <span class="k-step-indicator">STEP 1</span>
-            <span class="k-sec-title">Shop Your Stash First</span>
-            <span class="k-stash-summary-badge">${stashItems.length} items${stashPlannedCount > 0 ? ` · ${stashPlannedCount} planned` : ''}</span>
-            <button type="button" class="k-collapse-toggle-btn" onclick="event.stopPropagation(); kToggleKitchenStep1()" title="${isStep1Collapsed ? 'Expand Step 1' : 'Collapse Step 1'}">
-              <span>${isStep1Collapsed ? '▶ Expand' : '▼ Collapse'}</span>
-            </button>
-          </div>
-          <span class="k-sec-hint">${isStep1Collapsed ? 'Tap to view &amp; manage pantry, fridge &amp; freezer stash' : 'Tap checkbox when used · Tap "+ Plan" to mark planned · Tap badge to flip location'}</span>
+      <!-- SUB-HEADER INFORMATION STRIP -->
+      <div class="k-hub-subbar">
+        <div>
+          Viewing: <strong class="k-hub-subbar-date">${escapeHtml(weekRangeLabel)}</strong>
         </div>
-
-        <div class="k-sec-collapsible-body" style="${isStep1Collapsed ? 'display: none;' : ''}">
-          <!-- Stash Chips -->
-          <div class="k-stash-chips-row">
-            ${stashItems.length > 0 ? stashItems.map(item => `
-              <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                <span class="k-stash-check" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Check off as used'}">✓</span>
-                <span class="k-stash-text" onclick="kAssignStashDirect('${escapeHtml(item.name)}', '${item.type}')">${escapeHtml(item.name)}</span>
-                <span class="k-stash-tag-badge ${item.type}" onclick="kCycleStashType('${item.id}', event)" title="Click to cycle (Pantry, Fridge, Freezer)" style="cursor:pointer;">${item.type === 'freezer' ? 'Freezer' : (item.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
-                ${item.planned ? `
-                  <span class="k-stash-planned-badge" onclick="kToggleStashPlanned('${item.id}', event)" title="Earmarked for this week's plan! Tap to unmark">PLANNED 📌</span>
-                ` : `
-                  <span class="k-stash-plan-btn" onclick="kToggleStashPlanned('${item.id}', event)" title="Tap to mark planned for this week">+ Plan</span>
-                `}
-                <button class="kitchen-stash-del-btn" onclick="event.stopPropagation(); kDeleteStash('${item.id}')">×</button>
-              </div>
-            `).join('') : `
-              <span style="font-size:12px; color:var(--text-muted); font-style:italic; padding:4px 0;">No stash items saved yet. Use the buttons below to log what's in your pantry, fridge, or freezer.</span>
-            `}
-          </div>
-
-          <!-- 3 Separate Buttons: Pantry (Default on Enter), Fridge, and Freezer -->
-          <div class="k-stash-quick-bar" style="margin-top: 10px;">
-            <input type="text" class="k-clean-input" id="k-stash-input" name="k_stash_input_new" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
-            <button type="button" class="k-btn-stash-add pantry" onclick="kAddStashWithSource('pantry')" title="Add directly to Pantry (Default on Enter)">
-              🥫 + Pantry
-            </button>
-            <button type="button" class="k-btn-stash-add fridge" onclick="kAddStashWithSource('fridge')" title="Add directly to Fridge">
-              🥬 + Fridge
-            </button>
-            <button type="button" class="k-btn-stash-add freezer" onclick="kAddStashWithSource('freezer')" title="Add directly to Freezer">
-              🧊 + Freezer
-            </button>
-          </div>
+        <div class="k-hub-subbar-hint">
+          ${activeTab === 'meals' ? 'Hero dinners front &amp; center' : (activeTab === 'stash' ? 'Shop stash first, then verify groceries' : (activeTab === 'vault' ? 'Trusted household staples' : 'Test kitchen queue'))}
         </div>
-      </section>
+      </div>
 
-      <!-- STEP 2: WEEKLY MEAL BOARD (Brunch, Lunch, Dinner, Dessert) -->
-      <section class="k-section-box" id="k-sec-dinners">
-        <div class="k-sec-header">
-          <div class="k-sec-title-group">
-            <span class="k-step-indicator">STEP 2</span>
-            <span class="k-sec-title">Weekly Meal Board</span>
-            <div class="k-week-toggle-group" style="margin-left:4px;">
-              <button type="button" class="k-week-toggle-btn ${weekOffset === 0 ? 'active' : ''}" onclick="kSetWeekOffset(0)" title="${thisWeekLabel}">
-                This Week
-              </button>
-              <button type="button" class="k-week-toggle-btn ${weekOffset === 1 ? 'active' : ''}" onclick="kSetWeekOffset(1)" title="${nextWeekLabel}">
-                Upcoming Week
-              </button>
-            </div>
-            <button type="button" class="k-week-rollover-btn" onclick="kManualWeekRollover()" style="margin-left:4px;" title="Promote Upcoming Week to This Week and start fresh upcoming plan">
-              ↻ Roll Over Week
-            </button>
-          </div>
-          <span class="k-sec-hint">Tap any slot or + to plan Brunch, Lunch, Dinner &amp; Dessert</span>
-        </div>
-
-        <!-- Filter bar for meal types -->
-        <div class="k-meal-filter-bar">
-          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'all' ? 'active' : ''}" onclick="kSetMealFilter('all')">
-            All Meals
-          </button>
-          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'brunch' ? 'active' : ''}" onclick="kSetMealFilter('brunch')">
-            🍳 Brunch
-          </button>
-          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'lunch' ? 'active' : ''}" onclick="kSetMealFilter('lunch')">
-            🥗 Lunch
-          </button>
-          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'dinner' ? 'active' : ''}" onclick="kSetMealFilter('dinner')">
-            🍲 Dinner
-          </button>
-          <button type="button" class="k-meal-filter-chip ${activeMealFilter === 'dessert' ? 'active' : ''}" onclick="kSetMealFilter('dessert')">
-            🍨 Dessert
-          </button>
-        </div>
-
-        <div class="k-week-list">
+      <!-- ===================================================================== -->
+      <!-- TAB 1: WEEKLY BOARD                                                   -->
+      <!-- ===================================================================== -->
+      ${activeTab === 'meals' ? `
+        <div class="k-board-grid">
           ${fullWeekSchedule.map((d, idx) => {
-            const isPast = (weekOffset === 0 && d.iso < todayIso);
             const isToday = (weekOffset === 0 && d.iso === todayIso);
-            const mealTypes = ['brunch', 'lunch', 'dinner', 'dessert'];
-            const mealTypeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
-            const mealTypeIcons = { brunch: '🍳', lunch: '🥗', dinner: '🍲', dessert: '🍨' };
+            const dinnerArr = d.meals.dinner || [];
+            const heroDinner = dinnerArr[0] || (d.meal ? { meal: d.meal, source: d.source, recipeUrl: d.recipeUrl } : null);
+            const brunchCount = (d.meals.brunch || []).length;
+            const lunchCount = (d.meals.lunch || []).length;
+            const dessertCount = (d.meals.dessert || []).length;
+            const daytimeCount = brunchCount + lunchCount + dessertCount;
 
-            // When a single meal type is filtered (e.g. Dinner board)
-            if (activeMealFilter !== 'all') {
-              const t = activeMealFilter;
-              const items = d.meals[t] || [];
-
-              return `
-                <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}">
-                  <div class="k-day-meta">
-                    <span class="k-day-name">${d.day}</span>
-                    <div class="k-day-date-row">
-                      <span class="k-day-date">${d.date}</span>
-                      ${isToday ? `<span class="k-badge-day-status today">Today</span>` : (isPast ? `<span class="k-badge-day-status past">Past</span>` : '')}
-                    </div>
-                  </div>
-
-                  <div class="k-day-slots-wrap">
-                    ${items.map((slot, itemIdx) => {
-                      const isOut = slot.source === 'out';
-                      const iconKey = slot.icon || (isOut ? 'takeout' : (t === 'brunch' ? 'brunch' : (t === 'dessert' ? 'dessert' : 'chicken')));
-                      const iconSvg = KITCHEN_ICONS[iconKey] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.chicken);
-                      const isFav = favoriteRecipes.some(r => r.title.toLowerCase() === slot.meal.toLowerCase());
-                      const pillLabel = getSourcePillLabel(slot.source, d.day, t);
-
-                      return `
-                        <div class="k-slot-row">
-                          <div class="k-avatar-icon-sm" onclick="kOpenMealPicker(${idx}, '${t}', ${itemIdx})" title="Click to edit">
-                            ${iconSvg}
-                          </div>
-                          <div class="k-slot-info" onclick="kOpenMealPicker(${idx}, '${t}', ${itemIdx})">
-                            <span class="k-slot-title">${escapeHtml(slot.meal)}</span>
-                            ${slot.recipeUrl ? `
-                              <a href="${escapeHtml(slot.recipeUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="k-recipe-web-link">
-                                <i data-lucide="external-link" style="width:10px; height:10px;"></i>
-                              </a>
-                            ` : ''}
-                          </div>
-                          ${pillLabel ? `
-                            <button type="button" class="k-source-pill ${slot.source}" onclick="kCycleSlotSource(${idx}, '${t}', ${itemIdx}, event)" title="Click to cycle source">
-                              ${pillLabel}
-                            </button>
-                          ` : ''}
-                          <button type="button" class="k-btn-edit-sm" onclick="kOpenMealPicker(${idx}, '${t}', ${itemIdx})" title="Edit ${mealTypeLabels[t]}">
-                            ✏️
-                          </button>
-                          <button type="button" class="k-icon-btn-sm ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Add to Favorites'}" onclick="kToggleFavSlot(${idx}, '${t}', ${itemIdx}, event)">
-                            <i data-lucide="heart" style="width:12px; height:12px;"></i>
-                          </button>
-                          <button type="button" class="k-btn-del-item-sm" onclick="kDeleteMealItem(${idx}, '${t}', ${itemIdx}, event)" title="Remove dish">
-                            ×
-                          </button>
-                        </div>
-                      `;
-                    }).join('')}
-
-                    <div class="k-slot-empty-row">
-                      <button type="button" class="k-slot-add-chip ${t}" onclick="kOpenMealPicker(${idx}, '${t}', null)" title="Add ${items.length > 0 ? 'another ' : ''}${mealTypeLabels[t]} dish for ${d.day}">
-                        <span>${mealTypeIcons[t]}</span>
-                        <span>+ Add ${items.length > 0 ? 'another ' : ''}${mealTypeLabels[t]}</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              `;
-            }
-
-            // All Meals View: shows all planned items across all meal types
-            const allPlannedItems = [];
-            mealTypes.forEach(t => {
-              const items = d.meals[t] || [];
-              items.forEach((slot, itemIdx) => {
-                allPlannedItems.push({ ...slot, mealType: t, itemIdx });
-              });
-            });
+            const sourceLabels = {
+              fresh: 'Fresh Cook',
+              leftover: 'Leftovers',
+              out: 'Takeout',
+              prep: 'Batch Prep',
+              freezer: 'Freezer Stash',
+              custom: 'Homemade'
+            };
+            const heroSourceLabel = heroDinner ? (sourceLabels[heroDinner.source] || 'Cook') : '';
 
             return `
-              <div class="k-day-row ${isPast ? 'is-past-day' : ''} ${isToday ? 'is-today-row' : ''}">
-                <div class="k-day-meta">
-                  <span class="k-day-name">${d.day}</span>
-                  <div class="k-day-date-row">
+              <div class="k-board-day-card ${isToday ? 'is-today' : ''}">
+                <div class="k-day-header-row">
+                  <div class="k-day-title-group">
+                    <span class="k-day-name">${d.day}</span>
                     <span class="k-day-date">${d.date}</span>
-                    ${isToday ? `<span class="k-badge-day-status today">Today</span>` : (isPast ? `<span class="k-badge-day-status past">Past</span>` : '')}
                   </div>
+                  ${isToday ? `<span class="k-badge-today">Today</span>` : (d.day === 'Sun' ? `<span class="k-badge-day-tag">Rest Day</span>` : (d.day === 'Fri' ? `<span class="k-badge-day-tag">Ritual</span>` : ''))}
                 </div>
 
-                <div class="k-day-slots-wrap">
-                  ${allPlannedItems.map(item => {
-                    const t = item.mealType;
-                    const itemIdx = item.itemIdx;
-                    const isOut = item.source === 'out';
-                    const iconKey = item.icon || (isOut ? 'takeout' : (t === 'brunch' ? 'brunch' : (t === 'dessert' ? 'dessert' : 'chicken')));
-                    const iconSvg = KITCHEN_ICONS[iconKey] || (isOut ? KITCHEN_ICONS.takeout : KITCHEN_ICONS.chicken);
-                    const isFav = favoriteRecipes.some(r => r.title.toLowerCase() === item.meal.toLowerCase());
-                    const pillLabel = getSourcePillLabel(item.source, d.day, t);
+                <!-- Hero Dinner Slot -->
+                ${heroDinner && heroDinner.meal ? `
+                  <div class="k-hero-dinner-box" onclick="kOpenMealPicker(${idx}, 'dinner', 0)" title="Click to view or edit dinner">
+                    <div class="k-hero-dinner-tag-row">
+                      <span>🍽️ Dinner (Hero)</span>
+                      <span class="k-hero-source-pill">${heroSourceLabel}</span>
+                    </div>
+                    <div class="k-hero-dinner-main">
+                      <span class="k-hero-dinner-name">${escapeHtml(heroDinner.meal)}</span>
+                      <span class="k-hero-dinner-edit-hint">✎</span>
+                    </div>
+                    ${heroDinner.recipeUrl ? `
+                      <a href="${escapeHtml(heroDinner.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link" onclick="event.stopPropagation()">
+                        <span>🔗 Recipe link</span>
+                      </a>
+                    ` : ''}
+                  </div>
+                ` : `
+                  <button type="button" class="k-hero-dinner-empty" onclick="kOpenMealPicker(${idx}, 'dinner', 0)">
+                    <span class="k-hero-dinner-empty-plus">＋</span>
+                    <span class="k-hero-dinner-empty-text">Plan ${d.day} Dinner</span>
+                    <span class="k-hero-dinner-empty-sub">Pick from Vault or Stash</span>
+                  </button>
+                `}
 
-                    return `
-                      <div class="k-slot-row">
-                        <span class="k-slot-type-badge ${t}">${mealTypeLabels[t]}</span>
-                        <div class="k-avatar-icon-sm" onclick="kOpenMealPicker(${idx}, '${t}', ${itemIdx})" title="Click to edit">
-                          ${iconSvg}
-                        </div>
-                        <div class="k-slot-info" onclick="kOpenMealPicker(${idx}, '${t}', ${itemIdx})">
-                          <span class="k-slot-title">${escapeHtml(item.meal)}</span>
-                          ${item.recipeUrl ? `
-                            <a href="${escapeHtml(item.recipeUrl)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="k-recipe-web-link">
-                              <i data-lucide="external-link" style="width:10px; height:10px;"></i>
-                            </a>
-                          ` : ''}
-                        </div>
-                        ${pillLabel ? `
-                          <button type="button" class="k-source-pill ${item.source}" onclick="kCycleSlotSource(${idx}, '${t}', ${itemIdx}, event)" title="Click to cycle source">
-                            ${pillLabel}
-                          </button>
-                        ` : ''}
-                        <button type="button" class="k-btn-edit-sm" onclick="kOpenMealPicker(${idx}, '${t}', ${itemIdx})" title="Edit ${mealTypeLabels[t]}">
-                          ✏️
-                        </button>
-                        <button type="button" class="k-icon-btn-sm ${isFav ? 'is-fav' : ''}" title="${isFav ? 'In Favorites' : 'Add to Favorites'}" onclick="kToggleFavSlot(${idx}, '${t}', ${itemIdx}, event)">
-                          <i data-lucide="heart" style="width:12px; height:12px;"></i>
-                        </button>
-                        <button type="button" class="k-btn-del-item-sm" onclick="kDeleteMealItem(${idx}, '${t}', ${itemIdx}, event)" title="Remove dish">
-                          ×
-                        </button>
+                <!-- Collapsible Daytime Slots Accordion -->
+                <div class="k-daytime-accordion">
+                  <button type="button" class="k-daytime-toggle-btn" onclick="kToggleDayExtras(${idx})">
+                    <span>${daytimeCount > 0 ? `+ Daytime Meals (${daytimeCount} Planned)` : '+ Add Daytime Meals'}</span>
+                    <span id="k-day-arrow-${idx}">▾</span>
+                  </button>
+
+                  <div class="k-daytime-expandable-body is-hidden" id="k-day-extras-${idx}">
+                    <!-- Brunch Row -->
+                    <div class="k-daytime-slot-row">
+                      <div>
+                        <span class="k-daytime-slot-label">🥞 Brunch:</span>
+                        <span>${(d.meals.brunch || []).length > 0 ? escapeHtml(d.meals.brunch[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
                       </div>
-                    `;
-                  }).join('')}
-
-                  <div class="k-slot-empty-row">
-                    ${mealTypes.map(t => `
-                      <button type="button" class="k-slot-add-chip ${t}" onclick="kOpenMealPicker(${idx}, '${t}', null)" title="Add ${mealTypeLabels[t]} dish for ${d.day}">
-                        <span>${mealTypeIcons[t]}</span>
-                        <span>+ ${mealTypeLabels[t]}</span>
+                      <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'brunch', ${(d.meals.brunch || []).length > 0 ? 0 : null})">
+                        ${(d.meals.brunch || []).length > 0 ? 'Edit' : '+ Add'}
                       </button>
-                    `).join('')}
+                    </div>
+
+                    <!-- Lunch Row -->
+                    <div class="k-daytime-slot-row">
+                      <div>
+                        <span class="k-daytime-slot-label">🥗 Lunch:</span>
+                        <span>${(d.meals.lunch || []).length > 0 ? escapeHtml(d.meals.lunch[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
+                      </div>
+                      <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'lunch', ${(d.meals.lunch || []).length > 0 ? 0 : null})">
+                        ${(d.meals.lunch || []).length > 0 ? 'Edit' : '+ Add'}
+                      </button>
+                    </div>
+
+                    <!-- Dessert Row -->
+                    <div class="k-daytime-slot-row">
+                      <div>
+                        <span class="k-daytime-slot-label">🍨 Dessert:</span>
+                        <span>${(d.meals.dessert || []).length > 0 ? escapeHtml(d.meals.dessert[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
+                      </div>
+                      <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'dessert', ${(d.meals.dessert || []).length > 0 ? 0 : null})">
+                        ${(d.meals.dessert || []).length > 0 ? 'Edit' : '+ Add'}
+                      </button>
+                    </div>
                   </div>
                 </div>
+
               </div>
             `;
           }).join('')}
         </div>
-      </section>
+      ` : ''}
 
-      <!-- STEP 3: HOUSEHOLD FAVORITES VAULT -->
-      <section class="k-section-box" id="k-sec-favorites">
-        <div class="k-sec-header">
-          <div class="k-sec-title-group">
-            <span class="k-step-indicator" style="background:var(--pal-coral-soft); color:var(--pal-coral);">FAVORITES</span>
-            <span class="k-sec-title">Household Favorites Vault</span>
-            <span style="font-size:11px; font-weight:700; color:var(--text-muted);">(${favoriteRecipes.length} trusted recipes)</span>
-          </div>
-          <button type="button" class="k-btn-action" onclick="kOpenAddFavModal('vault')">
-            <i data-lucide="plus" style="width:13px; height:13px;"></i>
-            <span>Add Recipe</span>
-          </button>
-        </div>
-
-        <!-- Tags filter bar for Main, Side, Brunch, Dessert -->
-        <div class="k-vault-filter-bar">
-          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'all' ? 'active' : ''}" onclick="kSetVaultFilter('all')">
-            All (${favoriteRecipes.length})
-          </button>
-          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'main' ? 'active' : ''}" onclick="kSetVaultFilter('main')">
-            🍲 Main (${favMainCount})
-          </button>
-          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'side' ? 'active' : ''}" onclick="kSetVaultFilter('side')">
-            🥗 Side (${favSideCount})
-          </button>
-          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'brunch' ? 'active' : ''}" onclick="kSetVaultFilter('brunch')">
-            ☕ Brunch (${favBrunchCount})
-          </button>
-          <button type="button" class="k-vault-filter-chip ${vaultFilter === 'dessert' ? 'active' : ''}" onclick="kSetVaultFilter('dessert')">
-            🍨 Dessert (${favDessertCount})
-          </button>
-        </div>
-
-        <div class="k-favs-shelf">
-          ${filteredFavs.length > 0 ? filteredFavs.map(r => `
-            <div class="k-fav-card">
-              <div class="k-fav-top">
-                <div class="k-avatar-icon-fav">
-                  ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.chicken}
-                </div>
-                <div class="k-fav-title" style="flex:1; min-width:0;" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</div>
-                <button class="k-fav-del-btn" onclick="kDeleteFavorite('${r.id}', event)" title="Remove recipe from vault">×</button>
-              </div>
-
-              ${(r.ingredients && r.ingredients !== 'Custom recipe' && r.ingredients !== 'Favorite recipe') ? `
-                <div class="k-fav-ingredients" title="${escapeHtml(r.ingredients)}">
-                  ${escapeHtml(r.ingredients)}
-                </div>
-              ` : ''}
-
-              <div class="k-fav-footer">
-                ${r.recipeUrl ? `
-                  <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-web-link">
-                    <i data-lucide="external-link" style="width:9px; height:9px;"></i>
-                    <span>Recipe</span>
-                  </a>
-                ` : `<span></span>`}
-
-                <div style="display:flex; gap:3px; align-items:center;">
-                  <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'vault', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
-                    ${(r.course || 'main').toUpperCase()}
-                  </span>
-                  <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'vault')" title="Assign recipe to a day and meal slot">
-                    <span>Assign 🗓️</span>
-                  </button>
-                </div>
+      <!-- ===================================================================== -->
+      <!-- TAB 2: STASH & GROCERIES (SIDE-BY-SIDE)                                -->
+      <!-- ===================================================================== -->
+      ${activeTab === 'stash' ? `
+        <div class="k-stash-groceries-grid">
+          
+          <!-- Shop Your Stash First -->
+          <div class="k-panel-card">
+            <div class="k-panel-header">
+              <div class="k-panel-title-group">
+                <h3 class="k-panel-title">
+                  <span>🥫</span>
+                  <span>Shop Your Stash First</span>
+                </h3>
+                <span class="k-panel-desc">Prioritize items on hand before purchasing new groceries</span>
               </div>
             </div>
-          `).join('') : `
-            <div style="grid-column: 1 / -1; padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
-              No recipes in this vault filter yet. Tap <strong>+ Add Recipe</strong> above to save one! 💜
-            </div>
-          `}
-        </div>
-      </section>
 
-      <!-- STEP 4: NEW RECIPES QUEUE (Want to Try) -->
-      <section class="k-section-box" id="k-sec-new-recipes">
-        <div class="k-sec-header">
-          <div class="k-sec-title-group">
-            <span class="k-step-indicator" style="background:#EDE9FE; color:#6D28D9;">WANT TO TRY</span>
-            <span class="k-sec-title">New Recipes Queue</span>
-            <span style="font-size:11px; font-weight:700; color:var(--text-muted);">(${newRecipes.length} to test)</span>
-          </div>
-          <button type="button" class="k-btn-action" onclick="kOpenAddFavModal('new')">
-            <i data-lucide="plus" style="width:13px; height:13px;"></i>
-            <span>Add Recipe to Try</span>
-          </button>
-        </div>
-
-        <div class="k-favs-shelf">
-          ${newRecipes.length > 0 ? newRecipes.map(r => `
-            <div class="k-fav-card" style="border-left: 3px solid #8B5CF6;">
-              <div class="k-fav-top">
-                <div class="k-avatar-icon-fav">
-                  ${KITCHEN_ICONS[r.icon] || KITCHEN_ICONS.chicken}
-                </div>
-                <div class="k-fav-title" style="flex:1; min-width:0;" title="${escapeHtml(r.title)}">${escapeHtml(r.title)}</div>
-                <button class="k-fav-del-btn" onclick="kDeleteNewRecipe('${r.id}', event)" title="Delete recipe from queue">×</button>
-              </div>
-
-              ${r.ingredients ? `
-                <div class="k-fav-ingredients" title="${escapeHtml(r.ingredients)}">
-                  ${escapeHtml(r.ingredients)}
-                </div>
-              ` : ''}
-
-              <div class="k-fav-footer">
-                ${r.recipeUrl ? `
-                  <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-web-link">
-                    <i data-lucide="external-link" style="width:9px; height:9px;"></i>
-                    <span>Recipe</span>
-                  </a>
-                ` : `<span></span>`}
-
-                <div style="display:flex; gap:2.5px; align-items:center;">
-                  <span class="k-course-badge ${r.course || 'main'}" onclick="kCycleRecipeCourse('${r.id}', 'new', event)" title="Click to cycle course (Main, Side, Brunch, Dessert)">
-                    ${(r.course || 'main').toUpperCase()}
-                  </span>
-                  <button type="button" class="k-btn-move-vault" onclick="kMoveNewRecipeToVault('${r.id}')" title="Love this recipe? Move it to your Household Favorites Vault!">
-                    <span>Vault 💜</span>
-                  </button>
-                  <button type="button" class="k-btn-assign-modal" onclick="kOpenAssignModal('${r.id}', 'new')" title="Assign recipe to a day and meal slot">
-                    <span>Assign 🗓️</span>
-                  </button>
-                </div>
+            <!-- Freezer Section -->
+            <div class="k-stash-section">
+              <span class="k-stash-section-label">🧊 Freezer (${freezerItems.length})</span>
+              <div class="k-stash-chips-wrap">
+                ${freezerItems.length > 0 ? freezerItems.map(item => `
+                  <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                    <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
+                    <span>${escapeHtml(item.name)}</span>
+                    <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Freezer</span>
+                    <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
+                  </div>
+                `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No freezer items</span>`}
               </div>
             </div>
-          `).join('') : `
-            <div style="grid-column: 1 / -1; padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
-              🧪 No new recipes queued yet. Found an exciting dish to try? Tap <strong>+ Add Recipe to Try</strong> to test it before moving to your Vault!
-            </div>
-          `}
-        </div>
-      </section>
 
-      <!-- STEP 5: VISIBLE GROCERY LIST & THINGS 3 EXPORTER -->
-      <section class="k-grocery-card" id="k-sec-groceries">
-        <div class="k-grocery-top-bar">
-          <div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span class="k-step-indicator" style="background:var(--pal-sage-soft); color:#3B6B35;">STEP 5</span>
-              <span style="font-size:16px; font-weight:700; color:var(--text-primary);">Verify Grocery List</span>
-              <span style="font-size:12px; font-weight:700; color:var(--text-muted);">(${groceryItems.filter(g => !g.checked).length} items needed)</span>
+            <!-- Fridge Section -->
+            <div class="k-stash-section">
+              <span class="k-stash-section-label">🥦 Refrigerator (${fridgeItems.length})</span>
+              <div class="k-stash-chips-wrap">
+                ${fridgeItems.length > 0 ? fridgeItems.map(item => `
+                  <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                    <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
+                    <span>${escapeHtml(item.name)}</span>
+                    <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Fridge</span>
+                    <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
+                  </div>
+                `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No fridge items</span>`}
+              </div>
             </div>
-            <span style="font-size:12px; color:var(--text-muted); margin-top:2px; display:block;">
-              Check items you already have to exclude them before opening Things 3.
-            </span>
+
+            <!-- Pantry Section -->
+            <div class="k-stash-section">
+              <span class="k-stash-section-label">🌾 Pantry (${pantryItems.length})</span>
+              <div class="k-stash-chips-wrap">
+                ${pantryItems.length > 0 ? pantryItems.map(item => `
+                  <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                    <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
+                    <span>${escapeHtml(item.name)}</span>
+                    <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Pantry</span>
+                    <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
+                  </div>
+                `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No pantry items</span>`}
+              </div>
+            </div>
+
+            <!-- Quick Add Bar -->
+            <div class="k-stash-quick-bar">
+              <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
+              <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">Pantry</button>
+              <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">Fridge</button>
+              <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">Freezer</button>
+            </div>
           </div>
 
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <button type="button" class="k-btn-copy-things" onclick="kOpenThings3()" title="Open Things 3 natively and create Grocery project">
-              <i data-lucide="external-link" style="width:14px; height:14px;"></i>
-              <span>Open in Things 3</span>
-            </button>
-            <button type="button" class="k-btn-action" onclick="kExportVerifiedThings3()" style="height:36px; padding:0 12px; font-size:12px;" title="Copy markdown checklist to clipboard">
-              <i data-lucide="copy" style="width:13px; height:13px;"></i>
-              <span>Copy Text</span>
+          <!-- Verified Grocery Checklist (Things 3 Integrated) -->
+          <div class="k-panel-card">
+            <div class="k-panel-header">
+              <div class="k-panel-title-group">
+                <h3 class="k-panel-title">
+                  <span>🛒</span>
+                  <span>Verified Grocery List</span>
+                </h3>
+                <span class="k-panel-desc">Only ingredients you actually need to buy</span>
+              </div>
+              <button type="button" class="k-btn-things3" onclick="kExportVerifiedThings3()" title="Sync grocery list to Things 3">
+                <span>↗</span>
+                <span>Send to Things 3</span>
+              </button>
+            </div>
+
+            <div class="k-grocery-list" id="k-grocery-items-wrap">
+              ${groceryItems.length > 0 ? groceryItems.map(g => `
+                <label class="k-grocery-item-row ${g.checked ? 'is-checked' : ''}">
+                  <input type="checkbox" class="k-grocery-item-checkbox" ${g.checked ? 'checked' : ''} onchange="kToggleGroceryItemPersist('${g.id}')">
+                  <span class="k-grocery-item-text">${escapeHtml(g.text)}</span>
+                  <button type="button" class="k-grocery-item-del" onclick="event.preventDefault(); kDeleteGroceryItem('${g.id}')" title="Delete">×</button>
+                </label>
+              `).join('') : `<div style="font-size:12px; color:var(--k-text-muted); font-style:italic; padding:10px 0;">No grocery items. Add custom items below or plan recipes.</div>`}
+            </div>
+
+            <!-- Add custom grocery item bar -->
+            <div class="k-stash-quick-bar">
+              <input type="text" class="k-clean-input" id="k-add-extra-grocery" placeholder="+ Add custom grocery item..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
+              <button type="button" class="k-btn-stash-add" onclick="kAddExtraGroceryItem()">+ Add</button>
+            </div>
+          </div>
+
+        </div>
+      ` : ''}
+
+      <!-- ===================================================================== -->
+      <!-- TAB 3: RECIPE VAULT (HOUSEHOLD FAVORITES)                              -->
+      <!-- ===================================================================== -->
+      ${activeTab === 'vault' ? `
+        <div class="k-panel-card">
+          <div class="k-vault-filter-bar">
+            <div class="k-course-filter-chips">
+              <button type="button" class="k-course-chip ${vaultFilter === 'all' ? 'active' : ''}" onclick="kSetVaultFilter('all')">
+                All (${favoriteRecipes.length})
+              </button>
+              <button type="button" class="k-course-chip ${vaultFilter === 'main' ? 'active' : ''}" onclick="kSetVaultFilter('main')">
+                Mains (${favMainCount})
+              </button>
+              <button type="button" class="k-course-chip ${vaultFilter === 'side' ? 'active' : ''}" onclick="kSetVaultFilter('side')">
+                Sides &amp; Salads (${favSideCount})
+              </button>
+              <button type="button" class="k-course-chip ${vaultFilter === 'brunch' ? 'active' : ''}" onclick="kSetVaultFilter('brunch')">
+                Brunch (${favBrunchCount})
+              </button>
+              <button type="button" class="k-course-chip ${vaultFilter === 'dessert' ? 'active' : ''}" onclick="kSetVaultFilter('dessert')">
+                Dessert (${favDessertCount})
+              </button>
+            </div>
+
+            <button type="button" class="k-btn-add-recipe" onclick="kOpenAddFavModal('vault')">
+              <span>＋</span>
+              <span>Add Recipe to Vault</span>
             </button>
           </div>
-        </div>
 
-        <div class="k-grocery-items-list" id="k-grocery-items-wrap" style="margin-top:10px;">
-          ${groceryItems.length > 0 ? groceryItems.map(item => `
-            <div class="k-grocery-row ${item.checked ? 'checked' : ''}" onclick="kToggleGroceryItemPersist('${item.id}')">
-              <div style="display:flex; align-items:center;">
-                <span class="k-grocery-check">${item.checked ? '✓' : ''}</span>
-                <span>${escapeHtml(item.text)}</span>
+          <div class="k-recipe-cards-grid">
+            ${filteredFavs.length > 0 ? filteredFavs.map(r => {
+              const courseLabel = { main: 'Main 🍲', side: 'Side 🥗', brunch: 'Brunch ☕', dessert: 'Dessert 🍨' }[r.course || 'main'] || 'Main 🍲';
+              return `
+                <div class="k-recipe-card">
+                  <div class="k-recipe-card-header">
+                    <span class="k-recipe-card-title">${escapeHtml(r.title)}</span>
+                    <span class="k-recipe-course-badge">${courseLabel}</span>
+                  </div>
+
+                  ${r.ingredients ? `
+                    <p class="k-recipe-card-ingredients">${escapeHtml(r.ingredients)}</p>
+                  ` : '<p class="k-recipe-card-ingredients" style="opacity:0.5; font-style:italic;">No ingredients listed</p>'}
+
+                  ${r.recipeUrl ? `
+                    <div>
+                      <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link">
+                        <span>🔗 View original recipe</span>
+                      </a>
+                    </div>
+                  ` : ''}
+
+                  <div class="k-recipe-card-actions">
+                    <button type="button" class="k-btn-plan-recipe" onclick="kOpenAssignModal('${r.id}', 'vault')">
+                      + Plan to Day
+                    </button>
+                    <div class="k-recipe-secondary-actions">
+                      <span style="font-size:11px; color:var(--k-text-muted);">Trusted staple</span>
+                      <button type="button" class="k-btn-del-recipe" onclick="kDeleteFavorite('${r.id}', event)">Delete</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('') : `
+              <div style="grid-column:1/-1; padding:30px; text-align:center; color:var(--k-text-muted); font-size:13px;">
+                No recipes found for this filter. Tap "Add Recipe to Vault" to add one!
               </div>
-              <button class="k-grocery-del-btn" onclick="event.stopPropagation(); kDeleteGroceryItem('${item.id}')">×</button>
-            </div>
-          `).join('') : `
-            <div style="padding: 24px 16px; text-align: center; color: var(--text-muted); font-size: 12.5px; border: 1px dashed var(--border-subtle, rgba(31,42,68,0.12)); border-radius: 12px;">
-              🛒 Your grocery list is empty. Add grocery items below to start your list!
-            </div>
-          `}
-        </div>
-
-        ${stashItems.filter(i => i.used).length > 0 ? `
-          <div class="k-dept-box" style="background:var(--pal-seafoam-soft); border-color:var(--pal-seafoam); margin-top:10px;">
-            <div class="k-dept-head" style="color:var(--pal-azure);">
-              <span>✨ Stash Items Skipped (Saved $)</span>
-            </div>
-            <div style="font-size:12px; color:var(--text-secondary); line-height:1.5;">
-              ${stashItems.filter(i => i.used).map(i => `• ${escapeHtml(i.name)} (${i.type === 'freezer' ? 'freezer' : 'pantry'})`).join('<br>')}
-            </div>
+            `}
           </div>
-        ` : ''}
-
-        <!-- Add Custom Grocery Item Field -->
-        <div style="display:flex; gap:8px; margin-top:10px; align-items:center;">
-          <input type="text" class="k-clean-input" id="k-add-extra-grocery" name="k_extra_grocery_input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add a grocery item (e.g. Oat milk, Lemons, Coffee beans)..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
-          <button type="button" class="k-btn-action" onclick="kAddExtraGroceryItem()">
-            <i data-lucide="plus" style="width:13px; height:13px;"></i>
-            <span>Add Item</span>
-          </button>
         </div>
-      </section>
+      ` : ''}
+
+      <!-- ===================================================================== -->
+      <!-- TAB 4: WANT TO TRY RECIPES (TEST KITCHEN QUEUE)                        -->
+      <!-- ===================================================================== -->
+      ${activeTab === 'want' ? `
+        <div class="k-panel-card">
+          <div class="k-vault-filter-bar">
+            <div>
+              <h3 class="k-panel-title">
+                <span>✨</span>
+                <span>Test Kitchen &amp; "Want to Try" Queue</span>
+              </h3>
+              <span class="k-panel-desc">Test new culinary ideas. Once tested and loved, promote them to your Vault with 1 tap.</span>
+            </div>
+
+            <button type="button" class="k-btn-add-recipe" onclick="kOpenAddFavModal('new')">
+              <span>＋</span>
+              <span>Add Recipe to Test</span>
+            </button>
+          </div>
+
+          <div class="k-recipe-cards-grid">
+            ${newRecipes.length > 0 ? newRecipes.map(r => {
+              const courseLabel = { main: 'Main 🍲', side: 'Side 🥗', brunch: 'Brunch ☕', dessert: 'Dessert 🍨' }[r.course || 'main'] || 'Main 🍲';
+              return `
+                <div class="k-recipe-card">
+                  <div class="k-recipe-card-header">
+                    <span class="k-recipe-card-title">${escapeHtml(r.title)}</span>
+                    <span class="k-recipe-course-badge want">Want to Try</span>
+                  </div>
+
+                  ${r.ingredients ? `
+                    <p class="k-recipe-card-ingredients">${escapeHtml(r.ingredients)}</p>
+                  ` : '<p class="k-recipe-card-ingredients" style="opacity:0.5; font-style:italic;">No ingredients listed</p>'}
+
+                  ${r.recipeUrl ? `
+                    <div>
+                      <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link">
+                        <span>🔗 View recipe link</span>
+                      </a>
+                    </div>
+                  ` : ''}
+
+                  <div class="k-recipe-card-actions">
+                    <button type="button" class="k-btn-plan-recipe" onclick="kOpenAssignModal('${r.id}', 'new')">
+                      Plan to Day ＋
+                    </button>
+                    <div class="k-recipe-secondary-actions">
+                      <button type="button" class="k-btn-promote-vault" onclick="kMoveNewRecipeToVault('${r.id}')">
+                        <span>💠</span>
+                        <span>Promote to Vault</span>
+                      </button>
+                      <button type="button" class="k-btn-del-recipe" onclick="kDeleteNewRecipe('${r.id}', event)">Remove</button>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('') : `
+              <div style="grid-column:1/-1; padding:30px; text-align:center; color:var(--k-text-muted); font-size:13px;">
+                Your "Want to Try" queue is empty. Tap "Add Recipe to Test" to queue up exciting new dishes!
+              </div>
+            `}
+          </div>
+        </div>
+      ` : ''}
 
     </div>
   `;
