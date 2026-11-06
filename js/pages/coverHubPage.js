@@ -53,6 +53,16 @@ const COMPASS_MAIL_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="
 
 function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 74) {
   const pid = presetId || 'headphones-bob';
+  if (pid.startsWith('img-')) {
+    const map = {
+      'img-ghibli': 'img/avatars/avatar-ghibli.jpg',
+      'img-rubberhose': 'img/avatars/avatar-rubberhose.jpg',
+      'img-kawaii': 'img/avatars/avatar-kawaii.jpg',
+      'img-y2k': 'img/avatars/avatar-y2k.jpg'
+    };
+    const src = map[pid] || 'img/avatars/avatar-ghibli.jpg';
+    return `<img src="${src}" alt="Compass Avatar" style="width:${width}px;height:${height}px;border-radius:18px;object-fit:cover;box-shadow:0 4px 14px rgba(124,58,237,0.18);border:2px solid rgba(124,58,237,0.25);">`;
+  }
   if (pid === 'headphones-bob' || pid === 'headphones') {
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Headphones with Bob Hair" xmlns="http://www.w3.org/2000/svg">
