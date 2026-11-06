@@ -532,7 +532,7 @@ function renderKitchenPage() {
                   <button type="button" class="k-hero-dinner-empty" onclick="kOpenMealPicker(${idx}, 'dinner', 0)">
                     <span class="k-hero-dinner-empty-plus">＋</span>
                     <span class="k-hero-dinner-empty-text">Plan ${d.day} Dinner</span>
-                    <span class="k-hero-dinner-empty-sub">Pick from Vault or Stash</span>
+                    <span class="k-hero-dinner-empty-sub">Pick from Vault</span>
                   </button>
                 `}
 
@@ -1078,22 +1078,6 @@ function kSetModalMealType(newType, reFocus = true) {
   if (clearBtn) {
     clearBtn.textContent = 'Delete Dish';
     clearBtn.style.display = slot ? 'inline-block' : 'none';
-  }
-
-  // Populate stash picker items
-  const stashContainer = document.getElementById('k-modal-stash-list');
-  if (stashContainer) {
-    const stashItems = (data.stashItems || []).filter(i => !i.used);
-    if (stashItems.length > 0) {
-      stashContainer.innerHTML = stashItems.map(i => `
-        <div class="k-modal-pick-item" onclick="kSelectStashForMeal('${escapeHtml(i.name)}', '${i.type}')">
-          <div style="font-weight:600; color:var(--text-primary);">${escapeHtml(i.name)}</div>
-          <span class="k-stash-tag-badge ${i.type}">${i.type === 'freezer' ? 'Freezer' : (i.type === 'fridge' ? 'Fridge' : 'Pantry')}</span>
-        </div>
-      `).join('');
-    } else {
-      stashContainer.innerHTML = `<div style="font-size:12px; color:var(--text-muted); padding:6px 0;">No active stash items available.</div>`;
-    }
   }
 
   // Populate favorites picker items
