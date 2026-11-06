@@ -509,7 +509,7 @@ function renderKitchenPage() {
                     <span class="k-day-name">${d.day}</span>
                     <span class="k-day-date">${d.date}</span>
                   </div>
-                  ${isToday ? `<span class="k-badge-today">Today</span>` : (d.day === 'Sun' ? `<span class="k-badge-day-tag">Rest Day</span>` : (d.day === 'Fri' ? `<span class="k-badge-day-tag">Ritual</span>` : ''))}
+                  ${isToday ? `<span class="k-badge-today">Today</span>` : ''}
                 </div>
 
                 <!-- Dinner Slot -->
