@@ -534,98 +534,86 @@ function renderFinanceCombinedOutOfPocketAndSpikesSection(outlierSpikes, periodL
   const netMonthlySubs = outOfPocketSubs.reduce((sum, s) => sum + s.netMonthly, 0);
 
   return `
-    <div class="finance-section-box" id="finance-outliers-radar" style="padding: 20px 22px;">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
-        
-        <!-- Left Column: Out-of-Pocket Subscriptions -->
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border-color, #E2E8F0);">
-            <div>
-              <h3 class="finance-section-title" style="margin: 0; font-size: 0.98rem;">
-                <i data-lucide="repeat" style="width: 17px; height: 17px; color: #7C3AED;"></i>
-                <span>Out-of-Pocket Subscriptions</span>
-              </h3>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">
-                $${(netMonthlySubs * 12).toFixed(2)}/yr personal outflow &bull; Reimbursed perks excluded
-              </span>
+    <div class="finance-section-box" id="finance-outliers-radar" style="padding: 18px 22px; display: flex; flex-direction: column; gap: 16px;">
+      
+      <!-- Top Row: Out-of-Pocket Subscriptions Pill Strip -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color, #E2E8F0);">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; flex: 1;">
+          <!-- Total Out-of-Pocket Badge Box -->
+          <div style="padding: 7px 14px; border-radius: 12px; background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.22); white-space: nowrap;">
+            <div style="font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted);">
+              Out-of-Pocket Subs
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="text-align: right;">
-                <span class="num-mono" style="font-size: 1.25rem; font-weight: 800; color: #BE123C;">$${netMonthlySubs.toFixed(2)}</span>
-                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">/mo</span>
-              </div>
-              <button class="finance-btn-add-service" onclick="openAddSubscriptionModal()" title="Add a new subscription or service" style="padding: 5px 10px; font-size: 0.72rem;">
-                <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
-                <span>Add</span>
-              </button>
+            <div class="num-mono" style="font-size: 1.15rem; font-weight: 800; color: #6D28D9; line-height: 1.2;">
+              $${netMonthlySubs.toFixed(2)}<span style="font-size: 0.74rem; font-weight: 600; color: var(--text-muted);">/mo</span>
+              <span style="font-size: 0.72rem; font-weight: 500; color: var(--text-muted);">($${Math.round(netMonthlySubs * 12)}/yr)</span>
             </div>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            ${outOfPocketSubs.map(s => `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: var(--bg-secondary, #F8FAFC); border: 1px solid var(--border-color, #E2E8F0); border-radius: 10px;">
-                <div style="min-width: 0;">
-                  <strong style="font-size: 0.84rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    ${escapeHtml(s.name)}
-                  </strong>
-                  <span style="font-size: 0.71rem; color: var(--text-muted);">
-                    ${s.monthlyCredit > 0 ? `$${s.monthlyGross.toFixed(2)} gross &minus; $${s.monthlyCredit.toFixed(2)} credit` : `Renews ${escapeHtml(s.nextRenewal || 'Monthly')}`}
-                  </span>
-                </div>
-                <div class="num-mono" style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; margin-left: 12px;">
-                  $${s.netMonthly.toFixed(2)}<span style="font-size: 0.7rem; font-weight: 500; color: var(--text-muted);">/mo</span>
-                </div>
-              </div>
-            `).join('')}
+          <!-- Inline Pill Chips for Out-of-Pocket Services -->
+          <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 7px;">
+            ${outOfPocketSubs.map(s => {
+              let shortName = s.name || '';
+              if (shortName.includes('Google One')) shortName = 'Google One';
+              else if (shortName.includes('Nest Aware')) shortName = 'Nest Aware';
+              else if (shortName.includes('iCloud+')) shortName = 'iCloud+';
+              else if (shortName.includes('Disney+')) shortName = 'Disney+ (Net)';
+              const tooltip = s.monthlyCredit > 0
+                ? `${s.name}: $${s.monthlyGross.toFixed(2)} gross - $${s.monthlyCredit.toFixed(2)} credit = $${s.netMonthly.toFixed(2)}/mo`
+                : `${s.name}: $${s.netMonthly.toFixed(2)}/mo (Renews ${s.nextRenewal || 'Monthly'})`;
+              return `
+                <span title="${escapeHtml(tooltip)}" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 0.76rem; background: var(--bg-secondary, #F8FAFC); border: 1px solid var(--border-color, #E2E8F0); color: var(--text-primary);">
+                  <span style="font-weight: 600;">${escapeHtml(shortName)}</span>
+                  <strong class="num-mono" style="color: #6D28D9; font-weight: 800;">$${s.netMonthly.toFixed(2)}</strong>
+                </span>
+              `;
+            }).join('')}
           </div>
         </div>
 
-        <!-- Right Column: High Spend Categories Above Baseline -->
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border-color, #E2E8F0);">
-            <div>
-              <h3 class="finance-section-title" style="margin: 0; font-size: 0.98rem;">
-                <i data-lucide="trending-up" style="width: 17px; height: 17px; color: #E11D48;"></i>
-                <span>High Spend Above Baseline</span>
-              </h3>
-              <span style="font-size: 0.75rem; color: var(--text-muted);">
-                Categories running above historical baseline in ${escapeHtml(periodLabel)}
-              </span>
-            </div>
-            <span class="finance-flag-pill danger" style="font-size: 0.72rem; padding: 3px 10px;">
-              ${outlierSpikes.length} Categories
-            </span>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px;">
-            ${outlierSpikes.length > 0 ? outlierSpikes.map(cat => `
-              <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: rgba(225, 29, 72, 0.04); border: 1px solid rgba(225, 29, 72, 0.18); border-radius: 10px; gap: 10px;">
-                <div style="min-width: 0;">
-                  <strong style="font-size: 0.84rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                    ${escapeHtml(cat.name)}
-                  </strong>
-                  <span style="font-size: 0.72rem; color: var(--text-muted);">
-                    Baseline: $${cat.baseline.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} &bull; <strong style="color: #BE123C;">+$${cat.delta.toFixed(0)} over</strong>
-                  </span>
-                </div>
-                <div style="text-align: right; white-space: nowrap;">
-                  <div class="num-mono" style="font-size: 0.95rem; font-weight: 800; color: #E11D48;">
-                    $${cat.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                  </div>
-                  <span style="font-size: 0.68rem; font-weight: 700; color: #9F1239;">
-                    🔺 +${cat.pctDelta}%
-                  </span>
-                </div>
-              </div>
-            `).join('') : `
-              <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.82rem; border: 1px dashed var(--border-color); border-radius: 10px;">
-                No categories above baseline for ${escapeHtml(periodLabel)}.
-              </div>
-            `}
-          </div>
-        </div>
-
+        <button class="finance-btn-add-service" onclick="openAddSubscriptionModal()" title="Add a new subscription or service" style="padding: 6px 12px; font-size: 0.74rem;">
+          <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+          <span>Add</span>
+        </button>
       </div>
+
+      <!-- Bottom Row: 4-Card Horizontal Grid of High Spend Categories Above Baseline -->
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted);">
+            High Spend Categories Above Baseline &bull; ${escapeHtml(periodLabel)}
+          </span>
+          <span class="finance-flag-pill danger" style="font-size: 0.7rem; padding: 3px 10px;">
+            ${outlierSpikes.length} ${outlierSpikes.length === 1 ? 'Category' : 'Categories'} Over Baseline
+          </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 10px;">
+          ${outlierSpikes.length > 0 ? outlierSpikes.map(cat => `
+            <div style="padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(225, 29, 72, 0.22); background: rgba(225, 29, 72, 0.04); display: flex; flex-direction: column; gap: 3px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px;">
+                <strong style="font-size: 0.8rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(cat.name)}">
+                  ${escapeHtml(cat.name)}
+                </strong>
+                <span style="font-size: 0.68rem; font-weight: 700; color: #9F1239; white-space: nowrap;">
+                  🔺 +${cat.pctDelta}%
+                </span>
+              </div>
+              <div class="num-mono" style="font-size: 1.15rem; font-weight: 800; color: #E11D48; margin-top: 2px;">
+                $${cat.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+              </div>
+              <div style="font-size: 0.72rem; color: var(--text-muted);">
+                Base $${cat.baseline.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} &bull; <strong style="color: #BE123C;">+$${cat.delta.toFixed(0)}</strong>
+              </div>
+            </div>
+          `).join('') : `
+            <div style="grid-column: 1 / -1; padding: 18px; text-align: center; color: var(--text-muted); font-size: 0.82rem; border: 1px dashed var(--border-color); border-radius: 10px;">
+              No categories running above baseline for ${escapeHtml(periodLabel)}.
+            </div>
+          `}
+        </div>
+      </div>
+
     </div>
   `;
 }
