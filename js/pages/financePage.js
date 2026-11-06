@@ -4454,57 +4454,6 @@ function renderFinanceBudget() {
 
       </div>
 
-      <!-- 3B. Wealth Sweep Pot (Surplus Holding Tank) -->
-      <div class="wealth-sweep-pot-card">
-
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 18px; position: relative; z-index: 2;">
-          <div style="max-width: 530px;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-              <div class="summer-widget-pill" style="width: 38px; height: 38px;">
-                <span style="font-size: 18px; line-height: 1;">🔮</span>
-              </div>
-              <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                  <span style="font-size: 14.5px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #0E7490;">Wealth Sweep Holding Tank</span>
-                  <span class="budget-badge budget-badge-teal">Active Sweep</span>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted, #71717A);">Unspent living budget auto-swept to separate holding pot</div>
-              </div>
-            </div>
-            
-            <p style="font-size: 12.5px; color: var(--text-secondary, #64668B); line-height: 1.5; margin: 6px 0 12px;">
-              Any unspent monthly living budget is automatically protected from casual spending and swept into this separate holding tank. Keep it liquid until you deploy into index funds or high-yield cash.
-            </p>
-
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A);">Destinations:</span>
-              <span class="wealth-sweep-chip"><i data-lucide="shield-check" style="width: 12px; height: 12px;"></i> Vanguard VTI / VOO</span>
-              <span class="wealth-sweep-chip"><i data-lucide="trending-up" style="width: 12px; height: 12px;"></i> Fidelity Brokerage</span>
-              <span class="wealth-sweep-chip"><i data-lucide="credit-card" style="width: 12px; height: 12px;"></i> Capital One 360 Cash</span>
-            </div>
-          </div>
-
-          <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-            <div class="wealth-sweep-pot-statbox" style="text-align: right; min-width: 170px;">
-              <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A); margin-bottom: 2px;">October Surplus</div>
-              <div class="num-mono" style="font-size: 22px; font-weight: 800; color: #0D98BA; line-height: 1.1;">
-                +$${Math.round(livingRemaining).toLocaleString()}
-              </div>
-              <div style="font-size: 11px; color: #0E7490; font-weight: 600; margin-top: 3px;">Unspent living cap</div>
-            </div>
-
-            <div class="wealth-sweep-pot-statbox" style="text-align: right; min-width: 190px;">
-              <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted, #71717A); margin-bottom: 2px;">Accumulated Pot Balance</div>
-              <div style="display: flex; align-items: center; gap: 4px; justify-content: flex-end;">
-                <span class="num-mono" style="font-size: 22px; font-weight: 800; color: #7C3AED;">$</span>
-                <input type="number" step="100" class="num-mono" value="${Math.round(fin.wealthSweepPot || livingRemaining)}" onchange="handleUpdateWealthSweepPot(this.value)" style="font-size: 20px; font-weight: 800; color: #7C3AED; background: transparent; border: 1px dashed rgba(139, 92, 246, 0.4); border-radius: 8px; padding: 2px 6px; width: 125px; text-align: right;">
-              </div>
-              <div style="font-size: 11px; color: #7C3AED; font-weight: 600; margin-top: 3px;">Ready for deployment</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- 4. Category Ledger & Baseline Tuner -->
       <div class="budget-ledger-card">
         <div class="budget-filter-bar">
