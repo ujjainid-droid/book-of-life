@@ -5210,6 +5210,18 @@ body.dark-mode .budget-progress-wrap {
   border: 1px solid #CBD5E1;
   box-shadow: none;
 }
+.budget-badge.budget-badge-soft-green {
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+  box-shadow: none;
+}
+.budget-badge.budget-badge-soft-red {
+  background: #FFF1F2;
+  color: #BE123C;
+  border: 1px solid #FECDD3;
+  box-shadow: none;
+}
 [data-theme="dark"] .summer-widget-card.theme-charcoal,
 body.dark-mode .summer-widget-card.theme-charcoal {
   background: #1E293B;
