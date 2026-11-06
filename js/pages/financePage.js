@@ -502,185 +502,129 @@ function renderFinanceTargetSplitWidget(periodInflow, totalFixedSpend, totalFlex
   `;
 }
 
-function renderFinanceRecurringCommitmentsSection() {
+function renderFinanceCombinedOutOfPocketAndSpikesSection(outlierSpikes, periodLabel) {
   const fin = storage.getFinanceData();
   const subs = (typeof storage.getFinanceSubscriptions === 'function') ? storage.getFinanceSubscriptions() : (fin.subscriptions || []);
 
-  const grossMonthlySubs = subs.reduce((sum, s) => {
-    const cost = parseFloat(s.cost) || 0;
-    if (s.cadence === 'annual') return sum + (cost / 12);
-    if (s.cadence === 'lifetime') return sum;
-    return sum + cost;
-  }, 0);
+  // Compute out-of-pocket monthly cost per subscription
+  const outOfPocketSubs = subs.map(s => {
+    const rawCost = parseFloat(s.cost) || 0;
+    let monthlyGross = rawCost;
+    if (s.cadence === 'annual') monthlyGross = rawCost / 12;
+    else if (s.cadence === 'lifetime') monthlyGross = 0;
 
-  const coveredMonthlySubs = 36.95; // Disney+ $20, NYT $4, Walmart+ $12.95
-  const netMonthlySubs = Math.max(0, grossMonthlySubs - coveredMonthlySubs);
-
-  const displayedSubs = subs.filter(s => {
-    if (financeSubCategoryFilter !== 'all' && s.category !== financeSubCategoryFilter) return false;
-    if (financeSubSearchQuery) {
-      const q = financeSubSearchQuery;
-      const matchName = (s.name || '').toLowerCase().includes(q);
-      const matchCat = (s.category || '').toLowerCase().includes(q);
-      const matchCard = (s.card || '').toLowerCase().includes(q);
-      const matchPerk = (s.cardPerk || '').toLowerCase().includes(q);
-      if (!matchName && !matchCat && !matchCard && !matchPerk) return false;
+    const perk = (s.cardPerk || '').toLowerCase();
+    const nameLower = (s.name || '').toLowerCase();
+    let monthlyCredit = 0;
+    if (nameLower.includes('disney') && (perk.includes('amex') || perk.includes('credit') || perk.includes('covered'))) {
+      monthlyCredit = Math.min(monthlyGross, 20.00);
+    } else if (perk.includes('covered') || perk.includes('amex') || perk.includes('credit')) {
+      monthlyCredit = monthlyGross;
     }
-    return true;
-  });
+
+    const netMonthly = Math.max(0, +(monthlyGross - monthlyCredit).toFixed(2));
+    return {
+      ...s,
+      monthlyGross,
+      monthlyCredit,
+      netMonthly
+    };
+  }).filter(s => s.netMonthly > 0.009);
+
+  const netMonthlySubs = outOfPocketSubs.reduce((sum, s) => sum + s.netMonthly, 0);
 
   return `
-    <div class="finance-section-box" id="finance-recurring-commitments-box">
-      <div class="finance-section-header">
-        <div>
-          <h3 class="finance-section-title">
-            <i data-lucide="repeat" style="width: 18px; height: 18px; color: var(--text-primary);"></i>
-            <span>Subscriptions</span>
-          </h3>
-        </div>
-
-        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-          <div class="finance-search-wrap">
-            <i data-lucide="search" class="finance-search-icon"></i>
-            <input type="text" 
-                   class="finance-search-input" 
-                   placeholder="Search subscriptions..." 
-                   value="${escapeHtml(financeSubSearchQuery)}" 
-                   oninput="handleFinanceSubSearch(event)"
-                   autocomplete="off"
-                   spellcheck="false">
-            ${financeSubSearchQuery ? `
-              <button type="button" class="finance-search-clear-btn" onclick="clearFinanceSubSearch(event)" title="Clear search">
-                <i data-lucide="x" style="width: 12px; height: 12px;"></i>
+    <div class="finance-section-box" id="finance-outliers-radar" style="padding: 20px 22px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; align-items: start;">
+        
+        <!-- Left Column: Out-of-Pocket Subscriptions -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border-color, #E2E8F0);">
+            <div>
+              <h3 class="finance-section-title" style="margin: 0; font-size: 0.98rem;">
+                <i data-lucide="repeat" style="width: 17px; height: 17px; color: #7C3AED;"></i>
+                <span>Out-of-Pocket Subscriptions</span>
+              </h3>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">
+                $${(netMonthlySubs * 12).toFixed(2)}/yr personal outflow &bull; Reimbursed perks excluded
+              </span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="text-align: right;">
+                <span class="num-mono" style="font-size: 1.25rem; font-weight: 800; color: #BE123C;">$${netMonthlySubs.toFixed(2)}</span>
+                <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">/mo</span>
+              </div>
+              <button class="finance-btn-add-service" onclick="openAddSubscriptionModal()" title="Add a new subscription or service" style="padding: 5px 10px; font-size: 0.72rem;">
+                <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+                <span>Add</span>
               </button>
-            ` : ''}
+            </div>
           </div>
-          <button class="finance-btn-add-service" onclick="openAddSubscriptionModal()" title="Add a new subscription or service">
-            <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
-            <span>Add Service</span>
-          </button>
-        </div>
-      </div>
 
-      <!-- 3 Cheery Summer KPI Widgets: Total, Reimbursed, Out of Pocket -->
-      <div class="finance-subs-summer-grid">
-        <!-- 1. Gross Commitments (Lavender Sorbet) -->
-        <div class="summer-widget-card theme-lavender">
-          <div>
-            <div class="summer-widget-top">
-              <div class="summer-widget-pill">
-                <i data-lucide="repeat" style="width: 19px; height: 19px; color: #7C3AED;"></i>
-              </div>
-              <span class="budget-badge budget-badge-violet">${subs.length} Active Services</span>
-            </div>
-            <div class="summer-widget-body">
-              <div class="summer-widget-spent num-mono">$${grossMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #64748B;">/mo</span></div>
-              <div class="summer-widget-title">Gross Commitments</div>
-              <div class="summer-widget-sub">$${(grossMonthlySubs * 12).toFixed(2)} / yr total recurring contracts</div>
-            </div>
-          </div>
-          <div class="summer-widget-foot">
-            <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: 100%; background: #7C3AED;"></div>
-            </div>
-            <div class="summer-widget-meta">
-              <span>${subs.length} recurring accounts</span>
-              <strong class="num-mono" style="color: #7C3AED;">100% Tracked</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- 2. Reimbursed Credits (Seafoam Mint) -->
-        <div class="summer-widget-card theme-mint">
-          <div>
-            <div class="summer-widget-top">
-              <div class="summer-widget-pill">
-                <i data-lucide="shield-check" style="width: 19px; height: 19px; color: #0D98BA;"></i>
-              </div>
-              <span class="budget-badge budget-badge-teal">100% Card Offset</span>
-            </div>
-            <div class="summer-widget-body">
-              <div class="summer-widget-spent num-mono" style="color: #0E7490;">$${coveredMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #0E7490;">/mo</span></div>
-              <div class="summer-widget-title">Reimbursed Credits</div>
-              <div class="summer-widget-sub">$${(coveredMonthlySubs * 12).toFixed(2)} / yr offset (Disney+, NYT, Walmart+)</div>
-            </div>
-          </div>
-          <div class="summer-widget-foot">
-            <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${Math.round((coveredMonthlySubs / (grossMonthlySubs || 1)) * 100)}%; background: #0D98BA;"></div>
-            </div>
-            <div class="summer-widget-meta">
-              <span>Card synergy offsets</span>
-              <strong class="num-mono" style="color: #0D98BA;">$0 Net Cost</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Out of Pocket Burn (Sunset Rose) -->
-        <div class="summer-widget-card theme-rose">
-          <div>
-            <div class="summer-widget-top">
-              <div class="summer-widget-pill">
-                <i data-lucide="wallet" style="width: 19px; height: 19px; color: #E11D48;"></i>
-              </div>
-              <span class="budget-badge budget-badge-rose">True Net Burn</span>
-            </div>
-            <div class="summer-widget-body">
-              <div class="summer-widget-spent num-mono" style="color: #BE123C;">$${netMonthlySubs.toFixed(2)}<span style="font-size: 15px; font-weight: 600; color: #BE123C;">/mo</span></div>
-              <div class="summer-widget-title">Out of Pocket Burn</div>
-              <div class="summer-widget-sub">$${(netMonthlySubs * 12).toFixed(2)} / yr personal outflow</div>
-            </div>
-          </div>
-          <div class="summer-widget-foot">
-            <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${Math.round((netMonthlySubs / (grossMonthlySubs || 1)) * 100)}%; background: #E11D48;"></div>
-            </div>
-            <div class="summer-widget-meta">
-              <span>Effective daily drain</span>
-              <strong class="num-mono" style="color: #BE123C;">$${(netMonthlySubs / 30).toFixed(2)} / day</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Subscriptions Grid: Simple & Small (Name, Amount, Monthly/Annual, Renewal Date, Reimbursed Icon) -->
-      <div class="finance-subs-grid" style="grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px;">
-        ${displayedSubs.map(s => {
-          const isOffset = s.cardPerk && (s.cardPerk.includes('Covered') || s.cardPerk.includes('Amex') || s.cardPerk.includes('credit'));
-          const cost = parseFloat(s.cost) || 0;
-          const cadenceText = (s.cadence || 'monthly').toLowerCase().includes('annual') || (s.cadence || '').toLowerCase().includes('year') ? 'Annual' : 'Monthly';
-          return `
-            <div class="finance-sub-card" style="padding: 10px 14px; gap: 6px;">
-              <!-- Top Row: Name + Reimbursed Icon -->
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                <strong style="font-size: 0.85rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(s.name)}">
-                  ${escapeHtml(s.name)}
-                </strong>
-                ${isOffset ? `
-                  <span class="finance-sub-check-badge" title="100% Reimbursed: ${escapeHtml(s.cardPerk)}">
-                    <i data-lucide="check-check"></i>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${outOfPocketSubs.map(s => `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: var(--bg-secondary, #F8FAFC); border: 1px solid var(--border-color, #E2E8F0); border-radius: 10px;">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.84rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${escapeHtml(s.name)}
+                  </strong>
+                  <span style="font-size: 0.71rem; color: var(--text-muted);">
+                    ${s.monthlyCredit > 0 ? `$${s.monthlyGross.toFixed(2)} gross &minus; $${s.monthlyCredit.toFixed(2)} credit` : `Renews ${escapeHtml(s.nextRenewal || 'Monthly')}`}
                   </span>
-                ` : ''}
+                </div>
+                <div class="num-mono" style="font-size: 0.92rem; font-weight: 700; color: var(--text-primary); white-space: nowrap; margin-left: 12px;">
+                  $${s.netMonthly.toFixed(2)}<span style="font-size: 0.7rem; font-weight: 500; color: var(--text-muted);">/mo</span>
+                </div>
               </div>
+            `).join('')}
+          </div>
+        </div>
 
-              <!-- Middle Row: Amount & Cadence -->
-              <div style="display: flex; justify-content: space-between; align-items: baseline;">
-                <span style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">
-                  $${cost.toFixed(2)}
-                </span>
-                <span style="font-size: 0.72rem; font-weight: 600; color: var(--text-muted);">
-                  ${cadenceText}
-                </span>
-              </div>
-
-              <!-- Bottom Row: Renewal Date -->
-              <div style="font-size: 0.68rem; color: var(--text-muted); border-top: 1px dashed var(--border-color, #E2E8F0); padding-top: 4px; display: flex; justify-content: space-between; align-items: center;">
-                <span>Renews: <strong style="color: var(--text-secondary);">${escapeHtml(s.nextRenewal || 'Monthly')}</strong></span>
-                ${isOffset ? `<span class="finance-sub-reimbursed-pill">Reimbursed</span>` : ''}
-              </div>
+        <!-- Right Column: High Spend Categories Above Baseline -->
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-bottom: 10px; border-bottom: 1px solid var(--border-color, #E2E8F0);">
+            <div>
+              <h3 class="finance-section-title" style="margin: 0; font-size: 0.98rem;">
+                <i data-lucide="trending-up" style="width: 17px; height: 17px; color: #E11D48;"></i>
+                <span>High Spend Above Baseline</span>
+              </h3>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">
+                Categories running above historical baseline in ${escapeHtml(periodLabel)}
+              </span>
             </div>
-          `;
-        }).join('')}
+            <span class="finance-flag-pill danger" style="font-size: 0.72rem; padding: 3px 10px;">
+              ${outlierSpikes.length} Categories
+            </span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            ${outlierSpikes.length > 0 ? outlierSpikes.map(cat => `
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: rgba(225, 29, 72, 0.04); border: 1px solid rgba(225, 29, 72, 0.18); border-radius: 10px; gap: 10px;">
+                <div style="min-width: 0;">
+                  <strong style="font-size: 0.84rem; color: var(--text-primary); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    ${escapeHtml(cat.name)}
+                  </strong>
+                  <span style="font-size: 0.72rem; color: var(--text-muted);">
+                    Baseline: $${cat.baseline.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} &bull; <strong style="color: #BE123C;">+$${cat.delta.toFixed(0)} over</strong>
+                  </span>
+                </div>
+                <div style="text-align: right; white-space: nowrap;">
+                  <div class="num-mono" style="font-size: 0.95rem; font-weight: 800; color: #E11D48;">
+                    $${cat.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                  </div>
+                  <span style="font-size: 0.68rem; font-weight: 700; color: #9F1239;">
+                    🔺 +${cat.pctDelta}%
+                  </span>
+                </div>
+              </div>
+            `).join('') : `
+              <div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.82rem; border: 1px dashed var(--border-color); border-radius: 10px;">
+                No categories above baseline for ${escapeHtml(periodLabel)}.
+              </div>
+            `}
+          </div>
+        </div>
+
       </div>
     </div>
   `;
@@ -1069,96 +1013,8 @@ function renderFinanceBurn() {
       <!-- Executive Dashboard Card: Cash Flow & 50/25/25 Split -->
       ${renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, totalFlexSpend, netCashFlow, periodLabel, monthlySummaries, selectedFinanceMonth, financeActivePeriod, periodOutflow)}
 
-      <!-- 3. Subscriptions -->
-      ${renderFinanceRecurringCommitmentsSection()}
-
-      <!-- 4. Monthly Outlier Radar (vs. Rolling Baseline) -->
-      <div class="finance-section-box" id="finance-outliers-radar">
-        <div class="finance-section-header">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="compass" style="width: 18px; height: 18px; color: #0D98BA;"></i>
-              <span>Category Outlier Radar (vs. Rolling Baseline)</span>
-            </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Detecting spending anomalies, seasonal spikes, and category deviations for ${periodLabel}
-            </span>
-          </div>
-
-          <!-- Interactive Outlier State Filters -->
-          <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
-            <button class="finance-outlier-filter-btn all ${financeOutlierFilter === 'all' ? 'active' : ''}" onclick="setFinanceOutlierFilter('all')" title="Show all categories">
-              <span>All (${outliers.length})</span>
-            </button>
-            <button class="finance-outlier-filter-btn spike ${financeOutlierFilter === 'spike' ? 'active' : ''}" onclick="setFinanceOutlierFilter('spike')" title="Filter to spending spikes only">
-              <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'spike' ? '#FFFFFF' : '#E11D48'};"></span>
-              <span>${outlierSpikes.length} Spikes</span>
-            </button>
-            <button class="finance-outlier-filter-btn baseline ${financeOutlierFilter === 'baseline' ? 'active' : ''}" onclick="setFinanceOutlierFilter('baseline')" title="Filter to categories on baseline">
-              <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'baseline' ? '#FFFFFF' : '#0D98BA'};"></span>
-              <span>${onBaseline.length} On Baseline</span>
-            </button>
-            ${reducedSpends.length > 0 ? `
-              <button class="finance-outlier-filter-btn reduced ${financeOutlierFilter === 'reduced' ? 'active' : ''}" onclick="setFinanceOutlierFilter('reduced')" title="Filter to reduced spending categories">
-                <span class="dot" style="width: 6px; height: 6px; border-radius: 50%; background: ${financeOutlierFilter === 'reduced' ? '#FFFFFF' : '#7C3AED'};"></span>
-                <span>${reducedSpends.length} Reduced</span>
-              </button>
-            ` : ''}
-          </div>
-        </div>
-
-        <div class="finance-outlier-grid">
-          ${displayedOutliers.length > 0 ? displayedOutliers.map(cat => {
-            const isSpike = cat.status === 'spike';
-            const isReduced = cat.status === 'reduced';
-            const cardClass = isSpike ? 'spike' : (isReduced ? 'reduced' : 'baseline');
-
-            let badgeHtml = '';
-            if (isSpike) {
-              badgeHtml = `<span class="finance-flag-pill danger" style="font-size: 0.68rem; padding: 2px 8px;">🔺 +${cat.pctDelta}% Spike</span>`;
-            } else if (isReduced) {
-              badgeHtml = `<span class="finance-flag-pill violet" style="font-size: 0.68rem; padding: 2px 8px;">⬇️ ${cat.pctDelta}% Reduced</span>`;
-            } else {
-              badgeHtml = `<span class="finance-flag-pill safe" style="font-size: 0.68rem; padding: 2px 8px;">🌿 On Baseline</span>`;
-            }
-
-            return `
-              <div class="finance-outlier-card ${cardClass}">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
-                  <div>
-                    <strong style="font-size: 0.84rem; color: var(--text-primary); display: block;">${escapeHtml(cat.name)}</strong>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);">${escapeHtml(cat.classification)}</span>
-                  </div>
-                  ${badgeHtml}
-                </div>
-
-                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 4px;">
-                  <div>
-                    <span style="font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 700; color: ${isSpike ? '#E11D48' : 'var(--text-primary)'};">
-                      $${cat.spent.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                    </span>
-                    <span style="font-size: 0.72rem; color: var(--text-muted);"> in period</span>
-                  </div>
-                  <div style="font-size: 0.74rem; color: var(--text-secondary); text-align: right;">
-                    Baseline: $${cat.baseline.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                  </div>
-                </div>
-
-                <div style="font-size: 0.72rem; padding-top: 4px; border-top: 1px dashed var(--border-color); color: ${isSpike ? '#9F1239' : 'var(--text-muted)'};">
-                  ${isSpike ? `⚠️ Ran <strong>+$${cat.delta.toFixed(0)}</strong> above historical baseline.` : ''}
-                  ${isReduced ? `✨ Spent <strong>$${Math.abs(cat.delta).toFixed(0)} less</strong> than expected baseline.` : ''}
-                  ${!isSpike && !isReduced ? `Within normal historical variance (&plusmn;${Math.abs(cat.pctDelta)}%).` : ''}
-                </div>
-              </div>
-            `;
-          }).join('') : `
-            <div style="grid-column: 1 / -1; padding: 32px 20px; text-align: center; color: var(--text-muted); background: var(--bg-card); border: 1px dashed var(--border-color); border-radius: 12px;">
-              <p style="margin: 0 0 10px 0; font-size: 0.88rem; font-weight: 600;">No categories matching "${financeOutlierFilter === 'spike' ? 'Spikes' : (financeOutlierFilter === 'baseline' ? 'On Baseline' : 'Reduced')}" for this period.</p>
-              <button class="btn btn-secondary" onclick="setFinanceOutlierFilter('all')" style="font-size: 0.74rem; padding: 4px 12px;">Show All Categories</button>
-            </div>
-          `}
-        </div>
-      </div>
+      <!-- 3. Combined Out-of-Pocket Subscriptions & High Spend Categories Above Baseline -->
+      ${renderFinanceCombinedOutOfPocketAndSpikesSection(outlierSpikes, periodLabel)}
 
       <!-- 4. Actionable Savings Levers Guide -->
       <div class="finance-levers-box">
