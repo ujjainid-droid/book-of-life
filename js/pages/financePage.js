@@ -1502,399 +1502,170 @@ function renderFinanceSubscriptions() {
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const monthInitials = ['J','F','M','A','M','J','J','A','S','O','N','D'];
 
+  const activeCard = displayedCards[0] || cardStats[0];
+
   container.innerHTML = `
-    <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 16px;">
       
-      <!-- 1. Executive Horizon KPI Deck (4-Tile Metric Row with Negative Value Attention) -->
-      <div class="finance-horizon-deck">
-        <div class="finance-horizon-deck-header">
-          <div class="finance-horizon-deck-title">
-            <i data-lucide="sparkles" style="width: 14px; height: 14px; color: #7C3AED;"></i>
-            <span>Executive Card Fee ROI Horizon</span>
-            <span style="font-weight: 500; text-transform: none; color: var(--text-muted);">&bull; 4 Fee Cards Tracked &bull; Breakeven Engine</span>
-          </div>
-          <div class="finance-horizon-deck-actions">
-            <button class="btn btn-secondary" onclick="handleResetCardBenefits()" style="font-size: 0.72rem; padding: 4px 10px;" title="Reset perk redemptions to U&T Google Sheet verified baseline">
-              <i data-lucide="rotate-ccw" style="width: 12px; height: 12px;"></i>
-              <span>Reset to Sheet Baseline</span>
-            </button>
-          </div>
+      <!-- 1. Slim Portfolio ROI Summary Bar -->
+      <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-radius: 14px; background: var(--bg-card, #FFFFFF); border: 1px solid var(--border-color, #E2E8F0); box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px; font-size: 0.82rem; color: var(--text-secondary, #475569);">
+          <span style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted, #64748B);">Portfolio ROI</span>
+          <span>Annual Fees: <strong class="num-mono" style="color: var(--text-primary, #334155);">$${Math.round(totalAnnualFees).toLocaleString()}/yr</strong></span>
+          <span style="color: var(--border-color, #CBD5E1);">&bull;</span>
+          <span>Redeemed: <strong class="num-mono" style="color: var(--text-primary, #334155);">$${Math.round(totalRealizedValue).toLocaleString()}/yr</strong></span>
         </div>
 
-        <div class="finance-card-roi-summer-grid">
-          <!-- Card 1: 4 Annual Fee Cards (Ocean Sky) -->
-          <div class="summer-widget-card theme-sky">
-            <div>
-              <div class="summer-widget-top">
-                <div class="summer-widget-pill">
-                  <i data-lucide="credit-card" style="width: 19px; height: 19px; color: #0284C7;"></i>
-                </div>
-                <span class="budget-badge budget-badge-sky">4 Fee Cards</span>
-              </div>
-              <div class="summer-widget-body">
-                <div class="summer-widget-spent num-mono">$${Math.round(totalAnnualFees).toLocaleString()}<span style="font-size: 15px; font-weight: 600; color: #64748B;">/yr</span></div>
-                <div class="summer-widget-title">Annual Fee Baseline</div>
-                <div class="summer-widget-sub">Amex Plat ($895) + 3 Chase ($95 ea)</div>
-              </div>
-            </div>
-            <div class="summer-widget-foot">
-              <div class="summer-widget-bar-wrap">
-                <div class="summer-widget-bar-fill" style="width: 100%; background: #0284C7;"></div>
-              </div>
-              <div class="summer-widget-meta">
-                <span>Contracted fees</span>
-                <strong class="num-mono" style="color: #0284C7;">$${Math.round(totalAnnualFees / 12)}/mo</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 2: Realized Perks & Credits (Lavender Sorbet) -->
-          <div class="summer-widget-card theme-lavender">
-            <div>
-              <div class="summer-widget-top">
-                <div class="summer-widget-pill">
-                  <i data-lucide="gift" style="width: 19px; height: 19px; color: #7C3AED;"></i>
-                </div>
-                <span class="budget-badge budget-badge-violet">${checkedBenefitsCount} Active Credits</span>
-              </div>
-              <div class="summer-widget-body">
-                <div class="summer-widget-spent num-mono" style="color: #7C3AED;">$${Math.round(totalRealizedValue).toLocaleString()}<span style="font-size: 15px; font-weight: 600; color: #7C3AED;">/yr</span></div>
-                <div class="summer-widget-title">Realized Perks</div>
-                <div class="summer-widget-sub">${checkedBenefitsCount} of ${totalBenefitsCount} credits active ($${Math.round(totalPotentialValue).toLocaleString()} potential)</div>
-              </div>
-            </div>
-            <div class="summer-widget-foot">
-              <div class="summer-widget-bar-wrap">
-                <div class="summer-widget-bar-fill" style="width: ${Math.min(100, Math.round((totalRealizedValue / (totalPotentialValue || 1)) * 100))}%; background: #7C3AED;"></div>
-              </div>
-              <div class="summer-widget-meta">
-                <span>Active potential</span>
-                <strong class="num-mono" style="color: #7C3AED;">${Math.round((totalRealizedValue / (totalPotentialValue || 1)) * 100)}% Claimed</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3: Net Fee Surplus (Pacific Blue-Green / Mint) -->
-          <div class="summer-widget-card theme-mint">
-            <div>
-              <div class="summer-widget-top">
-                <div class="summer-widget-pill">
-                  <i data-lucide="trending-up" style="width: 19px; height: 19px; color: #0D98BA;"></i>
-                </div>
-                <span class="budget-badge budget-badge-teal">${overallBreakevenPct}% Breakeven</span>
-              </div>
-              <div class="summer-widget-body">
-                <div class="summer-widget-spent num-mono" style="color: #0E7490;">+ $${Math.round(netAnnualValue).toLocaleString()}<span style="font-size: 15px; font-weight: 600; color: #0E7490;">/yr</span></div>
-                <div class="summer-widget-title">Net Fee Surplus</div>
-                <div class="summer-widget-sub">Total perks exceed annual fees by $${Math.round(netAnnualValue).toLocaleString()} net</div>
-              </div>
-            </div>
-            <div class="summer-widget-foot">
-              <div class="summer-widget-bar-wrap">
-                <div class="summer-widget-bar-fill" style="width: ${Math.min(100, overallBreakevenPct)}%; background: #0D98BA;"></div>
-              </div>
-              <div class="summer-widget-meta">
-                <span>Overall ROI</span>
-                <strong class="num-mono" style="color: #0E7490;">+${Math.max(0, overallBreakevenPct - 100)}% Margin</strong>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 4: Negative Value Cards Widget (Sunset Rose) -->
-          <div class="summer-widget-card ${negativeCardsCount > 0 ? 'theme-rose' : 'theme-mint'}" style="cursor: pointer;" onclick="if(negativeCards.length) setCardRoiFilter(negativeCards[0].id)" title="Click to inspect negative value cards">
-            <div>
-              <div class="summer-widget-top">
-                <div class="summer-widget-pill">
-                  <i data-lucide="${negativeCardsCount > 0 ? 'alert-triangle' : 'check-circle-2'}" style="width: 19px; height: 19px; color: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};"></i>
-                </div>
-                <span class="budget-badge ${negativeCardsCount > 0 ? 'budget-badge-rose' : 'budget-badge-teal'}">
-                  ${negativeCardsCount > 0 ? `${negativeCardsCount} Below Fee` : 'All Breakeven'}
-                </span>
-              </div>
-              <div class="summer-widget-body">
-                <div class="summer-widget-spent num-mono" style="color: ${negativeCardsCount > 0 ? '#BE123C' : '#0E7490'};">
-                  ${negativeCardsCount > 0 ? `-$${Math.round(totalDeficit)}` : '$0'}<span style="font-size: 15px; font-weight: 600; color: ${negativeCardsCount > 0 ? '#BE123C' : '#0E7490'};"> net drag</span>
-                </div>
-                <div class="summer-widget-title">Drag Below Fee</div>
-                <div class="summer-widget-sub" style="margin-top: 4px;">
-                  ${negativeCards.length > 0 ? `
-                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                      ${negativeCards.map(c => `
-                        <span onclick="event.stopPropagation(); setCardRoiFilter('${c.id}');" class="budget-badge budget-badge-rose" style="font-size: 10px; padding: 2px 7px; cursor: pointer; border-radius: 99px;" title="Inspect ${escapeHtml(c.shortName)}">
-                          ${escapeHtml(c.shortName || c.name)} (-$${Math.round(Math.abs(c.netValue))})
-                        </span>
-                      `).join('')}
-                    </div>
-                  ` : '<span style="color: #0E7490; font-weight: 600;">✓ All 4 cards exceeding annual fee!</span>'}
-                </div>
-              </div>
-            </div>
-            <div class="summer-widget-foot">
-              <div class="summer-widget-bar-wrap">
-                <div class="summer-widget-bar-fill" style="width: ${negativeCardsCount > 0 ? Math.min(100, Math.round((totalDeficit / (totalAnnualFees || 1)) * 100)) : 100}%; background: ${negativeCardsCount > 0 ? '#E11D48' : '#0D98BA'};"></div>
-              </div>
-              <div class="summer-widget-meta">
-                <span>${negativeCardsCount > 0 ? 'Drag intensity' : 'Portfolio status'}</span>
-                <strong class="num-mono" style="color: ${negativeCardsCount > 0 ? '#BE123C' : '#0E7490'};">${negativeCardsCount > 0 ? `${negativeCardsCount} cards below fee` : '100% Breakeven'}</strong>
-              </div>
-            </div>
-          </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="budget-badge ${netAnnualValue >= 0 ? 'budget-badge-soft-green' : 'budget-badge-soft-red'} num-mono" style="font-size: 0.76rem; padding: 4px 12px;">
+            ${netAnnualValue >= 0 ? '+' : '-'}$${Math.round(Math.abs(netAnnualValue)).toLocaleString()} Net ${netAnnualValue >= 0 ? 'Surplus' : 'Drag'} (${overallBreakevenPct}%)
+          </span>
+          <button class="btn btn-secondary" onclick="handleResetCardBenefits()" style="font-size: 0.72rem; padding: 4px 10px;" title="Reset perk redemptions to verified baseline">
+            <i data-lucide="rotate-ccw" style="width: 12px; height: 12px;"></i>
+            <span>Reset</span>
+          </button>
         </div>
       </div>
 
-      <!-- 2. Section: 4-Card Annual Fee ROI & Breakeven Engine -->
-      <div class="finance-section-box">
-        <div class="finance-section-header">
-          <div>
-            <h3 class="finance-section-title">
-              <i data-lucide="table" style="width: 18px; height: 18px; color: #7C3AED;"></i>
-              <span>Credit Card Perks &amp; ROI Ledger</span>
-            </h3>
-            <span style="font-size: 0.78rem; color: var(--text-muted);">
-              Track monthly &amp; annual perks, log weekly Monarch transactions, or record manual out-of-pocket savings
-            </span>
+      <!-- 2. 4 Clickable Card Selector Tiles -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px;">
+        ${cardStats.map(c => {
+          const isSelected = c.id === (activeCard && activeCard.id);
+          const isPositive = c.netValue >= 0;
+          const netText = `${isPositive ? '+' : '-'}$${Math.round(Math.abs(c.netValue))}`;
+          return `
+            <div onclick="setCardRoiFilter('${c.id}')"
+                 style="padding: 14px 16px; border-radius: 14px; background: var(--bg-card, #FFFFFF); border: ${isSelected ? '2px solid #334155' : '1px solid var(--border-color, #E2E8F0)'}; box-shadow: ${isSelected ? '0 4px 14px rgba(15, 23, 42, 0.08)' : '0 2px 6px rgba(15, 23, 42, 0.02)'}; opacity: ${isSelected ? '1' : '0.82'}; cursor: pointer; transition: all 0.15s ease; display: flex; flex-direction: column; gap: 6px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                <strong style="font-size: 0.86rem; color: var(--text-primary, #334155); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                  ${escapeHtml(c.shortName || c.name)}
+                </strong>
+                <span class="budget-badge ${isPositive ? 'budget-badge-soft-green' : 'budget-badge-soft-red'} num-mono" style="font-size: 0.7rem; padding: 2px 8px;">
+                  ${netText}
+                </span>
+              </div>
+              <div class="num-mono" style="font-size: 0.76rem; color: var(--text-muted, #64748B); display: flex; justify-content: space-between; align-items: center;">
+                <span><strong style="color: var(--text-secondary, #475569);">$${Math.round(c.cardRealized)}</strong> redeemed / $${c.annualFee} fee</span>
+                <span style="font-size: 0.68rem;">Renews ${escapeHtml(c.renewalMonth || 'Annual')}</span>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <!-- 3. Clean 3-Column Perk Checklist for Active Card -->
+      ${activeCard ? `
+        <div class="finance-section-box" style="padding: 0; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 20px; border-bottom: 1px solid var(--border-color, #E2E8F0); background: var(--bg-secondary, #F8FAFC);">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+              <strong style="font-size: 0.92rem; color: var(--text-primary, #334155);">${escapeHtml(activeCard.name)}</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted, #64748B);">
+                ${escapeHtml(activeCard.accountName || '')} &bull; Tap any period to toggle redeemed status
+              </span>
+            </div>
+            <button class="btn btn-secondary" onclick="openCardRoiPerkModal('${activeCard.id}')" style="font-size: 0.72rem; padding: 5px 10px;" title="Link Monarch transaction or log manual redemption">
+              <i data-lucide="plus" style="width: 12px; height: 12px;"></i>
+              <span>Log Perk</span>
+            </button>
           </div>
 
-          <!-- Card Filter Pills with Live Surplus/Deficit Indicators -->
-          <div class="card-roi-filter-pills">
-            ${cardStats.map(c => {
-              const surplusSign = c.netValue >= 0 ? '+' : '-';
-              const statCls = c.netValue >= 0 ? 'surplus' : 'deficit';
-              const statText = `${surplusSign}$${Math.round(Math.abs(c.netValue))}`;
-              const label = `${c.shortName || c.name} ($${c.annualFee})`;
+          <div style="display: flex; flex-direction: column;">
+            ${(activeCard.benefits || []).map((b, idx) => {
+              const isRealized = (b.realizedValue || 0) > 0;
               return `
-                <button class="card-roi-filter-btn ${selectedCardRoiFilter === c.id ? 'active' : ''}" onclick="setCardRoiFilter('${c.id}')">
-                  <span>${escapeHtml(label)} <strong class="card-roi-pill-stat ${statCls}">${statText}</strong></span>
-                </button>
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 20px; border-bottom: ${idx < activeCard.benefits.length - 1 ? '1px solid var(--border-color, #E2E8F0)' : 'none'}; background: var(--bg-card, #FFFFFF);">
+                  
+                  <!-- Column 1: Perk Name & Cadence -->
+                  <div style="min-width: 220px; flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                      <strong style="font-size: 0.84rem; color: var(--text-primary, #334155);">${escapeHtml(b.name)}</strong>
+                      ${b.maxVal > 0 ? `<span class="num-mono" style="font-size: 0.74rem; font-weight: 600; color: var(--text-muted, #64748B);">($${b.maxVal}/yr)</span>` : ''}
+                    </div>
+                    <div style="font-size: 0.73rem; color: var(--text-muted, #64748B); margin-top: 2px;">
+                      ${escapeHtml(b.notes || b.details || b.category || '')}
+                    </div>
+                  </div>
+
+                  <!-- Column 2: 1-Tap Period Checkboxes -->
+                  <div style="display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 4px;">
+                    ${b.trackType === 'monthly' ? `
+                      <div class="card-roi-month-strip">
+                        ${months.map((m, mIdx) => {
+                          const isActive = !!(b.periods && b.periods[m]);
+                          const pVal = (b.periodValues && b.periodValues[m] !== undefined) ? b.periodValues[m] : Math.round(b.maxVal / 12);
+                          return `
+                            <button class="card-roi-month-pill ${isActive ? 'active' : ''}" 
+                                    onclick="handleToggleCardPeriod('${activeCard.id}', '${b.id}', '${m}', event)"
+                                    title="${m}: $${pVal} (${isActive ? 'Claimed' : 'Pending'})">
+                              ${monthInitials[mIdx]}
+                            </button>
+                          `;
+                        }).join('')}
+                      </div>
+                    ` : b.trackType === 'quarterly' ? `
+                      <div class="card-roi-quarter-strip">
+                        ${Object.keys(b.periods || { Q1: false, Q2: false, Q3: false, Q4: false }).map(q => {
+                          const isActive = !!(b.periods && b.periods[q]);
+                          const qVal = (b.periodValues && b.periodValues[q] !== undefined) ? b.periodValues[q] : Math.round(b.maxVal / 4);
+                          return `
+                            <button class="card-roi-quarter-pill ${isActive ? 'active' : ''}"
+                                    onclick="handleToggleCardPeriod('${activeCard.id}', '${b.id}', '${q}', event)"
+                                    title="${q}: $${qVal} (${isActive ? 'Claimed' : 'Pending'})">
+                              ${q} ($${qVal})
+                            </button>
+                          `;
+                        }).join('')}
+                      </div>
+                    ` : b.trackType === 'semi-annual' ? `
+                      <div class="card-roi-semi-strip">
+                        ${['H1', 'H2'].map(h => {
+                          const isActive = !!(b.periods && b.periods[h]);
+                          const hLabel = h === 'H1' ? 'Jan–Jun' : 'Jul–Dec';
+                          return `
+                            <button class="card-roi-semi-pill ${isActive ? 'active' : ''}"
+                                    onclick="handleToggleCardPeriod('${activeCard.id}', '${b.id}', '${h}', event)"
+                                    title="${h} (${hLabel}): $${b.periodValues?.[h] || 300}">
+                              ${h} (${hLabel})
+                            </button>
+                          `;
+                        }).join('')}
+                      </div>
+                    ` : b.trackType === 'spend-milestone' ? `
+                      <div class="card-roi-quarter-strip">
+                        ${Object.keys(b.periods || { '$5k': false, '$10k': false, '$15k': false, '$20k': false }).map(sp => {
+                          const isActive = !!(b.periods && b.periods[sp]);
+                          return `
+                            <button class="card-roi-quarter-pill ${isActive ? 'active' : ''}"
+                                    onclick="handleToggleCardPeriod('${activeCard.id}', '${b.id}', '${sp}', event)"
+                                    title="${sp} spend: +2 Elite Nights">
+                              ${sp}
+                            </button>
+                          `;
+                        }).join('')}
+                      </div>
+                    ` : `
+                      <button class="card-roi-claim-toggle ${(b.periods && (b.periods.annual || b.periods.claim)) ? 'claimed' : ''}"
+                              onclick="handleToggleCardPeriod('${activeCard.id}', '${b.id}', '${b.periods && b.periods.claim !== undefined ? 'claim' : 'annual'}', event)">
+                        ${(b.periods && (b.periods.annual || b.periods.claim)) 
+                          ? `✓ Claimed ($${b.realizedValue || b.maxVal})` 
+                          : (b.status ? `${b.status}` : 'Pending Claim')}
+                      </button>
+                    `}
+                  </div>
+
+                  <!-- Column 3: Total Saved -->
+                  <div style="min-width: 70px; text-align: right;">
+                    <strong class="num-mono" style="font-size: 0.92rem; font-weight: 800; color: ${isRealized ? '#334155' : 'var(--text-muted, #94A3B8)'};">
+                      $${Math.round(b.realizedValue || 0)}
+                    </strong>
+                  </div>
+
+                </div>
               `;
             }).join('')}
           </div>
         </div>
-
-        <!-- Render Tabular Cards (Google Sheet Format) -->
-        <div style="display: flex; flex-direction: column; gap: 24px;">
-          ${displayedCards.map(c => {
-            const isBreakeven = c.cardRealized >= c.annualFee;
-            const meterPct = Math.min(100, c.breakevenPct);
-            const surplusSign = c.netValue >= 0 ? '+' : '';
-
-            // Group benefits by category
-            const categoriesOrder = ['Monthly', 'Quarterly', 'Semi-Annual', 'Annual', '4 Years', '4 years', 'Milestone', 'Status', 'Spend Tracking'];
-            const grouped = {};
-            (c.benefits || []).forEach(b => {
-              const cat = b.category || 'Other';
-              if (!grouped[cat]) grouped[cat] = [];
-              grouped[cat].push(b);
-            });
-
-            return `
-              <div class="card-roi-sheet-card theme-${c.theme || 'violet'}">
-                <!-- Card Header HUD -->
-                <div class="card-roi-sheet-card-header">
-                  <div class="card-roi-sheet-card-identity">
-                    <span class="card-roi-network-tag" style="color: ${c.color || '#7C3AED'};">${escapeHtml(c.network)}</span>
-                    <h4 class="card-roi-sheet-card-title">${escapeHtml(c.name)}</h4>
-                    <div class="card-roi-sheet-card-meta">
-                      <span><strong>${escapeHtml(c.accountName)}</strong></span>
-                      <span>&bull;</span>
-                      <span>Renews: <strong>${escapeHtml(c.renewalMonth || 'Annual')}</strong></span>
-                      <span>&bull;</span>
-                      <span>Synced: ${escapeHtml(c.lastUpdated || '9/27/2026')}</span>
-                    </div>
-                  </div>
-
-                  <div class="card-roi-sheet-card-stats">
-                    <div class="card-roi-sheet-kpi-chip">
-                      <span class="card-roi-sheet-kpi-val" style="color: ${c.color || '#7C3AED'};">$${c.annualFee}</span>
-                      <span class="card-roi-sheet-kpi-label">Annual Fee</span>
-                    </div>
-
-                    <div class="card-roi-sheet-kpi-chip">
-                      <span class="card-roi-sheet-kpi-val" style="color: var(--fin-primary);">$${Math.round(c.cardRealized)}</span>
-                      <span class="card-roi-sheet-kpi-label">Value Redeemed</span>
-                    </div>
-
-                    <div class="card-roi-sheet-kpi-chip" style="border-color: ${isBreakeven ? 'var(--fin-primary-border)' : 'var(--border-color)'};">
-                      <span class="card-roi-sheet-kpi-val" style="color: ${isBreakeven ? 'var(--fin-primary)' : 'var(--text-muted)'};">
-                        ${surplusSign}$${Math.round(c.netValue)}
-                      </span>
-                      <span class="card-roi-sheet-kpi-label">${isBreakeven ? 'Net Surplus' : 'Net Value'}</span>
-                    </div>
-
-                    <button class="btn btn-secondary" onclick="openCardRoiPerkModal('${c.id}')" style="font-size: 0.75rem; padding: 6px 12px;" title="Link weekly Monarch transactions or enter manual redemption">
-                      <i data-lucide="plus" style="width: 13px; height: 13px;"></i>
-                      <span>Log Perk</span>
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Breakeven Meter -->
-                <div class="card-roi-meter-box">
-                  <div class="card-roi-meter-labels">
-                    <span style="font-weight: 700; color: var(--text-primary);">
-                      Realized: $${Math.round(c.cardRealized)} <span style="font-weight: 500; color: var(--text-muted);">/ $${c.annualFee} Fee</span>
-                    </span>
-                    <span class="card-roi-surplus-pill ${isBreakeven ? 'surplus' : ''}">
-                      ${isBreakeven ? `✓ ${surplusSign}$${Math.round(c.netValue)} Surplus (${c.breakevenPct}%)` : `${c.breakevenPct}% of annual fee`}
-                    </span>
-                  </div>
-
-                  <div class="card-roi-meter-track">
-                    <div class="card-roi-meter-fill" style="width: ${meterPct}%; background: ${isBreakeven ? 'var(--fin-primary)' : (c.color || '#7C3AED')};"></div>
-                  </div>
-                </div>
-
-                <!-- Google Sheet Matrix Table -->
-                <div class="card-roi-table-wrap">
-                  <table class="card-roi-table">
-                    <thead>
-                      <tr>
-                        <th style="width: 100px;">Category</th>
-                        <th style="min-width: 220px;">Benefit / Perk &amp; Cadence</th>
-                        <th style="width: 90px;">Face Value</th>
-                        <th style="min-width: 320px;">Tracker (Checkboxes &bull; Tap to Toggle)</th>
-                        <th style="width: 100px; text-align: right;">Total Saved</th>
-                        <th style="width: 100px; text-align: center;">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${Object.keys(grouped).map(catKey => {
-                        const items = grouped[catKey];
-                        return `
-                          <tr class="card-roi-group-row">
-                            <td colspan="6">
-                              <i data-lucide="layers" style="width: 12px; height: 12px; display: inline-block; vertical-align: middle; margin-right: 4px;"></i>
-                              <span>${escapeHtml(catKey)} Perks</span>
-                            </td>
-                          </tr>
-                          ${items.map(b => {
-                            const isRealized = (b.realizedValue || 0) > 0;
-                            const hasRedemptions = Array.isArray(b.redemptions) && b.redemptions.length > 0;
-
-                            return `
-                              <tr class="card-roi-row ${isRealized ? 'active-benefit' : ''}">
-                                <td class="card-roi-td">
-                                  <span class="card-roi-cat-pill">${escapeHtml(b.category)}</span>
-                                </td>
-                                <td class="card-roi-td">
-                                  <div class="card-roi-perk-name">
-                                    <span>${escapeHtml(b.name)}</span>
-                                    ${b.status ? `<span class="card-roi-cat-pill" style="font-size: 0.6rem; color: #0D98BA;">${escapeHtml(b.status)}</span>` : ''}
-                                  </div>
-                                  <div class="card-roi-perk-notes">${escapeHtml(b.notes || b.details || '')}</div>
-                                </td>
-                                <td class="card-roi-td">
-                                  <span class="card-roi-face-val">${b.maxVal > 0 ? '$' + b.maxVal : '--'}</span>
-                                </td>
-                                <td class="card-roi-td">
-                                  ${b.trackType === 'monthly' ? `
-                                    <div class="card-roi-month-strip">
-                                      ${months.map((m, mIdx) => {
-                                        const isActive = !!(b.periods && b.periods[m]);
-                                        const pVal = (b.periodValues && b.periodValues[m] !== undefined) ? b.periodValues[m] : Math.round(b.maxVal / 12);
-                                        return `
-                                          <button class="card-roi-month-pill ${isActive ? 'active' : ''}" 
-                                                  onclick="handleToggleCardPeriod('${c.id}', '${b.id}', '${m}', event)"
-                                                  title="${m}: $${pVal} (${isActive ? 'Claimed' : 'Pending'})">
-                                            ${monthInitials[mIdx]}
-                                          </button>
-                                        `;
-                                      }).join('')}
-                                    </div>
-                                  ` : b.trackType === 'quarterly' ? `
-                                    <div class="card-roi-quarter-strip">
-                                      ${Object.keys(b.periods || { Q1: false, Q2: false, Q3: false, Q4: false }).map(q => {
-                                        const isActive = !!(b.periods && b.periods[q]);
-                                        const qVal = (b.periodValues && b.periodValues[q] !== undefined) ? b.periodValues[q] : Math.round(b.maxVal / 4);
-                                        return `
-                                          <button class="card-roi-quarter-pill ${isActive ? 'active' : ''}"
-                                                  onclick="handleToggleCardPeriod('${c.id}', '${b.id}', '${q}', event)"
-                                                  title="${q}: $${qVal} (${isActive ? 'Claimed' : 'Pending'})">
-                                            ${q} ($${qVal})
-                                          </button>
-                                        `;
-                                      }).join('')}
-                                    </div>
-                                  ` : b.trackType === 'semi-annual' ? `
-                                    <div class="card-roi-semi-strip">
-                                      ${['H1', 'H2'].map(h => {
-                                        const isActive = !!(b.periods && b.periods[h]);
-                                        const hLabel = h === 'H1' ? 'Jan–Jun' : 'Jul–Dec';
-                                        return `
-                                          <button class="card-roi-semi-pill ${isActive ? 'active' : ''}"
-                                                  onclick="handleToggleCardPeriod('${c.id}', '${b.id}', '${h}', event)"
-                                                  title="${h} (${hLabel}): $${b.periodValues?.[h] || 300}">
-                                            ${h} (${hLabel})
-                                          </button>
-                                        `;
-                                      }).join('')}
-                                    </div>
-                                  ` : b.trackType === 'spend-milestone' ? `
-                                    <div class="card-roi-quarter-strip">
-                                      ${Object.keys(b.periods || { '$5k': false, '$10k': false, '$15k': false, '$20k': false }).map(sp => {
-                                        const isActive = !!(b.periods && b.periods[sp]);
-                                        return `
-                                          <button class="card-roi-quarter-pill ${isActive ? 'active' : ''}"
-                                                  onclick="handleToggleCardPeriod('${c.id}', '${b.id}', '${sp}', event)"
-                                                  title="${sp} spend: +2 Elite Nights">
-                                            ${sp}
-                                          </button>
-                                        `;
-                                      }).join('')}
-                                    </div>
-                                  ` : `
-                                    <button class="card-roi-claim-toggle ${(b.periods && (b.periods.annual || b.periods.claim)) ? 'claimed' : ''}"
-                                            onclick="handleToggleCardPeriod('${c.id}', '${b.id}', '${b.periods && b.periods.claim !== undefined ? 'claim' : 'annual'}', event)">
-                                      ${(b.periods && (b.periods.annual || b.periods.claim)) 
-                                        ? `✓ Claimed ($${b.realizedValue || b.maxVal})` 
-                                        : (b.status ? `${b.status}` : 'Pending Claim')}
-                                    </button>
-                                  `}
-                                </td>
-                                <td class="card-roi-td" style="text-align: right;">
-                                  <span class="card-roi-saved-pill ${isRealized ? 'has-savings' : ''}">
-                                    $${Math.round(b.realizedValue || 0)}
-                                  </span>
-                                </td>
-                                <td class="card-roi-td" style="text-align: center;">
-                                  <button class="card-roi-action-btn ${hasRedemptions ? 'has-links' : ''}" 
-                                          onclick="openCardRoiPerkModal('${c.id}', '${b.id}')"
-                                          title="View weekly matching transactions or add manual record">
-                                    <i data-lucide="${hasRedemptions ? 'link' : 'plus'}" style="width: 12px; height: 12px;"></i>
-                                    <span>${hasRedemptions ? `Linked (${b.redemptions.length})` : 'Log / Tx'}</span>
-                                  </button>
-                                </td>
-                              </tr>
-                            `;
-                          }).join('')}
-                        `;
-                      }).join('')}
-                    </tbody>
-                    <tfoot class="card-roi-table-tfoot">
-                      <tr>
-                        <td colspan="4">
-                          <div style="display: flex; gap: 20px; align-items: center; font-weight: 600;">
-                            <span>Total Value Redeemed: <strong style="color: #0D98BA;">$${Math.round(c.cardRealized)}</strong></span>
-                            <span>&bull;</span>
-                            <span>Annual Fee: <strong>$${c.annualFee}</strong></span>
-                            <span>&bull;</span>
-                            <span>Net Value: <strong style="color: ${c.netValue >= 0 ? '#0D98BA' : '#64748B'};">${surplusSign}$${Math.round(c.netValue)}</strong></span>
-                          </div>
-                        </td>
-                        <td style="text-align: right; font-family: var(--font-sans); font-variant-numeric: tabular-nums; font-weight: 700; color: #0D98BA; font-size: 0.95rem;">
-                          $${Math.round(c.cardRealized)}
-                        </td>
-                        <td></td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
+      ` : ''}
 
     </div>
   `;
