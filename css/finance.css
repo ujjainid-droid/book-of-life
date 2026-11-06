@@ -5198,16 +5198,30 @@ body.dark-mode .budget-progress-wrap {
   border: 1px solid #E2E8F0;
   box-shadow: none;
 }
+.summer-widget-card.theme-charcoal .summer-widget-spent {
+  color: #334155;
+}
+.summer-widget-card.theme-charcoal .summer-widget-title {
+  color: #475569;
+}
 .budget-badge.budget-badge-charcoal {
-  background: #1E293B;
-  color: #FFFFFF;
-  border: 1px solid #1E293B;
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
   box-shadow: none;
 }
 [data-theme="dark"] .summer-widget-card.theme-charcoal,
 body.dark-mode .summer-widget-card.theme-charcoal {
   background: #1E293B;
   border-color: rgba(255, 255, 255, 0.12);
+}
+[data-theme="dark"] .summer-widget-card.theme-charcoal .summer-widget-spent,
+body.dark-mode .summer-widget-card.theme-charcoal .summer-widget-spent {
+  color: #F1F5F9;
+}
+[data-theme="dark"] .summer-widget-card.theme-charcoal .summer-widget-title,
+body.dark-mode .summer-widget-card.theme-charcoal .summer-widget-title {
+  color: #CBD5E1;
 }
 [data-theme="dark"] .summer-widget-card.theme-charcoal .summer-widget-pill,
 body.dark-mode .summer-widget-card.theme-charcoal .summer-widget-pill {

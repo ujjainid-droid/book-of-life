@@ -4327,7 +4327,7 @@ function renderFinanceBudget() {
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shopping-cart" style="width: 19px; height: 19px; color: #1E293B;"></i>
+                <i data-lucide="shopping-cart" style="width: 19px; height: 19px; color: #475569;"></i>
               </div>
               <span class="budget-badge budget-badge-charcoal">${grocPace.text}</span>
             </div>
@@ -4339,11 +4339,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${grocPct}%; background: #1E293B;"></div>
+              <div class="summer-widget-bar-fill" style="width: ${grocPct}%; background: #64748B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${grocExpected}</span>
-              <strong class="num-mono" style="color: #1E293B;">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #475569;">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4353,7 +4353,7 @@ function renderFinanceBudget() {
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="utensils" style="width: 19px; height: 19px; color: #1E293B;"></i>
+                <i data-lucide="utensils" style="width: 19px; height: 19px; color: #475569;"></i>
               </div>
               <span class="budget-badge budget-badge-charcoal">${dinePace.text}</span>
             </div>
@@ -4365,11 +4365,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${dinePct}%; background: #1E293B;"></div>
+              <div class="summer-widget-bar-fill" style="width: ${dinePct}%; background: #64748B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${dineExpected}</span>
-              <strong class="num-mono" style="color: #1E293B;">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #475569;">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4379,7 +4379,7 @@ function renderFinanceBudget() {
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shopping-bag" style="width: 19px; height: 19px; color: #1E293B;"></i>
+                <i data-lucide="shopping-bag" style="width: 19px; height: 19px; color: #475569;"></i>
               </div>
               <span class="budget-badge budget-badge-charcoal">${shopPace.text}</span>
             </div>
@@ -4391,11 +4391,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${shopPct}%; background: #1E293B;"></div>
+              <div class="summer-widget-bar-fill" style="width: ${shopPct}%; background: #64748B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${shopExpected}</span>
-              <strong class="num-mono" style="color: #1E293B;">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #475569;">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4405,7 +4405,7 @@ function renderFinanceBudget() {
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #1E293B;"></i>
+                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #475569;"></i>
               </div>
               <span class="budget-badge budget-badge-charcoal">${clothPace.text}</span>
             </div>
@@ -4417,11 +4417,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: #1E293B;"></div>
+              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: #64748B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${clothExpected}</span>
-              <strong class="num-mono" style="color: #1E293B;">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #475569;">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
@@ -4431,7 +4431,7 @@ function renderFinanceBudget() {
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="sparkles" style="width: 19px; height: 19px; color: #1E293B;"></i>
+                <i data-lucide="sparkles" style="width: 19px; height: 19px; color: #475569;"></i>
               </div>
               <span class="budget-badge budget-badge-charcoal">${selfPace.text}</span>
             </div>
@@ -4443,11 +4443,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${selfPct}%; background: #1E293B;"></div>
+              <div class="summer-widget-bar-fill" style="width: ${selfPct}%; background: #64748B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${selfExpected}</span>
-              <strong class="num-mono" style="color: #1E293B;">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #475569;">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
