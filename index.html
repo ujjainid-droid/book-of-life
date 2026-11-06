@@ -23,19 +23,19 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.31">
-  <link rel="stylesheet" href="css/layout.css?v=9.9.31">
-  <link rel="stylesheet" href="css/cover.css?v=9.9.31">
-  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.31">
-  <link rel="stylesheet" href="css/habits.css?v=9.9.31">
-  <link rel="stylesheet" href="css/tasks.css?v=9.9.31">
-  <link rel="stylesheet" href="css/settings.css?v=9.9.31">
-  <link rel="stylesheet" href="css/claims.css?v=9.9.31">
-  <link rel="stylesheet" href="css/zlog.css?v=9.9.31">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.31">
-  <link rel="stylesheet" href="css/finance.css?v=9.9.31">
-  <link rel="stylesheet" href="css/hobby.css?v=9.9.31">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.9.31">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.32">
+  <link rel="stylesheet" href="css/layout.css?v=9.9.32">
+  <link rel="stylesheet" href="css/cover.css?v=9.9.32">
+  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.32">
+  <link rel="stylesheet" href="css/habits.css?v=9.9.32">
+  <link rel="stylesheet" href="css/tasks.css?v=9.9.32">
+  <link rel="stylesheet" href="css/settings.css?v=9.9.32">
+  <link rel="stylesheet" href="css/claims.css?v=9.9.32">
+  <link rel="stylesheet" href="css/zlog.css?v=9.9.32">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.32">
+  <link rel="stylesheet" href="css/finance.css?v=9.9.32">
+  <link rel="stylesheet" href="css/hobby.css?v=9.9.32">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.9.32">
 </head>
 <body>
 
@@ -679,6 +679,47 @@
     </div>
   </div>
 
+  <!-- Modal: View & Edit Full Recipe Details -->
+  <div class="modal-overlay" id="k-view-recipe-modal" onclick="if(event.target===this) kCloseViewRecipeModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <h3 class="modal-title" id="k-view-recipe-title">Recipe Details</h3>
+          <span class="k-recipe-course-badge" id="k-view-recipe-course-badge">Main 🍲</span>
+        </div>
+        <button class="icon-btn modal-close" onclick="kCloseViewRecipeModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px; margin-top:4px;">
+        <div>
+          <label class="form-label" style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--text-secondary);">
+            Ingredients &amp; Notes
+          </label>
+          <div id="k-view-recipe-notes-display" class="k-view-recipe-notes-box"></div>
+          <textarea id="k-view-recipe-notes-edit" class="k-clean-input" rows="4" placeholder="Add ingredients, steps, or notes..." style="margin-top:6px; width:100%; resize:vertical; display:none;"></textarea>
+        </div>
+
+        <div id="k-view-recipe-link-wrap" style="display:none;">
+          <a href="#" target="_blank" rel="noopener noreferrer" id="k-view-recipe-link" class="k-recipe-card-link" style="font-size:12.5px;">
+            <span>🔗 Open Original Recipe Link</span>
+          </a>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:8px; border-top:1px solid var(--border-light, #EBEBEB);">
+          <button type="button" class="k-btn-plan-recipe" style="width:auto; flex:1;" id="k-view-recipe-plan-btn" onclick="kPlanFromViewRecipeModal()">
+            + Plan to Day
+          </button>
+          <button type="button" class="k-btn-stash-add" id="k-view-recipe-edit-btn" onclick="kToggleEditViewedRecipe()" style="padding:8px 14px; border-radius:10px;">
+            ✎ Edit Notes
+          </button>
+          <button type="button" class="k-btn-add-recipe" id="k-view-recipe-save-btn" onclick="kSaveViewedRecipeEdits()" style="display:none; padding:8px 14px; border-radius:10px;">
+            ✓ Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- More Navigation Sheet Modal (Always Available in DOM) -->
   <div class="margo-more-sheet-overlay" id="margo-more-sheet-overlay" onclick="if(event.target===this) closeMoreNavSheet()">
     <div class="margo-more-sheet" onclick="event.stopPropagation()">
@@ -718,22 +759,22 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.9.31"></script>
-  <script src="js/zlogData.js?v=9.9.31"></script>
-  <script src="js/financeData.js?v=9.9.31"></script>
-  <script src="js/podcastData.js?v=9.9.31"></script>
-  <script src="js/pdfStore.js?v=9.9.31"></script>
-  <script src="js/storage.js?v=9.9.31"></script>
-  <script src="js/sync.js?v=9.9.31"></script>
-  <script src="js/pages/coverPage.js?v=9.9.31"></script>
-  <script src="js/pages/todayPage.js?v=9.9.31"></script>
-  <script src="js/pages/coverHubPage.js?v=9.9.31"></script>
-  <script src="js/pages/claimsPage.js?v=9.9.31"></script>
-  <script src="js/pages/zlogPage.js?v=9.9.31"></script>
-  <script src="js/pages/financePage.js?v=9.9.31"></script>
-  <script src="js/pages/hobbyPage.js?v=9.9.31"></script>
-  <script src="js/pages/kitchenPage.js?v=9.9.31"></script>
-  <script src="js/podcastAgent.js?v=9.9.31"></script>
-  <script src="js/app.js?v=9.9.31"></script>
+  <script src="js/margoData.js?v=9.9.32"></script>
+  <script src="js/zlogData.js?v=9.9.32"></script>
+  <script src="js/financeData.js?v=9.9.32"></script>
+  <script src="js/podcastData.js?v=9.9.32"></script>
+  <script src="js/pdfStore.js?v=9.9.32"></script>
+  <script src="js/storage.js?v=9.9.32"></script>
+  <script src="js/sync.js?v=9.9.32"></script>
+  <script src="js/pages/coverPage.js?v=9.9.32"></script>
+  <script src="js/pages/todayPage.js?v=9.9.32"></script>
+  <script src="js/pages/coverHubPage.js?v=9.9.32"></script>
+  <script src="js/pages/claimsPage.js?v=9.9.32"></script>
+  <script src="js/pages/zlogPage.js?v=9.9.32"></script>
+  <script src="js/pages/financePage.js?v=9.9.32"></script>
+  <script src="js/pages/hobbyPage.js?v=9.9.32"></script>
+  <script src="js/pages/kitchenPage.js?v=9.9.32"></script>
+  <script src="js/podcastAgent.js?v=9.9.32"></script>
+  <script src="js/app.js?v=9.9.32"></script>
 </body>
 </html>

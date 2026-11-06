@@ -953,6 +953,7 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 12px;
+  cursor: pointer;
   transition: all 0.15s ease;
 }
 
@@ -1152,20 +1153,109 @@
   background: var(--k-coral-soft);
 }
 
+.k-modal-mealtype-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
 .k-modal-type-btn {
   flex: 1;
-  padding: 7px 10px;
-  border-radius: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
   border: 1px solid var(--k-birch-border);
   background: var(--k-birch-mist);
   font-size: 12px;
   font-weight: 700;
   color: var(--k-obsidian);
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.k-modal-type-btn:hover {
+  border-color: var(--k-obsidian);
 }
 
 .k-modal-type-btn.active {
   background: var(--k-obsidian);
   color: #FFFFFF;
   border-color: var(--k-obsidian);
+}
+
+/* Assign Recipe Modal Days Grid */
+.k-assign-days-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.k-assign-day-card {
+  background: var(--k-birch-mist);
+  border: 1.5px solid var(--k-birch-border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.k-assign-day-card:hover {
+  background: #EEF2FF;
+  border-color: #1F0BA0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px -2px rgba(31, 11, 160, 0.1);
+}
+
+.k-assign-day-card .day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.k-assign-day-card .day-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--k-obsidian);
+}
+
+.k-assign-day-card .day-date {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--k-text-muted);
+}
+
+.k-assign-day-card .day-current {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--k-obsidian);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.k-assign-day-card .day-current.empty {
+  color: #1F0BA0;
+  font-weight: 700;
+}
+
+/* View Recipe Modal Notes Box */
+.k-view-recipe-notes-box {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--k-birch-mist);
+  border: 1px solid var(--k-birch-border);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--k-obsidian);
+  white-space: pre-wrap;
+  word-break: break-word;
 }

@@ -766,7 +766,7 @@ function renderKitchenPage() {
             ${filteredFavs.length > 0 ? filteredFavs.map(r => {
               const courseLabel = { main: 'Main 🍲', side: 'Side 🥗', brunch: 'Brunch ☕', dessert: 'Dessert 🍨' }[r.course || 'main'] || 'Main 🍲';
               return `
-                <div class="k-recipe-card">
+                <div class="k-recipe-card" onclick="kOpenViewRecipeModal('${r.id}', 'vault', event)" title="Click to view full recipe">
                   <div class="k-recipe-card-header">
                     <span class="k-recipe-card-title">${escapeHtml(r.title)}</span>
                     <span class="k-recipe-course-badge">${courseLabel}</span>
@@ -778,18 +778,18 @@ function renderKitchenPage() {
 
                   ${r.recipeUrl ? `
                     <div>
-                      <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link">
+                      <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link" onclick="event.stopPropagation()">
                         <span>🔗 View original recipe</span>
                       </a>
                     </div>
                   ` : ''}
 
-                  <div class="k-recipe-card-actions">
+                  <div class="k-recipe-card-actions" onclick="event.stopPropagation()">
                     <button type="button" class="k-btn-plan-recipe" onclick="kOpenAssignModal('${r.id}', 'vault')">
                       + Plan to Day
                     </button>
                     <div class="k-recipe-secondary-actions">
-                      <span style="font-size:11px; color:var(--k-text-muted);">Trusted staple</span>
+                      <button type="button" class="k-btn-promote-vault" onclick="kOpenViewRecipeModal('${r.id}', 'vault', event)">View recipe</button>
                       <button type="button" class="k-btn-del-recipe" onclick="kDeleteFavorite('${r.id}', event)">Delete</button>
                     </div>
                   </div>
@@ -828,7 +828,7 @@ function renderKitchenPage() {
             ${newRecipes.length > 0 ? newRecipes.map(r => {
               const courseLabel = { main: 'Main 🍲', side: 'Side 🥗', brunch: 'Brunch ☕', dessert: 'Dessert 🍨' }[r.course || 'main'] || 'Main 🍲';
               return `
-                <div class="k-recipe-card">
+                <div class="k-recipe-card" onclick="kOpenViewRecipeModal('${r.id}', 'new', event)" title="Click to view full recipe">
                   <div class="k-recipe-card-header">
                     <span class="k-recipe-card-title">${escapeHtml(r.title)}</span>
                     <span class="k-recipe-course-badge want">Want to Try</span>
@@ -840,13 +840,13 @@ function renderKitchenPage() {
 
                   ${r.recipeUrl ? `
                     <div>
-                      <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link">
+                      <a href="${escapeHtml(r.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link" onclick="event.stopPropagation()">
                         <span>🔗 View recipe link</span>
                       </a>
                     </div>
                   ` : ''}
 
-                  <div class="k-recipe-card-actions">
+                  <div class="k-recipe-card-actions" onclick="event.stopPropagation()">
                     <button type="button" class="k-btn-plan-recipe" onclick="kOpenAssignModal('${r.id}', 'new')">
                       Plan to Day ＋
                     </button>
@@ -1892,7 +1892,7 @@ function kRenderAssignModalDays() {
   if (!container) return;
 
   const data = storage.getKitchenData();
-  const schedule = assignModalWeekOffset === 1 ? (data.followingWeekSchedule || []) : (data.weekSchedule || []);
+  const schedule = kGetScheduleForWeekOffset(data, assignModalWeekOffset);
 
   const now = new Date();
   const dayOfWeek = now.getDay();
@@ -1909,7 +1909,10 @@ function kRenderAssignModalDays() {
 
     const dayObj = schedule.find(s => s.day === name) || schedule[idx] || {};
     const rawSlot = (dayObj.meals && dayObj.meals[assignModalMealType]) ? dayObj.meals[assignModalMealType] : null;
-    const items = Array.isArray(rawSlot) ? rawSlot : (rawSlot && rawSlot.meal ? [rawSlot] : []);
+    const items = Array.isArray(rawSlot) ? rawSlot.filter(i => i && i.meal) : (rawSlot && rawSlot.meal ? [rawSlot] : []);
+    if (items.length === 0 && assignModalMealType === 'dinner' && dayObj.meal) {
+      items.push({ meal: dayObj.meal });
+    }
     const hasMeal = items.length > 0;
 
     let summaryText = '+ Open slot';
@@ -1946,6 +1949,127 @@ function kConfirmAssignFromModal(dayIdx) {
   kCloseAssignModal();
 }
 window.kConfirmAssignFromModal = kConfirmAssignFromModal;
+
+/* ==========================================================================
+   View & Edit Full Recipe Modal Controller
+   ========================================================================== */
+let viewedRecipeId = null;
+let viewedRecipeCollection = 'vault';
+
+function kOpenViewRecipeModal(recipeId, collection = 'vault', event = null) {
+  if (event) event.stopPropagation();
+  viewedRecipeId = recipeId;
+  viewedRecipeCollection = collection;
+
+  const data = storage.getKitchenData();
+  const list = collection === 'new' ? (data.newRecipes || []) : (data.favoriteRecipes || []);
+  const recipe = list.find(r => r.id === recipeId);
+  if (!recipe) return;
+
+  const titleEl = document.getElementById('k-view-recipe-title');
+  if (titleEl) titleEl.textContent = recipe.title || 'Recipe';
+
+  const badgeEl = document.getElementById('k-view-recipe-course-badge');
+  if (badgeEl) {
+    const courseLabel = { main: 'Main 🍲', side: 'Side 🥗', brunch: 'Brunch ☕', dessert: 'Dessert 🍨' }[recipe.course || 'main'] || 'Main 🍲';
+    badgeEl.textContent = collection === 'new' ? `Want to Try · ${courseLabel}` : courseLabel;
+  }
+
+  const displayEl = document.getElementById('k-view-recipe-notes-display');
+  const editEl = document.getElementById('k-view-recipe-notes-edit');
+  const editBtn = document.getElementById('k-view-recipe-edit-btn');
+  const saveBtn = document.getElementById('k-view-recipe-save-btn');
+
+  if (displayEl) {
+    displayEl.style.display = 'block';
+    displayEl.textContent = recipe.ingredients && recipe.ingredients.trim()
+      ? recipe.ingredients
+      : 'No ingredients or notes added yet. Tap "✎ Edit Notes" below to add them.';
+  }
+  if (editEl) {
+    editEl.style.display = 'none';
+    editEl.value = recipe.ingredients || '';
+  }
+  if (editBtn) editBtn.style.display = 'inline-flex';
+  if (saveBtn) saveBtn.style.display = 'none';
+
+  const linkWrap = document.getElementById('k-view-recipe-link-wrap');
+  const linkEl = document.getElementById('k-view-recipe-link');
+  if (linkWrap && linkEl) {
+    if (recipe.recipeUrl && recipe.recipeUrl.trim()) {
+      linkWrap.style.display = 'block';
+      linkEl.href = recipe.recipeUrl.trim();
+    } else {
+      linkWrap.style.display = 'none';
+    }
+  }
+
+  const modal = document.getElementById('k-view-recipe-modal');
+  if (modal) modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+window.kOpenViewRecipeModal = kOpenViewRecipeModal;
+
+function kCloseViewRecipeModal() {
+  const modal = document.getElementById('k-view-recipe-modal');
+  if (modal) modal.classList.remove('active');
+  viewedRecipeId = null;
+}
+window.kCloseViewRecipeModal = kCloseViewRecipeModal;
+
+function kToggleEditViewedRecipe() {
+  const displayEl = document.getElementById('k-view-recipe-notes-display');
+  const editEl = document.getElementById('k-view-recipe-notes-edit');
+  const editBtn = document.getElementById('k-view-recipe-edit-btn');
+  const saveBtn = document.getElementById('k-view-recipe-save-btn');
+
+  if (displayEl) displayEl.style.display = 'none';
+  if (editEl) {
+    editEl.style.display = 'block';
+    editEl.focus();
+  }
+  if (editBtn) editBtn.style.display = 'none';
+  if (saveBtn) saveBtn.style.display = 'inline-flex';
+}
+window.kToggleEditViewedRecipe = kToggleEditViewedRecipe;
+
+function kSaveViewedRecipeEdits() {
+  if (!viewedRecipeId) return;
+  const editEl = document.getElementById('k-view-recipe-notes-edit');
+  if (!editEl) return;
+
+  const data = storage.getKitchenData();
+  const list = viewedRecipeCollection === 'new' ? (data.newRecipes || []) : (data.favoriteRecipes || []);
+  const recipe = list.find(r => r.id === viewedRecipeId);
+  if (!recipe) return;
+
+  recipe.ingredients = editEl.value.trim();
+  storage.saveKitchenData(data);
+
+  const displayEl = document.getElementById('k-view-recipe-notes-display');
+  const editBtn = document.getElementById('k-view-recipe-edit-btn');
+  const saveBtn = document.getElementById('k-view-recipe-save-btn');
+
+  if (displayEl) {
+    displayEl.textContent = recipe.ingredients || 'No ingredients or notes added yet.';
+    displayEl.style.display = 'block';
+  }
+  editEl.style.display = 'none';
+  if (editBtn) editBtn.style.display = 'inline-flex';
+  if (saveBtn) saveBtn.style.display = 'none';
+
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Updated notes for "${recipe.title}"! ✨`);
+}
+window.kSaveViewedRecipeEdits = kSaveViewedRecipeEdits;
+
+function kPlanFromViewRecipeModal() {
+  const id = viewedRecipeId;
+  const col = viewedRecipeCollection;
+  kCloseViewRecipeModal();
+  if (id) kOpenAssignModal(id, col);
+}
+window.kPlanFromViewRecipeModal = kPlanFromViewRecipeModal;
 
 // Grocery List Item Toggle (Checked items will be excluded from Things 3 export)
 function kToggleGroceryItem(el) {
