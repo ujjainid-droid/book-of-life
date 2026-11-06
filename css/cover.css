@@ -16748,6 +16748,125 @@ body:has(.margo-compass-wrap) {
   padding-top: 4px;
 }
 
+.compass-avatar-wrap {
+  position: relative;
+  flex: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease;
+  user-select: none;
+}
+
+.compass-avatar-wrap:hover {
+  transform: scale(1.06);
+}
+
+.compass-avatar-switch-hint {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #7C3AED;
+  color: #FFFFFF;
+  padding: 1px 7px;
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.35);
+}
+
+.compass-avatar-wrap:hover .compass-avatar-switch-hint {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Avatar Options Modal Grid */
+.avatar-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.avatar-option-card {
+  background: var(--bg-surface, #F8FAFC);
+  border: 1.5px solid var(--border-light, #E2E8F0);
+  border-radius: 16px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  position: relative;
+}
+
+.avatar-option-card:hover {
+  transform: translateY(-2px);
+  border-color: #7C3AED;
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.1);
+}
+
+.avatar-option-card.is-active {
+  border-color: #7C3AED;
+  background: rgba(124, 58, 237, 0.05);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.avatar-preview-box {
+  width: 76px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(124, 58, 237, 0.05);
+  border-radius: 14px;
+  padding: 4px;
+}
+
+.avatar-option-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary, #1E1B3A);
+}
+
+.avatar-option-desc {
+  font-size: 11.5px;
+  color: var(--text-muted, #6B6785);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.avatar-option-btn {
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #7C3AED;
+  background: transparent;
+  color: #7C3AED;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: auto;
+  transition: all 0.15s ease;
+}
+
+.avatar-option-card:hover .avatar-option-btn,
+.avatar-option-card.is-active .avatar-option-btn {
+  background: #7C3AED;
+  color: #FFFFFF;
+}
+
 .margo-compass-header h1 {
   font-size: 36px;
   font-weight: 800;

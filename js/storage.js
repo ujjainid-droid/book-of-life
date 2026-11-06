@@ -321,8 +321,8 @@ class StorageManager {
         now: [
           {
             id: 'camp-school',
-            title: 'Z school, ood, IEP',
-            status: 'IP',
+            title: 'Z school, IEP',
+            status: 'Maintain',
             theme: 'cat-school',
             tools: {
               margo: { label: 'Z Admissions & Battle Plan', action: 'school-plan' },
@@ -3380,6 +3380,62 @@ class StorageManager {
       });
 
       this.data.coverMaintainSeedV3 = true;
+      this.data.coverUpdatedAt = Date.now();
+      updated = true;
+    }
+
+    // Permanently remove "get a tray for my nightstand"
+    const isNightstandTray = (item) => {
+      if (!item) return false;
+      const t = (item.title || item.text || '').toLowerCase().trim();
+      return t.includes('nightstand') || (t.includes('tray') && t.includes('night'));
+    };
+
+    const countBeforeNow = this.data.coverCampaigns.now.length;
+    const countBeforeLater = this.data.coverCampaigns.later.length;
+    this.data.coverCampaigns.now = this.data.coverCampaigns.now.filter(item => !isNightstandTray(item));
+    this.data.coverCampaigns.later = this.data.coverCampaigns.later.filter(item => !isNightstandTray(item));
+    if (this.data.coverCampaigns.now.length !== countBeforeNow || this.data.coverCampaigns.later.length !== countBeforeLater) {
+      updated = true;
+    }
+
+    if (this.data.coverTopMind) {
+      if (Array.isArray(this.data.coverTopMind.now)) {
+        this.data.coverTopMind.now = this.data.coverTopMind.now.filter(item => !isNightstandTray(item));
+      }
+      if (Array.isArray(this.data.coverTopMind.later)) {
+        this.data.coverTopMind.later = this.data.coverTopMind.later.filter(item => !isNightstandTray(item));
+      }
+    }
+
+    if (!this.data.coverMaintainSeedV4) {
+      // Move Z school, IEP to Maintain
+      for (let i = this.data.coverCampaigns.later.length - 1; i >= 0; i--) {
+        const item = this.data.coverCampaigns.later[i];
+        if (!item) continue;
+        const t = (item.title || '').toLowerCase().trim();
+        if (item.id === 'camp-school' || t.includes('school') || t.includes('iep')) {
+          item.status = 'Maintain';
+          item.title = 'Z school, IEP';
+          const [removed] = this.data.coverCampaigns.later.splice(i, 1);
+          if (!this.data.coverCampaigns.now.some(x => x.id === removed.id || (x.title || '').toLowerCase().trim() === t)) {
+            this.data.coverCampaigns.now.push(removed);
+          }
+          updated = true;
+        }
+      }
+
+      this.data.coverCampaigns.now.forEach(item => {
+        if (!item) return;
+        const t = (item.title || '').toLowerCase().trim();
+        if (item.id === 'camp-school' || t.includes('school') || t.includes('iep')) {
+          item.status = 'Maintain';
+          item.title = 'Z school, IEP';
+          updated = true;
+        }
+      });
+
+      this.data.coverMaintainSeedV4 = true;
       this.data.coverUpdatedAt = Date.now();
       updated = true;
     }

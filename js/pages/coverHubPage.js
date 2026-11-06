@@ -51,6 +51,221 @@ const COMPASS_PILLARS = [
 
 const COMPASS_MAIL_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>';
 
+function getCompassAvatarSvg(presetId = 'smirk', width = 68, height = 74) {
+  const pid = presetId || 'smirk';
+  if (pid === 'bob') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="The Parisian Bob" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="bobHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#231B2B"/>
+            <stop offset="60%" stop-color="#140E1B"/>
+            <stop offset="100%" stop-color="#0E0914"/>
+          </linearGradient>
+          <linearGradient id="bobHeadband" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#8B5CF6"/>
+            <stop offset="50%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <linearGradient id="bobSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F3CBB0"/>
+            <stop offset="100%" stop-color="#DF9E71"/>
+          </linearGradient>
+          <linearGradient id="bobSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6D28D9"/>
+            <stop offset="100%" stop-color="#4C1D95"/>
+          </linearGradient>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <path d="M 22 42 C 18 64 21 82 32 86 C 36 87 38 82 36 76 C 31 62 30 46 32 40 Z" fill="url(#bobHair)"/>
+        <path d="M 82 42 C 86 64 83 82 72 86 C 68 87 66 82 68 76 C 73 62 74 46 72 40 Z" fill="url(#bobHair)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#bobHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#bobSweater)"/>
+        <rect x="36" y="75" width="32" height="14" rx="5" fill="#7C3AED" stroke="#5B21B6" stroke-width="1.2"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#bobSkin)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#bobSkin)"/>
+        <circle cx="31" cy="48" r="5" fill="#D99E6C"/>
+        <circle cx="30" cy="53" r="4" fill="none" stroke="#E2E8F0" stroke-width="1.6"/>
+        <circle cx="73" cy="48" r="5" fill="#D99E6C"/>
+        <path d="M 37 36 Q 42 32 47 35" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 57 35 Q 62 32 67 36" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 37 43 Q 42 39 47 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="42" cy="44.5" r="3.2" fill="#241B2B"/>
+        <circle cx="43.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+        <path d="M 57 43 Q 62 39 67 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="62" cy="44.5" r="3.2" fill="#241B2B"/>
+        <circle cx="63.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+        <path d="M 51 47 Q 53 51 50 52" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M 45 60 Q 52 65 59 60" fill="none" stroke="#BE185D" stroke-width="2.6" stroke-linecap="round"/>
+        <circle cx="36" cy="51" r="4" fill="#F472B6" opacity="0.4"/>
+        <circle cx="68" cy="51" r="4" fill="#F472B6" opacity="0.4"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#bobHair)"/>
+        <path d="M 25 36 C 25 15 40 8 52 8 C 64 8 79 15 79 36" fill="none" stroke="url(#bobHeadband)" stroke-width="7" stroke-linecap="round"/>
+        <path d="M 34 20 C 42 14 50 13 58 14" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.75"/>
+      </svg>`;
+  }
+
+  if (pid === 'aviator') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="The Glam Aviators" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="avHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2D2235"/>
+            <stop offset="50%" stop-color="#1A1320"/>
+            <stop offset="100%" stop-color="#120D17"/>
+          </linearGradient>
+          <linearGradient id="avSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#ECC095"/>
+            <stop offset="100%" stop-color="#D99E6C"/>
+          </linearGradient>
+          <linearGradient id="avSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <linearGradient id="avLip" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#E75480"/>
+            <stop offset="100%" stop-color="#BE185D"/>
+          </linearGradient>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <path d="M 24 44 C 20 62 21 82 28 98 C 30 102 34 102 36 96 C 33 80 32 62 35 48 Z" fill="url(#avHair)"/>
+        <path d="M 80 44 C 84 62 83 82 76 98 C 74 102 70 102 68 96 C 71 80 72 62 69 48 Z" fill="url(#avHair)"/>
+        <ellipse cx="52" cy="40" rx="34" ry="32" fill="url(#avHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#avSweater)"/>
+        <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#avSkin)"/>
+        <path d="M 32 40 C 32 62 38 74 52 74 C 66 74 72 62 72 40 C 72 24 66 18 52 18 C 38 18 32 24 32 40 Z" fill="url(#avSkin)"/>
+        <circle cx="31" cy="45" r="5" fill="#D99E6C"/>
+        <circle cx="73" cy="45" r="5" fill="#D99E6C"/>
+        <rect x="33" y="36" width="16" height="13" rx="4.5" fill="#1E1B3A" stroke="#5B3FD9" stroke-width="1.4"/>
+        <rect x="55" y="36" width="16" height="13" rx="4.5" fill="#1E1B3A" stroke="#5B3FD9" stroke-width="1.4"/>
+        <path d="M 49 41 L 55 41" stroke="#5B3FD9" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 35 39 L 43 45" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.45"/>
+        <path d="M 57 39 L 65 45" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.45"/>
+        <path d="M 46 62 Q 52 66 58 62" stroke="url(#avLip)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+        <circle cx="36" cy="53" r="4" fill="#F472B6" opacity="0.3"/>
+        <circle cx="68" cy="53" r="4" fill="#F472B6" opacity="0.3"/>
+        <path d="M 26 34 C 30 18 42 12 52 12 C 64 12 76 18 78 34 C 74 24 64 22 52 23 C 40 22 30 25 26 34 Z" fill="url(#avHair)"/>
+        <path d="M 28 32 C 34 38 38 46 38 52 C 34 46 32 40 28 32 Z" fill="#2D2235"/>
+        <path d="M 76 32 C 70 38 66 46 66 52 C 70 46 72 40 76 32 Z" fill="#2D2235"/>
+      </svg>`;
+  }
+
+  if (pid === 'headphones') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Zen Studio Flow" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hpHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2D2235"/>
+            <stop offset="60%" stop-color="#1A1320"/>
+            <stop offset="100%" stop-color="#120D17"/>
+          </linearGradient>
+          <linearGradient id="hpSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F2C9A5"/>
+            <stop offset="100%" stop-color="#DF9F6E"/>
+          </linearGradient>
+          <linearGradient id="hpSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <ellipse cx="52" cy="15" rx="14" ry="12" fill="url(#hpHair)"/>
+        <ellipse cx="50" cy="13" rx="10" ry="7" fill="#3D2E47"/>
+        <ellipse cx="52" cy="42" rx="32" ry="30" fill="url(#hpHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#hpSweater)"/>
+        <rect x="36" y="75" width="32" height="14" rx="5" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#hpSkin)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#hpSkin)"/>
+        <path d="M 37 36 Q 42 32 47 35" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 57 35 Q 62 32 67 36" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 37 43 Q 42 39 47 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="42" cy="44.5" r="3.2" fill="#241B2B"/>
+        <circle cx="43.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+        <path d="M 57 43 Q 62 39 67 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="62" cy="44.5" r="3.2" fill="#241B2B"/>
+        <circle cx="63.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+        <path d="M 51 47 Q 53 51 50 52" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M 45 60 Q 52 65 59 60" fill="none" stroke="#BE185D" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="36" cy="51" r="4.5" fill="#F472B6" opacity="0.35"/>
+        <circle cx="68" cy="51" r="4.5" fill="#F472B6" opacity="0.35"/>
+        <path d="M 33 40 C 31 52 30 64 33 72" fill="none" stroke="#2D2235" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M 71 40 C 73 52 74 64 71 72" fill="none" stroke="#2D2235" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M 25 44 C 23 20 40 12 52 12 C 64 12 81 20 79 44" fill="none" stroke="#A78BFA" stroke-width="4.5" stroke-linecap="round"/>
+        <rect x="21" y="38" width="10" height="22" rx="5" fill="#8B5CF6" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="73" y="38" width="10" height="22" rx="5" fill="#8B5CF6" stroke="#EDE9FE" stroke-width="1.5"/>
+      </svg>`;
+  }
+
+  // Default: 'smirk' (The Executive Smirk)
+  return `
+    <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="The Executive Smirk" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="smirkHair" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#2D2235"/>
+          <stop offset="60%" stop-color="#1A1320"/>
+          <stop offset="100%" stop-color="#120D17"/>
+        </linearGradient>
+        <linearGradient id="smirkSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#F2C9A5"/>
+          <stop offset="100%" stop-color="#DF9F6E"/>
+        </linearGradient>
+        <linearGradient id="smirkSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#7C3AED"/>
+          <stop offset="100%" stop-color="#5B21B6"/>
+        </linearGradient>
+        <linearGradient id="smirkLip" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#E75480"/>
+          <stop offset="100%" stop-color="#BE185D"/>
+        </linearGradient>
+      </defs>
+      <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+      <path d="M 24 44 C 20 62 21 82 28 98 C 30 102 34 102 36 96 C 33 80 32 62 35 48 Z" fill="url(#smirkHair)"/>
+      <path d="M 80 44 C 84 62 83 82 76 98 C 74 102 70 102 68 96 C 71 80 72 62 69 48 Z" fill="url(#smirkHair)"/>
+      <ellipse cx="52" cy="40" rx="34" ry="32" fill="url(#smirkHair)"/>
+      <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#smirkSweater)"/>
+      <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+      <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+      <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+      <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+      <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+      <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#smirkSkin)"/>
+      <path d="M 32 40 C 32 62 38 74 52 74 C 66 74 72 62 72 40 C 72 24 66 18 52 18 C 38 18 32 24 32 40 Z" fill="url(#smirkSkin)"/>
+      <circle cx="31" cy="47" r="5" fill="#D99E6C"/>
+      <circle cx="73" cy="47" r="5" fill="#D99E6C"/>
+      <path d="M 37 36 Q 43 31 48 34" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M 56 34 Q 61 31 67 36" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M 36 43 Q 42 38 48 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M 48 43 L 50 41" stroke="#120D17" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="42" cy="44.5" r="3.2" fill="#241B2B"/>
+      <circle cx="43.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+      <path d="M 56 43 Q 62 38 68 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M 68 43 L 70 41" stroke="#120D17" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="62" cy="44.5" r="3.2" fill="#241B2B"/>
+      <circle cx="63.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+      <path d="M 51 47 Q 53 51 50 52" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M 45 59 Q 52 64 61 58" fill="none" stroke="url(#smirkLip)" stroke-width="2.6" stroke-linecap="round"/>
+      <ellipse cx="53" cy="61.5" rx="3.5" ry="1.2" fill="#FDA4AF" opacity="0.8"/>
+      <circle cx="36" cy="51" r="4.5" fill="#F472B6" opacity="0.35"/>
+      <circle cx="68" cy="51" r="4.5" fill="#F472B6" opacity="0.35"/>
+      <path d="M 26 34 C 30 18 42 12 52 12 C 64 12 76 18 78 34 C 74 24 64 22 52 23 C 40 22 30 25 26 34 Z" fill="url(#smirkHair)"/>
+      <path d="M 28 32 C 34 38 38 46 38 52 C 34 46 32 40 28 32 Z" fill="#2D2235"/>
+      <path d="M 76 32 C 70 38 66 46 66 52 C 70 46 72 40 76 32 Z" fill="#2D2235"/>
+      <g transform="translate(32, 13)">
+        <rect x="0" y="2" width="18" height="11" rx="3.5" fill="#1E1B3A" stroke="#7C3AED" stroke-width="1.2"/>
+        <line x1="3" y1="4" x2="8" y2="10" stroke="#FFFFFF" stroke-width="1" opacity="0.45" stroke-linecap="round"/>
+        <path d="M 17 6 Q 20 4 23 6" fill="none" stroke="#7C3AED" stroke-width="1.5"/>
+        <rect x="22" y="2" width="18" height="11" rx="3.5" fill="#1E1B3A" stroke="#7C3AED" stroke-width="1.2"/>
+        <line x1="25" y1="4" x2="30" y2="10" stroke="#FFFFFF" stroke-width="1" opacity="0.45" stroke-linecap="round"/>
+      </g>
+    </svg>`;
+}
+window.getCompassAvatarSvg = getCompassAvatarSvg;
+
 function renderCoverHubPage() {
   currentView = 'cover';
   try {
@@ -81,7 +296,15 @@ function renderCoverHubPage() {
     ? storage.getHabits()
     : [];
 
-  const seasonTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
+  try {
+    if (localStorage.getItem('BOL_COVER_SEASON_FOCUS') === 'Calm Mastery, Health Baseline & Vitality') {
+      localStorage.removeItem('BOL_COVER_SEASON_FOCUS');
+    }
+  } catch (e) {}
+
+  const storedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS'));
+  const seasonTheme = (storedTheme && storedTheme !== 'Calm Mastery, Health Baseline & Vitality') ? storedTheme : '';
+  const avatarPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'smirk';
   const activeLens = getCompassLens();
   const fwOpen = isCompassFwOpen();
 
@@ -109,79 +332,13 @@ function renderCoverHubPage() {
 
       <!-- Header with Sassy Cartoon Avatar -->
       <header class="margo-compass-header">
-        <svg width="68" height="74" viewBox="0 0 104 112" role="img" aria-label="Sassy cartoon avatar" style="flex:none;cursor:pointer;transition:transform 0.18s ease;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" onclick="switchAppView('sanctuary')" title="margo · Tap to return to Today" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="avatarHairGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#2D2235"/>
-              <stop offset="50%" stop-color="#1A1320"/>
-              <stop offset="100%" stop-color="#120D17"/>
-            </linearGradient>
-            <linearGradient id="avatarSkinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#ECC095"/>
-              <stop offset="100%" stop-color="#D99E6C"/>
-            </linearGradient>
-            <linearGradient id="avatarSweaterGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#7C3AED"/>
-              <stop offset="100%" stop-color="#5B21B6"/>
-            </linearGradient>
-            <linearGradient id="avatarLipGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#E75480"/>
-              <stop offset="100%" stop-color="#BE185D"/>
-            </linearGradient>
-            <filter id="avatarGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7C3AED" flood-opacity="0.18"/>
-            </filter>
-          </defs>
-
-          <!-- Ambient Glow -->
-          <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
-
-          <!-- Back Hair (Flowing waves) -->
-          <path d="M 24 44 C 20 62 21 82 28 98 C 30 102 34 102 36 96 C 33 80 32 62 35 48 Z" fill="url(#avatarHairGrad)"/>
-          <path d="M 80 44 C 84 62 83 82 76 98 C 74 102 70 102 68 96 C 71 80 72 62 69 48 Z" fill="url(#avatarHairGrad)"/>
-          <ellipse cx="52" cy="40" rx="34" ry="32" fill="url(#avatarHairGrad)"/>
-
-          <!-- Chic Violet Turtleneck Sweater -->
-          <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#avatarSweaterGrad)" filter="url(#avatarGlow)"/>
-          <!-- Ribbed Neckline -->
-          <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
-          <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-          <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-          <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-          <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
-
-          <!-- Neck -->
-          <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#avatarSkinGrad)"/>
-
-          <!-- Sassy Head / Jawline -->
-          <path d="M 32 40 C 32 62 38 74 52 74 C 66 74 72 62 72 40 C 72 24 66 18 52 18 C 38 18 32 24 32 40 Z" fill="url(#avatarSkinGrad)"/>
-
-          <!-- Cute Ears -->
-          <circle cx="31" cy="45" r="5" fill="#D99E6C"/>
-          <circle cx="73" cy="45" r="5" fill="#D99E6C"/>
-
-          <!-- Glam Oversized Sunglasses (Soft Lavender-Black Tint) -->
-          <rect x="33" y="36" width="16" height="13" rx="4.5" fill="#1E1B3A" stroke="#5B3FD9" stroke-width="1.4"/>
-          <rect x="55" y="36" width="16" height="13" rx="4.5" fill="#1E1B3A" stroke="#5B3FD9" stroke-width="1.4"/>
-          <path d="M 49 41 L 55 41" stroke="#5B3FD9" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Lens Flare Accent -->
-          <path d="M 35 39 L 43 45" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-          <path d="M 57 39 L 65 45" stroke="#FFFFFF" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
-
-          <!-- Sassy Smile / Lip Gloss -->
-          <path d="M 46 62 Q 52 66 58 62" stroke="url(#avatarLipGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-          <!-- Rosy Cheeks -->
-          <circle cx="36" cy="53" r="4" fill="#F472B6" opacity="0.3" filter="blur(1px)"/>
-          <circle cx="68" cy="53" r="4" fill="#F472B6" opacity="0.3" filter="blur(1px)"/>
-
-          <!-- Front Hair Fringe / Side Swept Curtain Bangs -->
-          <path d="M 26 34 C 30 18 42 12 52 12 C 64 12 76 18 78 34 C 74 24 64 22 52 23 C 40 22 30 25 26 34 Z" fill="url(#avatarHairGrad)"/>
-          <path d="M 28 32 C 34 38 38 46 38 52 C 34 46 32 40 28 32 Z" fill="#2D2235"/>
-          <path d="M 76 32 C 70 38 66 46 66 52 C 70 46 72 40 76 32 Z" fill="#2D2235"/>
-        </svg>
+        <div class="compass-avatar-wrap" onclick="openCompassAvatarModal()" title="Tap to switch cartoon avatar" role="button" aria-label="Change cartoon avatar">
+          ${getCompassAvatarSvg(avatarPreset)}
+          <span class="compass-avatar-switch-hint">Switch</span>
+        </div>
         <div>
           <h1>Compass</h1>
-          <p onclick="promptEditSeasonFocus()" title="Tap to edit focus theme">${escapeHtml(seasonTheme)}</p>
+          ${seasonTheme ? `<p onclick="promptEditSeasonFocus()" title="Tap to edit focus theme">${escapeHtml(seasonTheme)}</p>` : ''}
         </div>
       </header>
 
@@ -249,16 +406,113 @@ function renderCoverHubPage() {
 window.renderCoverHubPage = renderCoverHubPage;
 
 function promptEditSeasonFocus() {
-  const current = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || 'Calm Mastery, Health Baseline & Vitality';
-  const updated = prompt('Focus theme', current);
-  if (updated && updated.trim()) {
+  const current = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS')) || '';
+  const cleanCurrent = (current === 'Calm Mastery, Health Baseline & Vitality') ? '' : current;
+  const updated = prompt('Edit Focus Theme (leave blank to remove):', cleanCurrent);
+  if (updated !== null) {
     try {
-      localStorage.setItem('BOL_COVER_SEASON_FOCUS', updated.trim());
+      if (updated.trim()) {
+        localStorage.setItem('BOL_COVER_SEASON_FOCUS', updated.trim());
+      } else {
+        localStorage.removeItem('BOL_COVER_SEASON_FOCUS');
+      }
     } catch (e) {}
     renderCoverHubPage();
   }
 }
 window.promptEditSeasonFocus = promptEditSeasonFocus;
+
+function openCompassAvatarModal() {
+  let modal = document.getElementById('modal-compass-avatar');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.id = 'modal-compass-avatar';
+    modal.setAttribute('onclick', 'if(event.target === this) closeAllModals()');
+    document.body.appendChild(modal);
+  }
+
+  const currentPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'smirk';
+  const options = [
+    {
+      id: 'smirk',
+      title: 'The Executive Smirk',
+      badge: 'Recommended · High Energy',
+      desc: 'Winged cat-eye, knowing smirk with berry lip gloss, retro shades pushed up on hair & violet turtleneck.'
+    },
+    {
+      id: 'bob',
+      title: 'The Parisian Bob',
+      badge: 'Chic · Modern Editorial',
+      desc: 'Sleek chin-length bob, royal violet silk padded headband with highlight, silver hoop earring & radiant eyes.'
+    },
+    {
+      id: 'aviator',
+      title: 'The Glam Aviators',
+      badge: 'Classic · Statement Cool',
+      desc: 'Oversized glossy lavender-tinted dark shades, curtain bangs, relaxed waves & violet knit.'
+    },
+    {
+      id: 'headphones',
+      title: 'Zen Studio Flow',
+      badge: 'Calm · Momentum Focus',
+      desc: 'Lilac wireless studio headphones, messy topknot bun with loose tendrils, serene smile & slouchy knit.'
+    }
+  ];
+
+  modal.innerHTML = `
+    <div class="modal-card modal-card-wide" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:1.2rem;">✨</span>
+          <h3>Choose Compass Cartoon Avatar</h3>
+        </div>
+        <button class="icon-btn" onclick="closeAllModals()" aria-label="Close"><i data-lucide="x"></i></button>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted,#6B6785);margin:4px 0 14px;">Select your preferred cartoon personality and aesthetic for the Compass header.</p>
+      <div class="avatar-options-grid">
+        ${options.map(opt => `
+          <div class="avatar-option-card ${opt.id === currentPreset ? 'is-active' : ''}" onclick="selectCompassAvatar('${opt.id}')">
+            <div class="avatar-preview-box">
+              ${getCompassAvatarSvg(opt.id, 64, 70)}
+            </div>
+            <span class="badge" style="font-size:10px;font-weight:700;color:#7C3AED;background:#EDE9FE;padding:2px 8px;border-radius:999px;">${opt.badge}</span>
+            <div class="avatar-option-title">${opt.title}</div>
+            <div class="avatar-option-desc">${opt.desc}</div>
+            <button class="avatar-option-btn">${opt.id === currentPreset ? '✓ Selected' : 'Choose'}</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+
+  if (typeof lucide !== 'undefined' && lucide.createIcons) {
+    lucide.createIcons();
+  }
+  if (typeof openModal === 'function') {
+    openModal('modal-compass-avatar');
+  } else {
+    modal.classList.add('active');
+  }
+}
+
+function selectCompassAvatar(presetId) {
+  try {
+    localStorage.setItem('BOL_COMPASS_AVATAR_PRESET', presetId);
+  } catch (e) {}
+  if (typeof closeAllModals === 'function') {
+    closeAllModals();
+  } else {
+    const m = document.getElementById('modal-compass-avatar');
+    if (m) m.classList.remove('active');
+  }
+  renderCoverHubPage();
+  if (typeof showToast === 'function') {
+    showToast('✓ Compass Avatar updated!');
+  }
+}
+window.openCompassAvatarModal = openCompassAvatarModal;
+window.selectCompassAvatar = selectCompassAvatar;
 
 /* --------------------------------------------------------------------------
    Unified Life Architecture Card Renderer & Handlers

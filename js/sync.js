@@ -721,6 +721,20 @@ class SyncManager {
         localWasRicher = true;
       }
     }
+    const isNightstandTraySync = (item) => {
+      if (!item) return false;
+      const t = (item.title || item.text || '').toLowerCase().trim();
+      return t.includes('nightstand') || (t.includes('tray') && t.includes('night'));
+    };
+    if (mergedCampaigns) {
+      if (Array.isArray(mergedCampaigns.now)) {
+        mergedCampaigns.now = mergedCampaigns.now.filter(c => !isNightstandTraySync(c));
+      }
+      if (Array.isArray(mergedCampaigns.later)) {
+        mergedCampaigns.later = mergedCampaigns.later.filter(c => !isNightstandTraySync(c));
+      }
+    }
+
     ['now', 'later'].forEach(tierKey => {
       if (mergedCampaigns && Array.isArray(mergedCampaigns[tierKey])) {
         mergedCampaigns[tierKey].forEach(c => {
@@ -731,6 +745,10 @@ class SyncManager {
               apple: { noteQuery: '# BEAUTY 02_HAIR' }
             };
             c.visibleTools = ['margo', 'apple'];
+          }
+          if (c && (c.id === 'camp-school' || (c.title || '').toLowerCase().includes('school') || (c.title || '').toLowerCase().includes('iep'))) {
+            c.status = 'Maintain';
+            c.title = 'Z school, IEP';
           }
         });
       }
