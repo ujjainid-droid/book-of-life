@@ -500,6 +500,12 @@ function renderKitchenPage() {
               custom: 'Homemade'
             };
             const heroSourceLabel = heroDinner ? (sourceLabels[heroDinner.source] || 'Fresh Cook') : '';
+            const isMealInVault = (mealTitle) => {
+              if (!mealTitle) return false;
+              const norm = mealTitle.toLowerCase().trim();
+              return favoriteRecipes.some(r => (r.title || '').toLowerCase().trim() === norm);
+            };
+            const isDinnerFav = heroDinner && heroDinner.meal ? isMealInVault(heroDinner.meal) : false;
 
             return `
               <div class="k-board-day-card ${isToday ? 'is-today' : ''}">
@@ -520,7 +526,12 @@ function renderKitchenPage() {
                     </div>
                     <div class="k-hero-dinner-main">
                       <span class="k-hero-dinner-name">${escapeHtml(heroDinner.meal)}</span>
-                      <span class="k-hero-dinner-edit-hint">✎</span>
+                      <span class="k-hero-dinner-actions">
+                        <button type="button" class="k-meal-fav-btn ${isDinnerFav ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dinner', 0, event)" title="${isDinnerFav ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}" aria-label="Save recipe to Vault">
+                          ${isDinnerFav ? '♥' : '♡'}
+                        </button>
+                        <span class="k-hero-dinner-edit-hint">✎</span>
+                      </span>
                     </div>
                     ${heroDinner.recipeUrl ? `
                       <a href="${escapeHtml(heroDinner.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link" onclick="event.stopPropagation()">
@@ -550,9 +561,16 @@ function renderKitchenPage() {
                         <span class="k-daytime-slot-label">🥞 Brunch:</span>
                         <span>${(d.meals.brunch || []).length > 0 ? escapeHtml(d.meals.brunch[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
                       </div>
-                      <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'brunch', ${(d.meals.brunch || []).length > 0 ? 0 : null})">
-                        ${(d.meals.brunch || []).length > 0 ? 'Edit' : '+ Add'}
-                      </button>
+                      <span class="k-hero-dinner-actions">
+                        ${(d.meals.brunch || []).length > 0 && d.meals.brunch[0].meal ? `
+                          <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.brunch[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'brunch', 0, event)" title="${isMealInVault(d.meals.brunch[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
+                            ${isMealInVault(d.meals.brunch[0].meal) ? '♥' : '♡'}
+                          </button>
+                        ` : ''}
+                        <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'brunch', ${(d.meals.brunch || []).length > 0 ? 0 : null})">
+                          ${(d.meals.brunch || []).length > 0 ? 'Edit' : '+ Add'}
+                        </button>
+                      </span>
                     </div>
 
                     <!-- Lunch Row -->
@@ -561,9 +579,16 @@ function renderKitchenPage() {
                         <span class="k-daytime-slot-label">🥗 Lunch:</span>
                         <span>${(d.meals.lunch || []).length > 0 ? escapeHtml(d.meals.lunch[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
                       </div>
-                      <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'lunch', ${(d.meals.lunch || []).length > 0 ? 0 : null})">
-                        ${(d.meals.lunch || []).length > 0 ? 'Edit' : '+ Add'}
-                      </button>
+                      <span class="k-hero-dinner-actions">
+                        ${(d.meals.lunch || []).length > 0 && d.meals.lunch[0].meal ? `
+                          <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.lunch[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'lunch', 0, event)" title="${isMealInVault(d.meals.lunch[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
+                            ${isMealInVault(d.meals.lunch[0].meal) ? '♥' : '♡'}
+                          </button>
+                        ` : ''}
+                        <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'lunch', ${(d.meals.lunch || []).length > 0 ? 0 : null})">
+                          ${(d.meals.lunch || []).length > 0 ? 'Edit' : '+ Add'}
+                        </button>
+                      </span>
                     </div>
 
                     <!-- Dessert Row -->
@@ -572,9 +597,16 @@ function renderKitchenPage() {
                         <span class="k-daytime-slot-label">🍨 Dessert:</span>
                         <span>${(d.meals.dessert || []).length > 0 ? escapeHtml(d.meals.dessert[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
                       </div>
-                      <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'dessert', ${(d.meals.dessert || []).length > 0 ? 0 : null})">
-                        ${(d.meals.dessert || []).length > 0 ? 'Edit' : '+ Add'}
-                      </button>
+                      <span class="k-hero-dinner-actions">
+                        ${(d.meals.dessert || []).length > 0 && d.meals.dessert[0].meal ? `
+                          <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.dessert[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dessert', 0, event)" title="${isMealInVault(d.meals.dessert[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
+                            ${isMealInVault(d.meals.dessert[0].meal) ? '♥' : '♡'}
+                          </button>
+                        ` : ''}
+                        <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'dessert', ${(d.meals.dessert || []).length > 0 ? 0 : null})">
+                          ${(d.meals.dessert || []).length > 0 ? 'Edit' : '+ Add'}
+                        </button>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1403,19 +1435,20 @@ function kToggleFavSlot(dayIdx, mealType, itemIdx = 0, event) {
   const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[dayIdx];
   const items = (d && d.meals && Array.isArray(d.meals[mealType])) ? d.meals[mealType] : (d && d.meals && d.meals[mealType] && d.meals[mealType].meal ? [d.meals[mealType]] : []);
-  const slot = items[itemIdx];
+  const slot = items[itemIdx] || (mealType === 'dinner' && d && d.meal ? { meal: d.meal, source: d.source || 'fresh', icon: d.icon || 'chicken', recipeUrl: d.recipeUrl || '' } : null);
 
   if (!slot || !slot.meal) {
     kOpenMealPicker(dayIdx, mealType, null);
     return;
   }
 
-  const favIdx = (data.favoriteRecipes || []).findIndex(r => r.title.toLowerCase() === slot.meal.toLowerCase());
+  const normMeal = slot.meal.toLowerCase().trim();
+  const favIdx = (data.favoriteRecipes || []).findIndex(r => (r.title || '').toLowerCase().trim() === normMeal);
   if (favIdx !== -1) {
     data.favoriteRecipes.splice(favIdx, 1);
     storage.saveKitchenData(data);
     renderKitchenPage();
-    if (typeof showToast === 'function') showToast(`Removed "${slot.meal}" from Favorites`);
+    if (typeof showToast === 'function') showToast(`Removed "${slot.meal}" from Recipe Vault`);
   } else {
     if (!data.favoriteRecipes) data.favoriteRecipes = [];
     const course = (mealType === 'dessert') ? 'dessert' : (mealType === 'brunch' ? 'brunch' : 'main');
@@ -1426,12 +1459,12 @@ function kToggleFavSlot(dayIdx, mealType, itemIdx = 0, event) {
       course: course,
       tags: [],
       recipeUrl: slot.recipeUrl || '',
-      ingredients: 'Trusted favorite recipe',
+      ingredients: '',
       stashMatch: null
     });
     storage.saveKitchenData(data);
     renderKitchenPage();
-    if (typeof showToast === 'function') showToast(`Saved "${slot.meal}" to Favorites Vault! 💜`);
+    if (typeof showToast === 'function') showToast(`Saved "${slot.meal}" to Recipe Vault! 💜`);
     if (typeof confetti === 'function') {
       confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 }, colors: ['#8B5CF6', '#6D28D9', '#0D98BA', '#C084FC'] });
     }
