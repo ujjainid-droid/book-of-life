@@ -101,18 +101,26 @@ function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 7
         <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#hbSkin)"/>
 
         <!-- Arched Brows -->
-        <path d="M 37 36 Q 42 32 47 35" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M 57 35 Q 62 32 67 36" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 36 34.5 Q 42 31 48 33.5" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 56 33.5 Q 62 31 68 34.5" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
 
-        <!-- Expressive Eyes with Winged Liner -->
-        <path d="M 37 43 Q 42 39 47 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M 47 43 L 49 41.5" stroke="#120D17" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="42" cy="44.5" r="3.2" fill="#241B2B"/>
-        <circle cx="43.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
-        <path d="M 57 43 Q 62 39 67 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
-        <path d="M 67 43 L 69 41.5" stroke="#120D17" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="62" cy="44.5" r="3.2" fill="#241B2B"/>
-        <circle cx="63.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+        <!-- Left Eye: Radiant Almond (Full Sclera + Deep Iris + Sparkle Catchlights) -->
+        <path d="M 36.5 44 C 37 40.5 42.5 39 48 42 C 48 45 42 47 36.5 44 Z" fill="#FFFFFF"/>
+        <ellipse cx="42.8" cy="43.2" rx="3.1" ry="3.1" fill="#241829"/>
+        <circle cx="42.2" cy="42.8" r="1.3" fill="#120A17"/>
+        <circle cx="44" cy="42" r="1" fill="#FFFFFF"/>
+        <circle cx="41.8" cy="44.5" r="0.5" fill="#FFFFFF" opacity="0.85"/>
+        <path d="M 36 44 C 38.5 40.5 45.5 39.5 48.5 42" fill="none" stroke="#140E1B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 48.5 42 L 50.5 40.8" stroke="#140E1B" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Right Eye: Radiant Almond (Full Sclera + Deep Iris + Sparkle Catchlights) -->
+        <path d="M 56 42 C 61.5 39 67 40.5 67.5 44 C 62 47 56 45 56 42 Z" fill="#FFFFFF"/>
+        <ellipse cx="61.2" cy="43.2" rx="3.1" ry="3.1" fill="#241829"/>
+        <circle cx="61.8" cy="42.8" r="1.3" fill="#120A17"/>
+        <circle cx="62" cy="42" r="1" fill="#FFFFFF"/>
+        <circle cx="60.2" cy="44.5" r="0.5" fill="#FFFFFF" opacity="0.85"/>
+        <path d="M 55.5 42 C 58.5 39.5 65.5 40.5 68 44" fill="none" stroke="#140E1B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 68 44 L 70 42.8" stroke="#140E1B" stroke-width="2" stroke-linecap="round"/>
 
         <!-- Nose -->
         <path d="M 51 47 Q 53 51 50 52" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
@@ -133,6 +141,59 @@ function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 7
         <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
 
         <!-- Studio Earcups (Plush lilac cushions resting over bob sides) -->
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>`;
+  }
+
+  if (pid === 'headphones-bob-zen') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Headphones with Bob Hair (Serene Zen)" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hbHairZ" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#231B2B"/><stop offset="60%" stop-color="#140E1B"/><stop offset="100%" stop-color="#0E0914"/>
+          </linearGradient>
+          <linearGradient id="hbSkinZ" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F2C9A5"/><stop offset="100%" stop-color="#DF9E71"/>
+          </linearGradient>
+          <linearGradient id="hbSweaterZ" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <linearGradient id="hbLipZ" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#E75480"/><stop offset="100%" stop-color="#BE185D"/>
+          </linearGradient>
+          <filter id="hbGlowZ" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7C3AED" flood-opacity="0.18"/>
+          </filter>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <path d="M 22 42 C 18 64 21 82 32 86 C 36 87 38 82 36 76 C 31 62 30 46 32 40 Z" fill="url(#hbHairZ)"/>
+        <path d="M 82 42 C 86 64 83 82 72 86 C 68 87 66 82 68 76 C 73 62 74 46 72 40 Z" fill="url(#hbHairZ)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#hbHairZ)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#hbSweaterZ)" filter="url(#hbGlowZ)"/>
+        <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#hbSkinZ)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#hbSkinZ)"/>
+        <path d="M 36 34 Q 42 30 48 33" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 56 33 Q 62 30 68 34" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 37 42 Q 42 46.5 47 42" fill="none" stroke="#140E1B" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M 47 42 L 49.5 40" stroke="#140E1B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 57 42 Q 62 46.5 67 42" fill="none" stroke="#140E1B" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M 67 42 L 69.5 40" stroke="#140E1B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 51 47 Q 53 51 50 52" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M 45 59 Q 52 64 60 58" fill="none" stroke="url(#hbLipZ)" stroke-width="2.6" stroke-linecap="round"/>
+        <ellipse cx="53" cy="61" rx="3.5" ry="1.2" fill="#FDA4AF" opacity="0.8"/>
+        <circle cx="36" cy="50" r="4.5" fill="#F472B6" opacity="0.38"/>
+        <circle cx="68" cy="50" r="4.5" fill="#F472B6" opacity="0.38"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#hbHairZ)"/>
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
         <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
         <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
         <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
@@ -526,9 +587,15 @@ function openCompassAvatarModal() {
   const options = [
     {
       id: 'headphones-bob',
-      title: 'Headphones with Bob Hair',
-      badge: 'Active Choice · Serene Focus',
-      desc: 'Wireless lilac studio headphones, sleek chin-length dark bob with fringe, expressive cat-eye & violet turtleneck.'
+      title: 'Headphones with Bob (Radiant Eyes)',
+      badge: 'Active Default · Radiant Almond',
+      desc: 'Wireless lilac studio headphones, sleek dark bob, radiant almond eyes with white sclera & sparkle catchlights.'
+    },
+    {
+      id: 'headphones-bob-zen',
+      title: 'Headphones with Bob (Zen Lashes)',
+      badge: 'Zen Immersion · Smiling Lashes',
+      desc: 'Wireless lilac studio headphones, sleek dark bob, calm smiling lash line & serene focus.'
     },
     {
       id: 'bob',
