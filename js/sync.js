@@ -726,12 +726,17 @@ class SyncManager {
       const t = (item.title || item.text || '').toLowerCase().trim();
       return t.includes('nightstand') || (t.includes('tray') && t.includes('night'));
     };
+    const isFootcareSync = (item) => {
+      if (!item) return false;
+      const t = ((item.title || '') + ' ' + (item.id || '')).toLowerCase().trim();
+      return t.includes('footcare') || t.includes('foot care') || item.id === 'camp-footcare';
+    };
     if (mergedCampaigns) {
       if (Array.isArray(mergedCampaigns.now)) {
-        mergedCampaigns.now = mergedCampaigns.now.filter(c => !isNightstandTraySync(c));
+        mergedCampaigns.now = mergedCampaigns.now.filter(c => !isNightstandTraySync(c) && !isFootcareSync(c));
       }
       if (Array.isArray(mergedCampaigns.later)) {
-        mergedCampaigns.later = mergedCampaigns.later.filter(c => !isNightstandTraySync(c));
+        mergedCampaigns.later = mergedCampaigns.later.filter(c => !isNightstandTraySync(c) && !isFootcareSync(c));
       }
     }
 

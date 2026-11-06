@@ -320,6 +320,30 @@ class StorageManager {
       coverCampaigns: {
         now: [
           {
+            id: 'camp-move',
+            title: 'Move',
+            status: 'IP',
+            theme: 'cat-health',
+            tools: {
+              margo: { label: 'Move Checkpoint', action: 'move' },
+              apple: { noteQuery: '# VITALITY 01_MOVE' },
+              things: { query: 'Daily Movement' }
+            },
+            visibleTools: ['margo', 'things']
+          },
+          {
+            id: 'camp-healthy-food',
+            title: 'Healthy food',
+            status: 'IP',
+            theme: 'cat-nutrition',
+            tools: {
+              margo: { label: 'Nutrition & Energy', action: 'nutrition' },
+              apple: { noteQuery: '# NUTRITION 01_FOOD' },
+              things: { query: 'Meal Prep & Nutrition' }
+            },
+            visibleTools: ['margo', 'things']
+          },
+          {
             id: 'camp-school',
             title: 'Z school, IEP',
             status: 'Maintain',
@@ -408,19 +432,6 @@ class StorageManager {
           }
         ],
         later: [
-          {
-            id: 'camp-footcare',
-            title: 'Foot care',
-            status: 'NS',
-            theme: 'cat-care',
-            tools: {
-              margo: { label: 'Foot Care' },
-              apple: { noteQuery: '# BEAUTY 04_FOOTCARE' },
-              google: { folder: 'Foot Care Protocol' },
-              things: { query: 'Foot Care' },
-              email: { emailQuery: 'Foot Care' }
-            }
-          },
           {
             id: 'camp-outfits',
             title: 'Outfits',
@@ -3436,6 +3447,90 @@ class StorageManager {
       });
 
       this.data.coverMaintainSeedV4 = true;
+      this.data.coverUpdatedAt = Date.now();
+      updated = true;
+    }
+
+    // Always purge footcare from both now and later
+    const isFootcare = (c) => {
+      if (!c) return false;
+      const t = ((c.title || '') + ' ' + (c.id || '')).toLowerCase().trim();
+      return t.includes('footcare') || t.includes('foot care') || c.id === 'camp-footcare';
+    };
+    if (this.data.coverCampaigns.now.some(isFootcare)) {
+      this.data.coverCampaigns.now = this.data.coverCampaigns.now.filter(c => !isFootcare(c));
+      updated = true;
+    }
+    if (this.data.coverCampaigns.later.some(isFootcare)) {
+      this.data.coverCampaigns.later = this.data.coverCampaigns.later.filter(c => !isFootcare(c));
+      updated = true;
+    }
+
+    // Seed Move and Healthy food into Focus (now)
+    if (!this.data.coverFocusSeedV5) {
+      const hasMove = this.data.coverCampaigns.now.some(c => c && ((c.title || '').toLowerCase().trim() === 'move' || c.id === 'camp-move'));
+      if (!hasMove) {
+        const laterMoveIdx = this.data.coverCampaigns.later.findIndex(c => c && ((c.title || '').toLowerCase().trim() === 'move' || c.id === 'camp-move'));
+        if (laterMoveIdx !== -1) {
+          const [moved] = this.data.coverCampaigns.later.splice(laterMoveIdx, 1);
+          moved.status = 'IP';
+          moved.title = 'Move';
+          this.data.coverCampaigns.now.unshift(moved);
+        } else {
+          this.data.coverCampaigns.now.unshift({
+            id: 'camp-move',
+            title: 'Move',
+            status: 'IP',
+            theme: 'cat-health',
+            tools: {
+              margo: { label: 'Move Checkpoint', action: 'move' },
+              apple: { noteQuery: '# VITALITY 01_MOVE' },
+              things: { query: 'Daily Movement' }
+            },
+            visibleTools: ['margo', 'things']
+          });
+        }
+        updated = true;
+      }
+
+      const hasFood = this.data.coverCampaigns.now.some(c => c && ((c.title || '').toLowerCase().trim() === 'healthy food' || c.id === 'camp-healthy-food'));
+      if (!hasFood) {
+        const laterFoodIdx = this.data.coverCampaigns.later.findIndex(c => c && ((c.title || '').toLowerCase().trim() === 'healthy food' || (c.title || '').toLowerCase().trim() === 'food' || c.id === 'camp-healthy-food'));
+        if (laterFoodIdx !== -1) {
+          const [movedFood] = this.data.coverCampaigns.later.splice(laterFoodIdx, 1);
+          movedFood.status = 'IP';
+          movedFood.title = 'Healthy food';
+          // Place right after Move
+          const movePos = this.data.coverCampaigns.now.findIndex(c => c && (c.title || '').toLowerCase().trim() === 'move');
+          if (movePos !== -1) {
+            this.data.coverCampaigns.now.splice(movePos + 1, 0, movedFood);
+          } else {
+            this.data.coverCampaigns.now.unshift(movedFood);
+          }
+        } else {
+          const movePos = this.data.coverCampaigns.now.findIndex(c => c && (c.title || '').toLowerCase().trim() === 'move');
+          const newFood = {
+            id: 'camp-healthy-food',
+            title: 'Healthy food',
+            status: 'IP',
+            theme: 'cat-nutrition',
+            tools: {
+              margo: { label: 'Nutrition & Energy', action: 'nutrition' },
+              apple: { noteQuery: '# NUTRITION 01_FOOD' },
+              things: { query: 'Meal Prep & Nutrition' }
+            },
+            visibleTools: ['margo', 'things']
+          };
+          if (movePos !== -1) {
+            this.data.coverCampaigns.now.splice(movePos + 1, 0, newFood);
+          } else {
+            this.data.coverCampaigns.now.unshift(newFood);
+          }
+        }
+        updated = true;
+      }
+
+      this.data.coverFocusSeedV5 = true;
       this.data.coverUpdatedAt = Date.now();
       updated = true;
     }

@@ -16929,10 +16929,145 @@ body:has(.margo-compass-wrap) {
   flex: none;
 }
 
+/* Focus Layout Switcher Pill */
+.focus-layout-switcher {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(124, 58, 237, 0.08);
+  padding: 3px;
+  border-radius: 999px;
+  gap: 2px;
+}
+
+.layout-toggle-btn {
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--margo-muted, #6B6785);
+  padding: 3px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.layout-toggle-btn:hover {
+  color: var(--margo-accent, #7C3AED);
+}
+
+.layout-toggle-btn.active {
+  background: #FFFFFF;
+  color: var(--margo-accent, #7C3AED);
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.18);
+}
+
+[data-theme="dark"] .layout-toggle-btn.active {
+  background: #2D2340;
+  color: #DDD6FE;
+}
+
+[data-theme="dark"] .focus-layout-switcher {
+  background: rgba(139, 92, 246, 0.12);
+}
+
 .compass-focus-cards {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* 1. Bento Grid Layout */
+.compass-focus-cards.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.compass-focus-cards.layout-grid .compass-focus-card {
+  min-height: 104px;
+  justify-content: space-between;
+}
+
+/* 2. Spotlight Layout */
+.compass-focus-cards.layout-spotlight {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.compass-focus-cards.layout-spotlight .compass-focus-card.is-spotlight {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, #FFFFFF 100%);
+  border: 1.5px solid rgba(124, 58, 237, 0.22);
+  padding: 24px 26px;
+}
+
+.compass-focus-cards.layout-spotlight .compass-focus-card.is-spotlight .compass-focus-title {
+  font-size: 24px;
+}
+
+.compass-focus-cards.layout-spotlight .spotlight-satellites {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+/* 3. Stack Layout (Original vertical stack) */
+.compass-focus-cards.layout-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 4. Minimal Rows Layout */
+.compass-focus-cards.layout-minimal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compass-focus-cards.layout-minimal .compass-focus-card {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-radius: 16px;
+}
+
+.compass-focus-cards.layout-minimal .compass-focus-title {
+  font-size: 16.5px;
+}
+
+/* Card internal elements */
+.compass-focus-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.focus-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.focus-live-pill {
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.08);
+  color: var(--margo-accent, #7C3AED);
+}
+
+[data-theme="dark"] .focus-live-pill {
+  background: rgba(139, 92, 246, 0.16);
+  color: #C4B5FD;
 }
 
 /* In Focus Cards */
@@ -16953,12 +17088,32 @@ body:has(.margo-compass-wrap) {
   box-shadow: 0 4px 14px rgba(91, 63, 217, 0.08);
 }
 
+[data-theme="dark"] .compass-focus-card {
+  background: #181424;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .compass-focus-card:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="dark"] .compass-focus-cards.layout-spotlight .compass-focus-card.is-spotlight {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.14) 0%, #1F1A2E 100%);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+[data-theme="dark"] .compass-focus-title {
+  color: #EDE9FE;
+}
+
 .compass-focus-cat {
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--margo-muted, #6B6785);
+  display: inline-flex;
+  align-items: center;
 }
 
 .compass-focus-title {
