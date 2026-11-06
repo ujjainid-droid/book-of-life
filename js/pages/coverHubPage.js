@@ -51,8 +51,94 @@ const COMPASS_PILLARS = [
 
 const COMPASS_MAIL_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>';
 
-function getCompassAvatarSvg(presetId = 'smirk', width = 68, height = 74) {
-  const pid = presetId || 'smirk';
+function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 74) {
+  const pid = presetId || 'headphones-bob';
+  if (pid === 'headphones-bob' || pid === 'headphones') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Headphones with Bob Hair" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hbHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#231B2B"/>
+            <stop offset="60%" stop-color="#140E1B"/>
+            <stop offset="100%" stop-color="#0E0914"/>
+          </linearGradient>
+          <linearGradient id="hbSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F2C9A5"/>
+            <stop offset="100%" stop-color="#DF9E71"/>
+          </linearGradient>
+          <linearGradient id="hbSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <linearGradient id="hbLip" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#E75480"/>
+            <stop offset="100%" stop-color="#BE185D"/>
+          </linearGradient>
+          <filter id="hbGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#7C3AED" flood-opacity="0.18"/>
+          </filter>
+        </defs>
+        <!-- Soft violet ambient halo -->
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+
+        <!-- Sleek Bob Silhouette (Back and chin-length curves) -->
+        <path d="M 22 42 C 18 64 21 82 32 86 C 36 87 38 82 36 76 C 31 62 30 46 32 40 Z" fill="url(#hbHair)"/>
+        <path d="M 82 42 C 86 64 83 82 72 86 C 68 87 66 82 68 76 C 73 62 74 46 72 40 Z" fill="url(#hbHair)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#hbHair)"/>
+
+        <!-- Cozy Violet Turtleneck Sweater -->
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#hbSweater)" filter="url(#hbGlow)"/>
+        <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+
+        <!-- Neck -->
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#hbSkin)"/>
+
+        <!-- Face / Jawline -->
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#hbSkin)"/>
+
+        <!-- Arched Brows -->
+        <path d="M 37 36 Q 42 32 47 35" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 57 35 Q 62 32 67 36" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+
+        <!-- Expressive Eyes with Winged Liner -->
+        <path d="M 37 43 Q 42 39 47 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 47 43 L 49 41.5" stroke="#120D17" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="42" cy="44.5" r="3.2" fill="#241B2B"/>
+        <circle cx="43.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+        <path d="M 57 43 Q 62 39 67 43" fill="none" stroke="#120D17" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 67 43 L 69 41.5" stroke="#120D17" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="62" cy="44.5" r="3.2" fill="#241B2B"/>
+        <circle cx="63.2" cy="43.5" r="1.1" fill="#FFFFFF"/>
+
+        <!-- Nose -->
+        <path d="M 51 47 Q 53 51 50 52" fill="none" stroke="#B87D4E" stroke-width="1.8" stroke-linecap="round"/>
+
+        <!-- Sassy Berry Smile & Lip Gloss -->
+        <path d="M 45 60 Q 52 65 60 59" fill="none" stroke="url(#hbLip)" stroke-width="2.6" stroke-linecap="round"/>
+        <ellipse cx="53" cy="62" rx="3.5" ry="1.2" fill="#FDA4AF" opacity="0.8"/>
+
+        <!-- Rosy Cheeks -->
+        <circle cx="36" cy="51" r="4.5" fill="#F472B6" opacity="0.35"/>
+        <circle cx="68" cy="51" r="4.5" fill="#F472B6" opacity="0.35"/>
+
+        <!-- Sleek Bob Bangs Fringe -->
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#hbHair)"/>
+
+        <!-- Studio Headphones Arc (over crown) -->
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+
+        <!-- Studio Earcups (Plush lilac cushions resting over bob sides) -->
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>`;
+  }
   if (pid === 'bob') {
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="The Parisian Bob" xmlns="http://www.w3.org/2000/svg">
@@ -304,7 +390,11 @@ function renderCoverHubPage() {
 
   const storedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS'));
   const seasonTheme = (storedTheme && storedTheme !== 'Calm Mastery, Health Baseline & Vitality') ? storedTheme : '';
-  const avatarPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'smirk';
+  let avatarPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET'));
+  if (!avatarPreset || avatarPreset === 'smirk' || avatarPreset === 'headphones') {
+    avatarPreset = 'headphones-bob';
+    try { localStorage.setItem('BOL_COMPASS_AVATAR_PRESET', 'headphones-bob'); } catch(e) {}
+  }
   const activeLens = getCompassLens();
   const fwOpen = isCompassFwOpen();
 
@@ -432,19 +522,25 @@ function openCompassAvatarModal() {
     document.body.appendChild(modal);
   }
 
-  const currentPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'smirk';
+  const currentPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'headphones-bob';
   const options = [
     {
-      id: 'smirk',
-      title: 'The Executive Smirk',
-      badge: 'Recommended · High Energy',
-      desc: 'Winged cat-eye, knowing smirk with berry lip gloss, retro shades pushed up on hair & violet turtleneck.'
+      id: 'headphones-bob',
+      title: 'Headphones with Bob Hair',
+      badge: 'Active Choice · Serene Focus',
+      desc: 'Wireless lilac studio headphones, sleek chin-length dark bob with fringe, expressive cat-eye & violet turtleneck.'
     },
     {
       id: 'bob',
       title: 'The Parisian Bob',
-      badge: 'Chic · Modern Editorial',
+      badge: 'Chic · Silk Headband',
       desc: 'Sleek chin-length bob, royal violet silk padded headband with highlight, silver hoop earring & radiant eyes.'
+    },
+    {
+      id: 'smirk',
+      title: 'The Executive Smirk',
+      badge: 'Sassy · High Energy',
+      desc: 'Winged cat-eye, knowing smirk with berry lip gloss, retro shades pushed up on hair & violet turtleneck.'
     },
     {
       id: 'aviator',
@@ -454,8 +550,8 @@ function openCompassAvatarModal() {
     },
     {
       id: 'headphones',
-      title: 'Zen Studio Flow',
-      badge: 'Calm · Momentum Focus',
+      title: 'Zen Topknot Flow',
+      badge: 'Calm · Messy Bun',
       desc: 'Lilac wireless studio headphones, messy topknot bun with loose tendrils, serene smile & slouchy knit.'
     }
   ];
