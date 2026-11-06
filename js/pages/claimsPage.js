@@ -381,7 +381,7 @@ function renderClaimRowCellHtml(claim) {
 
   if (isSettled) {
     statusBadgeHtml = `<span class="status-pill status-settled"><i data-lucide="check-circle-2" style="width:11px;height:11px;"></i> Paid &bull; Deposited</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--mulled-wine, #4C4561);">+$${depositedAmt}</div><span class="reimburse-type deposited">Deposited</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:#047857;">+$${depositedAmt}</div><span class="reimburse-type deposited">Deposited</span>`;
     actionBtnHtml = `
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
         <i data-lucide="edit-3" style="width:12px;height:12px;"></i>
@@ -389,7 +389,7 @@ function renderClaimRowCellHtml(claim) {
     `;
   } else if (isReady) {
     statusBadgeHtml = `<span class="status-pill status-ready" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="file-text" style="width:11px;height:11px;"></i> To File &bull; Need Invoice</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--quicksand-deep, #7A4F54);">+$${expRec}</div><span class="reimburse-type tofile">Est. Recovery</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:#475569;">+$${expRec}</div><span class="reimburse-type tofile">Est. Recovery</span>`;
     actionBtnHtml = `
       <button class="claims-pill-btn" onclick="quickAdvanceClaim('${claim.id}')">Mark Filed</button>
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
@@ -399,7 +399,7 @@ function renderClaimRowCellHtml(claim) {
   } else if (isMissingDeposit) {
     const badgeText = claim.claimNumber ? `Check Missing #${claim.claimNumber}` : 'Check Missing';
     statusBadgeHtml = `<span class="status-pill status-check" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="alert-circle" style="width:11px;height:11px;"></i> ${escapeHtml(badgeText)}</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--red-damask, #DF5C4B);">+$${expRec}</div><span class="reimburse-type missing">Approved Check</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:#BE123C;">+$${expRec}</div><span class="reimburse-type missing">Approved Check</span>`;
     actionBtnHtml = `
       <button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
@@ -409,7 +409,7 @@ function renderClaimRowCellHtml(claim) {
   } else {
     // In Review / In Flight with Anthem
     statusBadgeHtml = `<span class="status-pill status-inflight" title="${escapeHtml(claim.nextAction || '')}"><i data-lucide="clock" style="width:11px;height:11px;"></i> In Review &bull; Anthem</span>`;
-    reimburseHtml = `<div class="cell-recovery-mono" style="color:var(--sunset-deep, #D86E2E);">+$${expRec}</div><span class="reimburse-type pending">Pending Payout</span>`;
+    reimburseHtml = `<div class="cell-recovery-mono" style="color:#6D28D9;">+$${expRec}</div><span class="reimburse-type pending">Pending Payout</span>`;
     actionBtnHtml = `
       <button class="claims-pill-btn btn-settle" onclick="quickSettleClaim('${claim.id}')">Received $</button>
       <button class="claims-icon-btn" onclick="openEditClaimModal('${claim.id}')" title="Edit Claim">
