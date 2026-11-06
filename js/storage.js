@@ -4840,18 +4840,19 @@ class StorageManager {
         }
       }
 
-      // Sanitize meals: remove legacy pantry source tag from meals (e.g. Leftovers)
+      // Sanitize meals: remove legacy pantry, fridge, and freezer source tags from meals
+      const legacySources = new Set(['pantry', 'fridge', 'freezer']);
       const sanitizeMealSources = (schedule) => {
         if (!Array.isArray(schedule)) return;
         schedule.forEach(d => {
-          if (d.source === 'pantry') d.source = 'fresh';
+          if (legacySources.has(d.source)) d.source = 'fresh';
           if (d.meals) {
             ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
               if (Array.isArray(d.meals[t])) {
                 d.meals[t].forEach(item => {
-                  if (item && item.source === 'pantry') item.source = 'fresh';
+                  if (item && legacySources.has(item.source)) item.source = 'fresh';
                 });
-              } else if (d.meals[t] && d.meals[t].source === 'pantry') {
+              } else if (d.meals[t] && legacySources.has(d.meals[t].source)) {
                 d.meals[t].source = 'fresh';
               }
             });

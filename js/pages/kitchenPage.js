@@ -497,10 +497,9 @@ function renderKitchenPage() {
               leftover: 'Leftovers',
               out: 'Takeout',
               prep: 'Batch Prep',
-              freezer: 'Freezer Stash',
               custom: 'Homemade'
             };
-            const heroSourceLabel = heroDinner ? (sourceLabels[heroDinner.source] || 'Cook') : '';
+            const heroSourceLabel = heroDinner ? (sourceLabels[heroDinner.source] || 'Fresh Cook') : '';
 
             return `
               <div class="k-board-day-card ${isToday ? 'is-today' : ''}">
@@ -1070,7 +1069,7 @@ function kSetModalMealType(newType, reFocus = true) {
   if (urlEl) urlEl.value = slot ? (slot.recipeUrl || '') : '';
 
   const sourceEl = document.getElementById('k-modal-custom-source');
-  if (sourceEl) sourceEl.value = slot ? (slot.source || 'fresh') : 'fresh';
+  if (sourceEl) sourceEl.value = (slot && slot.source === 'out') ? 'out' : 'fresh';
 
   const submitBtn = document.getElementById('k-modal-submit-btn');
   if (submitBtn) submitBtn.textContent = slot ? `Update ${label}` : `Add to ${label}`;
@@ -1288,7 +1287,7 @@ function kSelectStashForMeal(name, type) {
   });
 
   const icon = type === 'freezer' ? 'salmon' : 'risotto';
-  const effectiveSource = (type === 'freezer' || type === 'fridge') ? type : 'fresh';
+  const effectiveSource = 'fresh';
   const newDish = {
     meal: name,
     source: effectiveSource,
@@ -1343,7 +1342,7 @@ function kSelectFavForMeal(favId) {
     }
   });
 
-  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : 'fresh');
+  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : 'fresh';
   const newDish = {
     meal: fav.title,
     icon: fav.icon || detectRecipeIcon(fav.title, mealType),
@@ -1385,7 +1384,7 @@ function kCycleSlotSource(dayIdx, mealType, itemIdx = 0, event) {
   const slot = items[itemIdx];
   if (!slot) return;
 
-  const cycle = ['fresh', 'fridge', 'freezer', 'out'];
+  const cycle = ['fresh', 'out'];
   const curIdx = cycle.indexOf(slot.source);
   const nextSource = cycle[(curIdx + 1) % cycle.length];
   slot.source = nextSource;
@@ -1486,7 +1485,7 @@ function kAssignFavToMeal(favId, targetStr) {
     }
   });
 
-  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : ((fav.tags || []).some(t => t.includes('Freezer')) ? 'freezer' : 'fresh');
+  const source = (fav.tags || []).some(t => t.includes('Takeout')) ? 'out' : 'fresh';
 
   const newDish = {
     meal: fav.title,
