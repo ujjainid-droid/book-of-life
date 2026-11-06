@@ -4744,6 +4744,13 @@ class StorageManager {
       if (!kd.vaultFilter) kd.vaultFilter = 'all';
       if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
 
+      // Ensure advancing to another week starts completely blank
+      if (!this.data.kitchenNextWeekBlankV1) {
+        kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
+        this.data.kitchenNextWeekBlankV1 = true;
+        this.saveData();
+      }
+
       // Update eat-out target to 1x per week
       if (!this.data.kitchenEatOutTargetV1Updated) {
         kd.eatOutTarget = 1;
@@ -5012,7 +5019,7 @@ class StorageManager {
         ];
 
         kd.weekSchedule = JSON.parse(JSON.stringify(plannedWeek));
-        kd.followingWeekSchedule = JSON.parse(JSON.stringify(plannedWeek));
+        kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
 
         kd.groceries = [
           { id: 'g-peas', text: 'Peas', checked: false },

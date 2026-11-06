@@ -322,7 +322,9 @@ function renderKitchenPage() {
     return [];
   };
 
-  const rawSchedule = weekOffset === 1 ? (data.followingWeekSchedule || []) : (data.weekSchedule || []);
+  const rawSchedule = (weekOffset === 0) 
+    ? (data.weekSchedule || []) 
+    : (weekOffset === 1 ? (data.followingWeekSchedule || []) : []);
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const fullWeekSchedule = dayNames.map((dayName, idx) => {
     const existing = rawSchedule.find(s => s.day === dayName) || rawSchedule[idx] || {};
