@@ -51,8 +51,8 @@ const COMPASS_PILLARS = [
 
 const COMPASS_MAIL_SVG = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 8l9 6 9-6"/></svg>';
 
-function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 74) {
-  const pid = presetId || 'headphones-bob';
+function getCompassAvatarSvg(presetId = 'ghibli-anime', width = 68, height = 74) {
+  const pid = presetId || 'ghibli-anime';
   if (pid.startsWith('img-')) {
     const map = {
       'img-ghibli': 'img/avatars/avatar-ghibli.jpg',
@@ -62,6 +62,90 @@ function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 7
     };
     const src = map[pid] || 'img/avatars/avatar-ghibli.jpg';
     return `<img src="${src}" alt="Compass Avatar" style="width:${width}px;height:${height}px;border-radius:18px;object-fit:cover;box-shadow:0 4px 14px rgba(124,58,237,0.18);border:2px solid rgba(124,58,237,0.25);">`;
+  }
+
+  if (pid === 'ghibli-anime' || pid === 'ghibli' || pid === 'lofi') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Studio Ghibli / Lofi Anime Avatar" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ghSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E2A67B"/>
+            <stop offset="60%" stop-color="#D49163"/>
+            <stop offset="100%" stop-color="#BA774B"/>
+          </linearGradient>
+          <linearGradient id="ghNeck" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#C58053"/>
+            <stop offset="100%" stop-color="#A7673C"/>
+          </linearGradient>
+          <linearGradient id="ghHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#241829"/>
+            <stop offset="50%" stop-color="#160E1A"/>
+            <stop offset="100%" stop-color="#0E0812"/>
+          </linearGradient>
+          <linearGradient id="ghDarkEye" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#100814"/>
+            <stop offset="60%" stop-color="#1F1126"/>
+            <stop offset="100%" stop-color="#2D1936"/>
+          </linearGradient>
+          <linearGradient id="ghSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <radialGradient id="ghAmbient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.22"/>
+            <stop offset="70%" stop-color="#8B5CF6" stop-opacity="0.08"/>
+            <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="52" cy="54" r="48" fill="url(#ghAmbient)"/>
+        <path d="M 20 42 C 16 66 20 84 32 88 C 36 88 38 82 36 76 C 30 62 28 48 30 40 Z" fill="url(#ghHair)"/>
+        <path d="M 84 42 C 88 66 84 84 72 88 C 68 88 66 82 68 76 C 74 62 76 48 74 40 Z" fill="url(#ghHair)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#ghHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#ghSweater)"/>
+        <rect x="35" y="73" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="74" x2="42" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="74" x2="48" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="74" x2="54" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="74" x2="60" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="65" width="16" height="14" rx="4" fill="url(#ghNeck)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#ghSkin)"/>
+        <ellipse cx="52" cy="51" rx="16" ry="4" fill="#D65D7A" opacity="0.22"/>
+        <circle cx="36" cy="51" r="5" fill="#E26D8A" opacity="0.32"/>
+        <circle cx="68" cy="51" r="5" fill="#E26D8A" opacity="0.32"/>
+        <path d="M 36 34.5 Q 42 31.5 47 33.5" fill="none" stroke="#24172B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 57 33.5 Q 62 31.5 68 34.5" fill="none" stroke="#24172B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 37.5 38.5 Q 42 36.8 46.5 38.5" fill="none" stroke="#9E5D3A" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+        <path d="M 57.5 38.5 Q 62 36.8 66.5 38.5" fill="none" stroke="#9E5D3A" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+        <ellipse cx="42" cy="44" rx="5" ry="4.5" fill="#FDFBF9"/>
+        <ellipse cx="42.5" cy="44" rx="4.2" ry="4.5" fill="url(#ghDarkEye)"/>
+        <circle cx="42.5" cy="44.2" r="2.2" fill="#0A040E"/>
+        <circle cx="43.8" cy="42.2" r="1.3" fill="#FFFFFF"/>
+        <circle cx="41.2" cy="45.8" r="0.65" fill="#FFFFFF" opacity="0.9"/>
+        <path d="M 36 43.5 Q 42 39 48 42.5" fill="none" stroke="#160C1B" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M 47.8 42.5 L 49.8 41.2" stroke="#160C1B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 39 47.5 Q 42.5 48.5 46 47.5" fill="none" stroke="#7A4225" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <ellipse cx="62" cy="44" rx="5" ry="4.5" fill="#FDFBF9"/>
+        <ellipse cx="61.5" cy="44" rx="4.2" ry="4.5" fill="url(#ghDarkEye)"/>
+        <circle cx="61.5" cy="44.2" r="2.2" fill="#0A040E"/>
+        <circle cx="62.8" cy="42.2" r="1.3" fill="#FFFFFF"/>
+        <circle cx="60.2" cy="45.8" r="0.65" fill="#FFFFFF" opacity="0.9"/>
+        <path d="M 56 42.5 Q 62 39 68 43.5" fill="none" stroke="#160C1B" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M 68 43.5 L 70 42.2" stroke="#160C1B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 58 47.5 Q 61.5 48.5 65 47.5" fill="none" stroke="#7A4225" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 51 47 Q 53 50.5 50.5 51.5" fill="none" stroke="#9C5934" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M 45 59.5 Q 52 64.5 59 59.5" fill="none" stroke="#BE185D" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="52" cy="61.5" rx="3.2" ry="1.1" fill="#FDA4AF" opacity="0.75"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#ghHair)"/>
+        <path d="M 33 26 C 40 23 50 23 58 26" fill="none" stroke="#483353" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M 31 34 C 36 41 40 48 39 52" fill="none" stroke="#241829" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 73 34 C 68 41 64 48 65 52" fill="none" stroke="#241829" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>`;
   }
   if (pid === 'headphones-bob' || pid === 'headphones') {
     return `
@@ -648,9 +732,9 @@ function renderCoverHubPage() {
   const storedTheme = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COVER_SEASON_FOCUS'));
   const seasonTheme = (storedTheme && storedTheme !== 'Calm Mastery, Health Baseline & Vitality') ? storedTheme : '';
   let avatarPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET'));
-  if (!avatarPreset || avatarPreset === 'smirk' || avatarPreset === 'headphones') {
-    avatarPreset = 'headphones-bob';
-    try { localStorage.setItem('BOL_COMPASS_AVATAR_PRESET', 'headphones-bob'); } catch(e) {}
+  if (!avatarPreset || avatarPreset === 'smirk' || avatarPreset === 'headphones' || avatarPreset === 'headphones-bob') {
+    avatarPreset = 'ghibli-anime';
+    try { localStorage.setItem('BOL_COMPASS_AVATAR_PRESET', 'ghibli-anime'); } catch(e) {}
   }
   const activeLens = getCompassLens();
   const fwOpen = isCompassFwOpen();
@@ -825,8 +909,20 @@ function openCompassAvatarModal() {
     document.body.appendChild(modal);
   }
 
-  const currentPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'headphones-bob';
+  const currentPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'ghibli-anime';
   const options = [
+    {
+      id: 'ghibli-anime',
+      title: 'Studio Ghibli / Lofi Anime',
+      badge: 'Active Choice · Medium Skin & Dark Eyes',
+      desc: 'Warm golden-honey skin tone, deep dark obsidian anime eyes with sparkle catchlights, soft bob & lilac studio headphones.'
+    },
+    {
+      id: 'img-ghibli',
+      title: 'Studio Ghibli (Full Art Edition)',
+      badge: 'Illustrated Watercolor Art',
+      desc: 'Serene watercolor hand-drawn anime portrait with cozy ambient indoor lighting, lush plants & lilac headphones.'
+    },
     {
       id: 'headphones-shades',
       title: 'Headphones + Cat-Eye Shades',

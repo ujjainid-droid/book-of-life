@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compass Cartoon Avatars · Art Style Exploration</title>
+  <title>Compass Studio Ghibli / Lofi Anime · Medium Skin & Dark Eyes</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
     .header {
       text-align: center;
       max-width: 760px;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
     .header h1 {
       font-size: 34px;
@@ -44,6 +44,94 @@
       color: var(--muted);
       font-size: 15.5px;
       line-height: 1.5;
+    }
+    .hero-card {
+      background: linear-gradient(135deg, #FAF8FF 0%, #FFFFFF 100%);
+      border: 2.5px solid var(--violet);
+      border-radius: 28px;
+      padding: 32px;
+      max-width: 820px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-bottom: 40px;
+      box-shadow: 0 20px 50px rgba(124, 58, 237, 0.14);
+      position: relative;
+    }
+    .hero-badge {
+      position: absolute;
+      top: -12px;
+      left: 32px;
+      background: var(--violet);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 14px;
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+    .hero-avatar-box {
+      width: 140px;
+      height: 150px;
+      flex: none;
+      background: rgba(124, 58, 237, 0.06);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px;
+      border: 1px solid rgba(124, 58, 237, 0.15);
+    }
+    .hero-details {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hero-details h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .hero-details p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .feature-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 4px 0 8px;
+    }
+    .feature-tag {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--violet);
+      background: var(--violet-light);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .hero-btn {
+      align-self: flex-start;
+      padding: 12px 24px;
+      border-radius: 14px;
+      background: var(--violet);
+      color: #FFFFFF;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+    }
+    .hero-btn:hover {
+      background: #6D28D9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.4);
     }
     .section-title {
       max-width: 1120px;
@@ -194,13 +282,101 @@
 </head>
 <body>
   <div class="header">
-    <h1>Compass Cartoon Avatar Gallery</h1>
-    <p>We've created 4 completely new cartoon styles (dark bob, lilac studio headphones, and royal violet knit). Browse the full illustrations below and choose your favorite.</p>
+    <h1>Compass Avatar · Studio Ghibli / Lofi Edition</h1>
+    <p>Updated with your requested <strong>Medium Skin Tone</strong> (warm honey-tan) and <strong>Deep Dark Anime Eyes</strong> with dual catchlight sparkles.</p>
+  </div>
+
+  <!-- Featured Hero Avatar: Medium Skin Tone & Dark Obsidian Eyes -->
+  <div class="hero-card">
+    <span class="hero-badge">Active Default</span>
+    <div class="hero-avatar-box">
+      <svg width="124" height="134" viewBox="0 0 104 112" role="img" aria-label="Studio Ghibli / Lofi Anime Avatar" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ghSkinH" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#E2A67B"/><stop offset="60%" stop-color="#D49163"/><stop offset="100%" stop-color="#BA774B"/>
+          </linearGradient>
+          <linearGradient id="ghNeckH" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#C58053"/><stop offset="100%" stop-color="#A7673C"/>
+          </linearGradient>
+          <linearGradient id="ghHairH" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#241829"/><stop offset="50%" stop-color="#160E1A"/><stop offset="100%" stop-color="#0E0812"/>
+          </linearGradient>
+          <linearGradient id="ghDarkEyeH" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#100814"/><stop offset="60%" stop-color="#1F1126"/><stop offset="100%" stop-color="#2D1936"/>
+          </linearGradient>
+          <linearGradient id="ghSweaterH" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <radialGradient id="ghAmbientH" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.22"/><stop offset="70%" stop-color="#8B5CF6" stop-opacity="0.08"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="52" cy="54" r="48" fill="url(#ghAmbientH)"/>
+        <path d="M 20 42 C 16 66 20 84 32 88 C 36 88 38 82 36 76 C 30 62 28 48 30 40 Z" fill="url(#ghHairH)"/>
+        <path d="M 84 42 C 88 66 84 84 72 88 C 68 88 66 82 68 76 C 74 62 76 48 74 40 Z" fill="url(#ghHairH)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#ghHairH)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#ghSweaterH)"/>
+        <rect x="35" y="73" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="74" x2="42" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="74" x2="48" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="74" x2="54" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="74" x2="60" y2="87" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="65" width="16" height="14" rx="4" fill="url(#ghNeckH)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#ghSkinH)"/>
+        <ellipse cx="52" cy="51" rx="16" ry="4" fill="#D65D7A" opacity="0.22"/>
+        <circle cx="36" cy="51" r="5" fill="#E26D8A" opacity="0.32"/>
+        <circle cx="68" cy="51" r="5" fill="#E26D8A" opacity="0.32"/>
+        <path d="M 36 34.5 Q 42 31.5 47 33.5" fill="none" stroke="#24172B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 57 33.5 Q 62 31.5 68 34.5" fill="none" stroke="#24172B" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 37.5 38.5 Q 42 36.8 46.5 38.5" fill="none" stroke="#9E5D3A" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+        <path d="M 57.5 38.5 Q 62 36.8 66.5 38.5" fill="none" stroke="#9E5D3A" stroke-width="1.2" stroke-linecap="round" opacity="0.75"/>
+        <ellipse cx="42" cy="44" rx="5" ry="4.5" fill="#FDFBF9"/>
+        <ellipse cx="42.5" cy="44" rx="4.2" ry="4.5" fill="url(#ghDarkEyeH)"/>
+        <circle cx="42.5" cy="44.2" r="2.2" fill="#0A040E"/>
+        <circle cx="43.8" cy="42.2" r="1.3" fill="#FFFFFF"/>
+        <circle cx="41.2" cy="45.8" r="0.65" fill="#FFFFFF" opacity="0.9"/>
+        <path d="M 36 43.5 Q 42 39 48 42.5" fill="none" stroke="#160C1B" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M 47.8 42.5 L 49.8 41.2" stroke="#160C1B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 39 47.5 Q 42.5 48.5 46 47.5" fill="none" stroke="#7A4225" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <ellipse cx="62" cy="44" rx="5" ry="4.5" fill="#FDFBF9"/>
+        <ellipse cx="61.5" cy="44" rx="4.2" ry="4.5" fill="url(#ghDarkEyeH)"/>
+        <circle cx="61.5" cy="44.2" r="2.2" fill="#0A040E"/>
+        <circle cx="62.8" cy="42.2" r="1.3" fill="#FFFFFF"/>
+        <circle cx="60.2" cy="45.8" r="0.65" fill="#FFFFFF" opacity="0.9"/>
+        <path d="M 56 42.5 Q 62 39 68 43.5" fill="none" stroke="#160C1B" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M 68 43.5 L 70 42.2" stroke="#160C1B" stroke-width="2" stroke-linecap="round"/>
+        <path d="M 58 47.5 Q 61.5 48.5 65 47.5" fill="none" stroke="#7A4225" stroke-width="1.1" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 51 47 Q 53 50.5 50.5 51.5" fill="none" stroke="#9C5934" stroke-width="1.7" stroke-linecap="round"/>
+        <path d="M 45 59.5 Q 52 64.5 59 59.5" fill="none" stroke="#BE185D" stroke-width="2.4" stroke-linecap="round"/>
+        <ellipse cx="52" cy="61.5" rx="3.2" ry="1.1" fill="#FDA4AF" opacity="0.75"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#ghHairH)"/>
+        <path d="M 33 26 C 40 23 50 23 58 26" fill="none" stroke="#483353" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M 31 34 C 36 41 40 48 39 52" fill="none" stroke="#241829" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 73 34 C 68 41 64 48 65 52" fill="none" stroke="#241829" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>
+    </div>
+    <div class="hero-details">
+      <h2>Studio Ghibli / Lofi Anime (Medium Skin Tone & Dark Eyes)</h2>
+      <p>Features authentic warm watercolor anime shading with radiant medium honey-tan skin, deep dark obsidian anime eyes with double starlight catchlights, soft curtain fringe, and lilac over-ear studio headphones.</p>
+      <div class="feature-list">
+        <span class="feature-tag">Medium Skin Tone</span>
+        <span class="feature-tag">Deep Dark Obsidian Eyes</span>
+        <span class="feature-tag">Studio Ghibli Warmth</span>
+        <span class="feature-tag">Retina Crisp Vector</span>
+      </div>
+      <button class="hero-btn" onclick="selectAvatar('ghibli-anime')">✓ Active on Compass (Tap to Reapply)</button>
+    </div>
   </div>
 
   <div class="section-title">
-    <h2>4 Distinct Illustrated Cartoon Styles</h2>
-    <span class="pill">Full High-Res Edition</span>
+    <h2>Alternative Illustrated Editions</h2>
+    <span class="pill">Full High-Res Artwork</span>
   </div>
 
   <div class="grid" id="illustrated-grid"></div>
@@ -211,34 +387,35 @@
     const ILLUSTRATED = [
       {
         id: 'img-ghibli',
-        title: '1. Studio Ghibli / Lofi Anime',
-        badge: 'Hand-Drawn Anime Warmth',
+        title: 'Studio Ghibli (Full Art Edition)',
+        badge: 'Watercolor Art Edition',
         img: 'img/avatars/avatar-ghibli.jpg',
-        desc: 'Serene watercolor hand-drawn anime portrait. Gentle glowing warm eyes, soft breeze-swept dark bob, lilac headphones & quiet indoor plants.'
+        desc: 'Serene watercolor hand-drawn anime portrait with soft breeze-swept dark bob, lilac headphones, and quiet indoor plants.'
       },
       {
         id: 'img-rubberhose',
-        title: '2. 1930s Retro Rubber-Hose',
+        title: '1930s Retro Rubber-Hose',
         badge: 'Vintage Fleischer / Cuphead',
         img: 'img/avatars/avatar-rubberhose.jpg',
-        desc: 'Playful 1930s animation aesthetic. Iconic pie-cut eyes, bouncy curved vintage lines, sepia paper texture, vintage headphones & cheeky smile.'
+        desc: 'Playful 1930s animation aesthetic. Iconic pie-cut eyes, bouncy curved vintage lines, sepia paper texture & vintage headphones.'
       },
       {
         id: 'img-kawaii',
-        title: '3. Kawaii / Chibi Sanrio Mascot',
+        title: 'Kawaii / Chibi Sanrio Mascot',
         badge: 'Cute Mascot / Sticker Style',
         img: 'img/avatars/avatar-kawaii.jpg',
-        desc: 'Ultra-cute chibi proportions with huge starry sparkle eyes, chubby cheeks, pastel lilac cat-ear headphones & cozy oversized violet knit.'
+        desc: 'Ultra-cute chibi proportions with huge starry sparkle eyes, chubby cheeks, pastel lilac cat-ear headphones & violet knit.'
       },
       {
         id: 'img-y2k',
-        title: '4. Bold Y2K Graphic Cartoon',
+        title: 'Bold Y2K Graphic Cartoon',
         badge: 'Cartoon Network / Kim Possible',
-        desc: 'Razor-sharp graphic vector art with angular linework, bold winged cat-eye, confident wink & high-energy futuristic violet pop backdrop.'
+        img: 'img/avatars/avatar-y2k.jpg',
+        desc: 'Razor-sharp graphic vector art with angular linework, bold winged cat-eye, confident wink & high-energy violet pop backdrop.'
       }
     ];
 
-    const currentSaved = localStorage.getItem('BOL_COMPASS_AVATAR_PRESET') || 'headphones-bob';
+    const currentSaved = localStorage.getItem('BOL_COMPASS_AVATAR_PRESET') || 'ghibli-anime';
 
     function renderGrids() {
       const ig = document.getElementById('illustrated-grid');
@@ -258,7 +435,7 @@
 
     function selectAvatar(id) {
       localStorage.setItem('BOL_COMPASS_AVATAR_PRESET', id);
-      showToast('✓ Selected ' + id + ' for Compass! Updating...');
+      showToast('✓ Set ' + id + ' as Compass Avatar! Updating...');
       setTimeout(() => {
         window.location.reload();
       }, 700);
