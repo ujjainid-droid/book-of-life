@@ -2203,71 +2203,46 @@ function renderFinanceRunway() {
             </div>
           </div>
 
-          <!-- Card 3: Macro Allocation with Donut Chart -->
+          <!-- Card 3: Macro Allocation with Segmented Spectrum Bar (Option 1) -->
           <div class="finance-nw-tile-card card-alloc">
             <div class="finance-nw-tile-top">
               <span class="finance-nw-tile-lbl">
-                <i data-lucide="pie-chart" style="width: 13px; height: 13px; color: #475569;"></i>
+                <i data-lucide="bar-chart-2" style="width: 13px; height: 13px; color: #475569;"></i>
                 <span>Asset Allocation</span>
               </span>
               <span style="font-size: 0.68rem; font-weight: 600; color: var(--text-muted);">$${(totalAssets / 1e6).toFixed(2)}M Total</span>
             </div>
 
-            <div class="finance-donut-layout">
-              <!-- SVG Donut Chart (Radius = 32, Circumference ≈ 201.06) -->
-              <div class="finance-donut-svg-wrap">
-                <svg class="finance-donut-svg" viewBox="0 0 86 86">
-                  <circle cx="43" cy="43" r="32" fill="none" stroke="var(--border-color, #E2E8F0)" stroke-width="11" />
-                  ${(() => {
-                    const circumference = 2 * Math.PI * 32;
-                    let cumOffset = 0;
-                    const slices = [
-                      { name: 'Retirement', pct: parseFloat(allocPcts.retirement) || 0, color: '#6D28D9' },
-                      { name: 'Brokerage', pct: parseFloat(allocPcts.brokerage) || 0, color: '#8B5CF6' },
-                      { name: 'Real Estate', pct: parseFloat(allocPcts.realestate) || 0, color: '#334155' },
-                      { name: 'Cash', pct: parseFloat(allocPcts.cash) || 0, color: '#64748B' },
-                      { name: '529 Plan', pct: parseFloat(allocPcts.education) || 0, color: '#94A3B8' }
-                    ];
-                    return slices.map(s => {
-                      const len = (s.pct / 100) * circumference;
-                      const offset = cumOffset;
-                      cumOffset += len;
-                      return `
-                        <circle cx="43" cy="43" r="32" fill="none" stroke="${s.color}" stroke-width="11"
-                                stroke-dasharray="${len.toFixed(2)} ${(circumference - len).toFixed(2)}"
-                                stroke-dashoffset="-${offset.toFixed(2)}" />
-                      `;
-                    }).join('');
-                  })()}
-                </svg>
-                <div class="finance-donut-center-text">
-                  <span class="finance-donut-center-val">$${(totalAssets / 1e6).toFixed(1)}M</span>
-                  <span class="finance-donut-center-lbl">Assets</span>
-                </div>
-              </div>
+            <!-- Horizontal Segmented Spectrum Bar -->
+            <div class="finance-nw-stack-bar-wrap" title="Retirement ${allocPcts.retirement}% | Brokerage ${allocPcts.brokerage}% | Real Estate ${allocPcts.realestate}% | Cash ${allocPcts.cash}% | 529 ${allocPcts.education}%">
+              <div class="finance-nw-stack-seg" onclick="setFinanceNwClassFilter('retirement')" style="width: ${allocPcts.retirement}%; background: #6D28D9; cursor: pointer;" title="Retirement: ${allocPcts.retirement}%"></div>
+              <div class="finance-nw-stack-seg" onclick="setFinanceNwClassFilter('brokerage')" style="width: ${allocPcts.brokerage}%; background: #8B5CF6; cursor: pointer;" title="Brokerage: ${allocPcts.brokerage}%"></div>
+              <div class="finance-nw-stack-seg" onclick="setFinanceNwClassFilter('realestate')" style="width: ${allocPcts.realestate}%; background: #334155; cursor: pointer;" title="Real Estate: ${allocPcts.realestate}%"></div>
+              <div class="finance-nw-stack-seg" onclick="setFinanceNwClassFilter('cash')" style="width: ${allocPcts.cash}%; background: #64748B; cursor: pointer;" title="Cash: ${allocPcts.cash}%"></div>
+              <div class="finance-nw-stack-seg" onclick="setFinanceNwClassFilter('education')" style="width: ${allocPcts.education}%; background: #94A3B8; cursor: pointer;" title="529 Plan: ${allocPcts.education}%"></div>
+            </div>
 
-              <!-- Legend -->
-              <div class="finance-donut-legend">
-                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('retirement')" style="cursor: pointer;" title="Filter ledger to Retirement">
-                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #6D28D9;"></span>Retirement</span>
-                  <span class="finance-donut-legend-pct">${allocPcts.retirement}%</span>
-                </div>
-                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('brokerage')" style="cursor: pointer;" title="Filter ledger to Brokerage">
-                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #8B5CF6;"></span>Brokerage</span>
-                  <span class="finance-donut-legend-pct">${allocPcts.brokerage}%</span>
-                </div>
-                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate">
-                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #334155;"></span>Real Estate</span>
-                  <span class="finance-donut-legend-pct">${allocPcts.realestate}%</span>
-                </div>
-                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('cash')" style="cursor: pointer;" title="Filter ledger to Cash">
-                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #64748B;"></span>Cash</span>
-                  <span class="finance-donut-legend-pct">${allocPcts.cash}%</span>
-                </div>
-                <div class="finance-donut-legend-row" onclick="setFinanceNwClassFilter('education')" style="cursor: pointer;" title="Filter ledger to 529 Plan">
-                  <span class="finance-donut-legend-left"><span class="finance-donut-dot" style="background: #94A3B8;"></span>529 Plan</span>
-                  <span class="finance-donut-legend-pct">${allocPcts.education}%</span>
-                </div>
+            <!-- 2-Column Interactive Pill Grid -->
+            <div class="finance-nw-stack-legend-grid">
+              <div class="finance-nw-stack-item" onclick="setFinanceNwClassFilter('retirement')" title="Filter ledger to Retirement">
+                <span class="finance-nw-stack-item-left"><span class="finance-nw-stack-dot" style="background: #6D28D9;"></span><span class="finance-nw-stack-item-name">Retirement</span></span>
+                <span class="finance-nw-stack-item-pct">${allocPcts.retirement}%</span>
+              </div>
+              <div class="finance-nw-stack-item" onclick="setFinanceNwClassFilter('brokerage')" title="Filter ledger to Brokerage">
+                <span class="finance-nw-stack-item-left"><span class="finance-nw-stack-dot" style="background: #8B5CF6;"></span><span class="finance-nw-stack-item-name">Brokerage</span></span>
+                <span class="finance-nw-stack-item-pct">${allocPcts.brokerage}%</span>
+              </div>
+              <div class="finance-nw-stack-item" onclick="setFinanceNwClassFilter('realestate')" title="Filter ledger to Real Estate">
+                <span class="finance-nw-stack-item-left"><span class="finance-nw-stack-dot" style="background: #334155;"></span><span class="finance-nw-stack-item-name">Real Estate</span></span>
+                <span class="finance-nw-stack-item-pct">${allocPcts.realestate}%</span>
+              </div>
+              <div class="finance-nw-stack-item" onclick="setFinanceNwClassFilter('cash')" title="Filter ledger to Cash">
+                <span class="finance-nw-stack-item-left"><span class="finance-nw-stack-dot" style="background: #64748B;"></span><span class="finance-nw-stack-item-name">Cash</span></span>
+                <span class="finance-nw-stack-item-pct">${allocPcts.cash}%</span>
+              </div>
+              <div class="finance-nw-stack-item span-full" onclick="setFinanceNwClassFilter('education')" title="Filter ledger to 529 Plan">
+                <span class="finance-nw-stack-item-left"><span class="finance-nw-stack-dot" style="background: #94A3B8;"></span><span class="finance-nw-stack-item-name">529 Education Fund</span></span>
+                <span class="finance-nw-stack-item-pct">${allocPcts.education}%</span>
               </div>
             </div>
 

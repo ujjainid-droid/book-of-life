@@ -1078,7 +1078,100 @@ body.dark-mode .finance-sub-reimbursed-pill {
   border-top-color: rgba(255, 255, 255, 0.06);
 }
 
-/* Donut Chart Layout */
+/* Segmented Spectrum Bar (Option 1) for Asset Allocation */
+.finance-nw-stack-bar-wrap {
+  display: flex;
+  height: 12px;
+  border-radius: 999px;
+  overflow: hidden;
+  gap: 2px;
+  background: var(--bg-subtle, #F1F5F9);
+  margin: 10px 0 12px;
+}
+
+[data-theme="dark"] .finance-nw-stack-bar-wrap {
+  background: #0F172A;
+}
+
+.finance-nw-stack-seg {
+  height: 100%;
+  transition: opacity 0.15s ease;
+}
+
+.finance-nw-stack-seg:hover {
+  opacity: 0.85;
+}
+
+.finance-nw-stack-legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 8px;
+  margin-bottom: 8px;
+}
+
+.finance-nw-stack-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  padding: 5px 8px;
+  background: var(--bg-subtle, #F8FAFC);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.finance-nw-stack-item:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+}
+
+[data-theme="dark"] .finance-nw-stack-item {
+  background: #0F172A;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .finance-nw-stack-item:hover {
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.finance-nw-stack-item.span-full {
+  grid-column: 1 / -1;
+}
+
+.finance-nw-stack-item-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.finance-nw-stack-dot {
+  width: 6.5px;
+  height: 6.5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.finance-nw-stack-item-name {
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.finance-nw-stack-item-pct {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-left: 6px;
+}
+
+/* Donut Chart Layout (Legacy/Fallback) */
 .finance-donut-layout {
   display: flex;
   align-items: center;
