@@ -2254,95 +2254,96 @@ function renderFinanceRunway() {
         </div>
       </div>
 
-      <!-- 4. Six Asset Classes Matrix Cards -->
-      <div class="finance-nw-classes-grid">
-        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('retirement')" style="cursor: pointer;" title="Filter ledger to Retirement accounts">
-          <div class="finance-nw-class-header">
-            <span class="finance-nw-class-title">
-              <i data-lucide="shield" style="width: 15px; height: 15px; color: #6D28D9;"></i>
-              <span>Retirement (401k &amp; IRAs)</span>
-            </span>
-            <span class="finance-target-status-badge neutral">${allocPcts.retirement}% Share</span>
-          </div>
-          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.retirement.total).toLocaleString()}</div>
-          <div class="finance-nw-class-footer">
-            <span>${classBreakdown.retirement.count} accounts</span>
-            <span>Google 401k &amp; Schwab IRAs</span>
-          </div>
+      <!-- 4. Six Asset Classes Streamlined Allocation Bar -->
+      <div class="finance-nw-streamlined-bar">
+        <!-- Top Proportional Allocation Ribbon -->
+        <div class="finance-nw-streamlined-ribbon" title="Retirement ${allocPcts.retirement}% | Brokerage ${allocPcts.brokerage}% | Real Estate ${allocPcts.realestate}% | Cash ${allocPcts.cash}% | 529 ${allocPcts.education}%">
+          <div style="width: ${allocPcts.retirement}%; background: #6D28D9;" title="Retirement: ${allocPcts.retirement}%"></div>
+          <div style="width: ${allocPcts.brokerage}%; background: #8B5CF6;" title="Brokerage: ${allocPcts.brokerage}%"></div>
+          <div style="width: ${allocPcts.realestate}%; background: #334155;" title="Real Estate: ${allocPcts.realestate}%"></div>
+          <div style="width: ${allocPcts.cash}%; background: #64748B;" title="Cash: ${allocPcts.cash}%"></div>
+          <div style="width: ${allocPcts.education}%; background: #94A3B8;" title="529 Plan: ${allocPcts.education}%"></div>
+          <div style="width: 4.5%; background: #BE123C;" title="Liabilities: 4.5% Debt Ratio"></div>
         </div>
 
-        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('brokerage')" style="cursor: pointer;" title="Filter ledger to Taxable Brokerage accounts">
-          <div class="finance-nw-class-header">
-            <span class="finance-nw-class-title">
-              <i data-lucide="trending-up" style="width: 15px; height: 15px; color: #8B5CF6;"></i>
-              <span>Taxable Brokerage &amp; RSUs</span>
-            </span>
-            <span class="finance-target-status-badge neutral">${allocPcts.brokerage}% Share</span>
+        <!-- 6 Interactive Column Cells in a Single Row -->
+        <div class="finance-nw-streamlined-cols">
+          <!-- Col 1: Retirement -->
+          <div class="finance-nw-streamlined-col ${financeNwClassFilter === 'retirement' ? 'active' : ''}" onclick="setFinanceNwClassFilter('retirement')" title="Filter ledger to Retirement">
+            <div class="finance-nw-col-top">
+              <span class="finance-nw-col-title">
+                <i data-lucide="shield" style="width: 12px; height: 12px; color: #6D28D9;"></i>
+                <span>Retirement</span>
+              </span>
+              <span class="finance-nw-col-badge">${allocPcts.retirement}%</span>
+            </div>
+            <div class="finance-nw-col-amount">$${Math.round(classBreakdown.retirement.total).toLocaleString()}</div>
+            <div class="finance-nw-col-sub">${classBreakdown.retirement.count} accts &bull; 401(k) / IRA</div>
           </div>
-          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.brokerage.total).toLocaleString()}</div>
-          <div class="finance-nw-class-footer">
-            <span>${classBreakdown.brokerage.count} accounts</span>
-            <span>Schwab &amp; Google Equity Awards</span>
-          </div>
-        </div>
 
-        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('realestate')" style="cursor: pointer;" title="Filter ledger to Real Estate &amp; Vehicles">
-          <div class="finance-nw-class-header">
-            <span class="finance-nw-class-title">
-              <i data-lucide="home" style="width: 15px; height: 15px; color: #475569;"></i>
-              <span>Real Estate &amp; Vehicles</span>
-            </span>
-            <span class="finance-target-status-badge neutral">${allocPcts.realestate}% Share</span>
+          <!-- Col 2: Brokerage -->
+          <div class="finance-nw-streamlined-col ${financeNwClassFilter === 'brokerage' ? 'active' : ''}" onclick="setFinanceNwClassFilter('brokerage')" title="Filter ledger to Taxable Brokerage & RSUs">
+            <div class="finance-nw-col-top">
+              <span class="finance-nw-col-title">
+                <i data-lucide="trending-up" style="width: 12px; height: 12px; color: #8B5CF6;"></i>
+                <span>Brokerage</span>
+              </span>
+              <span class="finance-nw-col-badge">${allocPcts.brokerage}%</span>
+            </div>
+            <div class="finance-nw-col-amount">$${Math.round(classBreakdown.brokerage.total).toLocaleString()}</div>
+            <div class="finance-nw-col-sub">${classBreakdown.brokerage.count} accts &bull; RSUs &amp; Equity</div>
           </div>
-          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.realestate.total).toLocaleString()}</div>
-          <div class="finance-nw-class-footer">
-            <span>${classBreakdown.realestate.count} assets</span>
-            <span>Livingston NJ ($1.34M) &bull; Tesla Y</span>
-          </div>
-        </div>
 
-        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('cash')" style="cursor: pointer;" title="Filter ledger to Cash &amp; Liquid reserves">
-          <div class="finance-nw-class-header">
-            <span class="finance-nw-class-title">
-              <i data-lucide="droplet" style="width: 15px; height: 15px; color: #475569;"></i>
-              <span>Cash &amp; Liquid Reserves</span>
-            </span>
-            <span class="finance-target-status-badge success">${runwayMonths} Mo Runway</span>
+          <!-- Col 3: Real Estate -->
+          <div class="finance-nw-streamlined-col ${financeNwClassFilter === 'realestate' ? 'active' : ''}" onclick="setFinanceNwClassFilter('realestate')" title="Filter ledger to Real Estate & Vehicles">
+            <div class="finance-nw-col-top">
+              <span class="finance-nw-col-title">
+                <i data-lucide="home" style="width: 12px; height: 12px; color: #334155;"></i>
+                <span>Real Estate</span>
+              </span>
+              <span class="finance-nw-col-badge">${allocPcts.realestate}%</span>
+            </div>
+            <div class="finance-nw-col-amount">$${Math.round(classBreakdown.realestate.total).toLocaleString()}</div>
+            <div class="finance-nw-col-sub">${classBreakdown.realestate.count} asset &bull; Home &amp; Auto</div>
           </div>
-          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.cash.total).toLocaleString()}</div>
-          <div class="finance-nw-class-footer">
-            <span>${classBreakdown.cash.count} accounts</span>
-            <span>Capital One 360 HYSA &bull; Chase</span>
-          </div>
-        </div>
 
-        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('education')" style="cursor: pointer;" title="Filter ledger to 529 Education">
-          <div class="finance-nw-class-header">
-            <span class="finance-nw-class-title">
-              <i data-lucide="graduation-cap" style="width: 15px; height: 15px; color: #64748B;"></i>
-              <span>Education Fund (529)</span>
-            </span>
-            <span class="finance-target-status-badge neutral">${allocPcts.education}% Share</span>
+          <!-- Col 4: Cash Reserves -->
+          <div class="finance-nw-streamlined-col ${financeNwClassFilter === 'cash' ? 'active' : ''}" onclick="setFinanceNwClassFilter('cash')" title="Filter ledger to Cash & Liquid Reserves">
+            <div class="finance-nw-col-top">
+              <span class="finance-nw-col-title">
+                <i data-lucide="droplet" style="width: 12px; height: 12px; color: #64748B;"></i>
+                <span>Liquid Cash</span>
+              </span>
+              <span class="finance-nw-col-badge success">${runwayMonths} Mo</span>
+            </div>
+            <div class="finance-nw-col-amount">$${Math.round(classBreakdown.cash.total).toLocaleString()}</div>
+            <div class="finance-nw-col-sub">${classBreakdown.cash.count} accts &bull; HYSA &amp; Checking</div>
           </div>
-          <div class="finance-nw-class-amount">$${Math.round(classBreakdown.education.total).toLocaleString()}</div>
-          <div class="finance-nw-class-footer">
-            <span>${classBreakdown.education.count} account</span>
-            <span>Schwab 529 College Plan</span>
-          </div>
-        </div>
 
-        <div class="finance-nw-class-card" onclick="setFinanceNwClassFilter('liability')" style="cursor: pointer;" title="Filter ledger to Liabilities">
-          <div class="finance-nw-class-header">
-            <span class="finance-nw-class-title">
-              <i data-lucide="credit-card" style="width: 15px; height: 15px; color: #BE123C;"></i>
-              <span>Liabilities &amp; Debt</span>
-            </span>
-            <span class="finance-target-status-badge alert">4.5% Debt Ratio</span>
+          <!-- Col 5: 529 Education -->
+          <div class="finance-nw-streamlined-col ${financeNwClassFilter === 'education' ? 'active' : ''}" onclick="setFinanceNwClassFilter('education')" title="Filter ledger to 529 Education Fund">
+            <div class="finance-nw-col-top">
+              <span class="finance-nw-col-title">
+                <i data-lucide="graduation-cap" style="width: 12px; height: 12px; color: #94A3B8;"></i>
+                <span>529 Plan</span>
+              </span>
+              <span class="finance-nw-col-badge">${allocPcts.education}%</span>
+            </div>
+            <div class="finance-nw-col-amount">$${Math.round(classBreakdown.education.total).toLocaleString()}</div>
+            <div class="finance-nw-col-sub">${classBreakdown.education.count} acct &bull; College Fund</div>
           </div>
-          <div class="finance-nw-class-amount" style="color: #BE123C;">-$${Math.round(classBreakdown.liability.total).toLocaleString()}</div>
-          <div class="finance-nw-class-footer">
-            <span>${classBreakdown.liability.count} accounts</span>
-            <span>Mortgage ($277k) + Credit Cards</span>
+
+          <!-- Col 6: Liabilities & Debt -->
+          <div class="finance-nw-streamlined-col liability ${financeNwClassFilter === 'liability' ? 'active' : ''}" onclick="setFinanceNwClassFilter('liability')" title="Filter ledger to Liabilities & Debt">
+            <div class="finance-nw-col-top">
+              <span class="finance-nw-col-title">
+                <i data-lucide="credit-card" style="width: 12px; height: 12px; color: #BE123C;"></i>
+                <span>Liabilities</span>
+              </span>
+              <span class="finance-nw-col-badge alert">4.5% Debt</span>
+            </div>
+            <div class="finance-nw-col-amount liability">-$${Math.round(classBreakdown.liability.total).toLocaleString()}</div>
+            <div class="finance-nw-col-sub">${classBreakdown.liability.count} accts &bull; Mortgage + Cards</div>
           </div>
         </div>
       </div>

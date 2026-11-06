@@ -1259,7 +1259,191 @@ body.dark-mode .finance-sub-reimbursed-pill {
   color: var(--text-primary);
 }
 
-/* 6-Card Asset Classes Matrix */
+/* Streamlined Minimalist Asset Allocation Bar */
+.finance-nw-streamlined-bar {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border-color, #E2E8F0);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  margin-bottom: 16px;
+  transition: all 0.15s ease;
+}
+
+[data-theme="dark"] .finance-nw-streamlined-bar {
+  background: var(--bg-surface, #1E293B);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.finance-nw-streamlined-ribbon {
+  display: flex;
+  height: 5px;
+  width: 100%;
+  background: var(--bg-subtle, #F1F5F9);
+  gap: 1.5px;
+}
+
+.finance-nw-streamlined-ribbon > div {
+  height: 100%;
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+
+.finance-nw-streamlined-ribbon > div:hover {
+  opacity: 0.8;
+}
+
+.finance-nw-streamlined-cols {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+@media (max-width: 1100px) {
+  .finance-nw-streamlined-cols {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .finance-nw-streamlined-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.finance-nw-streamlined-col {
+  padding: 12px 14px;
+  border-right: 1px solid var(--border-color, #F1F5F9);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.finance-nw-streamlined-col:last-child {
+  border-right: none;
+}
+
+.finance-nw-streamlined-col:hover {
+  background: var(--bg-subtle, #F8FAFC);
+}
+
+[data-theme="dark"] .finance-nw-streamlined-col {
+  border-right-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .finance-nw-streamlined-col:hover {
+  background: #0F172A;
+}
+
+.finance-nw-streamlined-col.active {
+  background: #F5F3FF;
+}
+
+[data-theme="dark"] .finance-nw-streamlined-col.active {
+  background: rgba(109, 40, 217, 0.18);
+}
+
+.finance-nw-streamlined-col.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #6D28D9;
+}
+
+.finance-nw-col-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 4px;
+}
+
+.finance-nw-col-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted, #64748B);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.finance-nw-col-badge {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #F1F5F9;
+  color: #475569;
+}
+
+[data-theme="dark"] .finance-nw-col-badge {
+  background: #0F172A;
+  color: #94A3B8;
+}
+
+.finance-nw-col-badge.success {
+  background: #ECFDF5;
+  color: #047857;
+}
+
+[data-theme="dark"] .finance-nw-col-badge.success {
+  background: rgba(4, 120, 87, 0.2);
+  color: #A7F3D0;
+}
+
+.finance-nw-col-badge.alert {
+  background: #FFF1F2;
+  color: #BE123C;
+}
+
+[data-theme="dark"] .finance-nw-col-badge.alert {
+  background: rgba(190, 18, 60, 0.2);
+  color: #FECDD3;
+}
+
+.finance-nw-col-amount {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary, #0F172A);
+  line-height: 1.2;
+}
+
+[data-theme="dark"] .finance-nw-col-amount {
+  color: #F8FAFC;
+}
+
+.finance-nw-col-amount.liability {
+  color: #BE123C;
+}
+
+[data-theme="dark"] .finance-nw-col-amount.liability {
+  color: #FB7185;
+}
+
+.finance-nw-col-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted, #94A3B8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 6-Card Asset Classes Matrix (Legacy) */
 .finance-nw-classes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
