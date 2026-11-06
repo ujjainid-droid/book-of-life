@@ -200,6 +200,192 @@ function getCompassAvatarSvg(presetId = 'headphones-bob', width = 68, height = 7
         <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
       </svg>`;
   }
+
+  if (pid === 'headphones-shades') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Headphones and Shades" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hsHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#241A2D"/><stop offset="60%" stop-color="#150E1C"/><stop offset="100%" stop-color="#0E0814"/>
+          </linearGradient>
+          <linearGradient id="hsSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F2C9A5"/><stop offset="100%" stop-color="#DF9E71"/>
+          </linearGradient>
+          <linearGradient id="hsSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+          <linearGradient id="hsLip" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#E11D48"/><stop offset="100%" stop-color="#BE185D"/>
+          </linearGradient>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <path d="M 22 42 C 18 64 21 82 32 86 C 36 87 38 82 36 76 C 31 62 30 46 32 40 Z" fill="url(#hsHair)"/>
+        <path d="M 82 42 C 86 64 83 82 72 86 C 68 87 66 82 68 76 C 73 62 74 46 72 40 Z" fill="url(#hsHair)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#hsHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#hsSweater)"/>
+        <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#hsSkin)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#hsSkin)"/>
+        <path d="M 36 34 Q 42 30 48 33" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 56 33 Q 62 30 68 34" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 32 40 L 48 37 C 49 42 48 48 44 49 C 37 51 32 47 32 40 Z" fill="#181224" stroke="#8B5CF6" stroke-width="1.2"/>
+        <path d="M 72 40 L 56 37 C 55 42 56 48 60 49 C 67 51 72 47 72 40 Z" fill="#181224" stroke="#8B5CF6" stroke-width="1.2"/>
+        <line x1="48" y1="41" x2="56" y2="41" stroke="#8B5CF6" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M 35 40 L 44 47" stroke="#DDD6FE" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 59 40 L 68 47" stroke="#DDD6FE" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
+        <path d="M 51 49 Q 53 53 50 54" fill="none" stroke="#B87D4E" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M 45 61 Q 52 66 60 60" fill="none" stroke="url(#hsLip)" stroke-width="2.6" stroke-linecap="round"/>
+        <ellipse cx="53" cy="63" rx="3.5" ry="1.2" fill="#FDA4AF" opacity="0.8"/>
+        <circle cx="36" cy="53" r="4.5" fill="#F472B6" opacity="0.3"/>
+        <circle cx="68" cy="53" r="4.5" fill="#F472B6" opacity="0.3"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#hsHair)"/>
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>`;
+  }
+
+  if (pid === 'faceless-nordic') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Minimalist Faceless Nordic" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="fnHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#281D33"/><stop offset="60%" stop-color="#17101E"/><stop offset="100%" stop-color="#0F0914"/>
+          </linearGradient>
+          <linearGradient id="fnSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F3CBB0"/><stop offset="100%" stop-color="#DF9E71"/>
+          </linearGradient>
+          <linearGradient id="fnSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <path d="M 22 42 C 18 64 21 82 32 86 C 36 87 38 82 36 76 C 31 62 30 46 32 40 Z" fill="url(#fnHair)"/>
+        <path d="M 82 42 C 86 64 83 82 72 86 C 68 87 66 82 68 76 C 73 62 74 46 72 40 Z" fill="url(#fnHair)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#fnHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#fnSweater)"/>
+        <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#fnSkin)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#fnSkin)"/>
+        <path d="M 37 36 Q 43 32 48 35" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 56 35 Q 61 32 67 36" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <ellipse cx="38" cy="49" rx="5" ry="4" fill="#F472B6" opacity="0.4"/>
+        <ellipse cx="66" cy="49" rx="5" ry="4" fill="#F472B6" opacity="0.4"/>
+        <path d="M 46 61 Q 52 64 58 61" fill="none" stroke="#BE185D" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#fnHair)"/>
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>`;
+  }
+
+  if (pid === 'chic-wire-glasses') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Chic Wire Glasses" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="wgHair" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#231B2B"/><stop offset="60%" stop-color="#140E1B"/><stop offset="100%" stop-color="#0E0914"/>
+          </linearGradient>
+          <linearGradient id="wgSkin" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F2C9A5"/><stop offset="100%" stop-color="#DF9E71"/>
+          </linearGradient>
+          <linearGradient id="wgSweater" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#5B21B6"/>
+          </linearGradient>
+        </defs>
+        <circle cx="52" cy="54" r="46" fill="#8B5CF6" opacity="0.12"/>
+        <path d="M 22 42 C 18 64 21 82 32 86 C 36 87 38 82 36 76 C 31 62 30 46 32 40 Z" fill="url(#wgHair)"/>
+        <path d="M 82 42 C 86 64 83 82 72 86 C 68 87 66 82 68 76 C 73 62 74 46 72 40 Z" fill="url(#wgHair)"/>
+        <ellipse cx="52" cy="42" rx="35" ry="34" fill="url(#wgHair)"/>
+        <path d="M 23 112 C 23 88 35 83 52 83 C 69 83 81 88 81 112 Z" fill="url(#wgSweater)"/>
+        <rect x="35" y="74" width="34" height="15" rx="6" fill="#8B5CF6" stroke="#6D28D9" stroke-width="1.2"/>
+        <line x1="42" y1="75" x2="42" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="48" y1="75" x2="48" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="54" y1="75" x2="54" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <line x1="60" y1="75" x2="60" y2="88" stroke="#7C3AED" stroke-width="1" opacity="0.6"/>
+        <rect x="44" y="66" width="16" height="14" rx="4" fill="url(#wgSkin)"/>
+        <path d="M 33 40 C 33 62 38 74 52 74 C 66 74 71 62 71 40 C 71 24 66 18 52 18 C 38 18 33 24 33 40 Z" fill="url(#wgSkin)"/>
+        <path d="M 36 33 Q 42 30 48 33" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M 56 33 Q 62 30 68 33" fill="none" stroke="#1A1320" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="42" cy="43.5" r="2.2" fill="#1E1428"/>
+        <circle cx="62" cy="43.5" r="2.2" fill="#1E1428"/>
+        <rect x="32" y="37" width="18" height="14" rx="5" fill="none" stroke="#7C3AED" stroke-width="1.8"/>
+        <rect x="54" y="37" width="18" height="14" rx="5" fill="none" stroke="#7C3AED" stroke-width="1.8"/>
+        <line x1="50" y1="42" x2="54" y2="42" stroke="#7C3AED" stroke-width="1.8"/>
+        <path d="M 34 39 L 41 47" stroke="#EDE9FE" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+        <path d="M 56 39 L 63 47" stroke="#EDE9FE" stroke-width="1.2" stroke-linecap="round" opacity="0.8"/>
+        <path d="M 51 48 Q 53 52 50 53" fill="none" stroke="#B87D4E" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M 45 60 Q 52 65 60 59" fill="none" stroke="#BE185D" stroke-width="2.4" stroke-linecap="round"/>
+        <circle cx="36" cy="52" r="4" fill="#F472B6" opacity="0.35"/>
+        <circle cx="68" cy="52" r="4" fill="#F472B6" opacity="0.35"/>
+        <path d="M 28 32 C 32 20 44 16 52 16 C 60 16 72 20 76 32 C 72 26 62 24 52 24 C 42 24 32 26 28 32 Z" fill="url(#wgHair)"/>
+        <path d="M 23 44 C 21 16 40 8 52 8 C 64 8 83 16 81 44" fill="none" stroke="#A78BFA" stroke-width="5" stroke-linecap="round"/>
+        <path d="M 33 18 C 41 12 50 11 60 13" fill="none" stroke="#DDD6FE" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+        <rect x="18" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="25" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+        <rect x="75" y="37" width="11" height="23" rx="5.5" fill="#7C3AED" stroke="#EDE9FE" stroke-width="1.5"/>
+        <rect x="76" y="41" width="3" height="15" rx="1.5" fill="#C4B5FD" opacity="0.9"/>
+      </svg>`;
+  }
+
+  if (pid === 'nordic-compass-astral') {
+    return `
+      <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="Nordic Astral Compass" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="cmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#8B5CF6"/>
+            <stop offset="50%" stop-color="#7C3AED"/>
+            <stop offset="100%" stop-color="#0E7490"/>
+          </linearGradient>
+          <radialGradient id="cmCenter" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#FFFFFF"/>
+            <stop offset="50%" stop-color="#DDD6FE"/>
+            <stop offset="100%" stop-color="#7C3AED"/>
+          </radialGradient>
+        </defs>
+        <circle cx="52" cy="56" r="48" fill="#8B5CF6" opacity="0.08"/>
+        <circle cx="52" cy="56" r="42" fill="none" stroke="#7C3AED" stroke-width="1.8" stroke-dasharray="3 4" opacity="0.45"/>
+        <circle cx="52" cy="56" r="34" fill="none" stroke="#0D98BA" stroke-width="1.2" opacity="0.5"/>
+        <line x1="52" y1="18" x2="52" y2="24" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+        <line x1="52" y1="88" x2="52" y2="94" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+        <line x1="14" y1="56" x2="20" y2="56" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+        <line x1="84" y1="56" x2="90" y2="56" stroke="#7C3AED" stroke-width="2" stroke-linecap="round"/>
+        <polygon points="52,24 58,52 52,56" fill="url(#cmGrad)"/>
+        <polygon points="52,24 46,52 52,56" fill="#6D28D9"/>
+        <polygon points="52,88 58,60 52,56" fill="#0E7490"/>
+        <polygon points="52,88 46,60 52,56" fill="#0891B2"/>
+        <polygon points="84,56 56,62 52,56" fill="url(#cmGrad)"/>
+        <polygon points="84,56 56,50 52,56" fill="#6D28D9"/>
+        <polygon points="20,56 48,62 52,56" fill="#0E7490"/>
+        <polygon points="20,56 48,50 52,56" fill="#0891B2"/>
+        <polygon points="72,36 55,53 52,56" fill="#A78BFA" opacity="0.8"/>
+        <polygon points="32,76 49,59 52,56" fill="#38BDF8" opacity="0.8"/>
+        <polygon points="32,36 49,53 52,56" fill="#A78BFA" opacity="0.8"/>
+        <polygon points="72,76 55,59 52,56" fill="#38BDF8" opacity="0.8"/>
+        <circle cx="52" cy="56" r="10" fill="url(#cmCenter)" stroke="#FFFFFF" stroke-width="1.8"/>
+        <circle cx="50" cy="54" r="2.5" fill="#FFFFFF"/>
+        <circle cx="54" cy="58" r="1" fill="#FFFFFF" opacity="0.8"/>
+        <circle cx="76" cy="28" r="2" fill="#7C3AED"/>
+        <circle cx="28" cy="84" r="2" fill="#0D98BA"/>
+        <circle cx="30" cy="26" r="1.5" fill="#A78BFA"/>
+        <circle cx="74" cy="86" r="1.5" fill="#A78BFA"/>
+      </svg>`;
+  }
+
   if (pid === 'bob') {
     return `
       <svg width="${width}" height="${height}" viewBox="0 0 104 112" role="img" aria-label="The Parisian Bob" xmlns="http://www.w3.org/2000/svg">
@@ -632,28 +818,40 @@ function openCompassAvatarModal() {
   const currentPreset = (typeof localStorage !== 'undefined' && localStorage.getItem('BOL_COMPASS_AVATAR_PRESET')) || 'headphones-bob';
   const options = [
     {
-      id: 'headphones-bob',
-      title: 'Headphones with Bob (Radiant Eyes)',
-      badge: 'Active Default · Radiant Almond',
-      desc: 'Wireless lilac studio headphones, sleek dark bob, radiant almond eyes with white sclera & sparkle catchlights.'
+      id: 'headphones-shades',
+      title: 'Headphones + Cat-Eye Shades',
+      badge: 'Chic Sass · Zero Awkward Eyes',
+      desc: 'Lilac studio headphones, sleek dark bob, high-fashion cat-eye sunglasses with purple lens reflection & berry smile.'
+    },
+    {
+      id: 'faceless-nordic',
+      title: 'Minimalist Faceless Nordic',
+      badge: 'Notion / Editorial · Cleanest',
+      desc: 'Contemporary Scandinavian lifestyle silhouette with arched brows, rosy blush, sleek bob & headphones. No uncanny eyes.'
     },
     {
       id: 'headphones-bob-zen',
-      title: 'Headphones with Bob (Zen Lashes)',
-      badge: 'Zen Immersion · Smiling Lashes',
-      desc: 'Wireless lilac studio headphones, sleek dark bob, calm smiling lash line & serene focus.'
+      title: 'Lofi Peace (Closed Smiling Lashes)',
+      badge: 'Serene Focus · Zen Vibe',
+      desc: 'Eyes peacefully closed in listening bliss with delicate downward curved smiling lashes. Completely calm & sweet.'
     },
     {
-      id: 'bob',
-      title: 'The Parisian Bob',
-      badge: 'Chic · Silk Headband',
-      desc: 'Sleek chin-length bob, royal violet silk padded headband with highlight, silver hoop earring & radiant eyes.'
+      id: 'chic-wire-glasses',
+      title: 'Chic Wireframe Glasses',
+      badge: 'Smart & Poised · Intellectual',
+      desc: 'Rose-lilac wireframe glasses, soft natural gaze, cute blush, dark bob with fringe & studio headphones.'
     },
     {
-      id: 'smirk',
-      title: 'The Executive Smirk',
-      badge: 'Sassy · High Energy',
-      desc: 'Winged cat-eye, knowing smirk with berry lip gloss, retro shades pushed up on hair & violet turtleneck.'
+      id: 'nordic-compass-astral',
+      title: 'Nordic Astral Compass',
+      badge: 'Celestial Prism · Pure Serenity',
+      desc: 'Luminous royal violet and teal compass rose emblem with radiant prism jewel. Abstract & timeless mascot.'
+    },
+    {
+      id: 'headphones-bob',
+      title: 'Headphones with Bob (Radiant Eyes)',
+      badge: 'Almond Eyes · Open Gaze',
+      desc: 'Lilac studio headphones, sleek dark bob with fringe, almond eyes with white sclera & sparkle catchlights.'
     },
     {
       id: 'aviator',
@@ -662,10 +860,10 @@ function openCompassAvatarModal() {
       desc: 'Oversized glossy lavender-tinted dark shades, curtain bangs, relaxed waves & violet knit.'
     },
     {
-      id: 'headphones',
-      title: 'Zen Topknot Flow',
-      badge: 'Calm · Messy Bun',
-      desc: 'Lilac wireless studio headphones, messy topknot bun with loose tendrils, serene smile & slouchy knit.'
+      id: 'bob',
+      title: 'The Parisian Bob',
+      badge: 'Chic · Silk Headband',
+      desc: 'Sleek chin-length bob, royal violet silk padded headband with highlight, silver hoop earring & radiant eyes.'
     }
   ];
 
