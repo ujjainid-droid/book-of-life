@@ -5187,6 +5187,40 @@ body.dark-mode .budget-progress-wrap {
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
+/* Neutral Charcoal & White (5 Key Living Categories) */
+.summer-widget-card.theme-charcoal {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+.summer-widget-card.theme-charcoal .summer-widget-pill {
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  box-shadow: none;
+}
+.budget-badge.budget-badge-charcoal {
+  background: #1E293B;
+  color: #FFFFFF;
+  border: 1px solid #1E293B;
+  box-shadow: none;
+}
+[data-theme="dark"] .summer-widget-card.theme-charcoal,
+body.dark-mode .summer-widget-card.theme-charcoal {
+  background: #1E293B;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+[data-theme="dark"] .summer-widget-card.theme-charcoal .summer-widget-pill,
+body.dark-mode .summer-widget-card.theme-charcoal .summer-widget-pill {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+[data-theme="dark"] .budget-badge.budget-badge-charcoal,
+body.dark-mode .budget-badge.budget-badge-charcoal {
+  background: #334155;
+  color: #F8FAFC;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
 /* Summer Palettes */
 /* Coral Peach (Groceries) */
 .summer-widget-card.theme-coral {

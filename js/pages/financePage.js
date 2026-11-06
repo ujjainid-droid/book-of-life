@@ -4319,17 +4319,17 @@ function renderFinanceBudget() {
 
       </div>
 
-      <!-- 3. Key Living Categories - Cheery Summer Pillars Grid -->
+      <!-- 3. Key Living Categories - Neutral Charcoal & White Pillars Grid -->
       <div class="budget-pillars-summer-grid">
         
-        <!-- Card 1: Groceries (Peach Coral) -->
-        <div class="summer-widget-card theme-coral" onclick="openBudgetCategoryTransactionsModal('Groceries', 'Groceries')" title="Click to view all Groceries transactions" style="cursor: pointer;">
+        <!-- Card 1: Groceries -->
+        <div class="summer-widget-card theme-charcoal" onclick="openBudgetCategoryTransactionsModal('Groceries', 'Groceries')" title="Click to view all Groceries transactions" style="cursor: pointer;">
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shopping-cart" style="width: 19px; height: 19px; color: #EA580C;"></i>
+                <i data-lucide="shopping-cart" style="width: 19px; height: 19px; color: #1E293B;"></i>
               </div>
-              <span class="budget-badge ${grocPace.cls}">${grocPace.text}</span>
+              <span class="budget-badge budget-badge-charcoal">${grocPace.text}</span>
             </div>
             <div class="summer-widget-body">
               <div class="summer-widget-spent num-mono">$${Math.round(grocSpent).toLocaleString()}</div>
@@ -4339,23 +4339,23 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${grocPct}%; background: ${grocPace.cls === 'budget-badge-rose' ? '#E11D48' : '#EA580C'};"></div>
+              <div class="summer-widget-bar-fill" style="width: ${grocPct}%; background: #1E293B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${grocExpected}</span>
-              <strong class="num-mono" style="color: ${grocRem < 0 ? '#E11D48' : '#0D98BA'};">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #1E293B;">${grocRem < 0 ? `-$${Math.abs(Math.round(grocRem)).toLocaleString()}` : `$${Math.round(grocRem).toLocaleString()}`} ${grocRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card 2: Eating Out (Ocean Sky Blue) -->
-        <div class="summer-widget-card theme-sky" onclick="openBudgetCategoryTransactionsModal('Eating out', 'Eating Out')" title="Click to view all Eating Out transactions" style="cursor: pointer;">
+        <!-- Card 2: Eating Out -->
+        <div class="summer-widget-card theme-charcoal" onclick="openBudgetCategoryTransactionsModal('Eating out', 'Eating Out')" title="Click to view all Eating Out transactions" style="cursor: pointer;">
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="utensils" style="width: 19px; height: 19px; color: #0284C7;"></i>
+                <i data-lucide="utensils" style="width: 19px; height: 19px; color: #1E293B;"></i>
               </div>
-              <span class="budget-badge ${dinePace.cls}">${dinePace.text}</span>
+              <span class="budget-badge budget-badge-charcoal">${dinePace.text}</span>
             </div>
             <div class="summer-widget-body">
               <div class="summer-widget-spent num-mono">$${Math.round(dineSpent).toLocaleString()}</div>
@@ -4365,23 +4365,23 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${dinePct}%; background: ${dinePace.cls === 'budget-badge-rose' ? '#E11D48' : '#0284C7'};"></div>
+              <div class="summer-widget-bar-fill" style="width: ${dinePct}%; background: #1E293B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${dineExpected}</span>
-              <strong class="num-mono" style="color: ${dineRem < 0 ? '#E11D48' : '#0D98BA'};">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #1E293B;">${dineRem < 0 ? `-$${Math.abs(Math.round(dineRem)).toLocaleString()}` : `$${Math.round(dineRem).toLocaleString()}`} ${dineRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card 3: Shopping (Lavender Sorbet) -->
-        <div class="summer-widget-card theme-lavender" onclick="openBudgetCategoryTransactionsModal('Shopping', 'Shopping')" title="Click to view all Shopping transactions" style="cursor: pointer;">
+        <!-- Card 3: Shopping -->
+        <div class="summer-widget-card theme-charcoal" onclick="openBudgetCategoryTransactionsModal('Shopping', 'Shopping')" title="Click to view all Shopping transactions" style="cursor: pointer;">
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shopping-bag" style="width: 19px; height: 19px; color: #7C3AED;"></i>
+                <i data-lucide="shopping-bag" style="width: 19px; height: 19px; color: #1E293B;"></i>
               </div>
-              <span class="budget-badge ${shopPace.cls}">${shopPace.text}</span>
+              <span class="budget-badge budget-badge-charcoal">${shopPace.text}</span>
             </div>
             <div class="summer-widget-body">
               <div class="summer-widget-spent num-mono">$${Math.round(shopSpent).toLocaleString()}</div>
@@ -4391,23 +4391,23 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${shopPct}%; background: ${shopPace.cls === 'budget-badge-rose' ? '#E11D48' : '#7C3AED'};"></div>
+              <div class="summer-widget-bar-fill" style="width: ${shopPct}%; background: #1E293B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${shopExpected}</span>
-              <strong class="num-mono" style="color: ${shopRem < 0 ? '#E11D48' : '#0D98BA'};">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #1E293B;">${shopRem < 0 ? `-$${Math.abs(Math.round(shopRem)).toLocaleString()}` : `$${Math.round(shopRem).toLocaleString()}`} ${shopRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card 4: Clothing, Shoes & Jewelry (Seafoam Mint) -->
-        <div class="summer-widget-card theme-mint" onclick="openBudgetCategoryTransactionsModal('Clothing, Shoes, Jewelry', 'Clothing &amp; Jewelry')" title="Click to view all Clothing &amp; Jewelry transactions" style="cursor: pointer;">
+        <!-- Card 4: Clothing, Shoes & Jewelry -->
+        <div class="summer-widget-card theme-charcoal" onclick="openBudgetCategoryTransactionsModal('Clothing, Shoes, Jewelry', 'Clothing &amp; Jewelry')" title="Click to view all Clothing &amp; Jewelry transactions" style="cursor: pointer;">
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #0D98BA;"></i>
+                <i data-lucide="shirt" style="width: 19px; height: 19px; color: #1E293B;"></i>
               </div>
-              <span class="budget-badge ${clothPace.cls}">${clothPace.text}</span>
+              <span class="budget-badge budget-badge-charcoal">${clothPace.text}</span>
             </div>
             <div class="summer-widget-body">
               <div class="summer-widget-spent num-mono">$${Math.round(clothSpent).toLocaleString()}</div>
@@ -4417,23 +4417,23 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: ${clothPace.cls === 'budget-badge-rose' ? '#E11D48' : '#0D98BA'};"></div>
+              <div class="summer-widget-bar-fill" style="width: ${clothPct}%; background: #1E293B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${clothExpected}</span>
-              <strong class="num-mono" style="color: ${clothRem < 0 ? '#E11D48' : '#0D98BA'};">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #1E293B;">${clothRem < 0 ? `-$${Math.abs(Math.round(clothRem)).toLocaleString()}` : `$${Math.round(clothRem).toLocaleString()}`} ${clothRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
 
-        <!-- Card 5: Self care & Grooming (Sunset Rose Guava) -->
-        <div class="summer-widget-card theme-rose" onclick="openBudgetCategoryTransactionsModal('Self care + Grooming', 'Self Care &amp; Grooming')" title="Click to view all Self Care &amp; Grooming transactions" style="cursor: pointer;">
+        <!-- Card 5: Self care & Grooming -->
+        <div class="summer-widget-card theme-charcoal" onclick="openBudgetCategoryTransactionsModal('Self care + Grooming', 'Self Care &amp; Grooming')" title="Click to view all Self Care &amp; Grooming transactions" style="cursor: pointer;">
           <div>
             <div class="summer-widget-top">
               <div class="summer-widget-pill">
-                <i data-lucide="sparkles" style="width: 19px; height: 19px; color: #E11D48;"></i>
+                <i data-lucide="sparkles" style="width: 19px; height: 19px; color: #1E293B;"></i>
               </div>
-              <span class="budget-badge ${selfPace.cls}">${selfPace.text}</span>
+              <span class="budget-badge budget-badge-charcoal">${selfPace.text}</span>
             </div>
             <div class="summer-widget-body">
               <div class="summer-widget-spent num-mono">$${Math.round(selfSpent).toLocaleString()}</div>
@@ -4443,11 +4443,11 @@ function renderFinanceBudget() {
           </div>
           <div class="summer-widget-foot">
             <div class="summer-widget-bar-wrap">
-              <div class="summer-widget-bar-fill" style="width: ${selfPct}%; background: ${selfPace.cls === 'budget-badge-rose' ? '#E11D48' : '#E11D48'};"></div>
+              <div class="summer-widget-bar-fill" style="width: ${selfPct}%; background: #1E293B;"></div>
             </div>
             <div class="summer-widget-meta">
               <span>Day ${currentDayOfMonth} target: $${selfExpected}</span>
-              <strong class="num-mono" style="color: ${selfRem < 0 ? '#E11D48' : '#0D98BA'};">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
+              <strong class="num-mono" style="color: #1E293B;">${selfRem < 0 ? `-$${Math.abs(Math.round(selfRem)).toLocaleString()}` : `$${Math.round(selfRem).toLocaleString()}`} ${selfRem < 0 ? 'Over' : 'Left'}</strong>
             </div>
           </div>
         </div>
