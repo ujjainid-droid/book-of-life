@@ -964,6 +964,17 @@ class SyncManager {
       }
     }
 
+    if (mergedKitchen && Array.isArray(mergedKitchen.followingWeekSchedule)) {
+      const hasClonedSeed = mergedKitchen.followingWeekSchedule.some(
+        d => (d && d.meal === 'Spanish rice') || (d && d.meal === 'Home made pizza with salami')
+      );
+      if (hasClonedSeed && typeof storage.makeEmptyKitchenWeek === 'function') {
+        mergedKitchen.followingWeekSchedule = storage.makeEmptyKitchenWeek();
+        mergedKitchenUpdatedAt = Date.now();
+        localWasRicher = true;
+      }
+    }
+
     // Apply consolidated data
     storage.data = {
       ...storage.data,

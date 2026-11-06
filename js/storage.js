@@ -4744,10 +4744,16 @@ class StorageManager {
       if (!kd.vaultFilter) kd.vaultFilter = 'all';
       if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
 
-      // Ensure advancing to another week starts completely blank
-      if (!this.data.kitchenNextWeekBlankV1) {
+      // Ensure advancing to another week starts completely blank (and purge any cloned seed schedule)
+      const isClonedSeedNextWeek = Array.isArray(kd.followingWeekSchedule) &&
+        kd.followingWeekSchedule.some(d => (d && d.meal === 'Spanish rice') || (d && d.meal === 'Home made pizza with salami'));
+      if (!this.data.kitchenNextWeekBlankV3 || isClonedSeedNextWeek) {
         kd.followingWeekSchedule = this.makeEmptyKitchenWeek();
+        kd.extraWeekSchedules = {};
         this.data.kitchenNextWeekBlankV1 = true;
+        this.data.kitchenNextWeekBlankV2 = true;
+        this.data.kitchenNextWeekBlankV3 = true;
+        this.data.kitchenUpdatedAt = Date.now();
         this.saveData();
       }
 

@@ -391,7 +391,7 @@
 .k-dinner-tag-label {
   font-size: 12px;
   font-weight: 800;
-  color: #1F0BA0; /* Vivid Cobalt Blue from Crystal */
+  color: #1F0BA0; /* Vivid Royal Cobalt Blue from Crystal */
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -400,9 +400,12 @@
 
 .k-hero-source-pill {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   padding: 2px 8px;
   border-radius: 6px;
+  background: #EEF2FF;
+  color: #1F0BA0;
+  border: 1px solid #C7D2FE;
   text-transform: none;
   letter-spacing: normal;
   transition: all 0.15s ease;
@@ -411,37 +414,17 @@
   line-height: 1.3;
 }
 
-/* Vivid Cobalt Crystal Pill for Fresh Cook */
-.k-hero-source-pill.source-fresh {
+/* Vivid Royal Cobalt Crystal Font Color across all source pills */
+.k-hero-source-pill.source-fresh,
+.k-hero-source-pill.source-leftover,
+.k-hero-source-pill.source-out,
+.k-hero-source-pill.source-prep,
+.k-hero-source-pill.source-custom,
+.k-hero-source-pill.source-freezer {
   background: #EEF2FF;
   color: #1F0BA0;
   border: 1px solid #C7D2FE;
   font-weight: 800;
-}
-
-.k-hero-source-pill.source-leftover {
-  background: #EDE9FE;
-  color: #6D28D9;
-  border: 1px solid #DDD6FE;
-}
-
-.k-hero-source-pill.source-out {
-  background: #E0F2FE;
-  color: #0369A1;
-  border: 1px solid #BAE6FD;
-}
-
-.k-hero-source-pill.source-prep,
-.k-hero-source-pill.source-custom {
-  background: #CCFBF1;
-  color: #0F766E;
-  border: 1px solid #99F6E4;
-}
-
-.k-hero-source-pill.source-freezer {
-  background: #F0F9FF;
-  color: #0284C7;
-  border: 1px solid #BAE6FD;
 }
 
 .k-hero-dinner-main {

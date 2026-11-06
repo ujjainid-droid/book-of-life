@@ -135,6 +135,37 @@ let activeKitchenEditIdx = null;
 let activeKitchenMealType = 'dinner'; // 'brunch', 'lunch', 'dinner', 'dessert'
 let activeKitchenItemIdx = null; // index of item within d.meals[t], or null when adding new item
 
+function kGetScheduleForWeekOffset(data, offset) {
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const makeBlankWeek = () => dayNames.map(day => ({
+    day,
+    date: '',
+    meal: '',
+    source: 'fresh',
+    icon: 'chicken',
+    recipeUrl: '',
+    favoriteId: null,
+    meals: { brunch: [], lunch: [], dinner: [], dessert: [] }
+  }));
+
+  if (offset === 0) {
+    if (!Array.isArray(data.weekSchedule)) data.weekSchedule = makeBlankWeek();
+    return data.weekSchedule;
+  }
+  if (offset === 1) {
+    if (!Array.isArray(data.followingWeekSchedule)) data.followingWeekSchedule = makeBlankWeek();
+    return data.followingWeekSchedule;
+  }
+  if (!data.extraWeekSchedules || typeof data.extraWeekSchedules !== 'object') {
+    data.extraWeekSchedules = {};
+  }
+  const key = String(offset);
+  if (!Array.isArray(data.extraWeekSchedules[key])) {
+    data.extraWeekSchedules[key] = makeBlankWeek();
+  }
+  return data.extraWeekSchedules[key];
+}
+
 function kSetWeekOffset(offset) {
   const data = storage.getKitchenData();
   data.activeWeekOffset = offset;
@@ -322,9 +353,7 @@ function renderKitchenPage() {
     return [];
   };
 
-  const rawSchedule = (weekOffset === 0) 
-    ? (data.weekSchedule || []) 
-    : (weekOffset === 1 ? (data.followingWeekSchedule || []) : []);
+  const rawSchedule = kGetScheduleForWeekOffset(data, weekOffset);
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const fullWeekSchedule = dayNames.map((dayName, idx) => {
     const existing = rawSchedule.find(s => s.day === dayName) || rawSchedule[idx] || {};
@@ -411,7 +440,7 @@ function renderKitchenPage() {
         <!-- Interactive Week Selector Dropdown -->
         <div class="k-week-dropdown-wrap" id="k-week-dropdown-wrap">
           <button type="button" class="k-week-dropdown-trigger" onclick="kToggleWeekDropdown()" aria-haspopup="true">
-            <span>${weekOffset === 0 ? `This Week (${thisWeekLabel})` : `Next Week (${nextWeekLabel})`}</span>
+            <span>${weekOffset === 0 ? `This Week (${thisWeekLabel})` : (weekOffset === 1 ? `Next Week (${nextWeekLabel})` : `Week (${weekRangeLabel})`)}</span>
             <span style="font-size:10px;">▾</span>
           </button>
 
@@ -1018,7 +1047,7 @@ function kSetModalMealType(newType, reFocus = true) {
 
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = (activeKitchenEditIdx !== null && schedule && schedule[activeKitchenEditIdx]) ? schedule[activeKitchenEditIdx] : { day: 'Day', date: '', meals: {} };
   const rawSlot = (d.meals && d.meals[newType]) ? d.meals[newType] : null;
   const items = Array.isArray(rawSlot) ? rawSlot : (rawSlot && rawSlot.meal ? [rawSlot] : []);
@@ -1101,7 +1130,7 @@ function kSubmitCustomMeal() {
 
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
 
   if (!Array.isArray(schedule) || !schedule[activeKitchenEditIdx]) {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -1172,7 +1201,7 @@ function kClearCurrentMealSlot() {
   const mealType = activeKitchenMealType || 'dinner';
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[activeKitchenEditIdx];
 
   if (d && d.meals) {
@@ -1215,7 +1244,7 @@ function kDeleteMealItem(dayIdx, mealType, itemIdx, event) {
   if (event) event.stopPropagation();
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[dayIdx];
   if (!d || !d.meals) return;
 
@@ -1248,7 +1277,7 @@ function kSelectStashForMeal(name, type) {
   const mealType = activeKitchenMealType || 'dinner';
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[activeKitchenEditIdx];
   if (!d) return;
   if (!d.meals) d.meals = { brunch: [], lunch: [], dinner: [], dessert: [] };
@@ -1304,7 +1333,7 @@ function kSelectFavForMeal(favId) {
   if (!fav) return;
 
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[activeKitchenEditIdx];
   if (!d) return;
   if (!d.meals) d.meals = { brunch: [], lunch: [], dinner: [], dessert: [] };
@@ -1348,7 +1377,7 @@ function kCycleSlotSource(dayIdx, mealType, itemIdx = 0, event) {
   if (event) event.stopPropagation();
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[dayIdx];
   if (!d || !d.meals) return;
 
@@ -1381,7 +1410,7 @@ function kToggleFavSlot(dayIdx, mealType, itemIdx = 0, event) {
   if (event) event.stopPropagation();
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[dayIdx];
   const items = (d && d.meals && Array.isArray(d.meals[mealType])) ? d.meals[mealType] : (d && d.meals && d.meals[mealType] && d.meals[mealType].meal ? [d.meals[mealType]] : []);
   const slot = items[itemIdx];
@@ -1447,7 +1476,7 @@ function kAssignFavToMeal(favId, targetStr) {
   const fav = (data.favoriteRecipes || []).find(r => r.id === favId);
   if (!fav) return;
 
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[dayIdx];
   if (!d) return;
   if (!d.meals) d.meals = { brunch: [], lunch: [], dinner: [], dessert: [] };
@@ -1683,7 +1712,7 @@ function kAssignNewRecipeToMeal(id, targetStr) {
   const item = (data.newRecipes || []).find(r => r.id === id);
   if (!item) return;
 
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const d = schedule[dayIdx];
   if (!d) return;
   if (!d.meals) d.meals = { brunch: [], lunch: [], dinner: [], dessert: [] };
@@ -1948,7 +1977,7 @@ window.kDeleteGroceryItem = kDeleteGroceryItem;
 function kOpenThings3() {
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const weekTitle = weekOffset === 1 ? 'Upcoming Week' : 'This Week';
 
   const groceries = (data.groceries || []).filter(g => !g.checked);
@@ -1993,7 +2022,7 @@ window.kOpenThings3 = kOpenThings3;
 function kExportVerifiedThings3() {
   const data = storage.getKitchenData();
   const weekOffset = data.activeWeekOffset || 0;
-  const schedule = weekOffset === 1 ? data.followingWeekSchedule : data.weekSchedule;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
   const weekTitle = weekOffset === 1 ? 'Upcoming Week' : 'This Week';
 
   const groceries = (data.groceries || []).filter(g => !g.checked);
