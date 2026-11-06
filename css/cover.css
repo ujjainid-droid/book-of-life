@@ -16919,6 +16919,8 @@ body:has(.margo-compass-wrap) {
   display: flex;
   align-items: center;
   gap: 6px;
+  white-space: nowrap;
+  flex: none;
 }
 
 .compass-dot-indicator {
@@ -16927,48 +16929,6 @@ body:has(.margo-compass-wrap) {
   border-radius: 50%;
   background: var(--margo-accent, #5B3FD9);
   flex: none;
-}
-
-/* Focus Layout Switcher Pill */
-.focus-layout-switcher {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(124, 58, 237, 0.08);
-  padding: 3px;
-  border-radius: 999px;
-  gap: 2px;
-}
-
-.layout-toggle-btn {
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--margo-muted, #6B6785);
-  padding: 3px 10px;
-  border-radius: 999px;
-  cursor: pointer;
-  transition: all 0.16s ease;
-}
-
-.layout-toggle-btn:hover {
-  color: var(--margo-accent, #7C3AED);
-}
-
-.layout-toggle-btn.active {
-  background: #FFFFFF;
-  color: var(--margo-accent, #7C3AED);
-  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.18);
-}
-
-[data-theme="dark"] .layout-toggle-btn.active {
-  background: #2D2340;
-  color: #DDD6FE;
-}
-
-[data-theme="dark"] .focus-layout-switcher {
-  background: rgba(139, 92, 246, 0.12);
 }
 
 .compass-focus-cards {
