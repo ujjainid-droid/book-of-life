@@ -5032,6 +5032,9 @@ body.dark-mode .budget-pill-btn:hover {
   box-shadow: 0 4px 16px rgba(109, 40, 217, 0.04);
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .budget-master-card:hover {

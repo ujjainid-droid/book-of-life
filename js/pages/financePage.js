@@ -4069,7 +4069,7 @@ function renderFinanceBudget() {
     livingStatusText = 'Over Budget';
   } else if (livingSpendMTD > livingExpectedMTD) {
     livingBadgeClass = 'budget-badge-violet';
-    livingStatusText = 'On Track (Moderate)';
+    livingStatusText = `On Track (${livingSpentPct}%)`;
   }
 
   // Income Inflow Budget calculations
@@ -4223,97 +4223,97 @@ function renderFinanceBudget() {
         
         <!-- Master Income Inflow -->
         <div class="budget-master-card income-theme" onclick="openBudgetCategoryTransactionsModal('__income_inflow__', 'Verified Income Inflow')" title="Click to inspect all verified income inflow transactions" style="cursor: pointer;">
-          <div class="summer-widget-top">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div class="summer-widget-pill">
+          <div class="summer-widget-top" style="align-items: flex-start; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+              <div class="summer-widget-pill" style="flex-shrink: 0;">
                 <i data-lucide="trending-up" style="width: 19px; height: 19px; color: #0284C7;"></i>
               </div>
-              <div>
+              <div style="min-width: 0;">
                 <span class="budget-master-lbl" style="display: block; color: #0284C7;">Verified Income Inflow</span>
-                <span style="font-size: 11px; color: #0284C7;">Take-home salary &amp; deposits</span>
+                <span style="font-size: 11px; color: #0284C7; display: block;">Take-home salary &amp; deposits</span>
               </div>
             </div>
-            <span class="budget-badge ${incomeBadgeClass}">${incomeStatusText}</span>
+            <span class="budget-badge ${incomeBadgeClass}" style="flex-shrink: 0; white-space: nowrap;">${incomeStatusText}</span>
           </div>
 
-          <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
-            <div class="budget-master-val num-mono" style="color: #0284C7;">
+          <div style="margin-top: auto; padding-top: 14px; position: relative; z-index: 2;">
+            <div class="budget-master-val num-mono" style="color: #0284C7; margin-bottom: 10px;">
               $${Math.round(incomeMTD).toLocaleString()}
               <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(targetIncome).toLocaleString()} Target</span>
             </div>
-          </div>
 
-          <div class="budget-progress-wrap" style="position: relative; z-index: 2;">
-            <div class="budget-progress-fill fill-sky" style="width: ${incomePct}%;"></div>
-          </div>
+            <div class="budget-progress-wrap">
+              <div class="budget-progress-fill fill-sky" style="width: ${incomePct}%;"></div>
+            </div>
 
-          <div class="budget-master-foot" style="position: relative; z-index: 2;">
-            <span style="color: #0284C7;">${incomeFootLeft}</span>
-            <strong class="num-mono" style="color: #0284C7; font-size: 12.5px;">${incomeFootRight}</strong>
+            <div class="budget-master-foot">
+              <span style="color: #0284C7;">${incomeFootLeft}</span>
+              <strong class="num-mono" style="color: #0284C7; font-size: 12.5px;">${incomeFootRight}</strong>
+            </div>
           </div>
         </div>
 
         <!-- Master Living Outflows -->
         <div class="budget-master-card" onclick="openBudgetCategoryTransactionsModal('__living_all__', 'All Living Expenses')" title="Click to inspect all living expense transactions" style="cursor: pointer;">
-          <div class="summer-widget-top">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div class="summer-widget-pill">
+          <div class="summer-widget-top" style="align-items: flex-start; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+              <div class="summer-widget-pill" style="flex-shrink: 0;">
                 <i data-lucide="wallet" style="width: 19px; height: 19px; color: #7C3AED;"></i>
               </div>
-              <div>
+              <div style="min-width: 0;">
                 <span class="budget-master-lbl" style="display: block;">Living Expenses Outflow</span>
-                <span style="font-size: 11px; color: var(--text-muted, #71717A);">Active monthly spending cap</span>
+                <span style="font-size: 11px; color: var(--text-muted, #71717A); display: block;">Active monthly spending cap</span>
               </div>
             </div>
-            <span class="budget-badge ${livingBadgeClass}">${livingStatusText}</span>
+            <span class="budget-badge ${livingBadgeClass}" style="flex-shrink: 0; white-space: nowrap;">${livingStatusText}</span>
           </div>
 
-          <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
-            <div class="budget-master-val num-mono">
+          <div style="margin-top: auto; padding-top: 14px; position: relative; z-index: 2;">
+            <div class="budget-master-val num-mono" style="margin-bottom: 10px;">
               $${Math.round(livingSpendMTD).toLocaleString()}
               <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(totalLivingBudget).toLocaleString()} Target</span>
             </div>
-          </div>
 
-          <div class="budget-progress-wrap" style="position: relative; z-index: 2;">
-            <div class="budget-progress-fill ${livingSpendMTD > totalLivingBudget ? 'fill-rose' : 'fill-violet'}" style="width: ${livingSpentPct}%;"></div>
-          </div>
+            <div class="budget-progress-wrap">
+              <div class="budget-progress-fill ${livingSpendMTD > totalLivingBudget ? 'fill-rose' : 'fill-violet'}" style="width: ${livingSpentPct}%;"></div>
+            </div>
 
-          <div class="budget-master-foot" style="position: relative; z-index: 2;">
-            <span>Day ${currentDayOfMonth} pace: <strong class="num-mono">$${livingExpectedMTD.toLocaleString()}</strong></span>
-            <strong class="num-mono" style="color: ${livingRemaining < 0 ? '#E11D48' : 'var(--fin-income, #0D98BA)'}; font-size: 12.5px;">$${Math.round(livingRemaining).toLocaleString()} Left ($${livingDailyRem}/day)</strong>
+            <div class="budget-master-foot">
+              <span>Day ${currentDayOfMonth} pace: <strong class="num-mono">$${livingExpectedMTD.toLocaleString()}</strong></span>
+              <strong class="num-mono" style="color: ${livingRemaining < 0 ? '#E11D48' : 'var(--fin-income, #0D98BA)'}; font-size: 12.5px;">$${Math.round(livingRemaining).toLocaleString()} Left ($${livingDailyRem}/day)</strong>
+            </div>
           </div>
         </div>
 
         <!-- Master Wealth & Savings Envelope -->
         <div class="budget-master-card savings-theme" onclick="openBudgetCategoryTransactionsModal('__savings_transfers__', 'Direct Wealth Transfers')" title="Click to inspect direct wealth &amp; savings transfers" style="cursor: pointer;">
-          <div class="summer-widget-top">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div class="summer-widget-pill">
+          <div class="summer-widget-top" style="align-items: flex-start; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+              <div class="summer-widget-pill" style="flex-shrink: 0;">
                 <i data-lucide="gem" style="width: 19px; height: 19px; color: #0D98BA;"></i>
               </div>
-              <div>
+              <div style="min-width: 0;">
                 <span class="budget-master-lbl" style="display: block; color: #0E7490;">Direct Wealth Transfers</span>
-                <span style="font-size: 11px; color: #0E7490;">Capital One, Vanguard &amp; Fidelity</span>
+                <span style="font-size: 11px; color: #0E7490; display: block;">Capital One, Vanguard &amp; Fidelity</span>
               </div>
             </div>
-            <span class="budget-badge budget-badge-teal">${savingsFundedPct}% Funded</span>
+            <span class="budget-badge budget-badge-teal" style="flex-shrink: 0; white-space: nowrap;">${savingsFundedPct}% Funded</span>
           </div>
 
-          <div style="margin: 12px 0 10px; position: relative; z-index: 2;">
-            <div class="budget-master-val num-mono" style="color: #0E7490;">
+          <div style="margin-top: auto; padding-top: 14px; position: relative; z-index: 2;">
+            <div class="budget-master-val num-mono" style="color: #0E7490; margin-bottom: 10px;">
               $${Math.round(savingsFundedMTD).toLocaleString()}
               <span style="font-size: 14px; font-weight: 500; color: var(--text-muted, #71717A);">of $${Math.round(savingsTarget).toLocaleString()} Target</span>
             </div>
-          </div>
 
-          <div class="budget-progress-wrap" style="position: relative; z-index: 2;">
-            <div class="budget-progress-fill fill-teal" style="width: ${savingsFundedPct}%;"></div>
-          </div>
+            <div class="budget-progress-wrap">
+              <div class="budget-progress-fill fill-teal" style="width: ${savingsFundedPct}%;"></div>
+            </div>
 
-          <div class="budget-master-foot" style="position: relative; z-index: 2;">
-            <span style="color: #0E7490;">Direct accounts (Excludes 401k)</span>
-            <strong class="num-mono" style="color: #0E7490; font-size: 12.5px;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
+            <div class="budget-master-foot">
+              <span style="color: #0E7490;">Direct accounts (Excludes 401k)</span>
+              <strong class="num-mono" style="color: #0E7490; font-size: 12.5px;">$${Math.round(savingsRemaining).toLocaleString()} to Goal</strong>
+            </div>
           </div>
         </div>
 
