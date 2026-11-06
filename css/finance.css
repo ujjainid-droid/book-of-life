@@ -4304,15 +4304,15 @@ body.dark-mode .finance-sub-reimbursed-pill {
 
 .card-roi-month-pill:hover {
   transform: translateY(-1px);
-  border-color: #FF5A5F;
-  color: #FF5A5F;
+  border-color: #475569;
+  color: #334155;
 }
 
 .card-roi-month-pill.active {
-  background: #A7F3D0;
-  border-color: rgba(6, 95, 70, 0.4);
-  color: #065F46;
-  box-shadow: 0 1px 3px rgba(6, 95, 70, 0.2);
+  background: #475569;
+  border-color: #334155;
+  color: #F8FAFC;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
   font-weight: 700;
 }
 
@@ -4344,16 +4344,16 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .card-roi-quarter-pill:hover {
-  border-color: #FF5A5F;
-  color: #FF5A5F;
+  border-color: #475569;
+  color: #334155;
 }
 
 .card-roi-quarter-pill.active {
-  background: #A7F3D0;
-  border-color: rgba(6, 95, 70, 0.4);
-  color: #065F46;
+  background: #475569;
+  border-color: #334155;
+  color: #F8FAFC;
   font-weight: 700;
-  box-shadow: 0 1px 3px rgba(6, 95, 70, 0.2);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
 }
 
 /* Semi-Annual Strip (H1 / H2) */
@@ -4383,16 +4383,16 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .card-roi-semi-pill:hover {
-  border-color: #FF5A5F;
-  color: #FF5A5F;
+  border-color: #475569;
+  color: #334155;
 }
 
 .card-roi-semi-pill.active {
-  background: #A7F3D0;
-  border-color: rgba(6, 95, 70, 0.4);
-  color: #065F46;
+  background: #475569;
+  border-color: #334155;
+  color: #F8FAFC;
   font-weight: 700;
-  box-shadow: 0 1px 3px rgba(6, 95, 70, 0.2);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
 }
 
 /* Annual / Multi-Year / Milestone Toggle Pill */
@@ -4418,21 +4418,21 @@ body.dark-mode .finance-sub-reimbursed-pill {
 }
 
 .card-roi-claim-toggle:hover {
-  border-color: #FF5A5F;
-  color: #FF5A5F;
+  border-color: #475569;
+  color: #334155;
 }
 
 .card-roi-claim-toggle.claimed {
-  background: #A7F3D0;
-  border-color: rgba(6, 95, 70, 0.4);
-  color: #065F46;
+  background: #475569;
+  border-color: #334155;
+  color: #F8FAFC;
   font-weight: 700;
 }
 
 [data-theme="dark"] .card-roi-claim-toggle.claimed {
-  background: rgba(167, 243, 208, 0.25);
-  color: #A7F3D0;
-  border-color: rgba(167, 243, 208, 0.4);
+  background: #64748B;
+  color: #F8FAFC;
+  border-color: #94A3B8;
 }
 
 /* Total Saved Column */

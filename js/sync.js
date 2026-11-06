@@ -916,16 +916,21 @@ class SyncManager {
     const mergedAnnualChecklists = mergeChecklistMaps(incFin.annualChecklists, locFin.annualChecklists);
     const mergedWeeklySundayUpdates = mergeChecklistMaps(incFin.weeklySundayUpdates, locFin.weeklySundayUpdates);
 
+    const locFinSeed = Number(locFin.seedVersion) || 0;
+    const incFinSeed = Number(incFin.seedVersion) || 0;
+    const cloudFinWins = (incFinSeed > locFinSeed) || (incFinSeed === locFinSeed && incFinTime > locFinTime);
+
     const mergedFinance = {
-      ...(incFinTime >= locFinTime ? locFin : incFin),
-      ...(incFinTime >= locFinTime ? incFin : locFin),
+      ...(cloudFinWins ? locFin : incFin),
+      ...(cloudFinWins ? incFin : locFin),
+      seedVersion: Math.max(locFinSeed, incFinSeed, 15),
       weeklyChecklists: mergedWeeklyChecklists,
       quarterlyChecklists: mergedQuarterlyChecklists,
       annualChecklists: mergedAnnualChecklists,
       weeklySundayUpdates: mergedWeeklySundayUpdates,
       updatedAt: Math.max(locFinTime, incFinTime)
     };
-    if (locFinTime > incFinTime) {
+    if (locFinTime > incFinTime || locFinSeed > incFinSeed) {
       localWasRicher = true;
     }
     try {
@@ -976,6 +981,15 @@ class SyncManager {
     }
 
     // Apply consolidated data
+    const prevLocalSnapshot = JSON.stringify({
+      points: storage.data.points,
+      habitsState: storage.data.habitsState,
+      choicesState: storage.data.choicesState,
+      dayGoals: storage.data.dayGoals,
+      finance: storage.data.finance,
+      kitchenData: storage.data.kitchenData
+    });
+
     storage.data = {
       ...storage.data,
       ...incoming,
@@ -1018,6 +1032,16 @@ class SyncManager {
     storage.recalculateAllStreaks();
     storage.recalculatePointsFromHistory(true);
 
+    const nextLocalSnapshot = JSON.stringify({
+      points: storage.data.points,
+      habitsState: storage.data.habitsState,
+      choicesState: storage.data.choicesState,
+      dayGoals: storage.data.dayGoals,
+      finance: storage.data.finance,
+      kitchenData: storage.data.kitchenData
+    });
+    const actuallyChanged = prevLocalSnapshot !== nextLocalSnapshot;
+
     try {
       localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(storage.data));
       localStorage.setItem('BOOK_OF_LIFE_DATA_BACKUP', JSON.stringify(storage.data));
@@ -1030,11 +1054,12 @@ class SyncManager {
       }
     } catch (e) {}
 
-    if (localWasRicher) {
+    if (localWasRicher && (!this._lastMergePushAt || (Date.now() - this._lastMergePushAt > 60000))) {
+      this._lastMergePushAt = Date.now();
       this.pendingPush = true;
     }
 
-    return true;
+    return actuallyChanged;
   }
 
   async pullFromCloud() {

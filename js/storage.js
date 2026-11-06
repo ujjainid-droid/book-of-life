@@ -3783,10 +3783,11 @@ class StorageManager {
       }
 
       this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
+      this.data.finance.seedVersion = 15;
       try {
         localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(this.data));
       } catch (e) {}
-      this.saveData();
       return this.data.finance;
     }
 
@@ -3825,8 +3826,8 @@ class StorageManager {
       }
       try {
         localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(this.data));
       } catch (e) {}
-      this.saveData();
     }
 
     if (this.data.finance && (!this.data.finance.netWorth || !Array.isArray(this.data.finance.netWorth.accounts) || this.data.finance.netWorth.accounts.length === 0)) {
@@ -4143,8 +4144,10 @@ class StorageManager {
     if (needsMigration) {
       if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
         fin.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
-        try { localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin)); } catch (e) {}
-        this.saveData();
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+          localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(this.data));
+        } catch (e) {}
       } else {
         return [];
       }

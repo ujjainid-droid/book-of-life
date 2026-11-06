@@ -1569,11 +1569,11 @@ function renderFinanceSubscriptions() {
             </button>
           </div>
 
-          <div style="display: flex; flex-direction: column;">
-            ${(activeCard.benefits || []).map((b, idx) => {
+          <div style="display: flex; flex-direction: column; gap: 10px; padding: 14px 18px; background: var(--bg-secondary, #F8FAFC);">
+            ${(activeCard.benefits || []).map((b) => {
               const isRealized = (b.realizedValue || 0) > 0;
               return `
-                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 20px; border-bottom: ${idx < activeCard.benefits.length - 1 ? '1px solid var(--border-color, #E2E8F0)' : 'none'}; background: var(--bg-card, #FFFFFF);">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 18px; border: 1px solid var(--border-color, #E2E8F0); border-radius: 12px; background: var(--bg-card, #FFFFFF); box-shadow: 0 1px 3px rgba(15, 23, 42, 0.02);">
                   
                   <!-- Column 1: Perk Name & Cadence -->
                   <div style="min-width: 220px; flex: 1;">
