@@ -478,6 +478,34 @@ function renderCoverHubPage() {
   const nowPrimary = campaignsData.now.filter(c => !isMaintainCamp(c));
   const nowMaintain = campaignsData.now.filter(c => isMaintainCamp(c));
 
+  // Group Maintain items by category into smaller widgets
+  const maintainByCat = {};
+  nowMaintain.forEach(camp => {
+    const cat = getCampaignDomainName(camp);
+    if (!maintainByCat[cat]) maintainByCat[cat] = [];
+    maintainByCat[cat].push(camp);
+  });
+
+  const catOrder = ['Care', 'Education', 'Finance', 'Health', 'Home', 'Nutrition', 'Style', 'Focus'];
+  const sortedMaintainCats = Object.keys(maintainByCat).sort((a, b) => {
+    let ia = catOrder.indexOf(a);
+    let ib = catOrder.indexOf(b);
+    if (ia === -1) ia = 99;
+    if (ib === -1) ib = 99;
+    return ia - ib;
+  });
+
+  const catMetaConfig = {
+    'Care': { label: 'Care & Regimen', icon: 'sparkles', dot: '#8B5CF6' },
+    'Education': { label: 'Education', icon: 'graduation-cap', dot: '#7C3AED' },
+    'Finance': { label: 'Finance & Claims', icon: 'receipt', dot: '#0D98BA' },
+    'Health': { label: 'Health', icon: 'heart-pulse', dot: '#0284C7' },
+    'Home': { label: 'Home', icon: 'home', dot: '#4F46E5' },
+    'Nutrition': { label: 'Nutrition', icon: 'salad', dot: '#059669' },
+    'Style': { label: 'Style', icon: 'shirt', dot: '#9333EA' },
+    'Focus': { label: 'General', icon: 'compass', dot: '#6B6785' }
+  };
+
   container.innerHTML = `
     <div class="margo-compass-wrap">
 
@@ -512,23 +540,41 @@ function renderCoverHubPage() {
         </div>
       </section>
 
-      <!-- 2. Maintain Section -->
+      <!-- 2. Maintain Section (Grouped by Category with Smaller Widgets) -->
       <section class="compass-sec" aria-label="Maintain">
         <div class="compass-sec-head">
           <h2>Maintain</h2>
-          <span class="sec-counter">${nowMaintain.length} steady</span>
+          <span class="sec-counter">${nowMaintain.length} steady across ${sortedMaintainCats.length} domains</span>
         </div>
-        <div class="compass-maintain-cards">
-          ${nowMaintain.map(camp => `
-            <div class="compass-maintain-row" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
-              <div class="compass-maintain-left">
-                <span class="compass-dot-indicator"></span>
-                <span class="compass-maintain-title">${escapeHtml(camp.title || 'Maintain item')}</span>
-              </div>
-              <span class="compass-maintain-tag">${escapeHtml(getCampaignDomainName(camp))}</span>
-            </div>
-          `).join('')}
-        </div>
+        ${nowMaintain.length === 0 ? `
+          <div class="compass-maintain-empty">No steady items currently in Maintain.</div>
+        ` : `
+          <div class="compass-maintain-cat-grid">
+            ${sortedMaintainCats.map(catKey => {
+              const items = maintainByCat[catKey] || [];
+              const meta = catMetaConfig[catKey] || { label: catKey, icon: 'bookmark', dot: '#8B5CF6' };
+              return `
+                <div class="compass-maintain-cat-card">
+                  <div class="compass-maintain-cat-header">
+                    <div class="compass-maintain-cat-title-wrap">
+                      <i data-lucide="${meta.icon}" class="compass-maintain-cat-icon" style="width:13px;height:13px;color:${meta.dot};"></i>
+                      <span class="compass-maintain-cat-name">${escapeHtml(meta.label)}</span>
+                    </div>
+                    <span class="compass-maintain-cat-count">${items.length}</span>
+                  </div>
+                  <div class="compass-maintain-chips-grid">
+                    ${items.map(camp => `
+                      <div class="compass-maintain-chip" onclick="promptEditCampaignTitle('${camp.id}', '${escapeHtml(camp.title || '')}')" title="Tap to edit title">
+                        <span class="compass-chip-dot" style="background:${meta.dot}"></span>
+                        <span class="compass-chip-title">${escapeHtml(camp.title || 'Maintain item')}</span>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `}
       </section>
 
       <!-- 3. Later Section (Transparent Rows, No White Background) -->
