@@ -5048,7 +5048,6 @@ class StorageManager {
           { id: 'g-saladgreens', text: 'Salad greens / romaine', checked: false },
           { id: 'g-cucumbers', text: 'Cucumbers', checked: false },
           { id: 'g-tomatoes', text: 'Tomatoes', checked: false },
-          { id: 'g-chickpeas', text: 'Chickpeas', checked: false },
           { id: 'g-bacon', text: 'Bacon', checked: false },
           { id: 'g-chickennuggets', text: 'Chicken nuggets', checked: false },
           { id: 'g-veggies', text: 'Veggies (freezer/pantry)', checked: false }
@@ -5134,6 +5133,30 @@ class StorageManager {
       }
       if (Array.isArray(kd.newRecipes)) {
         kd.newRecipes = kd.newRecipes.filter(r => (r.title || '').toLowerCase().trim() !== 'crispy chickpea & avocado wrap');
+      }
+
+      // Purge any chick peas / chickpeas from stash and groceries
+      if (Array.isArray(kd.stashItems)) {
+        const prevLen = kd.stashItems.length;
+        kd.stashItems = kd.stashItems.filter(i => {
+          const n = (i.name || '').toLowerCase().trim();
+          return !n.includes('chick pea') && !n.includes('chickpea');
+        });
+        if (kd.stashItems.length !== prevLen) {
+          this.data.kitchenUpdatedAt = Date.now();
+          this.saveData();
+        }
+      }
+      if (Array.isArray(kd.groceries)) {
+        const prevG = kd.groceries.length;
+        kd.groceries = kd.groceries.filter(g => {
+          const t = (g.text || '').toLowerCase().trim();
+          return !t.includes('chick pea') && !t.includes('chickpea');
+        });
+        if (kd.groceries.length !== prevG) {
+          this.data.kitchenUpdatedAt = Date.now();
+          this.saveData();
+        }
       }
     }
     return this.data.kitchenData;

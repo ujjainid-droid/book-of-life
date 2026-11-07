@@ -694,7 +694,7 @@ function renderKitchenPage() {
 
             <!-- Quick Add Bar -->
             <div class="k-stash-quick-bar">
-              <input type="text" class="k-clean-input" id="k-stash-input" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
+              <input type="text" class="k-clean-input" id="k-stash-entry-input" name="k_stash_item_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
               <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">Pantry</button>
               <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">Fridge</button>
               <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">Freezer</button>
@@ -736,7 +736,7 @@ function renderKitchenPage() {
 
             <!-- Add custom grocery item bar -->
             <div class="k-stash-quick-bar">
-              <input type="text" class="k-clean-input" id="k-add-extra-grocery" placeholder="+ Add custom grocery item..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
+              <input type="text" class="k-clean-input" id="k-add-extra-grocery" name="k_extra_grocery_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add custom grocery item..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
               <button type="button" class="k-btn-stash-add" onclick="kAddExtraGroceryItem()">+ Add</button>
             </div>
           </div>
@@ -916,7 +916,7 @@ function kDeleteStash(id) {
 
 // 3 Separate Buttons: Pantry (default on Enter), Fridge, and Freezer
 function kAddStashWithSource(sourceType = 'pantry') {
-  const input = document.getElementById('k-stash-input');
+  const input = document.getElementById('k-stash-entry-input') || document.getElementById('k-stash-input');
   if (!input) return;
   const val = input.value.trim();
   if (!val) {
