@@ -4705,7 +4705,14 @@ class StorageManager {
         { id: 's-fz-veggies', type: 'freezer', name: 'veggies', badge: 'Freezer', used: false },
         { id: 's-fz-cool-whip', type: 'freezer', name: 'cool whip', badge: 'Freezer', used: false },
         { id: 's-fz-mini-tacos', type: 'freezer', name: 'mini tacos', badge: 'Freezer', used: false },
-        { id: 's-fz-chicken-breast-tenderloins', type: 'freezer', name: 'chicken breast tenderloins', badge: 'Freezer', used: false }
+        { id: 's-fz-chicken-breast-tenderloins', type: 'freezer', name: 'chicken breast tenderloins', badge: 'Freezer', used: false },
+        { id: 's-pt-chick-peas', type: 'pantry', name: 'chick peas', badge: 'Pantry', used: false },
+        { id: 's-pt-black-beans', type: 'pantry', name: 'black beans', badge: 'Pantry', used: false },
+        { id: 's-pt-refried-beans', type: 'pantry', name: 'refried beans', badge: 'Pantry', used: false },
+        { id: 's-pt-coconut-milk', type: 'pantry', name: 'coconut milk', badge: 'Pantry', used: false },
+        { id: 's-pt-great-northern-beans', type: 'pantry', name: 'great northern beans', badge: 'Pantry', used: false },
+        { id: 's-pt-pumpkin-puree', type: 'pantry', name: 'pumpkin puree', badge: 'Pantry', used: false },
+        { id: 's-pt-soup', type: 'pantry', name: 'soup', badge: 'Pantry', used: false }
       ],
       eatOutTarget: 1,
       selectedHopperIngredients: [],
@@ -5133,30 +5140,6 @@ class StorageManager {
         kd.newRecipes = kd.newRecipes.filter(r => (r.title || '').toLowerCase().trim() !== 'crispy chickpea & avocado wrap');
       }
 
-      // Purge any chick peas / chickpeas from stash and groceries
-      if (Array.isArray(kd.stashItems)) {
-        const prevLen = kd.stashItems.length;
-        kd.stashItems = kd.stashItems.filter(i => {
-          const n = (i.name || '').toLowerCase().trim();
-          return !n.includes('chick pea') && !n.includes('chickpea');
-        });
-        if (kd.stashItems.length !== prevLen) {
-          this.data.kitchenUpdatedAt = Date.now();
-          this.saveData();
-        }
-      }
-      if (Array.isArray(kd.groceries)) {
-        const prevG = kd.groceries.length;
-        kd.groceries = kd.groceries.filter(g => {
-          const t = (g.text || '').toLowerCase().trim();
-          return !t.includes('chick pea') && !t.includes('chickpea');
-        });
-        if (kd.groceries.length !== prevG) {
-          this.data.kitchenUpdatedAt = Date.now();
-          this.saveData();
-        }
-      }
-
       // Ensure user's requested items are in freezer
       if (!this.data.kitchenFreezerItemsNov2026Seeded) {
         if (!Array.isArray(kd.stashItems)) kd.stashItems = [];
@@ -5194,6 +5177,42 @@ class StorageManager {
         });
 
         this.data.kitchenFreezerItemsNov2026Seeded = true;
+        this.data.kitchenUpdatedAt = Date.now();
+        this.saveData();
+      }
+
+      // Ensure user's requested items are in pantry
+      if (!this.data.kitchenPantryItemsNov2026Seeded) {
+        if (!Array.isArray(kd.stashItems)) kd.stashItems = [];
+        const pantryList = [
+          'chick peas',
+          'black beans',
+          'refried beans',
+          'coconut milk',
+          'great northern beans',
+          'pumpkin puree',
+          'soup'
+        ];
+
+        pantryList.forEach(name => {
+          const norm = name.toLowerCase().trim();
+          const existing = kd.stashItems.find(i => (i.name || '').toLowerCase().trim() === norm);
+          if (existing) {
+            existing.type = 'pantry';
+            existing.badge = 'Pantry';
+            existing.used = false;
+          } else {
+            kd.stashItems.push({
+              id: 's-pt-' + norm.replace(/[^a-z0-9]/g, '-') + '-' + Date.now(),
+              type: 'pantry',
+              name: name,
+              badge: 'Pantry',
+              used: false
+            });
+          }
+        });
+
+        this.data.kitchenPantryItemsNov2026Seeded = true;
         this.data.kitchenUpdatedAt = Date.now();
         this.saveData();
       }
