@@ -4716,7 +4716,7 @@ class StorageManager {
           id: 'r-kale-salad',
           title: 'Kale Salad',
           icon: 'salad',
-          course: 'side',
+          course: 'main',
           tags: [],
           recipeUrl: '',
           ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
@@ -5068,7 +5068,7 @@ class StorageManager {
             id: 'r-kale-salad-' + Date.now(),
             title: 'Kale Salad',
             icon: 'salad',
-            course: 'side',
+            course: 'main',
             tags: [],
             recipeUrl: '',
             ingredients: 'Shredded kale, carrots & red cabbage tossed with Granny Smith apples, croutons, chickpeas, bacon, sunflower seeds, red onions, Grana Padano cheese & an apple cider vinaigrette',
@@ -5078,6 +5078,21 @@ class StorageManager {
         }
         this.data.kitchenKaleSaladSeeded = true;
         this.saveData();
+      }
+
+      // Ensure Kale Salad course is updated to 'main'
+      if (Array.isArray(kd.favoriteRecipes)) {
+        let updatedKale = false;
+        kd.favoriteRecipes.forEach(r => {
+          if ((r.title || '').toLowerCase().includes('kale salad') && r.course !== 'main') {
+            r.course = 'main';
+            updatedKale = true;
+          }
+        });
+        if (updatedKale) {
+          this.data.kitchenUpdatedAt = Date.now();
+          this.saveData();
+        }
       }
 
       // Ensure Buffalo Jack Salad is seeded in Favorites Vault
