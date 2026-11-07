@@ -4693,7 +4693,20 @@ class StorageManager {
   getDefaultKitchenData() {
     return {
       currentWeekSundayIso: this.getCurrentSundayIso(),
-      stashItems: [],
+      stashItems: [
+        { id: 's-fz-turkey-bacon', type: 'freezer', name: 'turkey bacon', badge: 'Freezer', used: false },
+        { id: 's-fz-blueberry', type: 'freezer', name: 'blueberry', badge: 'Freezer', used: false },
+        { id: 's-fz-sausage-patty', type: 'freezer', name: 'sausage patty', badge: 'Freezer', used: false },
+        { id: 's-fz-masala-burger', type: 'freezer', name: 'masala burger', badge: 'Freezer', used: false },
+        { id: 's-fz-waffles', type: 'freezer', name: 'waffles', badge: 'Freezer', used: false },
+        { id: 's-fz-soup-dumplings', type: 'freezer', name: 'soup dumplings', badge: 'Freezer', used: false },
+        { id: 's-fz-shrimp', type: 'freezer', name: 'shrimp', badge: 'Freezer', used: false },
+        { id: 's-fz-chicken-nuggets', type: 'freezer', name: 'chicken nuggets', badge: 'Freezer', used: false },
+        { id: 's-fz-veggies', type: 'freezer', name: 'veggies', badge: 'Freezer', used: false },
+        { id: 's-fz-cool-whip', type: 'freezer', name: 'cool whip', badge: 'Freezer', used: false },
+        { id: 's-fz-mini-tacos', type: 'freezer', name: 'mini tacos', badge: 'Freezer', used: false },
+        { id: 's-fz-chicken-breast-tenderloins', type: 'freezer', name: 'chicken breast tenderloins', badge: 'Freezer', used: false }
+      ],
       eatOutTarget: 1,
       selectedHopperIngredients: [],
       weekSchedule: this.makeEmptyKitchenWeek(),
@@ -4796,31 +4809,16 @@ class StorageManager {
         });
       }
 
-      // Migrate aracula/arugula, strawberry, blueberry to fridge (one-time preserved)
+      // Migrate aracula/arugula, strawberry to fridge (one-time preserved)
       if (Array.isArray(kd.stashItems)) {
-        const fridgeTargets = new Set(['aracula', 'arugula', 'strawberry', 'strawberries', 'blueberry', 'blueberries']);
-        let foundBlueberry = false;
+        const fridgeTargets = new Set(['aracula', 'arugula', 'strawberry', 'strawberries']);
         kd.stashItems.forEach(item => {
           const n = (item.name || '').toLowerCase().trim();
           if (fridgeTargets.has(n) && !item.manuallySet) {
             item.type = 'fridge';
             item.badge = 'Fridge';
           }
-          if (n === 'blueberry' || n === 'blueberries') {
-            foundBlueberry = true;
-          }
         });
-        if (!foundBlueberry && !this.data.kitchenBlueberryAdded) {
-          kd.stashItems.push({
-            id: 's-' + Date.now(),
-            type: 'fridge',
-            name: 'blueberry',
-            badge: 'Fridge',
-            used: false
-          });
-          this.data.kitchenBlueberryAdded = true;
-          this.saveData();
-        }
 
         // Move the second broccoli to freezer while keeping first in fridge
         if (!this.data.kitchenSecondBroccoliFreezerV1) {
@@ -5157,6 +5155,47 @@ class StorageManager {
           this.data.kitchenUpdatedAt = Date.now();
           this.saveData();
         }
+      }
+
+      // Ensure user's requested items are in freezer
+      if (!this.data.kitchenFreezerItemsNov2026Seeded) {
+        if (!Array.isArray(kd.stashItems)) kd.stashItems = [];
+        const freezerList = [
+          'turkey bacon',
+          'blueberry',
+          'sausage patty',
+          'masala burger',
+          'waffles',
+          'soup dumplings',
+          'shrimp',
+          'chicken nuggets',
+          'veggies',
+          'cool whip',
+          'mini tacos',
+          'chicken breast tenderloins'
+        ];
+
+        freezerList.forEach(name => {
+          const norm = name.toLowerCase().trim();
+          const existing = kd.stashItems.find(i => (i.name || '').toLowerCase().trim() === norm);
+          if (existing) {
+            existing.type = 'freezer';
+            existing.badge = 'Freezer';
+            existing.used = false;
+          } else {
+            kd.stashItems.push({
+              id: 's-fz-' + norm.replace(/[^a-z0-9]/g, '-') + '-' + Date.now(),
+              type: 'freezer',
+              name: name,
+              badge: 'Freezer',
+              used: false
+            });
+          }
+        });
+
+        this.data.kitchenFreezerItemsNov2026Seeded = true;
+        this.data.kitchenUpdatedAt = Date.now();
+        this.saveData();
       }
     }
     return this.data.kitchenData;
