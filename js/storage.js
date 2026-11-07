@@ -609,7 +609,7 @@ class StorageManager {
       zlogActiveMeds: (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [],
       // Kitchen & Stash Data
       kitchenData: this.getDefaultKitchenData(),
-      kitchenUpdatedAt: Date.now()
+      kitchenUpdatedAt: 0
     };
   }
 
@@ -1056,7 +1056,16 @@ class StorageManager {
           if (parsedKd && typeof parsedKd === 'object' && parsedKd.kitchenData) {
             const dedTime = Number(parsedKd.kitchenUpdatedAt) || 0;
             const curTime = Number(merged.kitchenUpdatedAt) || 0;
-            if (dedTime >= curTime || !merged.kitchenData) {
+
+            const hasAnyMeals = (sch) => {
+              if (!Array.isArray(sch)) return false;
+              return sch.some(d => (d && d.meal && d.meal.trim() !== '') || (d && d.meals && Object.values(d.meals).some(slots => Array.isArray(slots) && slots.some(s => s && s.meal))));
+            };
+
+            const locHasMeals = hasAnyMeals(merged.kitchenData && merged.kitchenData.weekSchedule);
+            const dedHasMeals = hasAnyMeals(parsedKd.kitchenData.weekSchedule);
+
+            if (dedTime >= curTime || !merged.kitchenData || (!locHasMeals && dedHasMeals) || curTime === 0) {
               const existingStash = (merged.kitchenData && Array.isArray(merged.kitchenData.stashItems)) ? merged.kitchenData.stashItems : [];
               const dedStash = Array.isArray(parsedKd.kitchenData.stashItems) ? parsedKd.kitchenData.stashItems : [];
               const stashMap = new Map();
@@ -1070,10 +1079,18 @@ class StorageManager {
                 }
               });
 
+              let resolvedWeekSchedule = (merged.kitchenData && merged.kitchenData.weekSchedule) || [];
+              if (!hasAnyMeals(resolvedWeekSchedule) && dedHasMeals) {
+                resolvedWeekSchedule = parsedKd.kitchenData.weekSchedule;
+              } else if (!hasAnyMeals(resolvedWeekSchedule) && hasAnyMeals(parsedKd.kitchenData.previousWeekSchedule)) {
+                resolvedWeekSchedule = parsedKd.kitchenData.previousWeekSchedule;
+              }
+
               merged.kitchenData = {
                 ...(merged.kitchenData || {}),
                 ...parsedKd.kitchenData,
-                stashItems: Array.from(stashMap.values())
+                stashItems: Array.from(stashMap.values()),
+                weekSchedule: hasAnyMeals(resolvedWeekSchedule) ? resolvedWeekSchedule : (merged.kitchenData && hasAnyMeals(merged.kitchenData.weekSchedule) ? merged.kitchenData.weekSchedule : (defaults.kitchenData ? defaults.kitchenData.weekSchedule : []))
               };
               merged.kitchenUpdatedAt = Math.max(curTime, dedTime);
             }
@@ -4652,6 +4669,111 @@ class StorageManager {
     return `${yr}-${mo}-${da}`;
   }
 
+  getSeededNov2026Week() {
+    return [
+      {
+        day: 'Sun',
+        date: '',
+        meal: 'Spanish rice',
+        source: 'fresh',
+        icon: 'risotto',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: {
+          brunch: [],
+          lunch: [],
+          dinner: [{ meal: 'Spanish rice', source: 'fresh', icon: 'risotto', recipeUrl: '', favoriteId: null }],
+          dessert: []
+        }
+      },
+      {
+        day: 'Mon',
+        date: '',
+        meal: 'Home made pizza with salami',
+        source: 'fresh',
+        icon: 'pizza',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: {
+          brunch: [],
+          lunch: [],
+          dinner: [{ meal: 'Home made pizza with salami', source: 'fresh', icon: 'pizza', recipeUrl: '', favoriteId: null }],
+          dessert: []
+        }
+      },
+      {
+        day: 'Tue',
+        date: '',
+        meal: 'Tacos soft Shell with shredded lettuce and ground turkey',
+        source: 'fresh',
+        icon: 'taco',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: {
+          brunch: [],
+          lunch: [],
+          dinner: [{ meal: 'Tacos soft Shell with shredded lettuce and ground turkey', source: 'fresh', icon: 'taco', recipeUrl: '', favoriteId: null }],
+          dessert: []
+        }
+      },
+      {
+        day: 'Wed',
+        date: '',
+        meal: 'Salad with grilled chicken and cucumbers, tomatoes, chickpeas, bacon',
+        source: 'fresh',
+        icon: 'salad',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: {
+          brunch: [],
+          lunch: [],
+          dinner: [{ meal: 'Salad with grilled chicken and cucumbers, tomatoes, chickpeas, bacon', source: 'fresh', icon: 'salad', recipeUrl: '', favoriteId: null }],
+          dessert: []
+        }
+      },
+      {
+        day: 'Thu',
+        date: '',
+        meal: 'Chicken nuggets, veggies, stuff from freezer and pantry',
+        source: 'freezer',
+        icon: 'chicken',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: {
+          brunch: [],
+          lunch: [],
+          dinner: [{ meal: 'Chicken nuggets, veggies, stuff from freezer and pantry', source: 'freezer', icon: 'chicken', recipeUrl: '', favoriteId: null }],
+          dessert: []
+        }
+      },
+      {
+        day: 'Fri',
+        date: '',
+        meal: 'Takeout / Eat Out',
+        source: 'out',
+        icon: 'takeout',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: {
+          brunch: [],
+          lunch: [],
+          dinner: [{ meal: 'Takeout / Eat Out', source: 'out', icon: 'takeout', recipeUrl: '', favoriteId: null }],
+          dessert: []
+        }
+      },
+      {
+        day: 'Sat',
+        date: '',
+        meal: '',
+        source: 'fresh',
+        icon: 'chicken',
+        recipeUrl: '',
+        favoriteId: null,
+        meals: { brunch: [], lunch: [], dinner: [], dessert: [] }
+      }
+    ];
+  }
+
   makeEmptyKitchenWeek() {
     const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     return dayNames.map(dayName => ({
@@ -4766,7 +4888,7 @@ class StorageManager {
 
   getDefaultKitchenData() {
     return {
-      currentWeekSundayIso: this.getCurrentSundayIso(),
+      currentWeekSundayIso: '2026-11-01',
       stashItems: [
         { id: 's-fz-turkey-bacon', type: 'freezer', name: 'turkey bacon', badge: 'Freezer', used: false },
         { id: 's-fz-blueberry', type: 'freezer', name: 'blueberry', badge: 'Freezer', used: false },
@@ -4790,7 +4912,7 @@ class StorageManager {
       ],
       eatOutTarget: 1,
       selectedHopperIngredients: [],
-      weekSchedule: this.makeEmptyKitchenWeek(),
+      weekSchedule: this.getSeededNov2026Week(),
       followingWeekSchedule: this.makeEmptyKitchenWeek(),
       activeWeekOffset: 0,
       activeMealFilter: 'all',
@@ -4840,6 +4962,35 @@ class StorageManager {
       if (!kd.activeMealFilter) kd.activeMealFilter = 'all';
       if (!kd.vaultFilter) kd.vaultFilter = 'all';
       if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
+
+      // Resilient Meal Schedule Self-Healing:
+      // If current weekSchedule is completely empty, restore it from previousWeekSchedule or seeded Nov 2026 schedule
+      const hasAnyMeals = (schedule) => {
+        if (!Array.isArray(schedule)) return false;
+        return schedule.some(d => {
+          if (d && d.meal && d.meal.trim() !== '') return true;
+          if (d && d.meals && typeof d.meals === 'object') {
+            return ['brunch', 'lunch', 'dinner', 'dessert'].some(t => {
+              const slots = d.meals[t];
+              if (Array.isArray(slots)) return slots.some(s => s && s.meal && s.meal.trim() !== '');
+              return Boolean(slots && slots.meal && slots.meal.trim() !== '');
+            });
+          }
+          return false;
+        });
+      };
+
+      if (!hasAnyMeals(kd.weekSchedule)) {
+        if (hasAnyMeals(kd.previousWeekSchedule)) {
+          kd.weekSchedule = JSON.parse(JSON.stringify(kd.previousWeekSchedule));
+        } else {
+          kd.weekSchedule = this.getSeededNov2026Week();
+        }
+        kd.currentWeekSundayIso = '2026-11-01';
+        kd.activeWeekOffset = 0;
+        this.data.kitchenUpdatedAt = Date.now();
+        this.saveData();
+      }
 
       // Ensure advancing to another week starts completely blank (and purge any cloned seed schedule)
       const isClonedSeedNextWeek = Array.isArray(kd.followingWeekSchedule) &&

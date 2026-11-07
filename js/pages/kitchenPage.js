@@ -156,6 +156,12 @@ function kGetScheduleForWeekOffset(data, offset) {
     if (!Array.isArray(data.followingWeekSchedule)) data.followingWeekSchedule = makeBlankWeek();
     return data.followingWeekSchedule;
   }
+  if (offset === -1) {
+    if (!Array.isArray(data.previousWeekSchedule)) {
+      data.previousWeekSchedule = (data.extraWeekSchedules && Array.isArray(data.extraWeekSchedules['-1'])) ? data.extraWeekSchedules['-1'] : makeBlankWeek();
+    }
+    return data.previousWeekSchedule;
+  }
   if (!data.extraWeekSchedules || typeof data.extraWeekSchedules !== 'object') {
     data.extraWeekSchedules = {};
   }

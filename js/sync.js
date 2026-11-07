@@ -969,15 +969,59 @@ class SyncManager {
       });
       const mergedStash = Array.from(stashMap.values());
 
+      const hasAnyMeals = (sch) => {
+        if (!Array.isArray(sch)) return false;
+        return sch.some(d => {
+          if (d && d.meal && d.meal.trim() !== '') return true;
+          if (d && d.meals && typeof d.meals === 'object') {
+            return ['brunch', 'lunch', 'dinner', 'dessert'].some(t => {
+              const slots = d.meals[t];
+              if (Array.isArray(slots)) return slots.some(s => s && s.meal && s.meal.trim() !== '');
+              return Boolean(slots && slots.meal && slots.meal.trim() !== '');
+            });
+          }
+          return false;
+        });
+      };
+
+      const locHasMeals = hasAnyMeals(locKitchen.weekSchedule);
+      const incHasMeals = hasAnyMeals(incKitchen.weekSchedule);
+
+      let targetSchedule;
+      if (locHasMeals && !incHasMeals) {
+        // Protect local meals from being wiped by an empty cloud schedule
+        targetSchedule = locKitchen.weekSchedule;
+        localWasRicher = true;
+      } else if (!locHasMeals && incHasMeals) {
+        targetSchedule = incKitchen.weekSchedule;
+      } else if (locHasMeals && incHasMeals) {
+        targetSchedule = (incKitchenTime > locKitchenTime) ? incKitchen.weekSchedule : locKitchen.weekSchedule;
+      } else {
+        // Both empty: check previousWeekSchedule or seeded week
+        if (hasAnyMeals(locKitchen.previousWeekSchedule)) {
+          targetSchedule = locKitchen.previousWeekSchedule;
+          localWasRicher = true;
+        } else if (hasAnyMeals(incKitchen.previousWeekSchedule)) {
+          targetSchedule = incKitchen.previousWeekSchedule;
+        } else if (typeof storage.getSeededNov2026Week === 'function') {
+          targetSchedule = storage.getSeededNov2026Week();
+          localWasRicher = true;
+        } else {
+          targetSchedule = locKitchen.weekSchedule || [];
+        }
+      }
+
       if (incKitchenTime > locKitchenTime || !storage.data.kitchenData) {
         mergedKitchen = {
           ...incKitchen,
-          stashItems: mergedStash
+          stashItems: mergedStash,
+          weekSchedule: targetSchedule
         };
       } else if (locKitchenTime > incKitchenTime) {
         mergedKitchen = {
           ...locKitchen,
-          stashItems: mergedStash
+          stashItems: mergedStash,
+          weekSchedule: targetSchedule
         };
         localWasRicher = true;
       } else {
@@ -989,9 +1033,9 @@ class SyncManager {
           favoriteRecipes: (Array.isArray(incKitchen.favoriteRecipes) && incKitchen.favoriteRecipes.length > 0) ? incKitchen.favoriteRecipes : (locKitchen.favoriteRecipes || []),
           newRecipes: (Array.isArray(incKitchen.newRecipes) && incKitchen.newRecipes.length > 0) ? incKitchen.newRecipes : (locKitchen.newRecipes || []),
           groceries: (Array.isArray(incKitchen.groceries) && incKitchen.groceries.length > 0) ? incKitchen.groceries : (locKitchen.groceries || []),
-          weekSchedule: incKitchen.weekSchedule || locKitchen.weekSchedule,
+          weekSchedule: targetSchedule,
           followingWeekSchedule: incKitchen.followingWeekSchedule || locKitchen.followingWeekSchedule,
-          currentWeekSundayIso: incKitchen.currentWeekSundayIso || locKitchen.currentWeekSundayIso
+          currentWeekSundayIso: incKitchen.currentWeekSundayIso || locKitchen.currentWeekSundayIso || '2026-11-01'
         };
       }
     }
