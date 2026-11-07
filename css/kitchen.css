@@ -764,6 +764,208 @@
   margin-top: 6px;
 }
 
+/* Stash 3-Column Kanban Layout */
+.k-stash-summary-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  background: var(--k-birch-mist);
+  border: 1px solid var(--k-birch-border);
+  color: var(--k-obsidian);
+  white-space: nowrap;
+}
+
+.k-stash-kanban-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 6px;
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .k-stash-kanban-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.k-stash-kanban-col {
+  background: var(--k-birch-mist);
+  border: 1px solid var(--k-birch-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 200px;
+  transition: all 0.15s ease;
+}
+
+.k-stash-kanban-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--k-birch-border);
+}
+
+.k-stash-kanban-col-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--k-obsidian);
+  letter-spacing: 0.02em;
+}
+
+.k-stash-kanban-col-count {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid var(--k-birch-border);
+  color: var(--k-obsidian);
+  min-width: 20px;
+  text-align: center;
+}
+
+.k-stash-kanban-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.k-stash-kanban-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: #FFFFFF;
+  border: 1px solid var(--k-birch-border);
+  color: var(--k-obsidian);
+  font-size: 12.5px;
+  font-weight: 600;
+  transition: all 0.12s ease;
+  box-shadow: 0 1px 3px rgba(0, 31, 41, 0.03);
+}
+
+.k-stash-kanban-item:hover {
+  border-color: rgba(31, 11, 160, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 31, 41, 0.06);
+}
+
+.k-stash-kanban-item.is-used {
+  opacity: 0.45;
+}
+
+.k-stash-kanban-item.is-used .k-stash-item-name {
+  text-decoration: line-through;
+}
+
+.k-stash-kanban-item.is-planned {
+  background: var(--k-coral-soft);
+  border-color: var(--k-coral-border);
+}
+
+.k-stash-item-main {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.k-stash-item-check-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--k-birch-border);
+  background: transparent;
+  color: var(--k-coral);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.12s ease;
+}
+
+.k-stash-item-check-btn:hover {
+  border-color: var(--k-coral);
+  background: var(--k-coral-soft);
+}
+
+.k-stash-kanban-item.is-used .k-stash-item-check-btn {
+  background: var(--k-coral);
+  border-color: var(--k-coral);
+  color: #FFFFFF;
+}
+
+.k-stash-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12.5px;
+}
+
+.k-stash-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.k-stash-item-cycle-btn,
+.k-stash-item-del-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--k-text-muted);
+  font-size: 13px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.k-stash-item-cycle-btn:hover {
+  background: rgba(31, 11, 160, 0.08);
+  color: #1F0BA0;
+}
+
+.k-stash-item-del-btn:hover {
+  background: var(--k-coral-soft);
+  color: var(--k-wine);
+}
+
+.k-stash-kanban-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  font-size: 12px;
+  color: var(--k-text-muted);
+  font-style: italic;
+  padding: 30px 8px;
+  text-align: center;
+}
+
 .k-clean-input {
   flex: 1;
   padding: 8px 12px;

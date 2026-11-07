@@ -630,12 +630,12 @@ function renderKitchenPage() {
       ` : ''}
 
       <!-- ===================================================================== -->
-      <!-- TAB 2: SHOP YOUR STASH                                                -->
+      <!-- TAB 2: SHOP YOUR STASH (3-COLUMN KANBAN)                              -->
       <!-- ===================================================================== -->
       ${activeTab === 'stash' ? `
         <!-- Shop Your Stash First -->
         <div class="k-panel-card">
-          <div class="k-panel-header">
+          <div class="k-panel-header" style="align-items:flex-start;">
             <div class="k-panel-title-group">
               <h3 class="k-panel-title">
                 <span>🥫</span>
@@ -643,59 +643,125 @@ function renderKitchenPage() {
               </h3>
               <span class="k-panel-desc">Prioritize items on hand before purchasing new groceries</span>
             </div>
-          </div>
-
-          <!-- Freezer Section -->
-          <div class="k-stash-section">
-            <span class="k-stash-section-label">🧊 Freezer (${freezerItems.length})</span>
-            <div class="k-stash-chips-wrap">
-              ${freezerItems.length > 0 ? freezerItems.map(item => `
-                <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                  <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
-                  <span>${escapeHtml(item.name)}</span>
-                  <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Freezer</span>
-                  <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
-                </div>
-              `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No freezer items</span>`}
-            </div>
-          </div>
-
-          <!-- Fridge Section -->
-          <div class="k-stash-section">
-            <span class="k-stash-section-label">🥦 Refrigerator (${fridgeItems.length})</span>
-            <div class="k-stash-chips-wrap">
-              ${fridgeItems.length > 0 ? fridgeItems.map(item => `
-                <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                  <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
-                  <span>${escapeHtml(item.name)}</span>
-                  <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Fridge</span>
-                  <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
-                </div>
-              `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No fridge items</span>`}
-            </div>
-          </div>
-
-          <!-- Pantry Section -->
-          <div class="k-stash-section">
-            <span class="k-stash-section-label">🌾 Pantry (${pantryItems.length})</span>
-            <div class="k-stash-chips-wrap">
-              ${pantryItems.length > 0 ? pantryItems.map(item => `
-                <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                  <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
-                  <span>${escapeHtml(item.name)}</span>
-                  <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Pantry</span>
-                  <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
-                </div>
-              `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No pantry items</span>`}
+            <div class="k-stash-summary-pill">
+              <span>${stashItems.length} item${stashItems.length === 1 ? '' : 's'} on hand</span>
             </div>
           </div>
 
           <!-- Quick Add Bar -->
           <div class="k-stash-quick-bar">
-            <input type="text" class="k-clean-input" id="k-stash-entry-input" name="k_stash_item_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
-            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">Pantry</button>
-            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">Fridge</button>
-            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">Freezer</button>
+            <input type="text" class="k-clean-input" id="k-stash-entry-input" name="k_stash_item_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('fridge')">
+            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">🧊 + Freezer</button>
+            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">🥦 + Fridge</button>
+            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">🌾 + Pantry</button>
+          </div>
+
+          <!-- 3-Column Kanban Grid -->
+          <div class="k-stash-kanban-grid">
+            <!-- Col 1: Freezer -->
+            <div class="k-stash-kanban-col">
+              <div class="k-stash-kanban-col-header">
+                <div class="k-stash-kanban-col-title">
+                  <span>🧊</span>
+                  <span>Freezer</span>
+                </div>
+                <span class="k-stash-kanban-col-count">${freezerItems.length}</span>
+              </div>
+              <div class="k-stash-kanban-items">
+                ${freezerItems.length > 0 ? freezerItems.map(item => `
+                  <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                    <div class="k-stash-item-main">
+                      <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
+                        ${item.used ? '✓' : '○'}
+                      </button>
+                      <span class="k-stash-item-name">${escapeHtml(item.name)}</span>
+                    </div>
+                    <div class="k-stash-item-actions">
+                      <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Freezer → Pantry → Fridge)">
+                        ⇄
+                      </button>
+                      <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                `).join('') : `
+                  <div class="k-stash-kanban-empty">
+                    <span>No freezer items</span>
+                  </div>
+                `}
+              </div>
+            </div>
+
+            <!-- Col 2: Fridge -->
+            <div class="k-stash-kanban-col">
+              <div class="k-stash-kanban-col-header">
+                <div class="k-stash-kanban-col-title">
+                  <span>🥦</span>
+                  <span>Refrigerator</span>
+                </div>
+                <span class="k-stash-kanban-col-count">${fridgeItems.length}</span>
+              </div>
+              <div class="k-stash-kanban-items">
+                ${fridgeItems.length > 0 ? fridgeItems.map(item => `
+                  <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                    <div class="k-stash-item-main">
+                      <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
+                        ${item.used ? '✓' : '○'}
+                      </button>
+                      <span class="k-stash-item-name">${escapeHtml(item.name)}</span>
+                    </div>
+                    <div class="k-stash-item-actions">
+                      <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Fridge → Freezer → Pantry)">
+                        ⇄
+                      </button>
+                      <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                `).join('') : `
+                  <div class="k-stash-kanban-empty">
+                    <span>No fridge items</span>
+                  </div>
+                `}
+              </div>
+            </div>
+
+            <!-- Col 3: Pantry -->
+            <div class="k-stash-kanban-col">
+              <div class="k-stash-kanban-col-header">
+                <div class="k-stash-kanban-col-title">
+                  <span>🌾</span>
+                  <span>Pantry</span>
+                </div>
+                <span class="k-stash-kanban-col-count">${pantryItems.length}</span>
+              </div>
+              <div class="k-stash-kanban-items">
+                ${pantryItems.length > 0 ? pantryItems.map(item => `
+                  <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                    <div class="k-stash-item-main">
+                      <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
+                        ${item.used ? '✓' : '○'}
+                      </button>
+                      <span class="k-stash-item-name">${escapeHtml(item.name)}</span>
+                    </div>
+                    <div class="k-stash-item-actions">
+                      <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Pantry → Fridge → Freezer)">
+                        ⇄
+                      </button>
+                      <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                `).join('') : `
+                  <div class="k-stash-kanban-empty">
+                    <span>No pantry items</span>
+                  </div>
+                `}
+              </div>
+            </div>
           </div>
         </div>
       ` : ''}
