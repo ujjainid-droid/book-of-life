@@ -31,12 +31,13 @@
 
 .kitchen-workflow-wrap {
   width: 100%;
-  max-width: 960px;
+  max-width: 1180px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 18px;
   padding: 10px 12px 80px;
+  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -648,13 +649,78 @@
 
 .k-panel-card {
   background: var(--k-card-bg);
-  border: 1px solid var(--k-birch-border);
+  border: 1px solid #E2E8F0;
   border-radius: 20px;
-  padding: 18px;
+  padding: 18px 20px;
   box-shadow: 0 4px 16px -4px rgba(0, 31, 41, 0.04);
   display: flex;
   flex-direction: column;
   gap: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Stash Icon Legend Strip */
+.k-stash-legend-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  padding: 9px 14px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  margin-top: -2px;
+}
+
+.k-stash-legend-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: #475569;
+}
+
+.k-stash-legend-pill strong {
+  color: #1E293B;
+  font-weight: 700;
+}
+
+.k-stash-legend-pill .legend-ic {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.k-stash-legend-pill .legend-zap {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6D28D9;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+}
+
+.k-stash-legend-pill .legend-plan {
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.25);
+}
+
+.k-stash-legend-pill .legend-cycle {
+  background: #FFFFFF;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+}
+
+.k-stash-legend-pill .legend-check {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6D28D9;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  font-weight: 800;
 }
 
 .k-panel-header {
@@ -778,28 +844,33 @@
 
 .k-stash-kanban-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  margin-top: 6px;
+  margin-top: 4px;
   align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 820px) {
   .k-stash-kanban-grid {
     grid-template-columns: 1fr;
   }
 }
 
 .k-stash-kanban-col {
-  background: var(--k-birch-mist);
-  border: 1px solid var(--k-birch-border);
-  border-radius: 14px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   min-height: 200px;
   transition: all 0.15s ease;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .k-stash-kanban-col-header {
@@ -808,28 +879,28 @@
   justify-content: space-between;
   gap: 8px;
   padding-bottom: 8px;
-  border-bottom: 1px solid var(--k-birch-border);
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .k-stash-kanban-col-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
-  color: var(--k-obsidian);
-  letter-spacing: 0.02em;
+  color: #0F172A;
+  letter-spacing: 0.01em;
 }
 
 .k-stash-kanban-col-count {
   font-size: 11px;
   font-weight: 800;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: 10px;
   background: #FFFFFF;
-  border: 1px solid var(--k-birch-border);
-  color: var(--k-obsidian);
-  min-width: 20px;
+  border: 1px solid #E2E8F0;
+  color: #475569;
+  min-width: 22px;
   text-align: center;
 }
 
@@ -843,9 +914,9 @@
   width: 24px;
   height: 24px;
   border-radius: 8px;
-  border: 1px solid var(--k-birch-border);
+  border: 1px solid #E2E8F0;
   background: #FFFFFF;
-  color: var(--k-obsidian);
+  color: #475569;
   font-size: 14px;
   font-weight: 700;
   line-height: 1;
@@ -859,8 +930,8 @@
 
 .k-stash-col-add-btn:hover,
 .k-stash-col-add-btn.active {
-  background: var(--k-obsidian);
-  border-color: var(--k-obsidian);
+  background: #8B5CF6;
+  border-color: #8B5CF6;
   color: #FFFFFF;
   transform: scale(1.06);
 }
@@ -946,57 +1017,101 @@
   padding: 8px 10px;
   border-radius: 10px;
   background: #FFFFFF;
-  border: 1px solid var(--k-birch-border);
-  color: var(--k-obsidian);
+  border: 1px solid #E2E8F0;
+  color: #0F172A;
   font-size: 12.5px;
   font-weight: 600;
-  transition: all 0.12s ease;
-  box-shadow: 0 1px 3px rgba(0, 31, 41, 0.03);
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .k-stash-kanban-item:hover {
-  border-color: rgba(31, 11, 160, 0.3);
+  border-color: rgba(139, 92, 246, 0.35);
   transform: translateY(-1px);
-  box-shadow: 0 3px 8px rgba(0, 31, 41, 0.06);
+  box-shadow: 0 3px 8px rgba(139, 92, 246, 0.08);
 }
 
 .k-stash-kanban-item.is-used {
   opacity: 0.45;
+  background: #F8FAFC;
 }
 
 .k-stash-kanban-item.is-used .k-stash-item-name {
   text-decoration: line-through;
+  color: #94A3B8;
 }
 
 /* Immediate Use (Priority Sort to Top) */
 .k-stash-kanban-item.is-immediate {
   border-left: 3.5px solid #8B5CF6;
-  border-color: rgba(139, 92, 246, 0.4);
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.08) 0%, #FFFFFF 100%);
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+  border-color: #DDD6FE;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.07) 0%, #FFFFFF 100%);
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.08);
 }
 
 /* Planned for Week Status */
 .k-stash-kanban-item.is-planned {
   border-left: 3.5px solid #0D98BA;
-  border-color: rgba(13, 152, 186, 0.38);
-  background: linear-gradient(90deg, rgba(13, 152, 186, 0.08) 0%, #FFFFFF 100%);
+  border-color: #BAE6FD;
+  background: linear-gradient(90deg, rgba(13, 152, 186, 0.07) 0%, #FFFFFF 100%);
 }
 
 /* Both Immediate and Planned */
 .k-stash-kanban-item.is-immediate.is-planned {
   border-left: 3.5px solid #8B5CF6;
-  border-color: rgba(13, 152, 186, 0.45);
-  background: linear-gradient(90deg, rgba(139, 92, 246, 0.09) 0%, rgba(13, 152, 186, 0.07) 100%);
+  border-color: #C4B5FD;
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.08) 0%, rgba(13, 152, 186, 0.06) 100%);
 }
 
 .k-stash-item-main {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   min-width: 0;
   flex: 1;
   overflow: hidden;
+}
+
+/* Crisp Clean Checkbox (Zero muddy red) */
+.k-stash-item-check-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid #CBD5E1;
+  background: #FFFFFF;
+  color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all 0.12s ease;
+}
+
+.k-stash-item-check-btn:hover {
+  border-color: #8B5CF6;
+  background: rgba(139, 92, 246, 0.08);
+  color: #8B5CF6;
+}
+
+.k-stash-kanban-item.is-used .k-stash-item-check-btn {
+  background: #8B5CF6;
+  border-color: #8B5CF6;
+  color: #FFFFFF;
+}
+
+.k-stash-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12.5px;
+  color: #1E293B;
+  font-weight: 600;
 }
 
 /* Interactive Pill Badges */
@@ -1008,9 +1123,9 @@
   font-weight: 700;
   padding: 1.5px 6px;
   border-radius: 6px;
-  background: rgba(139, 92, 246, 0.14);
+  background: rgba(139, 92, 246, 0.12);
   color: #6D28D9;
-  border: 1px solid rgba(139, 92, 246, 0.28);
+  border: 1px solid rgba(139, 92, 246, 0.25);
   cursor: pointer;
   flex-shrink: 0;
   line-height: 1.2;
@@ -1018,7 +1133,7 @@
 }
 
 .k-stash-badge-immediate:hover {
-  background: rgba(139, 92, 246, 0.22);
+  background: rgba(139, 92, 246, 0.2);
   transform: scale(1.04);
 }
 
@@ -1030,9 +1145,9 @@
   font-weight: 700;
   padding: 1.5px 6px;
   border-radius: 6px;
-  background: rgba(13, 152, 186, 0.13);
+  background: rgba(13, 152, 186, 0.12);
   color: #0E7490;
-  border: 1px solid rgba(13, 152, 186, 0.28);
+  border: 1px solid rgba(13, 152, 186, 0.25);
   cursor: pointer;
   flex-shrink: 0;
   line-height: 1.2;
@@ -1040,92 +1155,31 @@
 }
 
 .k-stash-badge-planned:hover {
-  background: rgba(13, 152, 186, 0.22);
+  background: rgba(13, 152, 186, 0.2);
   transform: scale(1.04);
 }
 
-.k-stash-item-immediate-btn,
-.k-stash-item-plan-btn {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--k-text-muted);
-  font-size: 12px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.12s ease;
-  opacity: 0.55;
-}
-
-.k-stash-item-immediate-btn:hover,
-.k-stash-item-plan-btn:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.k-stash-item-immediate-btn.is-active {
-  opacity: 1;
-  background: rgba(139, 92, 246, 0.16);
-  border-color: rgba(139, 92, 246, 0.35);
-  color: #6D28D9;
-}
-
-.k-stash-item-plan-btn.is-active {
-  opacity: 1;
-  background: rgba(13, 152, 186, 0.15);
-  border-color: rgba(13, 152, 186, 0.35);
-  color: #0E7490;
-}
-
-.k-stash-item-check-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 6px;
-  border: 1.5px solid var(--k-birch-border);
-  background: transparent;
-  color: var(--k-coral);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 800;
-  cursor: pointer;
-  padding: 0;
-  flex-shrink: 0;
-  transition: all 0.12s ease;
-}
-
-.k-stash-item-check-btn:hover {
-  border-color: var(--k-coral);
-  background: var(--k-coral-soft);
-}
-
-.k-stash-kanban-item.is-used .k-stash-item-check-btn {
-  background: var(--k-coral);
-  border-color: var(--k-coral);
-  color: #FFFFFF;
-}
-
-.k-stash-item-name {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 12.5px;
-}
-
+/* Action Toolbar (Zero visual clutter: reveals cleanly on hover) */
 .k-stash-item-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   flex-shrink: 0;
+  transition: opacity 0.15s ease;
 }
 
+@media (hover: hover) {
+  .k-stash-kanban-item .k-stash-item-actions {
+    opacity: 0.18;
+  }
+  .k-stash-kanban-item:hover .k-stash-item-actions,
+  .k-stash-kanban-item:focus-within .k-stash-item-actions {
+    opacity: 1;
+  }
+}
+
+.k-stash-item-immediate-btn,
+.k-stash-item-plan-btn,
 .k-stash-item-cycle-btn,
 .k-stash-item-del-btn {
   width: 22px;
@@ -1133,8 +1187,8 @@
   border-radius: 6px;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--k-text-muted);
-  font-size: 13px;
+  color: #64748B;
+  font-size: 12px;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -1144,14 +1198,38 @@
   transition: all 0.12s ease;
 }
 
+.k-stash-item-immediate-btn:hover {
+  background: rgba(139, 92, 246, 0.12);
+  color: #6D28D9;
+}
+
+.k-stash-item-immediate-btn.is-active {
+  background: rgba(139, 92, 246, 0.15);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #6D28D9;
+  opacity: 1 !important;
+}
+
+.k-stash-item-plan-btn:hover {
+  background: rgba(13, 152, 186, 0.12);
+  color: #0E7490;
+}
+
+.k-stash-item-plan-btn.is-active {
+  background: rgba(13, 152, 186, 0.14);
+  border-color: rgba(13, 152, 186, 0.3);
+  color: #0E7490;
+  opacity: 1 !important;
+}
+
 .k-stash-item-cycle-btn:hover {
-  background: rgba(31, 11, 160, 0.08);
-  color: #1F0BA0;
+  background: #F1F5F9;
+  color: #0F172A;
 }
 
 .k-stash-item-del-btn:hover {
-  background: var(--k-coral-soft);
-  color: var(--k-wine);
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
 }
 
 .k-stash-kanban-empty {
@@ -1739,4 +1817,23 @@
   background: #1C1D3A;
   border-color: rgba(255, 255, 255, 0.12);
   color: #EDEEFF;
+}
+
+[data-theme="dark"] .k-stash-legend-strip {
+  background: #15162B;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .k-stash-legend-pill {
+  color: #9496BC;
+}
+
+[data-theme="dark"] .k-stash-legend-pill strong {
+  color: #EDEEFF;
+}
+
+[data-theme="dark"] .k-stash-legend-pill .legend-cycle {
+  background: #1C1D3A;
+  color: #CBD5E1;
+  border-color: rgba(255, 255, 255, 0.12);
 }

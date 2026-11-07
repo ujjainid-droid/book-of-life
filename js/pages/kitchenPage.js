@@ -328,7 +328,7 @@ function kRenderStashItem(item, schedule) {
     <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${isImmediate ? 'is-immediate' : ''} ${isPlanned ? 'is-planned' : ''}">
       <div class="k-stash-item-main">
         <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
-          ${item.used ? '✓' : '○'}
+          ${item.used ? '✓' : ''}
         </button>
         <span class="k-stash-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
         ${isImmediate ? `
@@ -724,6 +724,26 @@ function renderKitchenPage() {
             </div>
             <div class="k-stash-summary-pill">
               <span>${stashItems.length} item${stashItems.length === 1 ? '' : 's'} on hand</span>
+            </div>
+          </div>
+
+          <!-- Icon Legend Strip -->
+          <div class="k-stash-legend-strip">
+            <div class="k-stash-legend-pill">
+              <span class="legend-ic legend-zap">⚡</span>
+              <span><strong>Immediate Use</strong> (sorted to top)</span>
+            </div>
+            <div class="k-stash-legend-pill">
+              <span class="legend-ic legend-plan">🗓️</span>
+              <span><strong>Planned</strong> (on week's schedule)</span>
+            </div>
+            <div class="k-stash-legend-pill">
+              <span class="legend-ic legend-cycle">⇄</span>
+              <span><strong>Move Zone</strong> (Freezer ⇄ Fridge ⇄ Pantry)</span>
+            </div>
+            <div class="k-stash-legend-pill">
+              <span class="legend-ic legend-check">✓</span>
+              <span><strong>Mark Used</strong></span>
             </div>
           </div>
 
