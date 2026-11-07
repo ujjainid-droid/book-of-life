@@ -648,14 +648,6 @@ function renderKitchenPage() {
             </div>
           </div>
 
-          <!-- Quick Add Bar -->
-          <div class="k-stash-quick-bar">
-            <input type="text" class="k-clean-input" id="k-stash-entry-input" name="k_stash_item_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('fridge')">
-            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">🧊 + Freezer</button>
-            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">🥦 + Fridge</button>
-            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">🌾 + Pantry</button>
-          </div>
-
           <!-- 3-Column Kanban Grid -->
           <div class="k-stash-kanban-grid">
             <!-- Col 1: Freezer -->
@@ -665,9 +657,17 @@ function renderKitchenPage() {
                   <span>🧊</span>
                   <span>Freezer</span>
                 </div>
-                <span class="k-stash-kanban-col-count">${freezerItems.length}</span>
+                <div class="k-stash-col-header-actions">
+                  <span class="k-stash-kanban-col-count">${freezerItems.length}</span>
+                  <button type="button" class="k-stash-col-add-btn" id="k-stash-add-btn-freezer" onclick="kToggleColAdd('freezer')" title="Add item to Freezer" aria-label="Add item to Freezer">＋</button>
+                </div>
               </div>
               <div class="k-stash-kanban-items">
+                <div class="k-stash-col-add-row" id="k-stash-add-row-freezer" style="display:none;">
+                  <input type="text" class="k-clean-input" id="k-stash-inline-input-freezer" name="k_stash_item_freezer" placeholder="Add to Freezer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') kSubmitColAdd('freezer'); else if(event.key==='Escape') kToggleColAdd('freezer');">
+                  <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('freezer')">Add</button>
+                  <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('freezer')" title="Cancel">×</button>
+                </div>
                 ${freezerItems.length > 0 ? freezerItems.map(item => `
                   <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
                     <div class="k-stash-item-main">
@@ -686,9 +686,9 @@ function renderKitchenPage() {
                     </div>
                   </div>
                 `).join('') : `
-                  <div class="k-stash-kanban-empty">
-                    <span>No freezer items</span>
-                  </div>
+                  <button type="button" class="k-stash-kanban-empty-btn" onclick="kToggleColAdd('freezer')">
+                    <span>＋ Add to Freezer</span>
+                  </button>
                 `}
               </div>
             </div>
@@ -700,9 +700,17 @@ function renderKitchenPage() {
                   <span>🥦</span>
                   <span>Refrigerator</span>
                 </div>
-                <span class="k-stash-kanban-col-count">${fridgeItems.length}</span>
+                <div class="k-stash-col-header-actions">
+                  <span class="k-stash-kanban-col-count">${fridgeItems.length}</span>
+                  <button type="button" class="k-stash-col-add-btn" id="k-stash-add-btn-fridge" onclick="kToggleColAdd('fridge')" title="Add item to Refrigerator" aria-label="Add item to Refrigerator">＋</button>
+                </div>
               </div>
               <div class="k-stash-kanban-items">
+                <div class="k-stash-col-add-row" id="k-stash-add-row-fridge" style="display:none;">
+                  <input type="text" class="k-clean-input" id="k-stash-inline-input-fridge" name="k_stash_item_fridge" placeholder="Add to Refrigerator..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') kSubmitColAdd('fridge'); else if(event.key==='Escape') kToggleColAdd('fridge');">
+                  <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('fridge')">Add</button>
+                  <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('fridge')" title="Cancel">×</button>
+                </div>
                 ${fridgeItems.length > 0 ? fridgeItems.map(item => `
                   <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
                     <div class="k-stash-item-main">
@@ -721,9 +729,9 @@ function renderKitchenPage() {
                     </div>
                   </div>
                 `).join('') : `
-                  <div class="k-stash-kanban-empty">
-                    <span>No fridge items</span>
-                  </div>
+                  <button type="button" class="k-stash-kanban-empty-btn" onclick="kToggleColAdd('fridge')">
+                    <span>＋ Add to Refrigerator</span>
+                  </button>
                 `}
               </div>
             </div>
@@ -735,9 +743,17 @@ function renderKitchenPage() {
                   <span>🌾</span>
                   <span>Pantry</span>
                 </div>
-                <span class="k-stash-kanban-col-count">${pantryItems.length}</span>
+                <div class="k-stash-col-header-actions">
+                  <span class="k-stash-kanban-col-count">${pantryItems.length}</span>
+                  <button type="button" class="k-stash-col-add-btn" id="k-stash-add-btn-pantry" onclick="kToggleColAdd('pantry')" title="Add item to Pantry" aria-label="Add item to Pantry">＋</button>
+                </div>
               </div>
               <div class="k-stash-kanban-items">
+                <div class="k-stash-col-add-row" id="k-stash-add-row-pantry" style="display:none;">
+                  <input type="text" class="k-clean-input" id="k-stash-inline-input-pantry" name="k_stash_item_pantry" placeholder="Add to Pantry..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') kSubmitColAdd('pantry'); else if(event.key==='Escape') kToggleColAdd('pantry');">
+                  <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('pantry')">Add</button>
+                  <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('pantry')" title="Cancel">×</button>
+                </div>
                 ${pantryItems.length > 0 ? pantryItems.map(item => `
                   <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
                     <div class="k-stash-item-main">
@@ -756,9 +772,9 @@ function renderKitchenPage() {
                     </div>
                   </div>
                 `).join('') : `
-                  <div class="k-stash-kanban-empty">
-                    <span>No pantry items</span>
-                  </div>
+                  <button type="button" class="k-stash-kanban-empty-btn" onclick="kToggleColAdd('pantry')">
+                    <span>＋ Add to Pantry</span>
+                  </button>
                 `}
               </div>
             </div>
@@ -962,6 +978,59 @@ function kAddStashWithSource(sourceType = 'pantry') {
   renderKitchenPage();
   if (typeof showToast === 'function') showToast(`Added "${val}" to ${badgeName}!`);
 }
+window.kAddStashWithSource = kAddStashWithSource;
+
+function kToggleColAdd(type) {
+  const row = document.getElementById(`k-stash-add-row-${type}`);
+  if (!row) return;
+  const isCurrentlyOpen = row.style.display !== 'none';
+
+  ['freezer', 'fridge', 'pantry'].forEach(t => {
+    const r = document.getElementById(`k-stash-add-row-${t}`);
+    const b = document.getElementById(`k-stash-add-btn-${t}`);
+    if (r) {
+      if (t === type && !isCurrentlyOpen) {
+        r.style.display = 'flex';
+        if (b) b.classList.add('active');
+        const inp = document.getElementById(`k-stash-inline-input-${t}`);
+        if (inp) {
+          setTimeout(() => {
+            inp.focus();
+            inp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }, 40);
+        }
+      } else {
+        r.style.display = 'none';
+        if (b) b.classList.remove('active');
+      }
+    }
+  });
+}
+window.kToggleColAdd = kToggleColAdd;
+
+function kSubmitColAdd(type) {
+  const input = document.getElementById(`k-stash-inline-input-${type}`);
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) {
+    input.focus();
+    return;
+  }
+  const badgeName = type === 'freezer' ? 'Freezer' : (type === 'fridge' ? 'Fridge' : 'Pantry');
+  const data = storage.getKitchenData();
+  if (!data.stashItems) data.stashItems = [];
+  data.stashItems.push({
+    id: 's-' + Date.now(),
+    type: type,
+    name: val,
+    badge: badgeName,
+    used: false
+  });
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') showToast(`Added "${val}" to ${badgeName}! ✨`);
+}
+window.kSubmitColAdd = kSubmitColAdd;
 
 function kCycleStashType(id, event) {
   if (event) event.stopPropagation();

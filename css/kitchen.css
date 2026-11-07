@@ -833,6 +833,104 @@
   text-align: center;
 }
 
+.k-stash-col-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.k-stash-col-add-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 1px solid var(--k-birch-border);
+  background: #FFFFFF;
+  color: var(--k-obsidian);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.k-stash-col-add-btn:hover,
+.k-stash-col-add-btn.active {
+  background: var(--k-obsidian);
+  border-color: var(--k-obsidian);
+  color: #FFFFFF;
+  transform: scale(1.06);
+}
+
+.k-stash-col-add-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(31, 11, 160, 0.25);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 31, 41, 0.05);
+}
+
+.k-stash-col-add-row .k-clean-input {
+  flex: 1;
+  padding: 6px 8px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  outline: none;
+  min-width: 0;
+}
+
+.k-stash-inline-cancel-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--k-text-muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.12s ease;
+}
+
+.k-stash-inline-cancel-btn:hover {
+  color: var(--k-wine);
+  background: var(--k-coral-soft);
+}
+
+.k-stash-kanban-empty-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  font-size: 12px;
+  color: var(--k-text-muted);
+  background: transparent;
+  border: 1px dashed var(--k-birch-border);
+  border-radius: 10px;
+  padding: 24px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  font-family: inherit;
+}
+
+.k-stash-kanban-empty-btn:hover {
+  background: #FFFFFF;
+  border-color: rgba(31, 11, 160, 0.3);
+  color: #1F0BA0;
+}
+
 .k-stash-kanban-items {
   display: flex;
   flex-direction: column;
