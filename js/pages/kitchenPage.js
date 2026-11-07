@@ -297,6 +297,70 @@ if (!window._kWeekDropdownListenerAttached) {
   });
 }
 
+function kGetPlannedInfoForItem(itemName, schedule) {
+  if (!itemName || !Array.isArray(schedule)) return null;
+  const norm = String(itemName).toLowerCase().trim();
+  if (!norm) return null;
+  for (const d of schedule) {
+    if (!d || !d.meals) continue;
+    for (const mType of ['brunch', 'lunch', 'dinner', 'dessert']) {
+      const slots = Array.isArray(d.meals[mType]) ? d.meals[mType] : (d.meals[mType] && d.meals[mType].meal ? [d.meals[mType]] : []);
+      for (const s of slots) {
+        if (s && s.meal) {
+          const mealText = String(s.meal).toLowerCase();
+          if (mealText.includes(norm) || (norm.length >= 5 && mealText.includes(norm.slice(0, -1)))) {
+            return { day: d.day, date: d.date, meal: s.meal };
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+window.kGetPlannedInfoForItem = kGetPlannedInfoForItem;
+
+function kRenderStashItem(item, schedule) {
+  const plannedInfo = kGetPlannedInfoForItem(item.name, schedule);
+  const isPlanned = item.planned === true || (item.planned !== false && Boolean(plannedInfo));
+  const isImmediate = Boolean(item.immediate);
+
+  return `
+    <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${isImmediate ? 'is-immediate' : ''} ${isPlanned ? 'is-planned' : ''}">
+      <div class="k-stash-item-main">
+        <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
+          ${item.used ? '✓' : '○'}
+        </button>
+        <span class="k-stash-item-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
+        ${isImmediate ? `
+          <button type="button" class="k-stash-badge-immediate" onclick="kToggleStashImmediate('${item.id}', event)" title="Immediate use (priority sort on top) · Tap to toggle">
+            ⚡ Now
+          </button>
+        ` : ''}
+        ${isPlanned ? `
+          <button type="button" class="k-stash-badge-planned" onclick="kToggleStashPlanned('${item.id}', event)" title="${plannedInfo ? `Planned for ${plannedInfo.day} (${escapeHtml(plannedInfo.meal)})` : 'Planned for this week'} · Tap to toggle">
+            🗓️ ${plannedInfo ? plannedInfo.day : 'Planned'}
+          </button>
+        ` : ''}
+      </div>
+      <div class="k-stash-item-actions">
+        <button type="button" class="k-stash-item-immediate-btn ${isImmediate ? 'is-active' : ''}" onclick="kToggleStashImmediate('${item.id}', event)" title="${isImmediate ? 'Remove immediate use' : 'Mark for immediate use (sorts to top)'}">
+          ⚡
+        </button>
+        <button type="button" class="k-stash-item-plan-btn ${isPlanned ? 'is-active' : ''}" onclick="kToggleStashPlanned('${item.id}', event)" title="${isPlanned ? (plannedInfo ? `Planned on ${plannedInfo.day} · Tap to unmark` : 'Planned for this week · Tap to unmark') : 'Mark as planned for this week'}">
+          🗓️
+        </button>
+        <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Freezer → Fridge → Pantry)">
+          ⇄
+        </button>
+        <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
+          ×
+        </button>
+      </div>
+    </div>
+  `;
+}
+window.kRenderStashItem = kRenderStashItem;
+
 function renderKitchenPage() {
   const container = document.getElementById('daily-sheet-container');
   if (!container) return;
@@ -405,9 +469,24 @@ function renderKitchenPage() {
     return (a.title || '').localeCompare(b.title || '');
   });
 
-  const freezerItems = stashItems.filter(i => i.type === 'freezer');
-  const fridgeItems = stashItems.filter(i => i.type === 'fridge');
-  const pantryItems = stashItems.filter(i => i.type !== 'freezer' && i.type !== 'fridge');
+  const sortStashItems = (items) => {
+    return [...items].sort((a, b) => {
+      // 1. Used items go to the very bottom
+      if (Boolean(a.used) !== Boolean(b.used)) return a.used ? 1 : -1;
+      // 2. Immediate use items go to the very top!
+      if (Boolean(a.immediate) !== Boolean(b.immediate)) return a.immediate ? -1 : 1;
+      // 3. Planned items next
+      const aPlanned = a.planned === true || (a.planned !== false && Boolean(kGetPlannedInfoForItem(a.name, fullWeekSchedule)));
+      const bPlanned = b.planned === true || (b.planned !== false && Boolean(kGetPlannedInfoForItem(b.name, fullWeekSchedule)));
+      if (aPlanned !== bPlanned) return aPlanned ? -1 : 1;
+      // 4. Alphabetical by name
+      return (a.name || '').localeCompare(b.name || '');
+    });
+  };
+
+  const freezerItems = sortStashItems(stashItems.filter(i => i.type === 'freezer'));
+  const fridgeItems = sortStashItems(stashItems.filter(i => i.type === 'fridge'));
+  const pantryItems = sortStashItems(stashItems.filter(i => i.type !== 'freezer' && i.type !== 'fridge'));
   const uncheckedGroceriesCount = groceryItems.filter(g => !g.checked).length;
 
   container.innerHTML = `
@@ -668,24 +747,7 @@ function renderKitchenPage() {
                   <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('freezer')">Add</button>
                   <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('freezer')" title="Cancel">×</button>
                 </div>
-                ${freezerItems.length > 0 ? freezerItems.map(item => `
-                  <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                    <div class="k-stash-item-main">
-                      <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
-                        ${item.used ? '✓' : '○'}
-                      </button>
-                      <span class="k-stash-item-name">${escapeHtml(item.name)}</span>
-                    </div>
-                    <div class="k-stash-item-actions">
-                      <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Freezer → Pantry → Fridge)">
-                        ⇄
-                      </button>
-                      <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
-                        ×
-                      </button>
-                    </div>
-                  </div>
-                `).join('') : `
+                ${freezerItems.length > 0 ? freezerItems.map(item => kRenderStashItem(item, fullWeekSchedule)).join('') : `
                   <button type="button" class="k-stash-kanban-empty-btn" onclick="kToggleColAdd('freezer')">
                     <span>＋ Add to Freezer</span>
                   </button>
@@ -711,24 +773,7 @@ function renderKitchenPage() {
                   <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('fridge')">Add</button>
                   <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('fridge')" title="Cancel">×</button>
                 </div>
-                ${fridgeItems.length > 0 ? fridgeItems.map(item => `
-                  <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                    <div class="k-stash-item-main">
-                      <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
-                        ${item.used ? '✓' : '○'}
-                      </button>
-                      <span class="k-stash-item-name">${escapeHtml(item.name)}</span>
-                    </div>
-                    <div class="k-stash-item-actions">
-                      <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Fridge → Freezer → Pantry)">
-                        ⇄
-                      </button>
-                      <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
-                        ×
-                      </button>
-                    </div>
-                  </div>
-                `).join('') : `
+                ${fridgeItems.length > 0 ? fridgeItems.map(item => kRenderStashItem(item, fullWeekSchedule)).join('') : `
                   <button type="button" class="k-stash-kanban-empty-btn" onclick="kToggleColAdd('fridge')">
                     <span>＋ Add to Refrigerator</span>
                   </button>
@@ -754,24 +799,7 @@ function renderKitchenPage() {
                   <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('pantry')">Add</button>
                   <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('pantry')" title="Cancel">×</button>
                 </div>
-                ${pantryItems.length > 0 ? pantryItems.map(item => `
-                  <div class="k-stash-kanban-item ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                    <div class="k-stash-item-main">
-                      <button type="button" class="k-stash-item-check-btn" onclick="kToggleStashUsed('${item.id}', event)" title="${item.used ? 'Mark active' : 'Mark used'}">
-                        ${item.used ? '✓' : '○'}
-                      </button>
-                      <span class="k-stash-item-name">${escapeHtml(item.name)}</span>
-                    </div>
-                    <div class="k-stash-item-actions">
-                      <button type="button" class="k-stash-item-cycle-btn" onclick="kCycleStashType('${item.id}', event)" title="Move to next zone (Pantry → Fridge → Freezer)">
-                        ⇄
-                      </button>
-                      <button type="button" class="k-stash-item-del-btn" onclick="kDeleteStash('${item.id}')" title="Delete">
-                        ×
-                      </button>
-                    </div>
-                  </div>
-                `).join('') : `
+                ${pantryItems.length > 0 ? pantryItems.map(item => kRenderStashItem(item, fullWeekSchedule)).join('') : `
                   <button type="button" class="k-stash-kanban-empty-btn" onclick="kToggleColAdd('pantry')">
                     <span>＋ Add to Pantry</span>
                   </button>
@@ -1052,7 +1080,7 @@ function kCycleStashType(id, event) {
   const item = (data.stashItems || []).find(i => i.id === id);
   if (!item) return;
 
-  const cycle = ['pantry', 'fridge', 'freezer'];
+  const cycle = ['freezer', 'fridge', 'pantry'];
   const curIdx = cycle.indexOf(item.type);
   const nextType = cycle[(curIdx + 1) % cycle.length];
   item.type = nextType;
@@ -1064,6 +1092,22 @@ function kCycleStashType(id, event) {
 }
 window.kCycleStashType = kCycleStashType;
 
+function kToggleStashImmediate(id, event) {
+  if (event) event.stopPropagation();
+  const data = storage.getKitchenData();
+  if (!Array.isArray(data.stashItems)) return;
+  const item = data.stashItems.find(i => i.id === id);
+  if (!item) return;
+
+  item.immediate = !item.immediate;
+  storage.saveKitchenData(data);
+  renderKitchenPage();
+  if (typeof showToast === 'function') {
+    showToast(item.immediate ? `Marked "${item.name}" for immediate use! ⚡ (Moved to top)` : `Removed immediate use for "${item.name}"`);
+  }
+}
+window.kToggleStashImmediate = kToggleStashImmediate;
+
 function kToggleStashPlanned(id, event) {
   if (event) event.stopPropagation();
   const data = storage.getKitchenData();
@@ -1071,11 +1115,22 @@ function kToggleStashPlanned(id, event) {
   const item = data.stashItems.find(i => i.id === id);
   if (!item) return;
 
-  item.planned = !item.planned;
+  const weekOffset = data.activeWeekOffset || 0;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
+  const autoPlanned = Boolean(kGetPlannedInfoForItem(item.name, schedule));
+
+  if (item.planned === true) {
+    item.planned = false;
+  } else if (item.planned === false) {
+    item.planned = true;
+  } else {
+    item.planned = !autoPlanned;
+  }
+
   storage.saveKitchenData(data);
   renderKitchenPage();
   if (typeof showToast === 'function') {
-    showToast(item.planned ? `Marked "${item.name}" as Planned! 📌` : `Unmarked "${item.name}" from Planned`);
+    showToast(item.planned ? `Marked "${item.name}" as Planned for this week! 🗓️` : `Unmarked "${item.name}" from Planned`);
   }
 }
 window.kToggleStashPlanned = kToggleStashPlanned;

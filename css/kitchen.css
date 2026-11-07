@@ -968,17 +968,119 @@
   text-decoration: line-through;
 }
 
+/* Immediate Use (Priority Sort to Top) */
+.k-stash-kanban-item.is-immediate {
+  border-left: 3.5px solid #8B5CF6;
+  border-color: rgba(139, 92, 246, 0.4);
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.08) 0%, #FFFFFF 100%);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+}
+
+/* Planned for Week Status */
 .k-stash-kanban-item.is-planned {
-  background: var(--k-coral-soft);
-  border-color: var(--k-coral-border);
+  border-left: 3.5px solid #0D98BA;
+  border-color: rgba(13, 152, 186, 0.38);
+  background: linear-gradient(90deg, rgba(13, 152, 186, 0.08) 0%, #FFFFFF 100%);
+}
+
+/* Both Immediate and Planned */
+.k-stash-kanban-item.is-immediate.is-planned {
+  border-left: 3.5px solid #8B5CF6;
+  border-color: rgba(13, 152, 186, 0.45);
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.09) 0%, rgba(13, 152, 186, 0.07) 100%);
 }
 
 .k-stash-item-main {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
   flex: 1;
+  overflow: hidden;
+}
+
+/* Interactive Pill Badges */
+.k-stash-badge-immediate {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: 6px;
+  background: rgba(139, 92, 246, 0.14);
+  color: #6D28D9;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1.2;
+  transition: all 0.12s ease;
+}
+
+.k-stash-badge-immediate:hover {
+  background: rgba(139, 92, 246, 0.22);
+  transform: scale(1.04);
+}
+
+.k-stash-badge-planned {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1.5px 6px;
+  border-radius: 6px;
+  background: rgba(13, 152, 186, 0.13);
+  color: #0E7490;
+  border: 1px solid rgba(13, 152, 186, 0.28);
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1.2;
+  transition: all 0.12s ease;
+}
+
+.k-stash-badge-planned:hover {
+  background: rgba(13, 152, 186, 0.22);
+  transform: scale(1.04);
+}
+
+.k-stash-item-immediate-btn,
+.k-stash-item-plan-btn {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--k-text-muted);
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.12s ease;
+  opacity: 0.55;
+}
+
+.k-stash-item-immediate-btn:hover,
+.k-stash-item-plan-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.k-stash-item-immediate-btn.is-active {
+  opacity: 1;
+  background: rgba(139, 92, 246, 0.16);
+  border-color: rgba(139, 92, 246, 0.35);
+  color: #6D28D9;
+}
+
+.k-stash-item-plan-btn.is-active {
+  opacity: 1;
+  background: rgba(13, 152, 186, 0.15);
+  border-color: rgba(13, 152, 186, 0.35);
+  color: #0E7490;
 }
 
 .k-stash-item-check-btn {
@@ -1597,4 +1699,44 @@
   color: var(--k-obsidian);
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+/* Dark Mode Overrides for Stash Kanban & Priority Badges */
+[data-theme="dark"] .k-stash-kanban-col {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .k-stash-kanban-item {
+  background: #181A33;
+  border-color: rgba(255, 255, 255, 0.09);
+  color: #EDEEFF;
+}
+
+[data-theme="dark"] .k-stash-kanban-item.is-immediate {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.22) 0%, #181A33 100%);
+  border-color: rgba(139, 92, 246, 0.45);
+}
+
+[data-theme="dark"] .k-stash-kanban-item.is-planned {
+  background: linear-gradient(90deg, rgba(13, 152, 186, 0.22) 0%, #181A33 100%);
+  border-color: rgba(13, 152, 186, 0.45);
+}
+
+[data-theme="dark"] .k-stash-badge-immediate {
+  background: rgba(139, 92, 246, 0.25);
+  color: #C4B5FD;
+  border-color: rgba(139, 92, 246, 0.45);
+}
+
+[data-theme="dark"] .k-stash-badge-planned {
+  background: rgba(13, 152, 186, 0.25);
+  color: #67E8F9;
+  border-color: rgba(13, 152, 186, 0.45);
+}
+
+[data-theme="dark"] .k-clean-input {
+  background: #1C1D3A;
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #EDEEFF;
 }
