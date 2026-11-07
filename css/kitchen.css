@@ -480,6 +480,28 @@
   color: var(--k-coral);
 }
 
+.k-meal-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--k-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.k-meal-copy-btn:hover {
+  background: rgba(31, 11, 160, 0.08);
+  border-color: rgba(31, 11, 160, 0.2);
+  color: #1F0BA0;
+  transform: scale(1.08);
+}
+
 .k-hero-dinner-edit-hint {
   font-size: 12px;
   color: var(--k-text-muted);
@@ -1244,6 +1266,23 @@
 .k-assign-day-card .day-current.empty {
   color: #1F0BA0;
   font-weight: 700;
+}
+
+.k-assign-day-card.is-current-day {
+  opacity: 0.55;
+  cursor: not-allowed;
+  border-style: dashed;
+}
+
+.k-assign-day-card.is-current-day:hover {
+  background: var(--k-birch-mist);
+  border-color: var(--k-birch-border);
+  transform: none;
+  box-shadow: none;
+}
+
+.k-assign-day-card .day-current.occupied {
+  color: #6D28D9;
 }
 
 /* View Recipe Modal Notes Box */

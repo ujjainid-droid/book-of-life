@@ -530,6 +530,9 @@ function renderKitchenPage() {
                         <button type="button" class="k-meal-fav-btn ${isDinnerFav ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dinner', 0, event)" title="${isDinnerFav ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}" aria-label="Save recipe to Vault">
                           ${isDinnerFav ? '♥' : '♡'}
                         </button>
+                        <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'dinner', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                        </button>
                         <span class="k-hero-dinner-edit-hint">✎</span>
                       </span>
                     </div>
@@ -566,6 +569,9 @@ function renderKitchenPage() {
                           <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.brunch[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'brunch', 0, event)" title="${isMealInVault(d.meals.brunch[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
                             ${isMealInVault(d.meals.brunch[0].meal) ? '♥' : '♡'}
                           </button>
+                          <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'brunch', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                          </button>
                         ` : ''}
                         <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'brunch', ${(d.meals.brunch || []).length > 0 ? 0 : null})">
                           ${(d.meals.brunch || []).length > 0 ? 'Edit' : '+ Add'}
@@ -584,6 +590,9 @@ function renderKitchenPage() {
                           <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.lunch[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'lunch', 0, event)" title="${isMealInVault(d.meals.lunch[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
                             ${isMealInVault(d.meals.lunch[0].meal) ? '♥' : '♡'}
                           </button>
+                          <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'lunch', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                          </button>
                         ` : ''}
                         <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'lunch', ${(d.meals.lunch || []).length > 0 ? 0 : null})">
                           ${(d.meals.lunch || []).length > 0 ? 'Edit' : '+ Add'}
@@ -601,6 +610,9 @@ function renderKitchenPage() {
                         ${(d.meals.dessert || []).length > 0 && d.meals.dessert[0].meal ? `
                           <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.dessert[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dessert', 0, event)" title="${isMealInVault(d.meals.dessert[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
                             ${isMealInVault(d.meals.dessert[0].meal) ? '♥' : '♡'}
+                          </button>
+                          <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'dessert', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
                           </button>
                         ` : ''}
                         <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'dessert', ${(d.meals.dessert || []).length > 0 ? 0 : null})">
@@ -1117,6 +1129,11 @@ function kSetModalMealType(newType, reFocus = true) {
   if (clearBtn) {
     clearBtn.textContent = 'Delete Dish';
     clearBtn.style.display = slot ? 'inline-block' : 'none';
+  }
+
+  const copyMoveBtn = document.getElementById('k-modal-copy-move-btn');
+  if (copyMoveBtn) {
+    copyMoveBtn.style.display = slot ? 'inline-block' : 'none';
   }
 
   // Populate favorites picker items
@@ -1949,6 +1966,370 @@ function kConfirmAssignFromModal(dayIdx) {
   kCloseAssignModal();
 }
 window.kConfirmAssignFromModal = kConfirmAssignFromModal;
+
+/* ==========================================================================
+   Copy or Move Meal Controller (1-Tap Rescheduling & Duplicating)
+   ========================================================================== */
+let copyMoveState = {
+  sourceWeekOffset: 0,
+  sourceDayIdx: 0,
+  sourceMealType: 'dinner',
+  sourceItemIdx: 0,
+  sourceDish: null,
+  action: 'move', // 'move', 'copy', 'swap'
+  targetWeekOffset: 0,
+  targetMealType: 'dinner'
+};
+
+function kOpenCopyMoveModal(dayIdx, mealType = 'dinner', itemIdx = 0, event = null) {
+  if (event) event.stopPropagation();
+
+  const data = storage.getKitchenData();
+  const weekOffset = (typeof data.activeWeekOffset === 'number') ? data.activeWeekOffset : 0;
+  const schedule = kGetScheduleForWeekOffset(data, weekOffset);
+  const dayObj = schedule[dayIdx];
+  if (!dayObj) return;
+
+  const rawSlot = (dayObj.meals && dayObj.meals[mealType]) ? dayObj.meals[mealType] : null;
+  let items = Array.isArray(rawSlot) ? rawSlot.filter(i => i && i.meal) : (rawSlot && rawSlot.meal ? [rawSlot] : []);
+  if (items.length === 0 && mealType === 'dinner' && dayObj.meal) {
+    items = [{
+      meal: dayObj.meal,
+      source: dayObj.source || 'fresh',
+      icon: dayObj.icon || 'chicken',
+      recipeUrl: dayObj.recipeUrl || '',
+      favoriteId: dayObj.favoriteId || null
+    }];
+  }
+
+  const effectiveIdx = (typeof itemIdx === 'number' && itemIdx >= 0 && itemIdx < items.length) ? itemIdx : 0;
+  const dish = items[effectiveIdx];
+  if (!dish || !dish.meal) return;
+
+  copyMoveState = {
+    sourceWeekOffset: weekOffset,
+    sourceDayIdx: dayIdx,
+    sourceMealType: mealType,
+    sourceItemIdx: effectiveIdx,
+    sourceDish: dish,
+    action: 'move',
+    targetWeekOffset: weekOffset,
+    targetMealType: mealType
+  };
+
+  const nameEl = document.getElementById('k-copymove-dish-name');
+  if (nameEl) nameEl.textContent = dish.meal;
+
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  const fromEl = document.getElementById('k-copymove-from-label');
+  if (fromEl) {
+    const weekNote = weekOffset === 1 ? ' (Upcoming)' : '';
+    fromEl.textContent = `${dayObj.day} · ${typeLabels[mealType] || 'Dinner'}${weekNote}`;
+  }
+
+  kSyncCopyMoveToggles();
+  kRenderCopyMoveDays();
+
+  const modal = document.getElementById('k-copy-move-modal');
+  if (modal) modal.classList.add('active');
+  if (window.lucide) lucide.createIcons();
+}
+window.kOpenCopyMoveModal = kOpenCopyMoveModal;
+
+function kCloseCopyMoveModal() {
+  const modal = document.getElementById('k-copy-move-modal');
+  if (modal) modal.classList.remove('active');
+}
+window.kCloseCopyMoveModal = kCloseCopyMoveModal;
+
+function kOpenCopyMoveFromFastModal() {
+  if (activeKitchenEditIdx === null) return;
+  const dayIdx = activeKitchenEditIdx;
+  const mealType = activeKitchenMealType || 'dinner';
+  const itemIdx = (typeof activeKitchenItemIdx === 'number') ? activeKitchenItemIdx : 0;
+  kCloseModal();
+  kOpenCopyMoveModal(dayIdx, mealType, itemIdx);
+}
+window.kOpenCopyMoveFromFastModal = kOpenCopyMoveFromFastModal;
+
+function kSetCopyMoveAction(action) {
+  copyMoveState.action = action;
+  kSyncCopyMoveToggles();
+  kRenderCopyMoveDays();
+}
+window.kSetCopyMoveAction = kSetCopyMoveAction;
+
+function kSetCopyMoveWeek(offset) {
+  copyMoveState.targetWeekOffset = offset;
+  kSyncCopyMoveToggles();
+  kRenderCopyMoveDays();
+}
+window.kSetCopyMoveWeek = kSetCopyMoveWeek;
+
+function kSetCopyMoveMealType(type) {
+  copyMoveState.targetMealType = type;
+  kSyncCopyMoveToggles();
+  kRenderCopyMoveDays();
+}
+window.kSetCopyMoveMealType = kSetCopyMoveMealType;
+
+function kSyncCopyMoveToggles() {
+  ['copy', 'move', 'swap'].forEach(act => {
+    const btn = document.getElementById(`k-cm-action-${act}`);
+    if (btn) {
+      if (act === copyMoveState.action) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+
+  const descEl = document.getElementById('k-cm-action-desc');
+  if (descEl) {
+    const schedule = kGetScheduleForWeekOffset(storage.getKitchenData(), copyMoveState.sourceWeekOffset);
+    const srcDayName = (schedule[copyMoveState.sourceDayIdx] && schedule[copyMoveState.sourceDayIdx].day) || 'selected day';
+    if (copyMoveState.action === 'copy') {
+      descEl.textContent = `📋 Duplicating keeps this dish on ${srcDayName} and also schedules it on the target date.`;
+    } else if (copyMoveState.action === 'move') {
+      descEl.textContent = `🚚 Moving transfers this dish to the target date and clears it from ${srcDayName}.`;
+    } else {
+      descEl.textContent = `⇄ Swapping exchanges meals between ${srcDayName} and the target date.`;
+    }
+  }
+
+  [0, 1].forEach(w => {
+    const btn = document.getElementById(`k-cm-week-${w}`);
+    if (btn) {
+      if (w === copyMoveState.targetWeekOffset) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+
+  ['dinner', 'lunch', 'brunch', 'dessert'].forEach(t => {
+    const btn = document.getElementById(`k-cm-mtype-${t}`);
+    if (btn) {
+      if (t === copyMoveState.targetMealType) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+}
+
+function kRenderCopyMoveDays() {
+  const container = document.getElementById('k-copymove-days-grid');
+  if (!container) return;
+
+  const data = storage.getKitchenData();
+  const schedule = kGetScheduleForWeekOffset(data, copyMoveState.targetWeekOffset);
+
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const baseSun = new Date(now);
+  baseSun.setDate(now.getDate() - dayOfWeek);
+  const targetSun = new Date(baseSun);
+  targetSun.setDate(baseSun.getDate() + (copyMoveState.targetWeekOffset * 7));
+
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const cardsHtml = dayNames.map((name, idx) => {
+    const d = new Date(targetSun);
+    d.setDate(targetSun.getDate() + idx);
+    const dateLabel = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    const isSameSlot = (
+      copyMoveState.sourceWeekOffset === copyMoveState.targetWeekOffset &&
+      copyMoveState.sourceDayIdx === idx &&
+      copyMoveState.sourceMealType === copyMoveState.targetMealType
+    );
+
+    const dayObj = schedule.find(s => s.day === name) || schedule[idx] || {};
+    const rawSlot = (dayObj.meals && dayObj.meals[copyMoveState.targetMealType]) ? dayObj.meals[copyMoveState.targetMealType] : null;
+    const items = Array.isArray(rawSlot) ? rawSlot.filter(i => i && i.meal) : (rawSlot && rawSlot.meal ? [rawSlot] : []);
+    if (items.length === 0 && copyMoveState.targetMealType === 'dinner' && dayObj.meal) {
+      items.push({ meal: dayObj.meal });
+    }
+    const hasMeal = items.length > 0;
+
+    let summaryText = '+ Open slot';
+    let summaryClass = 'empty';
+    if (isSameSlot) {
+      summaryText = 'Current location';
+      summaryClass = 'current';
+    } else if (hasMeal) {
+      summaryText = (copyMoveState.action === 'swap' ? '⇄ Swap with: ' : 'Replace: ') + escapeHtml(items[0].meal) + (items.length > 1 ? ` (+${items.length - 1})` : '');
+      summaryClass = 'occupied';
+    } else {
+      summaryText = (copyMoveState.action === 'copy' ? '📋 Copy here' : '🚚 Move here');
+    }
+
+    if (isSameSlot) {
+      return `
+        <div class="k-assign-day-card is-current-day">
+          <div class="day-head">
+            <span class="day-name">${name}</span>
+            <span class="day-date">${dateLabel}</span>
+          </div>
+          <div class="day-current" style="color:var(--k-text-muted); font-style:italic;">
+            ${summaryText}
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <button type="button" class="k-assign-day-card" onclick="kConfirmCopyMove(${idx})">
+        <div class="day-head">
+          <span class="day-name">${name}</span>
+          <span class="day-date">${dateLabel}</span>
+        </div>
+        <div class="day-current ${summaryClass}">
+          ${summaryText}
+        </div>
+      </button>
+    `;
+  }).join('');
+
+  container.innerHTML = cardsHtml;
+}
+
+function kConfirmCopyMove(targetDayIdx) {
+  if (!copyMoveState.sourceDish) return;
+
+  const data = storage.getKitchenData();
+  const srcWeek = copyMoveState.sourceWeekOffset;
+  const srcDayIdx = copyMoveState.sourceDayIdx;
+  const srcMealType = copyMoveState.sourceMealType;
+  const srcItemIdx = copyMoveState.sourceItemIdx;
+
+  const targetWeek = copyMoveState.targetWeekOffset;
+  const targetMealType = copyMoveState.targetMealType;
+  const action = copyMoveState.action;
+
+  const srcSchedule = kGetScheduleForWeekOffset(data, srcWeek);
+  const targetSchedule = kGetScheduleForWeekOffset(data, targetWeek);
+
+  const srcDay = srcSchedule[srcDayIdx];
+  const targetDay = targetSchedule[targetDayIdx];
+  if (!srcDay || !targetDay) return;
+
+  ['brunch', 'lunch', 'dinner', 'dessert'].forEach(t => {
+    if (!srcDay.meals) srcDay.meals = { brunch: [], lunch: [], dinner: [], dessert: [] };
+    if (!Array.isArray(srcDay.meals[t])) {
+      srcDay.meals[t] = (srcDay.meals[t] && srcDay.meals[t].meal) ? [srcDay.meals[t]] : [];
+    }
+    if (!targetDay.meals) targetDay.meals = { brunch: [], lunch: [], dinner: [], dessert: [] };
+    if (!Array.isArray(targetDay.meals[t])) {
+      targetDay.meals[t] = (targetDay.meals[t] && targetDay.meals[t].meal) ? [targetDay.meals[t]] : [];
+    }
+  });
+
+  const srcDish = copyMoveState.sourceDish;
+  const clonedSrcDish = {
+    meal: srcDish.meal,
+    source: srcDish.source || 'fresh',
+    icon: srcDish.icon || 'chicken',
+    recipeUrl: srcDish.recipeUrl || '',
+    favoriteId: srcDish.favoriteId || null
+  };
+
+  let targetExistingDish = null;
+  const rawTargetSlot = targetDay.meals[targetMealType];
+  if (Array.isArray(rawTargetSlot) && rawTargetSlot.length > 0 && rawTargetSlot[0].meal) {
+    targetExistingDish = { ...rawTargetSlot[0] };
+  } else if (targetMealType === 'dinner' && targetDay.meal) {
+    targetExistingDish = {
+      meal: targetDay.meal,
+      source: targetDay.source || 'fresh',
+      icon: targetDay.icon || 'chicken',
+      recipeUrl: targetDay.recipeUrl || '',
+      favoriteId: targetDay.favoriteId || null
+    };
+  }
+
+  if (action === 'copy') {
+    targetDay.meals[targetMealType] = [clonedSrcDish];
+    if (targetMealType === 'dinner') {
+      targetDay.meal = clonedSrcDish.meal;
+      targetDay.source = clonedSrcDish.source;
+      targetDay.icon = clonedSrcDish.icon;
+      targetDay.recipeUrl = clonedSrcDish.recipeUrl;
+      targetDay.favoriteId = clonedSrcDish.favoriteId;
+    }
+  } else if (action === 'move') {
+    if (srcMealType === 'dinner') {
+      if (srcDay.meals.dinner.length > 1 && typeof srcItemIdx === 'number') {
+        srcDay.meals.dinner.splice(srcItemIdx, 1);
+        srcDay.meal = srcDay.meals.dinner[0]?.meal || '';
+        srcDay.source = srcDay.meals.dinner[0]?.source || 'fresh';
+        srcDay.icon = srcDay.meals.dinner[0]?.icon || 'chicken';
+        srcDay.recipeUrl = srcDay.meals.dinner[0]?.recipeUrl || '';
+        srcDay.favoriteId = srcDay.meals.dinner[0]?.favoriteId || null;
+      } else {
+        srcDay.meals.dinner = [];
+        srcDay.meal = '';
+        srcDay.recipeUrl = '';
+        srcDay.favoriteId = null;
+      }
+    } else {
+      if (srcDay.meals[srcMealType].length > 1 && typeof srcItemIdx === 'number') {
+        srcDay.meals[srcMealType].splice(srcItemIdx, 1);
+      } else {
+        srcDay.meals[srcMealType] = [];
+      }
+    }
+
+    targetDay.meals[targetMealType] = [clonedSrcDish];
+    if (targetMealType === 'dinner') {
+      targetDay.meal = clonedSrcDish.meal;
+      targetDay.source = clonedSrcDish.source;
+      targetDay.icon = clonedSrcDish.icon;
+      targetDay.recipeUrl = clonedSrcDish.recipeUrl;
+      targetDay.favoriteId = clonedSrcDish.favoriteId;
+    }
+  } else if (action === 'swap') {
+    if (targetExistingDish) {
+      srcDay.meals[srcMealType] = [targetExistingDish];
+      if (srcMealType === 'dinner') {
+        srcDay.meal = targetExistingDish.meal;
+        srcDay.source = targetExistingDish.source;
+        srcDay.icon = targetExistingDish.icon;
+        srcDay.recipeUrl = targetExistingDish.recipeUrl;
+        srcDay.favoriteId = targetExistingDish.favoriteId;
+      }
+    } else {
+      srcDay.meals[srcMealType] = [];
+      if (srcMealType === 'dinner') {
+        srcDay.meal = '';
+        srcDay.recipeUrl = '';
+        srcDay.favoriteId = null;
+      }
+    }
+
+    targetDay.meals[targetMealType] = [clonedSrcDish];
+    if (targetMealType === 'dinner') {
+      targetDay.meal = clonedSrcDish.meal;
+      targetDay.source = clonedSrcDish.source;
+      targetDay.icon = clonedSrcDish.icon;
+      targetDay.recipeUrl = clonedSrcDish.recipeUrl;
+      targetDay.favoriteId = clonedSrcDish.favoriteId;
+    }
+  }
+
+  data.activeWeekOffset = targetWeek;
+  storage.saveKitchenData(data);
+
+  kCloseCopyMoveModal();
+  renderKitchenPage();
+
+  const typeLabels = { brunch: 'Brunch', lunch: 'Lunch', dinner: 'Dinner', dessert: 'Dessert' };
+  const targetTypeLabel = typeLabels[targetMealType] || 'Dinner';
+  const targetWeekNote = targetWeek === 1 ? ' (Upcoming Week)' : '';
+
+  if (action === 'copy') {
+    if (typeof showToast === 'function') showToast(`Copied "${clonedSrcDish.meal}" to ${targetDay.day} ${targetTypeLabel}${targetWeekNote}! 📋`);
+  } else if (action === 'move') {
+    if (typeof showToast === 'function') showToast(`Moved "${clonedSrcDish.meal}" to ${targetDay.day} ${targetTypeLabel}${targetWeekNote}! 🚚`);
+  } else {
+    if (typeof showToast === 'function') showToast(`Swapped meals between ${srcDay.day} and ${targetDay.day}! ⇄`);
+  }
+}
+window.kConfirmCopyMove = kConfirmCopyMove;
 
 /* ==========================================================================
    View & Edit Full Recipe Modal Controller

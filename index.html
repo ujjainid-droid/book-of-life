@@ -23,19 +23,19 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <!-- Modular Stylesheets with Cache Buster -->
-  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.48">
-  <link rel="stylesheet" href="css/layout.css?v=9.9.48">
-  <link rel="stylesheet" href="css/cover.css?v=9.9.48">
-  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.48">
-  <link rel="stylesheet" href="css/habits.css?v=9.9.48">
-  <link rel="stylesheet" href="css/tasks.css?v=9.9.48">
-  <link rel="stylesheet" href="css/settings.css?v=9.9.48">
-  <link rel="stylesheet" href="css/claims.css?v=9.9.48">
-  <link rel="stylesheet" href="css/zlog.css?v=9.9.48">
-  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.48">
-  <link rel="stylesheet" href="css/finance.css?v=9.9.48">
-  <link rel="stylesheet" href="css/hobby.css?v=9.9.48">
-  <link rel="stylesheet" href="css/kitchen.css?v=9.9.48">
+  <link rel="stylesheet" href="css/nordic-theme.css?v=9.9.49">
+  <link rel="stylesheet" href="css/layout.css?v=9.9.49">
+  <link rel="stylesheet" href="css/cover.css?v=9.9.49">
+  <link rel="stylesheet" href="css/today-simplified.css?v=9.9.49">
+  <link rel="stylesheet" href="css/habits.css?v=9.9.49">
+  <link rel="stylesheet" href="css/tasks.css?v=9.9.49">
+  <link rel="stylesheet" href="css/settings.css?v=9.9.49">
+  <link rel="stylesheet" href="css/claims.css?v=9.9.49">
+  <link rel="stylesheet" href="css/zlog.css?v=9.9.49">
+  <link rel="stylesheet" href="css/podcastAgent.css?v=9.9.49">
+  <link rel="stylesheet" href="css/finance.css?v=9.9.49">
+  <link rel="stylesheet" href="css/hobby.css?v=9.9.49">
+  <link rel="stylesheet" href="css/kitchen.css?v=9.9.49">
 </head>
 <body>
 
@@ -548,6 +548,9 @@
               <button type="button" class="k-btn-action k-btn-submit" id="k-modal-submit-btn" style="flex:1;" onclick="kSubmitCustomMeal()">
                 Save Meal
               </button>
+              <button type="button" class="k-btn-action" id="k-modal-copy-move-btn" style="background:var(--bg-surface); color:var(--text-primary); border:1px solid var(--border-light, #2E3060); padding:0 12px; display:none;" onclick="kOpenCopyMoveFromFastModal()" title="Copy or Move to another date">
+                ⇄ Copy / Move
+              </button>
               <button type="button" class="k-btn-action" id="k-modal-clear-btn" style="background:var(--bg-surface); color:var(--pal-coral); border:1px solid rgba(248,124,113,0.3); padding:0 14px;" onclick="kClearCurrentMealSlot()" title="Clear this meal slot">
                 Clear Slot
               </button>
@@ -679,6 +682,89 @@
     </div>
   </div>
 
+  <!-- Modal: Copy or Move Meal to Another Date (Kitchen) -->
+  <div class="modal-overlay" id="k-copy-move-modal" onclick="if(event.target===this) kCloseCopyMoveModal()">
+    <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title" id="k-copymove-modal-title">Copy or Move Dish</h3>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 2px 0 0;" id="k-copymove-modal-subtitle">Pick action and destination date</p>
+        </div>
+        <button class="icon-btn modal-close" onclick="kCloseCopyMoveModal()"><i data-lucide="x"></i></button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-top: 6px;">
+        <!-- Dish summary banner -->
+        <div style="background: var(--k-birch-mist, #F8F8F7); border: 1px solid var(--k-birch-border, #E5E5E0); border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+          <div>
+            <div style="font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--k-text-muted, #585854);">Selected Dish</div>
+            <div style="font-size: 14px; font-weight: 700; color: var(--k-obsidian, #001F29); margin-top: 1px;" id="k-copymove-dish-name">Dish Name</div>
+          </div>
+          <span style="font-size: 11.5px; font-weight: 600; padding: 4px 8px; border-radius: 8px; background: rgba(31, 11, 160, 0.08); color: #1F0BA0;" id="k-copymove-from-label">Sun · Dinner</span>
+        </div>
+
+        <!-- Action Selector (Copy / Move / Swap) -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary);">
+            Action
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top: 4px; grid-template-columns: 1fr 1fr 1fr;">
+            <button type="button" class="k-modal-type-btn" id="k-cm-action-copy" onclick="kSetCopyMoveAction('copy')">
+              📋 Copy
+            </button>
+            <button type="button" class="k-modal-type-btn active" id="k-cm-action-move" onclick="kSetCopyMoveAction('move')">
+              🚚 Move
+            </button>
+            <button type="button" class="k-modal-type-btn" id="k-cm-action-swap" onclick="kSetCopyMoveAction('swap')">
+              ⇄ Swap
+            </button>
+          </div>
+          <p style="font-size: 11px; color: var(--text-muted); margin: 6px 2px 0;" id="k-cm-action-desc">
+            Moving transfers this dish to the target date and clears it from the original day.
+          </p>
+        </div>
+
+        <!-- Target Week Switcher -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary);">
+            Target Week
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top: 4px; grid-template-columns: 1fr 1fr;">
+            <button type="button" class="k-modal-type-btn active" id="k-cm-week-0" onclick="kSetCopyMoveWeek(0)">
+              📅 This Week
+            </button>
+            <button type="button" class="k-modal-type-btn" id="k-cm-week-1" onclick="kSetCopyMoveWeek(1)">
+              ⏩ Following Week
+            </button>
+          </div>
+        </div>
+
+        <!-- Target Meal Type Switcher -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary);">
+            Target Meal Slot
+          </label>
+          <div class="k-modal-mealtype-row" style="margin-top: 4px; grid-template-columns: repeat(4, 1fr);">
+            <button type="button" class="k-modal-type-btn active" id="k-cm-mtype-dinner" onclick="kSetCopyMoveMealType('dinner')">🍲 Dinner</button>
+            <button type="button" class="k-modal-type-btn" id="k-cm-mtype-lunch" onclick="kSetCopyMoveMealType('lunch')">🥗 Lunch</button>
+            <button type="button" class="k-modal-type-btn" id="k-cm-mtype-brunch" onclick="kSetCopyMoveMealType('brunch')">☕ Brunch</button>
+            <button type="button" class="k-modal-type-btn" id="k-cm-mtype-dessert" onclick="kSetCopyMoveMealType('dessert')">🍨 Dessert</button>
+          </div>
+        </div>
+
+        <!-- Days Grid (1-tap destination) -->
+        <div>
+          <label class="form-label" style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-secondary); margin-bottom: 6px; display: block;">
+            Tap Target Day
+          </label>
+          <div class="k-assign-days-grid" id="k-copymove-days-grid">
+            <!-- 7 dynamic target day cards rendered here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: View & Edit Full Recipe Details -->
   <div class="modal-overlay" id="k-view-recipe-modal" onclick="if(event.target===this) kCloseViewRecipeModal()">
     <div class="modal-card" onclick="event.stopPropagation()" style="max-width: 520px; max-height: 85vh; overflow-y: auto;">
@@ -754,22 +840,22 @@
   <div class="toast-container" id="toast-container"></div>
 
   <!-- Application Scripts with Cache Buster -->
-  <script src="js/margoData.js?v=9.9.48"></script>
-  <script src="js/zlogData.js?v=9.9.48"></script>
-  <script src="js/financeData.js?v=9.9.48"></script>
-  <script src="js/podcastData.js?v=9.9.48"></script>
-  <script src="js/pdfStore.js?v=9.9.48"></script>
-  <script src="js/storage.js?v=9.9.48"></script>
-  <script src="js/sync.js?v=9.9.48"></script>
-  <script src="js/pages/coverPage.js?v=9.9.48"></script>
-  <script src="js/pages/todayPage.js?v=9.9.48"></script>
-  <script src="js/pages/coverHubPage.js?v=9.9.48"></script>
-  <script src="js/pages/claimsPage.js?v=9.9.48"></script>
-  <script src="js/pages/zlogPage.js?v=9.9.48"></script>
-  <script src="js/pages/financePage.js?v=9.9.48"></script>
-  <script src="js/pages/hobbyPage.js?v=9.9.48"></script>
-  <script src="js/pages/kitchenPage.js?v=9.9.48"></script>
-  <script src="js/podcastAgent.js?v=9.9.48"></script>
-  <script src="js/app.js?v=9.9.48"></script>
+  <script src="js/margoData.js?v=9.9.49"></script>
+  <script src="js/zlogData.js?v=9.9.49"></script>
+  <script src="js/financeData.js?v=9.9.49"></script>
+  <script src="js/podcastData.js?v=9.9.49"></script>
+  <script src="js/pdfStore.js?v=9.9.49"></script>
+  <script src="js/storage.js?v=9.9.49"></script>
+  <script src="js/sync.js?v=9.9.49"></script>
+  <script src="js/pages/coverPage.js?v=9.9.49"></script>
+  <script src="js/pages/todayPage.js?v=9.9.49"></script>
+  <script src="js/pages/coverHubPage.js?v=9.9.49"></script>
+  <script src="js/pages/claimsPage.js?v=9.9.49"></script>
+  <script src="js/pages/zlogPage.js?v=9.9.49"></script>
+  <script src="js/pages/financePage.js?v=9.9.49"></script>
+  <script src="js/pages/hobbyPage.js?v=9.9.49"></script>
+  <script src="js/pages/kitchenPage.js?v=9.9.49"></script>
+  <script src="js/podcastAgent.js?v=9.9.49"></script>
+  <script src="js/app.js?v=9.9.49"></script>
 </body>
 </html>
