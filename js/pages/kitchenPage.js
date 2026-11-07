@@ -422,7 +422,7 @@ function renderKitchenPage() {
           </button>
           <button type="button" class="k-hub-tab-btn ${activeTab === 'stash' ? 'active' : ''}" onclick="kSetActiveTab('stash')">
             <span>🥫</span>
-            <span>Stash &amp; Groceries</span>
+            <span>Stash</span>
             ${stashItems.length > 0 ? `<span class="k-hub-tab-count">${stashItems.length}</span>` : ''}
           </button>
           <button type="button" class="k-hub-tab-btn ${activeTab === 'vault' ? 'active' : ''}" onclick="kSetActiveTab('vault')">
@@ -630,117 +630,73 @@ function renderKitchenPage() {
       ` : ''}
 
       <!-- ===================================================================== -->
-      <!-- TAB 2: STASH & GROCERIES (SIDE-BY-SIDE)                                -->
+      <!-- TAB 2: SHOP YOUR STASH                                                -->
       <!-- ===================================================================== -->
       ${activeTab === 'stash' ? `
-        <div class="k-stash-groceries-grid">
-          
-          <!-- Shop Your Stash First -->
-          <div class="k-panel-card">
-            <div class="k-panel-header">
-              <div class="k-panel-title-group">
-                <h3 class="k-panel-title">
-                  <span>🥫</span>
-                  <span>Shop Your Stash First</span>
-                </h3>
-                <span class="k-panel-desc">Prioritize items on hand before purchasing new groceries</span>
-              </div>
-            </div>
-
-            <!-- Freezer Section -->
-            <div class="k-stash-section">
-              <span class="k-stash-section-label">🧊 Freezer (${freezerItems.length})</span>
-              <div class="k-stash-chips-wrap">
-                ${freezerItems.length > 0 ? freezerItems.map(item => `
-                  <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                    <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
-                    <span>${escapeHtml(item.name)}</span>
-                    <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Freezer</span>
-                    <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
-                  </div>
-                `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No freezer items</span>`}
-              </div>
-            </div>
-
-            <!-- Fridge Section -->
-            <div class="k-stash-section">
-              <span class="k-stash-section-label">🥦 Refrigerator (${fridgeItems.length})</span>
-              <div class="k-stash-chips-wrap">
-                ${fridgeItems.length > 0 ? fridgeItems.map(item => `
-                  <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                    <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
-                    <span>${escapeHtml(item.name)}</span>
-                    <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Fridge</span>
-                    <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
-                  </div>
-                `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No fridge items</span>`}
-              </div>
-            </div>
-
-            <!-- Pantry Section -->
-            <div class="k-stash-section">
-              <span class="k-stash-section-label">🌾 Pantry (${pantryItems.length})</span>
-              <div class="k-stash-chips-wrap">
-                ${pantryItems.length > 0 ? pantryItems.map(item => `
-                  <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
-                    <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
-                    <span>${escapeHtml(item.name)}</span>
-                    <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Pantry</span>
-                    <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
-                  </div>
-                `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No pantry items</span>`}
-              </div>
-            </div>
-
-            <!-- Quick Add Bar -->
-            <div class="k-stash-quick-bar">
-              <input type="text" class="k-clean-input" id="k-stash-entry-input" name="k_stash_item_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
-              <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">Pantry</button>
-              <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">Fridge</button>
-              <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">Freezer</button>
+        <!-- Shop Your Stash First -->
+        <div class="k-panel-card">
+          <div class="k-panel-header">
+            <div class="k-panel-title-group">
+              <h3 class="k-panel-title">
+                <span>🥫</span>
+                <span>Shop Your Stash First</span>
+              </h3>
+              <span class="k-panel-desc">Prioritize items on hand before purchasing new groceries</span>
             </div>
           </div>
 
-          <!-- Verified Grocery Checklist (Things 3 Integrated) -->
-          <div class="k-panel-card">
-            <div class="k-panel-header">
-              <div class="k-panel-title-group">
-                <h3 class="k-panel-title">
-                  <span>🛒</span>
-                  <span>Verified Grocery List</span>
-                </h3>
-                <span class="k-panel-desc">Only ingredients you actually need to buy</span>
-              </div>
-              <div class="k-grocery-header-actions">
-                ${groceryItems.length > 0 ? `
-                  <button type="button" class="k-btn-clear-groceries" onclick="kClearAllGroceries()" title="Clear all grocery items">
-                    Clear All
-                  </button>
-                ` : ''}
-                <button type="button" class="k-btn-things3" onclick="kExportVerifiedThings3()" title="Sync grocery list to Things 3">
-                  <span>↗</span>
-                  <span>Send to Things 3</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="k-grocery-list" id="k-grocery-items-wrap">
-              ${groceryItems.length > 0 ? groceryItems.map(g => `
-                <label class="k-grocery-item-row ${g.checked ? 'is-checked' : ''}">
-                  <input type="checkbox" class="k-grocery-item-checkbox" ${g.checked ? 'checked' : ''} onchange="kToggleGroceryItemPersist('${g.id}')">
-                  <span class="k-grocery-item-text">${escapeHtml(g.text)}</span>
-                  <button type="button" class="k-grocery-item-del" onclick="event.preventDefault(); kDeleteGroceryItem('${g.id}')" title="Delete">×</button>
-                </label>
-              `).join('') : `<div style="font-size:12px; color:var(--k-text-muted); font-style:italic; padding:10px 0;">No grocery items. Add custom items below or plan recipes.</div>`}
-            </div>
-
-            <!-- Add custom grocery item bar -->
-            <div class="k-stash-quick-bar">
-              <input type="text" class="k-clean-input" id="k-add-extra-grocery" name="k_extra_grocery_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add custom grocery item..." onkeydown="if(event.key==='Enter') kAddExtraGroceryItem()">
-              <button type="button" class="k-btn-stash-add" onclick="kAddExtraGroceryItem()">+ Add</button>
+          <!-- Freezer Section -->
+          <div class="k-stash-section">
+            <span class="k-stash-section-label">🧊 Freezer (${freezerItems.length})</span>
+            <div class="k-stash-chips-wrap">
+              ${freezerItems.length > 0 ? freezerItems.map(item => `
+                <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                  <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
+                  <span>${escapeHtml(item.name)}</span>
+                  <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Freezer</span>
+                  <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
+                </div>
+              `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No freezer items</span>`}
             </div>
           </div>
 
+          <!-- Fridge Section -->
+          <div class="k-stash-section">
+            <span class="k-stash-section-label">🥦 Refrigerator (${fridgeItems.length})</span>
+            <div class="k-stash-chips-wrap">
+              ${fridgeItems.length > 0 ? fridgeItems.map(item => `
+                <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                  <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
+                  <span>${escapeHtml(item.name)}</span>
+                  <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Fridge</span>
+                  <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
+                </div>
+              `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No fridge items</span>`}
+            </div>
+          </div>
+
+          <!-- Pantry Section -->
+          <div class="k-stash-section">
+            <span class="k-stash-section-label">🌾 Pantry (${pantryItems.length})</span>
+            <div class="k-stash-chips-wrap">
+              ${pantryItems.length > 0 ? pantryItems.map(item => `
+                <div class="k-stash-chip ${item.used ? 'is-used' : ''} ${item.planned ? 'is-planned' : ''}">
+                  <span class="k-stash-chip-check" onclick="kToggleStashUsed('${item.id}', event)" title="Mark used">✓</span>
+                  <span>${escapeHtml(item.name)}</span>
+                  <span class="k-stash-chip-type" onclick="kCycleStashType('${item.id}', event)">Pantry</span>
+                  <span class="k-stash-chip-del" onclick="kDeleteStash('${item.id}')" title="Delete">×</span>
+                </div>
+              `).join('') : `<span style="font-size:12px; color:var(--k-text-muted); font-style:italic;">No pantry items</span>`}
+            </div>
+          </div>
+
+          <!-- Quick Add Bar -->
+          <div class="k-stash-quick-bar">
+            <input type="text" class="k-clean-input" id="k-stash-entry-input" name="k_stash_item_new_entry" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" placeholder="+ Add stash item to use up..." onkeydown="if(event.key==='Enter') kAddStashWithSource('pantry')">
+            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('pantry')" title="Add to Pantry">Pantry</button>
+            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('fridge')" title="Add to Fridge">Fridge</button>
+            <button type="button" class="k-btn-stash-add" onclick="kAddStashWithSource('freezer')" title="Add to Freezer">Freezer</button>
+          </div>
         </div>
       ` : ''}
 
