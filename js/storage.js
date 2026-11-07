@@ -606,7 +606,10 @@ class StorageManager {
       // Z Log Data, Titration & Protocols
       zlogEntries: (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {},
       titrationHistory: (typeof DEFAULT_TITRATION_HISTORY !== 'undefined') ? [...DEFAULT_TITRATION_HISTORY] : [],
-      zlogActiveMeds: (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : []
+      zlogActiveMeds: (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [],
+      // Kitchen & Stash Data
+      kitchenData: this.getDefaultKitchenData(),
+      kitchenUpdatedAt: Date.now()
     };
   }
 
@@ -969,6 +972,38 @@ class StorageManager {
               : (merged.finance.weeklyChecklists || {})
           };
         }
+
+        // 13. Kitchen Data & Seed Flags: preserve stash, meals, and recipe edits
+        Object.keys(s).forEach(k => {
+          if (k.startsWith('kitchen') && s[k] !== undefined) {
+            merged[k] = s[k];
+          }
+        });
+        if (s.kitchenData && typeof s.kitchenData === 'object') {
+          const snapKitchenTime = Number(s.kitchenUpdatedAt) || 0;
+          const curKitchenTime = Number(merged.kitchenUpdatedAt) || 0;
+          if (!merged.kitchenData || snapKitchenTime >= curKitchenTime || snap.key === STORAGE_KEY) {
+            const existingStash = (merged.kitchenData && Array.isArray(merged.kitchenData.stashItems)) ? merged.kitchenData.stashItems : [];
+            const snapStash = Array.isArray(s.kitchenData.stashItems) ? s.kitchenData.stashItems : [];
+            const stashMap = new Map();
+            existingStash.forEach(item => {
+              if (item && item.name) stashMap.set(String(item.name).toLowerCase().trim(), item);
+            });
+            snapStash.forEach(item => {
+              if (item && item.name) {
+                const k = String(item.name).toLowerCase().trim();
+                stashMap.set(k, { ...(stashMap.get(k) || {}), ...item });
+              }
+            });
+
+            merged.kitchenData = {
+              ...(merged.kitchenData || {}),
+              ...s.kitchenData,
+              stashItems: Array.from(stashMap.values())
+            };
+            merged.kitchenUpdatedAt = Math.max(curKitchenTime, snapKitchenTime);
+          }
+        }
       }
       delete merged._hasLoadedCoverCampaigns;
 
@@ -1009,6 +1044,39 @@ class StorageManager {
               ...(merged.finance.weeklyChecklists || {}),
               ...parsedLists
             };
+          }
+        }
+      } catch (e) {}
+
+      // Check dedicated resilient Kitchen backup
+      try {
+        const dedicatedKitchen = localStorage.getItem('BOL_KITCHEN_DATA_V2');
+        if (dedicatedKitchen) {
+          const parsedKd = JSON.parse(dedicatedKitchen);
+          if (parsedKd && typeof parsedKd === 'object' && parsedKd.kitchenData) {
+            const dedTime = Number(parsedKd.kitchenUpdatedAt) || 0;
+            const curTime = Number(merged.kitchenUpdatedAt) || 0;
+            if (dedTime >= curTime || !merged.kitchenData) {
+              const existingStash = (merged.kitchenData && Array.isArray(merged.kitchenData.stashItems)) ? merged.kitchenData.stashItems : [];
+              const dedStash = Array.isArray(parsedKd.kitchenData.stashItems) ? parsedKd.kitchenData.stashItems : [];
+              const stashMap = new Map();
+              existingStash.forEach(item => {
+                if (item && item.name) stashMap.set(String(item.name).toLowerCase().trim(), item);
+              });
+              dedStash.forEach(item => {
+                if (item && item.name) {
+                  const k = String(item.name).toLowerCase().trim();
+                  stashMap.set(k, { ...(stashMap.get(k) || {}), ...item });
+                }
+              });
+
+              merged.kitchenData = {
+                ...(merged.kitchenData || {}),
+                ...parsedKd.kitchenData,
+                stashItems: Array.from(stashMap.values())
+              };
+              merged.kitchenUpdatedAt = Math.max(curTime, dedTime);
+            }
           }
         }
       } catch (e) {}
@@ -1259,6 +1327,12 @@ class StorageManager {
           coverCampaigns: this.data.coverCampaigns,
           coverUpdatedAt: this.data.coverUpdatedAt || 0,
           coverCampaignsSeedVersion: this.data.coverCampaignsSeedVersion || 9
+        }));
+      }
+      if (this.data && this.data.kitchenData) {
+        localStorage.setItem('BOL_KITCHEN_DATA_V2', JSON.stringify({
+          kitchenData: this.data.kitchenData,
+          kitchenUpdatedAt: this.data.kitchenUpdatedAt || Date.now()
         }));
       }
       if (typeof syncManager !== 'undefined' && syncManager.isConfigured()) {
@@ -5223,6 +5297,12 @@ class StorageManager {
   saveKitchenData(kitchenData) {
     this.data.kitchenData = kitchenData;
     this.data.kitchenUpdatedAt = Date.now();
+    try {
+      localStorage.setItem('BOL_KITCHEN_DATA_V2', JSON.stringify({
+        kitchenData: this.data.kitchenData,
+        kitchenUpdatedAt: this.data.kitchenUpdatedAt
+      }));
+    } catch (e) {}
     this.saveData();
   }
 

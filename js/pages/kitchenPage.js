@@ -664,7 +664,7 @@ function renderKitchenPage() {
               </div>
               <div class="k-stash-kanban-items">
                 <div class="k-stash-col-add-row" id="k-stash-add-row-freezer" style="display:none;">
-                  <input type="text" class="k-clean-input" id="k-stash-inline-input-freezer" name="k_stash_item_freezer" placeholder="Add to Freezer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') kSubmitColAdd('freezer'); else if(event.key==='Escape') kToggleColAdd('freezer');">
+                  <input type="text" class="k-clean-input" id="k-stash-inline-input-freezer" name="k_stash_item_freezer" placeholder="Add to Freezer..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter'||event.keyCode===13){event.preventDefault();kSubmitColAdd('freezer');}else if(event.key==='Escape'){kToggleColAdd('freezer');}">
                   <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('freezer')">Add</button>
                   <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('freezer')" title="Cancel">×</button>
                 </div>
@@ -707,7 +707,7 @@ function renderKitchenPage() {
               </div>
               <div class="k-stash-kanban-items">
                 <div class="k-stash-col-add-row" id="k-stash-add-row-fridge" style="display:none;">
-                  <input type="text" class="k-clean-input" id="k-stash-inline-input-fridge" name="k_stash_item_fridge" placeholder="Add to Refrigerator..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') kSubmitColAdd('fridge'); else if(event.key==='Escape') kToggleColAdd('fridge');">
+                  <input type="text" class="k-clean-input" id="k-stash-inline-input-fridge" name="k_stash_item_fridge" placeholder="Add to Refrigerator..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter'||event.keyCode===13){event.preventDefault();kSubmitColAdd('fridge');}else if(event.key==='Escape'){kToggleColAdd('fridge');}">
                   <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('fridge')">Add</button>
                   <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('fridge')" title="Cancel">×</button>
                 </div>
@@ -750,7 +750,7 @@ function renderKitchenPage() {
               </div>
               <div class="k-stash-kanban-items">
                 <div class="k-stash-col-add-row" id="k-stash-add-row-pantry" style="display:none;">
-                  <input type="text" class="k-clean-input" id="k-stash-inline-input-pantry" name="k_stash_item_pantry" placeholder="Add to Pantry..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter') kSubmitColAdd('pantry'); else if(event.key==='Escape') kToggleColAdd('pantry');">
+                  <input type="text" class="k-clean-input" id="k-stash-inline-input-pantry" name="k_stash_item_pantry" placeholder="Add to Pantry..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-form-type="other" onkeydown="if(event.key==='Enter'||event.keyCode===13){event.preventDefault();kSubmitColAdd('pantry');}else if(event.key==='Escape'){kToggleColAdd('pantry');}">
                   <button type="button" class="k-btn-stash-add" onclick="kSubmitColAdd('pantry')">Add</button>
                   <button type="button" class="k-stash-inline-cancel-btn" onclick="kToggleColAdd('pantry')" title="Cancel">×</button>
                 </div>
@@ -1020,7 +1020,7 @@ function kSubmitColAdd(type) {
   const data = storage.getKitchenData();
   if (!data.stashItems) data.stashItems = [];
   data.stashItems.push({
-    id: 's-' + Date.now(),
+    id: 's-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
     type: type,
     name: val,
     badge: badgeName,
@@ -1028,6 +1028,20 @@ function kSubmitColAdd(type) {
   });
   storage.saveKitchenData(data);
   renderKitchenPage();
+
+  // Keep the add row open and focus the input for rapid multi-item entry
+  const newRow = document.getElementById(`k-stash-add-row-${type}`);
+  const newInp = document.getElementById(`k-stash-inline-input-${type}`);
+  const newBtn = document.getElementById(`k-stash-add-btn-${type}`);
+  if (newRow && newInp) {
+    newRow.style.display = 'flex';
+    if (newBtn) newBtn.classList.add('active');
+    newInp.value = '';
+    setTimeout(() => {
+      newInp.focus();
+    }, 40);
+  }
+
   if (typeof showToast === 'function') showToast(`Added "${val}" to ${badgeName}! ✨`);
 }
 window.kSubmitColAdd = kSubmitColAdd;

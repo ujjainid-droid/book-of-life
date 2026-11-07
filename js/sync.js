@@ -948,17 +948,44 @@ class SyncManager {
     let mergedKitchenUpdatedAt = Math.max(locKitchenTime, incKitchenTime);
 
     if (incKitchen && typeof incKitchen === 'object' && Object.keys(incKitchen).length > 0) {
+      // 2-way stash union so items added on either device or cloud are NEVER wiped
+      const locStash = Array.isArray(locKitchen.stashItems) ? locKitchen.stashItems : [];
+      const incStash = Array.isArray(incKitchen.stashItems) ? incKitchen.stashItems : [];
+      const stashMap = new Map();
+      incStash.forEach(item => {
+        if (item && item.name) stashMap.set(String(item.name).toLowerCase().trim(), item);
+      });
+      locStash.forEach(item => {
+        if (item && item.name) {
+          const k = String(item.name).toLowerCase().trim();
+          if (!stashMap.has(k)) {
+            stashMap.set(k, item);
+            localWasRicher = true;
+          } else {
+            const incItem = stashMap.get(k);
+            stashMap.set(k, { ...incItem, ...item });
+          }
+        }
+      });
+      const mergedStash = Array.from(stashMap.values());
+
       if (incKitchenTime > locKitchenTime || !storage.data.kitchenData) {
-        mergedKitchen = incKitchen;
+        mergedKitchen = {
+          ...incKitchen,
+          stashItems: mergedStash
+        };
       } else if (locKitchenTime > incKitchenTime) {
-        mergedKitchen = locKitchen;
+        mergedKitchen = {
+          ...locKitchen,
+          stashItems: mergedStash
+        };
         localWasRicher = true;
       } else {
         // Equal timestamps: merge collections and schedule
         mergedKitchen = {
           ...locKitchen,
           ...incKitchen,
-          stashItems: (Array.isArray(incKitchen.stashItems) && incKitchen.stashItems.length > 0) ? incKitchen.stashItems : (locKitchen.stashItems || []),
+          stashItems: mergedStash,
           favoriteRecipes: (Array.isArray(incKitchen.favoriteRecipes) && incKitchen.favoriteRecipes.length > 0) ? incKitchen.favoriteRecipes : (locKitchen.favoriteRecipes || []),
           newRecipes: (Array.isArray(incKitchen.newRecipes) && incKitchen.newRecipes.length > 0) ? incKitchen.newRecipes : (locKitchen.newRecipes || []),
           groceries: (Array.isArray(incKitchen.groceries) && incKitchen.groceries.length > 0) ? incKitchen.groceries : (locKitchen.groceries || []),
@@ -1050,6 +1077,12 @@ class SyncManager {
           coverCampaigns: storage.data.coverCampaigns,
           coverUpdatedAt: storage.data.coverUpdatedAt || 0,
           coverCampaignsSeedVersion: storage.data.coverCampaignsSeedVersion || 9
+        }));
+      }
+      if (storage.data.kitchenData) {
+        localStorage.setItem('BOL_KITCHEN_DATA_V2', JSON.stringify({
+          kitchenData: storage.data.kitchenData,
+          kitchenUpdatedAt: storage.data.kitchenUpdatedAt || 0
         }));
       }
     } catch (e) {}
