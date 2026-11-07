@@ -134,6 +134,7 @@ const KITCHEN_ICONS = {
 let activeKitchenEditIdx = null;
 let activeKitchenMealType = 'dinner'; // 'brunch', 'lunch', 'dinner', 'dessert'
 let activeKitchenItemIdx = null; // index of item within d.meals[t], or null when adding new item
+const kExpandedDayExtras = new Set();
 
 function kGetScheduleForWeekOffset(data, offset) {
   const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -284,10 +285,20 @@ window.kToggleWeekDropdown = function() {
 };
 
 window.kToggleDayExtras = function(dayIdx) {
+  if (kExpandedDayExtras.has(dayIdx)) {
+    kExpandedDayExtras.delete(dayIdx);
+  } else {
+    kExpandedDayExtras.add(dayIdx);
+  }
   const el = document.getElementById(`k-day-extras-${dayIdx}`);
   const arrow = document.getElementById(`k-day-arrow-${dayIdx}`);
   if (el) {
-    const isHidden = el.classList.toggle('is-hidden');
+    const isHidden = !kExpandedDayExtras.has(dayIdx);
+    if (isHidden) {
+      el.classList.add('is-hidden');
+    } else {
+      el.classList.remove('is-hidden');
+    }
     if (arrow) arrow.textContent = isHidden ? '▾' : '▴';
   }
 };
@@ -571,11 +582,11 @@ function renderKitchenPage() {
           ${fullWeekSchedule.map((d, idx) => {
             const isToday = (weekOffset === 0 && d.iso === todayIso);
             const dinnerArr = d.meals.dinner || [];
-            const heroDinner = dinnerArr[0] || (d.meal ? { meal: d.meal, source: d.source, recipeUrl: d.recipeUrl } : null);
-            const brunchCount = (d.meals.brunch || []).length;
-            const lunchCount = (d.meals.lunch || []).length;
-            const dessertCount = (d.meals.dessert || []).length;
-            const daytimeCount = brunchCount + lunchCount + dessertCount;
+            const brunchArr = d.meals.brunch || [];
+            const lunchArr = d.meals.lunch || [];
+            const dessertArr = d.meals.dessert || [];
+            const daytimeCount = brunchArr.length + lunchArr.length + dessertArr.length;
+            const isDaytimeExpanded = kExpandedDayExtras.has(idx) || (daytimeCount > 0 && !kExpandedDayExtras.has(`closed_${idx}`));
 
             const sourceLabels = {
               fresh: 'Fresh Cook',
@@ -584,13 +595,11 @@ function renderKitchenPage() {
               prep: 'Batch Prep',
               custom: 'Homemade'
             };
-            const heroSourceLabel = heroDinner ? (sourceLabels[heroDinner.source] || 'Fresh Cook') : '';
             const isMealInVault = (mealTitle) => {
               if (!mealTitle) return false;
               const norm = mealTitle.toLowerCase().trim();
               return favoriteRecipes.some(r => (r.title || '').toLowerCase().trim() === norm);
             };
-            const isDinnerFav = heroDinner && heroDinner.meal ? isMealInVault(heroDinner.meal) : false;
 
             return `
               <div class="k-board-day-card ${isToday ? 'is-today' : ''}">
@@ -602,109 +611,118 @@ function renderKitchenPage() {
                   ${isToday ? `<span class="k-badge-today">Today</span>` : ''}
                 </div>
 
-                <!-- Dinner Slot -->
-                ${heroDinner && heroDinner.meal ? `
-                  <div class="k-hero-dinner-box" onclick="kOpenMealPicker(${idx}, 'dinner', 0)" title="Click to view or edit dinner">
-                    <div class="k-hero-dinner-tag-row">
-                      <span class="k-dinner-tag-label">🍽️ Dinner</span>
-                      <span class="k-hero-source-pill source-${heroDinner.source || 'fresh'}">${heroSourceLabel}</span>
+                <!-- Dinner Section (Supports multiple entries) -->
+                <div class="k-dinner-section">
+                  ${dinnerArr.length > 0 ? `
+                    <div class="k-dinner-list">
+                      ${dinnerArr.map((dish, dIdx) => {
+                        const isFav = isMealInVault(dish.meal);
+                        const sLabel = sourceLabels[dish.source] || 'Fresh Cook';
+                        return `
+                          <div class="k-hero-dinner-box ${dIdx > 0 ? 'k-extra-dinner-box' : ''}" onclick="kOpenMealPicker(${idx}, 'dinner', ${dIdx})" title="Click to view or edit dish">
+                            <div class="k-hero-dinner-tag-row">
+                              <span class="k-dinner-tag-label">${dIdx === 0 ? '🍽️ Dinner' : '➕ Side / Course'}</span>
+                              <span class="k-hero-source-pill source-${dish.source || 'fresh'}">${sLabel}</span>
+                            </div>
+                            <div class="k-hero-dinner-main">
+                              <span class="k-hero-dinner-name">${escapeHtml(dish.meal)}</span>
+                              <span class="k-hero-dinner-actions" onclick="event.stopPropagation()">
+                                <button type="button" class="k-meal-fav-btn ${isFav ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dinner', ${dIdx}, event)" title="${isFav ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}" aria-label="Save recipe to Vault">
+                                  ${isFav ? '♥' : '♡'}
+                                </button>
+                                <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'dinner', ${dIdx}, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
+                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                                </button>
+                                <button type="button" class="k-meal-del-btn" onclick="kDeleteMealItem(${idx}, 'dinner', ${dIdx}, event)" title="Remove dish" aria-label="Remove dish">
+                                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                                <span class="k-hero-dinner-edit-hint">✎</span>
+                              </span>
+                            </div>
+                            ${dish.recipeUrl ? `
+                              <a href="${escapeHtml(dish.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link" onclick="event.stopPropagation()">
+                                <span>🔗 Recipe link</span>
+                              </a>
+                            ` : ''}
+                          </div>
+                        `;
+                      }).join('')}
                     </div>
-                    <div class="k-hero-dinner-main">
-                      <span class="k-hero-dinner-name">${escapeHtml(heroDinner.meal)}</span>
-                      <span class="k-hero-dinner-actions">
-                        <button type="button" class="k-meal-fav-btn ${isDinnerFav ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dinner', 0, event)" title="${isDinnerFav ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}" aria-label="Save recipe to Vault">
-                          ${isDinnerFav ? '♥' : '♡'}
-                        </button>
-                        <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'dinner', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
-                        </button>
-                        <span class="k-hero-dinner-edit-hint">✎</span>
-                      </span>
-                    </div>
-                    ${heroDinner.recipeUrl ? `
-                      <a href="${escapeHtml(heroDinner.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-card-link" onclick="event.stopPropagation()">
-                        <span>🔗 Recipe link</span>
-                      </a>
-                    ` : ''}
-                  </div>
-                ` : `
-                  <button type="button" class="k-hero-dinner-empty" onclick="kOpenMealPicker(${idx}, 'dinner', 0)">
-                    <span class="k-hero-dinner-empty-plus">＋</span>
-                    <span class="k-hero-dinner-empty-text">Plan ${d.day} Dinner</span>
-                    <span class="k-hero-dinner-empty-sub">Pick from Vault</span>
-                  </button>
-                `}
+                    <button type="button" class="k-add-extra-dish-btn" onclick="kOpenMealPicker(${idx}, 'dinner', null)" title="Add another dish to ${d.day} Dinner">
+                      <span>＋ Add Another Dish to Dinner</span>
+                    </button>
+                  ` : `
+                    <button type="button" class="k-hero-dinner-empty" onclick="kOpenMealPicker(${idx}, 'dinner', null)">
+                      <span class="k-hero-dinner-empty-plus">＋</span>
+                      <span class="k-hero-dinner-empty-text">Plan ${d.day} Dinner</span>
+                      <span class="k-hero-dinner-empty-sub">Pick from Vault</span>
+                    </button>
+                  `}
+                </div>
 
-                <!-- Collapsible Daytime Slots Accordion -->
+                <!-- Collapsible Daytime Slots Accordion (Supports multiple entries per type) -->
                 <div class="k-daytime-accordion">
                   <button type="button" class="k-daytime-toggle-btn" onclick="kToggleDayExtras(${idx})">
                     <span>${daytimeCount > 0 ? `+ Daytime Meals (${daytimeCount} Planned)` : '+ Add Daytime Meals'}</span>
-                    <span id="k-day-arrow-${idx}">▾</span>
+                    <span id="k-day-arrow-${idx}">${isDaytimeExpanded ? '▴' : '▾'}</span>
                   </button>
 
-                  <div class="k-daytime-expandable-body is-hidden" id="k-day-extras-${idx}">
-                    <!-- Brunch Row -->
-                    <div class="k-daytime-slot-row">
-                      <div>
-                        <span class="k-daytime-slot-label">🥞 Brunch:</span>
-                        <span>${(d.meals.brunch || []).length > 0 ? escapeHtml(d.meals.brunch[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
-                      </div>
-                      <span class="k-hero-dinner-actions">
-                        ${(d.meals.brunch || []).length > 0 && d.meals.brunch[0].meal ? `
-                          <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.brunch[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'brunch', 0, event)" title="${isMealInVault(d.meals.brunch[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
-                            ${isMealInVault(d.meals.brunch[0].meal) ? '♥' : '♡'}
-                          </button>
-                          <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'brunch', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
-                          </button>
-                        ` : ''}
-                        <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'brunch', ${(d.meals.brunch || []).length > 0 ? 0 : null})">
-                          ${(d.meals.brunch || []).length > 0 ? 'Edit' : '+ Add'}
-                        </button>
-                      </span>
-                    </div>
+                  <div class="k-daytime-expandable-body ${isDaytimeExpanded ? '' : 'is-hidden'}" id="k-day-extras-${idx}">
+                    ${[
+                      { key: 'brunch', icon: '🥞', label: 'Brunch' },
+                      { key: 'lunch', icon: '🥗', label: 'Lunch' },
+                      { key: 'dessert', icon: '🍨', label: 'Dessert' }
+                    ].map(slotConfig => {
+                      const items = d.meals[slotConfig.key] || [];
+                      return `
+                        <div class="k-daytime-category-block">
+                          <div class="k-daytime-category-head">
+                            <span class="k-daytime-category-title">
+                              ${slotConfig.icon} ${slotConfig.label}
+                              ${items.length > 0 ? `<span class="k-daytime-badge">${items.length}</span>` : ''}
+                            </span>
+                            <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, '${slotConfig.key}', null)" title="Add dish to ${slotConfig.label}">
+                              ＋ Add
+                            </button>
+                          </div>
 
-                    <!-- Lunch Row -->
-                    <div class="k-daytime-slot-row">
-                      <div>
-                        <span class="k-daytime-slot-label">🥗 Lunch:</span>
-                        <span>${(d.meals.lunch || []).length > 0 ? escapeHtml(d.meals.lunch[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
-                      </div>
-                      <span class="k-hero-dinner-actions">
-                        ${(d.meals.lunch || []).length > 0 && d.meals.lunch[0].meal ? `
-                          <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.lunch[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'lunch', 0, event)" title="${isMealInVault(d.meals.lunch[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
-                            ${isMealInVault(d.meals.lunch[0].meal) ? '♥' : '♡'}
-                          </button>
-                          <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'lunch', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
-                          </button>
-                        ` : ''}
-                        <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'lunch', ${(d.meals.lunch || []).length > 0 ? 0 : null})">
-                          ${(d.meals.lunch || []).length > 0 ? 'Edit' : '+ Add'}
-                        </button>
-                      </span>
-                    </div>
-
-                    <!-- Dessert Row -->
-                    <div class="k-daytime-slot-row">
-                      <div>
-                        <span class="k-daytime-slot-label">🍨 Dessert:</span>
-                        <span>${(d.meals.dessert || []).length > 0 ? escapeHtml(d.meals.dessert[0].meal) : '<span style="opacity:0.6;">Empty</span>'}</span>
-                      </div>
-                      <span class="k-hero-dinner-actions">
-                        ${(d.meals.dessert || []).length > 0 && d.meals.dessert[0].meal ? `
-                          <button type="button" class="k-meal-fav-btn ${isMealInVault(d.meals.dessert[0].meal) ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, 'dessert', 0, event)" title="${isMealInVault(d.meals.dessert[0].meal) ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
-                            ${isMealInVault(d.meals.dessert[0].meal) ? '♥' : '♡'}
-                          </button>
-                          <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, 'dessert', 0, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
-                          </button>
-                        ` : ''}
-                        <button type="button" class="k-daytime-slot-add-btn" onclick="kOpenMealPicker(${idx}, 'dessert', ${(d.meals.dessert || []).length > 0 ? 0 : null})">
-                          ${(d.meals.dessert || []).length > 0 ? 'Edit' : '+ Add'}
-                        </button>
-                      </span>
-                    </div>
+                          ${items.length === 0 ? `
+                            <div class="k-daytime-empty-row" onclick="kOpenMealPicker(${idx}, '${slotConfig.key}', null)">
+                              <span>Empty · tap + to plan</span>
+                            </div>
+                          ` : `
+                            <div class="k-daytime-items-list">
+                              ${items.map((slot, sIdx) => {
+                                const isFav = isMealInVault(slot.meal);
+                                return `
+                                  <div class="k-daytime-slot-row" onclick="kOpenMealPicker(${idx}, '${slotConfig.key}', ${sIdx})" title="Click to edit dish">
+                                    <div class="k-daytime-slot-main">
+                                      <span class="k-daytime-dish-name">${escapeHtml(slot.meal)}</span>
+                                      ${slot.source === 'out' ? `<span class="k-hero-source-pill source-out" style="padding:1px 6px; font-size:10px;">Takeout</span>` : ''}
+                                      ${slot.recipeUrl ? `
+                                        <a href="${escapeHtml(slot.recipeUrl)}" target="_blank" rel="noopener noreferrer" class="k-recipe-mini-link" onclick="event.stopPropagation()">🔗</a>
+                                      ` : ''}
+                                    </div>
+                                    <span class="k-hero-dinner-actions" onclick="event.stopPropagation()">
+                                      <button type="button" class="k-meal-fav-btn ${isFav ? 'is-fav' : ''}" onclick="kToggleFavSlot(${idx}, '${slotConfig.key}', ${sIdx}, event)" title="${isFav ? 'Saved in Recipe Vault (tap to remove)' : 'Save recipe to Vault'}">
+                                        ${isFav ? '♥' : '♡'}
+                                      </button>
+                                      <button type="button" class="k-meal-copy-btn" onclick="kOpenCopyMoveModal(${idx}, '${slotConfig.key}', ${sIdx}, event)" title="Copy or Move to another date" aria-label="Copy or Move to another date">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                                      </button>
+                                      <button type="button" class="k-meal-del-btn" onclick="kDeleteMealItem(${idx}, '${slotConfig.key}', ${sIdx}, event)" title="Remove dish" aria-label="Remove dish">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                      </button>
+                                      <span class="k-hero-dinner-edit-hint">✎</span>
+                                    </span>
+                                  </div>
+                                `;
+                              }).join('')}
+                            </div>
+                          `}
+                        </div>
+                      `;
+                    }).join('')}
                   </div>
                 </div>
 
@@ -1260,6 +1278,11 @@ function kOpenMealPicker(dayIdx, mealType = 'dinner', itemIdx = null) {
   activeKitchenMealType = mealType;
   activeKitchenItemIdx = (typeof itemIdx === 'number' && itemIdx >= 0) ? itemIdx : null;
 
+  if (mealType !== 'dinner') {
+    kExpandedDayExtras.add(dayIdx);
+    kExpandedDayExtras.delete(`closed_${dayIdx}`);
+  }
+
   kSetModalMealType(mealType, false);
 
   const modal = document.getElementById('k-fast-meal-modal');
@@ -1269,7 +1292,11 @@ function kOpenMealPicker(dayIdx, mealType = 'dinner', itemIdx = null) {
 window.kOpenMealPicker = kOpenMealPicker;
 
 function kSetModalMealType(newType, reFocus = true) {
+  const isTypeChange = (newType !== activeKitchenMealType);
   activeKitchenMealType = newType;
+  if (isTypeChange) {
+    activeKitchenItemIdx = null;
+  }
   const hiddenTypeEl = document.getElementById('k-modal-meal-type');
   if (hiddenTypeEl) hiddenTypeEl.value = newType;
 
@@ -1386,6 +1413,9 @@ function kSubmitCustomMeal() {
     };
 
     if (activeKitchenItemIdx !== null && activeKitchenItemIdx >= 0 && activeKitchenItemIdx < d.meals[mealType].length) {
+      if (d.meals[mealType][activeKitchenItemIdx].favoriteId) {
+        newDish.favoriteId = d.meals[mealType][activeKitchenItemIdx].favoriteId;
+      }
       d.meals[mealType][activeKitchenItemIdx] = newDish;
     } else {
       d.meals[mealType].push(newDish);
@@ -2429,17 +2459,17 @@ function kConfirmCopyMove(targetDayIdx) {
   }
 
   if (action === 'copy') {
-    targetDay.meals[targetMealType] = [clonedSrcDish];
+    targetDay.meals[targetMealType].push(clonedSrcDish);
     if (targetMealType === 'dinner') {
-      targetDay.meal = clonedSrcDish.meal;
-      targetDay.source = clonedSrcDish.source;
-      targetDay.icon = clonedSrcDish.icon;
-      targetDay.recipeUrl = clonedSrcDish.recipeUrl;
-      targetDay.favoriteId = clonedSrcDish.favoriteId;
+      targetDay.meal = targetDay.meals.dinner[0]?.meal || '';
+      targetDay.source = targetDay.meals.dinner[0]?.source || 'fresh';
+      targetDay.icon = targetDay.meals.dinner[0]?.icon || 'chicken';
+      targetDay.recipeUrl = targetDay.meals.dinner[0]?.recipeUrl || '';
+      targetDay.favoriteId = targetDay.meals.dinner[0]?.favoriteId || null;
     }
   } else if (action === 'move') {
     if (srcMealType === 'dinner') {
-      if (srcDay.meals.dinner.length > 1 && typeof srcItemIdx === 'number') {
+      if (srcDay.meals.dinner.length > 1 && typeof srcItemIdx === 'number' && srcItemIdx >= 0 && srcItemIdx < srcDay.meals.dinner.length) {
         srcDay.meals.dinner.splice(srcItemIdx, 1);
         srcDay.meal = srcDay.meals.dinner[0]?.meal || '';
         srcDay.source = srcDay.meals.dinner[0]?.source || 'fresh';
@@ -2453,20 +2483,20 @@ function kConfirmCopyMove(targetDayIdx) {
         srcDay.favoriteId = null;
       }
     } else {
-      if (srcDay.meals[srcMealType].length > 1 && typeof srcItemIdx === 'number') {
+      if (srcDay.meals[srcMealType].length > 1 && typeof srcItemIdx === 'number' && srcItemIdx >= 0 && srcItemIdx < srcDay.meals[srcMealType].length) {
         srcDay.meals[srcMealType].splice(srcItemIdx, 1);
       } else {
         srcDay.meals[srcMealType] = [];
       }
     }
 
-    targetDay.meals[targetMealType] = [clonedSrcDish];
+    targetDay.meals[targetMealType].push(clonedSrcDish);
     if (targetMealType === 'dinner') {
-      targetDay.meal = clonedSrcDish.meal;
-      targetDay.source = clonedSrcDish.source;
-      targetDay.icon = clonedSrcDish.icon;
-      targetDay.recipeUrl = clonedSrcDish.recipeUrl;
-      targetDay.favoriteId = clonedSrcDish.favoriteId;
+      targetDay.meal = targetDay.meals.dinner[0]?.meal || '';
+      targetDay.source = targetDay.meals.dinner[0]?.source || 'fresh';
+      targetDay.icon = targetDay.meals.dinner[0]?.icon || 'chicken';
+      targetDay.recipeUrl = targetDay.meals.dinner[0]?.recipeUrl || '';
+      targetDay.favoriteId = targetDay.meals.dinner[0]?.favoriteId || null;
     }
   } else if (action === 'swap') {
     if (targetExistingDish) {

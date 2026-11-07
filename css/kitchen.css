@@ -566,7 +566,73 @@
   color: var(--k-text-muted);
 }
 
-/* Daytime Slots Accordion */
+/* Dinner Section & Multiple Dishes */
+.k-dinner-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.k-dinner-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.k-extra-dinner-box {
+  background: #FFFFFF;
+  border: 1px solid var(--k-birch-border, #CBD5E1);
+}
+
+.k-extra-dinner-box .k-dinner-tag-label {
+  color: #6D28D9; /* Nordic Royal Violet */
+}
+
+.k-add-extra-dish-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px dashed var(--k-birch-border, #CBD5E1);
+  background: transparent;
+  color: #1F0BA0;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.k-add-extra-dish-btn:hover {
+  border-color: #1F0BA0;
+  background: #EEF2FF;
+  transform: translateY(-1px);
+}
+
+.k-meal-del-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--k-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.k-meal-del-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Daytime Slots Accordion & Multi-Entry Categories */
 .k-daytime-accordion {
   border-top: 1px solid var(--k-birch-mist);
   padding-top: 8px;
@@ -594,12 +660,68 @@
 .k-daytime-expandable-body {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   margin-top: 8px;
 }
 
 .k-daytime-expandable-body.is-hidden {
   display: none;
+}
+
+.k-daytime-category-block {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--k-birch-mist);
+  border: 1px solid var(--k-birch-border);
+}
+
+.k-daytime-category-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.k-daytime-category-title {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--k-obsidian);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.k-daytime-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: #EEF2FF;
+  color: #1F0BA0;
+  border: 1px solid #C7D2FE;
+}
+
+.k-daytime-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.k-daytime-empty-row {
+  font-size: 11px;
+  color: var(--k-text-muted);
+  font-style: italic;
+  padding: 4px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.k-daytime-empty-row:hover {
+  color: #1F0BA0;
+  background: rgba(31, 11, 160, 0.05);
 }
 
 .k-daytime-slot-row {
@@ -608,9 +730,48 @@
   justify-content: space-between;
   padding: 6px 10px;
   border-radius: 8px;
-  background: var(--k-birch-mist);
+  background: #FFFFFF;
+  border: 1px solid var(--k-birch-border, #E2E8F0);
   font-size: 12px;
   color: var(--k-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.k-daytime-slot-row:hover {
+  border-color: #1F0BA0;
+  background: #EEF2FF;
+}
+
+.k-daytime-slot-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.k-daytime-dish-name {
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--k-obsidian);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.k-daytime-slot-row:hover .k-daytime-dish-name {
+  color: #1F0BA0;
+}
+
+.k-recipe-mini-link {
+  font-size: 11px;
+  text-decoration: none;
+  opacity: 0.7;
+}
+
+.k-recipe-mini-link:hover {
+  opacity: 1;
 }
 
 .k-daytime-slot-label {
@@ -621,7 +782,7 @@
 .k-daytime-slot-add-btn {
   font-size: 11px;
   font-weight: 700;
-  color: var(--k-coral);
+  color: #1F0BA0;
   background: transparent;
   border: none;
   cursor: pointer;
