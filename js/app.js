@@ -42,7 +42,7 @@ function applyAppModeUI() {
             <i data-lucide="shield" style="width:14px;height:14px;"></i>
             <span>Z Hub</span>
           </a>
-          <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance')" title="Money: Burn, Budget & Reimbursements">
+          <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance', 'burn')" title="Money: Burn, Budget & Reimbursements">
             <i data-lucide="dollar-sign" style="width:14px;height:14px;"></i>
             <span>Money</span>
           </a>
@@ -59,7 +59,7 @@ function applyAppModeUI() {
           <a href="#compass" id="nav-btn-cover" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('cover')" title="Compass: System Architecture, Life Focus & Long-term Index">Compass</a>
           <a href="#hobby" id="nav-btn-hobby" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('hobby')" title="Hobby: Tasting Menu & Somatic Exploration">Hobby</a>
           <a href="#zhub" id="nav-btn-zhub" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('zlog')" title="Z Hub: Care, Meds, Behavior & Insights">Z Hub</a>
-          <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance')" title="Money: Burn, Subscriptions & Reimbursements">
+          <a href="#finance" id="nav-btn-finance" class="aurora-nav-link" onclick="event.preventDefault(); switchAppView('finance', 'burn')" title="Money: Burn, Subscriptions & Reimbursements">
             <span>Money</span>
           </a>
         `;
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money') || rawHash.startsWith('budget')) {
         const parts = rawHash.split(/[\/\-_?]/);
-        let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')));
+        let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : 'burn'));
         if (sub === 'cash') sub = 'burn';
         else if (sub === 'cards') sub = 'subscriptions';
         else if (sub === 'worth') sub = 'runway';
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (
         (rawHash.startsWith('quarterly') || rawHash.startsWith('quarter') || rawHash.startsWith('networth') || rawHash.startsWith('runway') || rawHash.startsWith('investment'))
           ? 'runway'
-          : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')))
+          : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : 'burn'))
       );
       if (sub === 'cash') sub = 'burn';
       else if (sub === 'cards') sub = 'subscriptions';
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
       switchAppView('zlog');
     } else if (key === 'm') {
       e.preventDefault();
-      switchAppView('finance');
+      switchAppView('finance', 'burn');
     } else if (key === 'h') {
       e.preventDefault();
       switchAppView('hobby');
@@ -289,8 +289,9 @@ function switchAppView(viewName, subViewName) {
     }
   } else if (currentView === 'finance') {
     const validTabs = ['burn', 'budget', 'subscriptions', 'runway', 'claims', 'cash', 'cards', 'worth', 'med', 'plan'];
-    if (subViewName && validTabs.includes(subViewName)) {
-      const normalized = (subViewName === 'cash' ? 'burn' : (subViewName === 'cards' ? 'subscriptions' : (subViewName === 'worth' ? 'runway' : (subViewName === 'med' ? 'claims' : (subViewName === 'plan' ? 'budget' : subViewName)))));
+    const chosenSubTab = subViewName || 'burn';
+    if (validTabs.includes(chosenSubTab)) {
+      const normalized = (chosenSubTab === 'cash' ? 'burn' : (chosenSubTab === 'cards' ? 'subscriptions' : (chosenSubTab === 'worth' ? 'runway' : (chosenSubTab === 'med' ? 'claims' : (chosenSubTab === 'plan' ? 'budget' : chosenSubTab)))));
       try { localStorage.setItem('BOL_FINANCE_ACTIVE_SUBTAB', normalized); } catch (e) {}
       if (typeof activeFinanceSubTab !== 'undefined') activeFinanceSubTab = normalized;
     }
@@ -384,7 +385,7 @@ function switchAppView(viewName, subViewName) {
     if (typeof renderZLogPage === 'function') renderZLogPage(subViewName);
   } else if (currentView === 'finance') {
     if (typeof renderFinancePage === 'function') {
-      renderFinancePage(subViewName);
+      renderFinancePage(subViewName || 'burn');
     } else if (typeof renderClaimsPage === 'function') {
       renderClaimsPage();
     }
