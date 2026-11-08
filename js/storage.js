@@ -3959,6 +3959,15 @@ class StorageManager {
       }
     }
 
+    if (this.data.finance && (!this.data.finance.investmentPerformance || typeof this.data.finance.investmentPerformance !== 'object')) {
+      if (typeof DEFAULT_INVESTMENT_PERFORMANCE !== 'undefined') {
+        this.data.finance.investmentPerformance = JSON.parse(JSON.stringify(DEFAULT_INVESTMENT_PERFORMANCE));
+        try {
+          localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
+        } catch (e) {}
+      }
+    }
+
     return this.data.finance;
   }
 
@@ -4106,6 +4115,29 @@ class StorageManager {
     } catch (e) {}
     this.saveData();
     return { checklist: fin.annualChecklists[yKey], allDone };
+  }
+
+  getFinanceInvestmentPerformance() {
+    const fin = this.getFinanceData();
+    if (!fin.investmentPerformance || typeof fin.investmentPerformance !== 'object') {
+      if (typeof DEFAULT_INVESTMENT_PERFORMANCE !== 'undefined') {
+        fin.investmentPerformance = JSON.parse(JSON.stringify(DEFAULT_INVESTMENT_PERFORMANCE));
+      } else {
+        fin.investmentPerformance = {};
+      }
+    }
+    return fin.investmentPerformance;
+  }
+
+  saveFinanceInvestmentPerformance(perfData) {
+    const fin = this.getFinanceData();
+    fin.investmentPerformance = perfData;
+    fin.updatedAt = Date.now();
+    try {
+      localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(fin));
+    } catch (e) {}
+    this.saveData();
+    return fin.investmentPerformance;
   }
 
   saveFinanceNetWorth(data) {

@@ -15,6 +15,7 @@ function getInitialFinanceSubTab() {
         if (['claims', 'page4', '4'].includes(parts[1])) return 'claims';
       }
     }
+    if (rawHash === 'quarterly' || rawHash === 'quarterly/' || rawHash.startsWith('quarter') || rawHash === 'networth' || rawHash.startsWith('investment')) return 'runway';
     if (rawHash === 'budget' || rawHash === 'budget/' || rawHash.startsWith('budget')) return 'budget';
     if (rawHash === 'finance' || rawHash === 'finance/') return 'burn';
     if (rawHash.startsWith('claims')) return 'claims';
@@ -50,6 +51,25 @@ let selectedFinanceQuarter = '2026-Q3';
 let selectedCardRoiFilter = 'amex-plat';
 let financeSubSearchQuery = '';
 let financeSubCategoryFilter = 'all';
+
+let activeFinanceBenchmark = (function() {
+  try {
+    return localStorage.getItem('margo_finance_active_benchmark') || 'sp500';
+  } catch (e) {
+    return 'sp500';
+  }
+})();
+
+let activeFinancePerfView = (function() {
+  try {
+    return localStorage.getItem('margo_finance_perf_view') || 'both'; // 'cards' | 'ledger' | 'both'
+  } catch (e) {
+    return 'both';
+  }
+})();
+
+let selectedFinancePerfMonth = '2026-10';
+
 let financeLedgerCollapsed = (function() {
   try {
     return localStorage.getItem('margo_finance_ledger_collapsed') === 'true';
@@ -115,9 +135,9 @@ function renderFinancePage(targetSubTab) {
             <span>💳</span>
             <span>Card Fee ROI</span>
           </button>
-          <button class="finance-subnav-btn ${activeFinanceSubTab === 'runway' ? 'active' : ''}" onclick="switchFinanceSubTab('runway')" title="Net Worth Horizon &amp; Quarterly Ledger">
+          <button class="finance-subnav-btn ${activeFinanceSubTab === 'runway' ? 'active' : ''}" onclick="switchFinanceSubTab('runway')" title="Investment Performance, Net Worth &amp; Quarterly Review">
             <span>📈</span>
-            <span>Net Worth &amp; Quarterly</span>
+            <span>Quarterly &amp; Net Worth</span>
           </button>
           <button class="finance-subnav-btn ${activeFinanceSubTab === 'claims' ? 'active' : ''}" onclick="switchFinanceSubTab('claims')" title="Medical Claims &amp; Superbills">
             <span>🏥</span>
@@ -2066,6 +2086,649 @@ function renderFinanceMilestonesSparkline(milestones) {
 }
 
 /* ==========================================================================
+   Investment Performance & Market Benchmarking Deck (Quarterly Page)
+   ========================================================================== */
+function switchFinanceBenchmark(benchId) {
+  if (['sp500', 'blended', 'nasdaq'].includes(benchId)) {
+    activeFinanceBenchmark = benchId;
+    try {
+      localStorage.setItem('margo_finance_active_benchmark', benchId);
+    } catch (e) {}
+    renderFinanceRunway();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+window.switchFinanceBenchmark = switchFinanceBenchmark;
+
+function switchFinancePerfView(viewMode) {
+  if (['cards', 'ledger', 'both'].includes(viewMode)) {
+    activeFinancePerfView = viewMode;
+    try {
+      localStorage.setItem('margo_finance_perf_view', viewMode);
+    } catch (e) {}
+    renderFinanceRunway();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+  }
+}
+window.switchFinancePerfView = switchFinancePerfView;
+
+function selectFinancePerfMonth(mIso) {
+  selectedFinancePerfMonth = mIso;
+  renderFinanceRunway();
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.selectFinancePerfMonth = selectFinancePerfMonth;
+
+function renderFinanceInvestmentPerformanceCard() {
+  const perf = (typeof storage !== 'undefined' && typeof storage.getFinanceInvestmentPerformance === 'function')
+    ? storage.getFinanceInvestmentPerformance()
+    : (typeof DEFAULT_INVESTMENT_PERFORMANCE !== 'undefined' ? DEFAULT_INVESTMENT_PERFORMANCE : {});
+
+  const fin = (typeof storage !== 'undefined' && typeof storage.getFinanceData === 'function')
+    ? storage.getFinanceData()
+    : {};
+  const nw = fin.netWorth || (typeof DEFAULT_NET_WORTH_DATA !== 'undefined' ? DEFAULT_NET_WORTH_DATA : {});
+  const accounts = Array.isArray(nw.accounts) ? nw.accounts : (fin.accounts || []);
+
+  const benchmarkKey = activeFinanceBenchmark || 'sp500';
+  const benchmarks = perf.benchmarks || {
+    sp500: { id: 'sp500', name: 'S&P 500', ticker: 'SPY / VOO', desc: 'US Large-Cap Equity Benchmark', month: -1.0, ytd: 15.4, oneYear: 18.7, fiveYear: 78.6, cagrFiveYear: 12.3 },
+    blended: { id: 'blended', name: 'Blended 60/40', ticker: 'VBIAX / Balanced', desc: 'Balanced (60% Equities / 40% Bonds)', month: -0.6, ytd: 10.8, oneYear: 13.2, fiveYear: 51.4, cagrFiveYear: 8.6 },
+    nasdaq: { id: 'nasdaq', name: 'Nasdaq-100', ticker: 'QQQ / Growth', desc: 'Tech-Focused Growth Benchmark', month: -1.4, ytd: 19.6, oneYear: 24.1, fiveYear: 112.5, cagrFiveYear: 16.3 }
+  };
+  const activeBench = benchmarks[benchmarkKey] || benchmarks.sp500;
+
+  const portfolio = perf.portfolio || {
+    month: -0.9,
+    ytd: 17.2,
+    oneYear: 21.4,
+    fiveYear: 94.2,
+    cagrFiveYear: 14.2,
+    dollarGains: { month: -44100, ytd: 742000, oneYear: 885000, fiveYear: 2340000 }
+  };
+
+  const monthlyList = Array.isArray(perf.monthlyData) ? perf.monthlyData : [];
+  const selMonthData = monthlyList.find(m => m.month === selectedFinancePerfMonth) || monthlyList[monthlyList.length - 1] || {
+    month: '2026-10',
+    label: 'Oct 2026',
+    portfolioReturn: portfolio.month,
+    benchmarks: { [benchmarkKey]: activeBench.month },
+    dollarGain: portfolio.dollarGains ? portfolio.dollarGains.month : -44100
+  };
+
+  const mPort = selMonthData.portfolioReturn !== undefined ? selMonthData.portfolioReturn : portfolio.month;
+  const mBench = (selMonthData.benchmarks && selMonthData.benchmarks[benchmarkKey] !== undefined)
+    ? selMonthData.benchmarks[benchmarkKey]
+    : activeBench.month;
+  const mAlpha = (mPort - mBench);
+  const mGain = selMonthData.dollarGain !== undefined ? selMonthData.dollarGain : (portfolio.dollarGains ? portfolio.dollarGains.month : -44100);
+
+  const ytdAlpha = (portfolio.ytd - activeBench.ytd);
+  const oneYrAlpha = (portfolio.oneYear - activeBench.oneYear);
+  const fiveYrAlpha = (portfolio.fiveYear - activeBench.fiveYear);
+
+  // Dynamic invested assets calculation from verified accounts
+  const investAccounts = accounts.filter(a => ['retirement', 'brokerage', 'equity', 'education'].includes(a.assetClass));
+  const dynamicInvestTotal = investAccounts.reduce((sum, a) => sum + Math.abs(parseFloat(a.balance) || 0), 0);
+  const investedTotal = dynamicInvestTotal > 0 ? dynamicInvestTotal : (perf.investedAssets || 4820271.48);
+
+  const asOf = perf.asOfDate || '2026-10-31';
+
+  // Helper for dual comparative bars
+  const renderDualBar = (portVal, benchVal, maxBase = null) => {
+    const pAbs = Math.abs(portVal);
+    const bAbs = Math.abs(benchVal);
+    const base = maxBase || Math.max(pAbs, bAbs, 1);
+    const pPct = Math.min(100, Math.max(8, (pAbs / base) * 100)).toFixed(0);
+    const bPct = Math.min(100, Math.max(8, (bAbs / base) * 100)).toFixed(0);
+
+    const pColor = portVal >= 0 ? 'linear-gradient(90deg, #8B5CF6, #6D28D9)' : 'linear-gradient(90deg, #FB7185, #BE123C)';
+    const bColor = benchVal >= 0 ? 'linear-gradient(90deg, #64748B, #475569)' : 'linear-gradient(90deg, #94A3B8, #64748B)';
+
+    return `
+      <div class="finance-perf-bars-box">
+        <div class="finance-perf-bar-item">
+          <div class="finance-perf-bar-label">
+            <span style="font-weight: 700; color: #6D28D9;">Portfolio</span>
+            <span style="font-weight: 700; font-variant-numeric: tabular-nums;">${portVal >= 0 ? '+' : ''}${portVal.toFixed(1)}%</span>
+          </div>
+          <div class="finance-perf-bar-track">
+            <div class="finance-perf-bar-fill" style="width: ${pPct}%; background: ${pColor};"></div>
+          </div>
+        </div>
+        <div class="finance-perf-bar-item">
+          <div class="finance-perf-bar-label">
+            <span>${escapeHtml(activeBench.name)}</span>
+            <span style="font-weight: 600; font-variant-numeric: tabular-nums;">${benchVal >= 0 ? '+' : ''}${benchVal.toFixed(1)}%</span>
+          </div>
+          <div class="finance-perf-bar-track">
+            <div class="finance-perf-bar-fill" style="width: ${bPct}%; background: ${bColor};"></div>
+          </div>
+        </div>
+      </div>
+    `;
+  };
+
+  const formatAlphaPill = (alphaVal) => {
+    const isPos = alphaVal >= 0;
+    const sign = isPos ? '+' : '';
+    const cls = isPos ? 'positive' : 'negative';
+    const icon = isPos ? 'trending-up' : 'trending-down';
+    return `
+      <span class="finance-perf-alpha-pill ${cls}" title="Alpha vs ${escapeHtml(activeBench.name)}: ${sign}${alphaVal.toFixed(1)}%">
+        <i data-lucide="${icon}" style="width: 10px; height: 10px;"></i>
+        <span>${sign}${alphaVal.toFixed(1)}% Alpha</span>
+      </span>
+    `;
+  };
+
+  const showCards = activeFinancePerfView === 'cards' || activeFinancePerfView === 'both';
+  const showLedger = activeFinancePerfView === 'ledger' || activeFinancePerfView === 'both';
+
+  return `
+    <div class="finance-perf-deck" id="finance-investment-performance-section">
+      <!-- Deck Header -->
+      <div class="finance-perf-header">
+        <div class="finance-perf-title-wrap">
+          <div class="finance-perf-title">
+            <i data-lucide="trending-up" style="width: 16px; height: 16px; color: #7C3AED;"></i>
+            <span>Investment Performance &bull; Market Comparison</span>
+          </div>
+          <div class="finance-perf-subtitle">
+            $${(investedTotal / 1e6).toFixed(2)}M Invested Capital across ${investAccounts.length || 12} Accounts &bull; Verified as of ${escapeHtml(asOf)}
+          </div>
+        </div>
+
+        <div class="finance-perf-controls">
+          <!-- Benchmark Switcher -->
+          <div class="finance-perf-segmented" title="Select Market Benchmark for Comparison">
+            <button type="button" 
+                    class="finance-perf-segmented-btn ${benchmarkKey === 'sp500' ? 'active' : ''}" 
+                    onclick="switchFinanceBenchmark('sp500')">
+              S&amp;P 500
+            </button>
+            <button type="button" 
+                    class="finance-perf-segmented-btn ${benchmarkKey === 'blended' ? 'active' : ''}" 
+                    onclick="switchFinanceBenchmark('blended')">
+              Blended 60/40
+            </button>
+            <button type="button" 
+                    class="finance-perf-segmented-btn ${benchmarkKey === 'nasdaq' ? 'active' : ''}" 
+                    onclick="switchFinanceBenchmark('nasdaq')">
+              Nasdaq-100
+            </button>
+          </div>
+
+          <!-- View Switcher -->
+          <div class="finance-perf-segmented" title="Toggle Summary Cards or Monthly Ledger">
+            <button type="button" 
+                    class="finance-perf-segmented-btn ${activeFinancePerfView === 'cards' ? 'active' : ''}" 
+                    onclick="switchFinancePerfView('cards')"
+                    title="Show Executive Horizon Cards">
+              Cards
+            </button>
+            <button type="button" 
+                    class="finance-perf-segmented-btn ${activeFinancePerfView === 'ledger' ? 'active' : ''}" 
+                    onclick="switchFinancePerfView('ledger')"
+                    title="Show Monthly Returns Breakdown Table">
+              Monthly
+            </button>
+            <button type="button" 
+                    class="finance-perf-segmented-btn ${activeFinancePerfView === 'both' ? 'active' : ''}" 
+                    onclick="switchFinancePerfView('both')"
+                    title="Show Full Performance Deck">
+              Full Deck
+            </button>
+          </div>
+
+          <button class="btn btn-secondary" 
+                  onclick="openEditInvestmentPerformanceModal()" 
+                  style="font-size: 0.68rem; padding: 3px 9px;" 
+                  title="Edit or adjust portfolio performance figures">
+            <i data-lucide="edit-3" style="width: 11px; height: 11px;"></i>
+            <span>Edit Returns</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Executive Insight Banner -->
+      <div class="finance-perf-insight-strip">
+        <div class="finance-perf-insight-left">
+          <i data-lucide="sparkles" style="width: 14px; height: 14px; color: #0D98BA; flex-shrink: 0;"></i>
+          <span>
+            ${ytdAlpha >= 0 ? `
+              <strong>Portfolio Alpha:</strong> Outperforming ${escapeHtml(activeBench.name)} by <strong>+${ytdAlpha.toFixed(1)}% YTD</strong> and <strong>+${fiveYrAlpha.toFixed(1)}% 5-Year</strong> cumulative (${portfolio.cagrFiveYear}%/yr vs ${activeBench.cagrFiveYear}%/yr CAGR).
+            ` : `
+              <strong>Performance Tracking:</strong> Portfolio trailing ${escapeHtml(activeBench.name)} by ${ytdAlpha.toFixed(1)}% YTD (${portfolio.ytd >= 0 ? '+' : ''}${portfolio.ytd.toFixed(1)}% vs ${activeBench.ytd >= 0 ? '+' : ''}${activeBench.ytd.toFixed(1)}%).
+            `}
+          </span>
+        </div>
+        <div style="font-size: 0.70rem; color: var(--text-muted); font-weight: 600;">
+          Benchmark: <strong>${escapeHtml(activeBench.name)} (${escapeHtml(activeBench.ticker)})</strong>
+        </div>
+      </div>
+
+      <!-- 4 Period Horizon Cards: Month, YTD, 1 Year, 5 Years -->
+      ${showCards ? `
+        <div class="finance-perf-grid">
+          <!-- 1. Month Card -->
+          <div class="finance-perf-card">
+            <div class="finance-perf-card-top">
+              <span class="finance-perf-card-label">
+                <i data-lucide="calendar" style="width: 12px; height: 12px; color: #6D28D9;"></i>
+                <span>${escapeHtml(selMonthData.label || 'Month')}</span>
+              </span>
+              ${formatAlphaPill(mAlpha)}
+            </div>
+            <div>
+              <div class="finance-perf-hero-row">
+                <div class="finance-perf-hero-val ${mPort < 0 ? 'negative' : ''}">
+                  ${mPort >= 0 ? '+' : ''}${mPort.toFixed(1)}%
+                </div>
+                <div class="finance-perf-market-val">
+                  vs ${mBench >= 0 ? '+' : ''}${mBench.toFixed(1)}%<br>
+                  <span style="font-size: 0.68rem; color: var(--text-muted);">${escapeHtml(activeBench.name)}</span>
+                </div>
+              </div>
+            </div>
+            ${renderDualBar(mPort, mBench)}
+            <div class="finance-perf-card-footer">
+              <span>Month Value Delta:</span>
+              <strong style="color: ${mGain >= 0 ? '#0E7490' : '#BE123C'}; font-variant-numeric: tabular-nums;">
+                ${mGain >= 0 ? '+' : '-'}$${Math.abs(Math.round(mGain)).toLocaleString()}
+              </strong>
+            </div>
+          </div>
+
+          <!-- 2. YTD Card -->
+          <div class="finance-perf-card">
+            <div class="finance-perf-card-top">
+              <span class="finance-perf-card-label">
+                <i data-lucide="compass" style="width: 12px; height: 12px; color: #6D28D9;"></i>
+                <span>2026 YTD</span>
+              </span>
+              ${formatAlphaPill(ytdAlpha)}
+            </div>
+            <div>
+              <div class="finance-perf-hero-row">
+                <div class="finance-perf-hero-val ${portfolio.ytd < 0 ? 'negative' : ''}">
+                  ${portfolio.ytd >= 0 ? '+' : ''}${portfolio.ytd.toFixed(1)}%
+                </div>
+                <div class="finance-perf-market-val">
+                  vs ${activeBench.ytd >= 0 ? '+' : ''}${activeBench.ytd.toFixed(1)}%<br>
+                  <span style="font-size: 0.68rem; color: var(--text-muted);">${escapeHtml(activeBench.name)}</span>
+                </div>
+              </div>
+            </div>
+            ${renderDualBar(portfolio.ytd, activeBench.ytd)}
+            <div class="finance-perf-card-footer">
+              <span>YTD Expansion:</span>
+              <strong style="color: #0E7490; font-variant-numeric: tabular-nums;">
+                +$${Math.round((portfolio.dollarGains ? portfolio.dollarGains.ytd : 742000) / 1000).toLocaleString()}k
+              </strong>
+            </div>
+          </div>
+
+          <!-- 3. 1 Year Card -->
+          <div class="finance-perf-card">
+            <div class="finance-perf-card-top">
+              <span class="finance-perf-card-label">
+                <i data-lucide="shield" style="width: 12px; height: 12px; color: #6D28D9;"></i>
+                <span>1 Year Trailing</span>
+              </span>
+              ${formatAlphaPill(oneYrAlpha)}
+            </div>
+            <div>
+              <div class="finance-perf-hero-row">
+                <div class="finance-perf-hero-val ${portfolio.oneYear < 0 ? 'negative' : ''}">
+                  ${portfolio.oneYear >= 0 ? '+' : ''}${portfolio.oneYear.toFixed(1)}%
+                </div>
+                <div class="finance-perf-market-val">
+                  vs ${activeBench.oneYear >= 0 ? '+' : ''}${activeBench.oneYear.toFixed(1)}%<br>
+                  <span style="font-size: 0.68rem; color: var(--text-muted);">${escapeHtml(activeBench.name)}</span>
+                </div>
+              </div>
+            </div>
+            ${renderDualBar(portfolio.oneYear, activeBench.oneYear)}
+            <div class="finance-perf-card-footer">
+              <span>1-Yr Expansion:</span>
+              <strong style="color: #0E7490; font-variant-numeric: tabular-nums;">
+                +$${Math.round((portfolio.dollarGains ? portfolio.dollarGains.oneYear : 885000) / 1000).toLocaleString()}k
+              </strong>
+            </div>
+          </div>
+
+          <!-- 4. 5 Years Card -->
+          <div class="finance-perf-card">
+            <div class="finance-perf-card-top">
+              <span class="finance-perf-card-label">
+                <i data-lucide="award" style="width: 12px; height: 12px; color: #6D28D9;"></i>
+                <span>5 Years Cumulative</span>
+              </span>
+              ${formatAlphaPill(fiveYrAlpha)}
+            </div>
+            <div>
+              <div class="finance-perf-hero-row">
+                <div class="finance-perf-hero-val ${portfolio.fiveYear < 0 ? 'negative' : ''}">
+                  ${portfolio.fiveYear >= 0 ? '+' : ''}${portfolio.fiveYear.toFixed(1)}%
+                </div>
+                <div class="finance-perf-market-val">
+                  vs ${activeBench.fiveYear >= 0 ? '+' : ''}${activeBench.fiveYear.toFixed(1)}%<br>
+                  <span style="font-size: 0.68rem; color: var(--text-muted);">${portfolio.cagrFiveYear}% vs ${activeBench.cagrFiveYear}% CAGR</span>
+                </div>
+              </div>
+            </div>
+            ${renderDualBar(portfolio.fiveYear, activeBench.fiveYear)}
+            <div class="finance-perf-card-footer">
+              <span>5-Yr Expansion:</span>
+              <strong style="color: #6D28D9; font-variant-numeric: tabular-nums;">
+                +$${((portfolio.dollarGains ? portfolio.dollarGains.fiveYear : 2340000) / 1e6).toFixed(2)}M
+              </strong>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+
+      <!-- Monthly Breakdown Table -->
+      ${showLedger ? `
+        <div class="finance-perf-table-wrap">
+          <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color, #E2E8F0); display: flex; justify-content: space-between; align-items: center; background: var(--bg-surface, #F8FAFC);">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i data-lucide="list" style="width: 14px; height: 14px; color: #6D28D9;"></i>
+              <strong style="font-size: 0.82rem; color: var(--text-primary);">2026 Monthly Investment Ledger</strong>
+              <span style="font-size: 0.70rem; color: var(--text-muted);">(Click any month to inspect in Month Card)</span>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted);">
+              Benchmark: <strong>${escapeHtml(activeBench.name)}</strong>
+            </div>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="finance-perf-table">
+              <thead>
+                <tr>
+                  <th>Month</th>
+                  <th>Portfolio Return</th>
+                  <th>${escapeHtml(activeBench.name)}</th>
+                  <th>Alpha (Excess)</th>
+                  <th>Est. Portfolio Gain</th>
+                  <th>Comparative Trajectory</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${monthlyList.map(m => {
+                  const isActive = m.month === (selectedFinancePerfMonth || '2026-10');
+                  const pRet = m.portfolioReturn !== undefined ? m.portfolioReturn : 0;
+                  const bRet = (m.benchmarks && m.benchmarks[benchmarkKey] !== undefined) ? m.benchmarks[benchmarkKey] : activeBench.month;
+                  const alpha = (pRet - bRet);
+                  const isAlphaPos = alpha >= 0;
+                  const gain = m.dollarGain !== undefined ? m.dollarGain : 0;
+
+                  // Proportional track
+                  const pAbs = Math.abs(pRet);
+                  const bAbs = Math.abs(bRet);
+                  const maxBase = Math.max(pAbs, bAbs, 6);
+                  const pW = Math.min(100, Math.max(6, (pAbs / maxBase) * 100));
+                  const bW = Math.min(100, Math.max(6, (bAbs / maxBase) * 100));
+                  const pColor = pRet >= 0 ? '#7C3AED' : '#BE123C';
+                  const bColor = bRet >= 0 ? '#64748B' : '#94A3B8';
+
+                  return `
+                    <tr class="${isActive ? 'active-month' : ''}" 
+                        onclick="selectFinancePerfMonth('${escapeHtml(m.month)}')"
+                        style="cursor: pointer;"
+                        title="Click to select ${escapeHtml(m.label || m.month)} in the Month Card">
+                      <td style="font-weight: 700; white-space: nowrap;">
+                        ${isActive ? '<i data-lucide="chevron-right" style="width: 11px; height: 11px; color: #7C3AED; vertical-align: middle;"></i> ' : ''}
+                        ${escapeHtml(m.label || m.month)}
+                      </td>
+                      <td style="font-weight: 700; color: ${pRet >= 0 ? '#6D28D9' : '#BE123C'}; white-space: nowrap;">
+                        ${pRet >= 0 ? '+' : ''}${pRet.toFixed(1)}%
+                      </td>
+                      <td style="font-weight: 600; color: var(--text-secondary); white-space: nowrap;">
+                        ${bRet >= 0 ? '+' : ''}${bRet.toFixed(1)}%
+                      </td>
+                      <td>
+                        <span class="finance-perf-alpha-pill ${isAlphaPos ? 'positive' : 'negative'}">
+                          ${isAlphaPos ? '+' : ''}${alpha.toFixed(1)}%
+                        </span>
+                      </td>
+                      <td style="font-weight: 600; color: ${gain >= 0 ? '#0E7490' : '#BE123C'}; white-space: nowrap;">
+                        ${gain >= 0 ? '+' : '-'}$${Math.abs(Math.round(gain)).toLocaleString()}
+                      </td>
+                      <td>
+                        <div class="finance-perf-mini-track" title="Portfolio: ${pRet >= 0 ? '+' : ''}${pRet.toFixed(1)}% | ${escapeHtml(activeBench.name)}: ${bRet >= 0 ? '+' : ''}${bRet.toFixed(1)}%">
+                          <div style="flex: 1; display: flex; flex-direction: column; gap: 2px;">
+                            <div style="height: 4px; background: var(--border-color); border-radius: 2px; overflow: hidden;">
+                              <div style="height: 100%; width: ${pW.toFixed(0)}%; background: ${pColor};"></div>
+                            </div>
+                            <div style="height: 4px; background: var(--border-color); border-radius: 2px; overflow: hidden;">
+                              <div style="height: 100%; width: ${bW.toFixed(0)}%; background: ${bColor};"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>2026 YTD Total</td>
+                  <td style="color: #6D28D9;">${portfolio.ytd >= 0 ? '+' : ''}${portfolio.ytd.toFixed(1)}%</td>
+                  <td style="color: var(--text-secondary);">${activeBench.ytd >= 0 ? '+' : ''}${activeBench.ytd.toFixed(1)}%</td>
+                  <td>
+                    <span class="finance-perf-alpha-pill ${ytdAlpha >= 0 ? 'positive' : 'negative'}">
+                      ${ytdAlpha >= 0 ? '+' : ''}${ytdAlpha.toFixed(1)}%
+                    </span>
+                  </td>
+                  <td style="color: #0E7490;">+$${Math.round(portfolio.dollarGains ? portfolio.dollarGains.ytd : 742000).toLocaleString()}</td>
+                  <td style="font-size: 0.70rem; color: var(--text-muted);">10 Months Trailing</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+function openEditInvestmentPerformanceModal() {
+  let modal = document.getElementById('modal-edit-investment-performance');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'modal-edit-investment-performance';
+    modal.className = 'modal-overlay';
+    document.body.appendChild(modal);
+  }
+
+  const perf = (typeof storage !== 'undefined' && typeof storage.getFinanceInvestmentPerformance === 'function')
+    ? storage.getFinanceInvestmentPerformance()
+    : (typeof DEFAULT_INVESTMENT_PERFORMANCE !== 'undefined' ? DEFAULT_INVESTMENT_PERFORMANCE : {});
+
+  const p = perf.portfolio || { month: -0.9, ytd: 17.2, oneYear: 21.4, fiveYear: 94.2, cagrFiveYear: 14.2, dollarGains: { month: -44100, ytd: 742000, oneYear: 885000, fiveYear: 2340000 } };
+  const b = (perf.benchmarks && perf.benchmarks.sp500) || { month: -1.0, ytd: 15.4, oneYear: 18.7, fiveYear: 78.6, cagrFiveYear: 12.3 };
+
+  modal.innerHTML = `
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="trending-up" style="width: 18px; height: 18px; color: #7C3AED;"></i>
+          <span>Edit Investment Performance</span>
+        </h3>
+        <button class="modal-close-btn" onclick="closeEditInvestmentPerformanceModal()">&times;</button>
+      </div>
+      <form onsubmit="submitEditInvestmentPerformanceModal(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 14px; max-height: 65vh; overflow-y: auto;">
+          <p style="font-size: 0.76rem; color: var(--text-muted); margin: 0;">
+            Adjust your verified portfolio and S&amp;P 500 market benchmark returns for each time horizon.
+          </p>
+
+          <!-- Selected Month Returns -->
+          <div style="background: var(--bg-secondary); padding: 10px 12px; border-radius: 10px;">
+            <strong style="font-size: 0.80rem; display: block; margin-bottom: 8px;">Month (${escapeHtml(selectedFinancePerfMonth || '2026-10')})</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">Portfolio Month %</label>
+                <input type="number" step="0.1" id="perf-input-port-month" class="finance-search-input" style="width: 100%;" value="${p.month !== undefined ? p.month : -0.9}" required>
+              </div>
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">S&amp;P 500 Month %</label>
+                <input type="number" step="0.1" id="perf-input-sp-month" class="finance-search-input" style="width: 100%;" value="${b.month !== undefined ? b.month : -1.0}" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- YTD Returns -->
+          <div style="background: var(--bg-secondary); padding: 10px 12px; border-radius: 10px;">
+            <strong style="font-size: 0.80rem; display: block; margin-bottom: 8px;">2026 Year-to-Date (YTD)</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">Portfolio YTD %</label>
+                <input type="number" step="0.1" id="perf-input-port-ytd" class="finance-search-input" style="width: 100%;" value="${p.ytd !== undefined ? p.ytd : 17.2}" required>
+              </div>
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">S&amp;P 500 YTD %</label>
+                <input type="number" step="0.1" id="perf-input-sp-ytd" class="finance-search-input" style="width: 100%;" value="${b.ytd !== undefined ? b.ytd : 15.4}" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- 1 Year Returns -->
+          <div style="background: var(--bg-secondary); padding: 10px 12px; border-radius: 10px;">
+            <strong style="font-size: 0.80rem; display: block; margin-bottom: 8px;">1 Year Trailing</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">Portfolio 1-Year %</label>
+                <input type="number" step="0.1" id="perf-input-port-1y" class="finance-search-input" style="width: 100%;" value="${p.oneYear !== undefined ? p.oneYear : 21.4}" required>
+              </div>
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">S&amp;P 500 1-Year %</label>
+                <input type="number" step="0.1" id="perf-input-sp-1y" class="finance-search-input" style="width: 100%;" value="${b.oneYear !== undefined ? b.oneYear : 18.7}" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 Years Returns -->
+          <div style="background: var(--bg-secondary); padding: 10px 12px; border-radius: 10px;">
+            <strong style="font-size: 0.80rem; display: block; margin-bottom: 8px;">5 Years Cumulative &amp; CAGR</strong>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">Portfolio 5-Year %</label>
+                <input type="number" step="0.1" id="perf-input-port-5y" class="finance-search-input" style="width: 100%;" value="${p.fiveYear !== undefined ? p.fiveYear : 94.2}" required>
+              </div>
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">S&amp;P 500 5-Year %</label>
+                <input type="number" step="0.1" id="perf-input-sp-5y" class="finance-search-input" style="width: 100%;" value="${b.fiveYear !== undefined ? b.fiveYear : 78.6}" required>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px;">
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">Portfolio 5Y CAGR %</label>
+                <input type="number" step="0.1" id="perf-input-port-cagr" class="finance-search-input" style="width: 100%;" value="${p.cagrFiveYear !== undefined ? p.cagrFiveYear : 14.2}" required>
+              </div>
+              <div>
+                <label style="font-size: 0.70rem; color: var(--text-muted); display: block;">S&amp;P 500 5Y CAGR %</label>
+                <input type="number" step="0.1" id="perf-input-sp-cagr" class="finance-search-input" style="width: 100%;" value="${b.cagrFiveYear !== undefined ? b.cagrFiveYear : 12.3}" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--border-color); background: var(--bg-secondary);">
+          <button type="button" class="btn btn-secondary" onclick="resetInvestmentPerformanceToDefaults()" style="font-size: 0.74rem;">
+            Reset Defaults
+          </button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="closeEditInvestmentPerformanceModal()" style="font-size: 0.74rem;">Cancel</button>
+            <button type="submit" class="btn btn-primary" style="font-size: 0.74rem; background: #6D28D9; color: #FFFFFF;">Save Performance</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  `;
+
+  modal.classList.add('active');
+  if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+window.openEditInvestmentPerformanceModal = openEditInvestmentPerformanceModal;
+
+function closeEditInvestmentPerformanceModal() {
+  const modal = document.getElementById('modal-edit-investment-performance');
+  if (modal) modal.classList.remove('active');
+}
+window.closeEditInvestmentPerformanceModal = closeEditInvestmentPerformanceModal;
+
+function submitEditInvestmentPerformanceModal(e) {
+  if (e) e.preventDefault();
+  const perf = storage.getFinanceInvestmentPerformance();
+
+  const portMonth = parseFloat(document.getElementById('perf-input-port-month').value) || 0;
+  const spMonth = parseFloat(document.getElementById('perf-input-sp-month').value) || 0;
+
+  const portYtd = parseFloat(document.getElementById('perf-input-port-ytd').value) || 0;
+  const spYtd = parseFloat(document.getElementById('perf-input-sp-ytd').value) || 0;
+
+  const port1y = parseFloat(document.getElementById('perf-input-port-1y').value) || 0;
+  const sp1y = parseFloat(document.getElementById('perf-input-sp-1y').value) || 0;
+
+  const port5y = parseFloat(document.getElementById('perf-input-port-5y').value) || 0;
+  const sp5y = parseFloat(document.getElementById('perf-input-sp-5y').value) || 0;
+
+  const portCagr = parseFloat(document.getElementById('perf-input-port-cagr').value) || 0;
+  const spCagr = parseFloat(document.getElementById('perf-input-sp-cagr').value) || 0;
+
+  perf.portfolio = perf.portfolio || {};
+  perf.portfolio.month = portMonth;
+  perf.portfolio.ytd = portYtd;
+  perf.portfolio.oneYear = port1y;
+  perf.portfolio.fiveYear = port5y;
+  perf.portfolio.cagrFiveYear = portCagr;
+
+  if (!perf.benchmarks) perf.benchmarks = {};
+  if (!perf.benchmarks.sp500) perf.benchmarks.sp500 = {};
+  perf.benchmarks.sp500.month = spMonth;
+  perf.benchmarks.sp500.ytd = spYtd;
+  perf.benchmarks.sp500.oneYear = sp1y;
+  perf.benchmarks.sp500.fiveYear = sp5y;
+  perf.benchmarks.sp500.cagrFiveYear = spCagr;
+
+  // Also update selected month in monthlyData if present
+  if (Array.isArray(perf.monthlyData)) {
+    const curM = perf.monthlyData.find(m => m.month === selectedFinancePerfMonth);
+    if (curM) {
+      curM.portfolioReturn = portMonth;
+      if (!curM.benchmarks) curM.benchmarks = {};
+      curM.benchmarks.sp500 = spMonth;
+    }
+  }
+
+  storage.saveFinanceInvestmentPerformance(perf);
+  closeEditInvestmentPerformanceModal();
+  renderFinanceRunway();
+  if (typeof showToast === 'function') {
+    showToast('Investment performance saved & synced', 'success');
+  }
+}
+window.submitEditInvestmentPerformanceModal = submitEditInvestmentPerformanceModal;
+
+function resetInvestmentPerformanceToDefaults() {
+  if (confirm('Reset investment performance returns to default baseline?')) {
+    if (typeof DEFAULT_INVESTMENT_PERFORMANCE !== 'undefined') {
+      const resetData = JSON.parse(JSON.stringify(DEFAULT_INVESTMENT_PERFORMANCE));
+      storage.saveFinanceInvestmentPerformance(resetData);
+      closeEditInvestmentPerformanceModal();
+      renderFinanceRunway();
+      if (typeof showToast === 'function') {
+        showToast('Reset investment performance to defaults', 'success');
+      }
+    }
+  }
+}
+window.resetInvestmentPerformanceToDefaults = resetInvestmentPerformanceToDefaults;
+
+/* ==========================================================================
    Sub-View 3: Net Worth Horizon, Runway & Quarterly Ledger
    ========================================================================== */
 function renderFinanceRunway() {
@@ -2135,6 +2798,9 @@ function renderFinanceRunway() {
       
       <!-- 1. Unified Quarterly & Annual Governance Card (Option A) -->
       ${renderFinanceGovernanceCadenceCard()}
+
+      <!-- 2. Investment Performance & Market Benchmarks Deck -->
+      ${renderFinanceInvestmentPerformanceCard()}
 
       <!-- 3. Executive Horizon Deck (Option B: Net Worth · Runway · Asset Allocation Donut) -->
       <div class="finance-horizon-deck">
@@ -3516,8 +4182,84 @@ function exportAllFinanceDataToCSV() {
   });
   rows.push([]);
 
-  // 5. Medical Reimbursements & Claims
-  rows.push(['=== SECTION 5: MEDICAL REIMBURSEMENTS & SUPERBILLS ===']);
+  // 5. Investment Performance vs Market Benchmarks
+  rows.push(['=== SECTION 5: INVESTMENT PERFORMANCE & MARKET BENCHMARKS ===']);
+  rows.push(['Time Horizon', 'Portfolio Return %', 'S&P 500 %', 'Blended 60/40 %', 'Nasdaq-100 %', 'Alpha vs S&P 500 %', 'Est. Dollar Expansion', 'Annualized CAGR %']);
+  const perfData = (typeof storage !== 'undefined' && typeof storage.getFinanceInvestmentPerformance === 'function')
+    ? storage.getFinanceInvestmentPerformance()
+    : (typeof DEFAULT_INVESTMENT_PERFORMANCE !== 'undefined' ? DEFAULT_INVESTMENT_PERFORMANCE : {});
+  const pObj = perfData.portfolio || { month: -0.9, ytd: 17.2, oneYear: 21.4, fiveYear: 94.2, cagrFiveYear: 14.2, dollarGains: { month: -44100, ytd: 742000, oneYear: 885000, fiveYear: 2340000 } };
+  const bObj = perfData.benchmarks || {};
+  const spB = bObj.sp500 || { month: -1.0, ytd: 15.4, oneYear: 18.7, fiveYear: 78.6, cagrFiveYear: 12.3 };
+  const blB = bObj.blended || { month: -0.6, ytd: 10.8, oneYear: 13.2, fiveYear: 51.4, cagrFiveYear: 8.6 };
+  const nqB = bObj.nasdaq || { month: -1.4, ytd: 19.6, oneYear: 24.1, fiveYear: 112.5, cagrFiveYear: 16.3 };
+
+  rows.push([
+    csvEscape('Month (Oct 2026)'),
+    csvEscape((pObj.month >= 0 ? '+' : '') + pObj.month.toFixed(1) + '%'),
+    csvEscape((spB.month >= 0 ? '+' : '') + spB.month.toFixed(1) + '%'),
+    csvEscape((blB.month >= 0 ? '+' : '') + blB.month.toFixed(1) + '%'),
+    csvEscape((nqB.month >= 0 ? '+' : '') + nqB.month.toFixed(1) + '%'),
+    csvEscape(((pObj.month - spB.month) >= 0 ? '+' : '') + (pObj.month - spB.month).toFixed(1) + '%'),
+    csvEscape((pObj.dollarGains && pObj.dollarGains.month !== undefined ? (pObj.dollarGains.month >= 0 ? '+' : '-') + '$' + Math.abs(Math.round(pObj.dollarGains.month)).toLocaleString() : '-$44,100')),
+    csvEscape('—')
+  ]);
+  rows.push([
+    csvEscape('2026 Year-to-Date (YTD)'),
+    csvEscape((pObj.ytd >= 0 ? '+' : '') + pObj.ytd.toFixed(1) + '%'),
+    csvEscape((spB.ytd >= 0 ? '+' : '') + spB.ytd.toFixed(1) + '%'),
+    csvEscape((blB.ytd >= 0 ? '+' : '') + blB.ytd.toFixed(1) + '%'),
+    csvEscape((nqB.ytd >= 0 ? '+' : '') + nqB.ytd.toFixed(1) + '%'),
+    csvEscape(((pObj.ytd - spB.ytd) >= 0 ? '+' : '') + (pObj.ytd - spB.ytd).toFixed(1) + '%'),
+    csvEscape('+$' + Math.round((pObj.dollarGains ? pObj.dollarGains.ytd : 742000)).toLocaleString()),
+    csvEscape('—')
+  ]);
+  rows.push([
+    csvEscape('1 Year Trailing'),
+    csvEscape((pObj.oneYear >= 0 ? '+' : '') + pObj.oneYear.toFixed(1) + '%'),
+    csvEscape((spB.oneYear >= 0 ? '+' : '') + spB.oneYear.toFixed(1) + '%'),
+    csvEscape((blB.oneYear >= 0 ? '+' : '') + blB.oneYear.toFixed(1) + '%'),
+    csvEscape((nqB.oneYear >= 0 ? '+' : '') + nqB.oneYear.toFixed(1) + '%'),
+    csvEscape(((pObj.oneYear - spB.oneYear) >= 0 ? '+' : '') + (pObj.oneYear - spB.oneYear).toFixed(1) + '%'),
+    csvEscape('+$' + Math.round((pObj.dollarGains ? pObj.dollarGains.oneYear : 885000)).toLocaleString()),
+    csvEscape('—')
+  ]);
+  rows.push([
+    csvEscape('5 Years Cumulative'),
+    csvEscape((pObj.fiveYear >= 0 ? '+' : '') + pObj.fiveYear.toFixed(1) + '%'),
+    csvEscape((spB.fiveYear >= 0 ? '+' : '') + spB.fiveYear.toFixed(1) + '%'),
+    csvEscape((blB.fiveYear >= 0 ? '+' : '') + blB.fiveYear.toFixed(1) + '%'),
+    csvEscape((nqB.fiveYear >= 0 ? '+' : '') + nqB.fiveYear.toFixed(1) + '%'),
+    csvEscape(((pObj.fiveYear - spB.fiveYear) >= 0 ? '+' : '') + (pObj.fiveYear - spB.fiveYear).toFixed(1) + '%'),
+    csvEscape('+$' + ((pObj.dollarGains ? pObj.dollarGains.fiveYear : 2340000) / 1e6).toFixed(2) + 'M'),
+    csvEscape(pObj.cagrFiveYear + '% vs ' + spB.cagrFiveYear + '% S&P 500')
+  ]);
+  rows.push([]);
+
+  // 6. Monthly Investment Returns
+  rows.push(['=== SECTION 6: 2026 MONTHLY INVESTMENT RETURNS LEDGER ===']);
+  rows.push(['Month', 'Portfolio Return %', 'S&P 500 %', 'Blended 60/40 %', 'Nasdaq-100 %', 'Alpha vs S&P 500 %', 'Est. Dollar Impact']);
+  (perfData.monthlyData || []).forEach(m => {
+    const pRet = m.portfolioReturn !== undefined ? m.portfolioReturn : 0;
+    const spRet = (m.benchmarks && m.benchmarks.sp500 !== undefined) ? m.benchmarks.sp500 : 0;
+    const blRet = (m.benchmarks && m.benchmarks.blended !== undefined) ? m.benchmarks.blended : 0;
+    const nqRet = (m.benchmarks && m.benchmarks.nasdaq !== undefined) ? m.benchmarks.nasdaq : 0;
+    const aVal = pRet - spRet;
+    const gVal = m.dollarGain !== undefined ? m.dollarGain : 0;
+    rows.push([
+      csvEscape(m.label || m.month),
+      csvEscape((pRet >= 0 ? '+' : '') + pRet.toFixed(1) + '%'),
+      csvEscape((spRet >= 0 ? '+' : '') + spRet.toFixed(1) + '%'),
+      csvEscape((blRet >= 0 ? '+' : '') + blRet.toFixed(1) + '%'),
+      csvEscape((nqRet >= 0 ? '+' : '') + nqRet.toFixed(1) + '%'),
+      csvEscape((aVal >= 0 ? '+' : '') + aVal.toFixed(1) + '%'),
+      csvEscape((gVal >= 0 ? '+' : '-') + '$' + Math.abs(Math.round(gVal)).toLocaleString())
+    ]);
+  });
+  rows.push([]);
+
+  // 7. Medical Reimbursements & Claims
+  rows.push(['=== SECTION 7: MEDICAL REIMBURSEMENTS & SUPERBILLS ===']);
   rows.push(['Claim ID', 'Patient', 'Provider', 'Date of Service', 'Amount Billed', 'Stage', 'Superbill Status', 'Next Action', 'Notes']);
   claims.forEach(cl => {
     rows.push([
@@ -3534,8 +4276,8 @@ function exportAllFinanceDataToCSV() {
   });
   rows.push([]);
 
-  // 6. Monarch Transactions Ledger
-  rows.push(['=== SECTION 6: MONARCH TRANSACTIONS LEDGER ===']);
+  // 8. Monarch Transactions Ledger
+  rows.push(['=== SECTION 8: MONARCH TRANSACTIONS LEDGER ===']);
   rows.push(['Date', 'Merchant', 'Category', 'Account', 'Amount', 'Tags', 'Notes']);
   (fin.transactions || []).forEach(t => {
     rows.push([

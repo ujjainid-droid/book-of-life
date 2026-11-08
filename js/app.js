@@ -141,12 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (localStorage.getItem('BOL_ZLOG_ACTIVE_SUBTAB') || 'timeline');
       return { view: 'zlog', subView: sub };
     }
-    if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money') || rawHash.startsWith('budget')) {
+    if (rawHash.startsWith('finance') || rawHash.startsWith('claims') || rawHash.startsWith('money') || rawHash.startsWith('budget') || rawHash.startsWith('quarterly') || rawHash.startsWith('quarter') || rawHash.startsWith('networth') || rawHash.startsWith('runway') || rawHash.startsWith('investment')) {
       const parts = rawHash.split(/[\/\-_?]/);
-      let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')));
+      let sub = (parts.length > 1 && parts[1]) ? parts[1].replace('tab=', '') : (
+        (rawHash.startsWith('quarterly') || rawHash.startsWith('quarter') || rawHash.startsWith('networth') || rawHash.startsWith('runway') || rawHash.startsWith('investment'))
+          ? 'runway'
+          : (rawHash.startsWith('claims') ? 'claims' : (rawHash.startsWith('budget') ? 'budget' : (localStorage.getItem('BOL_FINANCE_ACTIVE_SUBTAB') || 'burn')))
+      );
       if (sub === 'cash') sub = 'burn';
       else if (sub === 'cards') sub = 'subscriptions';
-      else if (sub === 'worth') sub = 'runway';
+      else if (sub === 'worth' || sub === 'quarterly' || sub === 'quarter' || sub === 'networth' || sub === 'investment' || sub === 'investments') sub = 'runway';
       else if (sub === 'med') sub = 'claims';
       else if (sub === 'plan') sub = 'budget';
       return { view: 'finance', subView: sub };
@@ -257,9 +261,10 @@ function switchAppView(viewName, subViewName) {
     }
   }
 
-  if (viewName === 'claims' || viewName === 'finance' || viewName === 'budget') {
+  if (viewName === 'claims' || viewName === 'finance' || viewName === 'budget' || viewName === 'quarterly' || viewName === 'quarter' || viewName === 'networth' || viewName === 'runway' || viewName === 'investment' || viewName === 'investments') {
     currentView = 'finance';
     if (viewName === 'budget' && !subViewName) subViewName = 'budget';
+    if (['quarterly', 'quarter', 'networth', 'runway', 'investment', 'investments'].includes(viewName) && !subViewName) subViewName = 'runway';
   } else if (viewName === 'zlog' || viewName === 'zhub' || viewName === 'bunker') {
     currentView = 'zlog';
   } else if (viewName === 'podcasts') {

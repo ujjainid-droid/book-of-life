@@ -12563,6 +12563,133 @@ const DEFAULT_NET_WORTH_DATA = {
   ]
 };
 
+const DEFAULT_INVESTMENT_PERFORMANCE = {
+  "asOfDate": "2026-10-31",
+  "selectedMonth": "2026-10",
+  "activeBenchmark": "sp500",
+  "investedAssets": 4820271.48,
+  "portfolio": {
+    "month": -0.9,
+    "ytd": 17.2,
+    "oneYear": 21.4,
+    "fiveYear": 94.2,
+    "cagrFiveYear": 14.2,
+    "dollarGains": {
+      "month": -44100,
+      "ytd": 742000,
+      "oneYear": 885000,
+      "fiveYear": 2340000
+    }
+  },
+  "benchmarks": {
+    "sp500": {
+      "id": "sp500",
+      "name": "S&P 500",
+      "ticker": "SPY / VOO",
+      "desc": "US Large-Cap Equity Benchmark",
+      "month": -1.0,
+      "ytd": 15.4,
+      "oneYear": 18.7,
+      "fiveYear": 78.6,
+      "cagrFiveYear": 12.3
+    },
+    "blended": {
+      "id": "blended",
+      "name": "Blended 60/40",
+      "ticker": "VBIAX / Balanced",
+      "desc": "Balanced (60% Equities / 40% Bonds)",
+      "month": -0.6,
+      "ytd": 10.8,
+      "oneYear": 13.2,
+      "fiveYear": 51.4,
+      "cagrFiveYear": 8.6
+    },
+    "nasdaq": {
+      "id": "nasdaq",
+      "name": "Nasdaq-100",
+      "ticker": "QQQ / Growth",
+      "desc": "Tech-Focused Growth Benchmark",
+      "month": -1.4,
+      "ytd": 19.6,
+      "oneYear": 24.1,
+      "fiveYear": 112.5,
+      "cagrFiveYear": 16.3
+    }
+  },
+  "monthlyData": [
+    {
+      "month": "2026-01",
+      "label": "Jan 2026",
+      "portfolioReturn": 2.4,
+      "benchmarks": { "sp500": 1.6, "blended": 1.1, "nasdaq": 1.8 },
+      "dollarGain": 104200
+    },
+    {
+      "month": "2026-02",
+      "label": "Feb 2026",
+      "portfolioReturn": 3.8,
+      "benchmarks": { "sp500": 5.2, "blended": 3.2, "nasdaq": 6.8 },
+      "dollarGain": 168500
+    },
+    {
+      "month": "2026-03",
+      "label": "Mar 2026",
+      "portfolioReturn": 2.9,
+      "benchmarks": { "sp500": 3.1, "blended": 2.3, "nasdaq": 3.4 },
+      "dollarGain": 132100
+    },
+    {
+      "month": "2026-04",
+      "label": "Apr 2026",
+      "portfolioReturn": -2.1,
+      "benchmarks": { "sp500": -4.1, "blended": -2.4, "nasdaq": -5.2 },
+      "dollarGain": -98400
+    },
+    {
+      "month": "2026-05",
+      "label": "May 2026",
+      "portfolioReturn": 4.6,
+      "benchmarks": { "sp500": 4.8, "blended": 3.4, "nasdaq": 6.2 },
+      "dollarGain": 215300
+    },
+    {
+      "month": "2026-06",
+      "label": "Jun 2026",
+      "portfolioReturn": 3.2,
+      "benchmarks": { "sp500": 3.5, "blended": 2.2, "nasdaq": 4.8 },
+      "dollarGain": 154200
+    },
+    {
+      "month": "2026-07",
+      "label": "Jul 2026",
+      "portfolioReturn": 1.8,
+      "benchmarks": { "sp500": 1.1, "blended": 1.4, "nasdaq": 1.2 },
+      "dollarGain": 89000
+    },
+    {
+      "month": "2026-08",
+      "label": "Aug 2026",
+      "portfolioReturn": 2.1,
+      "benchmarks": { "sp500": 2.3, "blended": 1.6, "nasdaq": 2.9 },
+      "dollarGain": 106300
+    },
+    {
+      "month": "2026-09",
+      "label": "Sep 2026",
+      "portfolioReturn": 1.4,
+      "benchmarks": { "sp500": 2.0, "blended": 1.5, "nasdaq": 2.6 },
+      "dollarGain": 72400
+    },
+    {
+      "month": "2026-10",
+      "label": "Oct 2026",
+      "portfolioReturn": -0.9,
+      "benchmarks": { "sp500": -1.0, "blended": -0.6, "nasdaq": -1.4 },
+      "dollarGain": -44100
+    }
+  ]
+};
+
 const DEFAULT_FINANCE_CARDS_ROI = [
   {
     id: 'amex-plat',
@@ -13109,7 +13236,8 @@ const DEFAULT_FINANCE_SUBSCRIPTIONS = [
 DEFAULT_FINANCE_DATA.netWorth = DEFAULT_NET_WORTH_DATA;
 DEFAULT_FINANCE_DATA.cardsROI = DEFAULT_FINANCE_CARDS_ROI;
 DEFAULT_FINANCE_DATA.subscriptions = DEFAULT_FINANCE_SUBSCRIPTIONS;
+DEFAULT_FINANCE_DATA.investmentPerformance = DEFAULT_INVESTMENT_PERFORMANCE;
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { DEFAULT_FINANCE_DATA, DEFAULT_REAL_CLAIMS, DEFAULT_FINANCE_CARDS_ROI, DEFAULT_FINANCE_SUBSCRIPTIONS };
+  module.exports = { DEFAULT_FINANCE_DATA, DEFAULT_REAL_CLAIMS, DEFAULT_FINANCE_CARDS_ROI, DEFAULT_FINANCE_SUBSCRIPTIONS, DEFAULT_INVESTMENT_PERFORMANCE };
 }
