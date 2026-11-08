@@ -4971,7 +4971,18 @@ class StorageManager {
           stashMatch: null
         }
       ],
-      newRecipes: [],
+      newRecipes: [
+        {
+          id: 'r-parmesan-broccoli-chips',
+          title: 'Parmesan Broccoli Chips',
+          icon: 'salad',
+          course: 'side',
+          tags: [],
+          recipeUrl: '',
+          ingredients: '1. Boil broccoli heads\n2. Place them on baking tray and smash them down\n3. Cover with freshly grated parmesan cheese\n4. Roast at 400 deg for 20 mins',
+          stashMatch: null
+        }
+      ],
       groceries: [
         { id: 'g-hashbrowns', text: 'Hash browns', checked: false }
       ]
@@ -5374,6 +5385,27 @@ class StorageManager {
           this.data.kitchenUpdatedAt = Date.now();
         }
         this.data.kitchenBuffaloJackSeeded = true;
+        this.saveData();
+      }
+
+      // Ensure Parmesan Broccoli Chips is seeded in Want to Try (newRecipes)
+      if (!this.data.kitchenParmesanBroccoliChipsSeeded) {
+        if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
+        const exists = kd.newRecipes.some(r => (r.title || '').toLowerCase().includes('parmesan broccoli chips'));
+        if (!exists) {
+          kd.newRecipes.unshift({
+            id: 'r-parmesan-broccoli-chips-' + Date.now(),
+            title: 'Parmesan Broccoli Chips',
+            icon: 'salad',
+            course: 'side',
+            tags: [],
+            recipeUrl: '',
+            ingredients: '1. Boil broccoli heads\n2. Place them on baking tray and smash them down\n3. Cover with freshly grated parmesan cheese\n4. Roast at 400 deg for 20 mins',
+            stashMatch: null
+          });
+          this.data.kitchenUpdatedAt = Date.now();
+        }
+        this.data.kitchenParmesanBroccoliChipsSeeded = true;
         this.saveData();
       }
 

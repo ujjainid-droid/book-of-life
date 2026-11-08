@@ -1250,7 +1250,7 @@ function detectRecipeIcon(title, mealType = 'dinner') {
   if (t.includes('risotto') || t.includes('stew') || t.includes('soup') || t.includes('chili') || t.includes('curry') || t.includes('dal') || t.includes('chowder')) return 'risotto';
   if (t.includes('dumpling') || t.includes('gyoza') || t.includes('wonton') || t.includes('potsticker') || t.includes('bao')) return 'dumplings';
   if (t.includes('pizza') || t.includes('flatbread')) return 'pizza';
-  if (t.includes('salad') || t.includes('greens') || t.includes('slaw') || t.includes('caesar')) return 'salad';
+  if (t.includes('salad') || t.includes('greens') || t.includes('slaw') || t.includes('caesar') || t.includes('broccoli') || t.includes('veggie') || t.includes('chip')) return 'salad';
   if (t.includes('takeout') || t.includes('thai') || t.includes('chinese') || t.includes('sushi') || t.includes('bento')) return 'takeout';
   if (mealType === 'dessert') return 'dessert';
   if (mealType === 'brunch') return 'brunch';

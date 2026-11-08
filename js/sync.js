@@ -1011,16 +1011,41 @@ class SyncManager {
         }
       }
 
+      const mergeRecipeList = (locList, incList) => {
+        const map = new Map();
+        (incList || []).forEach(r => {
+          if (r && r.title) map.set(String(r.title).toLowerCase().trim(), r);
+        });
+        (locList || []).forEach(r => {
+          if (r && r.title) {
+            const k = String(r.title).toLowerCase().trim();
+            if (!map.has(k)) {
+              map.set(k, r);
+              localWasRicher = true;
+            } else {
+              map.set(k, { ...map.get(k), ...r });
+            }
+          }
+        });
+        return Array.from(map.values());
+      };
+      const mergedFavorites = mergeRecipeList(locKitchen.favoriteRecipes, incKitchen.favoriteRecipes);
+      const mergedNewRecipes = mergeRecipeList(locKitchen.newRecipes, incKitchen.newRecipes);
+
       if (incKitchenTime > locKitchenTime || !storage.data.kitchenData) {
         mergedKitchen = {
           ...incKitchen,
           stashItems: mergedStash,
+          favoriteRecipes: mergedFavorites,
+          newRecipes: mergedNewRecipes,
           weekSchedule: targetSchedule
         };
       } else if (locKitchenTime > incKitchenTime) {
         mergedKitchen = {
           ...locKitchen,
           stashItems: mergedStash,
+          favoriteRecipes: mergedFavorites,
+          newRecipes: mergedNewRecipes,
           weekSchedule: targetSchedule
         };
         localWasRicher = true;
@@ -1030,8 +1055,8 @@ class SyncManager {
           ...locKitchen,
           ...incKitchen,
           stashItems: mergedStash,
-          favoriteRecipes: (Array.isArray(incKitchen.favoriteRecipes) && incKitchen.favoriteRecipes.length > 0) ? incKitchen.favoriteRecipes : (locKitchen.favoriteRecipes || []),
-          newRecipes: (Array.isArray(incKitchen.newRecipes) && incKitchen.newRecipes.length > 0) ? incKitchen.newRecipes : (locKitchen.newRecipes || []),
+          favoriteRecipes: mergedFavorites,
+          newRecipes: mergedNewRecipes,
           groceries: (Array.isArray(incKitchen.groceries) && incKitchen.groceries.length > 0) ? incKitchen.groceries : (locKitchen.groceries || []),
           weekSchedule: targetSchedule,
           followingWeekSchedule: incKitchen.followingWeekSchedule || locKitchen.followingWeekSchedule,
