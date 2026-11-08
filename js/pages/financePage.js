@@ -349,9 +349,9 @@ function renderFinanceWeeklyCadenceBar() {
     },
     {
       num: 5,
-      label: 'Outlier Radar',
+      label: 'overspent cat',
       action: `
-        <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Radar">
+        <button type="button" class="cadence-pill-action-btn" onclick="event.stopPropagation(); scrollToFinanceOutliers();" title="Jump to Overspent Categories">
           <i data-lucide="compass" style="width: 12px; height: 12px;"></i>
         </button>
       `
