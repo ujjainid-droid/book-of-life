@@ -76,12 +76,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V16';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V17';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
           this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
-          this.data.claimsSeedVersion = 16;
+          this.data.claimsSeedVersion = 17;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -3874,7 +3874,7 @@ class StorageManager {
       }
 
       this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
-      this.data.finance.seedVersion = 15;
+      this.data.finance.seedVersion = 16;
       try {
         localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
         localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(this.data));
@@ -3892,9 +3892,9 @@ class StorageManager {
       }
     }
 
-    // Seed v15 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 15)) {
-      this.data.finance.seedVersion = 15;
+    // Seed v16 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 16)) {
+      this.data.finance.seedVersion = 16;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
         if (Array.isArray(DEFAULT_FINANCE_DATA.transactions)) {
           this.data.finance.transactions = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.transactions));

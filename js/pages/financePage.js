@@ -41,7 +41,7 @@ function formatFinanceMonthLabel(mIso) {
 }
 window.formatFinanceMonthLabel = formatFinanceMonthLabel;
 
-let selectedFinanceMonth = '2026-10';
+let selectedFinanceMonth = '2026-11';
 let financeTxSearchQuery = '';
 let financeTxCategoryFilter = 'all';
 let financeTxHighSpendOnly = false;
@@ -226,8 +226,8 @@ let financeOutlierFilter = 'spike'; // 'all' | 'spike' | 'baseline' | 'reduced'
 
 function changeFinancePeriod(period) {
   financeActivePeriod = period;
-  if (period === 'this_month') selectedFinanceMonth = '2026-10';
-  else if (period === 'last_month') selectedFinanceMonth = '2026-09';
+  if (period === 'this_month') selectedFinanceMonth = '2026-11';
+  else if (period === 'last_month') selectedFinanceMonth = '2026-10';
   renderFinanceBurn();
 }
 
@@ -248,8 +248,9 @@ function setFinanceOutlierFilter(filter) {
 
 function changeFinanceMonth(mIso) {
   selectedFinanceMonth = mIso;
-  if (mIso === '2026-10') financeActivePeriod = 'this_month';
-  else if (mIso === '2026-09') financeActivePeriod = 'last_month';
+  if (mIso === '2026-11') financeActivePeriod = 'this_month';
+  else if (mIso === '2026-10') financeActivePeriod = 'last_month';
+  else financeActivePeriod = 'custom';
   renderFinanceBurn();
   if (typeof lucide !== 'undefined') lucide.createIcons();
 }
@@ -674,7 +675,7 @@ function renderFinanceExecutiveDashboardCard(periodInflow, totalFixedSpend, tota
 
   // Month navigation & 6-month bar chart
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const activeMonthIso = selectedFinanceMonth || '2026-10';
+  const activeMonthIso = selectedFinanceMonth || '2026-11';
   const [yStr, mStr] = activeMonthIso.split('-');
   let currentYear = parseInt(yStr, 10) || 2026;
   let currentMonth = parseInt(mStr, 10) || 10;
@@ -827,22 +828,26 @@ function renderFinanceBurn() {
   const baselines = fin.categoryBaselines || {};
 
   // Period configuration & data aggregation
-  let periodLabel = 'October 2026';
-  let targetMonths = ['2026-10'];
+  let periodLabel = 'November 2026';
+  let targetMonths = ['2026-11'];
   let baselineScale = 1;
 
   if (financeActivePeriod === 'last_month') {
-    periodLabel = 'September 2026';
-    targetMonths = ['2026-09'];
+    periodLabel = 'October 2026';
+    targetMonths = ['2026-10'];
     baselineScale = 1;
   } else if (financeActivePeriod === 'last_qtr') {
     periodLabel = 'Q3 2026 (Jul–Sep)';
     targetMonths = ['2026-07', '2026-08', '2026-09'];
     baselineScale = 3;
   } else if (financeActivePeriod === 'ytd') {
-    periodLabel = '2026 YTD (Jan–Oct)';
-    targetMonths = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10'];
-    baselineScale = 10;
+    periodLabel = '2026 YTD (Jan–Nov)';
+    targetMonths = ['2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10', '2026-11'];
+    baselineScale = 11;
+  } else if (selectedFinanceMonth) {
+    periodLabel = formatFinanceMonthLabel(selectedFinanceMonth);
+    targetMonths = [selectedFinanceMonth];
+    baselineScale = 1;
   }
 
   // Calculate Inflow & Outflow for the period from summaries
@@ -4123,7 +4128,7 @@ function exportAllFinanceDataToCSV() {
   rows.push(['Month', 'Category', 'Classification', 'Actual Month Spend', '3-Mo Baseline Avg', 'Delta Dollar', 'Delta Pct %', 'Outlier Status']);
   const categories = fin.categories || [];
   const baselines = fin.categoryBaselines || {};
-  const currentMonthTxs = (fin.transactions || []).filter(t => t.date && t.date.startsWith(selectedFinanceMonth || '2026-10'));
+  const currentMonthTxs = (fin.transactions || []).filter(t => t.date && t.date.startsWith(selectedFinanceMonth || '2026-11'));
   
   const catSpendMap = {};
   categories.forEach(c => { catSpendMap[c.name] = 0; });
@@ -4145,7 +4150,7 @@ function exportAllFinanceDataToCSV() {
     if (pctDelta < -20) status = 'Reduced Spend';
 
     rows.push([
-      csvEscape(selectedFinanceMonth || '2026-10'),
+      csvEscape(selectedFinanceMonth || '2026-11'),
       csvEscape(c.name),
       csvEscape(c.classification || 'General'),
       csvEscape(spent.toFixed(2)),
@@ -4324,7 +4329,7 @@ function exportAllFinanceDataToCSV() {
 /* ==========================================================================
    Modal: Log / Edit Monthly Cash Flow Inflow & Outflow
    ========================================================================== */
-function openLogCashFlowModal(targetMonth = '2026-10') {
+function openLogCashFlowModal(targetMonth = '2026-11') {
   let modal = document.getElementById('modal-log-cashflow');
   if (!modal) {
     modal = document.createElement('div');
@@ -4410,7 +4415,7 @@ function closeLogCashFlowModal() {
    Budget Sub-Tab: Option 1A (The Core 4 Pillars & Savings-As-Spend Budget)
    ========================================================================== */
 
-let selectedBudgetMonth = '2026-10';
+let selectedBudgetMonth = '2026-11';
 let budgetCategoryFilter = 'all'; // 'all' | 'core4' | 'fixed' | 'discretionary'
 let budgetSearchQuery = '';
 
@@ -4431,7 +4436,7 @@ function renderFinanceBudget() {
   if (!selectedBudgetMonth && monthlySummaries.length > 0) {
     selectedBudgetMonth = monthlySummaries[0].month;
   }
-  if (!selectedBudgetMonth) selectedBudgetMonth = '2026-10';
+  if (!selectedBudgetMonth) selectedBudgetMonth = '2026-11';
 
   // Month days & pace calculations
   const [bYear, bMonth] = selectedBudgetMonth.split('-').map(Number);
@@ -4439,9 +4444,9 @@ function renderFinanceBudget() {
   
   // Calculate day of month
   let currentDayOfMonth = daysInMonth; // default full month for past months
-  if (selectedBudgetMonth === '2026-10') {
-    currentDayOfMonth = 26; // As of Oct 26
-  } else if (selectedBudgetMonth > '2026-10') {
+  if (selectedBudgetMonth === '2026-11') {
+    currentDayOfMonth = 8; // As of Nov 8
+  } else if (selectedBudgetMonth > '2026-11') {
     currentDayOfMonth = 1;
   }
   const monthFraction = Math.min(1, currentDayOfMonth / daysInMonth);
@@ -4555,7 +4560,7 @@ function renderFinanceBudget() {
     incomeStatusText = `Pacing (${incomePct}%)`;
   }
 
-  const isCurrentMonth = selectedBudgetMonth === '2026-10';
+  const isCurrentMonth = selectedBudgetMonth === '2026-11';
   const incomeFootLeft = isCurrentMonth
     ? `Day ${currentDayOfMonth} pace: <strong class="num-mono" style="color: #334155;">$${incomeExpectedMTD.toLocaleString()}</strong>`
     : `Verified Monthly Inflow`;
@@ -5271,7 +5276,7 @@ function getBudgetCategoryTarget(categoryKey) {
     return parseFloat(fin.incomeTarget) || 22000;
   }
   if (categoryKey === '__savings_transfers__') {
-    const isNovOnward = (selectedBudgetMonth || '2026-10') >= '2026-11';
+    const isNovOnward = (selectedBudgetMonth || '2026-11') >= '2026-11';
     const defaultTarget = isNovOnward ? 3500 : 3000;
     return (fin.savingsTarget && (!isNovOnward || fin.savingsTarget >= 3500)) ? parseFloat(fin.savingsTarget) : defaultTarget;
   }
@@ -5417,7 +5422,7 @@ function openBudgetCategoryTransactionsModal(categoryKey, customTitle) {
   const txs = getBudgetCategoryTransactions(categoryKey, selectedBudgetMonth);
   const targetBudget = getBudgetCategoryTarget(categoryKey);
   const meta = getBudgetCategoryMeta(categoryKey, customTitle);
-  const monthLabel = formatFinanceMonthLabel(selectedBudgetMonth || '2026-10');
+  const monthLabel = formatFinanceMonthLabel(selectedBudgetMonth || '2026-11');
 
   // Sum actuals
   let totalSpent = 0;

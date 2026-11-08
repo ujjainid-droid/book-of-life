@@ -3,14 +3,14 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 15,
+  "seedVersion": 16,
   "monthlyTarget": 18200,
   "savingsTarget": 3000,
   "incomeTarget": 22000,
   "wealthSweepPot": 4258.3,
   "alertSpendRatio": 0.85,
   "categoryBaselines": {
-    "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3": 370.83,
+    "C'mas, Bday, India gifts 🎄 🎂 🇮🇳": 370.83,
     "Camp": 379.38,
     "Cash & ATM": 266.94,
     "Cell Phone": 20.0,
@@ -42,9 +42,14 @@ const DEFAULT_FINANCE_DATA = {
   },
   "monthlySummaries": [
     {
+      "month": "2026-11",
+      "income": 5177.62,
+      "outflow": 1721.65
+    },
+    {
       "month": "2026-10",
-      "income": 20014.72,
-      "outflow": 16216.03
+      "income": 25986.07,
+      "outflow": 17996.23
     },
     {
       "month": "2026-09",
@@ -525,7 +530,7 @@ const DEFAULT_FINANCE_DATA = {
     },
     {
       "id": "cat-c-mas--bday--india-gifts",
-      "name": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "name": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "budget": 350,
       "baseline": 370.83,
       "classification": "Discretionary",
@@ -638,6 +643,971 @@ const DEFAULT_FINANCE_DATA = {
   ],
   "transactions": [
     {
+      "id": "259907611172295559",
+      "date": "2026-11-08",
+      "merchant": "The Home Depot",
+      "category": "Home maintenance",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 21.29,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259870867048648826",
+      "date": "2026-11-07",
+      "merchant": "India Bazar",
+      "category": "Groceries",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 21.61,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259870865629925442",
+      "date": "2026-11-07",
+      "merchant": "UPS",
+      "category": "Shopping",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 25.58,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259870865629925441",
+      "date": "2026-11-07",
+      "merchant": "Target",
+      "category": "Groceries",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 89.13,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259867219192205807",
+      "date": "2026-11-07",
+      "merchant": "Walmart",
+      "category": "Shopping",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 27.18,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "259810477671469478",
+      "date": "2026-11-07",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 27.18,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259816553464746104",
+      "date": "2026-11-06",
+      "merchant": "Canteen",
+      "category": "Eating out",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 2.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259816553464746103",
+      "date": "2026-11-06",
+      "merchant": "Canteen",
+      "category": "Eating out",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 2.1,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259810477671469477",
+      "date": "2026-11-06",
+      "merchant": "American Express",
+      "category": "Credit Card Payment",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 5182.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259781096627524537",
+      "date": "2026-11-06",
+      "merchant": "Miga Sushi",
+      "category": "Eating out",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 76.4,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259777342554526329",
+      "date": "2026-11-06",
+      "merchant": "Source to Source/Fund to Fund Transfer In",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259777342554526328",
+      "date": "2026-11-06",
+      "merchant": "Source to Source/Fund to Fund Transfer Out",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259777342554526327",
+      "date": "2026-11-06",
+      "merchant": "Plan Contribution",
+      "category": "Buy",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 1710.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259742838699872347",
+      "date": "2026-11-06",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 100.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259742838699872346",
+      "date": "2026-11-06",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 35.16,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259712005541745611",
+      "date": "2026-11-06",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5040.91,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259810477671469479",
+      "date": "2026-11-05",
+      "merchant": "American Express",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 23.45,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "259694039932621233",
+      "date": "2026-11-05",
+      "merchant": "Canteen",
+      "category": "Eating out",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 2.1,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259694039932621232",
+      "date": "2026-11-05",
+      "merchant": "Canteen",
+      "category": "Eating out",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 2.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259684984943039267",
+      "date": "2026-11-05",
+      "merchant": "Hamleys",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 29.72,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259637731785199729",
+      "date": "2026-11-05",
+      "merchant": "United Airlines",
+      "category": "Travel & Vacation",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 12.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259637731785199728",
+      "date": "2026-11-05",
+      "merchant": "Disney",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 23.45,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259810477671469476",
+      "date": "2026-11-04",
+      "merchant": "American Express",
+      "category": "Other Income (incl cc reward credits)",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 1.55,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668057427301103",
+      "date": "2026-11-04",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 360.9,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668057427301102",
+      "date": "2026-11-04",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 624.1,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668057427301101",
+      "date": "2026-11-04",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 624.1,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668057427301100",
+      "date": "2026-11-04",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 360.9,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668055480094970",
+      "date": "2026-11-04",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 251.99,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668055480094969",
+      "date": "2026-11-04",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 163.51,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668055480094968",
+      "date": "2026-11-04",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 163.51,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259668055480094967",
+      "date": "2026-11-04",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 251.99,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259588792303243695",
+      "date": "2026-11-04",
+      "merchant": "Mindsoother",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 225.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259588792303243694",
+      "date": "2026-11-04",
+      "merchant": "Harry Potter Store",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 33.58,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259572854859256689",
+      "date": "2026-11-04",
+      "merchant": "The New York Times",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 4.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259637731785199730",
+      "date": "2026-11-03",
+      "merchant": "Walmart",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 13.81,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "259568242923164661",
+      "date": "2026-11-03",
+      "merchant": "Maison De Vision",
+      "category": "Medical + Dentist",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 123.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259492073334919375",
+      "date": "2026-11-03",
+      "merchant": "Boots",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 1.01,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259492073334919374",
+      "date": "2026-11-03",
+      "merchant": "CenterCourt",
+      "category": "Child Activities",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 562.5,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259455684725724125",
+      "date": "2026-11-03",
+      "merchant": "Walmart",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 13.81,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259412309480854238",
+      "date": "2026-11-02",
+      "merchant": "Aldi",
+      "category": "Groceries",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 55.37,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259397429514228603",
+      "date": "2026-11-02",
+      "merchant": "FirstEnergy",
+      "category": "Gas & Electric",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 236.15,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259349562049188595",
+      "date": "2026-11-02",
+      "merchant": "Venmo",
+      "category": "Self care + Grooming",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 68.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259397260732289026",
+      "date": "2026-11-01",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 7.3,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "259280733731312626",
+      "date": "2026-11-01",
+      "merchant": "the YMCA",
+      "category": "Child Activities",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 101.7,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259223219747704858",
+      "date": "2026-11-01",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 33.72,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259289561922294296",
+      "date": "2026-10-31",
+      "merchant": "Capital One",
+      "category": "Interest",
+      "account": "360 Checking (...5441)",
+      "amount": 0.1,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259289561269031365",
+      "date": "2026-10-31",
+      "merchant": "Capital One",
+      "category": "Interest",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 577.63,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259289560283370377",
+      "date": "2026-10-31",
+      "merchant": "Capital One",
+      "category": "Interest",
+      "account": "Kids Savings Account (...8421)",
+      "amount": 0.3,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259213397066272820",
+      "date": "2026-10-31",
+      "merchant": "DOUGH DASH",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 56.3,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259213397066272819",
+      "date": "2026-10-31",
+      "merchant": "the YMCA",
+      "category": "Child Care",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 183.6,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259213397066272818",
+      "date": "2026-10-31",
+      "merchant": "Saily",
+      "category": "Travel & Vacation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 8.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259166598690525220",
+      "date": "2026-10-31",
+      "merchant": "Walmart",
+      "category": "Shopping",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 23.37,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259405438050128143",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 440.29,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405438050128142",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 273.56,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405438050128141",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 273.56,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405438050128140",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 0.06,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405438050128139",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 440.29,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405438050128138",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 0.06,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437769109727",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 0.53,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437769109726",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 0.53,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437480751288",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 251.63,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437480751287",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 251.63,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437480751286",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 1.83,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437480751285",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 1.83,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437088583829",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 0.45,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437088583828",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 199.03,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437088583827",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 199.03,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437088583826",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 118.07,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437088583825",
+      "date": "2026-10-30",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 118.07,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259405437088583824",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 0.45,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259193663783457185",
+      "date": "2026-10-30",
+      "merchant": "Interest Earned Cash (315994103) (Cash)",
+      "category": "Interest",
+      "account": "Joint WROS - TOD (...3919)",
+      "amount": 14.09,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259193663783457184",
+      "date": "2026-10-30",
+      "merchant": "Reinvestment Cash (315994103) (Cash)",
+      "category": "Dividends & Capital Gains",
+      "account": "Joint WROS - TOD (...3919)",
+      "amount": 14.09,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259164408108306954",
+      "date": "2026-10-30",
+      "merchant": "Charles Schwab",
+      "category": "Interest",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 0.19,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259122175851123044",
+      "date": "2026-10-30",
+      "merchant": "CVS",
+      "category": "Medical + Dentist",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 23.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259122174161866857",
+      "date": "2026-10-30",
+      "merchant": "Paris Baguette",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 13.78,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259122174161866856",
+      "date": "2026-10-30",
+      "merchant": "Chimney Rock Inn",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 79.08,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259066556295172870",
+      "date": "2026-10-30",
+      "merchant": "Erco Lig",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5393.13,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259046475718742481",
+      "date": "2026-10-29",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 7.99,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259046475718742480",
+      "date": "2026-10-29",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 7.99,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259025473975636212",
+      "date": "2026-10-29",
+      "merchant": "CVS",
+      "category": "Medical + Dentist",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 5.5,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259025473975636211",
+      "date": "2026-10-29",
+      "merchant": "CVS",
+      "category": "Medical + Dentist",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 3.18,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259025473975636210",
+      "date": "2026-10-29",
+      "merchant": "CVS",
+      "category": "Medical + Dentist",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 1.98,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258980733192261791",
+      "date": "2026-10-29",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 157.5,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "258980733192261790",
+      "date": "2026-10-29",
+      "merchant": "Karina Oliveira De Araujo",
+      "category": "Home maintenance",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 175.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258744435080712333",
+      "date": "2026-10-29",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259025472628215852",
+      "date": "2026-10-28",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258936519646531722",
+      "date": "2026-10-28",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 25.82,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258931836135690839",
+      "date": "2026-10-28",
+      "merchant": "Mindsoother",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 225.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258888080955036154",
+      "date": "2026-10-28",
+      "merchant": "Restricted Stock Deposit",
+      "category": "Dividends & Capital Gains",
+      "account": "Google Equity Awards (...ards)",
+      "amount": 0.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258888080955036153",
+      "date": "2026-10-28",
+      "merchant": "Restricted Stock Deposit",
+      "category": "Dividends & Capital Gains",
+      "account": "Google Equity Awards (...ards)",
+      "amount": 0.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258888080955036152",
+      "date": "2026-10-28",
+      "merchant": "Restricted Stock Deposit",
+      "category": "Dividends & Capital Gains",
+      "account": "Google Equity Awards (...ards)",
+      "amount": 0.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "258762454130512554",
+      "date": "2026-10-28",
+      "merchant": "Walmart",
+      "category": "Shopping",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 24.13,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258931835663831480",
+      "date": "2026-10-27",
+      "merchant": "E-ZPass",
+      "category": "Transportation",
+      "account": "U WOH.6581 due 21st",
+      "amount": 50.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258931836135690838",
+      "date": "2026-10-26",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258837076920258719",
+      "date": "2026-10-26",
+      "merchant": "Sephora",
+      "category": "Self care + Grooming",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 11.84,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258804408175317997",
+      "date": "2026-10-26",
+      "merchant": "Shireen",
+      "category": "Child Activities",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 20.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
       "id": "258705053181301756",
       "date": "2026-10-26",
       "merchant": "Anthem",
@@ -659,12 +1629,42 @@ const DEFAULT_FINANCE_DATA = {
       "tags": ""
     },
     {
+      "id": "258744435080712334",
+      "date": "2026-10-25",
+      "merchant": "The Newmark School",
+      "category": "School stuff + Education",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 103.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258744435080712332",
+      "date": "2026-10-25",
+      "merchant": "The Law Office",
+      "category": "School stuff + Education",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 800.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258744435080712331",
+      "date": "2026-10-25",
+      "merchant": "Irvinsimon.com",
+      "category": "School stuff + Education",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 49.83,
+      "isIncome": false,
+      "tags": "Receipt Import"
+    },
+    {
       "id": "258704352096047840",
       "date": "2026-10-25",
       "merchant": "Walmart",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "U AMEX Plat 1003 due 6th",
-      "amount": 63.48,
+      "amount": 62.79,
       "isIncome": false,
       "tags": ""
     },
@@ -716,7 +1716,7 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 9.81,
       "isIncome": false,
-      "tags": ""
+      "tags": "Receipt Import"
     },
     {
       "id": "258533892676932526",
@@ -725,6 +1725,36 @@ const DEFAULT_FINANCE_DATA = {
       "category": "Fitness",
       "account": "U AMEX Plat 1003 due 6th",
       "amount": 128.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258762316467163943",
+      "date": "2026-10-23",
+      "merchant": "Plan Contribution",
+      "category": "Buy",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 1910.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258762316467163942",
+      "date": "2026-10-23",
+      "merchant": "Source to Source/Fund to Fund Transfer In",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "258762316467163941",
+      "date": "2026-10-23",
+      "merchant": "Source to Source/Fund to Fund Transfer Out",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
       "isIncome": false,
       "tags": ""
     },
@@ -826,7 +1856,7 @@ const DEFAULT_FINANCE_DATA = {
       "account": "U CSP (...8373) due 15th",
       "amount": 75.78,
       "isIncome": false,
-      "tags": ""
+      "tags": "Receipt Import"
     },
     {
       "id": "258471320047080253",
@@ -2508,7 +3538,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "257363950156927058",
       "date": "2026-10-02",
-      "merchant": "Tino\u2019s Artisan Pizza",
+      "merchant": "Tino’s Artisan Pizza",
       "category": "Eating out",
       "account": "U CSP (...8373) due 15th",
       "amount": 100.64,
@@ -3762,7 +4792,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "255484117813580408",
       "date": "2026-09-20",
-      "merchant": "G1ai101a",
+      "merchant": "GOOGLE *G1AI101A",
       "category": "Subscriptions",
       "account": "U CFF (...2344) due 15th",
       "amount": 199.99,
@@ -3822,7 +4852,7 @@ const DEFAULT_FINANCE_DATA = {
     {
       "id": "255484117813580431",
       "date": "2026-09-18",
-      "merchant": "Otter",
+      "merchant": "OTTER* BERGEN MUNCH",
       "category": "Eating out",
       "account": "U CFF (...2344) due 15th",
       "amount": 52.17,
@@ -6340,7 +7370,7 @@ const DEFAULT_FINANCE_DATA = {
       "id": "252944014067127265",
       "date": "2026-08-23",
       "merchant": "Etsy",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "U CSP 9369 due 15th",
       "amount": 29.86,
       "isIncome": false,
@@ -6350,7 +7380,7 @@ const DEFAULT_FINANCE_DATA = {
       "id": "252944014067127264",
       "date": "2026-08-23",
       "merchant": "Etsy",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "U CSP 9369 due 15th",
       "amount": 253.51,
       "isIncome": false,
@@ -6390,7 +7420,7 @@ const DEFAULT_FINANCE_DATA = {
       "id": "252854434784629511",
       "date": "2026-08-22",
       "merchant": "Play It Again Sports",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "T CSP 5914 due 15th",
       "amount": 85.26,
       "isIncome": false,
@@ -7021,7 +8051,7 @@ const DEFAULT_FINANCE_DATA = {
       "id": "252305058520650229",
       "date": "2026-08-15",
       "merchant": "Wayfair",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "U CSP 9369 due 15th",
       "amount": 81.02,
       "isIncome": false,
@@ -8067,7 +9097,7 @@ const DEFAULT_FINANCE_DATA = {
       "id": "251198643932517299",
       "date": "2026-08-03",
       "merchant": "Venmo",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "Primary Checking ...002 (....002)",
       "amount": 25.0,
       "isIncome": false,
@@ -10609,7 +11639,7 @@ const DEFAULT_FINANCE_DATA = {
       "id": "249119035827442057",
       "date": "2026-07-11",
       "merchant": "Costco",
-      "category": "C'mas, Bday, India gifts \ud83c\udf84 \ud83c\udf82 \ud83c\uddee\ud83c\uddf3",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
       "account": "Costco Visa 3744 due 17th",
       "amount": 319.86,
       "isIncome": false,
@@ -11205,11 +12235,745 @@ const DEFAULT_FINANCE_DATA = {
       "amount": 585.95,
       "isIncome": true,
       "tags": ""
+    },
+    {
+      "id": "248705401161798417",
+      "date": "2026-07-06",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 328.38,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248705401161798416",
+      "date": "2026-07-06",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta - Traditional IRA Brokerage Account - ****7008 (Managed) (...7008)",
+      "amount": 328.38,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248705399824863657",
+      "date": "2026-07-06",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 234.38,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248705399824863656",
+      "date": "2026-07-06",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 234.38,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248705399824863655",
+      "date": "2026-07-06",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 147.44,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248705399824863654",
+      "date": "2026-07-06",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Thomas L Healy - Traditional IRA Brokerage Account - ****8017 (Managed) (...8017)",
+      "amount": 147.44,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248662308112847505",
+      "date": "2026-07-06",
+      "merchant": "Google",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 174.18,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248662308112847504",
+      "date": "2026-07-06",
+      "merchant": "American Express",
+      "category": "Credit Card Payment",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 203.26,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484189674591173",
+      "date": "2026-07-05",
+      "merchant": "Ameripath",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 6.82,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761988024",
+      "date": "2026-07-05",
+      "merchant": "Regional Womens Health",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 20.57,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484117813580316",
+      "date": "2026-07-05",
+      "merchant": "Amazon",
+      "category": "Shopping",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 125.81,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248968068861547305",
+      "date": "2026-07-05",
+      "merchant": "Amazon",
+      "category": "Shopping",
+      "account": "U CFF 6579 due 15th",
+      "amount": 125.81,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248783853890065027",
+      "date": "2026-07-05",
+      "merchant": "The Home Depot",
+      "category": "Home Improvement",
+      "account": "T CSP 5914 due 15th",
+      "amount": 17.28,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248783459386413825",
+      "date": "2026-07-05",
+      "merchant": "Regional Womens Health",
+      "category": "Medical + Dentist",
+      "account": "U CSP 9369 due 15th",
+      "amount": 20.57,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248691700988923917",
+      "date": "2026-07-05",
+      "merchant": "Ameripath",
+      "category": "Medical + Dentist",
+      "account": "U CSP 9369 due 15th",
+      "amount": 6.82,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248549802624176600",
+      "date": "2026-07-05",
+      "merchant": "Zelle",
+      "category": "Mocha",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 100.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248485677390909572",
+      "date": "2026-07-05",
+      "merchant": "Costco",
+      "category": "Groceries",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 196.95,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484189674591098",
+      "date": "2026-07-04",
+      "merchant": "Quince",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 144.8,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761988323",
+      "date": "2026-07-04",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 196.18,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761988115",
+      "date": "2026-07-04",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 8.52,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761988007",
+      "date": "2026-07-04",
+      "merchant": "Sandqvist",
+      "category": "Shopping",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 214.4,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761987988",
+      "date": "2026-07-04",
+      "merchant": "Reef.com",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 101.5,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761987932",
+      "date": "2026-07-04",
+      "merchant": "Etsy",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 21.36,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248783459386413829",
+      "date": "2026-07-04",
+      "merchant": "Walmart",
+      "category": "Shopping",
+      "account": "U CSP 9369 due 15th",
+      "amount": 8.52,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248783459386413826",
+      "date": "2026-07-04",
+      "merchant": "Walmart",
+      "category": "Shopping",
+      "account": "U CSP 9369 due 15th",
+      "amount": 196.18,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248783459386413824",
+      "date": "2026-07-04",
+      "merchant": "Reef.com",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 101.5,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248768019744444989",
+      "date": "2026-07-04",
+      "merchant": "lululemon",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 75.0,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248692050740400341",
+      "date": "2026-07-04",
+      "merchant": "ON Inc",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "T CSP 5914 due 15th",
+      "amount": 115.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248662308112847506",
+      "date": "2026-07-04",
+      "merchant": "lululemon",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 128.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600495679623378",
+      "date": "2026-07-04",
+      "merchant": "Etsy",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 21.36,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600495679623377",
+      "date": "2026-07-04",
+      "merchant": "Quince",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 144.8,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600495679623376",
+      "date": "2026-07-04",
+      "merchant": "Sandqvist",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 214.4,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484189675638898",
+      "date": "2026-07-03",
+      "merchant": "Sephora",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 71.9,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761988153",
+      "date": "2026-07-03",
+      "merchant": "Baublebar",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 230.31,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248883984013480834",
+      "date": "2026-07-03",
+      "merchant": "Source to Source/Fund to Fund Transfer Out",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248883984013480833",
+      "date": "2026-07-03",
+      "merchant": "Source to Source/Fund to Fund Transfer In",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248783459386413827",
+      "date": "2026-07-03",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U CSP 9369 due 15th",
+      "amount": 70.34,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600857073438927",
+      "date": "2026-07-03",
+      "merchant": "ShopRite",
+      "category": "Groceries",
+      "account": "T CSP 5914 due 15th",
+      "amount": 24.94,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600857073438926",
+      "date": "2026-07-03",
+      "merchant": "RIX POOLS AND SPA",
+      "category": "Home maintenance",
+      "account": "T CSP 5914 due 15th",
+      "amount": 119.38,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600857073438925",
+      "date": "2026-07-03",
+      "merchant": "Bottle King",
+      "category": "Groceries",
+      "account": "T CSP 5914 due 15th",
+      "amount": 12.78,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600495679623379",
+      "date": "2026-07-03",
+      "merchant": "Sephora",
+      "category": "C'mas, Bday, India gifts 🎄 🎂 🇮🇳",
+      "account": "U CSP 9369 due 15th",
+      "amount": 71.9,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248600495679623375",
+      "date": "2026-07-03",
+      "merchant": "Baublebar",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 230.31,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248400284229325740",
+      "date": "2026-07-03",
+      "merchant": "Yoga Six",
+      "category": "Fitness",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 309.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248343346314498893",
+      "date": "2026-07-03",
+      "merchant": "Source to Source/Fund to Fund Transfer Out",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248343346314498891",
+      "date": "2026-07-03",
+      "merchant": "Source to Source/Fund to Fund Transfer In",
+      "category": "Transfer",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 900.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "255484187761987897",
+      "date": "2026-07-02",
+      "merchant": "BM Rincon Azteca",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 86.13,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248883984013480835",
+      "date": "2026-07-02",
+      "merchant": "Plan Contribution",
+      "category": "Buy",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 2115.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248503664239989236",
+      "date": "2026-07-02",
+      "merchant": "Walmart",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 13.81,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248419437311972142",
+      "date": "2026-07-02",
+      "merchant": "Living Smiles Dentistry",
+      "category": "Medical + Dentist",
+      "account": "T CSP 5914 due 15th",
+      "amount": 240.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248419023269155656",
+      "date": "2026-07-02",
+      "merchant": "Rincon Azteca",
+      "category": "Eating out",
+      "account": "U CSP 9369 due 15th",
+      "amount": 86.13,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248400284229325743",
+      "date": "2026-07-02",
+      "merchant": "Walmart",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 13.81,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248400284229325742",
+      "date": "2026-07-02",
+      "merchant": "American Express",
+      "category": "Entertainment & Recreation",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 7.94,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248400284229325741",
+      "date": "2026-07-02",
+      "merchant": "American Express",
+      "category": "Entertainment & Recreation",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 17.06,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248343347641995828",
+      "date": "2026-07-02",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 1.34,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248343347641995827",
+      "date": "2026-07-02",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 1.34,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248343347641995826",
+      "date": "2026-07-02",
+      "merchant": "Stock Split",
+      "category": "Buy",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 0.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248343346314498894",
+      "date": "2026-07-02",
+      "merchant": "Plan Contribution",
+      "category": "Buy",
+      "account": "GOOGLE LLC 401(K) SAVINGS PLAN (Self-Managed) - **3926 (...3926)",
+      "amount": 2115.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248295745560007462",
+      "date": "2026-07-02",
+      "merchant": "Disney",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 21.31,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248295745560007461",
+      "date": "2026-07-02",
+      "merchant": "Disney",
+      "category": "Subscriptions",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 17.06,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248202972361150958",
+      "date": "2026-07-02",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5351.95,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "248202972361150957",
+      "date": "2026-07-02",
+      "merchant": "Zelle",
+      "category": "Mocha",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 25.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248202972361150956",
+      "date": "2026-07-02",
+      "merchant": "Public Service Enterprise Group",
+      "category": "Gas & Electric",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 150.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248188855103541553",
+      "date": "2026-07-02",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 100.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "255484189675639049",
+      "date": "2026-07-01",
+      "merchant": "Loft",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 29.97,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "255484189674591125",
+      "date": "2026-07-01",
+      "merchant": "Loft",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 59.06,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248419023269155658",
+      "date": "2026-07-01",
+      "merchant": "Loft",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 29.97,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248419023269155657",
+      "date": "2026-07-01",
+      "merchant": "Loft",
+      "category": "Clothing, Shoes, Jewelry",
+      "account": "U CSP 9369 due 15th",
+      "amount": 59.06,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "248328234879963305",
+      "date": "2026-07-01",
+      "merchant": "Grill Hub",
+      "category": "Eating out",
+      "account": "T CSP 5914 due 15th",
+      "amount": 84.16,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "248327823677739662",
+      "date": "2026-07-01",
+      "merchant": "LAZ Parking",
+      "category": "Transportation",
+      "account": "U WOH.6581 due 21st",
+      "amount": 18.71,
+      "isIncome": false,
+      "tags": ""
     }
   ]
 };
 
 const DEFAULT_REAL_CLAIMS = [
+  {
+    "id": "claim-ms-2026-11-04",
+    "date": "2026-11-04",
+    "provider": "Mindsoother Therapy",
+    "patient": "Xavier Healy",
+    "amountPaid": 225.0,
+    "expectedRecovery": 157.5,
+    "reimbursedAmount": 0.0,
+    "submissionType": "provider",
+    "payoutMethod": "direct_deposit",
+    "superbillStatus": "have",
+    "stage": "submitted_by_provider",
+    "inPortal": true,
+    "inBank": false,
+    "claimNumber": "",
+    "nextAction": "Awaiting Anthem direct deposit (.50 expected)",
+    "notes": "Therapy session. Paid  via U CSP ...8373 on 2026-11-04. Submitted by provider to Anthem for 70% reimbursement (.50 expected)."
+  },
+  {
+    "id": "claim-ms-2026-10-28",
+    "date": "2026-10-28",
+    "provider": "Mindsoother Therapy",
+    "patient": "Xavier Healy",
+    "amountPaid": 225.0,
+    "expectedRecovery": 157.5,
+    "reimbursedAmount": 157.5,
+    "submissionType": "provider",
+    "payoutMethod": "direct_deposit",
+    "superbillStatus": "have",
+    "stage": "settled",
+    "inPortal": true,
+    "inBank": true,
+    "claimNumber": "",
+    "nextAction": "Reconciled in bank (.50 deposited on 2026-10-29)",
+    "notes": "Therapy session. Paid  via U CSP ...8373 on 2026-10-28. Submitted directly to Anthem for reimbursement. Settled with .50 direct deposit on 2026-10-29."
+  },
   {
     "id": "claim-barness-2026-10-13",
     "date": "2026-10-13",
@@ -11261,7 +13025,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem with Receipt #005834 \u2014 in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem with Receipt #005834 — in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement (Receipt #005834 attached)."
   },
   {
@@ -11279,7 +13043,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -11315,7 +13079,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -11333,7 +13097,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -11351,7 +13115,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -11369,7 +13133,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inPortal": true,
     "inBank": false,
     "claimNumber": "",
-    "nextAction": "Submitted to Anthem \u2014 in review ($210.00 expected)",
+    "nextAction": "Submitted to Anthem — in review ($210.00 expected)",
     "notes": "Medication Management (CPT: 99214, Diagnosis: F90.0). Billed Rate: $300.00. Submitted directly to Anthem for reimbursement."
   },
   {
@@ -11543,7 +13307,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inBank": true,
     "claimNumber": "2026125MJ9570",
     "eobPlanPaid": 0.0,
-    "nextAction": "Reconciled \u2014 applied 100% to annual out-of-network deductible",
+    "nextAction": "Reconciled — applied 100% to annual out-of-network deductible",
     "notes": "Invoice S278565. Billed $245.00. Applied to deductible ($0 paid by plan)."
   },
   {
@@ -11562,7 +13326,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inBank": true,
     "claimNumber": "2026108MB4822",
     "eobPlanPaid": 0.0,
-    "nextAction": "Reconciled \u2014 applied 100% to annual out-of-network deductible",
+    "nextAction": "Reconciled — applied 100% to annual out-of-network deductible",
     "notes": "Invoice S278565. Billed $245.00. Applied to deductible ($0 paid by plan)."
   },
   {
@@ -11581,7 +13345,7 @@ const DEFAULT_REAL_CLAIMS = [
     "inBank": true,
     "claimNumber": "2026104MD4194",
     "eobPlanPaid": 0.0,
-    "nextAction": "Reconciled \u2014 applied 100% to annual out-of-network deductible",
+    "nextAction": "Reconciled — applied 100% to annual out-of-network deductible",
     "notes": "Invoice S278565. Billed $275.00. Applied to deductible ($0 paid by plan)."
   },
   {
