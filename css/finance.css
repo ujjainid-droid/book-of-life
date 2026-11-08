@@ -6718,6 +6718,45 @@ body.dark-mode .finance-perf-insight-strip {
   color: var(--text-primary, #0F172A);
 }
 
+/* What is Alpha Explainer Box */
+.finance-perf-alpha-explainer {
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.02);
+}
+
+[data-theme="dark"] .finance-perf-alpha-explainer,
+body.dark-mode .finance-perf-alpha-explainer {
+  background: #1E2030;
+  border-color: rgba(139, 92, 246, 0.30);
+}
+
+.finance-perf-alpha-math-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(124, 58, 237, 0.12);
+  color: #6D28D9;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .finance-perf-alpha-math-tag,
+body.dark-mode .finance-perf-alpha-math-tag {
+  background: rgba(139, 92, 246, 0.24);
+  color: #C4B5FD;
+}
+
 [data-theme="dark"] .finance-perf-insight-left,
 body.dark-mode .finance-perf-insight-left {
   color: #F1F5F9;

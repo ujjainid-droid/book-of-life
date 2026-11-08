@@ -2308,6 +2308,19 @@ function renderFinanceInvestmentPerformanceCard() {
         </div>
       </div>
 
+      <!-- What is Alpha Explainer Callout on the Board -->
+      <div class="finance-perf-alpha-explainer">
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span class="finance-perf-alpha-math-tag">&alpha; Alpha</span>
+          <div style="font-size: 0.74rem; line-height: 1.45; color: var(--text-secondary);">
+            <strong style="color: var(--text-primary);">What is Alpha (&alpha;)?</strong> 
+            Measures your <strong>excess return over the market benchmark</strong>: 
+            <code style="background: rgba(139, 92, 246, 0.08); color: #6D28D9; padding: 2px 7px; border-radius: 5px; font-weight: 700; font-family: var(--font-sans);">&alpha; = Portfolio Return &minus; Market Return</code>.
+            <span style="color: #0E7490; font-weight: 600;">Positive &alpha; (Teal)</span> means your investments beat the index; <span style="color: #BE123C; font-weight: 600;">Negative &Delta; (Rose)</span> means you trailed it.
+          </div>
+        </div>
+      </div>
+
       <!-- 4 Period Horizon Cards: Month, YTD, 1 Year, 5 Years -->
       ${showCards ? `
         <div class="finance-perf-grid">
@@ -2450,7 +2463,7 @@ function renderFinanceInvestmentPerformanceCard() {
                   <th>Month</th>
                   <th>Portfolio Return</th>
                   <th>${escapeHtml(activeBench.name)}</th>
-                  <th>Alpha (Excess)</th>
+                  <th title="Alpha (α) = Portfolio Return minus Market Benchmark Return">Alpha (&alpha; Excess) <i data-lucide="help-circle" style="width: 10px; height: 10px; vertical-align: middle; opacity: 0.6; color: #7C3AED;"></i></th>
                   <th>Est. Portfolio Gain</th>
                   <th>Comparative Trajectory</th>
                 </tr>
