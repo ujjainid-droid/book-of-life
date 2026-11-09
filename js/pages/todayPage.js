@@ -482,6 +482,7 @@ function renderStepsSheetModalHtml(dateStr) {
   const isMin = isDayMinimumDay(dateStr);
   const targetThreshold = isMin ? 5000 : 10000;
   const currentLogged = getDayLoggedSteps(dateStr);
+  const pacing = getStepsPacingStats(dateStr);
 
   return `
     <div class="margo-sheet-overlay ${isStepsSheetOpen ? 'active' : ''}"
@@ -491,6 +492,11 @@ function renderStepsSheetModalHtml(dateStr) {
         <div>
           <h2 class="margo-sheet-title">Today's steps ${isMin ? '(50% floor)' : ''}</h2>
           <p class="margo-sheet-sub">Hit ${targetThreshold.toLocaleString()} and it checks itself off.</p>
+          <div class="margo-steps-pacing-chip">
+            <span>Avg: <strong>${pacing.avgFormatted}</strong></span>
+            <span>·</span>
+            <span>Need <strong>${pacing.neededFormatted}/day</strong> (${pacing.daysRemaining}d left) to keep 10k avg</span>
+          </div>
         </div>
 
         <input type="number" id="margo-steps-modal-input"
@@ -678,48 +684,80 @@ function getDayLoggedSteps(dateStr) {
 
 function getStepsSubLabel(dateStr, isMinDay = false) {
   const logged = getDayLoggedSteps(dateStr);
-  const monthAvg = getMonthAverageSteps(dateStr);
-  const avgFormatted = formatStepK(monthAvg);
+  const pacing = getStepsPacingStats(dateStr);
+  const neededStr = pacing.neededFormatted;
 
   if (isMinDay) {
     if (logged > 0) {
-      return `Today ${logged.toLocaleString()} · 5,000 floor (Avg ${avgFormatted})`;
+      return `Today ${logged.toLocaleString()} · 5k floor · Need ${neededStr}/d for 10k avg`;
     }
-    return `5,000 step floor · Avg ${avgFormatted}`;
+    return `5k floor · Avg ${pacing.avgFormatted} · Need ${neededStr}/d`;
   }
 
   if (logged > 0) {
-    return `Today ${logged.toLocaleString()} · Avg ${avgFormatted}`;
+    return `Today ${logged.toLocaleString()} · Avg ${pacing.avgFormatted} · Need ${neededStr}/d`;
   }
-  return `Avg ${avgFormatted} this month`;
+  return `Avg ${pacing.avgFormatted} · Need ${neededStr}/d for 10k avg`;
 }
 
-function getMonthAverageSteps(dateStr) {
+function getStepsPacingStats(dateStr) {
   const d = parseSafeDate(dateStr);
   const year = d.getFullYear();
   const month = d.getMonth();
-  let total = 0;
-  let count = 0;
+  const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+  const targetTotal = totalDaysInMonth * 10000;
+
+  let totalLogged = 0;
+  let loggedDaysCount = 0;
 
   // Tally all days up to dateStr in this month
-  for (let day = 1; day <= 31; day++) {
+  for (let day = 1; day <= totalDaysInMonth; day++) {
     const curDate = new Date(year, month, day);
-    if (curDate.getMonth() !== month) break;
     const curIso = formatDateIsoSafe(curDate);
     if (curIso > dateStr) break;
     const st = getDayLoggedSteps(curIso);
     if (st > 0) {
-      total += st;
-      count++;
+      totalLogged += st;
+      loggedDaysCount++;
     }
   }
 
-  if (count === 0) return 9500;
-  return Math.round(total / count);
+  const currentDayNum = d.getDate();
+  const todayLogged = getDayLoggedSteps(dateStr);
+
+  const daysRemaining = todayLogged > 0
+    ? Math.max(0, totalDaysInMonth - currentDayNum)
+    : Math.max(1, totalDaysInMonth - currentDayNum + 1);
+
+  const remainingStepsNeeded = Math.max(0, targetTotal - totalLogged);
+  const neededPerDay = daysRemaining > 0
+    ? Math.round(remainingStepsNeeded / daysRemaining)
+    : 0;
+
+  const monthAvg = loggedDaysCount > 0
+    ? Math.round(totalLogged / loggedDaysCount)
+    : 10000;
+
+  return {
+    monthAvg,
+    avgFormatted: formatStepK(monthAvg),
+    neededPerDay,
+    neededFormatted: formatStepK(neededPerDay),
+    daysRemaining,
+    totalDaysInMonth,
+    totalLogged,
+    remainingStepsNeeded,
+    isTargetMet: totalLogged >= targetTotal
+  };
+}
+
+function getMonthAverageSteps(dateStr) {
+  return getStepsPacingStats(dateStr).monthAvg;
 }
 
 function formatStepK(num) {
-  if (!num || isNaN(num)) return '9.5k';
+  if (num === 0) return '0';
+  if (!num || isNaN(num) || num <= 0) return '10.0k';
   const k = (num / 1000).toFixed(1);
   return `${k}k`;
 }
