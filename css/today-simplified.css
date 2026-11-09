@@ -408,16 +408,16 @@ body:has(.margo-screen-wrap) .global-actions {
 }
 
 .margo-habit-row.margo-row-min {
-  min-height: 76px;
+  min-height: 68px;
 }
 
 .margo-habit-row.margo-row-min .margo-habit-checkbox {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
 }
 
 .margo-habit-row.margo-row-min .margo-habit-label {
-  font-size: 18px;
+  font-size: 17px;
 }
 
 /* Back Link */

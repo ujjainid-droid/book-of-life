@@ -2,7 +2,7 @@
    margo · Simplified Today Page & Sunday Ritual Architecture
    Modular ES6+ Implementation adhering to Margo Design Specs:
    - 1. Today (5 daily habits, 10k steps sheet, progress bar, streak chip)
-   - 2. Minimum Day (Low-energy 2-item fallback: Skin & Walk, streak safe)
+   - 2. Minimum Day (50% floor of full day: Move, 5k steps, Eat well, Skin, Hair)
    - 3. Sunday Review (Weekly 2-min audit, 7 day dots, five stats, weigh-in)
    - 4. Parking Lot (Mid-week brain dump shelf, Sunday promote rule)
    - 5. Steps Sheet (10k step logging & automatic month/week averaging)
@@ -124,7 +124,7 @@ function renderNormalTodayHtml(dateStr) {
     <div class="margo-min-toggle-card" onclick="toggleMinimumDayMode('${dateStr}')" role="button" tabindex="0" aria-label="Toggle Minimum Day">
       <div class="min-text-wrap">
         <span class="min-title">Minimum Day</span>
-        <span class="min-sub">Low energy? Just two things.</span>
+        <span class="min-sub">Low energy? 50% floor of full day.</span>
       </div>
       <div class="margo-switch" role="switch" aria-checked="false">
         <div class="margo-switch-knob"></div>
@@ -156,7 +156,7 @@ function renderNormalTodayHtml(dateStr) {
 
 /**
  * --------------------------------------------------------------------------
- * 2. Minimum Day View HTML
+ * 2. Minimum Day View HTML (50% Floor of Full Day)
  * --------------------------------------------------------------------------
  */
 function renderMinimumDayHtml(dateStr) {
@@ -166,19 +166,23 @@ function renderMinimumDayHtml(dateStr) {
   const streak = calculateMargoStreak(dateStr);
 
   const minHabits = [
-    { id: 'h-skin', label: 'Skin', sub: 'Morning or evening, either counts', isSteps: false },
-    { id: 'h-walk', label: 'Walk', sub: 'Just 10 minutes', isSteps: false }
+    { id: 'h-move', label: 'Move', sub: '150 cal or 15-min gentle walk', isSteps: false },
+    { id: 'h-steps', label: '5k steps', sub: getStepsSubLabel(dateStr, true), isSteps: true },
+    { id: 'h-eat', label: 'Eat well', sub: 'One protein snack or quick meal', isSteps: false },
+    { id: 'h-skin', label: 'Skin', sub: 'Quick wash or evening rinse', isSteps: false },
+    { id: 'h-hair', label: 'Hair', sub: 'Scalp massage or quick brush', isSteps: false }
   ];
 
-  let doneCount = 0;
+  let completedCount = 0;
   minHabits.forEach(h => {
-    if (isHabitDone(h.id, dateStr)) doneCount++;
+    if (isHabitDone(h.id, dateStr)) completedCount++;
   });
 
-  const isFullWin = (doneCount === 2);
-  const message = isFullWin
-    ? 'A full win. Rest up, see you tomorrow.'
-    : `${doneCount} of 2 done.`;
+  const progressPct = Math.round((completedCount / minHabits.length) * 100);
+  const isAllDone = (completedCount === minHabits.length);
+  const message = isAllDone
+    ? '50% floor defended. Rest up, see you tomorrow.'
+    : 'Defend the baseline with zero guilt. Just check what you do.';
 
   return `
     <!-- Header: Same as Today -->
@@ -193,24 +197,32 @@ function renderMinimumDayHtml(dateStr) {
     </header>
 
     <!-- Minimum Day Toggle Card (Switch is ON) -->
-    <div class="margo-min-toggle-card" onclick="toggleMinimumDayMode('${dateStr}')" role="button" tabindex="0" aria-label="Minimum Day is On. Tap to return to normal day">
+    <div class="margo-min-toggle-card" onclick="toggleMinimumDayMode('${dateStr}')" role="button" tabindex="0" aria-label="Minimum Day is On. Tap to return to full day">
       <div class="min-text-wrap">
         <span class="min-title">Minimum Day</span>
-        <span class="min-sub">Low energy? Just two things.</span>
+        <span class="min-sub">50% floor active · Defend baseline</span>
       </div>
       <div class="margo-switch on" role="switch" aria-checked="true">
         <div class="margo-switch-knob"></div>
       </div>
     </div>
 
-    <!-- Heading Block: Just two things -->
+    <!-- Heading Block: 50% floor -->
     <div class="margo-min-heading">
-      <h2>Just two things.</h2>
-      <p>That is a full win and your streak stays safe. Everything else can wait.</p>
+      <h2>50% floor.</h2>
+      <p>Defend your baseline and your streak stays safe. Everything else can wait.</p>
     </div>
 
-    <!-- Two rows: Skin & Walk (76px tall, 32px checkbox, 18px label) -->
-    <section class="margo-habits-list" aria-label="Minimum day habits">
+    <!-- Progress: 8px bar + N of 5 -->
+    <div class="margo-progress-row" aria-label="Progress: ${completedCount} of 5 floor defended">
+      <div class="margo-progress-track">
+        <div class="margo-progress-fill" style="width: ${progressPct}%;"></div>
+      </div>
+      <span class="margo-progress-label">${completedCount} of 5</span>
+    </div>
+
+    <!-- Five Habit Rows (50% Floor) -->
+    <section class="margo-habits-list" aria-label="Minimum day 50% floor habits">
       ${minHabits.map(h => renderHabitRowHtml(h, dateStr, true)).join('')}
     </section>
 
@@ -467,6 +479,8 @@ function renderParkingLotHtml(dateStr) {
  * --------------------------------------------------------------------------
  */
 function renderStepsSheetModalHtml(dateStr) {
+  const isMin = isDayMinimumDay(dateStr);
+  const targetThreshold = isMin ? 5000 : 10000;
   const currentLogged = getDayLoggedSteps(dateStr);
 
   return `
@@ -475,14 +489,14 @@ function renderStepsSheetModalHtml(dateStr) {
       onclick="if(event.target === this) closeStepsSheetModal()">
       <div class="margo-steps-sheet" onclick="event.stopPropagation()">
         <div>
-          <h2 class="margo-sheet-title">Today's steps</h2>
-          <p class="margo-sheet-sub">Hit 10,000 and it checks itself off.</p>
+          <h2 class="margo-sheet-title">Today's steps ${isMin ? '(50% floor)' : ''}</h2>
+          <p class="margo-sheet-sub">Hit ${targetThreshold.toLocaleString()} and it checks itself off.</p>
         </div>
 
         <input type="number" id="margo-steps-modal-input"
           class="margo-steps-input"
           value="${currentLogged > 0 ? currentLogged : ''}"
-          placeholder="e.g. 10250"
+          placeholder="e.g. ${isMin ? '5250' : '10250'}"
           onkeydown="if(event.key === 'Enter'){ event.preventDefault(); saveStepsFromModal('${dateStr}'); }">
 
         <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
@@ -539,23 +553,24 @@ function toggleHabitClick(habitId, dateStr) {
   if (!storage.data.habitsState) storage.data.habitsState = {};
   if (!storage.data.habitsState[dateStr]) storage.data.habitsState[dateStr] = {};
 
-  const current = !!storage.data.habitsState[dateStr][habitId];
+  const current = isHabitDone(habitId, dateStr);
   const nextVal = !current;
   storage.data.habitsState[dateStr][habitId] = nextVal;
 
   if (nextVal && typeof confetti === 'function') {
-    // Check if this action completed all 5 habits or both min habits
-    const isMin = isDayMinimumDay(dateStr);
-    const targetHabits = isMin ? ['h-skin', 'h-walk'] : ['h-move', 'h-steps', 'h-eat', 'h-skin', 'h-hair'];
+    // Check if this action completed all 5 habits
+    const targetHabits = ['h-move', 'h-steps', 'h-eat', 'h-skin', 'h-hair'];
     const allCompleted = targetHabits.every(id => id === habitId ? nextVal : isHabitDone(id, dateStr));
     if (allCompleted) {
       triggerMargoConfetti();
     }
   }
 
-  // XP Points adjustment
+  // XP Points adjustment: +5 XP for 50% floor, +10 XP for full day
+  const isMin = isDayMinimumDay(dateStr);
+  const pointsDelta = isMin ? 5 : 10;
   if (typeof storage.addPoints === 'function') {
-    storage.addPoints(nextVal ? 10 : -10);
+    storage.addPoints(nextVal ? pointsDelta : -pointsDelta);
   }
 
   storage.saveData();
@@ -566,10 +581,13 @@ window.toggleHabitClick = toggleHabitClick;
 function isHabitDone(habitId, dateStr) {
   if (!storage.data) return false;
 
-  // 10k steps exception
+  const isMin = isDayMinimumDay(dateStr);
+
+  // 10k / 5k steps exception
   if (habitId === 'h-steps') {
     const steps = getDayLoggedSteps(dateStr);
-    if (steps >= 10000) return true;
+    const targetThreshold = isMin ? 5000 : 10000;
+    if (steps > 0) return steps >= targetThreshold;
     const hState = storage.data.habitsState && storage.data.habitsState[dateStr];
     return !!(hState && (hState['h-steps'] === true || hState['h-steps'] === 1));
   }
@@ -579,7 +597,9 @@ function isHabitDone(habitId, dateStr) {
     const hState = storage.data.habitsState && storage.data.habitsState[dateStr];
     if (hState && (hState['h-move'] === true || hState['h-move'] === 1)) return true;
     const auroraDay = storage.data.auroraDailyState && storage.data.auroraDailyState[dateStr];
-    if (auroraDay && ((auroraDay.moveCal && auroraDay.moveCal >= 300) || (auroraDay.anch && auroraDay.anch.move === 4))) return true;
+    const calThreshold = isMin ? 150 : 300;
+    const anchThreshold = isMin ? 2 : 4;
+    if (auroraDay && ((auroraDay.moveCal && auroraDay.moveCal >= calThreshold) || (auroraDay.anch && auroraDay.anch.move >= anchThreshold))) return true;
     return false;
   }
 
@@ -626,7 +646,8 @@ function saveStepsFromModal(dateStr) {
   if (!storage.data.habitsState[dateStr]) storage.data.habitsState[dateStr] = {};
 
   const wasChecked = isHabitDone('h-steps', dateStr);
-  const nowChecked = (val >= 10000);
+  const targetThreshold = isDayMinimumDay(dateStr) ? 5000 : 10000;
+  const nowChecked = (val >= targetThreshold);
   storage.data.habitsState[dateStr]['h-steps'] = nowChecked;
 
   if (!wasChecked && nowChecked && typeof confetti === 'function') {
@@ -655,10 +676,17 @@ function getDayLoggedSteps(dateStr) {
   return 0;
 }
 
-function getStepsSubLabel(dateStr) {
+function getStepsSubLabel(dateStr, isMinDay = false) {
   const logged = getDayLoggedSteps(dateStr);
   const monthAvg = getMonthAverageSteps(dateStr);
   const avgFormatted = formatStepK(monthAvg);
+
+  if (isMinDay) {
+    if (logged > 0) {
+      return `Today ${logged.toLocaleString()} · 5,000 floor (Avg ${avgFormatted})`;
+    }
+    return `5,000 step floor · Avg ${avgFormatted}`;
+  }
 
   if (logged > 0) {
     return `Today ${logged.toLocaleString()} · Avg ${avgFormatted}`;
@@ -763,9 +791,8 @@ function getWeekAuditData(dateStr) {
     const d = new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + i);
     const dIso = formatDateIsoSafe(d);
     const isMin = isDayMinimumDay(dIso);
-    const hasAnyBox = isMin
-      ? (isHabitDone('h-skin', dIso) && isHabitDone('h-walk', dIso))
-      : ['h-move', 'h-steps', 'h-eat', 'h-skin', 'h-hair'].some(id => isHabitDone(id, dIso));
+    const targetHabits = ['h-move', 'h-steps', 'h-eat', 'h-skin', 'h-hair'];
+    const hasAnyBox = targetHabits.some(id => isHabitDone(id, dIso));
 
     let status = 'empty';
     let statusLabel = 'Unchecked';
@@ -924,12 +951,8 @@ function calculateMargoStreak(referenceDateStr) {
     }
 
     const isMin = isDayMinimumDay(dIso);
-    let isDayDone = false;
-    if (isMin) {
-      isDayDone = isHabitDone('h-skin', dIso) && isHabitDone('h-walk', dIso);
-    } else {
-      isDayDone = ['h-move', 'h-steps', 'h-eat', 'h-skin', 'h-hair'].some(id => isHabitDone(id, dIso));
-    }
+    const targetHabits = ['h-move', 'h-steps', 'h-eat', 'h-skin', 'h-hair'];
+    const isDayDone = targetHabits.some(id => isHabitDone(id, dIso));
 
     if (isDayDone) {
       streak++;
