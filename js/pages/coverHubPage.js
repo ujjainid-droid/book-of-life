@@ -794,6 +794,7 @@ function renderCoverHubPage() {
     if (t.includes('surg') || t.includes('health') || t.includes('doctor') || t.includes('med')) return 'heart-pulse';
     if (t.includes('school') || t.includes('iep')) return 'graduation-cap';
     if (t.includes('oon') || t.includes('finance')) return 'receipt';
+    if (t.includes('outfit') || t.includes('style') || t.includes('wardrobe') || t.includes('cloth')) return 'shirt';
     return 'sparkles';
   };
 

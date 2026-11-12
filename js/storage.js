@@ -368,6 +368,19 @@ class StorageManager {
             visibleTools: ['apple', 'things']
           },
           {
+            id: 'camp-outfits',
+            title: 'Outfits',
+            status: 'IP',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Style & Outfits' },
+              apple: { noteQuery: '# STYLE 01_OUTFITS' },
+              google: { folder: 'Wardrobe Capsule' },
+              things: { query: 'Wardrobe Organizing' },
+              email: { emailQuery: 'Clothing Orders' }
+            }
+          },
+          {
             id: 'camp-oon',
             title: 'oon',
             status: 'Maintain',
@@ -432,19 +445,6 @@ class StorageManager {
           }
         ],
         later: [
-          {
-            id: 'camp-outfits',
-            title: 'Outfits',
-            status: 'NS',
-            theme: 'cat-care',
-            tools: {
-              margo: { label: 'Style & Outfits' },
-              apple: { noteQuery: '# STYLE 01_OUTFITS' },
-              google: { folder: 'Wardrobe Capsule' },
-              things: { query: 'Wardrobe Organizing' },
-              email: { emailQuery: 'Clothing Orders' }
-            }
-          },
           {
             id: 'camp-shoes',
             title: 'Shoes',
@@ -3622,6 +3622,42 @@ class StorageManager {
       }
 
       this.data.coverFocusSeedV5 = true;
+      this.data.coverUpdatedAt = Date.now();
+      updated = true;
+    }
+
+    // Move Outfits to In focus (now with IP status)
+    if (!this.data.coverFocusSeedV6) {
+      const isOutfits = (c) => c && (c.id === 'camp-outfits' || (c.title || '').toLowerCase().trim() === 'outfits');
+      const nowOutfits = this.data.coverCampaigns.now.find(isOutfits);
+      if (nowOutfits) {
+        if (nowOutfits.status !== 'IP') {
+          nowOutfits.status = 'IP';
+        }
+      } else {
+        const laterOutfitsIdx = this.data.coverCampaigns.later.findIndex(isOutfits);
+        if (laterOutfitsIdx !== -1) {
+          const [movedOutfits] = this.data.coverCampaigns.later.splice(laterOutfitsIdx, 1);
+          movedOutfits.status = 'IP';
+          this.data.coverCampaigns.now.push(movedOutfits);
+        } else {
+          this.data.coverCampaigns.now.push({
+            id: 'camp-outfits',
+            title: 'Outfits',
+            status: 'IP',
+            theme: 'cat-care',
+            tools: {
+              margo: { label: 'Style & Outfits' },
+              apple: { noteQuery: '# STYLE 01_OUTFITS' },
+              google: { folder: 'Wardrobe Capsule' },
+              things: { query: 'Wardrobe Organizing' },
+              email: { emailQuery: 'Clothing Orders' }
+            }
+          });
+        }
+      }
+      this.data.coverCampaigns.later = this.data.coverCampaigns.later.filter(c => !isOutfits(c));
+      this.data.coverFocusSeedV6 = true;
       this.data.coverUpdatedAt = Date.now();
       updated = true;
     }
