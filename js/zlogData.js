@@ -2888,6 +2888,52 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-05": {
+    "date": "2026-11-05",
+    "rawDate": "Thu, 11 - 5- 26",
+    "rating": 5,
+    "ratingRaw": "Great Day",
+    "aggression": false,
+    "notes": "- Challenging, hesitant drop-off feeling anxious not recognizing anyone; expressed missing mom (\"hole in his heart that will only be filled when you get home\"), but promised to be good (swore on River Styx)\n- Turned completely around once inside; ran and hugged Miss Nicole\n- Amazing day on the camp field trip; Miss Nicole reported he was not only well-behaved all day but was a wonderful helper\n- Picked up at 5:30 PM; handled skipping 7:00 PM martial arts smoothly to rest after a busy camp day and big week\n- Calm, positive, and cooperative evening",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-04": {
+    "date": "2026-11-04",
+    "rawDate": "Wed, 11 - 4- 26",
+    "rating": 1,
+    "ratingRaw": "Rough Day",
+    "aggression": true,
+    "notes": "- Smooth morning routine at home; Mocha playfully jumped with muddy paws (needed second shirt) and lightly scratched cheek, which Z took proudly in stride (\"makes me look tough\")\n- Rough day at school: regular teacher was absent and transition off computers triggered a full escalation\n- Refused to transition and dropped to floor when asked to leave room; physically removed to de-escalation room and restrained per NJ policy\n- Major positive turnaround: calmed down, returned to class/learning, and successfully finished the day earning all behavioral points; school was pleased with his recovery\n- Note: NJ incident report focused on points, omitting the substitute teacher and computer removal trigger",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-03": {
     "date": "2026-11-03",
     "rawDate": "Tue, 11 - 3- 26",
