@@ -111,11 +111,11 @@ class StorageManager {
   }
 
   applyZLogNovemberDatesMigration() {
-    const marker = 'BOL_ZLOG_NOVEMBER_DATES_V19';
+    const marker = 'BOL_ZLOG_NOVEMBER_DATES_V20';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (!this.data.zlogEntries) this.data.zlogEntries = {};
-        const targetDates = ['2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-05'];
+        const targetDates = ['2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-05', '2026-11-09', '2026-11-10', '2026-11-11'];
         let updated = false;
         if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
           targetDates.forEach(dateStr => {
@@ -133,7 +133,7 @@ class StorageManager {
           });
         }
         if (updated) {
-          this.data.zlogSeedVersion = 19;
+          this.data.zlogSeedVersion = 20;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -1237,7 +1237,7 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 19;
+        merged.zlogSeedVersion < 20;
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
@@ -1291,7 +1291,7 @@ class StorageManager {
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 19;
+        merged.zlogSeedVersion = 20;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);

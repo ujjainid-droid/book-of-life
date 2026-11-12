@@ -2888,6 +2888,75 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-11": {
+    "date": "2026-11-11",
+    "rawDate": "Wed, 11 -11- 26",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- Low morning mood with negative self-talk (\"calling himself a jerk and a loser\") following yesterday's escalation; took breakfast and meds, but motivation was low\n- Promised to have a good day and looked forward to seeing Melissa\n- Eagerly asked about Melissa immediately upon getting off the bus, checking every 10–15 minutes until it was time to go\n- Completed all homework independently; had a wonderful visit at Melissa's and a calm, positive remainder of the evening",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-10": {
+    "date": "2026-11-10",
+    "rawDate": "Tue, 11 -10- 26",
+    "rating": 1,
+    "ratingRaw": "Rough Day",
+    "aggression": true,
+    "notes": "- Brief negotiation with bus driver in morning, but sat down happily and waved goodbye\n- Good mood in afternoon but persistent nagging for TV remote and interrupting work; intently watched Ice Age around 4:30 PM\n- Dinner transition refusal: refused to turn off TV or join dinner, escalating when remote was forcefully removed\n- Severe meltdown lasting over an hour with hitting, kicking, spitting, intense verbal abuse, and property destruction; ice/cold water attempted and required restraint in his room\n- Eventually accepted melatonin and fell asleep shortly after 8:00 PM",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-09": {
+    "date": "2026-11-09",
+    "rawDate": "Mon, 11 - 9- 26",
+    "rating": 2,
+    "ratingRaw": "Difficult Day",
+    "aggression": false,
+    "notes": "- Good morning and smooth bus pick-up; good at drop-off but mentioned feeling very tired and mood seemed off\n- Promptly did homework at home and patiently waited for TV until 5:00 PM while listening to an audiobook\n- Evening screen friction: allowed TV after dinner, but mood deteriorated; fixated on video games/Duolingo and rejected alternative TV options\n- Skipped martial arts due to friction; Tom de-escalated after some raised voices, and Z fell asleep on time",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-05": {
     "date": "2026-11-05",
     "rawDate": "Thu, 11 - 5- 26",
