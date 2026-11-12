@@ -13,6 +13,7 @@ class StorageManager {
     this.applyCleanClaimsMigration();
     this.applyHobbiesSeedMigration();
     this.applyZLogOctoberMissingDatesMigration();
+    this.applyZLogOctoberLateDatesMigration();
     this.recalculateAllStreaks();
     this.recalculatePointsFromHistory();
   }
@@ -72,6 +73,39 @@ class StorageManager {
       }
     } catch (e) {
       console.warn('Z Log October missing dates migration failed', e);
+    }
+  }
+
+  applyZLogOctoberLateDatesMigration() {
+    const marker = 'BOL_ZLOG_OCTOBER_LATE_DATES_V17';
+    try {
+      if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
+        if (!this.data.zlogEntries) this.data.zlogEntries = {};
+        const targetDates = ['2026-10-30', '2026-10-31'];
+        let updated = false;
+        if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
+          targetDates.forEach(dateStr => {
+            if (DEFAULT_ZLOG_ENTRIES[dateStr]) {
+              const existing = this.data.zlogEntries[dateStr];
+              if (!existing || (!existing.notes && (existing.rating === null || existing.rating === undefined))) {
+                const entry = JSON.parse(JSON.stringify(DEFAULT_ZLOG_ENTRIES[dateStr]));
+                this.data.zlogEntries[dateStr] = entry;
+                try {
+                  localStorage.setItem('ZLOG_ENTRY_BACKUP_' + dateStr, JSON.stringify(entry));
+                } catch (e) {}
+                updated = true;
+              }
+            }
+          });
+        }
+        if (updated) {
+          this.data.zlogSeedVersion = 17;
+          this.saveData();
+        }
+        try { localStorage.setItem(marker, 'true'); } catch (e) {}
+      }
+    } catch (e) {
+      console.warn('Z Log October late dates migration failed', e);
     }
   }
 
@@ -1169,7 +1203,7 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 16;
+        merged.zlogSeedVersion < 17;
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
@@ -1223,7 +1257,7 @@ class StorageManager {
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 16;
+        merged.zlogSeedVersion = 17;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);

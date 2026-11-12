@@ -2888,6 +2888,52 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-10-31": {
+    "date": "2026-10-31",
+    "rawDate": "Sat, 10 -31- 26",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- Did well with trick-or-treating\n- Was quite upset and sad about my work trip, but did not have a meltdown\n- Tom dropped me off; Z had a hard time saying goodbye and didn't want me to leave",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-10-30": {
+    "date": "2026-10-30",
+    "rawDate": "Fri, 10 -30- 26",
+    "rating": 4,
+    "ratingRaw": "Good Day",
+    "aggression": false,
+    "notes": "- First check-in call with school; settling in well so far\n- Had an absolute blast at the Excel Halloween party",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-10-14": {
     "date": "2026-10-14",
     "rawDate": "Wed, 10 -14- 26",
