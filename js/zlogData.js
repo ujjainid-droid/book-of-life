@@ -2888,6 +2888,75 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-03": {
+    "date": "2026-11-03",
+    "rawDate": "Tue, 11 - 3- 26",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- Arrived home in good spirits but persistent whining/bargaining for iPad (IXL, Duolingo); lingered in office seeking attention\n- Handled screen-time boundary without escalating into a meltdown\n- Completed all homework independently, then played with LEGOs\n- Mocha accidentally ate raw chicken (vet advised monitoring for vomiting)\n- Post-dinner resistance refusing to take a bath; verbal pushback and friction, but remained verbal and avoided a full meltdown",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-02": {
+    "date": "2026-11-02",
+    "rawDate": "Mon, 11 - 2- 26",
+    "rating": 4,
+    "ratingRaw": "Good Day",
+    "aggression": false,
+    "notes": "- Good night's sleep; very smooth and independent morning routine (took meds, packed Kindle, water bottle, journal, backpack)\n- Requested Mocha be on the driveway to greet him at bus drop-off\n- Arrived home smoothly on an early bus and started homework right away\n- Mild frustration during martial arts struggling with a new move; came over for a hug, listened to encouragement from dad and Deshi, and got back on the mat to try again\n- Calm, regulated, and cooperative for the rest of the evening",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-01": {
+    "date": "2026-11-01",
+    "rawDate": "Sun, 11 - 1- 26",
+    "rating": 1,
+    "ratingRaw": "Rough Day",
+    "aggression": true,
+    "notes": "- Severe morning meltdown (worst in a long time) with physical aggression, throwing objects, and property damage to the house\n- Trigger unclear; occurred after changing mind about scootering while starting a walk with Mocha; asked dad to call police\n- Dad administered Risperidone (0.25mg) rescue dose and Z began calming down; canceled Ninja with Ms. Randi\n- Recovered well in the afternoon at the playground; afternoon and evening were calm\n- Treated to dinner at Friendly's as a positive reward for calming down and cooperating; fell asleep on the ride home and in bed by 7:15 PM",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": true,
+      "risDose": "0.25mg",
+      "rit": "",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-10-31": {
     "date": "2026-10-31",
     "rawDate": "Sat, 10 -31- 26",
