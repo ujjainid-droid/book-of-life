@@ -5077,6 +5077,16 @@ class StorageManager {
       ],
       newRecipes: [
         {
+          id: 'r-fiber-immunity-soup',
+          title: 'Fiber & Immunity Protein Soup',
+          icon: 'risotto',
+          course: 'main',
+          tags: [],
+          recipeUrl: 'https://www.youtube.com/shorts/OMkaCd196ec',
+          ingredients: '1️⃣ Preheat oven to 400°F.\n2️⃣ Peel & chop 2lbs carrots. Roughly chop 1 large yellow onion. Add to lined sheet pan with 8-10 garlic cloves.\n3️⃣ Drizzle with 1 tbsp olive oil; season with 2 tsp curry powder, 1 tbsp smoked paprika, generous salt & cracked black pepper.\n4️⃣ Roast 45–50 mins until caramelized.\n5️⃣ Transfer roasted veggies to blender or large pot.\n6️⃣ Add 4 cups bone broth, 2 servings cottage cheese (or 1 block soft tofu), 1 tbsp grated ginger, juice of 1/2 lemon, chili flakes, and 1/4 cup chickpeas for extra protein & fiber.\n7️⃣ Blend until creamy & smooth; adjust seasoning or thin with extra broth.\n8️⃣ Top with freshly grated parmesan, fresh herbs, lemon juice, and chili flakes.',
+          stashMatch: null
+        },
+        {
           id: 'r-parmesan-broccoli-chips',
           title: 'Parmesan Broccoli Chips',
           icon: 'salad',
@@ -5510,6 +5520,27 @@ class StorageManager {
           this.data.kitchenUpdatedAt = Date.now();
         }
         this.data.kitchenParmesanBroccoliChipsSeeded = true;
+        this.saveData();
+      }
+
+      // Ensure Fiber & Immunity Protein Soup is seeded in Want to Try (newRecipes)
+      if (!this.data.kitchenFiberImmunitySoupSeeded) {
+        if (!Array.isArray(kd.newRecipes)) kd.newRecipes = [];
+        const exists = kd.newRecipes.some(r => (r.title || '').toLowerCase().includes('fiber & immunity'));
+        if (!exists) {
+          kd.newRecipes.unshift({
+            id: 'r-fiber-immunity-soup-' + Date.now(),
+            title: 'Fiber & Immunity Protein Soup',
+            icon: 'risotto',
+            course: 'main',
+            tags: [],
+            recipeUrl: 'https://www.youtube.com/shorts/OMkaCd196ec',
+            ingredients: '1️⃣ Preheat oven to 400°F.\n2️⃣ Peel & chop 2lbs carrots. Roughly chop 1 large yellow onion. Add to lined sheet pan with 8-10 garlic cloves.\n3️⃣ Drizzle with 1 tbsp olive oil; season with 2 tsp curry powder, 1 tbsp smoked paprika, generous salt & cracked black pepper.\n4️⃣ Roast 45–50 mins until caramelized.\n5️⃣ Transfer roasted veggies to blender or large pot.\n6️⃣ Add 4 cups bone broth, 2 servings cottage cheese (or 1 block soft tofu), 1 tbsp grated ginger, juice of 1/2 lemon, chili flakes, and 1/4 cup chickpeas for extra protein & fiber.\n7️⃣ Blend until creamy & smooth; adjust seasoning or thin with extra broth.\n8️⃣ Top with freshly grated parmesan, fresh herbs, lemon juice, and chili flakes.',
+            stashMatch: null
+          });
+          this.data.kitchenUpdatedAt = Date.now();
+        }
+        this.data.kitchenFiberImmunitySoupSeeded = true;
         this.saveData();
       }
 
