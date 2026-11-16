@@ -144,12 +144,12 @@ class StorageManager {
   }
 
   applyCleanClaimsMigration() {
-    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V17';
+    const marker = 'BOL_CLAIMS_FORCED_RECONCILE_V18';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (typeof DEFAULT_REAL_CLAIMS !== 'undefined' && Array.isArray(DEFAULT_REAL_CLAIMS)) {
           this.data.claims = JSON.parse(JSON.stringify(DEFAULT_REAL_CLAIMS));
-          this.data.claimsSeedVersion = 17;
+          this.data.claimsSeedVersion = 18;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -3978,7 +3978,7 @@ class StorageManager {
       }
 
       this.data.finance = JSON.parse(JSON.stringify(typeof DEFAULT_FINANCE_DATA !== 'undefined' ? DEFAULT_FINANCE_DATA : {}));
-      this.data.finance.seedVersion = 16;
+      this.data.finance.seedVersion = 17;
       try {
         localStorage.setItem('BOL_FINANCE_DATA_V2', JSON.stringify(this.data.finance));
         localStorage.setItem('BOOK_OF_LIFE_DATA_V2', JSON.stringify(this.data));
@@ -3996,9 +3996,9 @@ class StorageManager {
       }
     }
 
-    // Seed v16 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
-    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 16)) {
-      this.data.finance.seedVersion = 16;
+    // Seed v17 migration: Update full transactions, monthly summaries, and ensure wealthSweepPot
+    if (this.data.finance && (!this.data.finance.seedVersion || this.data.finance.seedVersion < 17)) {
+      this.data.finance.seedVersion = 17;
       if (typeof DEFAULT_FINANCE_DATA !== 'undefined') {
         if (Array.isArray(DEFAULT_FINANCE_DATA.transactions)) {
           this.data.finance.transactions = JSON.parse(JSON.stringify(DEFAULT_FINANCE_DATA.transactions));
@@ -4017,6 +4017,9 @@ class StorageManager {
         this.data.finance.incomeTarget = DEFAULT_FINANCE_DATA.incomeTarget || 22000;
         if (this.data.finance.wealthSweepPot === undefined) {
           this.data.finance.wealthSweepPot = 4258.30;
+        }
+        if (typeof DEFAULT_FINANCE_CARDS_ROI !== 'undefined') {
+          this.data.finance.cardsROI = JSON.parse(JSON.stringify(DEFAULT_FINANCE_CARDS_ROI));
         }
       }
       try {

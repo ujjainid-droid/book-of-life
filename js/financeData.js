@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 16,
+  "seedVersion": 17,
   "monthlyTarget": 18200,
   "savingsTarget": 3000,
   "incomeTarget": 22000,
@@ -43,8 +43,8 @@ const DEFAULT_FINANCE_DATA = {
   "monthlySummaries": [
     {
       "month": "2026-11",
-      "income": 5177.62,
-      "outflow": 1721.65
+      "income": 10803.18,
+      "outflow": 3348.75
     },
     {
       "month": "2026-10",
@@ -643,12 +643,294 @@ const DEFAULT_FINANCE_DATA = {
   ],
   "transactions": [
     {
+      "id": "260419300852519043",
+      "date": "2026-11-13",
+      "merchant": "La Vida Salon",
+      "category": "Self care + Grooming",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 113.9,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260419300852519042",
+      "date": "2026-11-13",
+      "merchant": "The Great Greek",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 85.06,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260394083503591493",
+      "date": "2026-11-13",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 41.03,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260349122083049666",
+      "date": "2026-11-13",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 157.5,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "260349122083049665",
+      "date": "2026-11-13",
+      "merchant": "Erco Lig",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5383.38,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260257514402632700",
+      "date": "2026-11-12",
+      "merchant": "Anthem",
+      "category": "Medical + Dentist",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 157.5,
+      "isIncome": false,
+      "tags": "",
+      "isRefund": true
+    },
+    {
+      "id": "260257514402632699",
+      "date": "2026-11-12",
+      "merchant": "Excel Martial Arts",
+      "category": "Child Activities",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 357.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260257514402632701",
+      "date": "2026-11-11",
+      "merchant": "Erco Lighting Inc",
+      "category": "Other Income (incl cc reward credits)",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 229.19,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260236838239227978",
+      "date": "2026-11-11",
+      "merchant": "Mindsoother",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 225.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260054970215714951",
+      "date": "2026-11-11",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260236838239227979",
+      "date": "2026-11-10",
+      "merchant": "HARRISON NJ GARAGE",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260145254994825239",
+      "date": "2026-11-10",
+      "merchant": "SimpliSafe",
+      "category": "Home Security",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 24.51,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260105234215882985",
+      "date": "2026-11-10",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 10000.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260145254994825240",
+      "date": "2026-11-09",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260056008392987364",
+      "date": "2026-11-09",
+      "merchant": "The Home Depot",
+      "category": "Home maintenance",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 7.43,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260045901375493007",
+      "date": "2026-11-09",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 1.77,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260045901375493006",
+      "date": "2026-11-09",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 1.77,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259979075646935664",
+      "date": "2026-11-09",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 10000.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259979075646935663",
+      "date": "2026-11-09",
+      "merchant": "American Express",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5182.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259979075646935662",
+      "date": "2026-11-09",
+      "merchant": "Verizon",
+      "category": "Internet & Cable",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 79.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259924493240652563",
+      "date": "2026-11-09",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 18.49,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259982174048506201",
+      "date": "2026-11-08",
+      "merchant": "American Express",
+      "category": "Other Income (incl cc reward credits)",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 12.99,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "259962098851270923",
+      "date": "2026-11-08",
+      "merchant": "Aldi",
+      "category": "Groceries",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 60.71,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259962098060644556",
+      "date": "2026-11-08",
+      "merchant": "Deshe Landscaping",
+      "category": "Home maintenance",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 459.04,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259962098060644555",
+      "date": "2026-11-08",
+      "merchant": "Livingston Police Rec",
+      "category": "Miscellaneous",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 10.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259962098060644554",
+      "date": "2026-11-08",
+      "merchant": "Chewy",
+      "category": "Mocha",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 101.05,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "259924493240652564",
+      "date": "2026-11-08",
+      "merchant": "BT*AOGF BENEVITY NEWARK DE",
+      "category": "Charity",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 250.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
       "id": "259907611172295559",
       "date": "2026-11-08",
       "merchant": "The Home Depot",
       "category": "Home maintenance",
       "account": "Costco Visa 3744 due 17th",
       "amount": 21.29,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260145253677814724",
+      "date": "2026-11-07",
+      "merchant": "Amazon",
+      "category": "Shopping",
+      "account": "U Amazon 9598 due 15th",
+      "amount": 54.89,
       "isIncome": false,
       "tags": ""
     },
@@ -679,27 +961,6 @@ const DEFAULT_FINANCE_DATA = {
       "category": "Groceries",
       "account": "U CSP (...8373) due 15th",
       "amount": 89.13,
-      "isIncome": false,
-      "tags": ""
-    },
-    {
-      "id": "259867219192205807",
-      "date": "2026-11-07",
-      "merchant": "Walmart",
-      "category": "Shopping",
-      "account": "U AMEX Plat 1003 due 6th",
-      "amount": 27.18,
-      "isIncome": false,
-      "tags": "",
-      "isRefund": true
-    },
-    {
-      "id": "259810477671469478",
-      "date": "2026-11-07",
-      "merchant": "Walmart",
-      "category": "Groceries",
-      "account": "U AMEX Plat 1003 due 6th",
-      "amount": 27.18,
       "isIncome": false,
       "tags": ""
     },
@@ -2909,6 +3170,16 @@ const DEFAULT_FINANCE_DATA = {
       "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
       "amount": 2.13,
       "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260220186681430322",
+      "date": "2026-10-07",
+      "merchant": "Merck & Co Inc New Com Rec 10/07/26 Pay 10/07/26 Rate 0.00000000 Qty 0.00000000",
+      "category": "Transfer",
+      "account": "Individual Brokerage -9148 (...9148)",
+      "amount": 513.48,
+      "isIncome": false,
       "tags": ""
     },
     {
@@ -12939,22 +13210,40 @@ const DEFAULT_FINANCE_DATA = {
 
 const DEFAULT_REAL_CLAIMS = [
   {
+    "id": "claim-ms-2026-11-11",
+    "date": "2026-11-11",
+    "provider": "Mindsoother Therapy",
+    "patient": "Xavier Healy",
+    "amountPaid": 225.0,
+    "expectedRecovery": 157.5,
+    "reimbursedAmount": 157.5,
+    "submissionType": "provider",
+    "payoutMethod": "direct_deposit",
+    "superbillStatus": "have",
+    "stage": "settled",
+    "inPortal": true,
+    "inBank": true,
+    "claimNumber": "",
+    "nextAction": "Reconciled in bank ($157.50 deposited on 2026-11-13)",
+    "notes": "Therapy session. Paid $225 via U CSP ...8373 on 2026-11-11. Submitted by provider to Anthem. Settled with $157.50 direct deposit on 2026-11-13 (TRN*1*34275)."
+  },
+  {
     "id": "claim-ms-2026-11-04",
     "date": "2026-11-04",
     "provider": "Mindsoother Therapy",
     "patient": "Xavier Healy",
     "amountPaid": 225.0,
     "expectedRecovery": 157.5,
-    "reimbursedAmount": 0.0,
+    "reimbursedAmount": 157.5,
     "submissionType": "provider",
     "payoutMethod": "direct_deposit",
     "superbillStatus": "have",
-    "stage": "submitted_by_provider",
+    "stage": "settled",
     "inPortal": true,
-    "inBank": false,
+    "inBank": true,
     "claimNumber": "",
-    "nextAction": "Awaiting Anthem direct deposit (.50 expected)",
-    "notes": "Therapy session. Paid  via U CSP ...8373 on 2026-11-04. Submitted by provider to Anthem for 70% reimbursement (.50 expected)."
+    "nextAction": "Reconciled in bank ($157.50 deposited on 2026-11-12)",
+    "notes": "Therapy session. Paid $225 via U CSP ...8373 on 2026-11-04. Submitted by provider to Anthem. Settled with $157.50 direct deposit on 2026-11-12 (TRN*1*34272)."
   },
   {
     "id": "claim-ms-2026-10-28",
@@ -14466,7 +14755,7 @@ const DEFAULT_FINANCE_CARDS_ROI = [
     theme: 'violet',
     color: '#7C3AED',
     renewalMonth: 'October',
-    lastUpdated: '10/26/2026',
+    lastUpdated: '11/15/2026',
     benefits: [
       {
         id: 'amex-uber',
@@ -14491,10 +14780,10 @@ const DEFAULT_FINANCE_CARDS_ROI = [
         cadence: 'Monthly',
         notes: '$25/mo auto-pay',
         trackType: 'monthly',
-        periods: { Jan: true, Feb: true, Mar: true, Apr: true, May: true, Jun: true, Jul: true, Aug: true, Sep: false, Oct: true, Nov: false, Dec: false },
+        periods: { Jan: true, Feb: true, Mar: true, Apr: true, May: true, Jun: true, Jul: true, Aug: true, Sep: false, Oct: true, Nov: true, Dec: false },
         periodValues: { Jan: 25, Feb: 25, Mar: 25, Apr: 25, May: 25, Jun: 25, Jul: 25, Aug: 25, Sep: 25, Oct: 25, Nov: 25, Dec: 25 },
         realized: true,
-        realizedValue: 200,
+        realizedValue: 225,
         matchKeywords: ['disney', 'hulu', 'new york times', 'peacock', 'audible', 'espn'],
         redemptions: []
       },
@@ -14506,10 +14795,10 @@ const DEFAULT_FINANCE_CARDS_ROI = [
         cadence: 'Monthly',
         notes: 'Covers membership fee',
         trackType: 'monthly',
-        periods: { Jan: true, Feb: true, Mar: true, Apr: true, May: true, Jun: true, Jul: true, Aug: true, Sep: false, Oct: true, Nov: false, Dec: false },
+        periods: { Jan: true, Feb: true, Mar: true, Apr: true, May: true, Jun: true, Jul: true, Aug: true, Sep: false, Oct: true, Nov: true, Dec: false },
         periodValues: { Jan: 12.95, Feb: 12.95, Mar: 12.95, Apr: 12.95, May: 12.95, Jun: 12.95, Jul: 12.95, Aug: 12.95, Sep: 12.95, Oct: 12.95, Nov: 12.95, Dec: 12.95 },
         realized: true,
-        realizedValue: 103,
+        realizedValue: 116.55,
         matchKeywords: ['walmart', 'walmart+'],
         redemptions: []
       },
@@ -14566,11 +14855,11 @@ const DEFAULT_FINANCE_CARDS_ROI = [
         cadence: 'Annual',
         notes: 'Once per calendar year',
         trackType: 'annual',
-        periods: { annual: false },
-        realized: false,
-        realizedValue: 0,
+        periods: { annual: true },
+        realized: true,
+        realizedValue: 12.99,
         matchKeywords: ['airline', 'delta', 'united', 'baggage', 'seat'],
-        redemptions: []
+        redemptions: [{ date: '2026-11-08', amount: 12.99, note: 'United Airlines fee reimbursement' }]
       },
       {
         id: 'amex-clear',
