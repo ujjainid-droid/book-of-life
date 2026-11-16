@@ -449,6 +449,19 @@ class StorageManager {
             }
           },
           {
+            id: 'camp-home',
+            title: 'Home declutter',
+            status: 'IP',
+            theme: 'cat-home',
+            tools: {
+              margo: { label: 'Home Harmony' },
+              apple: { noteQuery: '# HOME 01_DECLUTTER' },
+              google: { folder: 'Home Inventory' },
+              things: { query: 'Room-by-Room Declutter' },
+              email: { emailQuery: 'Donations & Orders' }
+            }
+          },
+          {
             id: 'camp-oon',
             title: 'oon',
             status: 'Maintain',
@@ -550,19 +563,6 @@ class StorageManager {
               google: { folder: 'Tax Docs 2026' },
               things: { query: 'Monthly Budget Review' },
               email: { emailQuery: 'Financial Statements' }
-            }
-          },
-          {
-            id: 'camp-home',
-            title: 'Home declutter',
-            status: 'NS',
-            theme: 'cat-home',
-            tools: {
-              margo: { label: 'Home Harmony' },
-              apple: { noteQuery: '# HOME 01_DECLUTTER' },
-              google: { folder: 'Home Inventory' },
-              things: { query: 'Room-by-Room Declutter' },
-              email: { emailQuery: 'Donations & Orders' }
             }
           },
           {
@@ -3726,6 +3726,42 @@ class StorageManager {
       }
       this.data.coverCampaigns.later = this.data.coverCampaigns.later.filter(c => !isOutfits(c));
       this.data.coverFocusSeedV6 = true;
+      this.data.coverUpdatedAt = Date.now();
+      updated = true;
+    }
+
+    // Move Home declutter to In focus (now with IP status)
+    if (!this.data.coverFocusSeedV7) {
+      const isHomeDeclutter = (c) => c && (c.id === 'camp-home' || (c.title || '').toLowerCase().trim().includes('home declutter') || (c.title || '').toLowerCase().trim().includes('declutter'));
+      const nowHome = this.data.coverCampaigns.now.find(isHomeDeclutter);
+      if (nowHome) {
+        if (nowHome.status !== 'IP') {
+          nowHome.status = 'IP';
+        }
+      } else {
+        const laterHomeIdx = this.data.coverCampaigns.later.findIndex(isHomeDeclutter);
+        if (laterHomeIdx !== -1) {
+          const [movedHome] = this.data.coverCampaigns.later.splice(laterHomeIdx, 1);
+          movedHome.status = 'IP';
+          this.data.coverCampaigns.now.push(movedHome);
+        } else {
+          this.data.coverCampaigns.now.push({
+            id: 'camp-home',
+            title: 'Home declutter',
+            status: 'IP',
+            theme: 'cat-home',
+            tools: {
+              margo: { label: 'Home Harmony' },
+              apple: { noteQuery: '# HOME 01_DECLUTTER' },
+              google: { folder: 'Home Inventory' },
+              things: { query: 'Room-by-Room Declutter' },
+              email: { emailQuery: 'Donations & Orders' }
+            }
+          });
+        }
+      }
+      this.data.coverCampaigns.later = this.data.coverCampaigns.later.filter(c => !isHomeDeclutter(c));
+      this.data.coverFocusSeedV7 = true;
       this.data.coverUpdatedAt = Date.now();
       updated = true;
     }

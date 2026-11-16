@@ -795,6 +795,7 @@ function renderCoverHubPage() {
     if (t.includes('school') || t.includes('iep')) return 'graduation-cap';
     if (t.includes('oon') || t.includes('finance')) return 'receipt';
     if (t.includes('outfit') || t.includes('style') || t.includes('wardrobe') || t.includes('cloth')) return 'shirt';
+    if (t.includes('home') || t.includes('declutter') || t.includes('room') || t.includes('house')) return 'home';
     return 'sparkles';
   };
 

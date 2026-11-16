@@ -1098,6 +1098,7 @@ class SyncManager {
       coverCampaignsSeedVersion: mergedCampVersion,
       coverUpdatedAt: mergedCoverUpdatedAt,
       coverFocusSeedV6: Boolean(incoming.coverFocusSeedV6 || (locCoverTime >= incCoverTime && storage.data.coverFocusSeedV6)),
+      coverFocusSeedV7: Boolean(incoming.coverFocusSeedV7 || (locCoverTime >= incCoverTime && storage.data.coverFocusSeedV7)),
       points: mergedPoints,
       habits: mergedHabits,
       habitsState: mergedHabitsState,
