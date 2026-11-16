@@ -2888,6 +2888,98 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-15": {
+    "date": "2026-11-15",
+    "rawDate": "Sun, 11 -15- 26",
+    "rating": 4,
+    "ratingRaw": "Good Day",
+    "aggression": false,
+    "notes": "- Good day overall with consistently positive mood all day\n- Noticeably and extremely hyper throughout the day, but stayed in good spirits without escalating",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-14": {
+    "date": "2026-11-14",
+    "rawDate": "Sat, 11 -14- 26",
+    "rating": 2,
+    "ratingRaw": "Difficult Day",
+    "aggression": true,
+    "notes": "- Hyper in the morning; did well in martial arts class\n- Transition friction at the Y for swim class: went over but then refused to go in\n- Wanted vending machine but it wasn't working, which triggered frustration\n- Escalated and kicked dad in the car\n- Successfully de-escalated and avoided a full meltdown once home; was okay for the remainder of the day",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-13": {
+    "date": "2026-11-13",
+    "rawDate": "Fri, 11 -13- 26",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- Arrived home from school in a good mood\n- Started creatively experimenting in the kitchen mixing spices\n- Had to be left alone for a few minutes due to an appointment; got scared and walked to neighbor's house to call dad\n- Regulated quickly once connected with dad and had a good rest of the evening",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-12": {
+    "date": "2026-11-12",
+    "rawDate": "Thu, 11 -12- 26",
+    "rating": 2,
+    "ratingRaw": "Difficult Day",
+    "aggression": false,
+    "notes": "- Extremely hyper all morning but in good mood\n- Arrived home and immediately asked if he had to go to martial arts; resisted going because of rain, and mood seemed off (coughing, attitude)\n- Went straight downstairs to family room and skipped homework; demanded audiobook to be played in off mode until dad came home\n- Escalated again without apparent trigger: fixated on screen grievances, protesting that he is not allowed TV/video games and that peers on bus have phones/iPads\n- Placed stuffed animals near front door implying that he wants to move out / potentially run away\n- Spent most of evening off with anger directed mostly at mom (called mom an idiot, nonresponsive), but avoided major meltdown or physical aggression\n- Gradually calmed down and went to sleep",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-11": {
     "date": "2026-11-11",
     "rawDate": "Wed, 11 -11- 26",
