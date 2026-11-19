@@ -2888,6 +2888,75 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-18": {
+    "date": "2026-11-18",
+    "rawDate": "Wed, 11 -18- 26",
+    "rating": 4,
+    "ratingRaw": "Good Day",
+    "aggression": false,
+    "notes": "- Good day overall; positive mood, well-regulated, and cooperative",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-17": {
+    "date": "2026-11-17",
+    "rawDate": "Tue, 11 -17- 26",
+    "rating": 4,
+    "ratingRaw": "Good Day",
+    "aggression": false,
+    "notes": "- Good day overall; calm, cooperative, and smooth routines throughout the day",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-16": {
+    "date": "2026-11-16",
+    "rawDate": "Mon, 11 -16- 26",
+    "rating": 2,
+    "ratingRaw": "Difficult Day",
+    "aggression": true,
+    "notes": "- Good day overall until it was time to go to martial arts; off the bus in a good mood, did his homework, and was very polite and well-behaved\n- Ate well with his greens and finished dinner smoothly\n- Unexpected trigger when getting dressed for martial arts: started copping an attitude which escalated rapidly\n- Became very angry: threw things at us, hit us, growled, used foul language, and showed the middle finger\n- Lots of discussion about how hard it is to calm down, but eventually calmed down completely and even apologized\n- Did not get to sleep until 9:00 PM",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-15": {
     "date": "2026-11-15",
     "rawDate": "Sun, 11 -15- 26",

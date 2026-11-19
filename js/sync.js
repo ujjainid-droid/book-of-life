@@ -614,7 +614,7 @@ class SyncManager {
       mergedZLog[dStr] = entry;
     });
 
-    const mergedZLogVersion = Math.max(Number(incoming.zlogSeedVersion) || 0, Number(storage.data.zlogSeedVersion) || 0, 21);
+    const mergedZLogVersion = Math.max(Number(incoming.zlogSeedVersion) || 0, Number(storage.data.zlogSeedVersion) || 0, 22);
 
     let mergedTitration = incoming.titrationHistory;
     let mergedTitVersion = Math.max(Number(incoming.titrationSeedVersion) || 0, Number(storage.data.titrationSeedVersion) || 0, 7);
