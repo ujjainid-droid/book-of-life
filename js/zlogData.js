@@ -2888,6 +2888,29 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-19": {
+    "date": "2026-11-19",
+    "rawDate": "Thu, 11 -19- 26",
+    "rating": 1,
+    "ratingRaw": "Rough Day",
+    "aggression": true,
+    "notes": "- Severe and very challenging day with multiple major escalations\n- Morning escalation: started getting agitated and angry (unclear trigger, possibly around timer limits); became physically and verbally aggressive to the point of missing the school bus\n- Took extended time to calm down; around 8:15 AM calmed down enough for dad to drive him to school; nervous initially but had a good school day and took the bus home in a positive mood\n- Afternoon screen boundary trigger: started homework, then insisted on having mom's phone to make a Christmas list (seeking video games); when directed to use pen/paper, began loud persistent whining and demanding\n- When mom closed office door, he kicked the door repeatedly, threw objects, hit mom, and shouted verbal abuse\n- Elopement: ran outside crying without shoes (in socks) carrying a rake; walked up Hillside, sat at Riker Hill, then walked down to Hearthstone; mom followed in car coaxing him in; expressed extreme distress (\"wants a new family\", \"rather go to an orphanage\", \"worst parents\"); eventually got into car after negotiating screen time and treats\n- Evening transition: watched YouTube on TV then transitioned to regular TV with dad; had dinner (soup and sandwich)\n- Post-dinner meltdown: escalated throwing food, hitting dad, and spiraled into another major meltdown lasting well over an hour\n- Note: Risperidone was not administered",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-18": {
     "date": "2026-11-18",
     "rawDate": "Wed, 11 -18- 26",
