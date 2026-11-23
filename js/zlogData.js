@@ -2888,6 +2888,75 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-22": {
+    "date": "2026-11-22",
+    "rawDate": "Sun, 11 -22- 26",
+    "rating": 4,
+    "ratingRaw": "Good Day",
+    "aggression": false,
+    "notes": "- Positive day overall; woke up in a very good mood\n- Extremely hyper all day but maintained a consistently good mood and positive spirits\n- Reviewed house rules together and he seemed cooperative and receptive\n- Went to Ninja class",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-21": {
+    "date": "2026-11-21",
+    "rawDate": "Sat, 11 -21- 26",
+    "rating": 2,
+    "ratingRaw": "Difficult Day",
+    "aggression": true,
+    "notes": "- Morning elopement attempt: woke parents up by ringing the doorbell around 8:00 AM; dad discovered he had packed bags/backpacks/suitcase and was attempting to run away\n- Walked in socks with no shoes toward Hill, refusing to speak or listen; dad followed on foot while mom followed at a distance in the car\n- Refused to return for quite a while; eventually got cold without shoes and agreed to get into the car with the promise of iPad\n- Drove through Dunkin' Donuts for breakfast; once home, ate food and took his meds\n- Remained escalated up and down until around lunchtime; expressed \"I hate my life\"\n- Screen time resistance: given ~20 minutes of Nintendo before lunch, but refused to give it up and played for almost an hour; taken away without triggering a major escalation\n- Afternoon was relatively better: noticeably hyper with an impulse to break things or do something physical, but no major escalations for the rest of the day",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
+  "2026-11-20": {
+    "date": "2026-11-20",
+    "rawDate": "Fri, 11 -20- 26",
+    "rating": 2,
+    "ratingRaw": "Difficult Day",
+    "aggression": true,
+    "notes": "- Morning was good; arrived off the bus in a good mood, went outside and played\n- Screen time boundary friction: asked for TV and was told he could have it at 4:30 PM; once turned on, snatched the remote and put on YouTube, refusing to give the remote back or change the channel\n- De-escalation approach: chose to let him watch rather than force a meltdown; refused to come eat when dinner was ready and continued watching YouTube for ~3 hours until 7:30 PM\n- Evening escalation: dad asked multiple times to turn it off, which he refused, so dad turned it off at the wall switch\n- Threw and broke the TV remote, and threw the living room plastic lamp (did not break)\n- Carried to his room in an escalated state, but the escalation did not last long; calmed down, came downstairs saying he was hungry, had leftover soup, and went to bed relatively calm",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-19": {
     "date": "2026-11-19",
     "rawDate": "Thu, 11 -19- 26",
