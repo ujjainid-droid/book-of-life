@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const DEFAULT_FINANCE_DATA = {
-  "seedVersion": 17,
+  "seedVersion": 18,
   "monthlyTarget": 18200,
   "savingsTarget": 3000,
   "incomeTarget": 22000,
@@ -43,8 +43,8 @@ const DEFAULT_FINANCE_DATA = {
   "monthlySummaries": [
     {
       "month": "2026-11",
-      "income": 10803.18,
-      "outflow": 3348.75
+      "income": 15155.39,
+      "outflow": 11575.14
     },
     {
       "month": "2026-10",
@@ -643,6 +643,426 @@ const DEFAULT_FINANCE_DATA = {
   ],
   "transactions": [
     {
+      "id": "261064852729516632",
+      "date": "2026-11-21",
+      "merchant": "Dunkin'",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 7.66,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "261012163523007438",
+      "date": "2026-11-20",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "360 Performance Savings (...4275)",
+      "amount": 100.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260991696344994801",
+      "date": "2026-11-20",
+      "merchant": "Uber Eats",
+      "category": "Eating out",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 34.18,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260973401863639337",
+      "date": "2026-11-20",
+      "merchant": "Google",
+      "category": "Paychecks",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 4155.91,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260973401863639336",
+      "date": "2026-11-20",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 750.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260973401863639335",
+      "date": "2026-11-20",
+      "merchant": "Charles Schwab",
+      "category": "Transfer",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 600.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260974365341406202",
+      "date": "2026-11-19",
+      "merchant": "The Newmark School",
+      "category": "School stuff + Education",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 153.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260973401863639338",
+      "date": "2026-11-19",
+      "merchant": "Charles Schwab",
+      "category": "Water",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 814.49,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260883669658915369",
+      "date": "2026-11-19",
+      "merchant": "Public Service Enterprise Group",
+      "category": "Gas & Electric",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 57.97,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260883669658915368",
+      "date": "2026-11-19",
+      "merchant": "Karina Oliveira De Araujo",
+      "category": "Home maintenance",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 175.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260922438777852329",
+      "date": "2026-11-18",
+      "merchant": "Capital One",
+      "category": "Interest",
+      "account": "CD (...2555)",
+      "amount": 96.0,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260882338422476800",
+      "date": "2026-11-18",
+      "merchant": "Just Salad",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 13.85,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260882338421429247",
+      "date": "2026-11-18",
+      "merchant": "Apple",
+      "category": "Subscriptions",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 9.99,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260882338421429246",
+      "date": "2026-11-18",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260882338421429245",
+      "date": "2026-11-18",
+      "merchant": "McDonald's",
+      "category": "Eating out",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 11.72,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260882338421429244",
+      "date": "2026-11-18",
+      "merchant": "Mindsoother",
+      "category": "Medical + Dentist",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 225.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "261199396847768505",
+      "date": "2026-11-17",
+      "merchant": "Costco",
+      "category": "Home maintenance",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 150.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "261199396847768504",
+      "date": "2026-11-17",
+      "merchant": "Costco",
+      "category": "Groceries",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 269.68,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260784094265758128",
+      "date": "2026-11-17",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260781437341946548",
+      "date": "2026-11-17",
+      "merchant": "Costco",
+      "category": "Eating out",
+      "account": "Costco Visa 3744 due 17th",
+      "amount": 4.8,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260715535152992336",
+      "date": "2026-11-17",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 77.54,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260715535152992335",
+      "date": "2026-11-17",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 585.41,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260715535152992334",
+      "date": "2026-11-17",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 600.28,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260715535152992333",
+      "date": "2026-11-17",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 4597.98,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260715535152992332",
+      "date": "2026-11-17",
+      "merchant": "PennyMac",
+      "category": "Mortgage",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 5933.22,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260626523194151644",
+      "date": "2026-11-17",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 44.83,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260729466695209268",
+      "date": "2026-11-16",
+      "merchant": "Dividend Received Apple Inc (Aapl) (Cash)",
+      "category": "Dividends & Capital Gains",
+      "account": "Joint WROS - TOD (...3919)",
+      "amount": 0.3,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260729466695209267",
+      "date": "2026-11-16",
+      "merchant": "Purchase Into Core Account Cash (315994103) (Cash)",
+      "category": "Buy",
+      "account": "Joint WROS - TOD (...3919)",
+      "amount": 0.3,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260695100150535033",
+      "date": "2026-11-16",
+      "merchant": "Reinvestment",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 282.88,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260695100150535032",
+      "date": "2026-11-16",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****8042 (Self-Managed) (...8042)",
+      "amount": 282.88,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260692240718386150",
+      "date": "2026-11-16",
+      "merchant": "Newmark School",
+      "category": "Child Activities",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 35.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260692240718386149",
+      "date": "2026-11-16",
+      "merchant": "Target",
+      "category": "Shopping",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 43.67,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260692240718386147",
+      "date": "2026-11-16",
+      "merchant": "Harrison Garage",
+      "category": "Transportation",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 18.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260622103473574855",
+      "date": "2026-11-16",
+      "merchant": "Venmo",
+      "category": "Self care + Grooming",
+      "account": "Primary Checking ...002 (....002)",
+      "amount": 36.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260567910162387430",
+      "date": "2026-11-16",
+      "merchant": "Walmart",
+      "category": "Groceries",
+      "account": "U AMEX Plat 1003 due 6th",
+      "amount": 40.71,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260692242017570907",
+      "date": "2026-11-15",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 585.41,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260692240718386148",
+      "date": "2026-11-15",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 4597.98,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260692239651984263",
+      "date": "2026-11-15",
+      "merchant": "Chase",
+      "category": "Credit Card Payment",
+      "account": "U Amazon 9598 due 15th",
+      "amount": 77.54,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260600515704410589",
+      "date": "2026-11-15",
+      "merchant": "Aldi",
+      "category": "Groceries",
+      "account": "U CFF (...2344) due 15th",
+      "amount": 77.7,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260600515115110856",
+      "date": "2026-11-15",
+      "merchant": "Peter Collura",
+      "category": "Child Activities",
+      "account": "U CSP (...8373) due 15th",
+      "amount": 35.0,
+      "isIncome": false,
+      "tags": ""
+    },
+    {
+      "id": "260664836184625946",
+      "date": "2026-11-13",
+      "merchant": "Sweep In",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 1.51,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
+      "id": "260664836184625945",
+      "date": "2026-11-13",
+      "merchant": "Dividend",
+      "category": "Dividends & Capital Gains",
+      "account": "Ujjaini Dasgupta, Thomas L Healy - Brokerage Account - ****0093 (Managed) (...0093)",
+      "amount": 1.51,
+      "isIncome": true,
+      "tags": ""
+    },
+    {
       "id": "260419300852519043",
       "date": "2026-11-13",
       "merchant": "La Vida Salon",
@@ -668,7 +1088,7 @@ const DEFAULT_FINANCE_DATA = {
       "merchant": "Walmart",
       "category": "Groceries",
       "account": "U AMEX Plat 1003 due 6th",
-      "amount": 41.03,
+      "amount": 39.95,
       "isIncome": false,
       "tags": ""
     },
@@ -13210,6 +13630,24 @@ const DEFAULT_FINANCE_DATA = {
 
 const DEFAULT_REAL_CLAIMS = [
   {
+    "id": "claim-ms-2026-11-18",
+    "date": "2026-11-18",
+    "provider": "Mindsoother Therapy",
+    "patient": "Xavier Healy",
+    "amountPaid": 225.0,
+    "expectedRecovery": 157.5,
+    "reimbursedAmount": 0.0,
+    "submissionType": "provider",
+    "payoutMethod": "direct_deposit",
+    "superbillStatus": "have",
+    "stage": "submitted_by_provider",
+    "inPortal": true,
+    "inBank": false,
+    "claimNumber": "",
+    "nextAction": "Awaiting Anthem direct deposit ($157.50 expected)",
+    "notes": "Therapy session. Paid $225 via U CSP ...8373 on 2026-11-18. Submitted by provider to Anthem for 70% reimbursement ($157.50 expected)."
+  },
+  {
     "id": "claim-ms-2026-11-11",
     "date": "2026-11-11",
     "provider": "Mindsoother Therapy",
@@ -14755,7 +15193,7 @@ const DEFAULT_FINANCE_CARDS_ROI = [
     theme: 'violet',
     color: '#7C3AED',
     renewalMonth: 'October',
-    lastUpdated: '11/15/2026',
+    lastUpdated: '11/22/2026',
     benefits: [
       {
         id: 'amex-uber',
@@ -14765,12 +15203,12 @@ const DEFAULT_FINANCE_CARDS_ROI = [
         cadence: 'Monthly',
         notes: '$15/mo ($35 in Dec) [Wallet / Uber Balance / Transaction History]',
         trackType: 'monthly',
-        periods: { Jan: true, Feb: false, Mar: true, Apr: false, May: false, Jun: true, Jul: true, Aug: true, Sep: true, Oct: false, Nov: false, Dec: false },
+        periods: { Jan: true, Feb: false, Mar: true, Apr: false, May: false, Jun: true, Jul: true, Aug: true, Sep: true, Oct: false, Nov: true, Dec: false },
         periodValues: { Jan: 15, Feb: 15, Mar: 15, Apr: 15, May: 15, Jun: 15, Jul: 15, Aug: 15, Sep: 15, Oct: 15, Nov: 15, Dec: 35 },
         realized: true,
-        realizedValue: 100,
+        realizedValue: 115,
         matchKeywords: ['uber', 'uber eats'],
-        redemptions: []
+        redemptions: [{ date: '2026-11-20', amount: 15.00, note: 'Uber Eats ($34.18 order on Amex Plat)' }]
       },
       {
         id: 'amex-ent',

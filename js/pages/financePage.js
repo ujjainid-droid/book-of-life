@@ -4445,7 +4445,7 @@ function renderFinanceBudget() {
   // Calculate day of month
   let currentDayOfMonth = daysInMonth; // default full month for past months
   if (selectedBudgetMonth === '2026-11') {
-    currentDayOfMonth = 15; // As of Nov 15
+    currentDayOfMonth = 22; // As of Nov 22
   } else if (selectedBudgetMonth > '2026-11') {
     currentDayOfMonth = 1;
   }
