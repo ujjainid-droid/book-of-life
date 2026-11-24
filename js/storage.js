@@ -682,7 +682,11 @@ class StorageManager {
       zlogActiveMeds: (typeof DEFAULT_ZLOG_MEDS !== 'undefined') ? [...DEFAULT_ZLOG_MEDS] : [],
       // Kitchen & Stash Data
       kitchenData: this.getDefaultKitchenData(),
-      kitchenUpdatedAt: 0
+      kitchenUpdatedAt: 0,
+      // Today / Sanctuary Architecture State
+      todayMinimumDays: {},
+      stepLogs: {},
+      todayParkingLot: []
     };
   }
 
@@ -1077,8 +1081,46 @@ class StorageManager {
             merged.kitchenUpdatedAt = Math.max(curKitchenTime, snapKitchenTime);
           }
         }
+
+        // 14. Today Page Architecture State (Minimum Day, Steps Sheet, Parking Lot)
+        if (s.todayMinimumDays && typeof s.todayMinimumDays === 'object') {
+          if (!merged.todayMinimumDays) merged.todayMinimumDays = {};
+          Object.assign(merged.todayMinimumDays, s.todayMinimumDays);
+        }
+        if (s.stepLogs && typeof s.stepLogs === 'object') {
+          if (!merged.stepLogs) merged.stepLogs = {};
+          Object.assign(merged.stepLogs, s.stepLogs);
+        }
+        if (Array.isArray(s.todayParkingLot)) {
+          if (!Array.isArray(merged.todayParkingLot)) merged.todayParkingLot = [];
+          s.todayParkingLot.forEach(item => {
+            if (item && !merged.todayParkingLot.some(x => x.id === item.id)) {
+              merged.todayParkingLot.push(item);
+            }
+          });
+        }
       }
       delete merged._hasLoadedCoverCampaigns;
+
+      // Check dedicated resilient Minimum Days & Step Logs backup
+      try {
+        const dedicatedMinDays = localStorage.getItem('BOL_TODAY_MINIMUM_DAYS');
+        if (dedicatedMinDays) {
+          const parsedMin = JSON.parse(dedicatedMinDays);
+          if (parsedMin && typeof parsedMin === 'object') {
+            if (!merged.todayMinimumDays) merged.todayMinimumDays = {};
+            Object.assign(merged.todayMinimumDays, parsedMin);
+          }
+        }
+        const dedicatedStepLogs = localStorage.getItem('BOL_STEP_LOGS');
+        if (dedicatedStepLogs) {
+          const parsedSteps = JSON.parse(dedicatedStepLogs);
+          if (parsedSteps && typeof parsedSteps === 'object') {
+            if (!merged.stepLogs) merged.stepLogs = {};
+            Object.assign(merged.stepLogs, parsedSteps);
+          }
+        }
+      } catch (e) {}
 
       // Check dedicated resilient Cover Campaigns backup
       try {
@@ -1424,6 +1466,12 @@ class StorageManager {
           kitchenData: this.data.kitchenData,
           kitchenUpdatedAt: this.data.kitchenUpdatedAt || Date.now()
         }));
+      }
+      if (this.data && this.data.todayMinimumDays) {
+        localStorage.setItem('BOL_TODAY_MINIMUM_DAYS', JSON.stringify(this.data.todayMinimumDays));
+      }
+      if (this.data && this.data.stepLogs) {
+        localStorage.setItem('BOL_STEP_LOGS', JSON.stringify(this.data.stepLogs));
       }
       if (typeof syncManager !== 'undefined' && syncManager.isConfigured()) {
         syncManager.pushToCloud();

@@ -595,13 +595,18 @@ function isHabitDone(habitId, dateStr) {
     const targetThreshold = isMin ? 5000 : 10000;
     if (steps > 0) return steps >= targetThreshold;
     const hState = storage.data.habitsState && storage.data.habitsState[dateStr];
-    return !!(hState && (hState['h-steps'] === true || hState['h-steps'] === 1));
+    if (!hState) return false;
+    const raw = hState['h-steps'];
+    return raw === true || raw === 1 || (isMin && (raw === 0.5 || Number(raw) >= 0.5));
   }
 
   // Move exception: check if aurora moveCal or standard habit is set
   if (habitId === 'h-move') {
     const hState = storage.data.habitsState && storage.data.habitsState[dateStr];
-    if (hState && (hState['h-move'] === true || hState['h-move'] === 1)) return true;
+    if (hState) {
+      const raw = hState['h-move'];
+      if (raw === true || raw === 1 || (isMin && (raw === 0.5 || Number(raw) >= 0.5))) return true;
+    }
     const auroraDay = storage.data.auroraDailyState && storage.data.auroraDailyState[dateStr];
     const calThreshold = isMin ? 150 : 300;
     const anchThreshold = isMin ? 2 : 4;
@@ -611,7 +616,11 @@ function isHabitDone(habitId, dateStr) {
 
   // Normal habits: check habitsState
   const hState = storage.data.habitsState && storage.data.habitsState[dateStr];
-  if (hState && (hState[habitId] === true || hState[habitId] === 1)) return true;
+  if (hState) {
+    const raw = hState[habitId];
+    if (raw === true || raw === 1) return true;
+    if (isMin && (raw === 0.5 || Number(raw) >= 0.5)) return true;
+  }
   return false;
 }
 

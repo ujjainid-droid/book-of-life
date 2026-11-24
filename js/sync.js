@@ -1086,9 +1086,24 @@ class SyncManager {
       kitchenData: storage.data.kitchenData
     });
 
+    // Consolidated Today Page state
+    const mergedMinDays = { ...(storage.data.todayMinimumDays || {}), ...(incoming.todayMinimumDays || {}) };
+    const mergedStepLogs = { ...(storage.data.stepLogs || {}), ...(incoming.stepLogs || {}) };
+    let mergedParking = Array.isArray(storage.data.todayParkingLot) ? [...storage.data.todayParkingLot] : [];
+    if (Array.isArray(incoming.todayParkingLot)) {
+      incoming.todayParkingLot.forEach(item => {
+        if (item && !mergedParking.some(x => x.id === item.id)) {
+          mergedParking.push(item);
+        }
+      });
+    }
+
     storage.data = {
       ...storage.data,
       ...incoming,
+      todayMinimumDays: mergedMinDays,
+      stepLogs: mergedStepLogs,
+      todayParkingLot: mergedParking,
       kitchenData: mergedKitchen,
       kitchenUpdatedAt: mergedKitchenUpdatedAt,
       finance: mergedFinance,
@@ -1155,6 +1170,12 @@ class SyncManager {
           kitchenData: storage.data.kitchenData,
           kitchenUpdatedAt: storage.data.kitchenUpdatedAt || 0
         }));
+      }
+      if (storage.data.todayMinimumDays) {
+        localStorage.setItem('BOL_TODAY_MINIMUM_DAYS', JSON.stringify(storage.data.todayMinimumDays));
+      }
+      if (storage.data.stepLogs) {
+        localStorage.setItem('BOL_STEP_LOGS', JSON.stringify(storage.data.stepLogs));
       }
     } catch (e) {}
 
