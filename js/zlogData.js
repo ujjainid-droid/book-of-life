@@ -2891,8 +2891,9 @@ const DEFAULT_ZLOG_ENTRIES = {
   "2026-11-23": {
     "date": "2026-11-23",
     "rawDate": "Mon, 11 -23- 26",
-    "rating": 2,
-    "ratingRaw": "Difficult Day",
+    "careRating": "okay",
+    "rating": 3,
+    "ratingRaw": "Okay day",
     "aggression": false,
     "notes": "- Morning was good; seemed fine at drop-off and when getting off the bus\n- Did his homework and then went out to play\n- Later said he was bored and wanted dad to come play with him; read and played with Legos\n- Asked for Nintendo and TV, promising he would be good and go to martial arts\n- Had dinner, then went upstairs to read on his phone\n- Evening refusal & escalation: refused to get dressed for martial arts and started escalating each time he was asked to go; in the end he did not go\n- Escalation was severe verbally: told dad he hates him and doesn't want him to be his dad anymore, with a lot of yelling (\"shut up\"), but no physical aggression\n- Calmed down around 8:00 PM saying he was hungry; had a peanut butter and jelly sandwich and eventually went to sleep",
     "attachments": [],
