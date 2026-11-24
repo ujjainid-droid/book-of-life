@@ -111,7 +111,7 @@ class StorageManager {
   }
 
   applyZLogNovemberDatesMigration() {
-    const marker = 'BOL_ZLOG_NOVEMBER_DATES_V24';
+    const marker = 'BOL_ZLOG_NOVEMBER_DATES_V25';
     try {
       if (typeof localStorage !== 'undefined' && !localStorage.getItem(marker)) {
         if (!this.data.zlogEntries) this.data.zlogEntries = {};
@@ -119,14 +119,14 @@ class StorageManager {
           '2026-11-01', '2026-11-02', '2026-11-03', '2026-11-04', '2026-11-05',
           '2026-11-09', '2026-11-10', '2026-11-11', '2026-11-12', '2026-11-13',
           '2026-11-14', '2026-11-15', '2026-11-16', '2026-11-17', '2026-11-18',
-          '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22'
+          '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23'
         ];
         let updated = false;
         if (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') {
           targetDates.forEach(dateStr => {
             if (DEFAULT_ZLOG_ENTRIES[dateStr]) {
               const existing = this.data.zlogEntries[dateStr];
-              if (!existing || (!existing.notes && (existing.rating === null || existing.rating === undefined)) || ['2026-11-12', '2026-11-13', '2026-11-14', '2026-11-15', '2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22'].includes(dateStr)) {
+              if (!existing || (!existing.notes && (existing.rating === null || existing.rating === undefined)) || ['2026-11-12', '2026-11-13', '2026-11-14', '2026-11-15', '2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19', '2026-11-20', '2026-11-21', '2026-11-22', '2026-11-23'].includes(dateStr)) {
                 const entry = JSON.parse(JSON.stringify(DEFAULT_ZLOG_ENTRIES[dateStr]));
                 this.data.zlogEntries[dateStr] = entry;
                 try {
@@ -138,7 +138,7 @@ class StorageManager {
           });
         }
         if (updated) {
-          this.data.zlogSeedVersion = 24;
+          this.data.zlogSeedVersion = 25;
           this.saveData();
         }
         try { localStorage.setItem(marker, 'true'); } catch (e) {}
@@ -1242,7 +1242,7 @@ class StorageManager {
         typeof merged.zlogEntries !== 'object' || 
         Object.keys(merged.zlogEntries).length === 0 || 
         !merged.zlogSeedVersion ||
-        merged.zlogSeedVersion < 24;
+        merged.zlogSeedVersion < 25;
 
       if (needsEnrichedSeed) {
         const cleanDefaults = (typeof DEFAULT_ZLOG_ENTRIES !== 'undefined') ? { ...DEFAULT_ZLOG_ENTRIES } : {};
@@ -1296,7 +1296,7 @@ class StorageManager {
           }
         }
         merged.zlogEntries = cleanDefaults;
-        merged.zlogSeedVersion = 24;
+        merged.zlogSeedVersion = 25;
       }
 
       const hasMissingPrescribers = Array.isArray(merged.titrationHistory) && merged.titrationHistory.some(r => !r || !r.prescriber);
