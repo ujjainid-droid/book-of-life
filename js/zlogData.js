@@ -2888,6 +2888,30 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-24": {
+    "date": "2026-11-24",
+    "rawDate": "Tue, 11 -24- 26",
+    "careRating": "almost",
+    "rating": 4,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- Pretty good day overall; extremely hyper in the morning but in a good mood\n- Did his homework in the car while dad was driving him back after LEGO Challenge class\n- Video game boundary friction: played video games once home; struggled to hand them back when time was up, asking repeatedly for a few more minutes and ending up taking 15 additional minutes (notified that 15 minutes will be deducted from tomorrow's video game time)\n- Dinner flexibility: did not want the cauliflower burrito bowl made for dinner; offered mac & cheese which he ate, and although he initially refused the cauliflower, he ended up eating one or two pieces\n- \"I'm Bored\" jar reaction: talked to him about new activity ideas in the jar for this weekend, which unexpectedly made him mad; stormed off with the jar, but calmed down quickly soon after\n- Evening somatic play: spent the evening outside on the zip line, which he thoroughly enjoyed",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-23": {
     "date": "2026-11-23",
     "rawDate": "Mon, 11 -23- 26",
