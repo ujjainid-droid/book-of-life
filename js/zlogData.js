@@ -2888,6 +2888,30 @@ const DEFAULT_ZLOG_ENTRIES = {
       "melDose": "2mg"
     }
   },
+  "2026-11-25": {
+    "date": "2026-11-25",
+    "rawDate": "Wed, 11 -25- 26",
+    "careRating": "almost",
+    "rating": 3,
+    "ratingRaw": "Almost Good",
+    "aggression": false,
+    "notes": "- Morning school hesitation: didn't want to go to school because of the half-day schedule and worrying friends might not be there, but got on the bus with no problems\n- Afternoon good mood & activities: arrived home around 2:00 PM for the half-day in a good mood; did Lego planning and played, then went to the batting cage with dad followed by ice cream\n- Martial arts & dinner transition: did not want the homemade pizza prepared for dinner; agreed to go to martial arts for the 7:00 PM class just to watch; arrived feeling \"angry shy\" and hesitant to enter at first, but gradually warmed up and ended up participating through the 7:45 class\n- Paris Baguette dinner treat: stopped at Paris Baguette afterwards so he could pick one dinner treat; negotiated for more which parents held the boundary on; was a little moody on the car ride home\n- Evening self-reflection & calming: went to his room to play alone, feeling down and vocalizing that \"nobody likes him\"; parents reassured and talked through it with him; eventually ate some food and went to bed calmly",
+    "attachments": [],
+    "meds": {
+      "z": true,
+      "zDose": "75mg",
+      "g": true,
+      "gDose": "2mg",
+      "ris": false,
+      "risDose": "As needed",
+      "rit": "15mg + 10mg",
+      "ritDose": "15mg + 10mg",
+      "mag": true,
+      "magDose": "Daily",
+      "mel": true,
+      "melDose": "Bedtime"
+    }
+  },
   "2026-11-24": {
     "date": "2026-11-24",
     "rawDate": "Tue, 11 -24- 26",
